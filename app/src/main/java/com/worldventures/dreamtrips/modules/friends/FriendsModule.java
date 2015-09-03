@@ -4,13 +4,12 @@ import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresente
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
-import com.worldventures.dreamtrips.modules.friends.view.activity.FriendSearchActivity;
-
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
-import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
-import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
+import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
+import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendSearchFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 
@@ -18,7 +17,7 @@ import dagger.Module;
 
 @Module(
         injects = {
-                FriendSearchActivity.class,
+                FriendSearchFragment.class,
                 FriendSearchPresenter.class,
                 FriendsMainPresenter.class,
                 FriendListFragment.class,

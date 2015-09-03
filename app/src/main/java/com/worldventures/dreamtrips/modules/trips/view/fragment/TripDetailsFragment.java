@@ -73,8 +73,6 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
     protected TextView textViewFeatured;
-    @InjectView(R.id.layoutBookIt)
-    protected View layoutBookIt;
     @InjectView(R.id.textViewBookIt)
     protected TextView textViewBookIt;
 
@@ -94,7 +92,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
         return new TripDetailsPresenter();
     }
 
-    @OnClick(R.id.layoutBookIt)
+    @OnClick(R.id.textViewBookIt)
     public void bookIt() {
         getPresenter().actionBookIt();
     }
@@ -230,7 +228,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @Override
     public void hideBookIt() {
-        layoutBookIt.setEnabled(false);
+        textViewBookIt.setEnabled(false);
         textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
     }
 

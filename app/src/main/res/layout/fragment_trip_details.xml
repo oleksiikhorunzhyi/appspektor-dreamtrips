@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ripple="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:clipToPadding="false"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+             xmlns:ripple="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/white"
+             android:clipToPadding="false"
+             android:fitsSystemWindows="true"
+             android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,24 +26,24 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewPagerGallery"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"/>
 
                 <me.relex.circleindicator.CircleIndicator
                     android:id="@+id/circleIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_gravity="bottom" />
+                    android:layout_gravity="bottom"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-                    android:background="@drawable/trip_item_shadow" />
+                    android:background="@drawable/trip_item_shadow"/>
 
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar_actionbar"
                     style="@style/ToolBarStyle"
-                    android:layout_width="match_parent" />
+                    android:layout_width="match_parent"/>
 
                 <FrameLayout
                     android:id="@+id/pointsCountLayout"
@@ -55,7 +55,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_points_badge" />
+                        android:src="@drawable/ic_points_badge"/>
 
                     <TextView
                         android:id="@+id/textViewPoints"
@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textColor="@color/white"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"/>
 
                 </FrameLayout>
 
@@ -77,14 +77,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:visibility="invisible"
                         android:background="@drawable/ic_stripe_left"
-                        android:padding="@dimen/spacing_medium"
-                        android:textColor="@color/white"
                         android:gravity="center"
-                        android:textSize="12sp"
+                        android:padding="@dimen/spacing_medium"
                         android:text="@string/trip_featured"
-                        android:textStyle="bold" />
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="invisible"/>
 
                 </RelativeLayout>
 
@@ -93,8 +93,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
-                    android:visibility="gone"
-                    android:src="@drawable/soldout"/>
+                    android:src="@drawable/soldout"
+                    android:visibility="gone"/>
 
 
             </FrameLayout>
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
 
 
                     <TextView
@@ -127,7 +127,7 @@
                         android:drawableLeft="@drawable/ic_location"
                         android:drawablePadding="5dp"
                         android:drawableStart="@drawable/ic_location"
-                        android:textColor="@color/tripPlaceColor" />
+                        android:textColor="@color/tripPlaceColor"/>
                 </LinearLayout>
 
                 <TextView
@@ -138,7 +138,7 @@
                     android:gravity="center_vertical"
                     android:textColor="@color/tripPlaceColor"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
 
             </LinearLayout>
@@ -146,7 +146,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:background="@drawable/trip_details_shadow" />
+                android:background="@drawable/trip_details_shadow"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -168,7 +168,7 @@
                         android:padding="@dimen/spacing_medium"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                 </LinearLayout>
 
@@ -179,7 +179,7 @@
                     android:fontFamily="sans-serif-light"
                     android:gravity="end"
                     android:padding="@dimen/spacing_medium"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"/>
 
 
             </LinearLayout>
@@ -191,7 +191,7 @@
                 android:background="@color/gray_lighter"
                 android:fontFamily="sans-serif-light"
                 android:padding="@dimen/spacing_medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -201,19 +201,19 @@
                 android:padding="10dp"
                 android:text="@string/trip_details"
                 android:textColor="@android:color/black"
-                android:textSize="22sp" />
+                android:textSize="22sp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:background="@drawable/trip_details_shadow" />
+                android:background="@drawable/trip_details_shadow"/>
 
 
             <ProgressBar
                 android:id="@+id/progressBarDetailLoading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"/>
 
             <TextView
                 android:id="@+id/textViewReload"
@@ -224,18 +224,18 @@
                 android:text="@string/reload_trip_details"
                 android:textColor="@color/tripPlaceColor"
                 android:textSize="22sp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <com.linearlistview.LinearListView
                 android:id="@+id/listViewContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:showDividers="none" />
+                android:showDividers="none"/>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="64dp" />
+                android:layout_height="64dp"/>
 
         </LinearLayout>
 
@@ -246,24 +246,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom">
 
-        <com.andexert.library.RippleView
-            android:id="@+id/layoutBookIt"
+
+        <TextView
+            android:id="@+id/textViewBookIt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            ripple:rv_color="#D3D3D3">
-
-            <TextView
-                android:id="@+id/textViewBookIt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/tripButtonColor"
-                android:gravity="center"
-                android:padding="@dimen/spacing_normal"
-                android:text="@string/book_it"
-                android:textColor="@color/white"
-                android:textSize="22sp" />
-        </com.andexert.library.RippleView>
+            android:background="@color/tripButtonColor"
+            android:gravity="center"
+            android:padding="@dimen/spacing_normal"
+            android:text="@string/book_it"
+            android:textColor="@color/white"
+            android:textSize="22sp"/>
     </FrameLayout>
 
 

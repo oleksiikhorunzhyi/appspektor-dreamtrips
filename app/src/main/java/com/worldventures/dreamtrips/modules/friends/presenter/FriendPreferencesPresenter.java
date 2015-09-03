@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.profile.presenter;
+package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import android.os.Handler;
 import android.os.SystemClock;
@@ -6,13 +6,13 @@ import android.os.SystemClock;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.common.model.User;
-
 import com.worldventures.dreamtrips.modules.profile.FriendGroupRelation;
 import com.worldventures.dreamtrips.modules.profile.api.AddFriendToGroupCommand;
 import com.worldventures.dreamtrips.modules.profile.api.DeleteFriendFromGroupCommand;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
 
     User friend;
 
-    public FriendPreferencesPresenter(User friend) {
-        this.friend = friend;
+    public FriendPreferencesPresenter(UserBundle userBundle) {
+        this.friend = userBundle.getUser();
     }
 
     @Override

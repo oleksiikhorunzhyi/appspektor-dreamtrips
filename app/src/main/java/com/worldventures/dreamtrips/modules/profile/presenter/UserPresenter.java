@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
@@ -77,10 +78,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 eventBus.postSticky(new RemoveUserEvent(user));
             }
         });
-    }
-
-    private void openFriendPrefs() {
-        activityRouter.openFriendPrefs(user);
     }
 
     public void acceptClicked() {
@@ -139,7 +136,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     public void onEvent(OpenFriendPrefsEvent event) {
-        openFriendPrefs();
+        view.openFriendPrefs(new UserBundle(user));
     }
 
 
@@ -192,5 +189,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 
         void showFriendDialog(User user);
+
+        void openFriendPrefs(UserBundle userBundle);
     }
 }

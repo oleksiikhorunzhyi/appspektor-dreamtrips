@@ -1,14 +1,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://robobinding.org/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:gravity="bottom"
-    android:orientation="vertical"
-    tools:context="com.worldventures.dreamtrips.modules.auth.view.LoginActivity"
-    tools:ignore="MissingPrefix">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:bind="http://robobinding.org/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            tools:context="com.worldventures.dreamtrips.modules.auth.view.LoginActivity"
+            tools:ignore="MissingPrefix">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,13 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/background_login" />
+            android:src="@drawable/background_login"/>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/black_gradient" />
+            android:background="@drawable/black_gradient"/>
 
         <LinearLayout
             android:id="@+id/vg_content_container"
@@ -39,12 +39,12 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/iv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/dream_trips_logo"
-                bind:onClick="fillDataAction"
-                android:id="@+id/iv_title" />
+                bind:onClick="fillDataAction"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,14 +56,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ready_for_your_experience" />
+                    android:src="@drawable/ready_for_your_experience"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                    android:autoText="false"
                     android:background="@android:color/background_dark"
                     android:hint="@string/user_id_hint"
                     android:minEms="10"
@@ -74,13 +73,12 @@
                     app:floatingLabel="highlight"
                     app:hintColor="@android:color/white"
                     app:primaryColor="@android:color/white"
-                    bind:text="${username}" />
+                    bind:text="${username}"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autoText="false"
                     android:background="@android:color/background_dark"
                     android:hint="@string/user_password_hint"
                     android:inputType="textPassword"
@@ -92,7 +90,7 @@
                     app:floatingLabel="highlight"
                     app:hintColor="@android:color/white"
                     app:primaryColor="@android:color/white"
-                    bind:text="${userPassword}" />
+                    bind:text="${userPassword}"/>
 
                 <LinearLayout
                     android:id="@+id/containerTerms"
@@ -104,15 +102,15 @@
                     <CheckBox
                         android:id="@+id/checkBoxTerms"
                         android:layout_width="wrap_content"
-                        android:button="@drawable/check_box_dark"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/check_box_dark"/>
 
                     <TextView
                         android:id="@+id/textViewTerms"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:textColor="@android:color/white"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textColor="@android:color/white"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -126,7 +124,7 @@
                     android:id="@+id/progressBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
+                    android:layout_centerInParent="true"/>
 
                 <Button
                     android:id="@+id/btn_login"
@@ -136,7 +134,7 @@
                     android:background="@drawable/login_button_selector"
                     android:text="@string/log_in"
                     android:textColor="@android:color/white"
-                    bind:onClick="loginAction" />
+                    bind:onClick="loginAction"/>
             </RelativeLayout>
         </LinearLayout>
 

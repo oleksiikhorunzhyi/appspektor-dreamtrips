@@ -113,10 +113,6 @@
             android:label="@string/title_activity_full_screen_photo"/>
         <activity android:name=".modules.trips.view.activity.DetailTripActivity"/>
         <activity
-            android:name=".modules.profile.view.activity.FriendPrefsWrapperActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/empty"/>
-        <activity
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensorLandscape"/>
@@ -138,13 +134,6 @@
             android:name=".modules.membership.view.activity.PreviewTemplateActivity"
             android:label="@string/title_activity_invite"/>
         <activity android:name="nl.changer.polypicker.ImagePickerActivity"/>
-        <activity
-            android:name=".modules.friends.view.activity.FriendSearchActivity"
-            android:label="@string/empty">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
-        </activity>
 
         <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
             <intent-filter>

@@ -1,9 +1,8 @@
-package com.worldventures.dreamtrips.modules.profile.view.fragment;
+package com.worldventures.dreamtrips.modules.friends.view.fragment;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -11,9 +10,10 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.friends.presenter.FriendPreferencesPresenter;
 import com.worldventures.dreamtrips.modules.profile.FriendGroupRelation;
-import com.worldventures.dreamtrips.modules.profile.presenter.FriendPreferencesPresenter;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.view.cell.FriendPrefGroupCell;
 
 import java.util.List;
@@ -25,12 +25,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_friend_preference)
-public class FriendPreferenceFragment extends BaseFragment<FriendPreferencesPresenter> implements FriendPreferencesPresenter.View {
+public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPreferencesPresenter, UserBundle>
+        implements FriendPreferencesPresenter.View {
 
-
-    public static final String BUNDLE_FRIEND = "BUNDLE_FRIEND";
-    @InjectView(R.id.createNewListBtn)
-    TextView createNewListBtn;
     @InjectView(R.id.recyclerViewGroups)
     EmptyRecyclerView recyclerViewGroups;
     BaseArrayListAdapter<FriendGroupRelation> adapter;
@@ -41,7 +38,7 @@ public class FriendPreferenceFragment extends BaseFragment<FriendPreferencesPres
 
     @Override
     protected FriendPreferencesPresenter createPresenter(Bundle savedInstanceState) {
-        return new FriendPreferencesPresenter(getArguments().getParcelable(BUNDLE_FRIEND));
+        return new FriendPreferencesPresenter(getArgs());
     }
 
     @Override

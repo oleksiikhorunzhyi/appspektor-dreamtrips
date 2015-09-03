@@ -19,9 +19,9 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.event.PostClosedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
@@ -65,8 +65,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Icicle
     ArrayList<Object> items;
-    @Icicle
-    boolean postShown;
     private int screenHeight;
 
     @Override
@@ -122,7 +120,15 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
             }
         });
 
-        if (postShown) openPost();
+        restorePostIfNeeded();
+    }
+
+    private void restorePostIfNeeded() {
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        if (baseFragment instanceof PostFragment) {
+            showPostContainer();
+        }
     }
 
     @Override
@@ -193,7 +199,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void openPost() {
-        postShown = true;
         showPostContainer();
 
         fragmentCompass.removePost();
@@ -203,10 +208,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .attach(Route.POST_CREATE);
-    }
-
-    public void onEvent(PostClosedEvent event) {
-        postShown = false;
     }
 
     @Override

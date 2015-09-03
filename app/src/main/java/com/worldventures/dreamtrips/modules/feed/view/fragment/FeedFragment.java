@@ -16,11 +16,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.event.PostClosedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
-import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +53,6 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
 
     @Icicle
     ArrayList<BaseEventModel> items;
-    @Icicle
-    boolean postShown;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -94,8 +90,15 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
                 getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
+        restorePostIfNeeded();
+    }
 
-        if (postShown) openPost();
+    private void restorePostIfNeeded() {
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        if (baseFragment instanceof PostFragment) {
+            showPostContainer();
+        }
     }
 
     @OnClick(R.id.fab_post)
@@ -133,20 +136,14 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
     }
 
     public void openPost() {
-        postShown = true;
         showPostContainer();
 
         fragmentCompass.removePost();
-        fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         //
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .attach(Route.POST_CREATE);
-    }
-
-    public void onEvent(PostClosedEvent event) {
-        postShown = false;
     }
 
     @Override

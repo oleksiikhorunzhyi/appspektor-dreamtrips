@@ -7,6 +7,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
@@ -16,7 +17,7 @@ import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 
 import java.util.ArrayList;
@@ -125,7 +126,6 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
 
     public void globalSearch() {
         eventBus.postSticky(new QueryStickyEvent(query));
-        activityRouter.openFriendsSearch();
     }
 
     public void reload() {
@@ -158,7 +158,7 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
     }
 
     public void onEvent(OpenFriendPrefsEvent event) {
-        activityRouter.openFriendPrefs(event.getFriend());
+        view.openFriendPrefs(new UserBundle(event.getFriend()));
     }
 
     public void onEvent(FriendGroupRelationChangedEvent event) {
@@ -217,6 +217,8 @@ public class FriendListPresenter extends Presenter<FriendListPresenter.View> {
         BaseArrayListAdapter<User> getAdapter();
 
         void showFilters(List<Circle> circles, int selectedPosition);
+
+        void openFriendPrefs(UserBundle userBundle);
 
         void finishLoading();
 

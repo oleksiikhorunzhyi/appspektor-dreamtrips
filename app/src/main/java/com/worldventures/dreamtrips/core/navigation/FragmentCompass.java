@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
@@ -15,6 +16,9 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public class FragmentCompass {

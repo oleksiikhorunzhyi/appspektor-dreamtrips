@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ripple="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:clipToPadding="false"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+             xmlns:ripple="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/white"
+             android:clipToPadding="false"
+             android:fitsSystemWindows="true"
+             android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_actionbar_landscape"
             style="@style/ToolBarStyle"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,13 +41,13 @@
                         <android.support.v4.view.ViewPager
                             android:id="@+id/viewPagerGallery"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"/>
 
                         <me.relex.circleindicator.CircleIndicator
                             android:id="@+id/circleIndicator"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:layout_gravity="bottom" />
+                            android:layout_gravity="bottom"/>
 
                         <!--
                                                 <ImageView
@@ -70,7 +70,7 @@
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_points_badge" />
+                                android:src="@drawable/ic_points_badge"/>
 
                             <TextView
                                 android:id="@+id/textViewPoints"
@@ -78,7 +78,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:textColor="@color/white"
-                                android:textSize="12dp" />
+                                android:textSize="12dp"/>
 
                         </FrameLayout>
 
@@ -92,14 +92,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:visibility="invisible"
                                 android:background="@drawable/ic_stripe_left"
-                                android:padding="@dimen/spacing_medium"
-                                android:textColor="@color/white"
                                 android:gravity="center"
-                                android:textSize="12sp"
+                                android:padding="@dimen/spacing_medium"
                                 android:text="@string/trip_featured"
-                                android:textStyle="bold" />
+                                android:textColor="@color/white"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:visibility="invisible"/>
 
                         </RelativeLayout>
 
@@ -108,118 +108,119 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|end"
-                            android:visibility="gone"
-                            android:src="@drawable/soldout"/>
+                            android:src="@drawable/soldout"
+                            android:visibility="gone"/>
 
                     </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/spacing_medium">
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="horizontal"
+                            android:padding="@dimen/spacing_medium">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/textViewName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"/>
+
+
+                                <TextView
+                                    android:id="@+id/textViewPlace"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:drawableLeft="@drawable/ic_location"
+                                    android:drawablePadding="5dp"
+                                    android:drawableStart="@drawable/ic_location"
+                                    android:textColor="@color/tripPlaceColor"/>
+                            </LinearLayout>
 
                             <TextView
-                                android:id="@+id/textViewName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:id="@+id/textViewPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                android:gravity="center_vertical"
+                                android:textColor="@color/tripPlaceColor"
+                                android:textSize="22sp"
+                                android:textStyle="bold"/>
 
 
-                            <TextView
-                                android:id="@+id/textViewPlace"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:drawableLeft="@drawable/ic_location"
-                                android:drawablePadding="5dp"
-                                android:drawableStart="@drawable/ic_location"
-                                android:textColor="@color/tripPlaceColor" />
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/textViewPrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:fontFamily="sans-serif-light"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/tripPlaceColor"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="@android:color/black" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:background="@android:color/black"/>
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/textViewDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/ic_stripe_right"
+                                    android:padding="@dimen/spacing_medium"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"/>
+
+                            </LinearLayout>
 
                             <TextView
-                                android:id="@+id/textViewDate"
+                                android:id="@+id/textViewScheduleDescription"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ic_stripe_right"
+                                android:fontFamily="sans-serif-light"
+                                android:gravity="end"
                                 android:padding="@dimen/spacing_medium"
-                                android:textColor="@color/white"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                                android:textColor="@color/black"/>
+
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:background="@android:color/black"/>
+
                         <TextView
-                            android:id="@+id/textViewScheduleDescription"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/textViewDescription"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
-                            android:gravity="end"
                             android:padding="@dimen/spacing_medium"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/black"/>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="64dp"/>
 
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="@android:color/black" />
-
-                    <TextView
-                        android:id="@+id/textViewDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
-                        android:padding="@dimen/spacing_medium"
-                        android:textColor="@color/black" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="64dp" />
-
-                </LinearLayout>
 
                 </LinearLayout>
 
@@ -249,18 +250,18 @@
                             android:padding="10dp"
                             android:text="@string/trip_details"
                             android:textColor="@android:color/black"
-                            android:textSize="22sp" />
+                            android:textSize="22sp"/>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="4dp"
-                            android:background="@drawable/trip_details_shadow" />
+                            android:background="@drawable/trip_details_shadow"/>
 
                         <ProgressBar
                             android:id="@+id/progressBarDetailLoading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center" />
+                            android:layout_gravity="center"/>
 
                         <TextView
                             android:id="@+id/textViewReload"
@@ -271,22 +272,23 @@
                             android:text="@string/reload_trip_details"
                             android:textColor="@color/tripPlaceColor"
                             android:textSize="22sp"
-                            android:visibility="gone" />
+                            android:visibility="gone"/>
 
                         <com.linearlistview.LinearListView
                             android:id="@+id/listViewContent"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:showDividers="none" />
+                            android:showDividers="none"/>
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="64dp" />
+                            android:layout_height="64dp"/>
                     </LinearLayout>
 
 
                 </ScrollView>
+
                 <View
                     android:layout_width="4dp"
                     android:layout_height="match_parent"
@@ -305,24 +307,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom">
 
-        <com.andexert.library.RippleView
-            android:id="@+id/layoutBookIt"
+        <TextView
+            android:id="@+id/textViewBookIt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            ripple:rv_color="#D3D3D3">
-
-            <TextView
-                android:id="@+id/textViewBookIt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/tripButtonColor"
-                android:gravity="center"
-                android:padding="@dimen/spacing_normal"
-                android:text="@string/book_it"
-                android:textColor="@color/white"
-                android:textSize="22sp" />
-        </com.andexert.library.RippleView>
+            android:background="@color/tripButtonColor"
+            android:gravity="center"
+            android:padding="@dimen/spacing_normal"
+            android:text="@string/book_it"
+            android:textColor="@color/white"
+            android:textSize="22sp"/>
     </FrameLayout>
 
 </FrameLayout>

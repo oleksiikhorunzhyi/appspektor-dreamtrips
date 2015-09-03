@@ -48,6 +48,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -252,10 +253,10 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     }
 
     @Override
-    public void openPopular(Bundle args) {
+    public void openPopular(BucketBundle args) {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .args(args)
+                .data(args)
                 .move(Route.POPULAR_TAB_BUCKER);
     }
 
@@ -342,18 +343,18 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         }
     }
 
-    public void openDetails(Bundle args) {
+    public void openDetails(BucketBundle args) {
         Route detailsRoute = getDetailsRoute();
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
             fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
 
-            args.putBoolean(BucketDetailsFragment.EXTRA_SLAVE, true);
+            args.setSlave(true);
 
             NavigationBuilder.create()
                     .with(fragmentCompass)
-                    .args(args)
+                    .data(args)
                     .attach(detailsRoute);
             showDetailsContainer();
         } else {
@@ -361,7 +362,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
             NavigationBuilder.create()
                     .with(activityRouter)
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .args(args)
+                    .data(args)
                     .move(detailsRoute);
         }
     }

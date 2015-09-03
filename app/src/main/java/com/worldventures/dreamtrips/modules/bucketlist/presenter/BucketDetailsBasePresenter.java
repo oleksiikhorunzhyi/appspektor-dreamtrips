@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -29,6 +28,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoV
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -55,18 +55,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     protected BucketTabsPresenter.BucketType type;
     protected String bucketItemId;
-    protected BucketItem extraBucketItem;
-
     protected BucketItem bucketItem;
 
     List<UploadTask> tasks;
 
-    public BucketDetailsBasePresenter(Bundle bundle) {
+    public BucketDetailsBasePresenter(BucketBundle bundle) {
         super();
-        type = (BucketTabsPresenter.BucketType)
-                bundle.getSerializable(BucketListModule.EXTRA_TYPE);
-        bucketItemId = bundle.getString(BucketListModule.EXTRA_ITEM_ID);
-        extraBucketItem = (BucketItem) bundle.getSerializable(BucketListModule.EXTRA_ITEM);
+        type = bundle.getType();
+        bucketItemId = bundle.getBucketItemId();
     }
 
     @Override
@@ -96,9 +92,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     private void restoreBucketItem() {
         bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
-        if (bucketItem == null) {
-            bucketItem = extraBucketItem;
-        }
     }
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {

@@ -29,7 +29,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
@@ -42,9 +43,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.layout_bucket_item_details)
-public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragment<T> implements BucketItemDetailsPresenter.View {
-
-    public static final String EXTRA_SLAVE = "slave";
+public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragmentWithArgs<T, BucketBundle> implements BucketItemDetailsPresenter.View {
 
     @InjectView(R.id.imageViewCover)
     protected SimpleDraweeView imageViewCover;
@@ -123,7 +122,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         bucketPhotosView.init(injector, getBucketPhotosType());
         imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
 
-        boolean slave = getArguments().getBoolean(EXTRA_SLAVE, false);
+        boolean slave = getArgs().isSlave();
         if (!slave) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -152,7 +151,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
-        return (T) new BucketItemDetailsPresenter(getArguments());
+        return (T) new BucketItemDetailsPresenter(getArgs());
     }
 
     @Override

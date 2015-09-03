@@ -20,9 +20,9 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -36,7 +36,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_bucket_popular)
 @MenuResource(R.menu.menu_bucket_popular)
-public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresenter>
+public class BucketListPopularFragment extends BaseFragment<BucketPopularPresenter>
         implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
@@ -60,7 +60,7 @@ public class BucketListPopuralFragment extends BaseFragment<BucketPopularPresent
     @Override
     protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
         BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments()
-                .getSerializable(BucketListModule.EXTRA_TYPE);
+                .getSerializable(BucketPopularTabsPresenter.EXTRA_TYPE);
         return new BucketPopularPresenter(type);
     }
 

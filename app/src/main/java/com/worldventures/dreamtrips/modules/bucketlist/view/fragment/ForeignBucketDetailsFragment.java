@@ -21,7 +21,7 @@ public class ForeignBucketDetailsFragment extends BucketDetailsFragment<ForeignB
 
     @Override
     protected ForeignBucketItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new ForeignBucketItemDetailsPresenter(getArguments());
+        return new ForeignBucketItemDetailsPresenter(getArgs());
     }
 
 

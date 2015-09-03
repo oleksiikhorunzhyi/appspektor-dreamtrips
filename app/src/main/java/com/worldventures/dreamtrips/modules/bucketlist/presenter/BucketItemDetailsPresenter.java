@@ -1,41 +1,39 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
-    public BucketItemDetailsPresenter(Bundle bundle) {
+    public BucketItemDetailsPresenter(BucketBundle bundle) {
         super(bundle);
     }
 
     public void onEdit() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItemId);
+        BucketBundle bundle = new BucketBundle();
+        bundle.setType(type);
+        bundle.setBucketItemId(bucketItemId);
 
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
             view.showEditContainer();
             fragmentCompass.disableBackStack();
             fragmentCompass.setContainerId(R.id.container_details_floating);
-            fragmentCompass.add(Route.BUCKET_EDIT, bundle);
+            NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);
+
         } else {
-            bundle.putBoolean(BucketListModule.EXTRA_LOCK, true);
-            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.BUCKET_EDIT);
+            bundle.setLock(true);
+            NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
         }
     }
 

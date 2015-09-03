@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosV
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopularFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
@@ -47,7 +47,7 @@ import dagger.Provides;
                 BucketTabsPresenter.class,
                 BucketListPresenter.class,
                 BucketPopularPresenter.class,
-                BucketListPopuralFragment.class,
+                BucketListPopularFragment.class,
                 BucketTabsFragment.class,
                 BucketPopularTabsFragment.class,
                 BucketListFragment.class,
@@ -78,10 +78,6 @@ import dagger.Provides;
 )
 public class BucketListModule {
 
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
-    public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
-    public static final String EXTRA_ITEM = "EXTRA_ITEM";
-        public static final String EXTRA_LOCK = "EXTRA_LOCK";
     public static final String BUCKETLIST = Route.BUCKET_LIST.name();
 
     @Provides(type = Provides.Type.SET)

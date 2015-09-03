@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopularFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
@@ -55,7 +55,7 @@ public enum Route {
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),
 
     BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_edit_header),
-    POPULAR_BUCKET(BucketListPopuralFragment.class),
+    POPULAR_BUCKET(BucketListPopularFragment.class),
     POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
     DETAIL_BUCKET(BucketDetailsFragment.class),
     DETAIL_FOREIGN_BUCKET(ForeignBucketDetailsFragment.class),

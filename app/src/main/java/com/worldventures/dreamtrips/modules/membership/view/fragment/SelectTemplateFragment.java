@@ -32,7 +32,8 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_select_template)
-public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter> implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter>
+        implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     @ForActivity

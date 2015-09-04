@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedObjectChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
@@ -70,8 +70,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
             view.removeComment(event.getComment());
             feedEntity.getComments().remove(event.getComment());
             feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
-            eventBus.post(new FeedObjectChangedEvent(feedModel));
-
+            eventBus.post(new EntityChangedEvent(feedEntity));
         });
     }
 
@@ -84,7 +83,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     public void onEvent(CommentChangedEvent event) {
         view.updateComment(event.getComment());
         feedEntity.getComments().set(feedEntity.getComments().indexOf(event.getComment()), event.getComment());
-        eventBus.post(new FeedObjectChangedEvent(feedModel));
+        eventBus.post(new EntityChangedEvent(feedEntity));
 
     }
 
@@ -92,7 +91,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         view.addComment(comment);
         feedEntity.getComments().add(0, comment);
         feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
-        eventBus.post(new FeedObjectChangedEvent(feedModel));
+        eventBus.post(new EntityChangedEvent(feedEntity));
     }
 
     private void onCommentsLoaded(ArrayList<Comment> comments) {

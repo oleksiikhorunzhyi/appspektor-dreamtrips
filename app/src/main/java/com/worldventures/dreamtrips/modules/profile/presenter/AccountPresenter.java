@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -31,7 +30,7 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -187,16 +186,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     @Override
-    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
-        if (view.getAdapter().getItemCount() > 0) {
-            Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getItemCount() - 1);
-            return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
-        } else return null;
+    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getRefreshFeedRequest(Date date) {
+        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     @Override
-    protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
-        return new GetUserTimelineQuery(user.getId(), Calendar.getInstance().getTime());
+    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getNextPageFeedRequest(Date date) {
+        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     ////////////////////////////////////////

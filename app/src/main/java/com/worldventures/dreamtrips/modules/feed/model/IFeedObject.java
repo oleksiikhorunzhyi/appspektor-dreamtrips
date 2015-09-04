@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.feed.model;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
 
-public interface IFeedObject {
+public interface IFeedObject extends Serializable{
 
     String place();
 

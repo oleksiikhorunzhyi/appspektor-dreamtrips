@@ -70,7 +70,7 @@ public enum Route {
     ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
     MEMBERSHIP(MembershipFragment.class),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
-    EDIT_INVITE_TEMPLATE(EditTemplateFragment.class),
+    EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
     FOREIGN_BUCKET_LIST(ForeignBucketTabsFragment.class, R.string.bucket_list),
     MY_PROFILE(AccountFragment.class),

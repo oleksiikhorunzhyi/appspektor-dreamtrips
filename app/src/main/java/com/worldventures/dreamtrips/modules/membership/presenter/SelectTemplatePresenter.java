@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery;
+import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
 import com.worldventures.dreamtrips.modules.membership.event.TemplateSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -40,15 +41,13 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
     public void onEvent(TemplateSelectedEvent event) {
         getMembers();
         if (members != null && members.size() > 0) {
-            Bundle bundle = new Bundle();
             InviteTemplate inviteTemplate = event.getInviteTemplate();
             inviteTemplate.setFrom(getCurrentUserEmail());
             inviteTemplate.setName(members.get(0).getName());
             inviteTemplate.setTo(members);
             inviteTemplate.setType(members.get(0).isEmailMain() ?
                     InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);
-            bundle.putSerializable(EditTemplateFragment.TEMPLATE, inviteTemplate);
-            activityRouter.openEditInviteActivity(inviteTemplate);
+            view.openTemplate(new TemplateBundle(inviteTemplate));
             TrackingHelper.inviteShareTemplate(getAccountUserId(), inviteTemplate.getId());
         } else {
             view.informUser(R.string.invite_select_first);
@@ -88,6 +87,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
 
 
     public interface View extends Presenter.View {
+        void openTemplate(TemplateBundle templateBundle);
 
         void startLoading();
 

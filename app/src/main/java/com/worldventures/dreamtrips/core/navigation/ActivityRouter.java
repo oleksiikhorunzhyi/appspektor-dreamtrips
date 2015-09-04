@@ -19,8 +19,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
-import com.worldventures.dreamtrips.modules.membership.view.activity.EditTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
 import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
@@ -103,12 +101,6 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openDefaultShareIntent(Intent intent) {
         startActivityIntent(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
-    }
-
-    public void openEditInviteActivity(InviteTemplate inviteTemplate) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EditTemplateActivity.BUNDLE_TEMPLATE, inviteTemplate);
-        startActivity(EditTemplateActivity.class, bundle);
     }
 
     public void openSelectTemplateActivity() {

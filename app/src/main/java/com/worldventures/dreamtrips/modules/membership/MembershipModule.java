@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
-import com.worldventures.dreamtrips.modules.membership.presenter.InviteTemplateSelectorPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
@@ -45,7 +44,6 @@ import dagger.Provides;
                 InviteTemplateCell.class,
                 EditTemplateFragment.class,
                 EditTemplatePresenter.class,
-                InviteTemplateSelectorPresenter.class,
                 PreviewTemplateFragment.class,
                 TemplatePhotoCell.class,
                 VideoLocaleCell.class,

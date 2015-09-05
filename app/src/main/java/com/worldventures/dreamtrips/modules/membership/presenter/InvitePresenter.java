@@ -282,7 +282,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     public void openTemplateInView() {
         fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_templates);
-        NavigationBuilder.create().with(fragmentCompass).move(Route.SELECT_INVITE_TEMPLATE);
+        NavigationBuilder.create().with(fragmentCompass).attach(Route.SELECT_INVITE_TEMPLATE);
 
     }
 

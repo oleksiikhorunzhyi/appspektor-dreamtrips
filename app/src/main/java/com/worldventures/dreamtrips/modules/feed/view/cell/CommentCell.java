@@ -12,12 +12,14 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
 
@@ -121,7 +123,7 @@ public class CommentCell extends AbstractCell<Comment> {
     }
 
     private void openUser(User user) {
-        activityRouter.openUserProfile(user);
+        NavigationBuilder.create().with(activityRouter).data(new UserBundle(user));
     }
 
 }

@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
@@ -55,14 +56,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         Bundle bundle = new Bundle();
         bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
         startActivity(SimpleStreamPlayerActivity.class, bundle);
-    }
-
-    public void openUserProfile(User user) {
-        if (featureManager.isUserInfoAvailable(user)) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ProfileModule.EXTRA_USER, user);
-            startActivity(ProfileActivity.class, bundle);
-        }
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {

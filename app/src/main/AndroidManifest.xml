@@ -61,29 +61,6 @@
             android:value="DEBUG"/>
 
         <activity
-            android:name=".modules.auth.view.LoginActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/app_name"
-            android:noHistory="true"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".modules.common.view.activity.MainActivity"
-            android:label="@string/trips"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".modules.common.view.activity.ComponentActivity"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".modules.common.view.activity.SimpleStreamPlayerActivity"
-            android:screenOrientation="landscape"/>
-        <activity
-            android:name=".modules.facebook.view.activity.FacebookPickPhotoActivity"
-            android:label="@string/trips"/>
-        <activity
-            android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/trips"/>
-        <activity
             android:name=".modules.common.view.activity.LaunchActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name">
@@ -93,14 +70,35 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".modules.tripsimages.view.activity.FullScreenTripImageActivity"
-            android:label="@string/title_activity_full_screen_photo"/>
-        <activity android:name=".modules.trips.view.activity.DetailTripActivity"/>
+            android:name=".modules.common.view.activity.MainActivity"
+            android:label="@string/trips"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.common.view.activity.ComponentActivity"
+            android:windowSoftInputMode="adjustResize"/>
+
+
+        <activity
+            android:name=".modules.common.view.activity.SimpleStreamPlayerActivity"
+            android:screenOrientation="landscape"/>
+
         <activity
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensorLandscape"/>
+
+        <!--For result activities-->
+
+        <activity
+            android:name=".modules.facebook.view.activity.FacebookPickPhotoActivity"
+            android:label="@string/trips"/>
+        <activity
+            android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/trips"/>
+
         <!--Foreign activities-->
 
         <activity

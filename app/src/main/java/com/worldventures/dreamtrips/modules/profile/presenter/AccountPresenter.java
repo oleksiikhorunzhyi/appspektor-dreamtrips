@@ -116,7 +116,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         this.appSessionHolder.destroy();
         snappyRepository.clearAll();
         activityRouter.finish();
-        activityRouter.openLogin();
+        NavigationBuilder.create().with(activityRouter).move(Route.LOGIN);
     }
 
     @Override

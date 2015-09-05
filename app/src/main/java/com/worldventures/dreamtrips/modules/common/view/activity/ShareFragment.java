@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhoto
 
 import butterknife.InjectView;
 
-@Layout(R.layout.activity_share)
+@Layout(R.layout.share_fragment)
 public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBundle>
         implements FacebookPickPhotoPresenter.View, SharePresenter.View {
 

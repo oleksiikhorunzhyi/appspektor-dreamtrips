@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.events.MapInfoReadyEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
 public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter.View> {
 
@@ -28,9 +28,7 @@ public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter
     }
 
     public void onClick() {
-        Bundle args = new Bundle();
-        args.putSerializable(DetailTripActivity.EXTRA_TRIP, trip);
-        NavigationBuilder.create().args(args)
+        NavigationBuilder.create().data(new TripDetailsBundle(trip))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .with(activityRouter).move(Route.DETAILED_TRIP);
     }

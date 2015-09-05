@@ -5,12 +5,10 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
@@ -35,8 +33,6 @@ import dagger.Provides;
                 TripListPresenter.class,
                 FiltersPresenter.class,
                 TripDetailsFragment.class,
-                DetailTripActivity.class,
-                TripDetailsActivityPresenter.class,
                 TripDetailsPresenter.class,
                 TripMapInfoPresenter.class,
                 TripMapPresenter.class,

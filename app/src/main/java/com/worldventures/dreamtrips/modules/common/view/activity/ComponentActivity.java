@@ -6,9 +6,9 @@ import android.widget.FrameLayout;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -60,8 +60,10 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
 
     @Override
     public void onBackPressed() {
-        if (!handleComponentChange())
+        BaseFragment currentFragment = fragmentCompass.getCurrentFragment();
+        if (!handleComponentChange() && currentFragment!=null && !currentFragment.onBackPressed()) {
             super.onBackPressed();
+        }
     }
 
     public void hideToolbar() {

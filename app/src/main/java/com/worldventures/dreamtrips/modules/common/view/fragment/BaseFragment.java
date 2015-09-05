@@ -169,4 +169,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         SoftInputUtil.hideSoftInputMethod(view);
     }
 
+    public boolean onBackPressed() {
+        return false;
+    }
 }

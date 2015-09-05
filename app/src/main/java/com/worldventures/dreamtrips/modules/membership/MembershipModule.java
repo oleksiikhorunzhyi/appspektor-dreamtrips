@@ -10,8 +10,6 @@ import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
-import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
-import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;

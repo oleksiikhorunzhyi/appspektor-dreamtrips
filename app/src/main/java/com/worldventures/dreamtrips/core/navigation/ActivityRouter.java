@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
@@ -42,11 +41,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         bundle.putParcelable(CreatePhotoActivity.EXTRA_FILE_URI, fileUri);
         bundle.putString(CreatePhotoActivity.EXTRA_TYPE, type);
         startForResult(fm, CreatePhotoActivity.class, CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO, bundle);
-    }
-
-    public void openLogin() {
-        startActivity(LoginActivity.class);
-        finish();
     }
 
     public void open360Activity(String url) {

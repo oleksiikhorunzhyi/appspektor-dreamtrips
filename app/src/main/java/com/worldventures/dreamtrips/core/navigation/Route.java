@@ -69,7 +69,7 @@ public enum Route {
     FOREIGN_TRIP_IMAGES(TripImagesListFragment.class, R.string.trip_images),
     ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
     MEMBERSHIP(MembershipFragment.class),
-    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
+    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class,R.string.invitation_select_template),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
     FOREIGN_BUCKET_LIST(ForeignBucketTabsFragment.class, R.string.bucket_list),

@@ -20,11 +20,10 @@ import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.infopages.WebViewInEvent;
-import com.worldventures.dreamtrips.modules.infopages.WebViewOutEvent;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 import javax.inject.Inject;
 
@@ -35,7 +34,7 @@ import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T>
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragmentWithArgs<T, UrlBundle>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String PRIVACY_TITLE = "Privacy Policy";
@@ -70,6 +69,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         if (isWebViewSavedState(savedInstanceState)) {
             savedState = savedInstanceState;
         }
+    }
+
+    @Override
+    public UrlBundle getArgs() {
+        return super.getArgs();
     }
 
     private boolean isWebViewSavedState(Bundle savedInstanceState) {
@@ -297,11 +301,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @Layout(R.layout.fragment_webview)
     public static class BundleUrlFragment extends StaticInfoFragment {
 
-        public static final String URL_EXTRA = "URL_EXTRA";
-
         @Override
         protected String getURL() {
-            return getArguments().getString(URL_EXTRA);
+            return getArgs().getUrl();
         }
 
         @Override

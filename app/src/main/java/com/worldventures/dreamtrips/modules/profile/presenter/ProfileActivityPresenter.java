@@ -13,18 +13,30 @@ public class ProfileActivityPresenter extends Presenter<ProfileActivityPresenter
         user = bundle.getUser();
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
+    }
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
             User account = getAccount();
-            if (user.equals(account)) {
+            if (user == null || user.equals(account)) {
                 view.openAccountProfile();
             } else {
                 view.openForeignProfile(user);
             }
-        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     public interface View extends Presenter.View {

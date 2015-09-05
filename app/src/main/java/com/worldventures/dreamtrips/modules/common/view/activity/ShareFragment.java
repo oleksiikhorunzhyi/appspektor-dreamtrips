@@ -16,23 +16,20 @@ import com.facebook.widget.WebDialog;
 import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_share)
-public class ShareActivity extends ActivityWithPresenter<SharePresenter>
+public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBundle>
         implements FacebookPickPhotoPresenter.View, SharePresenter.View {
 
     public static final String FB = "fb";
     public static final String TW = "tw";
 
-    public static final String BUNDLE_IMAGE_URL = "BUNDLE_IMAGE_URL";
-    public static final String BUNDLE_SHARE_URL = "BUNDLE_SHARE_URL";
-    public static final String BUNDLE_TEXT = "BUNDLE_TEXT";
-    public static final String BUNDLE_SHARE_TYPE = "BUNDLE_SHARE_TYPE";
     @InjectView(R.id.login_button)
     protected LoginButton loginButton;
     private UiLifecycleHelper uiHelper;
@@ -41,36 +38,36 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper = new UiLifecycleHelper(getActivity(), callback);
         uiHelper.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         uiHelper.onResume();
-        Bundle bundleExtra = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
+        ShareBundle bundleExtra = getArgs();
         if (bundleExtra == null) {
-            finish();
+            getActivity().finish();
         } else {
-            String imageUrl = bundleExtra.getString(BUNDLE_IMAGE_URL, "");
-            String shareUrl = bundleExtra.getString(BUNDLE_SHARE_URL, "");
-            String text = bundleExtra.getString(BUNDLE_TEXT, "");
-            String type = bundleExtra.getString(BUNDLE_SHARE_TYPE);
-            getPresentationModel().create(imageUrl, shareUrl, text, type);
-            getIntent().removeExtra(ActivityRouter.EXTRA_BUNDLE);
+            String imageUrl = bundleExtra.getImageUrl();
+            String shareUrl = bundleExtra.getShareUrl();
+            String text = bundleExtra.getText();
+            String type = bundleExtra.getShareType();
+            getPresenter().create(imageUrl, shareUrl, text, type);
+            clearArgs();
         }
 
-        AppEventsLogger.activateApp(this); //facebook SDK event logger. Really needed?
+        AppEventsLogger.activateApp(getActivity()); //facebook SDK event logger. Really needed?
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         uiHelper.onPause();
-        AppEventsLogger.deactivateApp(this);
+        AppEventsLogger.deactivateApp(getActivity());
     }
 
     @Override
@@ -86,17 +83,16 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
     }
 
     @Override
-    protected SharePresenter createPresentationModel(Bundle savedInstanceState) {
+    protected SharePresenter createPresenter(Bundle savedInstanceState) {
         return new SharePresenter();
     }
 
-
     @Override
     public void shareFBDialog(String url, String link, String text) {
-        if (FacebookDialog.canPresentShareDialog(getApplicationContext(),
+        if (FacebookDialog.canPresentShareDialog(getActivity().getApplicationContext(),
                 FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
             FacebookDialog.ShareDialogBuilder shareDialog =
-                    new FacebookDialog.ShareDialogBuilder(this);
+                    new FacebookDialog.ShareDialogBuilder(getActivity());
             if (!TextUtils.isEmpty(url)) {
                 shareDialog.setPicture(url);
             }
@@ -125,25 +121,25 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
             params.putString("caption", text);
             params.putString("link", link);
             params.putString("picture", picture);
-            WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(this, Session.getActiveSession(), params)).build();
+            WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(getActivity(), Session.getActiveSession(), params)).build();
             feedDialog.setOnCompleteListener((bundle, e) -> {
                 if (feedDialog != null) {
                     if (e == null) {
                         informUser(getString(R.string.fab_posted));
-                        finish();
+                        getActivity().finish();
                     }
                     feedDialog.dismiss();
                 }
             });
-            feedDialog.setOnDismissListener(dialog -> finish());
+            feedDialog.setOnDismissListener(dialog -> getActivity().finish());
             feedDialog.show();
         } else {
             loginButton.setReadPermissions("user_photos");
             loginButton.setSessionStatusCallback((s, state, exception) -> {
                 Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
                 if (session != null && session.isOpened()) {
-                    runOnUiThread(() -> new Handler().postDelayed(() ->
-                            getPresentationModel().openShareActivity(picture, link, text), 150));
+                    getActivity().runOnUiThread(() -> new Handler().postDelayed(() ->
+                            getPresenter().openShareActivity(picture, link, text), 150));
                 }
             });
             loginButton.performClick();
@@ -158,7 +154,7 @@ public class ShareActivity extends ActivityWithPresenter<SharePresenter>
             url += "\n";
         }
 
-        TweetComposer.Builder builder = new TweetComposer.Builder(this);
+        TweetComposer.Builder builder = new TweetComposer.Builder(getActivity());
         builder.text(url + text);
 
         if (imageUrl != null) {

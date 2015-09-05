@@ -13,6 +13,8 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
@@ -123,7 +125,10 @@ public class CommentCell extends AbstractCell<Comment> {
     }
 
     private void openUser(User user) {
-        NavigationBuilder.create().with(activityRouter).data(new UserBundle(user));
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(new ToolbarConfig.Builder().visible(false).build())
+                .move(Route.AUTO_RESOLVE_PROFILE);
     }
 
 }

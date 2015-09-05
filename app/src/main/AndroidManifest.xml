@@ -61,9 +61,6 @@
             android:value="DEBUG"/>
 
         <activity
-            android:name=".modules.profile.view.activity.ProfileActivity"
-            android:label="@string/empty"/>
-        <activity
             android:name=".modules.auth.view.LoginActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
@@ -81,9 +78,6 @@
             android:screenOrientation="landscape"/>
         <activity
             android:name=".modules.facebook.view.activity.FacebookPickPhotoActivity"
-            android:label="@string/trips"/>
-        <activity
-            android:name=".modules.common.view.activity.ShareActivity"
             android:label="@string/trips"/>
         <activity
             android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"

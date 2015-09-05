@@ -6,8 +6,6 @@ import com.innahema.collections.query.functions.Action1;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
@@ -21,7 +19,6 @@ import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
@@ -36,8 +33,8 @@ import java.util.List;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
-    public UserPresenter(Bundle args) {
-        super(args.getParcelable(ProfileModule.EXTRA_USER));
+    public UserPresenter(User user) {
+        super(user);
     }
 
     @Override

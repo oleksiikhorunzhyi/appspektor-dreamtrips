@@ -11,16 +11,13 @@ import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
-import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 public class ActivityRouter extends ActivityBoundRouter {
@@ -59,21 +56,21 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
-        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.FB);
-        startActivity(ShareActivity.class, bundle);
+        ShareBundle data = new ShareBundle();
+        data.setImageUrl(imageUrl);
+        data.setShareUrl(shareLink);
+        data.setText(text);
+        data.setShareType(ShareFragment.FB);
+        NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
     }
 
     public void openShareTwitter(String imageUrl, String shareLink, String text) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
-        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.TW);
-        startActivity(ShareActivity.class, bundle);
+        ShareBundle data = new ShareBundle();
+        data.setImageUrl(imageUrl);
+        data.setShareUrl(shareLink);
+        data.setText(text);
+        data.setShareType(ShareFragment.TW);
+        NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
     }
 
     public void openDefaultShareIntent(Intent intent) {

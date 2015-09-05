@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -52,7 +52,7 @@ import dagger.Provides;
                 LaunchActivity.class,
                 MainActivity.class,
                 PlayerActivity.class,
-                ShareActivity.class,
+                ShareFragment.class,
                 SimpleStreamPlayerActivity.class,
                 FilterableArrayListAdapter.class,
                 DraggableArrayListAdapter.class,

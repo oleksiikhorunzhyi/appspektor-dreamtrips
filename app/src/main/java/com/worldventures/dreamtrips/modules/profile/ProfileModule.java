@@ -37,7 +37,7 @@ import dagger.Provides;
 )
 public class ProfileModule {
 
-    public static final String MY_PROFILE = Route.MY_PROFILE.name();
+    public static final String MY_PROFILE = Route.ACCOUNT_PROFILE.name();
     public static final String EXTRA_USER = "user";
 
     @Provides(type = Provides.Type.SET)

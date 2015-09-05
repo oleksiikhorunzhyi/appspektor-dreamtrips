@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopul
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
@@ -28,6 +29,7 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplat
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
+import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
@@ -73,8 +75,9 @@ public enum Route {
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
     BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
     FOREIGN_BUCKET_LIST(ForeignBucketTabsFragment.class, R.string.bucket_list),
-    MY_PROFILE(AccountFragment.class),
-    PROFILE(UserFragment.class),
+    ACCOUNT_PROFILE(AccountFragment.class),
+    FOREIGN_PROFILE(UserFragment.class),
+    AUTO_RESOLVE_PROFILE(ProfileActivity.class),
     REP_TOOLS(RepToolsFragment.class),
     FAQ(StaticInfoFragment.FAQFragment.class),
     TERMS(TermsTabFragment.class),
@@ -88,6 +91,7 @@ public enum Route {
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
     FRIEND_PREFERENCES(FriendPreferenceFragment.class, R.string.friend_pref_lists_header),
     FEED(FeedFragment.class, R.string.feed_title),
+    SHARE(ShareFragment.class, R.string.feed_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty);
 
     private Class<? extends BaseFragment> fragmentClass;

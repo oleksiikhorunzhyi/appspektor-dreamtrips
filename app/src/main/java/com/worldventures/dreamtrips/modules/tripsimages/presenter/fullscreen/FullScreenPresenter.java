@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 import android.text.Spanned;
 
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -60,9 +62,12 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void showFlagAction(int order) {
     }
 
-    public void onUserClicked() {//TODO
+    public void onUserClicked() {
         User user = photo.getUser();
-        NavigationBuilder.create().with(activityRouter).data(new UserBundle(user));
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(Route.AUTO_RESOLVE_PROFILE);
 
     }
 

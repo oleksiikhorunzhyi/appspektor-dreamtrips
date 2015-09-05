@@ -5,6 +5,8 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -98,7 +100,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     private void openUser(User user) {//TODO
-        NavigationBuilder.create().with(activityRouter).data(new UserBundle(user));
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(Route.AUTO_RESOLVE_PROFILE);
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {

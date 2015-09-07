@@ -58,14 +58,6 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
         return false;
     }
 
-    @Override
-    public void onBackPressed() {
-        BaseFragment currentFragment = fragmentCompass.getCurrentFragment();
-        if (!handleComponentChange() && currentFragment!=null && !currentFragment.onBackPressed()) {
-            super.onBackPressed();
-        }
-    }
-
     public void hideToolbar() {
         toolbar.setVisibility(View.GONE);
     }

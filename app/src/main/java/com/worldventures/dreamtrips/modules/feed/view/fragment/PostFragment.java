@@ -15,6 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.event.BackPressedMessage;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -52,6 +53,16 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     ImageView image;
 
     SweetAlertDialog dialog;
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (eventBus.isRegistered(this)) {
+            eventBus.unregister(this);
+            eventBus.register(this, 1);
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -246,4 +257,8 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         fragmentCompass.removePost();
     }
 
+    public void onEvent(BackPressedMessage type) {
+        getPresenter().cancelClicked();
+        eventBus.cancelEventDelivery(type);
+    }
 }

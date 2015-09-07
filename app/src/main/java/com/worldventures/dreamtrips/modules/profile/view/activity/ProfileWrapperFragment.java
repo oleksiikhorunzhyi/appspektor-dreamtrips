@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.profile.view.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.event.BackPressedMessage;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -21,6 +23,7 @@ public class ProfileWrapperFragment extends BaseFragmentWithArgs<ProfileWrapperP
 
     @Override
     public void openAccountProfile() {
+        fragmentCompass.disableBackStack();
         NavigationBuilder.create().with(fragmentCompass)
                 .move(Route.ACCOUNT_PROFILE);
         clearArgs();
@@ -28,14 +31,10 @@ public class ProfileWrapperFragment extends BaseFragmentWithArgs<ProfileWrapperP
 
     @Override
     public void openForeignProfile(User user) {
+        fragmentCompass.disableBackStack();
         NavigationBuilder.create().with(fragmentCompass).data(new UserBundle(user))
                 .move(Route.FOREIGN_PROFILE);
         clearArgs();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return true;
     }
 }
 

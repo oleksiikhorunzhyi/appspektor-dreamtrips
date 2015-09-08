@@ -15,7 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.event.BackPressedMessage;
+import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -257,8 +257,15 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         fragmentCompass.removePost();
     }
 
-    public void onEvent(BackPressedMessage type) {
+    public void onEvent(BackPressedMessageEvent type) {
         getPresenter().cancelClicked();
         eventBus.cancelEventDelivery(type);
     }
+
+
+    @Override
+    public int getEventBusPriority() {
+        return 1;
+    }
 }
+

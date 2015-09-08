@@ -33,7 +33,6 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Inject
     protected FragmentCompass fragmentCompass;
 
-
     public PM getPresenter() {
         return presenter;
     }

@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.modules.profile.view.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.event.BackPressedMessage;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;

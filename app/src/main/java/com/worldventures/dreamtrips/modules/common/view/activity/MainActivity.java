@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
-import com.worldventures.dreamtrips.modules.common.event.BackPressedMessage;
+import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
@@ -238,7 +238,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
     }
 
-    public void onEvent(BackPressedMessage type){
+    public void onEvent(BackPressedMessageEvent type){
         super.onBackPressed();
         if (!handleComponentChange()) {
             fragmentCompass.clear();
@@ -262,7 +262,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void onBackPressed() {
-        eventBus.post(new BackPressedMessage());
+        eventBus.post(new BackPressedMessageEvent());
     }
 
 }

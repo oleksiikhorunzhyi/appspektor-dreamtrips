@@ -114,7 +114,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     public void onResume() {
         super.onResume();
         try {
-            this.eventBus.registerSticky(this);
+            this.eventBus.registerSticky(this, getEventBusPriority());
         } catch (Exception e) {
             Timber.v(e, "Can't register");
         }
@@ -126,6 +126,10 @@ public abstract class InjectingFragment extends Fragment implements Configurable
         if (this.eventBus.isRegistered(this)) {
             this.eventBus.unregister(this);
         }
+    }
+
+    public int getEventBusPriority() {
+        return 0;
     }
 
 }

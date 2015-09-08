@@ -50,6 +50,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Icicle
     int callbackType;
 
+    int REQUESTER_ID = 3745742;
+
     public AccountPresenter() {
         super();
     }
@@ -152,6 +154,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         this.user.setAvatarUploadInProgress(true);
         view.notifyUserChanged();
         doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess, spiceException -> {
+            handleError(spiceException);
             user.setAvatarUploadInProgress(false);
             view.notifyUserChanged();
         });
@@ -167,6 +170,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             view.notifyUserChanged();
             TrackingHelper.profileUploadStart(getAccountUserId());
             doRequest(new UploadCoverCommand(typedFile), this::onCoverUploadSuccess, spiceException -> {
+                handleError(spiceException);
                 user.setCoverUploadInProgress(false);
                 view.notifyUserChanged();
             });
@@ -204,11 +208,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, this.hashCode()));
+        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == this.hashCode()) {
+        if (event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(ImagePickedEvent.class);
             imageSelected(event.getImages()[0]);

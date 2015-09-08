@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +66,16 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     BaseArrayListAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
 
+    private TextWatcherAdapter inputWatcher = new TextWatcherAdapter() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            super.onTextChanged(s, start, before, count);
+            String text = s.toString().trim();
+            getPresenter().setComment(text);
+            post.setEnabled(text.length() > 0);
+        }
+    };
+
     @Override
     protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
         return new BaseCommentPresenter((BaseEventModel) getArguments().
@@ -106,19 +115,17 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         commentsList.setLayoutManager(linearLayoutManager);
         commentsList.setAdapter(adapter);
 
-        input.addTextChangedListener(new TextWatcherAdapter() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                super.onTextChanged(s, start, before, count);
-                String text = s.toString().trim();
-                getPresenter().setComment(text);
-                post.setEnabled(text.length() > 0);
-            }
-        });
+        input.addTextChangedListener(inputWatcher);
 
         if (getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false)) {
             SoftInputUtil.showSoftInputMethod(input);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        input.removeTextChangedListener(inputWatcher);
     }
 
     @Override

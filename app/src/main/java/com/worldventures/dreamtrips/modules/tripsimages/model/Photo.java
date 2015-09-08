@@ -11,12 +11,11 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class Photo extends BaseFeedObject implements Serializable, IFullScreenObject, Parcelable {
+public class Photo extends BaseFeedObject implements IFullScreenObject, Parcelable {
 
     private String title;
     private Date shotAt;

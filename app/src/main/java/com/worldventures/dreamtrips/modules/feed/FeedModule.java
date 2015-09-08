@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.ParallaxRecyclerAdapter;
+import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
@@ -43,8 +43,6 @@ import dagger.Provides;
                 FeedPostEventCell.class,
                 FeedUndefinedEventCell.class,
 
-                ParallaxRecyclerAdapter.class,
-
                 EditCommentPresenter.class,
 
                 CommentsFragment.class,
@@ -53,7 +51,8 @@ import dagger.Provides;
                 BaseCommentPresenter.class,
                 PostPresenter.class,
                 PostFragment.class,
-                ParallaxRecyclerAdapter.class,
+
+                DiffArrayListAdapter.class,
         },
         complete = false,
         library = true

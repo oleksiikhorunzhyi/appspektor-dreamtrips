@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel extends BaseFeedObject implements Filterable, Serializable {
+public class TripModel extends BaseFeedObject implements Filterable {
     public static final String PATTERN = "?width=%d&height=%d";
 
     public static final long serialVersionUID = 123L;

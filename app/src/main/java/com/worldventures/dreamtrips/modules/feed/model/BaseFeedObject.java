@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseFeedObject implements IFeedObject, Serializable {
+public class BaseFeedObject implements IFeedObject {
 
     protected String uid;
 

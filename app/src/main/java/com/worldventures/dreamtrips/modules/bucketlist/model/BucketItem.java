@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BucketItem extends BaseFeedObject implements IFeedObject, Serializable {
+public class BucketItem extends BaseFeedObject {
 
     public static final String NEW = "new";
     public static final String COMPLETED = "completed";

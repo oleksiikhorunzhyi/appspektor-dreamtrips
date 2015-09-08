@@ -60,6 +60,10 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
         return item;
     }
 
+    public void setItem(T item) {
+        this.item = item;
+    }
+
     private String getActionCaption(Resources resources) {
         switch (action) {
             case BOOK:
@@ -134,17 +138,14 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BaseEventModel<?> model = (BaseEventModel<?>) o;
+        BaseEventModel<?> that = (BaseEventModel<?>) o;
 
-        return action == model.action &&
-                !(item != null ? !item.equals(model.item) : model.item != null);
+        return !(item != null ? !item.equals(that.item) : that.item != null);
     }
 
     @Override
     public int hashCode() {
-        int result = action != null ? action.hashCode() : 0;
-        result = 31 * result + (item != null ? item.hashCode() : 0);
-        return result;
+        return item != null ? item.hashCode() : 0;
     }
 
     public static BaseEventModel create(IFeedObject item, User owner) {

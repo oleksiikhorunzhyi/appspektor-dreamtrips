@@ -3,13 +3,12 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 
 import com.innahema.collections.query.functions.Action1;
-import com.octo.android.robospice.request.SpiceRequest;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
@@ -28,7 +27,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRe
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
@@ -44,14 +43,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     @Override
-    protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
-        return new GetUserTimelineQuery(user.getId(), Calendar.getInstance().getTime());
+    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getRefreshFeedRequest(Date date) {
+        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     @Override
-    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
-        Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getCount() - 1);
-        return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
+    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getNextPageFeedRequest(Date date) {
+        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     public void addFriendClicked() {

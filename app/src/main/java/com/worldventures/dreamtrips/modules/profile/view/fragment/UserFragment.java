@@ -29,7 +29,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
-        return new UserPresenter(getArguments());
+        return new UserPresenter(getArgs().getUser());
     }
 
     @Override

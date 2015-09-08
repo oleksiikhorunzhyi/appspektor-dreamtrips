@@ -10,20 +10,13 @@ import android.support.v4.app.Fragment;
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.modules.auth.view.LoginActivity;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.membership.view.activity.InviteTemplateSelectorActivity;
-import com.worldventures.dreamtrips.modules.membership.view.activity.PreviewTemplateActivity;
-import com.worldventures.dreamtrips.modules.profile.ProfileModule;
-import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileActivity;
-import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 public class ActivityRouter extends ActivityBoundRouter {
@@ -50,61 +43,32 @@ public class ActivityRouter extends ActivityBoundRouter {
         startForResult(fm, CreatePhotoActivity.class, CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO, bundle);
     }
 
-    public void openLogin() {
-        startActivity(LoginActivity.class);
-        finish();
-    }
-
     public void open360Activity(String url) {
         Bundle bundle = new Bundle();
         bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
         startActivity(SimpleStreamPlayerActivity.class, bundle);
     }
 
-    public void openUserProfile(User user) {
-        if (featureManager.isUserInfoAvailable(user)) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ProfileModule.EXTRA_USER, user);
-            startActivity(ProfileActivity.class, bundle);
-        }
-    }
-
-    public void openBookItActivity(String tripId) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BookItActivity.EXTRA_TRIP_ID, tripId);
-        startActivity(BookItActivity.class, bundle);
-    }
-
-    public void openPreviewActivity(String url) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(StaticInfoFragment.BundleUrlFragment.URL_EXTRA, url);
-        startActivity(PreviewTemplateActivity.class, bundle);
-    }
-
     public void openShareFacebook(String imageUrl, String shareLink, String text) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
-        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.FB);
-        startActivity(ShareActivity.class, bundle);
+        ShareBundle data = new ShareBundle();
+        data.setImageUrl(imageUrl);
+        data.setShareUrl(shareLink);
+        data.setText(text);
+        data.setShareType(ShareFragment.FB);
+        NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
     }
 
     public void openShareTwitter(String imageUrl, String shareLink, String text) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ShareActivity.BUNDLE_IMAGE_URL, imageUrl);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_URL, shareLink);
-        bundle.putSerializable(ShareActivity.BUNDLE_TEXT, text);
-        bundle.putSerializable(ShareActivity.BUNDLE_SHARE_TYPE, ShareActivity.TW);
-        startActivity(ShareActivity.class, bundle);
+        ShareBundle data = new ShareBundle();
+        data.setImageUrl(imageUrl);
+        data.setShareUrl(shareLink);
+        data.setText(text);
+        data.setShareType(ShareFragment.TW);
+        NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
     }
 
     public void openDefaultShareIntent(Intent intent) {
         startActivityIntent(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
-    }
-
-    public void openSelectTemplateActivity() {
-        startActivity(InviteTemplateSelectorActivity.class);
     }
 
     public void openComponentActivity(@NonNull Route route, @NonNull Bundle args) {

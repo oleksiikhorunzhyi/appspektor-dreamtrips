@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
+import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
@@ -196,28 +197,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         return false;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!handleComponentChange()) {
-            fragmentCompass.clear();
-            FragmentManager fm = getSupportFragmentManager();
-            int entryCount = fm.getBackStackEntryCount();
-            if (entryCount >= 2) {
-                int backOffset = 1;
-                do {
-                    currentComponent = this.rootComponentsProvider.getComponent(fm, backOffset);
-                    backOffset++;
-                }
-                while (!rootComponentsProvider.getActiveComponents().contains(currentComponent) &&
-                        backOffset <= entryCount);
-                navigationDrawerFragment.setCurrentComponent(currentComponent);
-                setTitle(currentComponent.getToolbarTitle());
-            }
-
-            super.onBackPressed();
-        }
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Drawer helpers
     ///////////////////////////////////////////////////////////////////////////
@@ -257,6 +236,33 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     public void enableRightDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
+    }
+
+    public void onEvent(BackPressedMessageEvent type){
+        super.onBackPressed();
+        if (!handleComponentChange()) {
+            fragmentCompass.clear();
+            FragmentManager fm = getSupportFragmentManager();
+            int entryCount = fm.getBackStackEntryCount();
+            if (entryCount >= 2) {
+                int backOffset = 1;
+                do {
+                    currentComponent = this.rootComponentsProvider.getComponent(fm, backOffset);
+                    backOffset++;
+                }
+                while (!rootComponentsProvider.getActiveComponents().contains(currentComponent) &&
+                        backOffset <= entryCount);
+                navigationDrawerFragment.setCurrentComponent(currentComponent);
+                setTitle(currentComponent.getToolbarTitle());
+            }
+
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        eventBus.post(new BackPressedMessageEvent());
     }
 
 }

@@ -13,7 +13,7 @@ public class FragmentNavigator implements Navigator {
 
     @Override
     public void move(Route route, Bundle bundle) {
-        fragmentCompass.replace(route, bundle);
+        fragmentCompass.switchBranch(route, bundle);
     }
 
     @Override

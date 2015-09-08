@@ -4,22 +4,18 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
-import com.worldventures.dreamtrips.modules.trips.presenter.BookItActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsActivityPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.activity.BookItActivity;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
@@ -34,13 +30,9 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                BookItActivity.class,
                 TripListPresenter.class,
                 FiltersPresenter.class,
-                BookItActivityPresenter.class,
                 TripDetailsFragment.class,
-                DetailTripActivity.class,
-                TripDetailsActivityPresenter.class,
                 TripDetailsPresenter.class,
                 TripMapInfoPresenter.class,
                 TripMapPresenter.class,

@@ -4,6 +4,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -17,6 +20,7 @@ import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 
 import java.util.Calendar;
@@ -95,8 +99,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         if (view.isVisibleOnScreen()) openUser(event.getUser());
     }
 
-    private void openUser(User user) {
-        activityRouter.openUserProfile(user);
+    private void openUser(User user) {//TODO
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(Route.AUTO_RESOLVE_PROFILE);
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {

@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
@@ -237,6 +238,11 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
         NavigationBuilder.create().with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+    }
+
+    @Override
+    public void openBookIt(String url) {
+        NavigationBuilder.create().with(activityRouter).data(new UrlBundle(url)).move(Route.BOOK_IT);
     }
 
     @Override

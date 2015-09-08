@@ -2,11 +2,15 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.text.Spanned;
 
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -60,7 +64,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     public void onUserClicked() {
         User user = photo.getUser();
-        activityRouter.openUserProfile(user);
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(Route.AUTO_RESOLVE_PROFILE);
+
     }
 
     public final void setupActualViewState() {

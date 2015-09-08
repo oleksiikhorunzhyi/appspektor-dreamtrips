@@ -11,6 +11,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
@@ -146,7 +148,7 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
             }
             activityRouter.openMain();
         } else {
-            activityRouter.openLogin();
+            NavigationBuilder.create().with(activityRouter).move(Route.LOGIN);
         }
         activityRouter.finish();
     }
@@ -214,6 +216,7 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
 
     public interface View extends Presenter.View {
         void configurationFailed();
+
         void configurationStarted();
     }
 }

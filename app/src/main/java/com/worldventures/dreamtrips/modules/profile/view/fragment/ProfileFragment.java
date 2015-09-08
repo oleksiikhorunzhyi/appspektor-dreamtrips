@@ -18,10 +18,13 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
@@ -36,7 +39,7 @@ import butterknife.InjectView;
 import icepick.Icicle;
 
 
-public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
+public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragmentWithArgs<T, UserBundle>
         implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
@@ -120,6 +123,17 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
             }
         });
 
+        boolean isMainActivity = getActivity() instanceof MainActivity;
+        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+            profileToolbar.setNavigationIcon(isMainActivity ? R.drawable.ic_menu_hamburger : R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            profileToolbar.setNavigationOnClickListener(view -> {
+                if (isMainActivity) {
+                    ((MainActivity) getActivity()).openLeftDrawer();
+                } else {
+                    getActivity().onBackPressed();
+                }
+            });
+        }
         restorePostIfNeeded();
     }
 

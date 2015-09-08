@@ -30,7 +30,7 @@
             custom:rangeBar="true"
             custom:selectorColor="#54B5FC"
             custom:tickEnd="9"
-            custom:tickInterval="3"
+            custom:tickInterval="1"
             custom:tickStart="0" />
 
         <TextView

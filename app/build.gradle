@@ -210,7 +210,7 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.7.4.1'
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.4.4@aar'
-    compile 'com.appyvet:materialrangebar:1.0'
+    compile 'com.github.techery:material-range-bar:d5f61f2f50'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.7.4'
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
     compile 'me.relex:circleindicator:1.0.0@aar'

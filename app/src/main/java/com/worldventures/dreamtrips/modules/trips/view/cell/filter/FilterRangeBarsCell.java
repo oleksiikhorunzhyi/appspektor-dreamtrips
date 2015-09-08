@@ -34,6 +34,7 @@ public class FilterRangeBarsCell extends AbstractCell<FilterModel> {
 
     @Override
     protected void syncUIStateWithModel() {
+        rangeBarDay.setTickSkipDrawEvery(3);
         this.rangeBarDay.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
             minNights = Integer.valueOf(s);
             maxNights = i2 == (rangeBarDay.getTickCount() - 1) ? Integer.MAX_VALUE : Integer.valueOf(s2);

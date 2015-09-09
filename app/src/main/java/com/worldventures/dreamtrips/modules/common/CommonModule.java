@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
-
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
@@ -26,11 +25,12 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class CommonModule {
 
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
-        activeComponents.add(InfoModule.MEMBERSHIP);
+        activeComponents.add(VideoModule.MEMBERSHIP);
         activeComponents.add(BucketListModule.BUCKETLIST);
         activeComponents.add(ProfileModule.MY_PROFILE);
 

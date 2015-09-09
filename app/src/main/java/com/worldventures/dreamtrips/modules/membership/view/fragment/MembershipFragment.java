@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -16,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePager
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
+import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 
 import butterknife.InjectView;
 

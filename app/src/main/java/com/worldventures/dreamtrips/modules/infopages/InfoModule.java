@@ -9,17 +9,15 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
-import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
-import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
-import com.worldventures.dreamtrips.modules.video.presenter.Video360Presenter;
+import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,9 +27,7 @@ import dagger.Provides;
                 OtaFragment.class,
                 AuthorizedStaticInfoFragment.class,
                 AuthorizedStaticInfoPresenter.class,
-                Video360Presenter.class,
                 PresentationVideosPresenter.class,
-                Video360Fragment.class,
                 StaticInfoFragment.class,
                 StaticInfoFragment.BookItFragment.class,
                 StaticInfoFragment.BundleUrlFragment.class,
@@ -42,10 +38,11 @@ import dagger.Provides;
                 StaticInfoFragment.EnrollRepFragment.class,
 
                 VideoCell.class,
-                Video360Cell.class,
                 VideoHeaderLightCell.class,
                 VideoHeaderCell.class,
-                Video360SmallCell.class,
+
+                ThreeSixtyVideosFragment.class,
+                ThreeSixtyVideosPresenter.class,
 
                 TermsTabFragment.class,
                 WebViewFragmentPresenter.class,
@@ -55,7 +52,6 @@ import dagger.Provides;
 )
 public class InfoModule {
 
-    public static final String MEMBERSHIP = Route.MEMBERSHIP.name();
     public static final String FAQ = Route.FAQ.name();
     public static final String TERMS = Route.TERMS.name();
 

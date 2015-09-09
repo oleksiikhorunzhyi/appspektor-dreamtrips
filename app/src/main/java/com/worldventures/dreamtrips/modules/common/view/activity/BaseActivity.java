@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.video.VideoModule;
 
 import java.util.List;
 
@@ -96,6 +97,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new ReptoolsModule());
         modules.add(new TripsModule());
         modules.add(new TripsImagesModule());
+        modules.add(new VideoModule());
         modules.add(new MembershipModule());
         modules.add(new FriendsModule());
         modules.add(new FeedModule());

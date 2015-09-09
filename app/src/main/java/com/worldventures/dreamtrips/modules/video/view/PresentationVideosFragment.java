@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.membership.view.fragment;
+package com.worldventures.dreamtrips.modules.video.view;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -17,12 +16,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
-import com.worldventures.dreamtrips.modules.video.view.BaseVideoFragment;
+import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -42,7 +42,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-    private LoaderRecycleAdapter<Object> arrayListAdapter;
+    protected BaseArrayListAdapter<Object> adapter;
 
     RecyclerViewStateDelegate stateDelegate;
     private WeakHandler weakHandler;
@@ -68,11 +68,11 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         setupLayoutManager();
         this.recyclerView.setEmptyView(emptyView);
 
-        this.arrayListAdapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
-        this.arrayListAdapter.registerCell(Video.class, VideoCell.class);
-        this.arrayListAdapter.registerCell(VideoHeader.class, VideoHeaderLightCell.class);
+        this.adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        this.adapter.registerCell(Video.class, VideoCell.class);
+        this.adapter.registerCell(VideoHeader.class, VideoHeaderLightCell.class);
 
-        this.recyclerView.setAdapter(this.arrayListAdapter);
+        this.recyclerView.setAdapter(this.adapter);
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -103,7 +103,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return arrayListAdapter.getItem(position) instanceof VideoHeader ? spanCount : 1;
+                return adapter.getItem(position) instanceof VideoHeader ? spanCount : 1;
             }
         });
         this.recyclerView.setLayoutManager(layoutManager);
@@ -121,7 +121,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
 
     @Override
     public void notifyItemChanged(CachedEntity videoEntity) {
-        arrayListAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -129,7 +129,6 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
-
     }
 
     @Override
@@ -141,8 +140,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     }
 
     @Override
-    public BaseArrayListAdapter getAdapter() {
-        return arrayListAdapter;
+    public void setItems(List<Object> videos) {
+        adapter.setItems(videos);
     }
-
 }

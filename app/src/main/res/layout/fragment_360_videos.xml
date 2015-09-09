@@ -6,74 +6,18 @@
              android:orientation="vertical">
 
 
-    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
-        android:id="@+id/recyclerViewAll"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:visibility="gone"/>
+        android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/containerLandscape"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <LinearLayout
+        <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+            android:id="@+id/recyclerViewAll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:visibility="gone"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="@string/featured_header"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-
-            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
-                android:id="@+id/recyclerViewFeatured"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/video_three_sixty_height"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="@string/recent_header"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-
-            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
-                android:id="@+id/recyclerViewRecent"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/video_three_sixty_height_small"/>
-        </LinearLayout>
-
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_tiny"
-            android:text="@string/loading"
-            android:textColor="@color/white"
-            android:textSize="22sp"/>
-
-    </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

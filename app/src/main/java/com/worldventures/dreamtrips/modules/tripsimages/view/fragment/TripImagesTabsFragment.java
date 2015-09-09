@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -14,9 +12,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.Video360Fragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
+import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import butterknife.InjectView;
 
@@ -55,7 +52,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
             this.adapter.add(new FragmentItem(AccountImagesListFragment.class, getString(R.string.my_images)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
             this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
-            this.adapter.add(new FragmentItem(Video360Fragment.class, getString(R.string.three_sixty)));
+            this.adapter.add(new FragmentItem(ThreeSixtyVideosFragment.class, getString(R.string.three_sixty)));
 
         }
 

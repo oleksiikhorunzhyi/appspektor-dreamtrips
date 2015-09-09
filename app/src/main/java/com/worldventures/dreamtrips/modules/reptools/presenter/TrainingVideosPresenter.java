@@ -4,7 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
@@ -81,7 +81,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
             VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
             firstHeader.setVideoLocale(videoLocale);
             firstHeader.setVideoLanguage(videoLanguage);
-            view.getAdapter().notifyItemChanged(0);
+            view.localeLoaded();
         }
     }
 
@@ -100,12 +100,13 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
         if (videoLocale != null && videoLanguage != null)
             return new MemberVideosRequest(DreamTripsApi.TYPE_REP, videoLanguage.getLocaleName());
         else return new MemberVideosRequest(DreamTripsApi.TYPE_REP);
-
     }
 
     public interface View extends PresentationVideosPresenter.View {
         void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue);
 
         void showDialog();
+
+        void localeLoaded();
     }
 }

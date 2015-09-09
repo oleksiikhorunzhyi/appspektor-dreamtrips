@@ -1,7 +1,6 @@
-package com.worldventures.dreamtrips.modules.membership.presenter;
+package com.worldventures.dreamtrips.modules.video.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -69,7 +68,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         videoCachingDelegate.onDeleteAction(videoEntity);
     }
 
-
     public void onCancelAction(CachedEntity cacheEntity) {
         videoCachingDelegate.onCancelAction(cacheEntity);
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
@@ -101,8 +99,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         currentItems = new ArrayList<>();
         Queryable.from(categories).forEachR(category -> addCategoryHeader(category.getCategory(),
                 category.getVideos(), categories.indexOf(category)));
-        view.getAdapter().clear();
-        view.getAdapter().addItems(currentItems);
+        view.setItems(currentItems);
     }
 
     protected void addCategoryHeader(String category, List<Video> videos, int categoryIndex) {
@@ -146,6 +143,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
         void finishLoading();
 
-        BaseArrayListAdapter<Object> getAdapter();
+        void setItems(List<Object> videos);
     }
 }

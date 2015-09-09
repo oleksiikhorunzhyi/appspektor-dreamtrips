@@ -13,6 +13,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
@@ -148,7 +149,9 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
             }
             activityRouter.openMain();
         } else {
-            NavigationBuilder.create().with(activityRouter).move(Route.LOGIN);
+            NavigationBuilder.create()
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .with(activityRouter).move(Route.LOGIN);
         }
         activityRouter.finish();
     }

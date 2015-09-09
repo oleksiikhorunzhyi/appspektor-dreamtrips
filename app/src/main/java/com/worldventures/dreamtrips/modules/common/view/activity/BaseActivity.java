@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -105,7 +106,9 @@ public abstract class BaseActivity extends InjectingActivity {
     }
 
     public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
-        NavigationBuilder.create().with(router).move(Route.LOGIN);
+        NavigationBuilder.create()
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .with(router).move(Route.LOGIN);
     }
 
     @Override

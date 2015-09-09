@@ -162,7 +162,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="ss_has_been_added_to_favorites">已添加成功故事至收藏夾</string>
     <string name="ss_has_been_removed_from_favorites">已從收藏夾移出成功故事</string>
-    <string name="show_favorites">顯示收藏</string>
+    <string name="ss_filter_show_favorites">顯示收藏</string>
     <string name="other_travel">預訂旅行</string>
     <string name="training_videos">培訓視頻</string>
     <string name="error_while_sync">出現問題</string>

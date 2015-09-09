@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
-import com.worldventures.dreamtrips.modules.membership.view.fragment.PresentationVideosFragment;
+import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
 
@@ -25,6 +25,11 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
     @Override
     public void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue) {
         dialog.setData(locales);
+    }
+
+    @Override
+    public void localeLoaded() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
@@ -17,11 +16,8 @@ import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguag
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
-import com.worldventures.dreamtrips.modules.membership.view.fragment.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLanguageCell;
-import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLocaleCell;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,9 +25,7 @@ import dagger.Provides;
 @Module(
         injects = {
                 MembershipPresenter.class,
-                PresentationVideosPresenter.class,
                 MembershipFragment.class,
-                PresentationVideosFragment.class,
                 StaticInfoFragment.EnrollFragment.class,
                 InviteFragment.class,
                 InvitePresenter.class,
@@ -44,8 +38,6 @@ import dagger.Provides;
                 EditTemplatePresenter.class,
                 PreviewTemplateFragment.class,
                 TemplatePhotoCell.class,
-                VideoLocaleCell.class,
-                VideoLanguageCell.class,
                 FilterLanguageDialogFragment.class
 
         },

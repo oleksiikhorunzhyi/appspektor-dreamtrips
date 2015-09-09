@@ -3,9 +3,7 @@ package com.worldventures.dreamtrips.modules.video.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Video {
-
     public static final String FEATURED = "Featured";
-    public static final String RECENT = "Recent";
 
     @SerializedName("image_url")
     private String imageUrl;
@@ -48,14 +46,6 @@ public class Video {
         return duration;
     }
 
-    public boolean isFeatured() {
-        return category.equals(FEATURED);
-    }
-
-    public boolean isRecent() {
-        return !isFeatured();
-    }
-
     public CachedEntity getCacheEntity() {
         if (entity == null) {
             entity = new CachedEntity(this.getMp4Url(), this.getUid(), this.getVideoName());
@@ -66,4 +56,13 @@ public class Video {
     public void setCacheEntity(CachedEntity entity) {
         this.entity = entity;
     }
+
+    public boolean isFeatured() {
+        return category.equals(FEATURED);
+    }
+
+    public boolean isRecent() {
+        return !isFeatured();
+    }
+
 }

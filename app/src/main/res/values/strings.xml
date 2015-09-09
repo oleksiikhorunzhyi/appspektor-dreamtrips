@@ -6,8 +6,8 @@
     <string name="detailed_trip">Detailed Trip</string>
     <string name="membership">Membership</string>
     <string name="trip_images">Trip Images</string>
-    <string name="bucket_list">Bucket list</string>
-    <string name="my_profile">My profile</string>
+    <string name="bucket_list">Bucket List</string>
+    <string name="my_profile">My Profile</string>
     <string name="terms">Terms</string>
     <string name="terms_of_service">Terms of Service</string>
     <string name="faq">FAQ</string>
@@ -63,7 +63,6 @@
     <string name="profile_enroll_hint">Enroll Date</string>
     <string name="profile_birth_hint">Date of Birth</string>
     <string name="profile_user_id_hint">User ID</string>
-    <string name="bucket_show_favorites">Show Favorites Only</string>
     <string name="bucket_locations">Locations</string>
     <string name="bucket_activities">Activities</string>
     <string name="bucket_restaurants">Dining</string>
@@ -162,7 +161,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="ss_has_been_added_to_favorites">Success story has been added to favorites</string>
     <string name="ss_has_been_removed_from_favorites">Success story has been removed from favorites</string>
-    <string name="show_favorites">Show Favorites</string>
+    <string name="ss_filter_show_favorites">Show Favorites</string>
     <string name="other_travel">Book Travel</string>
     <string name="training_videos">Training Videos</string>
     <string name="error_while_sync">Something went wrong</string>
@@ -323,7 +322,7 @@
     <string name="feed_trip">Trip</string>
     <string name="feed_photo">Photo</string>
     <string name="feed_bucket">Bucket Item</string>
-    <string name="coming_soon">Coming soon</string>
+    <string name="coming_soon">Coming Soon</string>
     <string name="loading">Loading…</string>
     <string name="filter_video_title_language">Choose language</string>
     <string name="filter_video_title_country">Choose country</string>

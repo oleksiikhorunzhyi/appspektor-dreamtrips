@@ -115,17 +115,26 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         commentsList.setLayoutManager(linearLayoutManager);
         commentsList.setAdapter(adapter);
 
-        input.addTextChangedListener(inputWatcher);
-
         if (getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false)) {
             SoftInputUtil.showSoftInputMethod(input);
         }
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        input.addTextChangedListener(inputWatcher);
+}
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        input.removeTextChangedListener(inputWatcher);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        input.removeTextChangedListener(inputWatcher);
     }
 
     @Override

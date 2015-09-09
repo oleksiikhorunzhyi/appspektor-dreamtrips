@@ -63,7 +63,6 @@
     <string name="profile_enroll_hint">註冊日期</string>
     <string name="profile_birth_hint">生日</string>
     <string name="profile_user_id_hint">用戶 ID </string>
-    <string name="bucket_show_favorites">僅顯示收藏</string>
     <string name="bucket_locations">地點</string>
     <string name="bucket_activities">活動</string>
     <string name="bucket_restaurants">餐飲</string>

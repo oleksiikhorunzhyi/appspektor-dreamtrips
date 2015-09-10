@@ -5,10 +5,14 @@ import java.io.Serializable;
 
 public class FilterModel implements Serializable {
 
-    private int indexLeftPrice = 0;
-    private int indexRightPrice = 4;
-    private int indexLeftDuration = 0;
-    private int indexRightDuration = 9;
+    public static final int START_INDEX = 0;
+    public static final int LAST_PRICE_INDEX = 4;
+    public static final int LAST_DURATION_INDEX = 9;
+
+    private int indexLeftPrice = START_INDEX;
+    private int indexRightPrice = LAST_PRICE_INDEX;
+    private int indexLeftDuration = START_INDEX;
+    private int indexRightDuration = LAST_DURATION_INDEX;
 
     public int getIndexLeftPrice() {
         return indexLeftPrice;
@@ -43,9 +47,9 @@ public class FilterModel implements Serializable {
     }
 
     public void reset() {
-        indexLeftPrice = 0;
-        indexRightPrice = 4;
-        indexLeftDuration = 0;
-        indexRightDuration = 3;
+        indexLeftPrice = START_INDEX;
+        indexRightPrice = LAST_PRICE_INDEX;
+        indexLeftDuration = START_INDEX;
+        indexRightDuration = LAST_DURATION_INDEX;
     }
 }

@@ -8,7 +8,7 @@ public class FilterModel implements Serializable {
     private int indexLeftPrice = 0;
     private int indexRightPrice = 4;
     private int indexLeftDuration = 0;
-    private int indexRightDuration = 3;
+    private int indexRightDuration = 9;
 
     public int getIndexLeftPrice() {
         return indexLeftPrice;

@@ -32,7 +32,7 @@ import butterknife.InjectView;
 import timber.log.Timber;
 
 @Layout(R.layout.activity_360)
-public class SimpleStreamPlayerActivity extends BaseActivity implements PFAssetObserver {
+public class Palyer360Activity extends BaseActivity implements PFAssetObserver {
 
     public static final String EXTRA_URL = "EXTRA_URL";
 

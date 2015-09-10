@@ -14,8 +14,8 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.Palyer360Activity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
@@ -45,8 +45,8 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void open360Activity(String url) {
         Bundle bundle = new Bundle();
-        bundle.putString(SimpleStreamPlayerActivity.EXTRA_URL, url);
-        startActivity(SimpleStreamPlayerActivity.class, bundle);
+        bundle.putString(Palyer360Activity.EXTRA_URL, url);
+        startActivity(Palyer360Activity.class, bundle);
     }
 
     public void openShareFacebook(String imageUrl, String shareLink, String text) {

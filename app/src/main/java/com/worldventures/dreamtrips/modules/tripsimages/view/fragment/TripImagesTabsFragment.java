@@ -10,6 +10,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
@@ -29,7 +30,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     @InjectView(R.id.pager)
     protected ViewPager pager;
 
-
     private BaseStatePagerAdapter adapter;
 
     @Override
@@ -41,7 +41,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
                 public void setArgs(int position, Fragment fragment) {
                     if (fragment instanceof TripImagesListFragment) {
                         Type type = Type.values()[position];
-                        ((TripImagesListFragment) fragment).setArgs(new TripsImagesBundle(type));
+                        BaseFragmentWithArgs fragmentWithArgs = (BaseFragmentWithArgs) fragment;
+                        fragmentWithArgs.setArgs(new TripsImagesBundle(type));
                     }
                 }
             };

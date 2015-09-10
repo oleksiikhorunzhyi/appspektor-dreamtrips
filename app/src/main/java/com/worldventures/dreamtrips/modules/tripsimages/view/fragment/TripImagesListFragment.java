@@ -41,7 +41,9 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment<T extends TripImagesListPresenter> extends BaseFragmentWithArgs<T, TripsImagesBundle> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class TripImagesListFragment<T extends TripImagesListPresenter>
+        extends BaseFragmentWithArgs<T, TripsImagesBundle>
+        implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     @ForActivity

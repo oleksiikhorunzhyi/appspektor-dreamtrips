@@ -10,14 +10,15 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import butterknife.InjectView;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.BUNDLE_TYPE;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 @Layout(R.layout.fragment_trip_images_tabs)
@@ -29,7 +30,6 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
     @InjectView(R.id.pager)
     protected ViewPager pager;
 
-
     private BaseStatePagerAdapter adapter;
 
     @Override
@@ -40,10 +40,9 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     if (fragment instanceof TripImagesListFragment) {
-                        Bundle args = new Bundle();
                         Type type = Type.values()[position];
-                        args.putSerializable(BUNDLE_TYPE, type);
-                        fragment.setArguments(args);
+                        BaseFragmentWithArgs fragmentWithArgs = (BaseFragmentWithArgs) fragment;
+                        fragmentWithArgs.setArgs(new TripsImagesBundle(type));
                     }
                 }
             };

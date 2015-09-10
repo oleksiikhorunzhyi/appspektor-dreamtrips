@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationCha
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -160,11 +161,11 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     public void openTripImages() {
-        Bundle args = new Bundle();
-        args.putSerializable(TripImagesListFragment.BUNDLE_TYPE, TripImagesListFragment.Type.FOREIGN_IMAGES);
-        args.putSerializable(TripImagesListFragment.BUNDLE_FOREIGN_USER_ID, user.getId());
-
-        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FOREIGN_TRIP_IMAGES);
+        NavigationBuilder
+                .create()
+                .with(activityRouter)
+                .data(new TripsImagesBundle(TripImagesListFragment.Type.FOREIGN_IMAGES, user.getId()))
+                .move(Route.FOREIGN_TRIP_IMAGES);
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

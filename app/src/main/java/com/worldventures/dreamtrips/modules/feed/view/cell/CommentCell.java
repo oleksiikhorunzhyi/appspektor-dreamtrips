@@ -127,7 +127,7 @@ public class CommentCell extends AbstractCell<Comment> {
     private void openUser(User user) {
         NavigationBuilder.create().with(activityRouter)
                 .data(new UserBundle(user))
-                .toolbarConfig(new ToolbarConfig.Builder().visible(false).build())
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .move(Route.AUTO_RESOLVE_PROFILE);
     }
 

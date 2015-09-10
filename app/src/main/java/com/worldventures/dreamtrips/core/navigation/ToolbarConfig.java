@@ -19,6 +19,9 @@ public class ToolbarConfig implements Serializable {
 
         private ToolbarConfig toolbarConfig;
 
+        private Builder() {
+        }
+
         public static ToolbarConfig.Builder create() {
             Builder builder = new ToolbarConfig.Builder();
             builder.toolbarConfig = new ToolbarConfig();

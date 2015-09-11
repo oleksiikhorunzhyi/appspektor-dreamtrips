@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -21,9 +21,9 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,18 +121,16 @@ public abstract class TripImagesListPresenter
                     startUpload((UploadTask) obj);
                 }
             } else {
-                Bundle args = getFullscreenArgs(position);
-                view.openFullscreen(args);
+                view.openFullscreen(getFullscreenArgs(position).build());
             }
         }
     }
 
     @NonNull
-    protected Bundle getFullscreenArgs(int position) {
-        Bundle args = new Bundle();
-        args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, position);
-        args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, type);
-        return args;
+    protected FullScreenImagesBundle.Builder getFullscreenArgs(int position) {
+        return new FullScreenImagesBundle.Builder()
+                .position(position)
+                .type(type);
     }
 
     private void savePhotoIfNeeded(UploadTask uploadTask) {
@@ -359,9 +357,8 @@ public abstract class TripImagesListPresenter
 
         IRoboSpiceAdapter getAdapter();
 
-        void openFullscreen(Bundle args);
+        void openFullscreen(FullScreenImagesBundle data);
 
         void inject(Object getMyPhotosQuery);
     }
-
 }

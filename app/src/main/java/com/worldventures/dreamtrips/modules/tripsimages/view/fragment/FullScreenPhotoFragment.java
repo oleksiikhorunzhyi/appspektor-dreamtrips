@@ -25,8 +25,9 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -42,10 +43,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
-        extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
-
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
-    public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
+        extends BaseFragmentWithArgs<FullScreenPresenter<T>, FullScreenPhotoBundle> implements FullScreenPresenter.View {
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;
@@ -146,11 +144,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
-        IFullScreenObject photo = (IFullScreenObject) getArguments().getSerializable(EXTRA_PHOTO);
-        type = (TripImagesListFragment.Type) getArguments().getSerializable(EXTRA_TYPE);
+        IFullScreenObject photo = getArgs().getPhoto();
+        type = getArgs().getType();
 
-        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo,
-                getArguments().getBoolean(FullScreenPhotoWrapperFragment.EXTRA_FOREIGN));
+        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo, getArgs().isForeign());
         if (photo != null) {
             fullScreenPresenter.setPhoto(photo);
             fullScreenPresenter.setType(type);

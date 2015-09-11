@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.io.Serializable;
@@ -234,10 +236,10 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
+    public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override

@@ -5,9 +5,10 @@ import android.os.Bundle;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -28,6 +29,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import icepick.Icicle;
 
 public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extends Presenter<V> {
@@ -37,6 +41,9 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     @Icicle
     protected ArrayList<BaseEventModel> feedItems;
+
+    @Inject @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -155,7 +162,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         NavigationBuilder.create().with(activityRouter)
                 .data(new UserBundle(user))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(Route.AUTO_RESOLVE_PROFILE);
+                .move(routeCreator.createRoute(user.getId()));
     }
 
     public void onEvent(LikesPressedEvent event) {

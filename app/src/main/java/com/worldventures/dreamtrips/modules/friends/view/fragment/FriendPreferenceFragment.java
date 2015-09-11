@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendPreferencesPresenter;
-import com.worldventures.dreamtrips.modules.profile.FriendGroupRelation;
+import com.worldventures.dreamtrips.modules.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.view.cell.FriendPrefGroupCell;
 

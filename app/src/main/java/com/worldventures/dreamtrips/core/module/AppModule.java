@@ -8,6 +8,7 @@ import com.techery.spares.module.DebugModule;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,7 +30,9 @@ import dagger.Provides;
                 ApiModule.class,
                 AmazonModule.class,
                 //
-                UiBindingModule.class
+                UiBindingModule.class,
+                //
+                RouteCreatorModule.class
         },
         library = true,
         complete = false,

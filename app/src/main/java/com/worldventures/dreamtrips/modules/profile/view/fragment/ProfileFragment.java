@@ -152,7 +152,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
     @Override
     public void notifyUserChanged() {
-        feedView.getAdapter().notifyItemChanged(0);
+        feedView.getAdapter().notifyDataSetChanged();
     }
 
     private void showPostContainer() {

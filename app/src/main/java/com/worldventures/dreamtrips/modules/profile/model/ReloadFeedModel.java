@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.profile;
+package com.worldventures.dreamtrips.modules.profile.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

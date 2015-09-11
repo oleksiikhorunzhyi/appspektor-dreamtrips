@@ -2,9 +2,10 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.text.Spanned;
 
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -19,6 +20,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
@@ -27,6 +31,10 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     protected Type type;
     protected T photo;
+
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     public static FullScreenPresenter create(IFullScreenObject photo, boolean foreign) {
         if (photo instanceof Photo) {
@@ -67,7 +75,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         NavigationBuilder.create().with(activityRouter)
                 .data(new UserBundle(user))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(Route.AUTO_RESOLVE_PROFILE);
+                .move(routeCreator.createRoute(user.getId()));
 
     }
 

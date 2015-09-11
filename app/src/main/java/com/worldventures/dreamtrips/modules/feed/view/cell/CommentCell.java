@@ -11,10 +11,11 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,9 +54,11 @@ public class CommentCell extends AbstractCell<Comment> {
     ImageView edited;
 
     @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
+    SessionHolder<UserSession> appSessionHolder;
     @Inject
     ActivityRouter activityRouter;
+    @Inject @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     private CommentCellHelper commentCellHelper;
 
@@ -128,7 +132,7 @@ public class CommentCell extends AbstractCell<Comment> {
         NavigationBuilder.create().with(activityRouter)
                 .data(new UserBundle(user))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(Route.AUTO_RESOLVE_PROFILE);
+                .move(routeCreator.createRoute(user.getId()));
     }
 
 }

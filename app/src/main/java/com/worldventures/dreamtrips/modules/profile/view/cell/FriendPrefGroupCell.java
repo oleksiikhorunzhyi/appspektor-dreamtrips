@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.profile.FriendGroupRelation;
+import com.worldventures.dreamtrips.modules.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 
 import butterknife.InjectView;

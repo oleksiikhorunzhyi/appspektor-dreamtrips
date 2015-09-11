@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.profile;
+package com.worldventures.dreamtrips.modules.profile.model;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;

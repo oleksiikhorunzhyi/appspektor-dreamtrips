@@ -6,9 +6,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendPreferencesPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
-import com.worldventures.dreamtrips.modules.profile.presenter.ProfileWrapperPresenter;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
-import com.worldventures.dreamtrips.modules.profile.view.activity.ProfileWrapperFragment;
 import com.worldventures.dreamtrips.modules.profile.view.cell.FriendPrefGroupCell;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
@@ -24,8 +22,6 @@ import dagger.Provides;
                 UserPresenter.class,
                 AccountFragment.class,
                 AccountPresenter.class,
-                ProfileWrapperPresenter.class,
-                ProfileWrapperFragment.class,
                 FriendPreferenceFragment.class,
                 FriendPreferencesPresenter.class,
                 FriendPrefGroupCell.class,
@@ -38,7 +34,6 @@ import dagger.Provides;
 public class ProfileModule {
 
     public static final String MY_PROFILE = Route.ACCOUNT_PROFILE.name();
-    public static final String EXTRA_USER = "user";
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideProfileComponent() {

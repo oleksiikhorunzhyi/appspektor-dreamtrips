@@ -300,4 +300,8 @@ public interface DreamTripsApi {
 
     @DELETE("/api/{uid}/likes")
     Void dislikeEntity(@Path("uid") String uid);
+
+    @GET("/api/{uid}/likes")
+    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
+
 }

@@ -72,7 +72,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
         boolean isMainActivity = getActivity() instanceof MainActivity;
         if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-            profileToolbar.setNavigationIcon(isMainActivity ? R.drawable.ic_menu_hamburger : R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            profileToolbar.setNavigationIcon(isMainActivity ? R.drawable.ic_menu_hamburger :
+                    R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             profileToolbar.setNavigationOnClickListener(view -> {
                 if (isMainActivity) {
                     ((MainActivity) getActivity()).openLeftDrawer();

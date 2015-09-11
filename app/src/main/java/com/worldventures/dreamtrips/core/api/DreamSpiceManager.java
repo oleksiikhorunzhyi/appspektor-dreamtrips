@@ -88,6 +88,28 @@ public class DreamSpiceManager extends SpiceManager {
         });
     }
 
+    public <T> void execute(final SpiceRequest<T> request, String cacheKey, long cacheExpiryDuration,
+                            SuccessListener<T> successListener, FailureListener failureListener) {
+        request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
+        super.execute(request, cacheKey, cacheExpiryDuration, new RequestListener<T>() {
+            @Override
+            public void onRequestFailure(SpiceException error) {
+                processError(error, failureListener, (loginResponse, exception) -> {
+                    if (loginResponse != null) {
+                        execute(request, successListener, failureListener);
+                    } else {
+                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                    }
+                });
+            }
+
+            @Override
+            public void onRequestSuccess(T t) {
+                successListener.onRequestSuccess(t);
+            }
+        });
+    }
+
     private void processError(SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
         if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
             final UserSession userSession = appSessionHolder.get().get();

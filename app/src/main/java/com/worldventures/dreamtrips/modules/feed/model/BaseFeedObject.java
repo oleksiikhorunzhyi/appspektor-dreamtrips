@@ -5,7 +5,6 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
-import java.io.Serializable;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -19,6 +18,7 @@ public class BaseFeedObject implements IFeedObject {
     protected int likesCount;
     protected User user;
 
+    private String firstUserLikedItem;
 
     @Override
     public String place() {
@@ -88,6 +88,16 @@ public class BaseFeedObject implements IFeedObject {
 
         return uid.equals(that.uid);
 
+    }
+
+    @Override
+    public String getFirstUserLikedItem() {
+        return firstUserLikedItem;
+    }
+
+    @Override
+    public void setFirstUserLikedItem(String firstUserLikedItem) {
+        this.firstUserLikedItem = firstUserLikedItem;
     }
 
     @Override

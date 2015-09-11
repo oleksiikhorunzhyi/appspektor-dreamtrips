@@ -66,7 +66,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
             sortedItems.add(context.getString(R.string.request_incoming));
             sortedItems.addAll(Queryable.from(items).filter(item -> item.getRelationship() == INCOMING_REQUEST).toList());
             sortedItems.add(context.getString(R.string.request_outgoing));
-            sortedItems.addAll(Queryable.from(items).filter(item -> (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECT))
+            sortedItems.addAll(Queryable.from(items).filter(item ->
+                    (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECT))
                     .toList());
             view.getAdapter().setItems(sortedItems);
         }

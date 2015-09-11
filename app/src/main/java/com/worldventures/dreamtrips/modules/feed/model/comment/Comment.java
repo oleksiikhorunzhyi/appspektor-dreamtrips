@@ -12,7 +12,7 @@ import java.util.Date;
 public class Comment implements Parcelable, Serializable {
 
     String uid;
-    long parent_id;
+    String parent_id;
     String text;
     User user;
     @SerializedName("created_at")
@@ -23,7 +23,7 @@ public class Comment implements Parcelable, Serializable {
 
     protected Comment(Parcel in) {
         uid = in.readString();
-        parent_id = in.readLong();
+        parent_id = in.readString();
         text = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
     }
@@ -76,7 +76,7 @@ public class Comment implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(uid);
-        parcel.writeLong(parent_id);
+        parcel.writeString(parent_id);
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
     }

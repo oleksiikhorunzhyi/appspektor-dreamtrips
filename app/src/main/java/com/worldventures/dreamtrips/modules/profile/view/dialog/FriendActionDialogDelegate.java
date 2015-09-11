@@ -14,24 +14,24 @@ import de.greenrobot.event.EventBus;
 
 public class FriendActionDialogDelegate {
 
-    Context c;
+    Context context;
     EventBus eventBus;
 
-    public FriendActionDialogDelegate(Context c, EventBus eventBus) {
-        this.c = c;
+    public FriendActionDialogDelegate(Context context, EventBus eventBus) {
+        this.context = context;
         this.eventBus = eventBus;
     }
 
     public void showFriendDialog(User user, Drawable profileIcon) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(user.getFullName());
         if (profileIcon != null)
             builder.setIcon(profileIcon);
         builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
                 dialogInterface.dismiss());
         builder.setItems(new String[]{
-                        c.getString(R.string.social_remove_friend_title),
-                        c.getString(R.string.social_friend_preference_title)
+                        context.getString(R.string.social_remove_friend_title),
+                        context.getString(R.string.social_friend_preference_title)
                 },
                 (dialogInterface, i) -> {
                     if (i == 0) {
@@ -46,10 +46,10 @@ public class FriendActionDialogDelegate {
     }
 
     private void showConfirmationDialog(DialogInterface.OnClickListener accept) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(c);
-        builder.setTitle(c.getString(R.string.social_unfriend_confirmation_title));
-        builder.setPositiveButton(c.getString(R.string.social_unfriend_confiramation_accept), accept);
-        builder.setNegativeButton(c.getString(R.string.social_unfriend_confiramation_cancel), null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.social_unfriend_confirmation_title));
+        builder.setPositiveButton(context.getString(R.string.social_unfriend_confiramation_accept), accept);
+        builder.setNegativeButton(context.getString(R.string.social_unfriend_confiramation_cancel), null);
         builder.show();
     }
 }

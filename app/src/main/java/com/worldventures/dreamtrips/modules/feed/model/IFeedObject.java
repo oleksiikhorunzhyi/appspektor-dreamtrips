@@ -24,6 +24,10 @@ public interface IFeedObject extends Serializable{
 
     int getLikesCount();
 
+    String getFirstUserLikedItem();
+
+    void setFirstUserLikedItem(String firstUserLikedItem);
+
     boolean isLiked();
 
     void setLiked(boolean isLiked);

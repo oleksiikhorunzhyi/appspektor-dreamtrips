@@ -3,18 +3,17 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 import android.content.Context;
 import android.net.Uri;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -29,6 +28,9 @@ public class FeedItemHeaderHelper {
     TextView location;
     @InjectView(R.id.feed_header_date)
     TextView date;
+    @Optional
+    @InjectView(R.id.user_who_liked)
+    TextView usersWhoLiked;
 
     @Optional
     @InjectView(R.id.comments_count)
@@ -65,6 +67,25 @@ public class FeedItemHeaderHelper {
                     likesCount.setVisibility(View.VISIBLE);
                     likesCount.setText(context.getString(R.string.likes, feedModel.getItem().getLikesCount()));
                 } else likesCount.setVisibility(View.GONE);
+            }
+
+            if (usersWhoLiked != null) {
+                if (feedModel.getItem().getLikesCount() > 0) {
+                    usersWhoLiked.setVisibility(View.VISIBLE);
+                    Spanned text = TextUtils.isEmpty(feedModel.getItem().getFirstUserLikedItem()) ?
+                            Html.fromHtml(context.getResources()
+                                    .getQuantityString(R.plurals.users_who_liked,
+                                            feedModel.getItem().getLikesCount(),
+                                            feedModel.getItem().getLikesCount())) :
+                            Html.fromHtml(context.getResources()
+                                    .getQuantityString(R.plurals.users_who_liked_with_first,
+                                            feedModel.getItem().getLikesCount(),
+                                            feedModel.getItem().getFirstUserLikedItem(),
+                                            feedModel.getItem().getLikesCount()));
+
+                    usersWhoLiked.setText(text);
+
+                } else usersWhoLiked.setVisibility(View.GONE);
             }
 
             if (commentsCount != null) {

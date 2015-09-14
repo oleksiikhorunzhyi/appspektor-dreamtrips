@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
-
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
@@ -15,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class Photo extends BaseFeedObject implements IFullScreenObject, Parcelable {
+public class Photo extends BaseFeedObject implements IFullScreenObject {
 
     private String title;
     private Date shotAt;

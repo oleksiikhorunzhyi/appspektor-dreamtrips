@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +15,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 
@@ -27,14 +30,9 @@ import butterknife.InjectView;
 import icepick.Icicle;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
-public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListPresenter> implements TripImagesListPresenter.View {
-
-    public static final String EXTRA_POSITION = "EXTRA_POSITION";
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
-    public static final String EXTRA_FIXED_LIST = "EXTRA_FIXED_LIST";
-    public static final String EXTRA_FOREIGN = "EXTRA_FOREIGN";
-    public static final String EXTRA_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
-
+public class FullScreenPhotoWrapperFragment
+        extends BaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+        implements TripImagesListPresenter.View {
 
     @InjectView(R.id.pager)
     protected ViewPager pager;
@@ -45,17 +43,14 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
     @Icicle
     int position;
 
-
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        TripImagesListFragment.Type type = (TripImagesListFragment.Type) args.getSerializable(EXTRA_TYPE);
-        int foreignUserId = args.getInt(EXTRA_FOREIGN_USER_ID);
-        position = args.getInt(EXTRA_POSITION);
-        ArrayList<IFullScreenObject> fixedList = (ArrayList<IFullScreenObject>) args.getSerializable(EXTRA_FIXED_LIST);
+        TripImagesListFragment.Type type = getArgs().getType();
+        int foreignUserId = getArgs().getForeignUserId();
+        position = getArgs().getPosition();
+        ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
         return TripImagesListPresenter.create(type, true, fixedList, foreignUserId);
     }
-
 
     @Override
     public void afterCreateView(View rootView) {
@@ -98,11 +93,9 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
         adapter = new BaseStatePagerAdapter<FragmentItem>(getActivity().getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
-                Bundle args = new Bundle();
-                args.putSerializable(FullScreenPhotoFragment.EXTRA_TYPE, getArguments().getSerializable(EXTRA_TYPE));
-                args.putSerializable(FullScreenPhotoFragment.EXTRA_PHOTO, getPresenter().getPhoto(position));
-                args.putBoolean(EXTRA_FOREIGN, getArguments().getBoolean(EXTRA_FOREIGN));
-                fragment.setArguments(args);
+                FullScreenPhotoBundle data = new FullScreenPhotoBundle(getPresenter().getPhoto(position),
+                        getArgs().getType(), getArgs().isForeign());
+                ((BaseFragmentWithArgs) fragment).setArgs(data);
             }
 
             @Override
@@ -135,10 +128,10 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
+    public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override

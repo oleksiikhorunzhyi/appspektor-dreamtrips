@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
@@ -156,10 +158,10 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
+    public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -31,6 +32,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosV
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
@@ -317,11 +319,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
+    public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create()
                 .with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .args(args)
+                .data(data)
                 .move(Route.FULLSCREEN_PHOTO_LIST);
     }
 

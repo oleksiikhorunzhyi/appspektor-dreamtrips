@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.io.Serializable;
 
-public class TripImage implements Serializable, IFullScreenObject {
+public class TripImage implements IFullScreenObject {
 
     public static final long serialVersionUID = 128L;
 

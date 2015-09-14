@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -29,9 +29,9 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
@@ -154,14 +154,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             }
             photos.addAll(bucketItem.getPhotos());
 
-            Bundle args = new Bundle();
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, photos.indexOf(selectedPhoto));
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, photos);
+            FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                    .position(photos.indexOf(selectedPhoto))
+                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .fixedList(photos)
+                    .foreign(getBucketItemManager() instanceof ForeignBucketItemManager)
+                    .build();
 
-            args.putBoolean(FullScreenPhotoWrapperFragment.EXTRA_FOREIGN, getBucketItemManager() instanceof ForeignBucketItemManager);
-
-            view.openFullscreen(args);
+            view.openFullscreen(data);
         }
     }
 
@@ -364,6 +364,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         IBucketPhotoView getBucketPhotosView();
 
-        void openFullscreen(Bundle args);
+        void openFullscreen(FullScreenImagesBundle data);
     }
 }

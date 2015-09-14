@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.graphics.PointF;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -16,9 +15,9 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -59,15 +58,18 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         }
 
         itemView.setOnClickListener(v -> {
-            ArrayList<Photo> items = new ArrayList<>();
+            ArrayList<IFullScreenObject> items = new ArrayList<>();
             items.add(getModelObject().getItem());
-            Bundle args = new Bundle();
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, 0);
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, items);
+
+            FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                    .position(0)
+                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .fixedList(items)
+                    .build();
+
             NavigationBuilder.create()
                     .with(activityRouter)
-                    .args(args)
+                    .data(data)
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .move(Route.FULLSCREEN_PHOTO_LIST);
         });

@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetForeignPhotosQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 
 import java.util.ArrayList;
 
@@ -40,12 +39,9 @@ public class ForeignImagesPresenter extends TripImagesListPresenter {
         };
     }
 
-
     @NonNull
     @Override
-    protected Bundle getFullscreenArgs(int position) {
-        Bundle args = super.getFullscreenArgs(position);
-        args.putInt(FullScreenPhotoWrapperFragment.EXTRA_FOREIGN_USER_ID, userId);
-        return args;
+    protected FullScreenImagesBundle.Builder getFullscreenArgs(int position) {
+        return super.getFullscreenArgs(position).foreignUserId(userId);
     }
 }

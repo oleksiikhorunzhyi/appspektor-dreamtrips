@@ -128,7 +128,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         recyclerView.setEmptyView(emptyView);
         // setup drag&drop with adapter
         dragDropManager = new RecyclerViewDragDropManager();
-        dragDropManager.setInitiateOnLongPress(true); // not working :(
+        dragDropManager.setInitiateOnLongPress(true);
+        dragDropManager.setInitiateOnMove(false);
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
         adapter = new BucketItemAdapter(getActivity(), injector);
 

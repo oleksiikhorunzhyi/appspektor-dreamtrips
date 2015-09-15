@@ -239,7 +239,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     public void onEvent(BackPressedMessageEvent type){
-        super.onBackPressed();
         if (!handleComponentChange()) {
             fragmentCompass.clear();
             FragmentManager fm = getSupportFragmentManager();

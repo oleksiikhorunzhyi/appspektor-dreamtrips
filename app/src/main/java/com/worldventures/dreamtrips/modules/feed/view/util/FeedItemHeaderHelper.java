@@ -83,7 +83,15 @@ public class FeedItemHeaderHelper {
                                             feedModel.getItem().getFirstUserLikedItem(),
                                             feedModel.getItem().getLikesCount() - 1));
 
-                    usersWhoLiked.setText(text);
+                    //TODO hotfix
+                    if (feedModel.getItem().getFirstUserLikedItem() != null
+                            && feedModel.getItem().getLikesCount() == 1) {
+                        usersWhoLiked.setText(Html.fromHtml(context.getString(
+                                R.string.users_who_liked_with_first_zero,
+                                feedModel.getItem().getFirstUserLikedItem())));
+                    } else {
+                        usersWhoLiked.setText(text);
+                    }
 
                 } else usersWhoLiked.setVisibility(View.GONE);
             }

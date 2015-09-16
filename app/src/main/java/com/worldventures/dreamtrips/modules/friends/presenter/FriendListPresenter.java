@@ -71,6 +71,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
 
     @Override
     protected void userStateChanged(User user) {
+        view.finishLoading();
         users.remove(user);
         view.refreshUsers(users);
     }

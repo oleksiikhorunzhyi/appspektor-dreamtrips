@@ -22,6 +22,8 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedIte
 
     @Override
     protected void userStateChanged(User user) {
+        view.finishLoading();
+
         int index = users.indexOf(user);
         if (index != -1) {
             users.remove(index);

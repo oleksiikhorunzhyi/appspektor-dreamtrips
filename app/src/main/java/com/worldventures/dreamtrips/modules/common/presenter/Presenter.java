@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.module.qualifier.Global;
@@ -132,6 +133,12 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
     protected <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, successListener, this);
+    }
+
+    protected <T> void doRequestWithCacheKey(SpiceRequest<T> request, String cacheKey,
+                                             DreamSpiceManager.SuccessListener<T> successListener) {
+        dreamSpiceManager.execute(request, cacheKey, DurationInMillis.ALWAYS_RETURNED,
+                successListener, this);
     }
 
     protected <T> void doRequest(SpiceRequest<T> request,

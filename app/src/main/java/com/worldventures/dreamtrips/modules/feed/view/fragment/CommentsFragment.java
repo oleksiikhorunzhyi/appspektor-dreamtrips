@@ -156,6 +156,11 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     }
 
     @Override
+    public void updateHeader() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void addComment(Comment comment) {
         post.setEnabled(true);
         input.setFocusable(true);

@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
+import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 
 import javax.inject.Inject;
 
@@ -86,7 +87,7 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     }
 
     @Optional
-    @OnClick({R.id.comment_preview, R.id.comments_count})
+    @OnClick({R.id.comment_preview, R.id.comments_count, R.id.likes_count})
     void commentsCountClicked() {
         openComments(getModelObject());
     }
@@ -123,6 +124,15 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     void eventOwnerClicked() {
         User user = getModelObject().getLinks().getUsers().get(0);
         getEventBus().post(new ProfileClickedEvent(user));
+    }
+
+    @Optional
+    @OnClick(R.id.user_who_liked)
+    void onUsersLikedPressed() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(new UsersLikedEntityBundle(getModelObject().getItem().getUid()))
+                .move(Route.USERS_LIKED_CONTENT);
     }
 
     @Optional

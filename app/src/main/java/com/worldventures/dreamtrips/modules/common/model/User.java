@@ -298,7 +298,6 @@ public class User extends BaseEntity implements Parcelable {
 
     }
 
-
     public void setAvatarUploadInProgress(boolean avatarUploadInProgress) {
         this.avatarUploadInProgress = avatarUploadInProgress;
     }

@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresent
 
 import butterknife.InjectView;
 
-@Layout(R.layout.activity_friends)
+@Layout(R.layout.fragment_friends_base)
 public class FriendsMainFragment extends BaseFragment<FriendsMainPresenter>
         implements FriendsMainPresenter.View {
 

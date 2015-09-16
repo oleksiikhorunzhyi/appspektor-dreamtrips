@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
@@ -42,6 +44,20 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         loadComments();
 
         view.setComment(comment);
+
+        preloadUsersWhoLiked();
+    }
+
+    private void preloadUsersWhoLiked() {
+        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), this::onUserLoaded,
+                spiceException -> {});
+    }
+
+    private void onUserLoaded(List<User> users) {
+        if (users != null && !users.isEmpty()) {
+            feedEntity.setFirstUserLikedItem(users.get(0).getUsername());
+            view.updateHeader();
+        }
     }
 
     private void loadComments() {
@@ -133,6 +149,8 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         void setLoading(boolean loading);
 
         void setHeader(BaseEventModel header);
+
+        void updateHeader();
 
         void editComment(EditCommentPresenter presenter);
 

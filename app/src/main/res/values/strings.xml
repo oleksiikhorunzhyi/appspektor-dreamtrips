@@ -378,4 +378,20 @@
     <string name="configuration_acitve_button">Try again</string>
     <string name="configuration_failed">Configuration loading failed</string>
 
+    <plurals name="users_who_liked">
+        <item quantity="one">&lt;b>%d User&lt;/b> like this</item>
+        <item quantity="other">&lt;b>%d Users&lt;/b> like this</item>
+    </plurals>
+
+    <plurals name="users_who_liked_with_first">
+        <item quantity="one">@string/users_who_liked_with_first_single</item>
+        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
+    </plurals>
+
+    <string name="users_who_liked_with_first_single"  formatted="false">&lt;b>%s and %d User&lt;/b> like this</string>
+    <string name="users_who_liked_with_first_multiple"  formatted="false">>&lt;b>%s and %d Users&lt;/b> like this</string>
+
+    <string name="users_who_liked_title">People who liked</string>
+    <string name="users_who_liked_empty">Nobody has liked this item</string>
+
 </resources>

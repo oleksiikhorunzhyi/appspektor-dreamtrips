@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -9,7 +8,6 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -119,9 +117,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         this.appSessionHolder.destroy();
         snappyRepository.clearAll();
         activityRouter.finish();
-        NavigationBuilder.create().with(activityRouter)
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false)
-                        .build()).move(Route.LOGIN);
     }
 
     @Override

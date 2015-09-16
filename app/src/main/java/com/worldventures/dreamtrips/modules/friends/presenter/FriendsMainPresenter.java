@@ -26,13 +26,4 @@ public class FriendsMainPresenter extends Presenter<FriendsMainPresenter.View> {
     public interface View extends Presenter.View {
         void setRecentItems(int count);
     }
-
-    public void onEvent(UserClickedEvent event) {
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(event.getUser()))
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(event.getUser().getId()));
-
-    }
-
 }

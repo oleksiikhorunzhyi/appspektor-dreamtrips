@@ -49,7 +49,7 @@ public class UserSearchCell extends AbstractCell<User> {
 
     @OnClick(R.id.add)
     void onAccept() {
-        getEventBus().post(new AddUserRequestEvent(getModelObject(), getAdapterPosition()));
+        getEventBus().post(new AddUserRequestEvent(getModelObject()));
     }
 
     @Override

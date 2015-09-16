@@ -55,8 +55,8 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     private void onUserLoaded(List<User> users) {
         if (users != null && !users.isEmpty()) {
-            feedEntity.setFirstUserLikedItem(users.get(0).getUsername());
-            view.updateHeader();
+            feedModel.getItem().setFirstUserLikedItem(users.get(0).getFullName());
+            view.updateHeader(feedModel);
         }
     }
 
@@ -150,7 +150,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         void setHeader(BaseEventModel header);
 
-        void updateHeader();
+        void updateHeader(BaseEventModel eventModel);
 
         void editComment(EditCommentPresenter presenter);
 

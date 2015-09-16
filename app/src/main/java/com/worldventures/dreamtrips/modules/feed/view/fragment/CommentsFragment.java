@@ -156,7 +156,8 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
     }
 
     @Override
-    public void updateHeader() {
+    public void updateHeader(BaseEventModel baseEventModel) {
+        adapter.replaceItem(0, baseEventModel);
         adapter.notifyDataSetChanged();
     }
 

@@ -117,7 +117,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
             if (photoUploadTask.equals(imagesAdapter.getItem(i))) {
                 imagesAdapter.replaceItem(i, bucketPhoto);
-                imagesAdapter.notifyDataSetChanged();
+                imagesAdapter.notifyItemChanged(i);
                 break;
             }
         }

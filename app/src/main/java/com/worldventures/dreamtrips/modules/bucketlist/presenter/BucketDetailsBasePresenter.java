@@ -57,8 +57,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     protected String bucketItemId;
     protected BucketItem bucketItem;
 
-    List<UploadTask> tasks;
-
     public BucketDetailsBasePresenter(BucketBundle bundle) {
         super();
         type = bundle.getType();
@@ -72,18 +70,19 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
         restoreBucketItem();
 
-        tasks = db.getUploadTasksForId(bucketItemId);
-        Collections.reverse(tasks);
+        List<UploadTask> tasks = db.getUploadTasksForId(bucketItemId);
 
-        if (tasks != null)
+        if (!tasks.isEmpty()) {
+            Collections.reverse(tasks);
             Queryable.from(tasks).forEachR(task -> {
                 TransferObserver transferObserver = photoUploadingSpiceManager
                         .getTransferById(task.getAmazonTaskId());
                 transferObserver.setTransferListener(this);
                 onStateChanged(transferObserver.getId(), transferObserver.getState());
             });
+        }
 
-        syncUI();
+        syncUI(tasks);
 
         ImagePickedEvent event = eventBus.getStickyEvent(ImagePickedEvent.class);
         if (event != null) onEvent(event);
@@ -100,6 +99,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     protected void syncUI() {
+        syncUI(db.getUploadTasksForId(bucketItemId));
+    }
+
+    protected void syncUI(List<UploadTask> tasks) {
         if (bucketItem != null) {
             view.setTitle(bucketItem.getName());
             view.setDescription(bucketItem.getDescription());
@@ -113,7 +116,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                 view.getBucketPhotosView().setImages(photos);
             }
 
-            view.getBucketPhotosView().addImages(tasks);
+            if (!tasks.isEmpty()) view.getBucketPhotosView().addImages(tasks);
         }
     }
 
@@ -225,15 +228,16 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
                     .getBucketPhotoUploadTask(String.valueOf(id));
             if (bucketPhotoUploadTask != null) {
-                if (state.equals(TransferState.COMPLETED)) {
+                if (state.equals(TransferState.COMPLETED)
+                        && !bucketPhotoUploadTask.getStatus().equals(UploadTask.Status.COMPLETED)) {
                     bucketPhotoUploadTask.setOriginUrl(photoUploadingSpiceManager
                             .getResultUrl(bucketPhotoUploadTask));
                     bucketPhotoUploadTask.setStatus(UploadTask.Status.COMPLETED);
                     addPhotoToBucketItem(bucketPhotoUploadTask);
-                } else if (state.equals(TransferState.FAILED)) {
+                } else if (state.equals(TransferState.FAILED)
+                        && !bucketPhotoUploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
                     photoUploadError(bucketPhotoUploadTask);
                 }
-
             }
         }
     }
@@ -291,6 +295,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(ImagePickedEvent event) {
+        eventBus.cancelEventDelivery(event);
         imagePicked(event);
     }
 

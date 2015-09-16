@@ -79,7 +79,7 @@ public class FeedItemHeaderHelper {
                                             feedModel.getItem().getLikesCount())) :
                             Html.fromHtml(context.getResources()
                                     .getQuantityString(R.plurals.users_who_liked_with_first,
-                                            feedModel.getItem().getLikesCount(),
+                                            feedModel.getItem().getLikesCount() - 1,
                                             feedModel.getItem().getFirstUserLikedItem(),
                                             feedModel.getItem().getLikesCount() - 1));
 

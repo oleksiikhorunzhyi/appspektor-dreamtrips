@@ -17,7 +17,9 @@ import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
+import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,10 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                     view.finishLoading();
                     handleError(exception);
                 });
+    }
+
+    public void onEvent(UserClickedEvent event) {
+        view.openUser(new UserBundle(event.getUser()));
     }
 
     private void addItems(List<User> items) {
@@ -128,6 +134,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
     public interface View extends Presenter.View {
         void startLoading();
+
+        void openUser(UserBundle userBundle);
 
         void finishLoading();
 

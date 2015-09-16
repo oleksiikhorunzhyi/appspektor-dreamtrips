@@ -6,11 +6,9 @@
     android:background="@android:color/black"
     android:keepScreenOn="true">
 
-    <tv.danmaku.ijk.media.widget.VideoView
+    <tv.danmaku.ijk.media.widget.media.IjkVideoView
         android:id="@+id/myVideo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_gravity="center"/>
 </RelativeLayout>

@@ -22,6 +22,8 @@
 
             <include layout="@layout/adapter_item_feed_trip_child"/>
 
+            <include layout="@layout/adapter_item_feed_comment_footer"/>
+
             <include layout="@layout/include_user_liked"/>
 
         </LinearLayout>

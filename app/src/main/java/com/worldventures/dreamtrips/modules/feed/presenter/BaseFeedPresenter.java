@@ -12,9 +12,14 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
+import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditPostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
@@ -42,7 +47,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Icicle
     protected ArrayList<BaseEventModel> feedItems;
 
-    @Inject @Named(RouteCreatorModule.PROFILE)
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
     @Override
@@ -131,7 +137,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     /////////////////////////////////////
-    ////// Items changed event
+    ////// Items changed events
     /////////////////////////////////////
 
     public void onEvent(EntityChangedEvent event) {
@@ -144,8 +150,17 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         view.refreshFeedItems(feedItems);
     }
 
+    public void onEvent(FeedEntityDeletedEvent event) {
+        feedItems.remove(event.getEventModel());
+        view.refreshFeedItems(feedItems);
+    }
+
     public void onEvent(FeedItemAddedEvent event) {
-        feedItems.add(0, event.getBaseEventModel());
+
+        if (feedItems.contains(event.getBaseEventModel()))
+            feedItems.set(feedItems.indexOf(event.getBaseEventModel()), event.getBaseEventModel());
+        else
+            feedItems.add(0, event.getBaseEventModel());
 
         view.refreshFeedItems(feedItems);
     }
@@ -166,11 +181,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(LikesPressedEvent event) {
-        BaseEventModel model = event.getModel();
-        DreamTripsRequest command = model.getItem().isLiked() ?
-                new UnlikeEntityCommand(model.getItem().getUid()) :
-                new LikeEntityCommand(model.getItem().getUid());
-        doRequest(command, element -> itemLiked(model.getItem().getUid()));
+        if (view.isVisibleOnScreen()) {
+            BaseEventModel model = event.getModel();
+            DreamTripsRequest command = model.getItem().isLiked() ?
+                    new UnlikeEntityCommand(model.getItem().getUid()) :
+                    new LikeEntityCommand(model.getItem().getUid());
+            doRequest(command, element -> itemLiked(model.getItem().getUid()));
+        }
     }
 
     private void itemLiked(String uid) {
@@ -188,12 +205,29 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         view.refreshFeedItems(feedItems);
     }
 
+    public void onEvent(DeletePostEvent event) {
+        if (view.isVisibleOnScreen())
+            doRequest(new DeletePostCommand(event.getEntity().getItem().getUid()),
+                    aVoid -> itemDeleted(event.getEntity()));
+    }
+
+    private void itemDeleted(BaseEventModel eventModel) {
+        feedItems.remove(eventModel);
+        view.refreshFeedItems(feedItems);
+    }
+
+    public void onEvent(EditPostEvent event) {
+        view.editPost(new PostBundle(event.getTextualPost()));
+    }
+
     public interface View extends Presenter.View {
         void startLoading();
 
         void finishLoading();
 
         void refreshFeedItems(List<BaseEventModel> events);
+
+        void editPost(PostBundle postBundle);
     }
 
 }

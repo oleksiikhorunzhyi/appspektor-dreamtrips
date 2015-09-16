@@ -16,8 +16,11 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
@@ -40,6 +43,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -235,4 +239,25 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         loadMore.setLoading(loading);
         adapter.notifyItemChanged(1);
     }
+
+    @Override
+    public void editPost(PostBundle postBundle) {
+        if (isVisibleOnScreen()) {
+            showPostContainer();
+            fragmentCompass.removePost();
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setContainerId(R.id.container_details_floating);
+            //
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .data(postBundle)
+                    .attach(Route.POST_CREATE);
+        }
+    }
+
+    protected void showPostContainer() {
+        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
+        if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
 }

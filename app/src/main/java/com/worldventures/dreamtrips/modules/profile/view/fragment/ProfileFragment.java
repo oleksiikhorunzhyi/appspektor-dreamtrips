@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
@@ -154,11 +153,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     @Override
     public void notifyUserChanged() {
         feedView.getAdapter().notifyDataSetChanged();
-    }
-
-    private void showPostContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
     }
 
 }

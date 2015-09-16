@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetBucketItemsQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
 import java.util.List;
+
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 
 public class ForeignBucketItemManager extends BucketItemManager {
 
@@ -20,12 +21,13 @@ public class ForeignBucketItemManager extends BucketItemManager {
         return new GetBucketItemsQuery(userId);
     }
 
-    protected List<BucketItem> readBucketItems(BucketTabsPresenter.BucketType type) {
+    @Override
+    protected List<BucketItem> readBucketItems(BucketType type) {
         return snapper.readBucketList(type.name(), userId);
     }
 
 
-    protected void doLocalSave(List<BucketItem> bucketItems, BucketTabsPresenter.BucketType type) {
+    protected void doLocalSave(List<BucketItem> bucketItems, BucketType type) {
         snapper.deleteAllForeignBucketList();
         snapper.saveBucketList(bucketItems, type.name(), userId);
     }

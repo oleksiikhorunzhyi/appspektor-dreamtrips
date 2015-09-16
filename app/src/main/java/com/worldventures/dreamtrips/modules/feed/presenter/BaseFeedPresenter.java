@@ -84,7 +84,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     protected abstract DreamTripsRequest<ArrayList<ParentFeedModel>> getRefreshFeedRequest(Date date);
 
-    private void refreshFeed() {
+    protected void refreshFeed() {
         view.startLoading();
         doRequest(getRefreshFeedRequest(Calendar.getInstance().getTime()),
                 this::refreshFeedSucceed, this::refreshFeedError);
@@ -95,7 +95,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         view.finishLoading();
     }
 
-    private void refreshFeedSucceed(List<ParentFeedModel> freshItems) {
+    protected void refreshFeedSucceed(List<ParentFeedModel> freshItems) {
         loading = false;
         view.finishLoading();
         feedItems.clear();
@@ -130,7 +130,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         }
     }
 
-    private void addFeedItems(List<ParentFeedModel> olderItems) {
+    protected void addFeedItems(List<ParentFeedModel> olderItems) {
         loading = false;
         feedItems.addAll(Queryable.from(olderItems)
                 .filter(ParentFeedModel::isSingle)

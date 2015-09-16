@@ -20,6 +20,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
@@ -59,7 +60,7 @@ public class BucketListPopularFragment extends BaseFragment<BucketPopularPresent
 
     @Override
     protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
-        BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments()
+        BucketItem.BucketType type = (BucketItem.BucketType) getArguments()
                 .getSerializable(BucketPopularTabsPresenter.EXTRA_TYPE);
         return new BucketPopularPresenter(type);
     }

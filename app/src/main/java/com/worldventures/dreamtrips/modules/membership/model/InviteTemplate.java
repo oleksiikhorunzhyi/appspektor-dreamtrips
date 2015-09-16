@@ -5,11 +5,11 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 
 import java.util.ArrayList;
 
-public class InviteTemplate extends BaseEntity implements Parcelable, HeaderAdapter.HeaderItem {
+public class InviteTemplate extends BaseEntity implements Parcelable, SuccessStoryHeaderAdapter.HeaderItem {
 
     private String title;
     private CoverImage coverImage;

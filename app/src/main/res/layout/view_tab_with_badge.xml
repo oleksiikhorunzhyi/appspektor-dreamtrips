@@ -21,23 +21,16 @@
             android:textAllCaps="true"
             android:textColor="@color/tab_text_color"/>
 
-        <TextView
+        <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
             android:id="@+id/psts_tab_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/psts_tab_title"
-            android:layout_marginLeft="-2dp"
+            android:layout_marginLeft="-4dp"
             android:layout_marginTop="-8dp"
+            android:layout_alignTop="@+id/psts_tab_title"
             android:layout_toRightOf="@+id/psts_tab_title"
-            android:background="@drawable/circle_red"
-            android:gravity="center"
-            android:minWidth="15dp"
-            android:paddingBottom="1dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:paddingTop="1dp"
             android:textColor="@android:color/white"
-            android:textSize="11sp"
+            android:textSize="@dimen/font_small"
             tools:text="35"/>
     </RelativeLayout>
 

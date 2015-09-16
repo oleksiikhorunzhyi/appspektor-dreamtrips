@@ -1,18 +1,18 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
 public class EditBucketEvent {
 
     private String uid;
-    private BucketTabsPresenter.BucketType type;
+    private BucketItem.BucketType type;
 
-    public EditBucketEvent(String uid, BucketTabsPresenter.BucketType type) {
+    public EditBucketEvent(String uid, BucketItem.BucketType type) {
         this.uid = uid;
         this.type = type;
     }
 
-    public BucketTabsPresenter.BucketType getType() {
+    public BucketItem.BucketType getType() {
         return type;
     }
 

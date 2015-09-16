@@ -12,10 +12,12 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
@@ -30,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.InjectView;
 
@@ -70,6 +73,9 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @Inject
     ForeignBucketItemManager foreignBucketItemManager;
 
+    @Inject
+    @Named(RouteCreatorModule.BUCKET_DETAILS)
+    RouteCreator<Integer> routeCreator;
 
     public FeedBucketEventCell(View view) {
         super(view);
@@ -132,23 +138,18 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
 
         itemView.setOnClickListener(v -> {
 
-            BucketTabsPresenter.BucketType bucketType = getType(getModelObject().getItem().getType());
-
+            BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
             BucketBundle bundle = new BucketBundle();
             bundle.setType(bucketType);
             bundle.setBucketItemId(getModelObject().getItem().getUid());
-
+            bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
             User user = getModelObject().getItem().getUser();
-            Route route;
-
-            if (appSessionHolder.get().get().getUser().equals(user)) {
+            Route route = routeCreator.createRoute(user.getId());
+            if(route==Route.DETAIL_BUCKET){
                 bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
-                route = Route.DETAIL_BUCKET;
-            } else {
+            }else{
                 foreignBucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
-                route = Route.DETAIL_FOREIGN_BUCKET;
             }
-
             NavigationBuilder.create()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .data(bundle)
@@ -179,13 +180,13 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
 
     @Override
     protected void onEdit() {
-        BucketTabsPresenter.BucketType bucketType = getType(getModelObject().getItem().getType());
+        BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
         bucketItemManager.saveSingleBucketItem(getModelObject().getItem(), bucketType);
 
         getEventBus().post(new EditBucketEvent(getModelObject().getItem().getUid(), bucketType));
     }
 
-    private BucketTabsPresenter.BucketType getType(String name) {
-        return BucketTabsPresenter.BucketType.valueOf(name.toUpperCase());
+    private BucketItem.BucketType getType(String name) {
+        return BucketItem.BucketType.valueOf(name.toUpperCase());
     }
 }

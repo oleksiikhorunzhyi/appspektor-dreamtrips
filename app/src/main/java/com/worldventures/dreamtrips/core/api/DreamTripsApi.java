@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.video.model.Category;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit.http.Body;
@@ -314,4 +315,9 @@ public interface DreamTripsApi {
     @GET("/api/{uid}/likes")
     ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
 
+    @GET("/api/social/notifications")
+    ArrayList<ParentFeedModel> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
+
+    @PUT("/api/social/notifications")
+    Void markAsRead(@Query("before") String before, @Query("since") String since);
 }

@@ -19,10 +19,12 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbum
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendSearchFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
+import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
@@ -90,8 +92,10 @@ public enum Route {
     PHOTO_EDIT(PhotoEditFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
+    FRIEND_REQUESTS(RequestsFragment.class, R.string.social_requests),
     FRIEND_PREFERENCES(FriendPreferenceFragment.class, R.string.friend_pref_lists_header),
     FEED(FeedFragment.class, R.string.feed_title),
+    NOTIFICATIONS(NotificationFragment.class, R.string.notifications_title),
     SHARE(ShareFragment.class, R.string.feed_title),
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty);

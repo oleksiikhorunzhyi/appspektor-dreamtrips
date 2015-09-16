@@ -28,6 +28,7 @@
     <dimen name="font_normal">16sp</dimen>
     <dimen name="font_medium">14sp</dimen>
     <dimen name="font_small">12sp</dimen>
+    <dimen name="font_tiny">8sp</dimen>
 
     <!-- dimen for trip items -->
     <dimen name="tripImageHeight">180dp</dimen>
@@ -48,6 +49,8 @@
 
     <dimen name="bucket_detail_cover_size">250dp</dimen>
 
+    <dimen name="bucket_cover_thumb_w">48dp</dimen>
+    <dimen name="bucket_cover_thumb_h">48dp</dimen>
     <dimen name="bucket_popular_photo_width">256dp</dimen>
     <dimen name="bucket_popular_cover_width">512dp</dimen>
 

@@ -377,6 +377,7 @@
     <string name="user_name_with_company" formatted="false">&lt;b>%s&lt;/b>, %s</string>
     <string name="configuration_acitve_button">Try again</string>
     <string name="configuration_failed">Configuration loading failed</string>
+    <string name="email_app_choose_dialog_title">Choose Application</string>
 
     <plurals name="users_who_liked">
         <item quantity="one">&lt;b>%d User&lt;/b> like this</item>

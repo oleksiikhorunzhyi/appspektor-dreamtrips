@@ -66,4 +66,11 @@
         <item name="textAllCaps">true</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <style name="UserStatusTextAppearance" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:shadowColor">@color/user_status_text_shadow</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
 </resources>

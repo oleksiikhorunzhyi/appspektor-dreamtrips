@@ -35,6 +35,8 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        profileToolbarTitle.setVisibility(View.INVISIBLE);
+        profileToolbarUserStatus.setVisibility(View.INVISIBLE);
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {

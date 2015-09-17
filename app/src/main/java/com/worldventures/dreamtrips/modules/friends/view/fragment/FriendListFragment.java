@@ -112,4 +112,8 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
         return new FriendListPresenter();
     }
 
+    @Override
+    public void resetSearch() {
+        search.setQuery("", true);
+    }
 }

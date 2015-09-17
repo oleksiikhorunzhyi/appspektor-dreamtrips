@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TextualPostChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
@@ -156,11 +157,16 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(FeedItemAddedEvent event) {
+        feedItems.add(0, event.getBaseEventModel());
+        view.refreshFeedItems(feedItems);
+    }
 
-        if (feedItems.contains(event.getBaseEventModel()))
-            feedItems.set(feedItems.indexOf(event.getBaseEventModel()), event.getBaseEventModel());
-        else
-            feedItems.add(0, event.getBaseEventModel());
+    public void onEvent(TextualPostChangedEvent event) {
+        Queryable.from(feedItems).forEachR(item -> {
+            if (item.getItem().equals(event.getTextualPost())) {
+                item.setItem(event.getTextualPost());
+            }
+        });
 
         view.refreshFeedItems(feedItems);
     }

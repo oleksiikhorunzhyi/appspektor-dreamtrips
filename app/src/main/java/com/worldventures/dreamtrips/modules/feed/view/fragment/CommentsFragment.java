@@ -122,6 +122,15 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         if (getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false)) {
             SoftInputUtil.showSoftInputMethod(input);
         }
+        restorePostIfNeeded();
+    }
+
+    private void restorePostIfNeeded() {
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        if (baseFragment instanceof PostFragment) {
+            showPostContainer();
+        }
     }
 
     @Override

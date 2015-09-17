@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.event.EntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TextualPostChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -148,6 +149,14 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     public void onEvent(EntityChangedEvent event) {
         if (event.getEntity().equals(feedEntity)) {
             feedModel.setItem(event.getEntity());
+            feedEntity = feedModel.getItem();
+            view.updateHeader(feedModel);
+        }
+    }
+
+    public void onEvent(TextualPostChangedEvent event) {
+        if (event.getTextualPost().equals(feedEntity)) {
+            feedModel.setItem(event.getTextualPost());
             feedEntity = feedModel.getItem();
             view.updateHeader(feedModel);
         }

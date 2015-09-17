@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -45,12 +46,23 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     @InjectView(R.id.profile_user_status)
     protected TextView profileToolbarUserStatus;
 
-    private int screenHeight;
+    private int scrollArea;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        screenHeight = ViewUtils.getScreenHeight(getActivity());
+        calculateScrollArea();
+    }
+
+    private void calculateScrollArea(){
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 0;
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+        int profilePhotoHeight = getResources().getDimensionPixelSize(R.dimen.profile_cover_height);
+        scrollArea = profilePhotoHeight - actionBarHeight;
     }
 
     @Override
@@ -60,7 +72,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         feedView.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);
-            if (percent >= 0.6) {
+            if (percent >= 1.0) {
                 profileToolbarTitle.setVisibility(View.VISIBLE);
                 profileToolbarUserStatus.setVisibility(View.VISIBLE);
             } else {
@@ -115,7 +127,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     }
 
     private float calculateOffset() {
-        return Math.min(feedView.getScrollOffset() / (float) screenHeight, 1);
+        return Math.min(feedView.getScrollOffset() / (float) scrollArea, 1);
     }
 
     private void setToolbarAlpha(float percentage) {

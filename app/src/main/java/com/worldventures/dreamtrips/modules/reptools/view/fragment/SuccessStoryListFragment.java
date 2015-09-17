@@ -40,6 +40,8 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_success_stories)
 public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoryListPresenter.View {
 
+    private static final String EXTRA_IS_SEARCH_ICONIFIED = "extra_is_search_iconified";
+
     @InjectView(R.id.recyclerViewStories)
     protected EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
@@ -88,6 +90,20 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
             return false;
         });
         popupMenu.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (outState == null) return;
+        outState.putBoolean(EXTRA_IS_SEARCH_ICONIFIED, search.isIconified());
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) return;
+        search.setIconified(savedInstanceState.getBoolean(EXTRA_IS_SEARCH_ICONIFIED, true));
     }
 
     @Override

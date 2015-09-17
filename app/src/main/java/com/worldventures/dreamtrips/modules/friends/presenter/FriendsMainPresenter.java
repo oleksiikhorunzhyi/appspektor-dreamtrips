@@ -15,10 +15,6 @@ import javax.inject.Named;
 
 public class FriendsMainPresenter extends Presenter<FriendsMainPresenter.View> {
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
-
     public void onEvent(RequestsLoadedEvent event) {
         view.setRecentItems(event.getCount());
     }
@@ -26,4 +22,5 @@ public class FriendsMainPresenter extends Presenter<FriendsMainPresenter.View> {
     public interface View extends Presenter.View {
         void setRecentItems(int count);
     }
+
 }

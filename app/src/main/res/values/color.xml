@@ -37,4 +37,6 @@
     <color name="load_more_color">#e5eff4</color>
 
     <color name="white_semi_transparent">#CCffffff</color>
+
+    <color name="user_status_text_shadow">#AA000000</color>
 </resources>

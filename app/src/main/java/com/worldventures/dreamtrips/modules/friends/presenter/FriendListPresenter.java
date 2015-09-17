@@ -4,11 +4,14 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.events.QueryStickyEvent;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
+import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
@@ -60,7 +63,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
     }
 
     public void globalSearch() {
-        eventBus.postSticky(new QueryStickyEvent(query));
+        view.resetSearch();
     }
 
     public void reloadWithFilter(int position) {
@@ -100,6 +103,8 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
         void showFilters(List<Circle> circles, int selectedPosition);
 
         void openFriendPrefs(UserBundle userBundle);
-   }
+
+        void resetSearch();
+    }
 
 }

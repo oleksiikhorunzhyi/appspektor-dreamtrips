@@ -1,9 +1,14 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
@@ -11,20 +16,21 @@ import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
+import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditPostEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
-import com.worldventures.dreamtrips.modules.feed.event.TextualPostChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +104,11 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         feedEntity.setLikesCount(currentCount);
 
         view.updateHeader(feedModel);
-        eventBus.post(new EntityChangedEvent(feedEntity));
+        eventBus.post(new FeedEntityChangedEvent(feedEntity));
+
+        if (feedEntity.getLikesCount() == 1 && feedEntity.isLiked()) {
+            preloadUsersWhoLiked();
+        }
     }
 
     public void post() {
@@ -117,7 +127,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
             view.removeComment(event.getComment());
             feedEntity.getComments().remove(event.getComment());
             feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
-            eventBus.post(new EntityChangedEvent(feedEntity));
+            eventBus.post(new FeedEntityChangedEvent(feedEntity));
         });
     }
 
@@ -130,33 +140,55 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     public void onEvent(CommentChangedEvent event) {
         view.updateComment(event.getComment());
         feedEntity.getComments().set(feedEntity.getComments().indexOf(event.getComment()), event.getComment());
-        eventBus.post(new EntityChangedEvent(feedEntity));
+        eventBus.post(new FeedEntityChangedEvent(feedEntity));
 
+    }
+
+    public void onEvent(EditBucketEvent event) {
+        BucketBundle bundle = new BucketBundle();
+        bundle.setType(event.getType());
+        bundle.setBucketItemId(event.getUid());
+
+        fragmentCompass.removeEdit();
+        if (view.isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setContainerId(R.id.container_details_floating);
+            fragmentCompass.showContainer();
+            NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);
+        } else {
+            bundle.setLock(true);
+            NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
+        }
     }
 
     public void onEvent(DeletePostEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePostCommand(event.getEntity().getItem().getUid()), aVoid -> {
-                eventBus.post(new FeedEntityDeletedEvent(event.getEntity()));
-                fragmentCompass.pop();
-            });
+            doRequest(new DeletePostCommand(event.getEntity().getItem().getUid()),
+                    aVoid -> itemDeleted(event.getEntity()));
     }
 
-    public void onEvent(EditPostEvent event) {
-        view.editPost(new PostBundle(event.getTextualPost()));
+    public void onEvent(DeletePhotoEvent event) {
+        if (view.isVisibleOnScreen())
+            doRequest(new DeletePhotoCommand(event.getEntity().getItem().getUid()),
+                    aVoid -> itemDeleted(event.getEntity()));
     }
 
-    public void onEvent(EntityChangedEvent event) {
-        if (event.getEntity().equals(feedEntity)) {
-            feedModel.setItem(event.getEntity());
-            feedEntity = feedModel.getItem();
-            view.updateHeader(feedModel);
-        }
+    public void onEvent(DeleteBucketEvent event) {
+        if (view.isVisibleOnScreen())
+            doRequest(new DeleteBucketItemCommand(event.getEventModel().getItem().getUid()),
+                    aVoid -> itemDeleted(event.getEventModel()));
+
     }
 
-    public void onEvent(TextualPostChangedEvent event) {
-        if (event.getTextualPost().equals(feedEntity)) {
-            feedModel.setItem(event.getTextualPost());
+    private void itemDeleted(BaseEventModel model) {
+        eventBus.post(new FeedEntityDeletedEvent(model));
+        fragmentCompass.pop();
+    }
+
+
+    public void onEvent(FeedEntityChangedEvent event) {
+        if (event.getFeedEntity().equals(feedEntity)) {
+            feedModel.setItem(event.getFeedEntity());
             feedEntity = feedModel.getItem();
             view.updateHeader(feedModel);
         }
@@ -166,7 +198,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         view.addComment(comment);
         feedEntity.getComments().add(0, comment);
         feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
-        eventBus.post(new EntityChangedEvent(feedEntity));
+        eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 
     private void onCommentsLoaded(ArrayList<Comment> comments) {
@@ -211,7 +243,5 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         void hideViewMore();
 
         void onPostError();
-
-        void editPost(PostBundle postBundle);
     }
 }

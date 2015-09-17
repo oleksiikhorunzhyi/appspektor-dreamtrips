@@ -2,14 +2,15 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
+import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -72,6 +73,10 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         return photo.isLiked();
     }
 
+    @Override
+    public void onEdit() {
+        view.openEdit(new EditPhotoBundle(photo));
+    }
 
     @Override
     protected boolean isFlagVisible() {
@@ -80,6 +85,11 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     protected boolean isDeleteVisible() {
+        return false;
+    }
+
+    @Override
+    protected boolean isMoreVisible() {
         return photo.getUser() != null && getAccount().getId() == photo.getUser().getId();
     }
 

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -93,6 +94,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     public void post() {
         if (cachedPostEntity.getUploadTask() != null && UploadTask.Status.COMPLETED.equals(cachedPostEntity.getUploadTask().getStatus())) {
             cachedPostEntity.getUploadTask().setTitle(cachedPostEntity.getText());
+            cachedPostEntity.getUploadTask().setShotAt(Calendar.getInstance().getTime());
+
             doRequest(new AddTripPhotoCommand(cachedPostEntity.getUploadTask()), this::processPost, spiceException -> {
                 PostPresenter.super.handleError(spiceException);
                 view.onPostError();

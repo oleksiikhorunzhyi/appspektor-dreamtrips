@@ -42,6 +42,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragm
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
 
@@ -86,6 +87,7 @@ public enum Route {
     PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
     COMMENTS(CommentsFragment.class, R.string.comments_title),
     POST_CREATE(PostFragment.class),
+    PHOTO_EDIT(PhotoEditFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
     FRIEND_PREFERENCES(FriendPreferenceFragment.class, R.string.friend_pref_lists_header),

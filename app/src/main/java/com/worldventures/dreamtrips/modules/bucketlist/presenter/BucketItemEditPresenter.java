@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -55,6 +56,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setDate(selectedDate);
         getBucketItemManager().updateBucketItem(bucketPostItem, item -> {
             if (savingItem) {
+                eventBus.post(new FeedEntityChangedEvent((item)));
                 savingItem = false;
                 view.done();
             }

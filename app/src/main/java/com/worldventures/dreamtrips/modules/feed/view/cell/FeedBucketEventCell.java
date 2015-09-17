@@ -24,6 +24,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPrese
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 
@@ -161,6 +163,24 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @Override
     public void prepareForReuse() {
 
+    }
+
+    @Override
+    protected void onMore() {
+        showMoreDialog(R.menu.menu_bucket_edit, R.string.bucket_delete, R.string.bucket_delete_caption);
+    }
+
+    @Override
+    protected void onDelete() {
+        getEventBus().post(new DeleteBucketEvent(getModelObject()));
+    }
+
+    @Override
+    protected void onEdit() {
+        BucketTabsPresenter.BucketType bucketType = getType(getModelObject().getItem().getType());
+        bucketItemManager.saveSingleBucketItem(getModelObject().getItem(), bucketType);
+
+        getEventBus().post(new EditBucketEvent(getModelObject().getItem().getUid(), bucketType));
     }
 
     private BucketTabsPresenter.BucketType getType(String name) {

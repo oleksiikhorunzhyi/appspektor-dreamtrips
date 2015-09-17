@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -66,4 +68,16 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
     protected ComponentPresenter createPresentationModel(Bundle savedInstanceState) {
         return new ComponentPresenter(extras);
     }
+
+    public void onEvent(BackPressedMessageEvent type) {
+        if (isVisibleOnScreen() && !handleComponentChange()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        eventBus.post(new BackPressedMessageEvent());
+    }
+
 }

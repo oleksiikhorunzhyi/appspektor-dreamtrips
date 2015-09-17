@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
@@ -51,6 +52,7 @@ import dagger.Provides;
                 BaseCommentPresenter.class,
                 PostPresenter.class,
                 PostFragment.class,
+                PostEditPresenter.class,
 
                 DiffArrayListAdapter.class,
         },

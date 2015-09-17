@@ -17,8 +17,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
+import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -29,7 +31,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.layout_post)
-public class PostFragment extends BaseFragment<PostPresenter> implements PostPresenter.View {
+public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle> implements PostPresenter.View {
 
     @InjectView(R.id.avatar)
     SimpleDraweeView avatar;
@@ -54,15 +56,15 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
 
     SweetAlertDialog dialog;
 
+    private boolean cancel = false;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (eventBus.isRegistered(this)) {
-            eventBus.unregister(this);
-            eventBus.register(this, 1);
+    private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
+        @Override
+        public void onTextChanged(CharSequence constraint, int start, int before, int count) {
+            super.onTextChanged(constraint, start, before, count);
+            getPresenter().postInputChanged(constraint.toString().trim());
         }
-    }
+    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -81,21 +83,23 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
+        post.addTextChangedListener(textWatcher);
+    }
 
-        post.addTextChangedListener(new TextWatcherAdapter() {
-            @Override
-            public void onTextChanged(CharSequence constraint, int start, int before, int count) {
-                super.onTextChanged(constraint, start, before, count);
-                getPresenter().postInputChanged(constraint.toString().trim());
-            }
-        });
+    @Override
+    public void onPause() {
+        super.onPause();
+        post.removeTextChangedListener(textWatcher);
     }
 
     @Override
     protected PostPresenter createPresenter(Bundle savedInstanceState) {
-        return new PostPresenter();
+        if (getArgs() != null)
+            return new PostEditPresenter(getArgs());
+        else
+            return new PostPresenter();
     }
 
     @OnClick(R.id.cancel_action)
@@ -255,13 +259,22 @@ public class PostFragment extends BaseFragment<PostPresenter> implements PostPre
         SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
         fragmentCompass.removePost();
+        cancel = true;
+
+        eventBus.post(new BackPressedMessageEvent());
     }
 
-    public void onEvent(BackPressedMessageEvent type) {
-        getPresenter().cancelClicked();
-        eventBus.cancelEventDelivery(type);
+    public void onEvent(BackPressedMessageEvent event) {
+        if (isVisibleOnScreen() && !cancel) {
+            getPresenter().cancelClicked();
+            eventBus.cancelEventDelivery(event);
+        }
     }
 
+    @Override
+    public void hidePhotoControl() {
+        image.setVisibility(View.GONE);
+    }
 
     @Override
     public int getEventBusPriority() {

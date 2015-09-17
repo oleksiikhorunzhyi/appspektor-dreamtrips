@@ -11,7 +11,6 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -194,29 +193,6 @@ public class SnappyRepository {
 
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // POST
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void savePost(CachedPostEntity post) {
-        act(db -> db.put(POST, post));
-    }
-
-    public boolean hasPost() {
-        return actWithResult(db -> {
-            String[] keys = db.findKeys(POST);
-            return keys != null && keys.length > 0;
-        }).or(false);
-    }
-
-    public CachedPostEntity getPost() {
-        return actWithResult(db -> db.get(POST, CachedPostEntity.class)).orNull();
-    }
-
-    public void removePost() {
-        act(db -> db.del(POST));
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -24,29 +24,31 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
+
 public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
 
     public static final int REQUESTER_ID = -2;
 
-    private CachedPostEntity post;
-
     @Inject
     SnappyRepository snapper;
+
+    @Icicle
+    CachedPostEntity cachedPostEntity;
+
+    public PostPresenter() {
+    }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-
-        post = snapper.getPost();
-
-        if (post == null) {
-            post = new CachedPostEntity();
-            savePost();
-        } else if (!TextUtils.isEmpty(post.getFilePath())) {
-            post.setUploadTask(snapper.getUploadTask(post.getFilePath()));
-            if (post.getUploadTask() != null) {
+        if (cachedPostEntity == null) {
+            cachedPostEntity = new CachedPostEntity();
+        } else if (!TextUtils.isEmpty(cachedPostEntity.getFilePath())) {
+            cachedPostEntity.setUploadTask(snapper.getUploadTask(cachedPostEntity.getFilePath()));
+            if (cachedPostEntity.getUploadTask() != null) {
                 TransferObserver transferObserver =
-                        photoUploadingSpiceManager.getTransferById(post.getUploadTask().getAmazonTaskId());
+                        photoUploadingSpiceManager.getTransferById(cachedPostEntity.getUploadTask().getAmazonTaskId());
                 onStateChanged(transferObserver.getId(), transferObserver.getState());
                 transferObserver.setTransferListener(this);
             }
@@ -58,16 +60,16 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         updateUi();
     }
 
-    private void updateUi() {
-        view.setText(post.getText());
+    protected void updateUi() {
+        view.setText(cachedPostEntity.getText());
 
-        if (post.getUploadTask() != null && post.getUploadTask().getStatus() != null) {
-            view.attachPhoto(Uri.parse(post.getUploadTask().getFilePath()));
+        if (cachedPostEntity.getUploadTask() != null && cachedPostEntity.getUploadTask().getStatus() != null) {
+            view.attachPhoto(Uri.parse(cachedPostEntity.getUploadTask().getFilePath()));
 
-            if (!post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))
+            if (!cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))
                 view.showProgress();
 
-            if (post.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
+            if (cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
                 view.imageError();
             }
         }
@@ -77,63 +79,50 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     public void cancel() {
         cancelUpload();
-        deletePost();
     }
 
     public void cancelClicked() {
         if (view != null)
-            if (TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
+            if (TextUtils.isEmpty(cachedPostEntity.getText()) && cachedPostEntity.getUploadTask() == null) {
                 view.cancel();
             } else {
                 view.showCancelationDialog();
             }
     }
 
-    private void savePost() {
-        snapper.savePost(post);
-    }
-
-    private void deletePost() {
-        post = null;
-        snapper.removePost();
-    }
-
-    @Override
-    public void dropView() {
-        super.dropView();
-        if (post != null) {
-            savePost();
-        }
-    }
-
     public void post() {
-        if (post.getUploadTask() != null && UploadTask.Status.COMPLETED.equals(post.getUploadTask().getStatus())) {
-            post.getUploadTask().setTitle(post.getText());
-            doRequest(new AddTripPhotoCommand(post.getUploadTask()), this::processPost, spiceException -> {
+        if (cachedPostEntity.getUploadTask() != null && UploadTask.Status.COMPLETED.equals(cachedPostEntity.getUploadTask().getStatus())) {
+            cachedPostEntity.getUploadTask().setTitle(cachedPostEntity.getText());
+            doRequest(new AddTripPhotoCommand(cachedPostEntity.getUploadTask()), this::processPost, spiceException -> {
                 PostPresenter.super.handleError(spiceException);
                 view.onPostError();
             });
-        } else if (!TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) {
-            doRequest(new NewPostCommand(post.getText()), this::processPost, spiceException -> {
-                PostPresenter.super.handleError(spiceException);
-                view.onPostError();
-            });
+        } else if (!TextUtils.isEmpty(cachedPostEntity.getText()) && cachedPostEntity.getUploadTask() == null) {
+            postTextualUpdate();
         }
+    }
+
+    protected void postTextualUpdate() {
+        doRequest(new NewPostCommand(cachedPostEntity.getText()),
+                this::processPost, spiceException -> {
+                    PostPresenter.super.handleError(spiceException);
+                    view.onPostError();
+                });
     }
 
     private void enablePostButton() {
-        if ((!TextUtils.isEmpty(post.getText()) && post.getUploadTask() == null) ||
-                (post.getUploadTask() != null &&
-                        post.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))) {
+        if ((!TextUtils.isEmpty(cachedPostEntity.getText()) && cachedPostEntity.getUploadTask() == null) ||
+                (cachedPostEntity.getUploadTask() != null &&
+                        cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))) {
             view.enableButton();
         } else {
             view.disableButton();
         }
     }
 
-    private void processPost(IFeedObject iFeedObject) {
-        if (post.getUploadTask() != null)
-            snapper.removeUploadTask(post.getUploadTask());
+    protected void processPost(IFeedObject iFeedObject) {
+        if (cachedPostEntity.getUploadTask() != null)
+            snapper.removeUploadTask(cachedPostEntity.getUploadTask());
 
         eventBus.post(new FeedItemAddedEvent(BaseEventModel.create(iFeedObject, getAccount())));
         view.cancel();
@@ -141,7 +130,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public void postInputChanged(String input) {
-        post.setText(input);
+        cachedPostEntity.setText(input);
         enablePostButton();
     }
 
@@ -150,35 +139,34 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     ////////////////////////////////////////
 
     private void savePhotoIfNeeded() {
-        doRequest(new CopyFileCommand(context, post.getUploadTask().getFilePath()), this::uploadPhoto);
+        doRequest(new CopyFileCommand(context, cachedPostEntity.getUploadTask().getFilePath()), this::uploadPhoto);
     }
 
     private void uploadPhoto(String filePath) {
-        post.setFilePath(filePath);
-        post.getUploadTask().setFilePath(filePath);
+        cachedPostEntity.setFilePath(filePath);
+        cachedPostEntity.getUploadTask().setFilePath(filePath);
         view.attachPhoto(Uri.parse(filePath));
-        startUpload(post.getUploadTask());
+        startUpload(cachedPostEntity.getUploadTask());
     }
 
     private void startUpload(UploadTask uploadTask) {
         view.showProgress();
-        TransferObserver transferObserver = photoUploadingSpiceManager.upload(post.getUploadTask());
+        TransferObserver transferObserver = photoUploadingSpiceManager.upload(cachedPostEntity.getUploadTask());
         uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
 
         snapper.saveUploadTask(uploadTask);
         transferObserver.setTransferListener(this);
-
     }
 
     @Override
     public void onStateChanged(int id, TransferState state) {
-        if (view != null && post.getUploadTask() != null) {
+        if (view != null && cachedPostEntity.getUploadTask() != null) {
             if (state.equals(TransferState.COMPLETED)) {
-                post.getUploadTask().setStatus(UploadTask.Status.COMPLETED);
-                post.getUploadTask().setOriginUrl
-                        (photoUploadingSpiceManager.getResultUrl(post.getUploadTask()));
+                cachedPostEntity.getUploadTask().setStatus(UploadTask.Status.COMPLETED);
+                cachedPostEntity.getUploadTask().setOriginUrl
+                        (photoUploadingSpiceManager.getResultUrl(cachedPostEntity.getUploadTask()));
             } else if (state.equals(TransferState.FAILED)) {
-                post.getUploadTask().setStatus(UploadTask.Status.FAILED);
+                cachedPostEntity.getUploadTask().setStatus(UploadTask.Status.FAILED);
             }
 
             processUploadTask();
@@ -191,15 +179,15 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     @Override
     public void onError(int id, Exception ex) {
-        post.getUploadTask().setStatus(UploadTask.Status.FAILED);
+        cachedPostEntity.getUploadTask().setStatus(UploadTask.Status.FAILED);
         processUploadTask();
     }
 
     private void processUploadTask() {
-        if (post != null && post.getUploadTask() != null) {
-            snapper.saveUploadTask(post.getUploadTask());
+        if (cachedPostEntity != null && cachedPostEntity.getUploadTask() != null) {
+            snapper.saveUploadTask(cachedPostEntity.getUploadTask());
 
-            switch (post.getUploadTask().getStatus()) {
+            switch (cachedPostEntity.getUploadTask().getStatus()) {
                 case IN_PROGRESS:
                     photoInProgress();
                     break;
@@ -235,24 +223,24 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public void onProgressClicked() {
-        if (post.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
-            startUpload(post.getUploadTask());
+        if (cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
+            startUpload(cachedPostEntity.getUploadTask());
         }
     }
 
     public void removeImage() {
         cancelUpload();
-        post.setUploadTask(null);
+        cachedPostEntity.setUploadTask(null);
         enablePostButton();
         view.attachPhoto(null);
         view.enableImagePicker();
     }
 
     private void cancelUpload() {
-        if (post.getUploadTask() != null) {
-            photoUploadingSpiceManager.cancelUploading(post.getUploadTask());
-            snapper.removeUploadTask(post.getUploadTask());
-            post.setUploadTask(null);
+        if (cachedPostEntity.getUploadTask() != null) {
+            photoUploadingSpiceManager.cancelUploading(cachedPostEntity.getUploadTask());
+            snapper.removeUploadTask(cachedPostEntity.getUploadTask());
+            cachedPostEntity.setUploadTask(null);
         }
     }
 
@@ -284,7 +272,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
             UploadTask imageUploadTask = new UploadTask();
             imageUploadTask.setFilePath(filePath);
             imageUploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
-            post.setUploadTask(imageUploadTask);
+            cachedPostEntity.setUploadTask(imageUploadTask);
             savePhotoIfNeeded();
         }
     }
@@ -317,5 +305,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         void showCancelationDialog();
 
         void onPostError();
+
+        void hidePhotoControl();
     }
 }

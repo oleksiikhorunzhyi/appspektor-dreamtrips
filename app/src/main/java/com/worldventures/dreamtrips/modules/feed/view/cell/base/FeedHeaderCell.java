@@ -1,18 +1,26 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditPostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
@@ -25,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractCell<T> {
 
@@ -39,9 +48,14 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     @Optional
     @InjectView(R.id.comment_divider)
     View commentDivider;
+    @Optional
+    @InjectView(R.id.more)
+    ImageView more;
 
     @Inject
     ActivityRouter activityRouter;
+    @Inject
+    SessionHolder<UserSession> sessionHolder;
 
     public FeedHeaderCell(View view) {
         super(view);
@@ -73,6 +87,14 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
         }
 
         syncUIStateWithModelWasCalled = true;
+
+        // for now we support edit/delete post only for textual updates
+        if (sessionHolder.get().get().getUser().equals(getModelObject().getItem().getUser()) &&
+                getModelObject().getType().equals(BaseEventModel.Type.POST)) {
+            more.setVisibility(View.VISIBLE);
+        } else {
+            more.setVisibility(View.GONE);
+        }
     }
 
 
@@ -90,6 +112,36 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     @OnClick({R.id.comment_preview, R.id.comments_count, R.id.likes_count})
     void commentsCountClicked() {
         openComments(getModelObject());
+    }
+
+    @Optional
+    @OnClick(R.id.more)
+    void onMoreClicked() {
+        PopupMenu popup = new PopupMenu(itemView.getContext(), more);
+        popup.inflate(R.menu.menu_post_edit);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    Dialog dialog = new SweetAlertDialog(itemView.getContext(), SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText(itemView.getResources().getString(R.string.post_delete))
+                            .setContentText(itemView.getResources().getString(R.string.post_delete_caption))
+                            .setConfirmText(itemView.getResources().getString(R.string.post_delete_confirm))
+                            .setConfirmClickListener(sDialog -> {
+                                sDialog.dismissWithAnimation();
+                                getEventBus().post(new DeletePostEvent(getModelObject()));
+                            });
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    break;
+                case R.id.action_edit:
+                    if (getModelObject().getType().equals(BaseEventModel.Type.POST))
+                        getEventBus().post(new EditPostEvent((TextualPost) getModelObject().getItem()));
+                    break;
+            }
+
+            return true;
+        });
+        popup.show();
     }
 
     @Optional

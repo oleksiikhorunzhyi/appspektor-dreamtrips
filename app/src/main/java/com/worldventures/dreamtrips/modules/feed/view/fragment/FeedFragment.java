@@ -71,17 +71,12 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         showPostContainer();
 
         fragmentCompass.removePost();
+        fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         //
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .attach(Route.POST_CREATE);
     }
-
-    private void showPostContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
-    }
-
 
 }

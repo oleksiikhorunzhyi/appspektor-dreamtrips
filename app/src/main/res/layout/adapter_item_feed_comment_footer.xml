@@ -53,13 +53,6 @@
                 android:src="@drawable/ic_feed_thumb_up"/>
 
             <ImageView
-                android:id="@+id/comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_feed_footer_comments"/>
-
-            <ImageView
                 android:id="@+id/more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,16 +64,5 @@
 
 
     </RelativeLayout>
-
-    <View
-        android:id="@+id/comment_divider"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="0.5dp"
-        android:background="@color/gray"/>
-
-    <include
-        android:id="@+id/comment_preview"
-        layout="@layout/adapter_item_comment_preview"/>
 
 </LinearLayout>

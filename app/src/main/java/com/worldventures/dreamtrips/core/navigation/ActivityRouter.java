@@ -79,4 +79,8 @@ public class ActivityRouter extends ActivityBoundRouter {
     public FeatureManager getFeatureManager() {
         return featureManager;
     }
+
+    public void startService(Class clazz) {
+        startService(clazz);
+    }
 }

@@ -51,6 +51,9 @@ public class SnappyRepository {
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
     private static final String NOTIFICATIONS_COUNT = "notifications_count";
     private static final String FRIEND_REQUEST_COUNT = "friend_request_count";
+    public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+    public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
+
     private Context context;
     private ExecutorService executorService;
 
@@ -385,5 +388,25 @@ public class SnappyRepository {
 
     private interface SnappyResult<T> {
         T call(DB db) throws SnappydbException;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // GCM
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void setGcmRegToken(String token) {
+        act(db -> db.put(GCM_REG_TOKEN, token));
+    }
+
+    public String getGcmRegToken() {
+        return actWithResult(db -> db.get(GCM_REG_TOKEN, String.class)).orNull();
+    }
+
+    public void setGcmRegIdPersisted(boolean persisted) {
+        act(db -> db.put(GCM_REG_ID_PERSISTED, persisted));
+    }
+
+    public boolean getGcmRegIdPersisted() {
+        return actWithResult(db -> db.get(GCM_REG_ID_PERSISTED, Boolean.class)).or(false);
     }
 }

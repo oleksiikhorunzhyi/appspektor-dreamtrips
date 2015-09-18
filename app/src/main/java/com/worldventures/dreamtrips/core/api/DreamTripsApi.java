@@ -319,5 +319,5 @@ public interface DreamTripsApi {
     ArrayList<ParentFeedModel> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
 
     @PUT("/api/social/notifications")
-    Void markAsRead(@Query("before") String before, @Query("since") String since);
+    Void markAsRead(@Query("since") String since, @Query("before") String before);
 }

@@ -33,7 +33,7 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
     protected Date createdAt;
     protected T item;
 
-    boolean unread;
+    Date read_at;
 
     public Type getType() {
         return type;
@@ -126,19 +126,20 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
             default:
                 return "";
         }
-  }
+    }
 
     public String previewImage(Resources resources) {
         return "";
     }
 
-    public boolean isUnread() {
-        return unread;
+
+    public Date getReadAt() {
+        return read_at;
     }
 
     @Override
     public String getHeaderTitle() {
-        return isUnread() ? "New" : "Older";
+        return getReadAt() == null ? "New" : "Older";
     }
 
     public enum Type {

@@ -5,20 +5,20 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 import java.util.Date;
 
-public class MarkAsreadNotificationsCommand extends Query<Void> {
+public class MarkAsReadNotificationsCommand extends Query<Void> {
 
-    private Date from;
-    private Date to;
+    private Date since;
+    private Date before;
 
-    public MarkAsreadNotificationsCommand(Date from, Date to) {
+    public MarkAsReadNotificationsCommand(Date since, Date before) {
         super(Void.class);
-        this.from = from;
-        this.to = to;
+        this.since = since;
+        this.before = before;
 
     }
 
     @Override
     public Void loadDataFromNetwork() throws Exception {
-        return getService().markAsRead(DateTimeUtils.convertDateToUTCString(from), DateTimeUtils.convertDateToUTCString(to));
+        return getService().markAsRead(DateTimeUtils.convertDateToUTCString(since), DateTimeUtils.convertDateToUTCString(before));
     }
 }

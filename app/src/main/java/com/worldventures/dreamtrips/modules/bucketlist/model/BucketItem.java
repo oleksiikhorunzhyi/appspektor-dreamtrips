@@ -133,11 +133,15 @@ public class BucketItem extends BaseFeedObject {
     }
 
     public String getFriends() {
-        if (tags != null) {
+        if (friends != null) {
             return Queryable.from(friends).joinStrings(", ");
         } else {
             return "";
         }
+    }
+
+    public List<String> getFriendsList() {
+        return friends;
     }
 
     public String getBucketTags() {
@@ -148,4 +152,59 @@ public class BucketItem extends BaseFeedObject {
         }
     }
 
+    public List<BucketTag> getTags() {
+        return tags;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setTargetDate(Date targetDate) {
+        this.targetDate = targetDate;
+    }
+
+    public void setCompletionDate(Date completionDate) {
+        this.completionDate = completionDate;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setTags(List<BucketTag> tags) {
+        this.tags = tags;
+    }
+
+    public void setCategory(CategoryItem category) {
+        this.category = category;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
+    }
+
+    public void setPhotos(List<BucketPhoto> photos) {
+        this.photos = photos;
+    }
+
+    public void setLocation(BucketLocation location) {
+        this.location = location;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setDining(DiningItem dining) {
+        this.dining = dining;
+    }
 }

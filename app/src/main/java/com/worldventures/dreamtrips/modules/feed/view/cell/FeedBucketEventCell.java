@@ -93,7 +93,9 @@ public class FeedBucketEventCell extends FeedHeaderCell<FeedBucketEventModel> {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-        foreignBucketItemManager.setUserId(getModelObject().getItem().getUser().getId());
+
+        if (getModelObject().getItem().getUser() != null)
+            foreignBucketItemManager.setUserId(getModelObject().getItem().getUser().getId());
 
         BucketItem bucketItem = getModelObject().getItem();
         String small = BucketItemInfoUtil.getMediumResUrl(itemView.getContext(), bucketItem);

@@ -56,7 +56,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setDate(selectedDate);
         getBucketItemManager().updateBucketItem(bucketPostItem, item -> {
             if (savingItem) {
-                eventBus.post(new FeedEntityChangedEvent((item)));
+                 eventBus.post(new FeedEntityChangedEvent((item)));
                 savingItem = false;
                 view.done();
             }

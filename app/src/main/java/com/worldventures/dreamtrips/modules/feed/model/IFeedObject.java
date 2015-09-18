@@ -33,4 +33,6 @@ public interface IFeedObject extends Serializable{
     void setLiked(boolean isLiked);
 
     User getUser();
+
+    void setUser(User user);
 }

@@ -95,6 +95,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     private void refreshFeedSucceed(List<ParentFeedModel> freshItems) {
+        loading = false;
         view.finishLoading();
         feedItems.clear();
         feedItems.addAll(Queryable.from(freshItems)
@@ -113,11 +114,6 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void scrolled(int totalItemCount, int lastVisible) {
         if (featureManager.available(Feature.SOCIAL)) {
-            if (totalItemCount > previousTotal) {
-                loading = false;
-                previousTotal = totalItemCount;
-            }
-
             if (!loading
                     && lastVisible == totalItemCount - 1) {
                 loading = true;
@@ -134,6 +130,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     private void addFeedItems(List<ParentFeedModel> olderItems) {
+        loading = false;
         feedItems.addAll(Queryable.from(olderItems)
                 .filter(ParentFeedModel::isSingle)
                 .map(element -> element.getItems().get(0))
@@ -160,6 +157,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(FeedEntityChangedEvent event) {
         Queryable.from(feedItems).forEachR(item -> {
             if (item.getItem().equals(event.getFeedEntity())) {
+                event.getFeedEntity().setLikesCount(item.getItem().getLikesCount());
+                event.getFeedEntity().setCommentsCount(item.getItem().getCommentsCount());
+                event.getFeedEntity().setUser(item.getItem().getUser());
+                event.getFeedEntity().setLiked(item.getItem().isLiked());
+                event.getFeedEntity().setComments(item.getItem().getComments());
+                event.getFeedEntity().setFirstUserLikedItem(item.getItem().getFirstUserLikedItem());
+
                 item.setItem(event.getFeedEntity());
             }
         });

@@ -75,6 +75,7 @@ public class BaseFeedObject implements IFeedObject {
         return user;
     }
 
+    @Override
     public void setUser(User user) {
         this.user = user;
     }

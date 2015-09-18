@@ -11,7 +11,6 @@ import android.view.View;
 import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
@@ -28,8 +27,8 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
@@ -162,8 +161,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
 
     @Override
     public void refreshFeedItems(List<BaseEventModel> events) {
-        adapter.addItems(events);
-        adapter.notifyDataSetChanged();
+        adapter.itemsUpdated(events);
     }
 
     @Override
@@ -172,7 +170,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
 
-    public static class NotificationAdapter extends BaseArrayListAdapter<BaseEventModel> {
+    public static class NotificationAdapter extends DiffArrayListAdapter<BaseEventModel> {
 
         public NotificationAdapter(Context context, Provider<Injector> injector) {
             super(context, injector);

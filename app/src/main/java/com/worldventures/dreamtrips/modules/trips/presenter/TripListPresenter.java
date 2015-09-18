@@ -158,7 +158,8 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             sweetDialogHelper.notifyTripLiked(activity, trip);
         }, (spiceException) -> {
             trip.setLiked(!trip.isLiked());
-            onFailure();
+            view.dataSetChanged();
+            handleError(spiceException);
         });
     }
 

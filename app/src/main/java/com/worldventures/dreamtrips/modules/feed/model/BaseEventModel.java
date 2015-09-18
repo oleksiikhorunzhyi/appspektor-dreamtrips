@@ -45,11 +45,25 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
     public String infoText(Resources resources) {
         String action = getActionCaption(resources);
         String type = getTypeCaption(resources);
-        User user = links.getUsers().get(0);
-        String companyName = TextUtils.isEmpty(user.getCompany()) ? "" : " - " + user.getCompany();
+        String result;
+        int usersCount = links.getUsers().size();
+        if (usersCount == 0) {
+            return null;
+        }
+        User user1 = links.getUsers().get(0);
+        String companyName1 = TextUtils.isEmpty(user1.getCompany()) ? "" : " - " + user1.getCompany();
 
-        return resources.getString(R.string.feed_header, links.getUsers().get(0)
-                .getFullName(), companyName, action, type);
+        if (usersCount == 1) {
+            result = resources.getString(R.string.feed_header, user1.getFullName(), companyName1, action, type);
+        } else if (usersCount == 2) {
+            User user2 = links.getUsers().get(1);
+            String companyName2 = TextUtils.isEmpty(user2.getCompany()) ? "" : " - " + user2.getCompany();
+            result = resources.getString(R.string.feed_header_two, user1.getFullName(), companyName1,
+                    user2.getFullName(), companyName2, action, type);
+        } else {
+            result = resources.getString(R.string.feed_header_many, user1.getFullName(), companyName1, "" + (usersCount - 1), action, type);
+        }
+        return result;
     }
 
     public Links getLinks() {

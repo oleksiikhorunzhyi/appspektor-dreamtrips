@@ -26,6 +26,9 @@
             android:id="@+id/feed_header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:singleLine="false"
             android:textSize="@dimen/abc_text_size_subhead_material"
             tools:text="John Doe, Adobe booked a DreamTrip"/>
 
@@ -35,8 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:drawableLeft="@drawable/ic_feed_location_small"
-            android:drawableStart="@drawable/ic_feed_location_small"
             android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_feed_location_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
             tools:text="Katerini, Greece"/>
@@ -48,8 +51,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:drawableLeft="@drawable/ic_feed_calendar_small"
-            android:drawableStart="@drawable/ic_feed_calendar_small"
             android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_feed_calendar_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
             tools:text="Jan 27, 2015   9:00AM"/>

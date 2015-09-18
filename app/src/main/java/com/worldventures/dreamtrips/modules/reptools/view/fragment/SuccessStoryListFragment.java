@@ -208,7 +208,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     public void openStory(Bundle bundle) {
         if (isTabletLandscape()) {
             fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.setSupportFragmentManager(getSupportFragmentManager());
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
 
             bundle.putBoolean(SuccessStoryDetailsFragment.EXTRA_SLAVE, true);
             NavigationBuilder.create().with(fragmentCompass).args(bundle).move(Route.SUCCESS_STORES_DETAILS);

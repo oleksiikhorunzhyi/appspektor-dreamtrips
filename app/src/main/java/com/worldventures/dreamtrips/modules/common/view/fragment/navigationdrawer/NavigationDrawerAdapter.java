@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<ComponentDescription> componentDescriptions;
     private NavigationDrawerListener navigationDrawerListener;
     private int selectedComponent;
+    private int notificationCount;
 
     public NavigationDrawerAdapter(List<ComponentDescription> data) {
         componentDescriptions = data;
@@ -85,6 +87,15 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         holder.itemView.setOnClickListener(v -> {
             navigationDrawerListener.onNavigationDrawerItemSelected(item);
         });
+
+
+        if (item.getNavMenuTitle() == R.string.notifications_title && notificationCount > 0) {
+            holder.badgeView.setVisibility(View.VISIBLE);
+            holder.badgeView.setBadgeBackgroundColor(holder.itemView.getResources().getColor(R.color.bucket_red));
+            holder.badgeView.setText(String.valueOf(notificationCount));
+        } else {
+            holder.badgeView.setVisibility(View.GONE);
+        }
     }
 
     public void selectComponent(ComponentDescription component) {
@@ -135,11 +146,22 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         return super.getItemId(position);
     }
 
+    public void setNotificationCount(int notificationCount) {
+        if (this.notificationCount != notificationCount) {
+            this.notificationCount = notificationCount;
+            notifyDataSetChanged();
+        }
+    }
+
     static class HeaderHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.user_cover) public ImageView userCover;
-        @InjectView(R.id.user_photo) public ImageView userPhoto;
-        @InjectView(R.id.user_name) public TextView userName;
-        @InjectView(R.id.user_email) public TextView userEmail;
+        @InjectView(R.id.user_cover)
+        public ImageView userCover;
+        @InjectView(R.id.user_photo)
+        public ImageView userPhoto;
+        @InjectView(R.id.user_name)
+        public TextView userName;
+        @InjectView(R.id.user_email)
+        public TextView userEmail;
 
         public HeaderHolder(View itemView) {
             super(itemView);
@@ -149,8 +171,12 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     static class ItemHolder extends RecyclerView.ViewHolder {
         @Optional
-        @InjectView(R.id.item_name) public TextView itemName;
-        @InjectView(R.id.section_icon) public ImageView sectionIcon;
+        @InjectView(R.id.item_name)
+        public TextView itemName;
+        @InjectView(R.id.section_icon)
+        public ImageView sectionIcon;
+        @InjectView(R.id.badge)
+        public BadgeView badgeView;
 
         public ItemHolder(View itemView) {
             super(itemView);

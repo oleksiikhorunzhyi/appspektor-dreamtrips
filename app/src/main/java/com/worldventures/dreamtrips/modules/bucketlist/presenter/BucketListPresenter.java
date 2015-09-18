@@ -33,7 +33,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     BucketItemManager bucketItemManager;
 
-    private BucketTabsPresenter.BucketType type;
+    private BucketItem.BucketType type;
 
     @Icicle
     boolean showToDO = true;
@@ -44,7 +44,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    public BucketListPresenter(BucketTabsPresenter.BucketType type, ObjectGraph objectGraph) {
+    public BucketListPresenter(BucketItem.BucketType type, ObjectGraph objectGraph) {
         super();
         this.type = type;
         bucketItemManager = objectGraph.get(getBucketItemManagerClass());

@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
 import java.util.List;
@@ -123,7 +123,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(recyclerView)
-                .setStickyHeadersAdapter(new HeaderAdapter(adapter.getItems(),
+                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems(),
                         R.layout.adapter_item_succes_story_header), false)
                 .build();
 

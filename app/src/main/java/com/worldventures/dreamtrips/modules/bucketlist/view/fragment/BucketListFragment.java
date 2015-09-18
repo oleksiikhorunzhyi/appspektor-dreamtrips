@@ -59,7 +59,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
@@ -121,7 +120,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         recyclerView.setScrollbarFadingEnabled(false);
         recyclerView.setFadingEdgeLength(0);
         // setup empty view
-        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
+        BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
 
         if (textViewEmptyAdd != null)
             textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
@@ -317,7 +316,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
-        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
+        BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
         return (T) new BucketListPresenter(type, getObjectGraph());
     }
 

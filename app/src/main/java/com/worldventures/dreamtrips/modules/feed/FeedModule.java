@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
@@ -21,8 +22,10 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedTripCommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 
 import dagger.Module;
@@ -55,17 +58,29 @@ import dagger.Provides;
                 PostEditPresenter.class,
 
                 DiffArrayListAdapter.class,
+
+                NotificationFragment.class,
+                NotificationPresenter.class,
+                NotificationCell.class,
+                NotificationFragment.NotificationAdapter.class
         },
         complete = false,
         library = true
 )
 public class FeedModule {
     public static final String FEED = Route.FEED.name();
+    public static final String NOTIFICATIONS = Route.NOTIFICATIONS.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideFeedComponent() {
         return new ComponentDescription(FEED, R.string.feed_title,
                 R.string.feed_title, R.drawable.ic_feed, FeedFragment.class);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideNotificationComponent() {
+        return new ComponentDescription(NOTIFICATIONS, R.string.notifications_title,
+                R.string.notifications_title, R.drawable.ic_notifications, NotificationFragment.class);
     }
 
 }

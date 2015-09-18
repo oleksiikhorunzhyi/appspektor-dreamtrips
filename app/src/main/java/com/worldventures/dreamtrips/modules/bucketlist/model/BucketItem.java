@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import android.support.annotation.StringRes;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 
@@ -156,6 +159,7 @@ public class BucketItem extends BaseFeedObject {
         return tags;
     }
 
+
     public void setName(String name) {
         this.name = name;
     }
@@ -206,5 +210,29 @@ public class BucketItem extends BaseFeedObject {
 
     public void setDining(DiningItem dining) {
         this.dining = dining;
+    }
+
+    public enum BucketType {
+        LOCATION("location", R.string.bucket_locations),
+        ACTIVITY("activity", R.string.bucket_activities),
+        DINING("dining", R.string.bucket_restaurants);
+
+        protected String name;
+        protected int res;
+
+        BucketType(String name, @StringRes int res) {
+            this.name = name;
+            this.res = res;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @StringRes
+        public int getRes() {
+            return res;
+        }
+
     }
 }

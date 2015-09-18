@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 
 import java.util.ArrayList;
 
@@ -73,7 +73,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(lvTemplates)
-                .setStickyHeadersAdapter(new HeaderAdapter(adapter.getItems(),
+                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems(),
                         R.layout.adapter_template_header), false)
                 .build();
 

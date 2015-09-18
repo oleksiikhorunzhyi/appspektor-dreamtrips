@@ -7,11 +7,8 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
@@ -26,7 +23,7 @@ import java.util.Map;
 import butterknife.InjectView;
 import icepick.Icicle;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.*;
 
 
 @Layout(R.layout.fragment_bucket_tab)
@@ -123,7 +120,7 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     }
 
     @Override
-    public void setRecentBucketItemsCount(Map<BucketType, Integer> items) {
+    public void setRecentBucketItemsCount(Map<BucketItem.BucketType, Integer> items) {
         for (BucketType type : items.keySet()) {
             tabStrip.setBadgeCount(type.ordinal(), items.get(type));
         }

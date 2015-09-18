@@ -49,6 +49,7 @@ public class SnappyRepository {
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
+    private static final String NOTIFICATIONS_COUNT = "notifications_count";
     private Context context;
     private ExecutorService executorService;
 
@@ -354,6 +355,14 @@ public class SnappyRepository {
 
     public List<Circle> getCircles() {
         return readList(CIRCLES, Circle.class);
+    }
+
+    public void saveNotificationsCount(int notificationsCount) {
+        act(db -> db.putInt(NOTIFICATIONS_COUNT, notificationsCount));
+    }
+
+    public int geNotificationCount() {
+        return actWithResult(db -> db.getInt(NOTIFICATIONS_COUNT)).or(0);
     }
 
     ///////////////////////////////////////////////////////////////////////////

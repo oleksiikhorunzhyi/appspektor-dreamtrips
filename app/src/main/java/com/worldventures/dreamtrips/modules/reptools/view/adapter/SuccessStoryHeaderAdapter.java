@@ -14,12 +14,12 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.SuccessHeaderViewHolder> {
+public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessStoryHeaderAdapter.SuccessHeaderViewHolder> {
 
     private List<? extends HeaderItem> items;
     private int layout;
 
-    public HeaderAdapter(List<? extends HeaderItem> items, int layout) {
+    public SuccessStoryHeaderAdapter(List<? extends HeaderItem> items, int layout) {
         this.items = items;
         this.layout = layout;
     }

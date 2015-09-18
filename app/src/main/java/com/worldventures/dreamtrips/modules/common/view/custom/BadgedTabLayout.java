@@ -67,7 +67,9 @@ public class BadgedTabLayout extends TabLayout {
     public void setBadgeCount(int pos, int count) {
         if (getTabCount() > 0) {
             View tab = (ViewGroup) getTabAt(pos).getTag();
-            TextView badge = ButterKnife.<TextView>findById(tab, R.id.psts_tab_badge);
+            BadgeView badge = ButterKnife.findById(tab, R.id.psts_tab_badge);
+            badge.setBadgeBackgroundColor(getResources().getColor(R.color.bucket_red));
+
             float alpha;
             long duration, delay;
             if (count == 0) {

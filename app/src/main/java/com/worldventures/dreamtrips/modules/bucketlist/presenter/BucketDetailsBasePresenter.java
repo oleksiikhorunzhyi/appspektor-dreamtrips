@@ -53,7 +53,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Inject
     SnappyRepository db;
 
-    protected BucketTabsPresenter.BucketType type;
+    protected BucketItem.BucketType type;
     protected String bucketItemId;
     protected BucketItem bucketItem;
 

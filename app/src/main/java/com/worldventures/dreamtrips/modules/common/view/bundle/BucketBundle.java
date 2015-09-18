@@ -3,17 +3,18 @@ package com.worldventures.dreamtrips.modules.common.view.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
 public class BucketBundle implements Parcelable {
 
-    protected BucketTabsPresenter.BucketType type;
+    protected BucketItem.BucketType type;
     protected String bucketItemId;
     protected boolean lock;
     protected boolean slave;
 
 
-    public void setType(BucketTabsPresenter.BucketType type) {
+    public void setType(BucketItem.BucketType type) {
         this.type = type;
     }
 
@@ -25,7 +26,7 @@ public class BucketBundle implements Parcelable {
         this.lock = lock;
     }
 
-    public BucketTabsPresenter.BucketType getType() {
+    public BucketItem.BucketType getType() {
         return type;
     }
 
@@ -64,7 +65,7 @@ public class BucketBundle implements Parcelable {
 
     protected BucketBundle(Parcel in) {
         int tmpType = in.readInt();
-        this.type = tmpType == -1 ? null : BucketTabsPresenter.BucketType.values()[tmpType];
+        this.type = tmpType == -1 ? null : BucketItem.BucketType.values()[tmpType];
         this.bucketItemId = in.readString();
         this.lock = in.readByte() != 0;
         this.slave = in.readByte() != 0;

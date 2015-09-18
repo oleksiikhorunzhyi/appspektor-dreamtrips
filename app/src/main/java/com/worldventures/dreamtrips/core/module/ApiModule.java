@@ -5,7 +5,9 @@ import android.content.Context;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.innahema.collections.query.queriables.Queryable;
 import com.squareup.okhttp.OkHttpClient;
+import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -14,9 +16,12 @@ import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
+import com.worldventures.dreamtrips.modules.common.event.NotificationsCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeserializer;
@@ -29,8 +34,10 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
@@ -85,20 +92,21 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    ConfigApi provideS3Api() {
-        return createRestAdapter(BuildConfig.S3Api).create(ConfigApi.class);
+    ConfigApi provideS3Api(GsonConverter gsonConverter) {
+        return createRestAdapter(BuildConfig.S3Api, gsonConverter).create(ConfigApi.class);
     }
 
-    private RestAdapter createRestAdapter(String endpoint) {
+    private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {
         return new RestAdapter.Builder()
                 .setEndpoint(endpoint)
+                .setConverter(gsonConverter)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
     }
 
     @Provides
     @Singleton
-    SharedServicesApi provideSharedServicesApi(SessionHolder<UserSession> session) {
+    SharedServicesApi provideSharedServicesApi(SessionHolder<UserSession> session, GsonConverter gsonConverter) {
         String baseUrl = BuildConfig.SharedServicesApi;
 
         Optional<UserSession> userSessionOptional = session.get();
@@ -111,12 +119,27 @@ public class ApiModule {
             }
         }
 
-        return createRestAdapter(baseUrl).create(SharedServicesApi.class);
+        return createRestAdapter(baseUrl, gsonConverter).create(SharedServicesApi.class);
     }
 
     @Provides
-    OkClient provideOkClient(OkHttpClient okHttpClient) {
-        return new OkClient(okHttpClient);
+    OkClient provideOkClient(OkHttpClient okHttpClient, SnappyRepository db, @Global EventBus eventBus) {
+        InterceptingOkClient interceptingOkClient = new InterceptingOkClient(okHttpClient);
+        interceptingOkClient.setResponseHeaderListener(headers -> {
+            Header header = Queryable.from(headers).firstOrDefault(element -> "Unread-Notifications-Count".equals(element.getName()));
+            if (header != null) {
+                int notificationsCount;
+                try {
+                    notificationsCount = Integer.parseInt(header.getValue());
+                } catch (Exception e) {
+                    notificationsCount = 0;
+                }
+                db.saveNotificationsCount(notificationsCount);
+                eventBus.post(new NotificationsCountChangedEvent());
+            }
+
+        });
+        return interceptingOkClient;
     }
 
     @Provides
@@ -126,5 +149,6 @@ public class ApiModule {
         okHttpClient.setCookieHandler(cookieManager);
         return okHttpClient;
     }
+
 
 }

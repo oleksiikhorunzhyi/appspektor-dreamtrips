@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -20,7 +21,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseEventModel<T extends IFeedObject> implements Serializable {
+public class BaseEventModel<T extends IFeedObject> implements Serializable, NotificationHeaderAdapter.HeaderItem {
+
+    protected int id;
 
     protected BaseEventModel.Type type;
     protected BaseEventModel.Action action;
@@ -29,6 +32,8 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
     @SerializedName("posted_at")
     protected Date createdAt;
     protected T item;
+
+    Date read_at;
 
     public Type getType() {
         return type;
@@ -74,6 +79,10 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
         return item;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setItem(T item) {
         this.item = item;
     }
@@ -90,12 +99,20 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
                 return resources.getString(R.string.shared);
             case LIKE:
                 return resources.getString(R.string.liked);
+            case ACCEPT_REQUEST:
+                return resources.getString(R.string.accept_request);
+            case REJECT_REQUEST:
+                return resources.getString(R.string.reject_request);
+            case COMMENT:
+                return resources.getString(R.string.comment);
         }
         return null;
     }
 
 
     private String getTypeCaption(Resources resources) {
+        if (type == null) return "";
+
         switch (type) {
             case TRIP:
                 return resources.getString(R.string.feed_trip);
@@ -105,8 +122,24 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
                 return resources.getString(R.string.feed_bucket);
             case POST:
                 return "Post";
+            case UNDEFINED:
+            default:
+                return "";
         }
-        return null;
+    }
+
+    public String previewImage(Resources resources) {
+        return "";
+    }
+
+
+    public Date getReadAt() {
+        return read_at;
+    }
+
+    @Override
+    public String getHeaderTitle() {
+        return getReadAt() == null ? "New" : "Older";
     }
 
     public enum Type {
@@ -144,7 +177,13 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable {
         ADD,
         UPDATE,
         @SerializedName("like")
-        LIKE
+        LIKE,
+        @SerializedName("accept_request")
+        ACCEPT_REQUEST,
+        @SerializedName("reject_request")
+        REJECT_REQUEST,
+        @SerializedName("comment")
+        COMMENT
     }
 
     @Override

@@ -148,9 +148,9 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
 
     @Override
     public void shareTwitterDialog(Uri imageUrl, String shareUrl, String text) {
-        String url = shareUrl;
+        String url = shareUrl == null ? "" : shareUrl;
 
-        if (!shareUrl.isEmpty()) {
+        if (!url.isEmpty()) {
             url += "\n";
         }
 

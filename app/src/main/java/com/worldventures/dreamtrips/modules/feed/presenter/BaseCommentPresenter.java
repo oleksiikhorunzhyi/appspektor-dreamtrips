@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
@@ -104,7 +105,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         feedEntity.setLikesCount(currentCount);
 
         view.updateHeader(feedModel);
-        eventBus.post(new FeedEntityChangedEvent(feedEntity));
+        eventBus.post(new FeedEntityCommentedEvent(feedEntity));
 
         if (feedEntity.getLikesCount() == 1 && feedEntity.isLiked()) {
             preloadUsersWhoLiked();
@@ -127,7 +128,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
             view.removeComment(event.getComment());
             feedEntity.getComments().remove(event.getComment());
             feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
-            eventBus.post(new FeedEntityChangedEvent(feedEntity));
+            eventBus.post(new FeedEntityCommentedEvent(feedEntity));
         });
     }
 
@@ -140,7 +141,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     public void onEvent(CommentChangedEvent event) {
         view.updateComment(event.getComment());
         feedEntity.getComments().set(feedEntity.getComments().indexOf(event.getComment()), event.getComment());
-        eventBus.post(new FeedEntityChangedEvent(feedEntity));
+        eventBus.post(new FeedEntityCommentedEvent(feedEntity));
 
     }
 
@@ -206,7 +207,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         view.addComment(comment);
         feedEntity.getComments().add(0, comment);
         feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
-        eventBus.post(new FeedEntityChangedEvent(feedEntity));
+        eventBus.post(new FeedEntityCommentedEvent(feedEntity));
     }
 
     private void onCommentsLoaded(ArrayList<Comment> comments) {

@@ -380,19 +380,19 @@
     <string name="email_app_choose_dialog_title">Choose Application</string>
 
     <plurals name="users_who_liked">
-        <item quantity="one">&lt;b>%d User&lt;/b> like this</item>
+        <item quantity="one">&lt;b>%d User&lt;/b> likes this</item>
         <item quantity="other">&lt;b>%d Users&lt;/b> like this</item>
-    </plurals>`
+    </plurals>
 
-    <plurals name="users_who_liked_with_first">
+    <plurals name="users_who_liked_with_name">
         <item quantity="zero">@string/users_who_liked_with_first_zero</item>
         <item quantity="one">@string/users_who_liked_with_first_single</item>
         <item quantity="other">@string/users_who_liked_with_first_multiple</item>
     </plurals>
 
-    <string name="users_who_liked_with_first_zero"  formatted="false">&lt;b> %s&lt;/b> likes this</string>
-    <string name="users_who_liked_with_first_single"  formatted="false">&lt;b> %s and %d other&lt;/b> like this</string>
-    <string name="users_who_liked_with_first_multiple"  formatted="false">>&lt;b> %s and %d others&lt;/b> like this</string>
+    <string name="users_who_liked_with_first_zero"  formatted="false">&lt;b>%s&lt;/b> likes this</string>
+    <string name="users_who_liked_with_first_single"  formatted="false">&lt;b>%s and %d other&lt;/b> like this</string>
+    <string name="users_who_liked_with_first_multiple"  formatted="false">&lt;b>%s and %d others&lt;/b> like this</string>
 
     <string name="users_who_liked_title">People who liked</string>
     <string name="users_who_liked_empty">Nobody has liked this item</string>

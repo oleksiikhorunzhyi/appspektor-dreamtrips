@@ -72,26 +72,22 @@ public class FeedItemHeaderHelper {
             if (usersWhoLiked != null) {
                 if (feedModel.getItem().getLikesCount() > 0) {
                     usersWhoLiked.setVisibility(View.VISIBLE);
-                    Spanned text = TextUtils.isEmpty(feedModel.getItem().getFirstUserLikedItem()) ?
-                            Html.fromHtml(context.getResources()
-                                    .getQuantityString(R.plurals.users_who_liked,
-                                            feedModel.getItem().getLikesCount(),
-                                            feedModel.getItem().getLikesCount())) :
-                            Html.fromHtml(context.getResources()
-                                    .getQuantityString(R.plurals.users_who_liked_with_first,
-                                            feedModel.getItem().getLikesCount() - 1,
-                                            feedModel.getItem().getFirstUserLikedItem(),
-                                            feedModel.getItem().getLikesCount() - 1));
 
-                    //TODO hotfix
-                    if (feedModel.getItem().getFirstUserLikedItem() != null
-                            && feedModel.getItem().getLikesCount() == 1) {
-                        usersWhoLiked.setText(Html.fromHtml(context.getString(
-                                R.string.users_who_liked_with_first_zero,
-                                feedModel.getItem().getFirstUserLikedItem())));
+                    Spanned text;
+                    if (TextUtils.isEmpty(feedModel.getItem().getFirstUserLikedItem())) {
+                        text = Html.fromHtml(context.getResources()
+                                .getQuantityString(R.plurals.users_who_liked,
+                                        feedModel.getItem().getLikesCount(),
+                                        feedModel.getItem().getLikesCount()));
                     } else {
-                        usersWhoLiked.setText(text);
+                        text = Html.fromHtml(context.getResources()
+                                .getQuantityString(R.plurals.users_who_liked_with_name,
+                                        feedModel.getItem().getLikesCount() - 1,
+                                        feedModel.getItem().getFirstUserLikedItem(),
+                                        feedModel.getItem().getLikesCount() - 1));
                     }
+
+                    usersWhoLiked.setText(text);
 
                 } else usersWhoLiked.setVisibility(View.GONE);
             }

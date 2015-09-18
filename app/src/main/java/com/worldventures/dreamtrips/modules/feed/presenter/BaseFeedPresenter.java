@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -145,8 +146,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
 
     public void onEvent(FeedEntityDeletedEvent event) {
-        feedItems.remove(event.getEventModel());
-        view.refreshFeedItems(feedItems);
+        itemDeleted(event.getEventModel());
     }
 
     public void onEvent(FeedItemAddedEvent event) {
@@ -164,6 +164,16 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
                 event.getFeedEntity().setComments(item.getItem().getComments());
                 event.getFeedEntity().setFirstUserLikedItem(item.getItem().getFirstUserLikedItem());
 
+                item.setItem(event.getFeedEntity());
+            }
+        });
+
+        view.refreshFeedItems(feedItems);
+    }
+
+    public void onEvent(FeedEntityCommentedEvent event) {
+        Queryable.from(feedItems).forEachR(item -> {
+            if (item.getItem().equals(event.getFeedEntity())) {
                 item.setItem(event.getFeedEntity());
             }
         });
@@ -249,7 +259,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     private void itemDeleted(BaseEventModel eventModel) {
-        feedItems.remove(eventModel);
+        List<BaseEventModel> filteredItems = Queryable.from(feedItems)
+                .filter(element -> !element.equals(eventModel))
+                .toList();
+
+        feedItems.clear();
+        feedItems.addAll(filteredItems);
+
         view.refreshFeedItems(feedItems);
     }
 

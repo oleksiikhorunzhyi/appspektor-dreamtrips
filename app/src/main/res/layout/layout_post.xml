@@ -101,7 +101,8 @@
                     android:paddingBottom="@dimen/spacing_normal"
                     android:paddingLeft="@dimen/spacing_medium"
                     android:paddingRight="@dimen/spacing_medium"
-                    android:paddingTop="@dimen/spacing_normal"/>
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:imeOptions="actionDone"/>
 
 
                 <FrameLayout

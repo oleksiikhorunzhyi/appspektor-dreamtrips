@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.util.Log;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -199,8 +200,7 @@ public class FragmentCompass {
 
     protected void clearBackStack() {
         try {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            supportFragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } catch (IllegalStateException e) {
             Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
         }

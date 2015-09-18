@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 
 @Layout(R.layout.adapter_post_comment_event)
 public class FeedPostCommentCell extends FeedPostEventCell {
@@ -15,4 +16,10 @@ public class FeedPostCommentCell extends FeedPostEventCell {
     @Override
     protected void itemClicked() {
     }
+
+    @Override
+    protected void openComments(BaseEventModel baseFeedModel) {
+        //do nothing
+    }
+
 }

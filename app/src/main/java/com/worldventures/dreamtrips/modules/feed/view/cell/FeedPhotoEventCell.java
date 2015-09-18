@@ -13,8 +13,10 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -79,6 +81,25 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
         int size = itemView.getResources().getDimensionPixelSize(R.dimen.feed_item_height);
         photo.setImageURI(Uri.parse(photoObj.getImages()
                 .getUrl(size, size)));
+    }
+
+    @Override
+    protected void onMore() {
+        showMoreDialog(R.menu.menu_photo_edit, R.string.photo_delete, R.string.photo_delete_caption);
+    }
+
+    @Override
+    protected void onDelete() {
+        getEventBus().post(new DeletePhotoEvent(getModelObject()));
+    }
+
+    @Override
+    protected void onEdit() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .data(new EditPhotoBundle(getModelObject().getItem()))
+                .attach(Route.PHOTO_EDIT);
     }
 
     @Override

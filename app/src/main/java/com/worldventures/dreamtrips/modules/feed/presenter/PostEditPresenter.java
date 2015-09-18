@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.modules.feed.api.EditPostCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
-import com.worldventures.dreamtrips.modules.feed.event.TextualPostChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 
@@ -42,7 +42,7 @@ public class PostEditPresenter extends PostPresenter {
     @Override
     protected void processPost(IFeedObject iFeedObject) {
         if (iFeedObject instanceof TextualPost) {
-            eventBus.post(new TextualPostChangedEvent((TextualPost) iFeedObject));
+            eventBus.post(new FeedEntityChangedEvent((TextualPost) iFeedObject));
             view.cancel();
             view = null;
         }

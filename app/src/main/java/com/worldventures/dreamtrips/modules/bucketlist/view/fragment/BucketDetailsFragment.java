@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -38,7 +37,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
@@ -363,12 +361,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
                 });
 
         builder.show();
-    }
-
-    @Override
-    public void showEditContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
     }
 
 }

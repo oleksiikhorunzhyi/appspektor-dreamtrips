@@ -122,6 +122,9 @@ public interface DreamTripsApi {
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body UploadTask uploadTask);
 
+    @PUT("/api/photos/{uid}")
+    Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
+
     @POST("/api/bucket_list_items/{uid}/photos")
     BucketPhoto uploadBucketPhoto(@Path("uid") String uid, @Body BucketPhoto bucketPhoto);
 

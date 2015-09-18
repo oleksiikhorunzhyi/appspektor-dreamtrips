@@ -19,8 +19,6 @@ import javax.inject.Provider;
 @Layout(R.layout.adapter_item_feed_undefined_event)
 public class FeedUndefinedEventCell extends FeedHeaderCell<FeedTripEventModel> {
 
-
-
     public FeedUndefinedEventCell(View view) {
         super(view);
     }
@@ -33,5 +31,20 @@ public class FeedUndefinedEventCell extends FeedHeaderCell<FeedTripEventModel> {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
+    }
+
+    @Override
+    protected void onDelete() {
+
+    }
+
+    @Override
+    protected void onEdit() {
+
+    }
+
+    @Override
+    protected void onMore() {
+
     }
 }

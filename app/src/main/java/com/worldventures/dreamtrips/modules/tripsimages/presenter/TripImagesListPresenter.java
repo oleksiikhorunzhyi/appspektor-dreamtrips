@@ -48,7 +48,7 @@ public abstract class TripImagesListPresenter
     private boolean loading = true;
 
     private TripImagesRoboSpiceController roboSpiceAdapterController;
-    private List<IFullScreenObject> photos = new ArrayList<>();
+    protected List<IFullScreenObject> photos = new ArrayList<>();
 
     public TripImagesListPresenter(Type type) {
         super();
@@ -58,7 +58,10 @@ public abstract class TripImagesListPresenter
     @Override
     public void onInjected() {
         super.onInjected();
-        photos.clear();
+        syncPhotos();
+    }
+
+    protected void syncPhotos() {
         photos.addAll(db.readPhotoEntityList(type));
     }
 

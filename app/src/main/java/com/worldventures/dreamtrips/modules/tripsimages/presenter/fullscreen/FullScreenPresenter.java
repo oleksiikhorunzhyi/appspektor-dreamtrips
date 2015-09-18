@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -61,6 +62,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         TrackingHelper.view(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
+    public void onEdit(){
+    }
+
     public void onLikeAction() {
     }
 
@@ -85,12 +89,15 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         } else {
             view.setTitle(photo.getFSTitle());
         }
+
         view.setLiked(isLiked());
+        view.setCommentVisibility(false);
+
         view.setLikeVisibility(isLikeVisible());
         view.setLikeCountVisibility(isLikeCountVisible());
         view.setDeleteVisibility(isDeleteVisible());
+        view.setMoreVisibility(isMoreVisible());
         view.setFlagVisibility(isFlagVisible());
-        view.setCommentVisibility(isCommentVisible());
         view.loadImage(photo.getFSImage());
         view.setDescription(photo.getFsDescription());
         view.setCommentCount(photo.getFsCommentCount());
@@ -99,7 +106,8 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
         view.setContentDividerVisibility(isLikeVisible() || isLikeCountVisible() ||
-                isDeleteVisible() || isFlagVisible() || isCommentVisible());
+                isDeleteVisible() || isFlagVisible());
+
         if (photo instanceof Inspiration) {
             TrackingHelper.insprDetails(getAccountUserId(), photo.getFsId());
         }
@@ -112,14 +120,11 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     protected abstract boolean isLikeVisible();
 
-    protected boolean isCommentVisible() {
-        return false;
-    }
+    protected abstract boolean isMoreVisible();
 
     protected boolean isLiked() {
         return false;
     }
-
 
     private boolean isLikeCountVisible() {
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
@@ -147,7 +152,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     public void onCheckboxPressed(boolean status) {
     }
-
 
     public interface View extends Presenter.View {
         void setTitle(String title);
@@ -199,5 +203,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void setContentDividerVisibility(boolean b);
 
         void setCommentVisibility(boolean commentVisible);
+
+        void setMoreVisibility(boolean visible);
+
+        void openEdit(EditPhotoBundle editPhotoBundle);
     }
 }

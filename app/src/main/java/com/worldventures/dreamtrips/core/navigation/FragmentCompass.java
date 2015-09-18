@@ -5,9 +5,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
@@ -16,9 +16,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class FragmentCompass {
@@ -38,6 +36,11 @@ public class FragmentCompass {
 
     public void setContainerId(int containerId) {
         this.containerId = containerId;
+    }
+
+    public void showContainer() {
+        View container = ButterKnife.findById(activity, containerId);
+        if (container != null) container.setVisibility(View.VISIBLE);
     }
 
     public void add(Route route) {

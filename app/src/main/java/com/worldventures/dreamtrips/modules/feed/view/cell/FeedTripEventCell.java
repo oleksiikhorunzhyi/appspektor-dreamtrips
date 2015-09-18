@@ -41,6 +41,21 @@ public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
     }
 
     @Override
+    protected void onDelete() {
+
+    }
+
+    @Override
+    protected void onEdit() {
+
+    }
+
+    @Override
+    protected void onMore() {
+
+    }
+
+    @Override
     public void prepareForReuse() {
 
     }

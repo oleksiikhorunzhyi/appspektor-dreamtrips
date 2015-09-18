@@ -8,14 +8,16 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_friends_base)
-public class FriendsMainFragment extends BaseFragment<FriendsMainPresenter>
+public class FriendsMainFragment extends BaseFragmentWithArgs<FriendsMainPresenter,FriendMainBundle>
         implements FriendsMainPresenter.View {
 
     @InjectView(R.id.tabs)
@@ -55,6 +57,11 @@ public class FriendsMainFragment extends BaseFragment<FriendsMainPresenter>
 
         tabLayout.setupWithPagerBadged(pager);
         tabLayout.getTabAt(pager.getCurrentItem()).select();
+
+
+        if (getArgs()!=null) {
+            pager.setCurrentItem(getArgs().getDefaultPosition());
+        }
     }
 
     @Override

@@ -5,9 +5,8 @@ import android.content.Context;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.Interceptor;
+import com.innahema.collections.query.queriables.Queryable;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.event.NotificationsCountChangedEvent;
@@ -37,6 +37,7 @@ import dagger.Provides;
 import de.greenrobot.event.EventBus;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
@@ -122,28 +123,14 @@ public class ApiModule {
     }
 
     @Provides
-    OkClient provideOkClient(OkHttpClient okHttpClient) {
-        return new OkClient(okHttpClient);
-    }
-
-    @Provides
-    OkHttpClient provideOkHttpClient(Context context, Interceptor responseHeaderInterceptor) {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
-        okHttpClient.setCookieHandler(cookieManager);
-        okHttpClient.interceptors().add(responseHeaderInterceptor);
-        return okHttpClient;
-    }
-
-    @Provides
-    public Interceptor provideResponseHeaderInterceptor(SnappyRepository db, @Global EventBus eventBus) {
-        return chain -> {
-            Response originalResponse = chain.proceed(chain.request());
-            String header = originalResponse.header("Unread-Notifications-Count");
-            if (!header.isEmpty()) {
+    OkClient provideOkClient(OkHttpClient okHttpClient, SnappyRepository db, @Global EventBus eventBus) {
+        InterceptingOkClient interceptingOkClient = new InterceptingOkClient(okHttpClient);
+        interceptingOkClient.setResponseHeaderListener(headers -> {
+            Header header = Queryable.from(headers).firstOrDefault(element -> "Unread-Notifications-Count".equals(element.getName()));
+            if (header != null) {
                 int notificationsCount;
                 try {
-                    notificationsCount = Integer.parseInt(header);
+                    notificationsCount = Integer.parseInt(header.getValue());
                 } catch (Exception e) {
                     notificationsCount = 0;
                 }
@@ -151,8 +138,17 @@ public class ApiModule {
                 eventBus.post(new NotificationsCountChangedEvent());
             }
 
-            return originalResponse;
-        };
+        });
+        return interceptingOkClient;
     }
+
+    @Provides
+    OkHttpClient provideOkHttpClient(Context context) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
+        okHttpClient.setCookieHandler(cookieManager);
+        return okHttpClient;
+    }
+
 
 }

@@ -358,7 +358,7 @@ public class SnappyRepository {
     }
 
     public void saveNotificationsCount(int notificationsCount) {
-        act(db -> db.put(NOTIFICATIONS_COUNT, notificationsCount));
+        act(db -> db.putInt(NOTIFICATIONS_COUNT, notificationsCount));
     }
 
     public int geNotificationCount() {

@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter
 import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
 import java.util.List;
 
@@ -72,7 +73,8 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
             case R.id.action_friend_requests:
                 NavigationBuilder.create()
                         .with(activityRouter)
-                        .attach(Route.FRIEND_REQUESTS);
+                        .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+                        .attach(Route.FRIENDS);
                 return true;
         }
         return super.onOptionsItemSelected(item);

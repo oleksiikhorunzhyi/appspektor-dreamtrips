@@ -88,8 +88,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         this.adapter.registerCell(FeedTripEventModel.class, NotificationCell.class);
         this.adapter.registerCell(FeedBucketEventModel.class, NotificationCell.class);
         this.adapter.registerCell(FeedPostEventModel.class, NotificationCell.class);
-
-        this.adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
+        this.adapter.registerCell(FeedUndefinedEventModel.class, NotificationCell.class);
 
         notifications.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -179,7 +178,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
 
         @Override
         public long getItemId(int position) {
-            return super.getItem(position).getItem().getUid().hashCode();
+            return super.getItem(position).getId();
         }
 
     }

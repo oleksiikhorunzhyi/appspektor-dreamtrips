@@ -23,6 +23,8 @@ import java.util.Date;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BaseEventModel<T extends IFeedObject> implements Serializable, NotificationHeaderAdapter.HeaderItem {
 
+    protected int id;
+
     protected BaseEventModel.Type type;
     protected BaseEventModel.Action action;
 
@@ -77,6 +79,10 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
         return item;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setItem(T item) {
         this.item = item;
     }
@@ -105,6 +111,8 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
 
 
     private String getTypeCaption(Resources resources) {
+        if (type == null) return "";
+
         switch (type) {
             case TRIP:
                 return resources.getString(R.string.feed_trip);
@@ -114,9 +122,11 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
                 return resources.getString(R.string.feed_bucket);
             case POST:
                 return "Post";
+            case UNDEFINED:
+            default:
+                return "";
         }
-        return null;
-    }
+  }
 
     public String previewImage(Resources resources) {
         return "";

@@ -397,8 +397,8 @@
     <string name="users_who_liked_title">People who liked</string>
     <string name="users_who_liked_empty">Nobody has liked this item</string>
     <string name="notifications_title">Notifications</string>
-    <string name="accept_request">accept request</string>
-    <string name="reject_request">reject request</string>
+    <string name="accept_request">accepted request</string>
+    <string name="reject_request">rejected request</string>
     <string name="comment">comment a</string>
 
     <string name="post_delete">Delete post</string>

@@ -6,7 +6,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
@@ -31,12 +33,19 @@ public class FeedModelDeserializer implements JsonDeserializer<BaseEventModel> {
     @Override
     public BaseEventModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
-        BaseEventModel.Type type = gson.fromJson(json.getAsJsonObject().getAsJsonPrimitive("type"), BaseEventModel.Type.class);
+        JsonElement typePrimitive = json.getAsJsonObject().get("type");
 
-        if (type != null) {
+        if (typePrimitive instanceof JsonNull) {
+            BaseEventModel.Type type = BaseEventModel.Type.UNDEFINED;
             return gson.fromJson(json, type.getClazz());
         } else {
-            return new FeedUndefinedEventModel();
+            BaseEventModel.Type type = gson.fromJson(json.getAsJsonObject().getAsJsonPrimitive("type"), BaseEventModel.Type.class);
+
+            if (type != null) {
+                return gson.fromJson(json, type.getClazz());
+            } else {
+                return new FeedUndefinedEventModel();
+            }
         }
     }
 }

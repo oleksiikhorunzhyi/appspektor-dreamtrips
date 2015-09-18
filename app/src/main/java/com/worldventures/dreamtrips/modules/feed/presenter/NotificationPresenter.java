@@ -23,15 +23,12 @@ public class NotificationPresenter extends BaseFeedPresenter<NotificationPresent
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedModel>> getRefreshFeedRequest(Date date) {
         return new NotificationsQuery(date);
-        // return new GetAccountFeedQuery(date);
     }
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedModel>> getNextPageFeedRequest(Date date) {
         return new NotificationsQuery(date);
-        // return new GetAccountFeedQuery(date);
     }
-
 
     public void reload() {
         refreshFeed();

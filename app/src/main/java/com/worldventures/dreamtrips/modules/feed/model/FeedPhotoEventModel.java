@@ -10,6 +10,8 @@ public class FeedPhotoEventModel extends BaseEventModel<Photo> {
     public String previewImage(Resources res) {
         int width = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_w);
         int height = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_h);
-        return getItem().getFSImage().getUrl(width, height);
+        if (getItem().getImages() != null) {
+            return getItem().getImages().getUrl(width, height);
+        } else return null;
     }
 }

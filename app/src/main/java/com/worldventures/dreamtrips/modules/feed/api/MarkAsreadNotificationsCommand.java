@@ -19,7 +19,6 @@ public class MarkAsreadNotificationsCommand extends Query<Void> {
 
     @Override
     public Void loadDataFromNetwork() throws Exception {
-        return null;
-        //getService().markAsRead(DateTimeUtils.convertDateToUTCString(from), DateTimeUtils.convertDateToUTCString(to));
+        return getService().markAsRead(DateTimeUtils.convertDateToUTCString(from), DateTimeUtils.convertDateToUTCString(to));
     }
 }

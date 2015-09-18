@@ -77,7 +77,7 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
 
     @Override
     protected void syncUIStateWithModel() {
-        User user = getModelObject().getItem().getUser();
+        User user = getModelObject().getLinks().getUsers().get(0);
         String thumb = user.getAvatar().getThumb();
 
         notificationAvatar.setImageURI(Uri.parse(thumb));
@@ -87,20 +87,30 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
                 getModelObject().getCreatedAt().getTime());
         notificationTime.setText(relativeTimeSpanString);
 
-        notificationImage.setImageURI(Uri.parse(getModelObject().previewImage(itemView.getResources())));
+        if (getModelObject().getType() == null) {
+            notificationImage.setVisibility(View.GONE);
+        } else {
+            notificationImage.setVisibility(View.VISIBLE);
+            String url = getModelObject().previewImage(itemView.getResources());
+
+            if (url != null)
+                notificationImage.setImageURI(Uri.parse(url));
+        }
+
+        //TODO enable routing after bussines acceptance
         itemView.setOnClickListener(v -> {
             switch (getModelObject().getType()) {
                 case TRIP:
-                    openTrip((TripModel) getModelObject().getItem());
+                   // openTrip((TripModel) getModelObject().getItem());
                     break;
                 case PHOTO:
-                    openPhoto(((IFullScreenObject) getModelObject().getItem()));
+                  //  openPhoto(((IFullScreenObject) getModelObject().getItem()));
                     break;
                 case BUCKET_LIST_ITEM:
-                    openBucketDetails(((BucketItem) getModelObject().getItem()));
+                  //  openBucketDetails(((BucketItem) getModelObject().getItem()));
                     break;
                 case POST:
-                    openComments();
+                   // openComments();
                     break;
                 case UNDEFINED:
                     break;
@@ -126,9 +136,9 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
         bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
         User user = getModelObject().getItem().getUser();
         Route route = routeCreator.createRoute(user.getId());
-        if(route==Route.DETAIL_BUCKET){
+        if (route == Route.DETAIL_BUCKET) {
             bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
-        }else{
+        } else {
             foreignBucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
         }
         NavigationBuilder.create()

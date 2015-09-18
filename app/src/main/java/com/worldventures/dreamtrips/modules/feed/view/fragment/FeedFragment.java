@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -17,6 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -26,7 +28,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_feed)
-@MenuResource(R.menu.menu_mock)
+@MenuResource(R.menu.menu_notifications)
 public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
@@ -56,6 +58,18 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         openPost();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_friend_requests:
+                NavigationBuilder.create()
+                        .with(activityRouter)
+                        .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+                        .attach(Route.FRIENDS);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected FeedPresenter createPresenter(Bundle savedInstanceState) {

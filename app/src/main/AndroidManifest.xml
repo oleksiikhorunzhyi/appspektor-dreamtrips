@@ -18,7 +18,8 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <permission android:name="com.worldventures.dreamtrips.permission.C2D_MESSAGE"
+
+    <permission android:name="${appId}.permission.C2D_MESSAGE"
                 android:protectionLevel="signature" />
     <uses-permission android:name="com.worldventures.dreamtrips.permission.C2D_MESSAGE"/>
 

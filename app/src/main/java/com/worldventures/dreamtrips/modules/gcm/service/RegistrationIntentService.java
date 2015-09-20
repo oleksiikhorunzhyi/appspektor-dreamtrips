@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.gcm.service;
 
-import android.app.IntentService;
 import android.content.Intent;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.techery.spares.service.InjectingIntentService;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 
@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class RegistrationIntentService extends IntentService {
+public class RegistrationIntentService extends InjectingIntentService {
 
     private static final String TAG = "RegIntentService";
 

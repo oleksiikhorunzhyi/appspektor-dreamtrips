@@ -81,6 +81,6 @@ public class ActivityRouter extends ActivityBoundRouter {
     }
 
     public void startService(Class clazz) {
-        startService(clazz);
+        super.startService(clazz);
     }
 }

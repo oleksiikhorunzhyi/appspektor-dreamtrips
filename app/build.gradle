@@ -50,6 +50,7 @@ android {
         buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
         buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
+        manifestPlaceholders = [appId: "com.worldventures.dreamtrips"]
         manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"]
     }
     productFlavors {
@@ -59,6 +60,8 @@ android {
             minSdkVersion 21
             applicationId "com.worldventures.dreamtrips.dev"
 
+            manifestPlaceholders = [appId: "com.worldventures.dreamtrips.dev"]
+
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
@@ -67,6 +70,8 @@ android {
         stage {
             applicationId "com.worldventures.dreamtrips.stage"
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+
+            manifestPlaceholders = [appId: "com.worldventures.dreamtrips.stage"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -78,6 +83,8 @@ android {
         }
         prod {
             applicationId "com.worldventures.dreamtrips"
+
+            manifestPlaceholders = [appId: "com.worldventures.dreamtrips"]
             manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
@@ -88,28 +95,6 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
 
-        stageWithoutSocial {
-            applicationId "com.worldventures.dreamtrips.stage"
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
-
-            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'false'
-
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            resValue "string", "facebook_app_id", "761062457321921"
-        }
-        prodWithoutSocial {
-            applicationId "com.worldventures.dreamtrips"
-            manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
-
-            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'false'
-
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
-            resValue "string", "facebook_app_id", "761062457321921"
-        }
     }
     signingConfigs {
         debug {

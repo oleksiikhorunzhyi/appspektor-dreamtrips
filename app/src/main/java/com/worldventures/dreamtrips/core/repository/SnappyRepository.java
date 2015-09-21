@@ -50,6 +50,7 @@ public class SnappyRepository {
     public static final String IMAGE = "IMAGE";
     private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
     private static final String NOTIFICATIONS_COUNT = "notifications_count";
+    private static final String FRIEND_REQUEST_COUNT = "friend_request_count";
     private Context context;
     private ExecutorService executorService;
 
@@ -361,8 +362,16 @@ public class SnappyRepository {
         act(db -> db.putInt(NOTIFICATIONS_COUNT, notificationsCount));
     }
 
-    public int geNotificationCount() {
+    public int getNotificationCount() {
         return actWithResult(db -> db.getInt(NOTIFICATIONS_COUNT)).or(0);
+    }
+
+    public void saveFriendsRequestsCount(int notificationsCount) {
+        act(db -> db.putInt(FRIEND_REQUEST_COUNT, notificationsCount));
+    }
+
+    public int getFriendsRequestsCount() {
+        return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
     }
 
     ///////////////////////////////////////////////////////////////////////////

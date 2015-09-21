@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -13,6 +16,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
@@ -23,7 +27,6 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -38,6 +41,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @InjectView(R.id.fab_post)
     FloatingActionButton fabPost;
+
+    BadgeImageView friendsBadge;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -59,16 +64,16 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_friend_requests:
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem item = menu.findItem(R.id.action_friend_requests);
+        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(item);
+        friendsBadge.setOnClickListener(v ->
                 NavigationBuilder.create()
                         .with(activityRouter)
                         .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                        .attach(Route.FRIENDS);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+                        .attach(Route.FRIENDS));
+        getPresenter().refreshRequestsCount();
     }
 
     @Override
@@ -93,4 +98,10 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .attach(Route.POST_CREATE);
     }
 
+    @Override
+    public void setRequestsCount(int count) {
+        if (friendsBadge != null) {
+            friendsBadge.setBadgeValue(count);
+        }
+    }
 }

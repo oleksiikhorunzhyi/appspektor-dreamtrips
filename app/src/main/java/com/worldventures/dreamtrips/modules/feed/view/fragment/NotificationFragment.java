@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
@@ -19,6 +20,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
@@ -58,6 +60,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     private RecyclerViewStateDelegate stateDelegate;
 
     WeakHandler weakHandler = new WeakHandler();
+    private BadgeImageView friendsBadge;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,16 +70,16 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_friend_requests:
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        friendsBadge = (BadgeImageView) menu.findItem(R.id.action_friend_requests).getActionView();
+        friendsBadge.setOnClickListener(v ->
                 NavigationBuilder.create()
                         .with(activityRouter)
                         .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                        .attach(Route.FRIENDS);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+                        .attach(Route.FRIENDS));
+        getPresenter().refreshRequestsCount();
     }
 
     @Override
@@ -158,7 +161,6 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         });
     }
 
-
     @Override
     public void refreshFeedItems(List<BaseEventModel> events) {
         adapter.itemsUpdated(events);
@@ -169,6 +171,12 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         getPresenter().reload();
     }
 
+    @Override
+    public void setRequestsCount(int count) {
+        if (friendsBadge != null) {
+            friendsBadge.setBadgeValue(count);
+        }
+    }
 
     public static class NotificationAdapter extends DiffArrayListAdapter<BaseEventModel> {
 

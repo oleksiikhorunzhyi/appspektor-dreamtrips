@@ -62,7 +62,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         TrackingHelper.view(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
-    public void onEdit(){
+    public void onEdit() {
     }
 
     public void onLikeAction() {
@@ -97,6 +97,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setLikeCountVisibility(isLikeCountVisible());
         view.setDeleteVisibility(isDeleteVisible());
         view.setMoreVisibility(isMoreVisible());
+        view.setShareVisibility(isShareVisible());
         view.setFlagVisibility(isFlagVisible());
         view.loadImage(photo.getFSImage());
         view.setDescription(photo.getFsDescription());
@@ -124,6 +125,10 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     protected boolean isLiked() {
         return false;
+    }
+
+    protected boolean isShareVisible() {
+        return true;
     }
 
     private boolean isLikeCountVisible() {
@@ -207,5 +212,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void setMoreVisibility(boolean visible);
 
         void openEdit(EditPhotoBundle editPhotoBundle);
+
+        void setShareVisibility(boolean shareVisible);
     }
 }

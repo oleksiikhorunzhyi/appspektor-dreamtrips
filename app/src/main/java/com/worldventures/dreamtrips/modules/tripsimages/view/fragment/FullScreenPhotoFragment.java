@@ -100,7 +100,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         super.afterCreateView(rootView);
 
         if (type == TripImagesListFragment.Type.FIXED_LIST) {
-            ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
         }
 
@@ -294,6 +293,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(bundle)
                 .attach(Route.PHOTO_EDIT);
+    }
+
+    @Override
+    public void setShareVisibility(boolean shareVisible) {
+        ivShare.setVisibility(shareVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

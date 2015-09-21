@@ -358,6 +358,7 @@ public abstract class TripImagesListPresenter
                 Photo photo = (Photo) photos.get(index);
                 temp.updateSocialContent(photo);
                 photos.set(index, temp);
+                db.savePhotoEntityList(type, photos);
             }
         }
     }

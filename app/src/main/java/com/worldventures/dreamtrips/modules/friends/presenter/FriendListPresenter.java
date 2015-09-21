@@ -62,10 +62,6 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
         view.showFilters(circles, position);
     }
 
-    public void globalSearch() {
-        view.resetSearch();
-    }
-
     public void reloadWithFilter(int position) {
         this.position = position;
         selectedCircle = position != 0 ? circles.get(position) : null;
@@ -104,7 +100,6 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
 
         void openFriendPrefs(UserBundle userBundle);
 
-        void resetSearch();
     }
 
 }

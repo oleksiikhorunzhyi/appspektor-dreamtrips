@@ -42,15 +42,14 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
 
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
-        getPresenter().globalSearch();
+        NavigationBuilder.create().with(activityRouter).move(Route.FRIEND_SEARCH);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_friend:
-                getPresenter().globalSearch();
-                NavigationBuilder.create().with(activityRouter).move(Route.FRIEND_SEARCH);
+                onGlobalSearchClicked();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -112,8 +111,4 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
         return new FriendListPresenter();
     }
 
-    @Override
-    public void resetSearch() {
-        search.setQuery("", true);
-    }
 }

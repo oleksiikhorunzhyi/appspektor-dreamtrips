@@ -41,6 +41,7 @@ import butterknife.OnClick;
 public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoryListPresenter.View {
 
     private static final String EXTRA_IS_SEARCH_ICONIFIED = "extra_is_search_iconified";
+    private static final String EXTRA_IS_SEARCH_FOCUSED= "extra_is_search_focused";
 
     @InjectView(R.id.recyclerViewStories)
     protected EmptyRecyclerView recyclerView;
@@ -95,8 +96,9 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (outState == null) return;
+        if (outState == null || search == null) return;
         outState.putBoolean(EXTRA_IS_SEARCH_ICONIFIED, search.isIconified());
+        outState.putBoolean(EXTRA_IS_SEARCH_FOCUSED, search.isFocused());
     }
 
     @Override
@@ -104,6 +106,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState == null) return;
         search.setIconified(savedInstanceState.getBoolean(EXTRA_IS_SEARCH_ICONIFIED, true));
+        if ( savedInstanceState.getBoolean(EXTRA_IS_SEARCH_FOCUSED, false) ) search.requestFocus();
     }
 
     @Override

@@ -9,7 +9,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -109,5 +111,15 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                         getPresenter().logout();
                     }
                 }).show();
+    }
+
+    @Override
+    protected void initialToolbar() {
+        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+            profileToolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+            profileToolbar.setNavigationOnClickListener(view ->
+                    ((MainActivity) getActivity()).openLeftDrawer()
+            );
+        }
     }
 }

@@ -12,7 +12,9 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
@@ -65,4 +67,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         NavigationBuilder.create().with(activityRouter).data(userBundle).move(Route.FRIEND_PREFERENCES);
     }
 
+    @Override
+    protected void initialToolbar() {
+        profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+    }
 }

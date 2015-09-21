@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.friends.bundle.BaseUsersBundle;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
@@ -42,7 +43,9 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
 
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
-        NavigationBuilder.create().with(activityRouter).move(Route.FRIEND_SEARCH);
+        NavigationBuilder.create().with(activityRouter)
+                .data(new FriendGlobalSearchBundle("" + search.getQuery()))
+                .move(Route.FRIEND_SEARCH);
     }
 
     @Override

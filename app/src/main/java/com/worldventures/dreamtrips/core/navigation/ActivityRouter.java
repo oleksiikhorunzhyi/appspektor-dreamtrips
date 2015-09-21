@@ -62,7 +62,7 @@ public class ActivityRouter extends ActivityBoundRouter {
         ShareBundle data = new ShareBundle();
         data.setImageUrl(imageUrl);
         data.setShareUrl(shareLink);
-        data.setText(text);
+        data.setText(text == null ? "" : text);
         data.setShareType(ShareFragment.TW);
         NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
     }

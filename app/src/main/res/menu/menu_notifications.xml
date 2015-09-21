@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/action_friend_requests"
-        android:icon="@drawable/ic_friends_white"
-        android:title="@string/social_requests"
-        app:showAsAction="ifRoom|collapseActionView"/>
-
+        app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView"
+        app:showAsAction="always"
+        android:title="@string/social_requests"/>
 </menu>

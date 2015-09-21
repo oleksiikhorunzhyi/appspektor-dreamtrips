@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.event.FriendRequestsCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.MarkAsReadNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.api.NotificationsQuery;
@@ -10,14 +12,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class NotificationPresenter extends BaseFeedPresenter<NotificationPresenter.View> {
 
-    public NotificationPresenter() {
-    }
+    @Inject
+    SnappyRepository db;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
+    public NotificationPresenter() {
     }
 
     @Override
@@ -55,7 +57,15 @@ public class NotificationPresenter extends BaseFeedPresenter<NotificationPresent
         }
     }
 
-    public interface View extends Presenter.View, BaseFeedPresenter.View {
+    public void onEventMainThread(FriendRequestsCountChangedEvent event) {
+        view.setRequestsCount(db.getFriendsRequestsCount());
+    }
 
+    public void refreshRequestsCount() {
+        view.setRequestsCount(db.getFriendsRequestsCount());
+    }
+
+    public interface View extends Presenter.View, BaseFeedPresenter.View {
+        void setRequestsCount(int count);
     }
 }

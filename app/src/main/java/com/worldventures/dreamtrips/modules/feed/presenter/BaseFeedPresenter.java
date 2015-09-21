@@ -157,12 +157,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(FeedEntityChangedEvent event) {
         Queryable.from(feedItems).forEachR(item -> {
             if (item.getItem().equals(event.getFeedEntity())) {
-                event.getFeedEntity().setLikesCount(item.getItem().getLikesCount());
-                event.getFeedEntity().setCommentsCount(item.getItem().getCommentsCount());
-                event.getFeedEntity().setUser(item.getItem().getUser());
-                event.getFeedEntity().setLiked(item.getItem().isLiked());
-                event.getFeedEntity().setComments(item.getItem().getComments());
-                event.getFeedEntity().setFirstUserLikedItem(item.getItem().getFirstUserLikedItem());
+                event.getFeedEntity().updateSocialContent(item.getItem());
 
                 item.setItem(event.getFeedEntity());
             }

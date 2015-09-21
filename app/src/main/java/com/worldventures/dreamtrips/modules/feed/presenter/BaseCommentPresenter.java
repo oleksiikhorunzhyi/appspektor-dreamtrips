@@ -189,13 +189,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     public void onEvent(FeedEntityChangedEvent event) {
         if (event.getFeedEntity().equals(feedEntity)) {
-
-            event.getFeedEntity().setLikesCount(feedEntity.getLikesCount());
-            event.getFeedEntity().setCommentsCount(feedEntity.getCommentsCount());
-            event.getFeedEntity().setUser(feedEntity.getUser());
-            event.getFeedEntity().setLiked(feedEntity.isLiked());
-            event.getFeedEntity().setComments(feedEntity.getComments());
-            event.getFeedEntity().setFirstUserLikedItem(feedEntity.getFirstUserLikedItem());
+            event.getFeedEntity().updateSocialContent(feedEntity);
 
             feedModel.setItem(event.getFeedEntity());
             feedEntity = feedModel.getItem();

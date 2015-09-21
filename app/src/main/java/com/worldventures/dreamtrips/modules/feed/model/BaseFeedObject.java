@@ -102,6 +102,16 @@ public class BaseFeedObject implements IFeedObject {
     }
 
     @Override
+    public void updateSocialContent(IFeedObject iFeedObject) {
+        setLikesCount(iFeedObject.getLikesCount());
+        setCommentsCount(iFeedObject.getCommentsCount());
+        setUser(iFeedObject.getUser());
+        setLiked(iFeedObject.isLiked());
+        setComments(iFeedObject.getComments());
+        setFirstUserLikedItem(iFeedObject.getFirstUserLikedItem());
+    }
+
+    @Override
     public int hashCode() {
         return uid.hashCode();
     }

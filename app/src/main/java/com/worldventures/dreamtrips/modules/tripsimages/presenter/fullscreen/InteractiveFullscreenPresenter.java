@@ -132,12 +132,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         if (event.getFeedEntity() instanceof Photo) {
             Photo temp = (Photo) event.getFeedEntity();
             if (photo.equals(temp)) {
-                temp.setLikesCount(photo.getLikesCount());
-                temp.setCommentsCount(photo.getCommentsCount());
-                temp.setUser(photo.getUser());
-                temp.setLiked(photo.isLiked());
-                temp.setComments(photo.getComments());
-                temp.setFirstUserLikedItem(photo.getFirstUserLikedItem());
+                temp.updateSocialContent(temp);
 
                 this.photo = temp;
                 setupActualViewState();

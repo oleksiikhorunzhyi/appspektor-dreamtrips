@@ -35,4 +35,6 @@ public interface IFeedObject extends Serializable{
     User getUser();
 
     void setUser(User user);
+
+    void updateSocialContent(IFeedObject iFeedObject);
 }

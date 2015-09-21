@@ -1,12 +1,17 @@
 package com.worldventures.dreamtrips.modules.gcm.service;
 
 import android.content.Intent;
+import android.os.Build;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.techery.spares.service.InjectingIntentService;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
 
 import javax.inject.Inject;
 
@@ -18,6 +23,8 @@ public class RegistrationIntentService extends InjectingIntentService {
 
     @Inject
     SnappyRepository db;
+    @Inject
+    DreamTripsApi dreamTripsApi;
 
     public RegistrationIntentService() {
         super(TAG);
@@ -51,10 +58,9 @@ public class RegistrationIntentService extends InjectingIntentService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        // TODO : notify DreamTrips server about this device and it's registration ID
-        if (true) { // if successfully persisted to server
-            db.setGcmRegIdPersisted(true);
-            db.setGcmRegToken(token);
-        }
+        dreamTripsApi.subscribeDevice(new PushSubscription("android", token,
+                BuildConfig.VERSION_NAME, Build.VERSION.CODENAME));
+        db.setGcmRegIdPersisted(true);
+        db.setGcmRegToken(token);
     }
 }

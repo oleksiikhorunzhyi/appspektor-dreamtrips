@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
@@ -36,7 +37,6 @@ import com.worldventures.dreamtrips.modules.video.model.Category;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit.http.Body;
@@ -320,4 +320,10 @@ public interface DreamTripsApi {
 
     @PUT("/api/social/notifications")
     Void markAsRead(@Query("since") String since, @Query("before") String before);
+
+    @POST("/api/social/push_subscriptions")
+    Void subscribeDevice(@Body PushSubscription pushSubscription);
+
+    @DELETE("/api/soical/push_subscriptions/{token}")
+    Void unsubscribeDevice(String token);
 }

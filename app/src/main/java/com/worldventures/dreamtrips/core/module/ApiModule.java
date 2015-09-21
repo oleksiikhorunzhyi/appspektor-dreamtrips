@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
+import com.worldventures.dreamtrips.modules.common.event.FriendRequestsCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.event.NotificationsCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
@@ -126,16 +127,30 @@ public class ApiModule {
     OkClient provideOkClient(OkHttpClient okHttpClient, SnappyRepository db, @Global EventBus eventBus) {
         InterceptingOkClient interceptingOkClient = new InterceptingOkClient(okHttpClient);
         interceptingOkClient.setResponseHeaderListener(headers -> {
-            Header header = Queryable.from(headers).firstOrDefault(element -> "Unread-Notifications-Count".equals(element.getName()));
-            if (header != null) {
+            Header headerNotification = Queryable.from(headers).firstOrDefault(element -> "Unread-Notifications-Count".equals(element.getName()));
+
+            if (headerNotification != null) {
                 int notificationsCount;
                 try {
-                    notificationsCount = Integer.parseInt(header.getValue());
+                    notificationsCount = Integer.parseInt(headerNotification.getValue());
                 } catch (Exception e) {
                     notificationsCount = 0;
                 }
                 db.saveNotificationsCount(notificationsCount);
                 eventBus.post(new NotificationsCountChangedEvent());
+            }
+
+            Header headerFriends = Queryable.from(headers).firstOrDefault(element -> "Friend-Requests-Count".equals(element.getName()));
+
+            if (headerFriends != null) {
+                int notificationsCount;
+                try {
+                    notificationsCount = Integer.parseInt(headerFriends.getValue());
+                } catch (Exception e) {
+                    notificationsCount = 0;
+                }
+                db.saveFriendsRequestsCount(notificationsCount);
+                eventBus.post(new FriendRequestsCountChangedEvent());
             }
 
         });

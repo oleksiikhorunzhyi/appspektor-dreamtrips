@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
@@ -124,6 +125,24 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
             view.showFlagDescription(flag.getName());
         } else {
             view.showFlagConfirmDialog(flag.getName(), null);
+        }
+    }
+
+    public void onEvent(FeedEntityChangedEvent event) {
+        if (event.getFeedEntity() instanceof Photo) {
+            Photo temp = (Photo) event.getFeedEntity();
+            if (photo.equals(temp)) {
+                temp.setLikesCount(photo.getLikesCount());
+                temp.setCommentsCount(photo.getCommentsCount());
+                temp.setUser(photo.getUser());
+                temp.setLiked(photo.isLiked());
+                temp.setComments(photo.getComments());
+                temp.setFirstUserLikedItem(photo.getFirstUserLikedItem());
+
+                this.photo = temp;
+                setupActualViewState();
+            }
+
         }
     }
 }

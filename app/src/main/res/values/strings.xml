@@ -416,4 +416,7 @@
 
     <string name="feed_header_two" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s%s&lt;/b> %s &lt;b>%s&lt;/b></string>
     <string name="feed_header_many" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s of your friends&lt;/b> %s &lt;b>%s&lt;/b></string>
+
+    <string name="player_error_header">Playback error</string>
+    <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
 </resources>

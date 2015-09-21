@@ -325,5 +325,5 @@ public interface DreamTripsApi {
     Void subscribeDevice(@Body PushSubscription pushSubscription);
 
     @DELETE("/api/soical/push_subscriptions/{token}")
-    Void unsubscribeDevice(String token);
+    Void unsubscribeDevice(@Path("token") String token);
 }

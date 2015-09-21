@@ -84,7 +84,13 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.common.view.activity.ComponentActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".modules.common.view.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".modules.common.view.activity.MainActivity"/>
+
+        </activity>
 
 
         <activity

@@ -115,12 +115,22 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void logout() {
-        doRequest(new UnsubscribeDeviceCommand(snappyRepository.getGcmRegToken()), aVoid -> {
-            this.appSessionHolder.destroy();
-            snappyRepository.clearAll();
-            activityRouter.finish();
-        });
-      }
+        if (snappyRepository.getGcmRegToken() != null)
+            doRequest(new UnsubscribeDeviceCommand(snappyRepository.getGcmRegToken()), aVoid -> {
+                this.appSessionHolder.destroy();
+                snappyRepository.clearAll();
+                activityRouter.finish();
+            });
+        else
+            logoutSucceed();
+    }
+
+    private void logoutSucceed() {
+        this.appSessionHolder.destroy();
+        snappyRepository.clearAll();
+        activityRouter.finish();
+
+    }
 
     @Override
     public void takeView(View view) {

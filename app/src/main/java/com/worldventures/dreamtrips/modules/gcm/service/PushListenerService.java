@@ -12,12 +12,10 @@ import javax.inject.Inject;
 
 public class PushListenerService extends GcmListenerService {
 
-    public static final int NOTIFICATION_ID = 424242;
-
-    private NotificationDelegate notificationDelegate;
-
     @Inject
     Gson gson;
+
+    private NotificationDelegate notificationDelegate;
 
     @Override
     public void onCreate() {

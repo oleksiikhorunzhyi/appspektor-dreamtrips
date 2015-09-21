@@ -21,8 +21,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
-import com.worldventures.dreamtrips.modules.common.event.FriendRequestsCountChangedEvent;
-import com.worldventures.dreamtrips.modules.common.event.NotificationsCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeserializer;
@@ -30,6 +29,7 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeser
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -127,34 +127,27 @@ public class ApiModule {
     OkClient provideOkClient(OkHttpClient okHttpClient, SnappyRepository db, @Global EventBus eventBus) {
         InterceptingOkClient interceptingOkClient = new InterceptingOkClient(okHttpClient);
         interceptingOkClient.setResponseHeaderListener(headers -> {
-            Header headerNotification = Queryable.from(headers).firstOrDefault(element -> "Unread-Notifications-Count".equals(element.getName()));
-
-            if (headerNotification != null) {
-                int notificationsCount;
-                try {
-                    notificationsCount = Integer.parseInt(headerNotification.getValue());
-                } catch (Exception e) {
-                    notificationsCount = 0;
-                }
-                db.saveNotificationsCount(notificationsCount);
-                eventBus.post(new NotificationsCountChangedEvent());
-            }
-
-            Header headerFriends = Queryable.from(headers).firstOrDefault(element -> "Friend-Requests-Count".equals(element.getName()));
-
-            if (headerFriends != null) {
-                int notificationsCount;
-                try {
-                    notificationsCount = Integer.parseInt(headerFriends.getValue());
-                } catch (Exception e) {
-                    notificationsCount = 0;
-                }
-                db.saveFriendsRequestsCount(notificationsCount);
-                eventBus.post(new FriendRequestsCountChangedEvent());
-            }
-
+            saveHeaderCount(SnappyRepository.NOTIFICATIONS_COUNT, headers, db);
+            saveHeaderCount(SnappyRepository.FRIEND_REQUEST_COUNT, headers, db);
+            eventBus.post(new HeaderCountChangedEvent());
         });
         return interceptingOkClient;
+    }
+
+    private void saveHeaderCount(String key, List<Header> headers, SnappyRepository snappyDB) {
+        Header header = Queryable.from(headers).firstOrDefault(element ->
+                key.equals(element.getName()));
+
+        if (header != null) {
+            int notificationsCount;
+            try {
+                notificationsCount = Integer.parseInt(header.getValue());
+            } catch (Exception e) {
+                notificationsCount = 0;
+            }
+            snappyDB.saveCountFromHeader(key, notificationsCount);
+        }
+
     }
 
     @Provides

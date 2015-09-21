@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.net.Uri;
-import android.os.Parcelable;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -295,7 +294,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void onEvent(ImagePickedEvent event) {
-        eventBus.cancelEventDelivery(event);
         imagePicked(event);
     }
 
@@ -325,6 +323,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
                 type = "camera";
                 break;
+            case PickImageDelegate.REQUEST_MULTI_SELECT:
             case PickImageDelegate.REQUEST_PICK_PICTURE:
                 type = "album";
                 break;

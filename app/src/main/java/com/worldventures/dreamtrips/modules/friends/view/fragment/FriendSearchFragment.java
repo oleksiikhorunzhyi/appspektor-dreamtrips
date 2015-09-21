@@ -13,14 +13,14 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
-import com.worldventures.dreamtrips.modules.friends.bundle.BaseUsersBundle;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
 
 
 @Layout(R.layout.fragment_search_friends)
 @MenuResource(R.menu.menu_search)
-public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresenter, BaseUsersBundle>
+public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresenter, FriendGlobalSearchBundle>
         implements FriendSearchPresenter.View {
 
     DelaySearchView searchView;
@@ -73,7 +73,8 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
     @Override
     protected FriendSearchPresenter createPresenter(Bundle savedInstanceState) {
-        return new FriendSearchPresenter();
+        String s = getArgs() != null ? getArgs().getQuery() : "";
+        return new FriendSearchPresenter(s);
     }
 
 }

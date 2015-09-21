@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.friends.presenter;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
-import com.worldventures.dreamtrips.modules.friends.events.QueryStickyEvent;
 
 import java.util.ArrayList;
 
@@ -14,7 +13,8 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
     @Icicle
     String query;
 
-    public FriendSearchPresenter() {
+    public FriendSearchPresenter(String query) {
+        this.query = query;
     }
 
     @Override
@@ -27,16 +27,6 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
         view.finishLoading();
         users.remove(user);
         view.refreshUsers(users);
-    }
-
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        QueryStickyEvent event = eventBus.getStickyEvent(QueryStickyEvent.class);
-        if (event != null) {
-            query = event.getQuery();
-            eventBus.removeStickyEvent(event);
-        }
     }
 
     @Override

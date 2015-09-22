@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.os.Bundle;
-
 import com.innahema.collections.query.functions.Action1;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
@@ -154,9 +152,11 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     public void openBucketList() {
-        Bundle args = new Bundle();
-        args.putSerializable(ForeignBucketTabsFragment.EXTRA_USER_ID, user.getId());
-        NavigationBuilder.create().args(args).with(activityRouter).move(Route.FOREIGN_BUCKET_LIST);
+        NavigationBuilder
+                .create()
+                .data(new ForeignBucketTabsBundle(user.getId()))
+                .with(activityRouter)
+                .move(Route.FOREIGN_BUCKET_LIST);
     }
 
     @Override

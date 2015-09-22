@@ -22,7 +22,7 @@ android {
     def versionMajor = 1
     def versionMinor = 2
     def versionPatch = 1
-    def versionBuild = 29  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 30  // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -50,8 +50,6 @@ android {
         buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
         buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
 
-        manifestPlaceholders = [appId: "com.worldventures.dreamtrips"]
-        manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"]
     }
     productFlavors {
         dev {
@@ -60,7 +58,8 @@ android {
             minSdkVersion 21
             applicationId "com.worldventures.dreamtrips.dev"
 
-            manifestPlaceholders = [appId: "com.worldventures.dreamtrips.dev"]
+            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
+                                    appId: "com.worldventures.dreamtrips.dev"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -71,7 +70,8 @@ android {
             applicationId "com.worldventures.dreamtrips.stage"
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
 
-            manifestPlaceholders = [appId: "com.worldventures.dreamtrips.stage"]
+            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
+                                    appId: "com.worldventures.dreamtrips.stage"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -84,8 +84,8 @@ android {
         prod {
             applicationId "com.worldventures.dreamtrips"
 
-            manifestPlaceholders = [appId: "com.worldventures.dreamtrips"]
-            manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
+            manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa",
+                                    appId: "com.worldventures.dreamtrips"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
 

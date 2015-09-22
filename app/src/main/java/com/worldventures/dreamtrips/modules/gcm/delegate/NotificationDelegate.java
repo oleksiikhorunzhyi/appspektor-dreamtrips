@@ -78,6 +78,6 @@ public class NotificationDelegate {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(user.getId(), notificationBuilder.build());
-    }
+     }
 
 }

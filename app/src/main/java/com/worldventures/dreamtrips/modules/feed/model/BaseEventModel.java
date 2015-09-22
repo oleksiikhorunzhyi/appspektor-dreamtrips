@@ -24,6 +24,8 @@ import java.util.Date;
 public class BaseEventModel<T extends IFeedObject> implements Serializable, NotificationHeaderAdapter.HeaderItem {
 
     protected int id;
+    @SerializedName("notification_id")
+    protected int notificationId;
 
     protected BaseEventModel.Type type;
     protected BaseEventModel.Action action;
@@ -45,6 +47,10 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
     }
 
     public String infoText(Resources resources) {

@@ -71,6 +71,11 @@ public class User extends BaseEntity implements Parcelable {
     public User() {
     }
 
+    public User(int id) {
+        this.id = id;
+    }
+
+
     public int getMutualFriends() {
         return mutualFriends;
     }

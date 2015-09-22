@@ -9,7 +9,6 @@ import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
-import android.text.Html;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -19,11 +18,12 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import dagger.Module;
 
 public class NotificationDelegate {
 
@@ -37,9 +37,15 @@ public class NotificationDelegate {
         this.context = context;
     }
 
-    public void sendFriendNotification(BaseEventModel eventModel, int notificationId) {
-        User user = eventModel.getLinks().getUsers().get(0);
-
+    /**
+     * Shows a push notification with ability to open user profile
+     *
+     * @param message actual message that will be shown in notification
+     * @param userId userId to get Route for navigation, and also unique id for the push
+     * @param notificationId UserPresenter need notification to mark actual notification
+     *                       as read, if it does not equal -1
+     */
+    public void sendFriendNotification(String message, int userId, int notificationId) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -47,11 +53,11 @@ public class NotificationDelegate {
 
         //set args to pending intent
         Bundle args = new Bundle();
-        args.putSerializable(ComponentPresenter.ROUTE, routeCreator.createRoute(user.getId()));
+        args.putSerializable(ComponentPresenter.ROUTE, routeCreator.createRoute(userId));
         args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG,
                 ToolbarConfig.Builder.create().visible(false).build());
         args.putParcelable(ComponentPresenter.EXTRA_DATA,
-                new UserBundle(user));
+                new UserBundle(new User(userId), notificationId));
 
         resultIntent.putExtra(ComponentPresenter.COMPONENT_EXTRA, args);
 
@@ -69,7 +75,7 @@ public class NotificationDelegate {
         notificationBuilder.setSmallIcon(R.drawable.dt_push_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_dt_launcher))
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(Html.fromHtml(eventModel.infoText(context.getResources())))
+                .setContentText(message)
                 .setAutoCancel(true)
                 .setContentIntent(resultPendingIntent)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
@@ -77,7 +83,7 @@ public class NotificationDelegate {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(user.getId(), notificationBuilder.build());
-     }
+        notificationManager.notify(userId, notificationBuilder.build());
+    }
 
 }

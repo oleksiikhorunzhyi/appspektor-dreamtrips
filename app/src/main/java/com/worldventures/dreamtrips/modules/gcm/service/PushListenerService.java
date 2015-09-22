@@ -3,18 +3,11 @@ package com.worldventures.dreamtrips.modules.gcm.service;
 import android.os.Bundle;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.google.gson.Gson;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.application.BaseApplicationWithInjector;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
-import javax.inject.Inject;
-
 public class PushListenerService extends GcmListenerService {
-
-    @Inject
-    Gson gson;
 
     private NotificationDelegate notificationDelegate;
 
@@ -29,18 +22,26 @@ public class PushListenerService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        processNotification(data.getString("payload"), data.getInt("notification_id", -1));
+        PushType type = PushType.forType(data.getString("type"));
+
+        //based on type we decide how to show push notification
+        switch (type) {
+            case ACCEPT_REQUEST:
+            case SEND_REQUEST:
+                //TODO implement message construction base on actual implementation
+                notificationDelegate.sendFriendNotification("",
+                        data.getInt("user_id", -1), data.getInt("notification_id", -1));
+
+                break;
+        }
     }
 
-    private void processNotification(String json, int notificationId) {
-        FeedUndefinedEventModel eventModel = gson.fromJson(json, FeedUndefinedEventModel.class);
-        if (eventModel != null && eventModel.getAction() != null) {
-            if (eventModel.getAction().equals(BaseEventModel.Action.ACCEPT_REQUEST) ||
-                    eventModel.getAction().equals(BaseEventModel.Action.SEND_REQUEST))
-                notificationDelegate.sendFriendNotification(eventModel, notificationId);
-            else {
-                //TODO
-            }
+    public enum PushType {
+        ACCEPT_REQUEST, SEND_REQUEST;
+
+        public static PushType forType(String type) {
+            return Queryable.from(values()).firstOrDefault(element ->
+                    element.name().equalsIgnoreCase(type));
         }
     }
 

@@ -66,7 +66,7 @@ public class NotificationDelegate {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
 
-        notificationBuilder.setSmallIcon(R.drawable.ic_dreamtrips)
+        notificationBuilder.setSmallIcon(R.drawable.dt_push_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_dt_launcher))
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(Html.fromHtml(eventModel.infoText(context.getResources())))

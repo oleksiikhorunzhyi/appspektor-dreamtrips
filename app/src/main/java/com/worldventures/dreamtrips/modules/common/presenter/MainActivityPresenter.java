@@ -10,6 +10,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
+import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 
 import javax.inject.Inject;
 
@@ -28,6 +29,8 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         if (code != ConnectionResult.SUCCESS) {
             GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
+        } else {
+            activityRouter.startService(RegistrationIntentService.class);
         }
     }
 

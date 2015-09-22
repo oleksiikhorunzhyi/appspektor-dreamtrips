@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.event.FriendRequestsCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 
@@ -34,7 +34,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return new GetAccountFeedQuery(date);
     }
 
-    public void onEventMainThread(FriendRequestsCountChangedEvent event) {
+    public void onEventMainThread(HeaderCountChangedEvent event) {
         view.setRequestsCount(db.getFriendsRequestsCount());
     }
 

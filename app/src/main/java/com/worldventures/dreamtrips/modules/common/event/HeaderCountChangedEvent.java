@@ -1,4 +1,4 @@
 package com.worldventures.dreamtrips.modules.common.event;
 
-public class NotificationsCountChangedEvent {
+public class HeaderCountChangedEvent {
 }

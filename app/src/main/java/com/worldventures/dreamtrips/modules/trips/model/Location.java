@@ -31,6 +31,7 @@ public class Location implements Serializable, Parcelable {
     private Location(Parcel in) {
         this.lat = in.readDouble();
         this.lng = in.readDouble();
+        this.name = in.readString();
     }
 
     public double getLat() {
@@ -66,6 +67,7 @@ public class Location implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(this.lat);
         dest.writeDouble(this.lng);
+        dest.writeString(this.name);
     }
 
 }

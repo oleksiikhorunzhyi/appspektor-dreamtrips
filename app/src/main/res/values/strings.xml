@@ -400,6 +400,7 @@
     <string name="accept_request">accepted request</string>
     <string name="reject_request">rejected request</string>
     <string name="comment">comment a</string>
+    <string name="send_request">send you a friend request</string>
 
     <string name="post_delete">Delete post</string>
     <string name="post_edit">Edit post</string>
@@ -416,4 +417,7 @@
 
     <string name="feed_header_two" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s%s&lt;/b> %s &lt;b>%s&lt;/b></string>
     <string name="feed_header_many" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s of your friends&lt;/b> %s &lt;b>%s&lt;/b></string>
+
+    <string name="player_error_header">Playback error</string>
+    <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
 </resources>

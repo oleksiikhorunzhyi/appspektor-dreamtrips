@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.event.NotificationsCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 
 import javax.inject.Inject;
 
@@ -11,7 +11,7 @@ public class NavigationDrawerPresenter extends Presenter<NavigationDrawerPresent
     @Inject
     SnappyRepository db;
 
-    public void onEventMainThread(NotificationsCountChangedEvent event) {
+    public void onEventMainThread(HeaderCountChangedEvent event) {
         view.notificationCountChanged(db.getNotificationCount());
     }
 

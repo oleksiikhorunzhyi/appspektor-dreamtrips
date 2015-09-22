@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -347,6 +347,20 @@ public abstract class TripImagesListPresenter
                 .getTransferById(uploadTask.getAmazonTaskId());
         transferObserver.setTransferListener(this);
         onStateChanged(transferObserver.getId(), transferObserver.getState());
+    }
+
+    public void onEvent(FeedEntityChangedEvent event) {
+        if (event.getFeedEntity() instanceof Photo) {
+            Photo temp = (Photo) event.getFeedEntity();
+            int index = photos.indexOf(temp);
+
+            if (index != -1) {
+                Photo photo = (Photo) photos.get(index);
+                temp.updateSocialContent(photo);
+                photos.set(index, temp);
+                db.savePhotoEntityList(type, photos);
+            }
+        }
     }
 
     public interface View extends Presenter.View, AdapterView<IFullScreenObject> {

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -114,9 +115,21 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void logout() {
+        if (snappyRepository.getGcmRegToken() != null)
+            doRequest(new UnsubscribeDeviceCommand(snappyRepository.getGcmRegToken()), aVoid -> {
+                this.appSessionHolder.destroy();
+                snappyRepository.clearAll();
+                activityRouter.finish();
+            });
+        else
+            logoutSucceed();
+    }
+
+    private void logoutSucceed() {
         this.appSessionHolder.destroy();
         snappyRepository.clearAll();
         activityRouter.finish();
+
     }
 
     @Override

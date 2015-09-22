@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 

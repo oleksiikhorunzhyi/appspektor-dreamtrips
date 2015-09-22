@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.event.FriendRequestsCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.MarkAsReadNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.api.NotificationsQuery;
@@ -57,7 +57,7 @@ public class NotificationPresenter extends BaseFeedPresenter<NotificationPresent
         }
     }
 
-    public void onEventMainThread(FriendRequestsCountChangedEvent event) {
+    public void onEventMainThread(HeaderCountChangedEvent event) {
         view.setRequestsCount(db.getFriendsRequestsCount());
     }
 

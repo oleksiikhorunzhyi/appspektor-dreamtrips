@@ -1,13 +1,14 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import timber.log.Timber;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.widget.media.AndroidMediaController;
@@ -34,6 +35,16 @@ public class PlayerActivity extends BaseActivity {
         mediaController = new AndroidMediaController(this, false);
 
         videoView.setMediaController(mediaController);
+
+        videoView.setOnErrorListener((iMediaPlayer, i, i1) -> {
+            Dialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText(getString(R.string.player_error_header))
+                    .setContentText(getString(R.string.player_error));
+
+            sweetAlertDialog.setOnCancelListener(dialog -> finish());
+            sweetAlertDialog.show();
+            return true;
+        });
 
         if (uri != null) {
             videoView.setVideoURI(uri);

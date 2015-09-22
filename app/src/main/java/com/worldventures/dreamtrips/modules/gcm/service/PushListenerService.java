@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.google.gson.Gson;
 import com.techery.spares.application.BaseApplicationWithInjector;
+import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
@@ -33,8 +34,14 @@ public class PushListenerService extends GcmListenerService {
 
     private void processNotification(String json) {
         FeedUndefinedEventModel eventModel = gson.fromJson(json, FeedUndefinedEventModel.class);
-        if (eventModel != null)
-            notificationDelegate.sendFriendNotification(eventModel);
+        if (eventModel != null && eventModel.getAction() != null) {
+            if (eventModel.getAction().equals(BaseEventModel.Action.ACCEPT_REQUEST) ||
+                    eventModel.getAction().equals(BaseEventModel.Action.SEND_REQUEST))
+                notificationDelegate.sendFriendNotification(eventModel);
+            else {
+                //TODO
+            }
+        }
     }
 
 }

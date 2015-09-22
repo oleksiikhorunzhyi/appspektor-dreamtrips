@@ -108,6 +108,8 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
                 return resources.getString(R.string.reject_request);
             case COMMENT:
                 return resources.getString(R.string.comment);
+            case SEND_REQUEST:
+                return resources.getString(R.string.send_request);
         }
         return null;
     }
@@ -186,7 +188,9 @@ public class BaseEventModel<T extends IFeedObject> implements Serializable, Noti
         @SerializedName("reject_request")
         REJECT_REQUEST,
         @SerializedName("comment")
-        COMMENT
+        COMMENT,
+        @SerializedName("send_request")
+        SEND_REQUEST
     }
 
     @Override

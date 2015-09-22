@@ -400,6 +400,7 @@
     <string name="accept_request">accepted request</string>
     <string name="reject_request">rejected request</string>
     <string name="comment">comment a</string>
+    <string name="send_request">send you a friend request</string>
 
     <string name="post_delete">Delete post</string>
     <string name="post_edit">Edit post</string>

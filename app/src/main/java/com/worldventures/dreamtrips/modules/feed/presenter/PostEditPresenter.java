@@ -13,7 +13,11 @@ public class PostEditPresenter extends PostPresenter {
     @Icicle
     TextualPost textualPost;
 
+    @Icicle
+    String IMMUTABLE_INPUT;
+
     public PostEditPresenter(PostBundle postBundle) {
+        IMMUTABLE_INPUT = postBundle.getTextualPost().getDescription();
         this.textualPost = postBundle.getTextualPost();
     }
 
@@ -42,9 +46,25 @@ public class PostEditPresenter extends PostPresenter {
     @Override
     protected void processPost(IFeedObject iFeedObject) {
         if (iFeedObject instanceof TextualPost) {
-            eventBus.post(new FeedEntityChangedEvent((TextualPost) iFeedObject));
+            eventBus.post(new FeedEntityChangedEvent(iFeedObject));
             view.cancel();
             view = null;
         }
+    }
+
+    @Override
+    public void cancel() {
+        textualPost.setDescription(IMMUTABLE_INPUT);
+        super.cancel();
+    }
+
+    @Override
+    public void cancelClicked() {
+        if (view != null)
+            if (textualPost.getDescription().equals(IMMUTABLE_INPUT)) {
+                view.cancel();
+            } else {
+                view.showCancelationDialog();
+            }
     }
 }

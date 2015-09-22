@@ -23,11 +23,14 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
@@ -118,11 +121,13 @@ public class ProfileCell extends AbstractCell<User> {
     protected AppCompatTextView reject;
     @InjectView(R.id.control_panel)
     protected ViewGroup controlPanel;
-
+    @InjectView(R.id.badge)
+    BadgeView badge;
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
+    @Inject
+    SnappyRepository snapper;
     @Inject
     FeatureManager featureManager;
 
@@ -216,6 +221,11 @@ public class ProfileCell extends AbstractCell<User> {
 
         progressBar.setVisibility(user.isAvatarUploadInProgress() ? View.VISIBLE : View.GONE);
         coverProgressBar.setVisibility(user.isCoverUploadInProgress() ? View.VISIBLE : View.GONE);
+
+        setBadgeValue();
+
+        if (!getEventBus().isRegistered(this))
+            getEventBus().register(this);
 
     }
 
@@ -341,6 +351,26 @@ public class ProfileCell extends AbstractCell<User> {
         friendRequest.setVisibility(View.GONE);
     }
 
+    @Override
+    public void clearResources() {
+        super.clearResources();
+        if (getEventBus().isRegistered(this))
+            getEventBus().unregister(this);
+    }
+
+    public void onEventMainThread(HeaderCountChangedEvent event) {
+        setBadgeValue();
+    }
+
+    public void setBadgeValue() {
+        int badgeCount = snapper.getFriendsRequestsCount();
+        if (badgeCount > 0) {
+            badge.setVisibility(View.VISIBLE);
+            badge.setText(String.valueOf(badgeCount));
+        } else {
+            badge.setVisibility(View.INVISIBLE);
+        }
+    }
 
     /***
      * View Events
@@ -394,13 +424,11 @@ public class ProfileCell extends AbstractCell<User> {
     @OnClick(R.id.reject)
     protected void onRejectRequest() {
         getEventBus().post(new OnRejectRequestEvent());
-
     }
 
     @OnClick(R.id.add_friend)
     protected void onAddFriend() {
         getEventBus().post(new OnAddFriendEvent());
-
     }
 
     @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
@@ -415,6 +443,5 @@ public class ProfileCell extends AbstractCell<User> {
             }
         }
     }
-
 
 }

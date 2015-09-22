@@ -37,7 +37,7 @@ public class NotificationDelegate {
         this.context = context;
     }
 
-    public void sendFriendNotification(BaseEventModel eventModel) {
+    public void sendFriendNotification(BaseEventModel eventModel, int notificationId) {
         User user = eventModel.getLinks().getUsers().get(0);
 
         Intent intent = new Intent(context, MainActivity.class);

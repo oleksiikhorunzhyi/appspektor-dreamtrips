@@ -9,8 +9,24 @@ public class UserBundle implements Parcelable {
 
     private User user;
 
+    //for mark notification as read when routing from push
+    private int notificationId;
+
     public UserBundle(User user) {
         this.user = user;
+    }
+
+    public UserBundle(User user, int notificationId) {
+        this.user = user;
+        this.notificationId = notificationId;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
     }
 
     public User getUser() {
@@ -19,6 +35,7 @@ public class UserBundle implements Parcelable {
 
     protected UserBundle(Parcel in) {
         user = in.readParcelable(User.class.getClassLoader());
+        notificationId = in.readInt();
     }
 
     public static final Creator<UserBundle> CREATOR = new Creator<UserBundle>() {
@@ -35,8 +52,8 @@ public class UserBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
         parcel.writeParcelable(user, i);
+        parcel.writeInt(notificationId);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
@@ -31,8 +32,20 @@ import java.util.List;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
-    public UserPresenter(User user) {
-        super(user);
+    private int notificationId;
+
+    public UserPresenter(UserBundle userBundle) {
+        super(userBundle.getUser());
+        this.notificationId = userBundle.getNotificationId();
+        userBundle.setNotificationId(-1);
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        if (notificationId != -1) {
+            doRequest(new MarkNotificationAsReadCommand(notificationId), aVoid -> {});
+        }
     }
 
     @Override

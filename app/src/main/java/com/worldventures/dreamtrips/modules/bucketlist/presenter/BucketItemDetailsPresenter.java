@@ -92,15 +92,17 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     @Override
     protected void syncUI(List<UploadTask> tasks) {
         super.syncUI(tasks);
-        if (!TextUtils.isEmpty(bucketItem.getType())) {
-            String s = bucketItem.getCategoryName();
-            view.setCategory(s);
+        if (bucketItem != null) {
+            if (!TextUtils.isEmpty(bucketItem.getType())) {
+                String s = bucketItem.getCategoryName();
+                view.setCategory(s);
+            }
+            view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
+            String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
+            String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
+            view.setCover(medium, original);
+            view.setupDiningView(bucketItem.getDining());
         }
-        view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
-        String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
-        String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
-        view.setCover(medium, original);
-        view.setupDiningView(bucketItem.getDining());
     }
 
     public interface View extends BucketDetailsBasePresenter.View {

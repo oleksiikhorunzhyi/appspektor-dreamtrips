@@ -140,7 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/post"
@@ -160,17 +160,35 @@
                 android:layout_marginTop="@dimen/spacing_small"
                 android:background="@color/gray"/>
 
-            <TextView
-                android:id="@+id/friends"
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_profile_friends_selector"
-                android:gravity="center"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:text="@string/profile_friends"
-                />
+                >
+
+                <TextView
+                    android:id="@+id/friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_profile_friends_selector"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/profile_friends"
+                    />
+
+                <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+                    android:id="@+id/badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:visibility="gone"
+                    android:textSize="@dimen/font_small"/>
+
+            </FrameLayout>
 
             <View
                 android:layout_width="0.5dp"

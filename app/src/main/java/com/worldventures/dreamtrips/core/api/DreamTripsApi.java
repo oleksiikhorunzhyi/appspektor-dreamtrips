@@ -321,6 +321,9 @@ public interface DreamTripsApi {
     @PUT("/api/social/notifications")
     Void markAsRead(@Query("since") String since, @Query("before") String before);
 
+    @PUT("/api/social/notifications/{id}")
+    Void markAsRead(@Path("id") int id);
+
     @POST("/api/social/push_subscriptions")
     Void subscribeDevice(@Body PushSubscription pushSubscription);
 

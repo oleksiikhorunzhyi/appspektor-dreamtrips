@@ -29,15 +29,15 @@ public class PushListenerService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        processNotification(data.getString("payload"));
+        processNotification(data.getString("payload"), data.getInt("notification_id", -1));
     }
 
-    private void processNotification(String json) {
+    private void processNotification(String json, int notificationId) {
         FeedUndefinedEventModel eventModel = gson.fromJson(json, FeedUndefinedEventModel.class);
         if (eventModel != null && eventModel.getAction() != null) {
             if (eventModel.getAction().equals(BaseEventModel.Action.ACCEPT_REQUEST) ||
                     eventModel.getAction().equals(BaseEventModel.Action.SEND_REQUEST))
-                notificationDelegate.sendFriendNotification(eventModel);
+                notificationDelegate.sendFriendNotification(eventModel, notificationId);
             else {
                 //TODO
             }

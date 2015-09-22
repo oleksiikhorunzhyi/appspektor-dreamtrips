@@ -68,24 +68,26 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
     }
 
     public void saveAction() {
-        UploadTask imageUploadTask = new UploadTask();
-        imageUploadTask.setTitle(view.getTitle());
+        if (view != null) {
+            UploadTask imageUploadTask = new UploadTask();
+            imageUploadTask.setTitle(view.getTitle());
 
-        List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
-        imageUploadTask.setTags(new ArrayList<>(tags));
-        imageUploadTask.setLatitude(0);
-        imageUploadTask.setLongitude(0);
-        imageUploadTask.setLocationName(view.getLocation());
+            List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
+            imageUploadTask.setTags(new ArrayList<>(tags));
+            imageUploadTask.setLatitude(0);
+            imageUploadTask.setLongitude(0);
+            imageUploadTask.setLocationName(view.getLocation());
 
-        Date date = DateTimeUtils.dateFromString(view.getDate());
-        Date time = DateTimeUtils.timeFromString(view.getTime());
-        imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+            Date date = DateTimeUtils.dateFromString(view.getDate());
+            Date time = DateTimeUtils.timeFromString(view.getTime());
+            imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
 
-        doRequest(new EditTripPhotoCommand(photo.getUid(), imageUploadTask), updatedPhoto -> {
-            eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
-            view.finish();
-            view = null;
-        });
+            doRequest(new EditTripPhotoCommand(photo.getUid(), imageUploadTask), updatedPhoto -> {
+                eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
+                view.finish();
+                view = null;
+            });
+        }
     }
 
     public interface View extends Presenter.View {

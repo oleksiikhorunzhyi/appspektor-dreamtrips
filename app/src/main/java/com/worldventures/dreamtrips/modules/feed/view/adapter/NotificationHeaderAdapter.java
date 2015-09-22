@@ -34,6 +34,8 @@ public class NotificationHeaderAdapter implements StickyHeadersAdapter<Notificat
     @Override
     public void onBindViewHolder(NotificationHeaderViewHolder headerViewHolder, int i) {
         headerViewHolder.letter.setText(items.get(i).getHeaderTitle().toUpperCase());
+        headerViewHolder.itemView.setVisibility( items.get(i).getHeaderTitle().contentEquals(HeaderItem.NON_SHOWING_HEADER_VALUE)?
+                                                    View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -57,7 +59,11 @@ public class NotificationHeaderAdapter implements StickyHeadersAdapter<Notificat
         }
     }
 
+
+
     public interface HeaderItem {
+        String NON_SHOWING_HEADER_VALUE = "";
+
         String getHeaderTitle();
     }
 }

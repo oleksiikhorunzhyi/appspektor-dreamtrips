@@ -30,9 +30,12 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
@@ -98,6 +101,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         this.adapter.registerCell(FeedBucketEventModel.class, NotificationCell.class);
         this.adapter.registerCell(FeedPostEventModel.class, NotificationCell.class);
         this.adapter.registerCell(FeedUndefinedEventModel.class, NotificationCell.class);
+        this.adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
         notifications.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -167,8 +171,9 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
-    public void refreshFeedItems(List<BaseEventModel> events) {
+    public void refreshFeedItems(List<BaseEventModel> events, boolean isNeedLoadMore) {
         adapter.itemsUpdated(events);
+        if (isNeedLoadMore) adapter.addItem(new LoadMoreModel());
     }
 
     @Override
@@ -183,7 +188,9 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         }
     }
 
-    public static class NotificationAdapter extends DiffArrayListAdapter<BaseEventModel> {
+    public static class NotificationAdapter extends DiffArrayListAdapter {
+
+        private static final long LOADER_ID = Long.MIN_VALUE;
 
         public NotificationAdapter(Context context, Provider<Injector> injector) {
             super(context, injector);
@@ -191,7 +198,12 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
 
         @Override
         public long getItemId(int position) {
-            return super.getItem(position).getId();
+            Object object = super.getItem(position);
+            if (object instanceof BaseEventModel) {
+                return ((BaseEventModel)object).getId();
+            } else {
+                return LOADER_ID;
+            }
         }
 
     }

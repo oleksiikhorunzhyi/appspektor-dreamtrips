@@ -82,7 +82,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     @Override
-    public DiffArrayListAdapter<BaseEventModel> getAdapter() {
+    public DiffArrayListAdapter getAdapter() {
         return new DiffArrayListAdapter<>(feedView.getContext(), injectorProvider);
     }
 

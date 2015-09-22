@@ -6,11 +6,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.annotations.NonInjectable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +58,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
-        this.injector.get().inject(cell);
-        cell.afterInject();
+        if (!cell.getClass().isAnnotationPresent(NonInjectable.class)) {
+            this.injector.get().inject(cell);
+            cell.afterInject();
+        }
         return cell;
     }
 

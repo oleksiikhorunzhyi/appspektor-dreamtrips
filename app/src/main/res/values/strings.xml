@@ -420,4 +420,6 @@
 
     <string name="player_error_header">Playback error</string>
     <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
+
+    <string name="retry">Retry</string>
 </resources>

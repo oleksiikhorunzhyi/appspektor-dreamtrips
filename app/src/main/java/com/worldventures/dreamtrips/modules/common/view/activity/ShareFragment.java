@@ -134,6 +134,7 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
             feedDialog.setOnDismissListener(dialog -> getActivity().finish());
             feedDialog.show();
         } else {
+            loginButton.setFragment(this);
             loginButton.setReadPermissions("user_photos");
             loginButton.setSessionStatusCallback((s, state, exception) -> {
                 Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);

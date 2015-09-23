@@ -422,4 +422,7 @@
     <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
 
     <string name="retry">Retry</string>
+
+    <string name="notification_message_friend_accepted">%s accepted your friend request</string>
+    <string name="notification_message_friend_request">%s sent you friend request</string>
 </resources>

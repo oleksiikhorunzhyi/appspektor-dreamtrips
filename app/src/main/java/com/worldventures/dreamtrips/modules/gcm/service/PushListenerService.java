@@ -3,46 +3,41 @@ package com.worldventures.dreamtrips.modules.gcm.service;
 import android.os.Bundle;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
+import com.worldventures.dreamtrips.modules.gcm.model.PushType;
+
+import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class PushListenerService extends GcmListenerService {
 
-    private NotificationDelegate notificationDelegate;
+    @Inject
+    NotificationDataParser parser;
+    @Inject
+    NotificationDelegate delegate;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        notificationDelegate = new NotificationDelegate(this);
-
         ((BaseApplicationWithInjector) getApplication()).inject(this);
-        ((BaseApplicationWithInjector) getApplication()).inject(notificationDelegate);
     }
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        PushType type = PushType.forType(data.getString("type"));
-
-        //based on type we decide how to show push notification
-        if (type != null)
-            switch (type) {
-                case ACCEPT_REQUEST:
-                case SEND_REQUEST:
-                    //TODO implement message construction base on actual implementation
-                    notificationDelegate.sendFriendNotification("",
-                            data.getInt("user_id", -1), data.getInt("notification_id", -1));
-
-                    break;
-            }
-    }
-
-    public enum PushType {
-        ACCEPT_REQUEST, SEND_REQUEST;
-
-        public static PushType forType(String type) {
-            return Queryable.from(values()).firstOrDefault(element ->
-                    element.name().equalsIgnoreCase(type));
+        Timber.i("Push message received: " + data);
+        switch (PushType.of(data.getString("type"))) {
+            case ACCEPT_REQUEST:
+                delegate.notifyFriendRequestAccepted(parser.parseUserData(data));
+                break;
+            case SEND_REQUEST:
+                delegate.notifyFriendRequestReceived(parser.parseUserData(data));
+                break;
+            default:
+                Timber.w("Unknown message type: %s", data.getString("type"));
+                break;
         }
     }
 

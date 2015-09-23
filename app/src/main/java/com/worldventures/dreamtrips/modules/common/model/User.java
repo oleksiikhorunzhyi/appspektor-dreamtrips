@@ -8,6 +8,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -187,7 +188,7 @@ public class User extends BaseEntity implements Parcelable {
     }
 
     public String getFullName() {
-        return TextUtils.join(" ", new String[]{getFirstName(), getLastName()});
+        return Queryable.from(new String[]{getFirstName(), getLastName()}).notNulls().joinStrings(" ");
     }
 
     public boolean isMember() {

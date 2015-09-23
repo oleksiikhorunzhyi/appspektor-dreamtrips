@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.gcm.service;
 
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -15,9 +14,9 @@ import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscrip
 
 import javax.inject.Inject;
 
-public class RegistrationIntentService extends InjectingIntentService {
+import timber.log.Timber;
 
-    private static final String TAG = "RegIntentService";
+public class RegistrationIntentService extends InjectingIntentService {
 
     @Inject
     SnappyRepository db;
@@ -25,7 +24,7 @@ public class RegistrationIntentService extends InjectingIntentService {
     DreamTripsApi dreamTripsApi;
 
     public RegistrationIntentService() {
-        super(TAG);
+        super("RegIntentService");
     }
 
     @Override
@@ -35,14 +34,14 @@ public class RegistrationIntentService extends InjectingIntentService {
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
-            Log.d(TAG, "GCM Registration Token: " + token);
+            Timber.d("GCM Registration Token: %s", token);
 
             if ((token != null && !token.equals(db.getGcmRegToken()))
                     || !db.getGcmRegIdPersisted()) {
                 sendRegistrationToServer(token);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Failed to complete token refresh", e);
+            Timber.e(e, "Failed to complete token refresh");
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
             db.setGcmRegIdPersisted(false);

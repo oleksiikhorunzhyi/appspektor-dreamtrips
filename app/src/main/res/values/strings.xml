@@ -423,6 +423,7 @@
 
     <string name="retry">Retry</string>
 
+    <string name="no_notifications">You have no notifications yet</string>
     <string name="notification_message_friend_accepted">%s accepted your friend request</string>
     <string name="notification_message_friend_request">%s sent you friend request</string>
 </resources>

@@ -184,7 +184,7 @@ public class ProfileCell extends AbstractCell<User> {
 
         ProfileViewUtils.setUserStatus(user, userStatus, context.getResources());
 
-        setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
+        setAvatarImage(Uri.parse(user.getAvatar() == null ? "" : user.getAvatar().getMedium()));
         setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
         setFriendButtonText(R.string.profile_friends);
 

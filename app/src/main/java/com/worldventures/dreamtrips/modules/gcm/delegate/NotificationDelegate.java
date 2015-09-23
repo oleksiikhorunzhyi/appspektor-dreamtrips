@@ -9,32 +9,38 @@ import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.gcm.model.UserNotificationData;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import dagger.Module;
 
 public class NotificationDelegate {
 
-    private Context context;
+    private final Context context;
+    private final RouteCreator<Integer> profileRouteCreator;
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
-
-    public NotificationDelegate(Context context) {
+    public NotificationDelegate(Context context, RouteCreator<Integer> profileRouteCreator) {
         this.context = context;
+        this.profileRouteCreator = profileRouteCreator;
+    }
+
+    public void notifyFriendRequestAccepted(UserNotificationData data) {
+        String message = context.getString(R.string.notification_message_friend_accepted,
+                TextUtils.join(" ", new String[]{data.firstName, data.lastName}));
+        showFriendNotification(message, data.userId, data.notificationId);
+    }
+
+    public void notifyFriendRequestReceived(UserNotificationData data) {
+        String message = context.getString(R.string.notification_message_friend_request,
+                TextUtils.join(" ", new String[]{data.firstName, data.lastName}));
+        showFriendNotification(message, data.userId, data.notificationId);
     }
 
     /**
@@ -45,7 +51,7 @@ public class NotificationDelegate {
      * @param notificationId UserPresenter need notification to mark actual notification
      *                       as read, if it does not equal -1
      */
-    public void sendFriendNotification(String message, int userId, int notificationId) {
+    private void showFriendNotification(String message, int userId, int notificationId) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -53,7 +59,7 @@ public class NotificationDelegate {
 
         //set args to pending intent
         Bundle args = new Bundle();
-        args.putSerializable(ComponentPresenter.ROUTE, routeCreator.createRoute(userId));
+        args.putSerializable(ComponentPresenter.ROUTE, profileRouteCreator.createRoute(userId));
         args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG,
                 ToolbarConfig.Builder.create().visible(false).build());
         args.putParcelable(ComponentPresenter.EXTRA_DATA,

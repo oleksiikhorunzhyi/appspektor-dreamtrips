@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +43,8 @@ import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import roboguice.util.temp.Ln;
 import timber.log.Timber;
+
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 public class DreamSpiceManager extends SpiceManager {
 
@@ -157,10 +158,10 @@ public class DreamSpiceManager extends SpiceManager {
     public static boolean isLoginError(Exception error) {
         if (error instanceof RetrofitError) {
             RetrofitError cause = (RetrofitError) error;
-            return cause.getResponse() != null && cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
+            return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
         } else if (error.getCause() instanceof RetrofitError) {
             RetrofitError cause = (RetrofitError) error.getCause();
-            return cause.getResponse() != null && cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
+            return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
         }
         return false;
     }

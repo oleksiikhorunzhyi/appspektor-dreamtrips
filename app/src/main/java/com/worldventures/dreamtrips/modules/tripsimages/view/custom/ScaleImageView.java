@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
@@ -212,11 +211,11 @@ public class ScaleImageView extends SimpleDraweeView {
     private float distance(float x0, float x1, float y0, float y1) {
         float x = x0 - x1;
         float y = y0 - y1;
-        return FloatMath.sqrt(x * x + y * y);
+        return (float) Math.sqrt(x * x + y * y);
     }
 
     private float dispDistance() {
-        return FloatMath.sqrt(width * width + height * height);
+        return (float) Math.sqrt(width * width + height * height);
     }
 
     @Override

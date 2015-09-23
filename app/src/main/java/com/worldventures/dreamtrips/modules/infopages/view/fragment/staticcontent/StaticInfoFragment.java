@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.MailTo;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -18,6 +21,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -90,6 +94,29 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
+
+            @TargetApi(Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                loadErrorText(view, error.getErrorCode());
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) loadErrorText(view, errorCode);
+            }
+
+            private void loadErrorText (WebView webView, int errorCode){
+                switch (errorCode) {
+                    case ERROR_HOST_LOOKUP:
+                        webView.loadData(getString(R.string.error_webview_no_internet), "text", "utf-8");
+                        break;
+                    default:
+                        webView.loadData(getString(R.string.error_webview_default), "text", "utf-8");
+                }
+            }
 
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {

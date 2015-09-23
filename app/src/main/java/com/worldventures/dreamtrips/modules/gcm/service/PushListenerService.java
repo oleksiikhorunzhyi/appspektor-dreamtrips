@@ -25,15 +25,16 @@ public class PushListenerService extends GcmListenerService {
         PushType type = PushType.forType(data.getString("type"));
 
         //based on type we decide how to show push notification
-        switch (type) {
-            case ACCEPT_REQUEST:
-            case SEND_REQUEST:
-                //TODO implement message construction base on actual implementation
-                notificationDelegate.sendFriendNotification("",
-                        data.getInt("user_id", -1), data.getInt("notification_id", -1));
+        if (type != null)
+            switch (type) {
+                case ACCEPT_REQUEST:
+                case SEND_REQUEST:
+                    //TODO implement message construction base on actual implementation
+                    notificationDelegate.sendFriendNotification("",
+                            data.getInt("user_id", -1), data.getInt("notification_id", -1));
 
-                break;
-        }
+                    break;
+            }
     }
 
     public enum PushType {

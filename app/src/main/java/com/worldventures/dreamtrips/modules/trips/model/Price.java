@@ -1,11 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 
 public class Price implements Serializable {
-
-    DecimalFormat df = new DecimalFormat("#.00");
 
     public static final String USD = "USD";
 
@@ -30,7 +27,7 @@ public class Price implements Serializable {
 
     @Override
     public String toString() {
-        return getCurrencySymbol() + df.format(amount);
+        return getCurrencySymbol() + String.format("%.02f", amount);
     }
 
     private String getCurrencySymbol() {

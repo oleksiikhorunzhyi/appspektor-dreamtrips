@@ -17,11 +17,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
 
-    @Icicle
+    @State
     Photo photo;
 
     public PhotoEditPresenter(EditPhotoBundle editPhotoBundle) {

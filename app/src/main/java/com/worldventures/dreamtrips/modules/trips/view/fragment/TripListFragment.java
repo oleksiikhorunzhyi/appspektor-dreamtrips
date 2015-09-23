@@ -37,7 +37,8 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import icepick.Icicle;
+import icepick.State;
+
 
 @Layout(R.layout.fragment_trip_list)
 @MenuResource(R.menu.menu_dream_trips)
@@ -64,7 +65,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     private WeakHandler weakHandler;
 
-    @Icicle
+    @State
     boolean searchOpened;
 
     @Override

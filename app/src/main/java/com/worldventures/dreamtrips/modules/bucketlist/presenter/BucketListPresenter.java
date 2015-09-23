@@ -24,7 +24,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
-import icepick.Icicle;
+import icepick.State;
+
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
@@ -35,9 +36,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private BucketItem.BucketType type;
 
-    @Icicle
+    @State
     boolean showToDO = true;
-    @Icicle
+    @State
     boolean showCompleted = true;
 
     BucketItem currentItem;

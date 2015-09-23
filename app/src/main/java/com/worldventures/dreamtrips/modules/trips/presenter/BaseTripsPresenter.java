@@ -15,32 +15,33 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class BaseTripsPresenter<T extends Presenter.View> extends Presenter<T> {
 
     @Inject
     protected SnappyRepository db;
 
-    @Icicle
+    @State
     double maxPrice;
-    @Icicle
+    @State
     double minPrice;
-    @Icicle
+    @State
     int maxNights;
-    @Icicle
+    @State
     int minNights;
-    @Icicle
+    @State
     boolean showSoldOut;
-    @Icicle
+    @State
     boolean showFavorites;
-    @Icicle
+    @State
     boolean showRecentlyAdded;
-    @Icicle
+    @State
     DateFilterItem dateFilterItem;
-    @Icicle
+    @State
     ArrayList<Integer> acceptedRegions;
-    @Icicle
+    @State
     ArrayList<ActivityModel> acceptedThemes;
 
     protected ArrayList<TripModel> cachedTrips = new ArrayList<>();

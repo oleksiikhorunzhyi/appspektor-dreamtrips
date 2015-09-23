@@ -44,10 +44,10 @@
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:hint="@string/profile_from_hint"
-                    app:baseColor="@android:color/black"
-                    app:floatingLabel="normal"
-                    app:hideUnderline="true"
-                    app:primaryColor="@android:color/transparent"/>
+                    app:met_baseColor="@android:color/black"
+                    app:met_floatingLabel="normal"
+                    app:met_hideUnderline="true"
+                    app:met_primaryColor="@android:color/transparent"/>
 
             </LinearLayout>
 
@@ -86,10 +86,10 @@
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:hint="@string/profile_enroll_hint"
-                    app:baseColor="@android:color/black"
-                    app:floatingLabel="normal"
-                    app:hideUnderline="true"
-                    app:primaryColor="@android:color/transparent"/>
+                    app:met_baseColor="@android:color/black"
+                    app:met_floatingLabel="normal"
+                    app:met_hideUnderline="true"
+                    app:met_primaryColor="@android:color/transparent"/>
 
             </LinearLayout>
 

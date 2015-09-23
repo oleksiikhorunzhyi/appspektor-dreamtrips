@@ -6,11 +6,12 @@ import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
 
 import java.util.ArrayList;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPresenter.View> {
 
-    @Icicle
+    @State
     String query;
 
     public FriendSearchPresenter(String query) {

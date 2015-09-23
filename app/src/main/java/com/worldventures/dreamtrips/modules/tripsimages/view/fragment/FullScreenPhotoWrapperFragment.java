@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +17,8 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 
@@ -27,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
-import icepick.Icicle;
+import icepick.State;
+
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment
@@ -40,7 +40,7 @@ public class FullScreenPhotoWrapperFragment
     protected Toolbar toolbar;
     protected BaseStatePagerAdapter<FragmentItem> adapter;
 
-    @Icicle
+    @State
     int position;
 
     @Override

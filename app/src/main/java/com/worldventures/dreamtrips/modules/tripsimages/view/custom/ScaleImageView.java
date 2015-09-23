@@ -15,7 +15,8 @@ import android.view.ViewTreeObserver;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
+
 
 public class ScaleImageView extends SimpleDraweeView {
 
@@ -37,8 +38,9 @@ public class ScaleImageView extends SimpleDraweeView {
     private SingleTapListener singleTapListener;
     private DoubleTapListener doubleTapListener;
 
-    @Icicle int intrinsicWidth;
-    @Icicle int intrinsicHeight;
+    @State
+    int intrinsicWidth;
+    @State int intrinsicHeight;
 
     public ScaleImageView(Context context, AttributeSet attr) {
         super(context, attr);

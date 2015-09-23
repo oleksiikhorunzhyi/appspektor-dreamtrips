@@ -23,8 +23,8 @@
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            app:floatingLabel="normal"
-            app:primaryColor="@color/theme_main_darker"/>
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/theme_main_darker"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextDescription"
@@ -34,9 +34,9 @@
             android:imeOptions="actionNext"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            app:floatingLabel="normal"
-            app:floatingLabelText="@string/bucket_hint_description"
-            app:primaryColor="@color/theme_main_darker"/>
+            app:met_floatingLabel="normal"
+            app:met_floatingLabelText="@string/bucket_hint_description"
+            app:met_primaryColor="@color/theme_main_darker"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -69,9 +69,9 @@
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            app:floatingLabel="highlight"
-            app:floatingLabelText="@string/bucket_hint_time"
-            app:primaryColor="@color/theme_main_darker"/>
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="@string/bucket_hint_time"
+            app:met_primaryColor="@color/theme_main_darker"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextPeople"
@@ -82,9 +82,9 @@
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            app:floatingLabel="normal"
-            app:floatingLabelText="@string/bucket_hint_people"
-            app:primaryColor="@color/theme_main_darker"/>
+            app:met_floatingLabel="normal"
+            app:met_floatingLabelText="@string/bucket_hint_people"
+            app:met_primaryColor="@color/theme_main_darker"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextTags"
@@ -95,9 +95,9 @@
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
-            app:floatingLabel="highlight"
-            app:floatingLabelText="@string/bucket_hint_tags"
-            app:primaryColor="@color/theme_main_darker"/>
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="@string/bucket_hint_tags"
+            app:met_primaryColor="@color/theme_main_darker"/>
 
         <TextView
             android:layout_width="wrap_content"

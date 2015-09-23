@@ -60,7 +60,7 @@ android {
             applicationId "com.worldventures.dreamtrips.dev"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId: "com.worldventures.dreamtrips.dev"]
+                                    appId         : "com.worldventures.dreamtrips.dev"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -72,7 +72,7 @@ android {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId: "com.worldventures.dreamtrips.stage"]
+                                    appId         : "com.worldventures.dreamtrips.stage"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -86,7 +86,7 @@ android {
             applicationId "com.worldventures.dreamtrips"
 
             manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa",
-                                    appId: "com.worldventures.dreamtrips"]
+                                    appId         : "com.worldventures.dreamtrips"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
 
@@ -141,7 +141,8 @@ android {
     lintOptions {
         disable 'MissingTranslation' // otherwise generated strings fucks you up
         abortOnError false
-        checkReleaseBuilds false // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
+        checkReleaseBuilds false
+        // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
     }
     packagingOptions {
         exclude 'LICENSE.txt'
@@ -172,18 +173,18 @@ dependencies {
     compile 'io.techery:ijkmediaplayer:0.4.0@aar'
     compile 'io.techery:ijkmediawidget:0.4.0@aar'
     // 3rd services
-    compile 'com.amazonaws:aws-android-sdk-core:2.2.5'
-    compile 'com.amazonaws:aws-android-sdk-s3:2.2.5'
+    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
     compile 'com.google.android.gms:play-services-maps:7.8.0'
     compile 'com.google.android.gms:play-services-analytics:7.8.0'
     compile 'com.google.android.gms:play-services-gcm:7.8.0'
     compile 'com.instabug.library:instabugsupport:1.7'
     compile 'net.hockeyapp.android:HockeySDK:3.5.0'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
-    compile('com.twitter.sdk.android:twitter:1.3.0@aar') {
+    compile('com.twitter.sdk.android:twitter:1.8.0@aar') {
         transitive = true;
     }
-    compile 'com.apptentive:apptentive-android:1.7.3@aar'
+    compile 'com.apptentive:apptentive-android:2.0.1@aar'
     // Ui
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile 'com.android.support:design:23.0.1'
@@ -193,37 +194,42 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:cardview-v7:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
-    compile 'com.rengwuxian.materialedittext:library:1.8.3'
-    compile 'com.getbase:floatingactionbutton:1.9.1'
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    compile 'com.getbase:floatingactionbutton:1.10.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
-    compile 'com.afollestad:material-dialogs:0.7.4.1'
+    compile('com.afollestad.material-dialogs:core:0.8.0.1@aar') {
+        transitive = true
+    }
+    compile('com.afollestad.material-dialogs:commons:0.8.0.1@aar') {
+        transitive = true
+    }
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.4.4@aar'
     compile 'com.github.techery:material-range-bar:d5f61f2f50'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.7.4'
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
-    compile 'me.relex:circleindicator:1.0.0@aar'
-    compile 'com.ms-square:expandableTextView:0.1.3'
+    compile 'me.relex:circleindicator:1.1.5@aar'
+    compile 'com.ms-square:expandableTextView:0.1.4'
     compile 'com.github.daimajia:AndroidSwipeLayout:6f6498e549733e49dba2f6808c2ddeb218d1ac3e'
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
     compile 'com.github.almozavr:FabButton:c68e57ba0f'
     compile 'com.github.man4ik:poly-picker:fce2e41f00'
     compile 'com.github.techery:AndroidImageZoomCrop:1.0.7'
-    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.1'
+    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
 
     // Util
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-annotations:23.0.1'
     compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.jakewharton.timber:timber:2.7.1'
+    compile 'com.jakewharton.timber:timber:3.1.0'
     compile 'com.innahema:collections-query:0.2.9'
-    compile 'joda-time:joda-time:2.7'
+    compile 'net.danlew:android.joda:2.8.2'
     compile 'com.badoo.mobile:android-weak-handler:1.1'
-    compile 'frankiesardo:icepick:3.0.2'
-    apt 'frankiesardo:icepick-processor:3.0.2'
+    compile 'frankiesardo:icepick:3.1.0'
+    apt 'frankiesardo:icepick-processor:3.1.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
-    compile 'com.github.pwittchen:networkevents:2.0.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+    compile 'com.github.pwittchen:networkevents:2.1.1'
 }
 
 apply plugin: "de.felixschulze.gradle.hockeyapp"

@@ -39,10 +39,10 @@
                 android:hint="@string/profile_birth_hint"
                 android:inputType="none"
                 android:textIsSelectable="true"
-                app:baseColor="@android:color/black"
-                app:floatingLabel="normal"
-                app:hideUnderline="true"
-                app:primaryColor="@android:color/transparent"/>
+                app:met_baseColor="@android:color/black"
+                app:met_floatingLabel="normal"
+                app:met_hideUnderline="true"
+                app:met_primaryColor="@android:color/transparent"/>
 
         </LinearLayout>
 
@@ -82,10 +82,10 @@
                 android:minWidth="300dp"
                 android:focusable="false"
                 android:hint="@string/profile_user_id_hint"
-                app:baseColor="@android:color/black"
-                app:floatingLabel="normal"
-                app:hideUnderline="true"
-                app:primaryColor="@android:color/transparent"/>
+                app:met_baseColor="@android:color/black"
+                app:met_floatingLabel="normal"
+                app:met_hideUnderline="true"
+                app:met_primaryColor="@android:color/transparent"/>
 
         </LinearLayout>
 

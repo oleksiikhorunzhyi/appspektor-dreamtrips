@@ -16,16 +16,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
+import icepick.State;
 
 
 public class FriendListPresenter extends BaseUserListPresenter<FriendListPresenter.View> {
 
-    @Icicle
+    @State
     Circle selectedCircle;
-    @Icicle
+    @State
     String query;
-    @Icicle
+    @State
     int position = 0;
 
     @Inject

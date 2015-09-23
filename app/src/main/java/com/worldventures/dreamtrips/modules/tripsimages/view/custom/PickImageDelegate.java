@@ -15,7 +15,7 @@ import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 import nl.changer.polypicker.ImagePickerActivity;
 import nl.changer.polypicker.IntentBuilder;
 import timber.log.Timber;
@@ -31,11 +31,11 @@ public class PickImageDelegate implements ImageChooserListener {
 
     private Activity activity;
 
-    @Icicle
+    @State
     int requestType;
-    @Icicle
+    @State
     String filePath;
-    @Icicle
+    @State
     int requesterId;
 
     private ImageChooserManager imageChooserManager;

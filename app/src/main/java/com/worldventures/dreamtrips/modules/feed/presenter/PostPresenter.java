@@ -25,7 +25,8 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
 
@@ -34,7 +35,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     @Inject
     SnappyRepository snapper;
 
-    @Icicle
+    @State
     CachedPostEntity cachedPostEntity;
 
     public PostPresenter() {

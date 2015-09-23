@@ -40,6 +40,7 @@ public class FriendCell extends AbstractCell<User> {
     protected void syncUIStateWithModel() {
         User user = getModelObject();
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+        userPhoto.invalidate(); // workaround for samsung devices
         tvName.setText(user.getFullName());
         if (!TextUtils.isEmpty(getModelObject().getCompany())) {
             companyName.setText(getModelObject().getCompany());

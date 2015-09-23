@@ -185,7 +185,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         if (view.isVisibleOnScreen()) openUser(event.getUser());
     }
 
-    private void openUser(User user) {
+    protected void openUser(User user) {
         NavigationBuilder.create().with(activityRouter)
                 .data(new UserBundle(user))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

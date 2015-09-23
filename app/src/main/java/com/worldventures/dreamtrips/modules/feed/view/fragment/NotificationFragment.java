@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
@@ -21,6 +22,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
+import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
@@ -47,13 +49,16 @@ import butterknife.InjectView;
 public class NotificationFragment extends BaseFragment<NotificationPresenter> implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.notifications)
-    RecyclerView notifications;
+    EmptyRecyclerView notifications;
 
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
+
+    @InjectView(R.id.ll_empty_view)
+    protected ViewGroup emptyView;
 
     private NotificationAdapter adapter;
 
@@ -120,7 +125,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
                 .build();
 
         notifications.addItemDecoration(decoration);
-
+        notifications.setEmptyView(emptyView);
     }
 
 

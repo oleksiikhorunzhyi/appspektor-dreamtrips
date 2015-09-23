@@ -126,6 +126,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         makePost();
     }
 
+    @Override
+    protected void openUser(User user) {
+        if (this.user.getId() != user.getId()) {
+            super.openUser(user);
+        }
+    }
+
     public interface View extends BaseFeedPresenter.View {
         Bundle getArguments();
 

@@ -6,14 +6,15 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class PostEditPresenter extends PostPresenter {
 
-    @Icicle
+    @State
     TextualPost textualPost;
 
-    @Icicle
+    @State
     String IMMUTABLE_INPUT;
 
     public PostEditPresenter(PostBundle postBundle) {

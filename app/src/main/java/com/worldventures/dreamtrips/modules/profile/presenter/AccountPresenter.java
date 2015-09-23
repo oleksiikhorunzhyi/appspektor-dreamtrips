@@ -35,7 +35,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
+import icepick.State;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
 
@@ -46,9 +46,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     private String coverTempFilePath;
 
-    @Icicle
+    @State
     boolean shouldReload;
-    @Icicle
+    @State
     int callbackType;
 
     int REQUESTER_ID = 3745742;

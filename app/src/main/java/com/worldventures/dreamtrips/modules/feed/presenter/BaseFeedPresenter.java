@@ -44,14 +44,15 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extends Presenter<V> {
 
     private int previousTotal = 0;
     private boolean loading = true;
 
-    @Icicle
+    @State
     protected ArrayList<BaseEventModel> feedItems;
 
     @Inject

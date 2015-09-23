@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -302,7 +301,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
 
     @Override
     public void showError() {
-        editTextDescription.checkCharactersCount();
+        editTextDescription.validate();
     }
 
 

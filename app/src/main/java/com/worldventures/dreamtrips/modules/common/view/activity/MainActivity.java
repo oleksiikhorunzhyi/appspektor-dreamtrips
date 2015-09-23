@@ -26,7 +26,8 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.Optional;
-import icepick.Icicle;
+import icepick.State;
+
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
@@ -49,9 +50,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
 
-    @Icicle
+    @State
     protected ComponentDescription currentComponent;
-    @Icicle
+    @State
     protected boolean toolbarGone;
 
     private NavigationDrawerFragment navigationDrawerFragment;

@@ -4,11 +4,12 @@ import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItem
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class ForeignBucketTabPresenter extends BucketTabsPresenter {
 
-    @Icicle
+    @State
     protected int userId;
 
     @Inject

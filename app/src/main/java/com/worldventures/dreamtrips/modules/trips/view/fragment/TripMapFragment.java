@@ -30,7 +30,8 @@ import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
 import butterknife.InjectView;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
+
 
 @Layout(R.layout.fragment_trip_map)
 @MenuResource(R.menu.menu_map)
@@ -45,8 +46,9 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
     protected GoogleMap googleMap;
     private Bundle mapBundle;
     private static final String KEY_MAP = "map";
-    @Icicle LatLng selectedLocation;
-    @Icicle boolean searchOpened;
+    @State LatLng selectedLocation;
+    @State
+    boolean searchOpened;
 
 
     @Override

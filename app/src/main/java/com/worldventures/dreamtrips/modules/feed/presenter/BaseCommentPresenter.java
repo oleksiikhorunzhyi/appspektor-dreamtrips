@@ -36,17 +36,18 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import java.util.ArrayList;
 import java.util.List;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private int page = 1;
     private int commentsCount = 0;
 
-    @Icicle
+    @State
     BaseEventModel feedModel;
-    @Icicle
+    @State
     IFeedObject feedEntity;
-    @Icicle
+    @State
     String comment;
 
     public BaseCommentPresenter(BaseEventModel feedModel) {

@@ -184,7 +184,7 @@ dependencies {
     compile('com.twitter.sdk.android:twitter:1.8.0@aar') {
         transitive = true;
     }
-    compile 'com.apptentive:apptentive-android:2.0.1@aar'
+    compile 'com.apptentive:apptentive-android:1.7.3@aar'
     // Ui
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile 'com.android.support:design:23.0.1'

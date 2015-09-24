@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
@@ -31,9 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
-import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
@@ -51,24 +50,24 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_notifications)
 public class NotificationFragment extends BaseFragment<NotificationPresenter> implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.notifications)
-    EmptyRecyclerView notifications;
-
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
+
+    @InjectView(R.id.notifications)
+    EmptyRecyclerView notifications;
+
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
-
     @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
+    ViewGroup emptyView;
 
-    private NotificationAdapter adapter;
+    NotificationAdapter adapter;
+    RecyclerViewStateDelegate stateDelegate;
 
-    private RecyclerViewStateDelegate stateDelegate;
+    BadgeImageView friendsBadge;
 
     WeakHandler weakHandler = new WeakHandler();
-    private BadgeImageView friendsBadge;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +79,6 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         friendsBadge = (BadgeImageView) menu.findItem(R.id.action_friend_requests).getActionView();
         friendsBadge.setOnClickListener(v ->
                 NavigationBuilder.create()
@@ -120,18 +118,19 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         swipeContainer.setOnRefreshListener(this);
         swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
 
-
+        NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(), R.layout.adapter_item_notification_divider, item -> () -> {
+            if (item instanceof BaseEventModel) {
+                return getString(((BaseEventModel) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
+            } else return null;
+        });
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
+                .setStickyHeadersAdapter(headerAdapter, false)
                 .setRecyclerView(notifications)
-                .setStickyHeadersAdapter(new NotificationHeaderAdapter(adapter.getItems(),
-                        R.layout.adapter_item_notification_divider), false)
                 .build();
-
         notifications.addItemDecoration(decoration);
         notifications.setEmptyView(emptyView);
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -172,7 +171,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
 
     @Override
     public void refreshFeedItems(List<BaseEventModel> events, boolean needLoader) {
-        adapter.itemsUpdated(events);
+        adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
     }
 
@@ -188,7 +187,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         }
     }
 
-    public static class NotificationAdapter extends DiffArrayListAdapter {
+    public static class NotificationAdapter extends BaseArrayListAdapter {
 
         private static final long LOADER_ID = Long.MIN_VALUE;
 
@@ -198,12 +197,8 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
 
         @Override
         public long getItemId(int position) {
-            Object object = super.getItem(position);
-            if (object instanceof BaseEventModel) {
-                return ((BaseEventModel)object).getId();
-            } else {
-                return LOADER_ID;
-            }
+            long id = super.getItemId(position);
+            return id != RecyclerView.NO_ID ? id : LOADER_ID;
         }
 
     }

@@ -4,12 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.techery.spares.adapter.HeaderItem;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 
 import java.util.ArrayList;
 
-public class InviteTemplate extends BaseEntity implements Parcelable, SuccessStoryHeaderAdapter.HeaderItem {
+public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem {
 
     private String title;
     private CoverImage coverImage;

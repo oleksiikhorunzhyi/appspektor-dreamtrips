@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
@@ -56,8 +55,6 @@ import dagger.Provides;
                 PostPresenter.class,
                 PostFragment.class,
                 PostEditPresenter.class,
-
-                DiffArrayListAdapter.class,
 
                 NotificationFragment.class,
                 NotificationPresenter.class,

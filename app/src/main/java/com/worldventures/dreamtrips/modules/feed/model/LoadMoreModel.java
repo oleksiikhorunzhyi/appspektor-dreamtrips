@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
+import com.techery.spares.adapter.HeaderItem;
 
-public class LoadMoreModel implements NotificationHeaderAdapter.HeaderItem {
+public class LoadMoreModel implements HeaderItem {
 
     @Override
     public String getHeaderTitle() {

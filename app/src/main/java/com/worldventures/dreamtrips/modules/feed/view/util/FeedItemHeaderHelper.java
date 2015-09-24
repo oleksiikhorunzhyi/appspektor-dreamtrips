@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -80,7 +81,7 @@ public class FeedItemHeaderHelper {
                                         feedModel.getItem().getLikesCount(),
                                         feedModel.getItem().getLikesCount()));
                     } else {
-                        text = Html.fromHtml(context.getResources()
+                        text = Html.fromHtml(new PluralResources(context.getResources())
                                 .getQuantityString(R.plurals.users_who_liked_with_name,
                                         feedModel.getItem().getLikesCount() - 1,
                                         feedModel.getItem().getFirstUserLikedItem(),

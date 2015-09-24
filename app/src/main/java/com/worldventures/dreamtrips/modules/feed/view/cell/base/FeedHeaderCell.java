@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 
 import android.app.Dialog;
-import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.PopupMenu;
@@ -17,11 +16,11 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
@@ -169,14 +168,9 @@ public abstract class FeedHeaderCell<T extends BaseEventModel> extends AbstractC
     }
 
     protected void openComments(BaseEventModel baseFeedModel, boolean openKeyboard) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(CommentsFragment.EXTRA_FEED_ITEM, baseFeedModel);
-        bundle.putBoolean(CommentsFragment.EXTRA_OPEN_COMMENT_KEYBOARD, openKeyboard);
-        //
         NavigationBuilder.create()
                 .with(activityRouter)
-                .args(bundle)
-                .data(baseFeedModel)
+                .data(new CommentsBundle(baseFeedModel, openKeyboard))
                 .move(Route.COMMENTS);
     }
 

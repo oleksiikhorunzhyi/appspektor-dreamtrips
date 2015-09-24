@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
@@ -45,9 +46,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_comments)
-public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter, BaseEventModel> implements BaseCommentPresenter.View {
-    public static final String EXTRA_FEED_ITEM = "item";
-    public static final String EXTRA_OPEN_COMMENT_KEYBOARD = "EXTRA_OPEN_COMMENT_KEYBOARD";
+public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter, CommentsBundle> implements BaseCommentPresenter.View {
     public static final int HEADER_COUNT = 2;
 
     @InjectView(R.id.commentsList)
@@ -79,7 +78,7 @@ public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter,
 
     @Override
     protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new BaseCommentPresenter(getArgs());
+        return new BaseCommentPresenter(getArgs().getBaseEventModel());
     }
 
     @Override
@@ -115,7 +114,7 @@ public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter,
         commentsList.setLayoutManager(linearLayoutManager);
         commentsList.setAdapter(adapter);
 
-        if (getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false)) {
+        if (getArgs().isOpenKeyboard()) {
             SoftInputUtil.showSoftInputMethod(input);
         }
         restorePostIfNeeded();
@@ -133,7 +132,7 @@ public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter,
     public void onResume() {
         super.onResume();
         input.addTextChangedListener(inputWatcher);
-}
+    }
 
     @Override
     public void onPause() {
@@ -149,7 +148,7 @@ public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter,
     @Override
     public void addComments(List<Comment> commentList) {
         boolean scrollToBottom = adapter.getItems().size() <= HEADER_COUNT
-                && getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false);
+                && getArgs().isOpenKeyboard();
         adapter.addItems(HEADER_COUNT, commentList);
         stateDelegate.restoreStateIfNeeded();
 

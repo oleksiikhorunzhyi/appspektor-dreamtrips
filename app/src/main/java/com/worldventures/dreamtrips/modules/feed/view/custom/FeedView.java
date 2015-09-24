@@ -57,15 +57,15 @@ public class FeedView extends RecyclerView {
         stateDelegate.onCreate(savedInstanceState);
 
         this.adapter = adapter;
-        this.adapter.registerCell(User.class, ProfileCell.class);
-        this.adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
+        adapter.registerCell(User.class, ProfileCell.class);
+        adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
 
-        this.adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
-        this.adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
-        this.adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
-        this.adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
+        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
+        adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
+        adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
+        adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
 
-        this.adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
+        adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
         adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
         layoutManager = new LinearLayoutManager(getContext());

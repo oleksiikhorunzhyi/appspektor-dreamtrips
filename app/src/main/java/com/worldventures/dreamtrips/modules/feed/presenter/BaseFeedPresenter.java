@@ -31,7 +31,6 @@ import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
@@ -51,7 +50,7 @@ import icepick.State;
 public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extends Presenter<V> {
 
     private boolean loading = true;
-    private boolean isEnd = false;
+    private boolean noMoreFeeds = false;
 
     @State
     protected ArrayList<BaseEventModel> feedItems;
@@ -70,7 +69,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void takeView(V view) {
         super.takeView(view);
         if (feedItems.size() != 0) {
-            view.refreshFeedItems(feedItems, !isEnd);
+            view.refreshFeedItems(feedItems, !noMoreFeeds);
         } else {
             refreshFeed();
         }
@@ -99,7 +98,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     protected void refreshFeedSucceed(List<ParentFeedModel> freshItems) {
         loading = false;
-        isEnd = freshItems == null || freshItems.size() == 0;
+        noMoreFeeds = freshItems == null || freshItems.size() == 0;
         view.finishLoading();
         feedItems.clear();
         feedItems.addAll(Queryable.from(freshItems)
@@ -107,7 +106,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
                 .map(element -> element.getItems().get(0))
                 .toList());
 
-        view.refreshFeedItems(feedItems, !isEnd);
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     /////////////////////////////////////
@@ -118,7 +117,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void scrolled(int totalItemCount, int lastVisible) {
         if (featureManager.available(Feature.SOCIAL)) {
-            if (!loading && !isEnd
+            if (!loading && !noMoreFeeds
                     && lastVisible == totalItemCount - 1) {
                 loading = true;
                 loadMore();
@@ -135,13 +134,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     protected void addFeedItems(List<ParentFeedModel> olderItems) {
         loading = false;
-        isEnd = olderItems == null || olderItems.size() == 0;
+        noMoreFeeds = olderItems == null || olderItems.size() == 0;
         feedItems.addAll(Queryable.from(olderItems)
                 .filter(ParentFeedModel::isSingle)
                 .map(element -> element.getItems().get(0))
                 .toList());
 
-        view.refreshFeedItems(feedItems, !isEnd);
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     protected void loadMoreItemsError(SpiceException spiceException){
@@ -159,7 +158,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(FeedItemAddedEvent event) {
         feedItems.add(0, event.getBaseEventModel());
-        view.refreshFeedItems(feedItems, !isEnd);
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     public void onEvent(FeedEntityChangedEvent event) {
@@ -171,7 +170,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
             }
         });
 
-        view.refreshFeedItems(feedItems, !isEnd);
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     public void onEvent(FeedEntityCommentedEvent event) {
@@ -181,7 +180,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
             }
         });
 
-        view.refreshFeedItems(feedItems, !isEnd);
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     public void onEvent(OnFeedReloadEvent event) {
@@ -221,7 +220,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
             }
         });
 
-        view.refreshFeedItems(feedItems, !isEnd);
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     public void onEvent(DeletePostEvent event) {
@@ -269,7 +268,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         feedItems.clear();
         feedItems.addAll(filteredItems);
 
-        view.refreshFeedItems(feedItems, !isEnd);
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     public interface View extends Presenter.View {
@@ -277,7 +276,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
         void finishLoading();
 
-        void refreshFeedItems(List<BaseEventModel> events, boolean isNeedLoader);
+        void refreshFeedItems(List<BaseEventModel> events, boolean needLoader);
 
     }
 

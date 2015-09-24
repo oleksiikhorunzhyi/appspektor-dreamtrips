@@ -171,9 +171,9 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
-    public void refreshFeedItems(List<BaseEventModel> events, boolean isNeedLoadMore) {
+    public void refreshFeedItems(List<BaseEventModel> events, boolean needLoader) {
         adapter.itemsUpdated(events);
-        if (isNeedLoadMore) adapter.addItem(new LoadMoreModel());
+        if (needLoader) adapter.addItem(new LoadMoreModel());
     }
 
     @Override

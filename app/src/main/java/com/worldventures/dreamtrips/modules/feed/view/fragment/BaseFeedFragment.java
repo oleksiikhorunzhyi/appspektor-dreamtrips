@@ -93,8 +93,8 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     }
 
     @Override
-    public void refreshFeedItems(List<BaseEventModel> events, boolean isNeedLoader) {
+    public void refreshFeedItems(List<BaseEventModel> events, boolean needLoader) {
         adapter.itemsUpdated(events);
-        if (isNeedLoader) adapter.addItem(new LoadMoreModel());
+        if (needLoader) adapter.addItem(new LoadMoreModel());
     }
 }

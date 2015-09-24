@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,19 +34,22 @@ public class NotificationHeaderAdapter implements StickyHeadersAdapter<Notificat
 
     @Override
     public void onBindViewHolder(NotificationHeaderViewHolder headerViewHolder, int i) {
-        headerViewHolder.letter.setText(items.get(i).getHeaderTitle().toUpperCase());
-        headerViewHolder.itemView.setVisibility( items.get(i).getHeaderTitle().contentEquals(HeaderItem.NON_SHOWING_HEADER_VALUE)?
-                                                    View.GONE : View.VISIBLE);
+        String headerTitle = items.get(i).getHeaderTitle();
+        headerViewHolder.itemView.setVisibility(headerTitle == null ? View.GONE : View.VISIBLE);
+        if (headerTitle != null) headerViewHolder.letter.setText(headerTitle.toUpperCase());
     }
 
     @Override
     public long getHeaderId(int i) {
-        String category = items.get(i).getHeaderTitle();
-        int index = 0;
-        for (int i1 = 0; i1 < category.length(); i1++) {
-            index += category.charAt(i1);
+        String categoryTitle = items.get(i).getHeaderTitle();
+        int headerId = 0;
+
+        if (categoryTitle == null) return headerId;
+
+        for (int cursor = 0; cursor < categoryTitle.length(); cursor++) {
+            headerId += categoryTitle.charAt(cursor);
         }
-        return index;
+        return headerId;
     }
 
 
@@ -60,10 +64,10 @@ public class NotificationHeaderAdapter implements StickyHeadersAdapter<Notificat
     }
 
 
-
     public interface HeaderItem {
-        String NON_SHOWING_HEADER_VALUE = "";
 
+        @Nullable
         String getHeaderTitle();
+
     }
 }

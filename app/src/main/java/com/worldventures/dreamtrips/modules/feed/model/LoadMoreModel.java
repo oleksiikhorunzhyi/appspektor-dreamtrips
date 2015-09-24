@@ -6,6 +6,6 @@ public class LoadMoreModel implements NotificationHeaderAdapter.HeaderItem {
 
     @Override
     public String getHeaderTitle() {
-        return NON_SHOWING_HEADER_VALUE;
+        return null;
     }
 }

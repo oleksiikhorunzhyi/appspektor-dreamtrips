@@ -46,6 +46,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
+        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
         setRecentBucketItemsCounts();
     }
 

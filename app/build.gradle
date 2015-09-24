@@ -83,6 +83,22 @@ android {
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             resValue "string", "facebook_app_id", "761062457321921"
         }
+        perf {
+            // the same as stage except API endpoint
+            applicationId "com.worldventures.dreamtrips.perf"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+
+            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
+                                    appId         : "com.worldventures.dreamtrips.perf"]
+
+            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz/"'
+
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            resValue "string", "facebook_app_id", "761062457321921"
+        }
         prod {
             applicationId "com.worldventures.dreamtrips"
 
@@ -240,16 +256,19 @@ hockeyapp {
     variantToApiToken = [
             stageDebug  : 'ba6b9a28a53947f287f62fdaed6086ad',
             stageRelease: 'c0cccff726ec45f28237523fa3918769',
-            prodRelease : '7bfe2802eb7947968190f0a0d1555fe2'
+            perfDebug   : 'a4bdfbd09db6462d9e6b41e84124d0f7',
+            prodRelease : '7bfe2802eb7947968190f0a0d1555fe2',
     ]
     variantToApplicationId = [
             stageDebug  : '48de37eaf46ec363d392ae15ae521df6',
             stageRelease: 'e25cd69fc32f855a3aab0f85f9ee8e58',
-            prodRelease : '4fc6063859b3388635cb834dbb004324'
+            perfDebug   : '48de37eaf46ec363d392ae15ae521df6',
+            prodRelease : '4fc6063859b3388635cb834dbb004324',
     ]
     variantToStatus = [
             stageDebug  : '2',
             stageRelease: '2',
+            perfDebug   : '2',
             prodRelease : '1'
     ]
     notes = rootProject.hasProperty('releaseNotes') ? rootProject.releaseNotes : ''

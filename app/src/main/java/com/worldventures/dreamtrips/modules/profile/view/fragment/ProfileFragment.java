@@ -7,17 +7,15 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -107,7 +105,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     @Override
     public void setUser(User user) {
         if (adapter.getItems().contains(user)) {
-            adapter.itemUpdated(user);
+            adapter.updateItem(user);
         } else {
             adapter.addItem(0, user);
             adapter.notifyItemInserted(0);
@@ -149,7 +147,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     }
 
     @Override
-    protected DiffArrayListAdapter getAdapter() {
+    protected BaseArrayListAdapter getAdapter() {
         return new IgnoreFirstItemAdapter(feedView.getContext(), injectorProvider);
     }
 

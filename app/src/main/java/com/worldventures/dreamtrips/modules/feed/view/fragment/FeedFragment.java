@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
@@ -19,9 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
 import javax.inject.Inject;
@@ -82,8 +81,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     @Override
-    public DiffArrayListAdapter getAdapter() {
-        return new DiffArrayListAdapter<>(feedView.getContext(), injectorProvider);
+    public BaseArrayListAdapter getAdapter() {
+        return new BaseArrayListAdapter<>(feedView.getContext(), injectorProvider);
     }
 
     public void openPost() {

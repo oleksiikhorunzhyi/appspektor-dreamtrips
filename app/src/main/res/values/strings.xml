@@ -429,4 +429,8 @@
 
     <string name="error_webview_no_internet">There is no internet connection. Please, fix the problem and reload page.</string>
     <string name="error_webview_default">There is a connection problem. Try to reload page.</string>
+
+    <string name="notifaction_new">New</string>
+    <string name="notifaction_older">Older</string>
+
 </resources>

@@ -7,19 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
-import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 
 import java.util.List;
 
@@ -38,7 +32,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     private WeakHandler weakHandler;
     private Bundle savedInstanceState;
 
-    protected DiffArrayListAdapter adapter;
+    protected BaseArrayListAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +65,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
         if (container != null) container.setVisibility(View.VISIBLE);
     }
 
-    protected abstract DiffArrayListAdapter getAdapter();
+    protected abstract BaseArrayListAdapter getAdapter();
 
     @Override
     public void onRefresh() {
@@ -94,7 +88,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
     @Override
     public void refreshFeedItems(List<BaseEventModel> events, boolean needLoader) {
-        adapter.itemsUpdated(events);
+        adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
     }
 }

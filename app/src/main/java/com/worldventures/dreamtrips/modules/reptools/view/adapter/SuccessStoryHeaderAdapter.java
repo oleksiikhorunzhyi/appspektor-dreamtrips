@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 import com.worldventures.dreamtrips.R;
+import com.techery.spares.adapter.HeaderItem;
 
 import java.util.List;
 
@@ -57,7 +58,4 @@ public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessSt
         }
     }
 
-    public interface HeaderItem {
-        String getHeaderTitle();
-    }
 }

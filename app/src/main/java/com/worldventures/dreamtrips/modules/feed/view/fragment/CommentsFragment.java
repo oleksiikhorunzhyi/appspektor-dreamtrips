@@ -17,6 +17,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
@@ -44,7 +45,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_comments)
-public class CommentsFragment extends BaseFragment<BaseCommentPresenter> implements BaseCommentPresenter.View {
+public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter, BaseEventModel> implements BaseCommentPresenter.View {
     public static final String EXTRA_FEED_ITEM = "item";
     public static final String EXTRA_OPEN_COMMENT_KEYBOARD = "EXTRA_OPEN_COMMENT_KEYBOARD";
     public static final int HEADER_COUNT = 2;
@@ -78,8 +79,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
     @Override
     protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new BaseCommentPresenter((BaseEventModel) getArguments().
-                getSerializable(EXTRA_FEED_ITEM));
+        return new BaseCommentPresenter(getArgs());
     }
 
     @Override

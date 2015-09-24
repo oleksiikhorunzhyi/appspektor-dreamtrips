@@ -8,6 +8,7 @@ import com.techery.spares.module.DebugModule;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
+import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 
 import dagger.Module;
@@ -34,7 +35,9 @@ import dagger.Provides;
                 //
                 RouteCreatorModule.class,
                 //
-                GcmModule.class
+                GcmModule.class,
+                //
+                ResponseSnifferModule.class
         },
         library = true,
         complete = false,

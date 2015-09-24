@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.innahema.collections.query.queriables.Queryable;
 import com.squareup.okhttp.OkHttpClient;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -16,12 +15,10 @@ import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeserializer;
@@ -29,18 +26,18 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeser
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
+
+import static com.worldventures.dreamtrips.core.utils.InterceptingOkClient.ResponseHeaderListener;
 
 @Module(complete = false, library = true)
 public class ApiModule {
@@ -124,30 +121,12 @@ public class ApiModule {
     }
 
     @Provides
-    OkClient provideOkClient(OkHttpClient okHttpClient, SnappyRepository db, @Global EventBus eventBus) {
+    OkClient provideOkClient(OkHttpClient okHttpClient, Set<ResponseHeaderListener> listeners) {
         InterceptingOkClient interceptingOkClient = new InterceptingOkClient(okHttpClient);
         interceptingOkClient.setResponseHeaderListener(headers -> {
-            saveHeaderCount(SnappyRepository.NOTIFICATIONS_COUNT, headers, db);
-            saveHeaderCount(SnappyRepository.FRIEND_REQUEST_COUNT, headers, db);
-            eventBus.post(new HeaderCountChangedEvent());
+            Queryable.from(listeners).forEachR(arg -> arg.onResponse(headers));
         });
         return interceptingOkClient;
-    }
-
-    private void saveHeaderCount(String key, List<Header> headers, SnappyRepository snappyDB) {
-        Header header = Queryable.from(headers).firstOrDefault(element ->
-                key.equals(element.getName()));
-
-        if (header != null) {
-            int notificationsCount;
-            try {
-                notificationsCount = Integer.parseInt(header.getValue());
-            } catch (Exception e) {
-                notificationsCount = 0;
-            }
-            snappyDB.saveCountFromHeader(key, notificationsCount);
-        }
-
     }
 
     @Provides

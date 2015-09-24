@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
@@ -231,6 +232,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             eventBus.removeStickyEvent(ImagePickedEvent.class);
             imageSelected(event.getImages()[0]);
         }
+    }
+
+
+    public void onEventMainThread(HeaderCountChangedEvent event) {
+        view.setUser(user); //Notify to update ProfileCell
     }
 
     private void imageSelected(ChosenImage chosenImage) {

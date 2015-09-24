@@ -34,18 +34,14 @@ public class BaseEntity implements Serializable, Parcelable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         BaseEntity that = (BaseEntity) o;
-
         return id == that.id;
-
     }
 
     @Override
     public int hashCode() {
         return id;
     }
-
 
     @Override
     public int describeContents() {

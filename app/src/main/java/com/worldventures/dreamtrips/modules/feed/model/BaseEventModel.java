@@ -114,11 +114,13 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity {
 
         BaseEventModel<?> that = (BaseEventModel<?>) o;
 
+        if (item == null && super.equals(that)) return true;
         return !(item != null ? !item.equals(that.item) : that.item != null);
     }
 
     @Override
     public int hashCode() {
+        if (item == null) return super.hashCode();
         return item != null ? item.hashCode() : 0;
     }
 

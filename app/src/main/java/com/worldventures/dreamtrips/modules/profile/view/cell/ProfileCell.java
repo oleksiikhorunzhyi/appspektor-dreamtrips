@@ -223,10 +223,6 @@ public class ProfileCell extends AbstractCell<User> {
         coverProgressBar.setVisibility(user.isCoverUploadInProgress() ? View.VISIBLE : View.GONE);
 
         setBadgeValue();
-
-        if (!getEventBus().isRegistered(this))
-            getEventBus().register(this);
-
     }
 
     private boolean isAccount() {
@@ -358,15 +354,15 @@ public class ProfileCell extends AbstractCell<User> {
             getEventBus().unregister(this);
     }
 
-    public void onEventMainThread(HeaderCountChangedEvent event) {
-        setBadgeValue();
-    }
-
-    public void setBadgeValue() {
-        int badgeCount = snapper.getFriendsRequestsCount();
-        if (badgeCount > 0) {
-            badge.setVisibility(View.VISIBLE);
-            badge.setText(String.valueOf(badgeCount));
+    private void setBadgeValue() {
+        if (isAccount()) {
+            int badgeCount = snapper.getFriendsRequestsCount();
+            if (badgeCount > 0) {
+                badge.setVisibility(View.VISIBLE);
+                badge.setText(String.valueOf(badgeCount));
+            } else {
+                badge.setVisibility(View.INVISIBLE);
+            }
         } else {
             badge.setVisibility(View.INVISIBLE);
         }

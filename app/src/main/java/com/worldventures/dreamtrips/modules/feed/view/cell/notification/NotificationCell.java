@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
@@ -171,7 +172,7 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
     private void openComments() {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .data(getModelObject())
+                .data(new CommentsBundle(getModelObject()))
                 .move(Route.COMMENTS);
     }
 

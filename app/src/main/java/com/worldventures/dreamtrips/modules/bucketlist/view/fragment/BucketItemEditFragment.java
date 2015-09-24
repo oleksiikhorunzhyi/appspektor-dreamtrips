@@ -89,6 +89,14 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     public void onResume() {
         super.onResume();
         initAutoCompleteDate();
+
+        if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Optional
@@ -135,8 +143,6 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         bucketPhotosView.init(injector, BucketPhotosView.Type.EDIT);
-
-        if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
 
         if (imageViewDone != null) {
             setHasOptionsMenu(false);

@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.DiffArrayListAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
@@ -91,7 +93,8 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     }
 
     @Override
-    public void refreshFeedItems(List<BaseEventModel> events) {
+    public void refreshFeedItems(List<BaseEventModel> events, boolean needLoader) {
         adapter.itemsUpdated(events);
+        if (needLoader) adapter.addItem(new LoadMoreModel());
     }
 }

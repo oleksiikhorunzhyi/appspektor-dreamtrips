@@ -15,11 +15,14 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
 import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
+import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
@@ -54,15 +57,16 @@ public class FeedView extends RecyclerView {
         stateDelegate.onCreate(savedInstanceState);
 
         this.adapter = adapter;
-        this.adapter.registerCell(User.class, ProfileCell.class);
-        this.adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
+        adapter.registerCell(User.class, ProfileCell.class);
+        adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
 
-        this.adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
-        this.adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
-        this.adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
-        this.adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
+        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
+        adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
+        adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
+        adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
 
-        this.adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
+        adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
+        adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
         layoutManager = new LinearLayoutManager(getContext());
         setLayoutManager(layoutManager);

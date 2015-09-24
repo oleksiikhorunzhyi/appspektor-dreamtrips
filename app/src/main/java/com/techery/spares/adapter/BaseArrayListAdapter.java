@@ -55,8 +55,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
-        this.injector.get().inject(cell);
-        cell.afterInject();
+        if (cell.shouldInject()) {
+            this.injector.get().inject(cell);
+            cell.afterInject();
+        }
         return cell;
     }
 

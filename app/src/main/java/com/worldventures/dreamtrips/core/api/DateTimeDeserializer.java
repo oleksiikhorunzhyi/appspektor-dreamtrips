@@ -6,13 +6,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
@@ -29,8 +27,8 @@ public class DateTimeDeserializer implements JsonDeserializer<Date> {
             throws JsonParseException {
         for (DateFormat format : dateFormats) {
             try {
+                format.setTimeZone(TimeZone.getTimeZone("UTC"));
                 Date date = format.parse(json.getAsString());
-                date = fixTimeZone(date);
                 return date;
             } catch (ParseException e) {
             }
@@ -39,9 +37,4 @@ public class DateTimeDeserializer implements JsonDeserializer<Date> {
         return null;
     }
 
-    private Date fixTimeZone(Date date) {
-        DateTime dateTime = new DateTime(date);
-        DateTimeZone dateTimeZone = DateTimeZone.getDefault();
-        return dateTime.withZoneRetainFields(DateTimeZone.UTC).withZone(dateTimeZone).toDate();
-    }
 }

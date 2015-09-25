@@ -104,6 +104,7 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
         }
 
         itemView.setOnClickListener(v -> open(getModelObject()));
+        notificationAvatar.setOnClickListener(v -> openProfile(getModelObject().getLinks().getUsers().get(0)));
     }
 
     private void open(BaseEventModel item) {
@@ -141,6 +142,7 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
         NavigationBuilder.create()
                 .with(activityRouter)
                 .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .move(profileRouteCreator.createRoute(user.getId()));
     }
 

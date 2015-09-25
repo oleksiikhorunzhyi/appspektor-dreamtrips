@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
@@ -251,8 +250,12 @@ public class ProfileCell extends AbstractCell<User> {
     private void setImage(Uri uri, SimpleDraweeView draweeView) {
         PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
         if (draweeView.getTag() != null) {
+            if (uri.equals(draweeView.getTag())) {
+                return;
+            }
             builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
         }
+        builder.setOldController(draweeView.getController());
         builder.setImageRequest(ImageRequest.fromUri(uri));
         DraweeController dc = builder.build();
         draweeView.setController(dc);

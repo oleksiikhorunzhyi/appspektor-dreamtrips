@@ -22,8 +22,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -42,10 +43,9 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
-import static com.worldventures.dreamtrips.modules.feed.model.BaseEventModel.Type.UNDEFINED;
 
 @Layout(R.layout.adapter_item_notification)
-public class NotificationCell extends AbstractCell<BaseEventModel> {
+public class NotificationCell extends AbstractCell<FeedItem> {
 
     @Optional
     @InjectView(R.id.notification_avatar)
@@ -107,14 +107,15 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
         notificationAvatar.setOnClickListener(v -> openProfile(getModelObject().getLinks().getUsers().get(0)));
     }
 
-    private void open(BaseEventModel item) {
-        if (item.getType() != UNDEFINED) openByType(getModelObject().getItem(), item.getType());
+    private void open(FeedItem item) {
+        if (item.getType() != Type.UNDEFINED)
+            openByType(getModelObject().getItem(), item.getType());
         else if (item.getAction() != null)
             openByAction(getModelObject().getLinks(), item.getAction());
         else Timber.w("Can't open event model by type or action");
     }
 
-    private void openByType(IFeedObject item, BaseEventModel.Type type) {
+    private void openByType(FeedEntity item, Type type) {
         switch (type) {
             case TRIP:
                 openTrip((TripModel) item);
@@ -127,7 +128,7 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
         }
     }
 
-    private void openByAction(Links links, BaseEventModel.Action action) {
+    private void openByAction(Links links, FeedItem.Action action) {
         switch (action) {
             case REJECT_REQUEST:
             case SEND_REQUEST:

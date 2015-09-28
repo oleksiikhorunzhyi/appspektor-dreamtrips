@@ -6,7 +6,7 @@ import android.os.Parcel;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
-public class FeedBucketEventModel extends BaseEventModel<BucketItem> {
+public class BucketFeedItem extends FeedItem<BucketItem> {
 
     @Override
     public String previewImage(Resources res) {
@@ -15,22 +15,22 @@ public class FeedBucketEventModel extends BaseEventModel<BucketItem> {
         return getItem().getCoverUrl(width, height);
     }
 
-    public FeedBucketEventModel() {
+    public BucketFeedItem() {
     }
 
-    public FeedBucketEventModel(Parcel in) {
+    public BucketFeedItem(Parcel in) {
         super(in);
     }
 
-    public static final Creator<FeedBucketEventModel> CREATOR = new Creator<FeedBucketEventModel>() {
+    public static final Creator<BucketFeedItem> CREATOR = new Creator<BucketFeedItem>() {
         @Override
-        public FeedBucketEventModel createFromParcel(Parcel in) {
-            return new FeedBucketEventModel(in);
+        public BucketFeedItem createFromParcel(Parcel in) {
+            return new BucketFeedItem(in);
         }
 
         @Override
-        public FeedBucketEventModel[] newArray(int size) {
-            return new FeedBucketEventModel[size];
+        public BucketFeedItem[] newArray(int size) {
+            return new BucketFeedItem[size];
         }
     };
 }

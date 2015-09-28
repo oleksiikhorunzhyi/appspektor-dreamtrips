@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import java.io.Serializable;
 import java.util.List;
 
-public interface IFeedObject extends Serializable{
+public interface FeedEntity extends Serializable{
 
     String place();
 
@@ -36,5 +36,5 @@ public interface IFeedObject extends Serializable{
 
     void setUser(User user);
 
-    void updateSocialContent(IFeedObject iFeedObject);
+    void updateSocialContent(FeedEntity iFeedItem);
 }

@@ -6,7 +6,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 @Layout(R.layout.adapter_item_feed_trip_event)
-public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
+public class FeedTripEventCell extends FeedHeaderCell<TripFeedItem> {
 
     @Inject
     @ForActivity
@@ -35,7 +35,7 @@ public class FeedTripEventCell extends FeedHeaderCell<FeedTripEventModel> {
     }
 
     @Override
-    public void fillWithItem(FeedTripEventModel item) {
+    public void fillWithItem(TripFeedItem item) {
         super.fillWithItem(item);
         tripCell.fillWithItem(item.getItem());
     }

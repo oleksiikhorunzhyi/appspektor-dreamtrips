@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
-import com.worldventures.dreamtrips.modules.feed.api.GetEventModelQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
@@ -29,8 +29,8 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 
@@ -45,15 +45,15 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private int commentsCount = 0;
 
     @State
-    BaseEventModel feedModel;
+    FeedItem feedModel;
     @State
-    IFeedObject feedEntity;
+    FeedEntity feedEntity;
     @State
     String comment;
 
-    public BaseCommentPresenter(BaseEventModel feedModel) {
-        this.feedModel = feedModel;
-        feedEntity = feedModel.getItem();
+    public BaseCommentPresenter(FeedItem feedItem) {
+        this.feedModel = feedItem;
+        feedEntity = feedItem.getItem();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     private void loadFullEventInfo() {
-        doRequest(new GetEventModelQuery(feedEntity.getUid()), feedObjectHolder -> {
+        doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedObjectHolder -> {
             feedModel.setItem(feedObjectHolder.getItem());
             view.updateHeader(feedModel);
         });
@@ -100,7 +100,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
-            BaseEventModel model = event.getModel();
+            FeedItem model = event.getModel();
             DreamTripsRequest command = model.getItem().isLiked() ?
                     new UnlikeEntityCommand(model.getItem().getUid()) :
                     new LikeEntityCommand(model.getItem().getUid());
@@ -191,7 +191,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     }
 
-    private void itemDeleted(BaseEventModel model) {
+    private void itemDeleted(FeedItem model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         fragmentCompass.pop();
     }
@@ -247,9 +247,9 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         void setLoading(boolean loading);
 
-        void setHeader(BaseEventModel header);
+        void setHeader(FeedItem header);
 
-        void updateHeader(BaseEventModel eventModel);
+        void updateHeader(FeedItem eventModel);
 
         void editComment(EditCommentPresenter presenter);
 

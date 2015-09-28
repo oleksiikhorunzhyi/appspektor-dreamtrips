@@ -20,13 +20,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements IFeedObjectHolder{
+public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder {
 
     @SerializedName("notification_id")
     protected int notificationId;
 
-    protected BaseEventModel.Type type = Type.UNDEFINED;
-    protected BaseEventModel.Action action;
+    protected FeedItem.Type type = Type.UNDEFINED;
+    protected FeedItem.Action action;
     protected T item;
     protected Links links;
 
@@ -34,33 +34,33 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements
     protected Date createdAt;
     protected Date readAt;
 
-    public static BaseEventModel create(IFeedObject item, User owner) {
+    public static FeedItem create(FeedEntity item, User owner) {
         Type type;
-        BaseEventModel baseEventModel;
+        FeedItem feedItem;
         if (item instanceof TextualPost) {
-            baseEventModel = new FeedPostEventModel();
+            feedItem = new PostFeedItem();
             type = Type.POST;
         } else if (item instanceof Photo) {
-            baseEventModel = new FeedPhotoEventModel();
+            feedItem = new PhotoFeedItem();
             type = Type.PHOTO;
         } else if (item instanceof BucketItem) {
-            baseEventModel = new FeedBucketEventModel();
+            feedItem = new BucketFeedItem();
             type = Type.BUCKET_LIST_ITEM;
         } else if (item instanceof TripModel) {
-            baseEventModel = new FeedTripEventModel();
+            feedItem = new TripFeedItem();
             type = Type.TRIP;
         } else {
-            baseEventModel = new FeedUndefinedEventModel();
+            feedItem = new UndefinedFeedItem();
             type = Type.UNDEFINED;
         }
 
         item.setComments(new ArrayList<>());
-        baseEventModel.action = Action.ADD;
-        baseEventModel.type = type;
-        baseEventModel.item = item;
-        baseEventModel.createdAt = Calendar.getInstance().getTime();
-        baseEventModel.links = Links.forUser(owner);
-        return baseEventModel;
+        feedItem.action = Action.ADD;
+        feedItem.type = type;
+        feedItem.item = item;
+        feedItem.createdAt = Calendar.getInstance().getTime();
+        feedItem.links = Links.forUser(owner);
+        return feedItem;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -71,6 +71,7 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements
         return notificationId;
     }
 
+    @Override
     public Type getType() {
         return type;
     }
@@ -83,6 +84,7 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements
         return action;
     }
 
+    @Override
     public T getItem() {
         return item;
     }
@@ -112,7 +114,7 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BaseEventModel<?> that = (BaseEventModel<?>) o;
+        FeedItem<?> that = (FeedItem<?>) o;
 
         if (item == null && super.equals(that)) return true;
         return !(item != null ? !item.equals(that.item) : that.item != null);
@@ -124,10 +126,10 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements
         return item != null ? item.hashCode() : 0;
     }
 
-    public BaseEventModel() {
+    public FeedItem() {
     }
 
-    public BaseEventModel(Parcel in) {
+    public FeedItem(Parcel in) {
         super(in);
         this.notificationId = in.readInt();
         this.type = (Type) in.readSerializable();
@@ -157,15 +159,15 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements
     }
 
 
-    public static final Creator<BaseEventModel> CREATOR = new Creator<BaseEventModel>() {
+    public static final Creator<FeedItem> CREATOR = new Creator<FeedItem>() {
         @Override
-        public BaseEventModel createFromParcel(Parcel in) {
-            return new BaseEventModel(in);
+        public FeedItem createFromParcel(Parcel in) {
+            return new FeedItem(in);
         }
 
         @Override
-        public BaseEventModel[] newArray(int size) {
-            return new BaseEventModel[size];
+        public FeedItem[] newArray(int size) {
+            return new FeedItem[size];
         }
     };
 
@@ -251,17 +253,6 @@ public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements
     // Inner
     ///////////////////////////////////////////////////////////////////////////
 
-    public enum Type {
-        @SerializedName("Trip")
-        TRIP,
-        @SerializedName("Photo")
-        PHOTO,
-        @SerializedName("BucketListItem")
-        BUCKET_LIST_ITEM,
-        @SerializedName("Post")
-        POST,
-        UNDEFINED
-    }
 
     public enum Action {
         @SerializedName("share")

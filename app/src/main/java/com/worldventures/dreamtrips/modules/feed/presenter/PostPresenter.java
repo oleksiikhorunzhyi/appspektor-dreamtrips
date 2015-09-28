@@ -14,9 +14,9 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
@@ -124,11 +124,11 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         }
     }
 
-    protected void processPost(IFeedObject iFeedObject) {
+    protected void processPost(FeedEntity feedEntity) {
         if (cachedPostEntity.getUploadTask() != null)
             snapper.removeUploadTask(cachedPostEntity.getUploadTask());
 
-        eventBus.post(new FeedItemAddedEvent(BaseEventModel.create(iFeedObject, getAccount())));
+        eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
         view.cancel();
         view = null;
     }

@@ -4,7 +4,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TextualPost extends BaseFeedObject {
+public class TextualPost extends BaseFeedEntity {
 
     private String description;
 

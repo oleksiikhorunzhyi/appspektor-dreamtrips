@@ -14,10 +14,10 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObjectHolder;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -262,13 +262,13 @@ public interface DreamTripsApi {
     JSONObject unfriend(@Path("user_id") int userId);
 
     @GET("/api/social/users/{user_id}/timeline")
-    ArrayList<ParentFeedModel> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/timeline")
-    ArrayList<ParentFeedModel> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/feed")
-    ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
@@ -317,10 +317,10 @@ public interface DreamTripsApi {
     ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
 
     @GET("/api/social/notifications")
-    ArrayList<ParentFeedModel> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
+    ArrayList<ParentFeedItem> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
 
     @GET("/api/{uid}")
-    IFeedObjectHolder getEventModel(@Path("uid") String uid);
+    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
 
     @PUT("/api/social/notifications")
     Void markAsRead(@Query("since") String since, @Query("before") String before);

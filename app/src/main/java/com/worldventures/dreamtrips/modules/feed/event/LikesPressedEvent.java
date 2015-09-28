@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public class LikesPressedEvent {
 
-    BaseEventModel model;
+    FeedItem model;
 
-    public LikesPressedEvent(BaseEventModel model) {
+    public LikesPressedEvent(FeedItem model) {
         this.model = model;
     }
 
-    public BaseEventModel getModel() {
+    public FeedItem getModel() {
         return model;
     }
 }

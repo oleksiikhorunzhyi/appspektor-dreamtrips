@@ -3,23 +3,23 @@ package com.worldventures.dreamtrips.modules.feed.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public class CommentsBundle implements Parcelable {
-    BaseEventModel baseEventModel;
+    FeedItem feedItem;
     boolean openKeyboard;
 
-    public CommentsBundle(BaseEventModel baseEventModel) {
-        this(baseEventModel, false);
+    public CommentsBundle(FeedItem feedItem) {
+        this(feedItem, false);
     }
 
-    public CommentsBundle(BaseEventModel baseEventModel, boolean openKeyboard) {
-        this.baseEventModel = baseEventModel;
+    public CommentsBundle(FeedItem feedItem, boolean openKeyboard) {
+        this.feedItem = feedItem;
         this.openKeyboard = openKeyboard;
     }
 
-    public BaseEventModel getBaseEventModel() {
-        return baseEventModel;
+    public FeedItem getFeedItem() {
+        return feedItem;
     }
 
     public boolean isOpenKeyboard() {
@@ -33,12 +33,12 @@ public class CommentsBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.baseEventModel, 0);
+        dest.writeParcelable(this.feedItem, 0);
         dest.writeByte(openKeyboard ? (byte) 1 : (byte) 0);
     }
 
     protected CommentsBundle(Parcel in) {
-        this.baseEventModel = in.readParcelable(BaseEventModel.class.getClassLoader());
+        this.feedItem = in.readParcelable(FeedItem.class.getClassLoader());
         this.openKeyboard = in.readByte() != 0;
     }
 

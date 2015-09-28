@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class FeedEntityCommentedEvent {
 
-    IFeedObject entity;
+    FeedEntity entity;
 
-    public FeedEntityCommentedEvent(IFeedObject entity) {
+    public FeedEntityCommentedEvent(FeedEntity entity) {
         this.entity = entity;
     }
 
-    public IFeedObject getFeedEntity() {
+    public FeedEntity getFeedEntity() {
         return entity;
     }
 }

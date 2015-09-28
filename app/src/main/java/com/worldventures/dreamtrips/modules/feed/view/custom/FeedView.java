@@ -9,14 +9,13 @@ import android.util.AttributeSet;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
-import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
@@ -60,12 +59,12 @@ public class FeedView extends RecyclerView {
         adapter.registerCell(User.class, ProfileCell.class);
         adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
 
-        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoEventCell.class);
-        adapter.registerCell(FeedTripEventModel.class, FeedTripEventCell.class);
-        adapter.registerCell(FeedBucketEventModel.class, FeedBucketEventCell.class);
-        adapter.registerCell(FeedPostEventModel.class, FeedPostEventCell.class);
+        adapter.registerCell(PhotoFeedItem.class, FeedPhotoEventCell.class);
+        adapter.registerCell(TripFeedItem.class, FeedTripEventCell.class);
+        adapter.registerCell(BucketFeedItem.class, FeedBucketEventCell.class);
+        adapter.registerCell(PostFeedItem.class, FeedPostEventCell.class);
 
-        adapter.registerCell(FeedUndefinedEventModel.class, FeedUndefinedEventCell.class);
+        adapter.registerCell(UndefinedFeedItem.class, FeedUndefinedEventCell.class);
         adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
         layoutManager = new LinearLayoutManager(getContext());
@@ -95,7 +94,7 @@ public class FeedView extends RecyclerView {
         stateDelegate.onDestroyView();
     }
 
-    public BaseArrayListAdapter<BaseEventModel> getAdapter() {
+    public BaseArrayListAdapter<FeedItem> getAdapter() {
         return adapter;
     }
 

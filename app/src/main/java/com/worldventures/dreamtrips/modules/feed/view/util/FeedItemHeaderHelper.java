@@ -14,7 +14,7 @@ import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -46,7 +46,7 @@ public class FeedItemHeaderHelper {
     @InjectView(R.id.likes)
     ImageView likes;
 
-    public void set(BaseEventModel feedModel, Context context) {
+    public void set(FeedItem feedModel, Context context) {
         try {
             User user = feedModel.getLinks().getUsers().get(0);
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));

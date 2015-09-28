@@ -120,8 +120,6 @@ public class NotificationCell extends AbstractCell<BaseEventModel> {
                 openTrip((TripModel) item);
                 break;
             case PHOTO:
-                openPhoto(((IFullScreenObject) getModelObject().getItem()));
-                break;
             case BUCKET_LIST_ITEM:
             case POST:
                 openComments();

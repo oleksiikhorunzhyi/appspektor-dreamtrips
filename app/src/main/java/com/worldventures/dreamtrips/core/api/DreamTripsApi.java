@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObjectHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
@@ -317,6 +318,9 @@ public interface DreamTripsApi {
 
     @GET("/api/social/notifications")
     ArrayList<ParentFeedModel> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
+
+    @GET("/api/{uid}")
+    IFeedObjectHolder getEventModel(@Path("uid") String uid);
 
     @PUT("/api/social/notifications")
     Void markAsRead(@Query("since") String since, @Query("before") String before);

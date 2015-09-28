@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetEventModelQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
@@ -64,7 +65,15 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         view.setComment(comment);
 
+        loadFullEventInfo();
         preloadUsersWhoLiked();
+    }
+
+    private void loadFullEventInfo() {
+        doRequest(new GetEventModelQuery(feedEntity.getUid()), feedObjectHolder -> {
+            feedModel.setItem(feedObjectHolder.getItem());
+            view.updateHeader(feedModel);
+        });
     }
 
     private void preloadUsersWhoLiked() {

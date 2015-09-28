@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.IFeedObjectHolder;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeserializer;
 
 import java.net.CookieManager;
@@ -85,6 +86,7 @@ public class ApiModule {
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
                 .registerTypeAdapter(BaseEventModel.class, new FeedModelDeserializer())
+                .registerTypeAdapter(IFeedObjectHolder.class, new FeedModelDeserializer())
                 .create();
     }
 

@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseEventModel<T extends IFeedObject> extends BaseEntity {
+public class BaseEventModel<T extends IFeedObject> extends BaseEntity implements IFeedObjectHolder{
 
     @SerializedName("notification_id")
     protected int notificationId;

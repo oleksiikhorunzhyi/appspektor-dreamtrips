@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.gcm.delegate;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.modules.gcm.model.UserNotificationData;
+import com.worldventures.dreamtrips.modules.friends.notification.UserNotificationData;
 
 public class NotificationDataParser {
 

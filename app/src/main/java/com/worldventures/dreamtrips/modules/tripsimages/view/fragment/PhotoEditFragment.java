@@ -63,7 +63,6 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this,
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
-        timePickerDialog.setCloseOnSingleTapMinute(true);
         timePickerDialog.show(getChildFragmentManager(), null);
     }
 

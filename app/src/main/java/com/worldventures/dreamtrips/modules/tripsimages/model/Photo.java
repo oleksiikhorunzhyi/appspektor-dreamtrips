@@ -4,7 +4,6 @@ import android.os.Parcel;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
@@ -32,6 +31,7 @@ public class Photo extends BaseFeedObject implements IFullScreenObject {
         likesCount = in.readInt();
         liked = in.readInt() == 1;
         title = in.readString();
+        shotAt = new Date(in.readLong());
         location = in.readParcelable(Location.class.getClassLoader());
         tags = in.createStringArrayList();
         images = in.readParcelable(Image.class.getClassLoader());
@@ -191,6 +191,7 @@ public class Photo extends BaseFeedObject implements IFullScreenObject {
         parcel.writeInt(likesCount);
         parcel.writeInt(liked ? 1 : 0);
         parcel.writeString(title);
+        parcel.writeLong(shotAt.getTime());
         parcel.writeParcelable(location, i);
         parcel.writeStringList(tags);
         parcel.writeParcelable(images, i);

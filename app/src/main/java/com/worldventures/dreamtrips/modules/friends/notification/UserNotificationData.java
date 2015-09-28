@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.gcm.model;
+package com.worldventures.dreamtrips.modules.friends.notification;
 
 public class UserNotificationData {
     public final String firstName;

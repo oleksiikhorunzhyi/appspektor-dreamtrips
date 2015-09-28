@@ -19,8 +19,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
-    <permission android:name="${appId}.permission.C2D_MESSAGE"
-                android:protectionLevel="signature" />
+    <permission
+        android:name="${appId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
     <uses-permission android:name="com.worldventures.dreamtrips.permission.C2D_MESSAGE"/>
 
     <uses-feature
@@ -84,8 +85,8 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.common.view.activity.ComponentActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".modules.common.view.activity.MainActivity">
+            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".modules.common.view.activity.MainActivity"/>
@@ -111,6 +112,8 @@
             android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/trips"/>
+
+        <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>
 
         <!--Foreign activities-->
 
@@ -148,22 +151,25 @@
             android:name=".core.api.VideoDownloadSpiceService"
             android:exported="false"/>
 
+        <!--GCM-->
+
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="com.worldventures.dreamtrips" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+
+                <category android:name="com.worldventures.dreamtrips"/>
             </intent-filter>
         </receiver>
 
         <service
             android:name="com.worldventures.dreamtrips.modules.gcm.service.PushListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
 
@@ -177,7 +183,7 @@
 
         <service
             android:name="com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService"
-            android:exported="false" />
+            android:exported="false"/>
     </application>
 
 </manifest>

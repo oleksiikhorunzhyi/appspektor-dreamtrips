@@ -11,12 +11,12 @@ import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadComma
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
 import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
@@ -30,21 +30,39 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     private int notificationId;
+    private boolean acceptFriend;
+
+    @Inject
+    NotificationDelegate notificationDelegate;
 
     public UserPresenter(UserBundle userBundle) {
         super(userBundle.getUser());
         this.notificationId = userBundle.getNotificationId();
-        userBundle.setNotificationId(-1);
+        this.acceptFriend = userBundle.isAcceptFriend();
+        userBundle.resetNotificationId();
+        userBundle.resetAcceptFriend();
     }
 
     @Override
     public void onInjected() {
         super.onInjected();
-        if (notificationId != -1) {
-            doRequest(new MarkNotificationAsReadCommand(notificationId), aVoid -> {});
+        notificationDelegate.cancel(user.getId());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (notificationId != UserBundle.NO_NOTIFICATION) {
+            doRequest(new MarkNotificationAsReadCommand(notificationId), aVoid -> {
+            });
+        }
+        if (acceptFriend) {
+            acceptClicked();
         }
     }
 
@@ -97,22 +115,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     private void addAsFriend(int position) {
         view.startLoading();
-        if (circles.isEmpty()) {
-            view.startLoading();
-            doRequest(new GetCirclesQuery(), circles -> {
-                view.finishLoading();
-                saveCircles(circles);
-                addAsFriend(position);
-            });
-        } else {
-            Circle circle = circles.get(position);
-            doRequest(new AddUserRequestCommand(user.getId(), circle),
-                    jsonObject -> {
-                        user.setRelationship(User.Relationship.OUTGOING_REQUEST);
-                        view.finishLoading();
-                        view.notifyUserChanged();
-                    });
-        }
+        Circle circle = circles.get(position);
+        doRequest(new AddUserRequestCommand(user.getId(), circle),
+                jsonObject -> {
+                    user.setRelationship(User.Relationship.OUTGOING_REQUEST);
+                    view.finishLoading();
+                    view.notifyUserChanged();
+                });
     }
 
     private void reject() {

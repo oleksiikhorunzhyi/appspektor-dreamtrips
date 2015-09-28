@@ -3,14 +3,11 @@ package com.worldventures.dreamtrips.modules.gcm;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.friends.notification.FriendNotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.gcm.service.PushListenerService;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,19 +17,23 @@ import dagger.Provides;
                 RegistrationIntentService.class,
                 PushListenerService.class
         },
+        includes = {
+                NotificationFactoryModule.class
+        },
         complete = false,
         library = true
 )
 public class GcmModule {
 
     @Provides
-    NotificationDataParser provideDataParser() {
-        return new NotificationDataParser();
+    NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationDataParser dataParser,
+                                                     FriendNotificationFactory friendNotificationFactory) {
+        return new NotificationDelegate(context, dataParser, friendNotificationFactory);
     }
 
     @Provides
-    NotificationDelegate provideNotificationDelegate(@ForApplication Context context, @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator) {
-        return new NotificationDelegate(context, routeCreator);
+    NotificationDataParser provideDataParser() {
+        return new NotificationDataParser();
     }
 
 }

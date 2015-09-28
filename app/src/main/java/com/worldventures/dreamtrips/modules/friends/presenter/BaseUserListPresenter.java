@@ -37,17 +37,21 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     private boolean loading = true;
 
     protected List<User> users = new ArrayList<>();
-
     protected List<Circle> circles;
 
     @Inject
     SnappyRepository snappyRepository;
 
     @Override
+    public void onInjected() {
+        super.onInjected();
+        circles = snappyRepository.getCircles();
+    }
+
+    @Override
     public void takeView(T view) {
         super.takeView(view);
         reload();
-        circles = snappyRepository.getCircles();
     }
 
     @Override

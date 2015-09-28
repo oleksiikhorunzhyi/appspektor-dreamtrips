@@ -130,6 +130,10 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         }
     }
 
+    protected <T> void doRequest(SpiceRequest<T> request) {
+        dreamSpiceManager.execute(request, r -> {}, this);
+    }
+
     protected <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, successListener, this);

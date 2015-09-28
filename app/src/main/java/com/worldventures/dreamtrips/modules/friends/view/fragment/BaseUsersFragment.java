@@ -103,7 +103,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
         refreshLayout.setOnRefreshListener(this);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-
     }
 
     @Override

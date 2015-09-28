@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
-import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
@@ -24,11 +23,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     public static final int HEADER_COUNT = 1;
 
     protected U user;
+    protected List<Circle> circles;
 
     @Inject
     SnappyRepository snappyRepository;
-
-    List<Circle> circles;
 
     public ProfilePresenter() {
     }
@@ -38,12 +36,16 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     @Override
+    public void onInjected() {
+        super.onInjected();
+        circles = snappyRepository.getCircles();
+    }
+
+    @Override
     public void takeView(T view) {
         super.takeView(view);
 
         attachUserToView(user);
-        circles = snappyRepository.getCircles();
-        loadCircles();
         loadProfile();
     }
 
@@ -81,29 +83,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public void openFriends() {
         if (featureManager.available(Feature.SOCIAL)) {
-            if (circles.isEmpty()) {
-                view.startLoading();
-                doRequest(new GetCirclesQuery(), circles -> {
-                    view.finishLoading();
-                    saveCircles(circles);
-                    openFriends();
-                });
-            } else {
-                view.openFriends();
-            }
+            view.openFriends();
         }
-    }
-
-    ///Circles
-
-    private void loadCircles() {
-        if (featureManager.available(Feature.SOCIAL))
-            doRequest(new GetCirclesQuery(), this::saveCircles);
-    }
-
-    protected void saveCircles(List<Circle> circles) {
-        this.circles = circles;
-        snappyRepository.saveCircles(circles);
     }
 
     public void onEvent(OnBucketListClickedEvent event) {

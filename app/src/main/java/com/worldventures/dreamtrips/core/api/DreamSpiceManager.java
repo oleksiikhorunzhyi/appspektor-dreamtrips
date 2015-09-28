@@ -16,6 +16,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
+import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
@@ -49,17 +50,17 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 public class DreamSpiceManager extends SpiceManager {
 
     @Inject
+    protected Context context;
+    @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
     @Inject
     protected LocalesHolder localeStorage;
-
     @Inject
     @Global
     protected EventBus eventBus;
-
     @Inject
-    protected Context context;
+    AuthorizedDataUpdater authorizedDataUpdater;
+
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
@@ -149,6 +150,7 @@ public class DreamSpiceManager extends SpiceManager {
             loginResponse.setSession(session);
             handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
                     username, userPassword);
+            authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
         }, spiceError -> {
             onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));

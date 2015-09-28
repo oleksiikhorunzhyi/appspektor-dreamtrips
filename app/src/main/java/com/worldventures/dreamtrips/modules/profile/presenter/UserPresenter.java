@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadComma
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.api.GetCirclesQuery;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
 import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
@@ -116,22 +115,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     private void addAsFriend(int position) {
         view.startLoading();
-        if (circles.isEmpty()) {
-            view.startLoading();
-            doRequest(new GetCirclesQuery(), circles -> {
-                view.finishLoading();
-                saveCircles(circles);
-                addAsFriend(position);
-            });
-        } else {
-            Circle circle = circles.get(position);
-            doRequest(new AddUserRequestCommand(user.getId(), circle),
-                    jsonObject -> {
-                        user.setRelationship(User.Relationship.OUTGOING_REQUEST);
-                        view.finishLoading();
-                        view.notifyUserChanged();
-                    });
-        }
+        Circle circle = circles.get(position);
+        doRequest(new AddUserRequestCommand(user.getId(), circle),
+                jsonObject -> {
+                    user.setRelationship(User.Relationship.OUTGOING_REQUEST);
+                    view.finishLoading();
+                    view.notifyUserChanged();
+                });
     }
 
     private void reject() {

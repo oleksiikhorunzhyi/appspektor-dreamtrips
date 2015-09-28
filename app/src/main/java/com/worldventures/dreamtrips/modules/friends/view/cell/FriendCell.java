@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
@@ -79,7 +82,10 @@ public class FriendCell extends AbstractCell<User> {
 
     @OnClick(R.id.actions)
     public void onAction(View v) {
-        dialog.showFriendDialog(getModelObject(), userPhoto.getDrawable());
+        userPhoto.buildDrawingCache();
+        Drawable profileIcon = new BitmapDrawable(v.getResources(), Bitmap.createBitmap(userPhoto.getDrawingCache()));
+        userPhoto.destroyDrawingCache();
+        dialog.showFriendDialog(getModelObject(), profileIcon);
     }
 
 

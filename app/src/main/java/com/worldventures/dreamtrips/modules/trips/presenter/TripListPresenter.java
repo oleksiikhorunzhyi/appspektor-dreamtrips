@@ -52,7 +52,8 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         adapterController = new DreamSpiceAdapterController<TripModel>() {
             @Override
             public SpiceRequest<ArrayList<TripModel>> getReloadRequest() {
-                return new GetTripsQuery(db, prefs, loadFromApi || cacheEmpty());
+                boolean makeApiCall = loadFromApi || cacheEmpty() || resetCacheOnStart();
+                return new GetTripsQuery(db, prefs, makeApiCall);
             }
 
             @Override
@@ -91,6 +92,13 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             private boolean shouldUpdate() {
                 long current = Calendar.getInstance().getTimeInMillis();
                 return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
+            }
+
+            /** one-time fix to deal with deploy issue */
+            private static final long RESET_POINT = 1443501000;
+
+            private boolean resetCacheOnStart() {
+                return prefs.getLong(Prefs.LAST_SYNC) / 1000 < RESET_POINT;
             }
         };
         adapterController.setSpiceManager(dreamSpiceManager);

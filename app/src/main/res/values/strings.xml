@@ -318,7 +318,7 @@
     <string name="booked">booked a</string>
     <string name="shared">shared a</string>
     <string name="updated">updated a</string>
-    <string name="liked">liked a</string>
+    <string name="liked">liked your</string>
     <string name="feed_trip">Trip</string>
     <string name="feed_photo">Photo</string>
     <string name="feed_bucket">Bucket List Item</string>
@@ -397,9 +397,9 @@
     <string name="users_who_liked_title">People who liked</string>
     <string name="users_who_liked_empty">Nobody has liked this item</string>
     <string name="notifications_title">Notifications</string>
-    <string name="accept_request">accepted request</string>
-    <string name="reject_request">rejected request</string>
-    <string name="comment">comment a</string>
+    <string name="accept_request">accepted your request</string>
+    <string name="reject_request">rejected your request</string>
+    <string name="comment">commented on your</string>
     <string name="send_request">send you a friend request</string>
 
     <string name="post_delete">Delete post</string>

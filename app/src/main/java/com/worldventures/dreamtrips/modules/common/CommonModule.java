@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
@@ -61,7 +62,8 @@ import dagger.Provides;
                 PresentationVideosPresenter.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
-                CopyFileCommand.class
+                CopyFileCommand.class,
+                ProgressDialogFragment.class
 
         },
         complete = false,

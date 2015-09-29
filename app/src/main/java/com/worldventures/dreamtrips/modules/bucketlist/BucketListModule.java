@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
@@ -71,7 +72,8 @@ import dagger.Provides;
                 ForeignBucketTabPresenter.class,
                 ForeignBucketListFragment.class,
                 BucketItemStaticCell.class,
-                ForeignBucketListPresenter.class
+                ForeignBucketListPresenter.class,
+                DeleteBucketDialog.class
         },
         complete = false,
         library = true

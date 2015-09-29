@@ -23,13 +23,23 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
     @Global
     protected EventBus eventBus;
 
+    /**
+     * This class is designed to use custom view for dialog inflated from layout.
+     * To vary this behavior when simple dialog is required set this to false in descendant.
+     */
+    protected boolean injectCustomLayout = true;
+
     public void onEvent(InjectingFragment.Events.ReloadEvent reloadEvent) {
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return FragmentHelper.onCreateView(inflater, container, this);
+        if (injectCustomLayout) {
+            return FragmentHelper.onCreateView(inflater, container, this);
+        } else {
+            return super.onCreateView(inflater, container, savedInstanceState);
+        }
     }
 
     public void afterCreateView(View rootView) {

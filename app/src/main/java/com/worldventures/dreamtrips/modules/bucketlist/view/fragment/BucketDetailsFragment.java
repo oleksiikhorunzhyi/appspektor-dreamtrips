@@ -29,7 +29,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -117,6 +119,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @InjectView(R.id.contentView)
     ViewGroup contentView;
 
+    protected ProgressDialogFragment progressDialog;
+
     @Override
     public void afterCreateView(View view) {
         super.afterCreateView(view);
@@ -144,6 +148,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
             toolbar.setVisibility(View.GONE);
         }
         setForeignIntentAction();
+
+        progressDialog = ProgressDialogFragment.create();
     }
 
     protected BucketPhotosView.Type getBucketPhotosType() {
@@ -327,17 +333,19 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void showDeletionDialog(BucketItem bucketItem) {
-        new MaterialDialog.Builder(getActivity())
-                .content(R.string.bucket_delete_dialog)
-                .positiveText(R.string.delete_photo_positiove)
-                .negativeText(R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().deleteBucketItem(bucketItem);
-                    }
-                })
-                .show();
+        DeleteBucketDialog dialog = new DeleteBucketDialog();
+        dialog.setBucketItemId(bucketItem.getUid());
+        dialog.show(getFragmentManager());
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.show(getFragmentManager());
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
     }
 
     @Override

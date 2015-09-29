@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemDeleteConfirmedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
@@ -44,12 +45,17 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     }
 
     public void deleteBucketItem(BucketItem bucketItem) {
+        view.showProgressDialog();
         getBucketItemManager().deleteBucketItem(bucketItem, type,
                 jsonObject -> {
+                    view.dismissProgressDialog();
                     if (!view.isTabletLandscape()) view.done();
                     eventBus.post(new BucketItemUpdatedEvent(bucketItem));
                 },
-                this);
+                spiceException -> {
+                    BucketItemDetailsPresenter.super.handleError(spiceException);
+                    view.dismissProgressDialog();
+                });
     }
 
     public void onStatusUpdated(boolean status) {
@@ -81,6 +87,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             bucketItem = event.getBucketItem();
             syncUI();
         }
+    }
+
+    public void onEvent(BucketItemDeleteConfirmedEvent event) {
+        if (bucketItemId.equals(event.getBucketItemId())) deleteBucketItem(bucketItem);
     }
 
     @Override
@@ -119,6 +129,9 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void setupDiningView(DiningItem diningItem);
 
         void showDeletionDialog(BucketItem bucketItem);
-    }
 
+        void showProgressDialog();
+
+        void dismissProgressDialog();
+    }
 }

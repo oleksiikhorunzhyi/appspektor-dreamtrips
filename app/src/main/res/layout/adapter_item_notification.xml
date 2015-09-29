@@ -61,6 +61,8 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginLeft="@dimen/spacing_normal"
+            fresco:placeholderImage="@drawable/ic_cover_place_holder"
+            fresco:placeholderImageScaleType="centerCrop"
             />
 
     </LinearLayout>

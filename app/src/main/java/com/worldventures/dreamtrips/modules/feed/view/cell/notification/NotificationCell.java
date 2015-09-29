@@ -22,9 +22,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -93,7 +93,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 getModelObject().getCreatedAt().getTime());
         notificationTime.setText(relativeTimeSpanString);
 
-        if (getModelObject().getType() == null) {
+        if (getModelObject().getType() == Type.UNDEFINED || getModelObject().getType() == Type.POST) {
             notificationImage.setVisibility(View.GONE);
         } else {
             notificationImage.setVisibility(View.VISIBLE);

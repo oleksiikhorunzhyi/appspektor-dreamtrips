@@ -39,7 +39,8 @@ import dagger.Provides;
                 GcmModule.class,
                 ActionReceiverModule.class,
                 //
-                ResponseSnifferModule.class
+                ResponseSnifferModule.class,
+                BadgeCountObserverModule.class
         },
         library = true,
         complete = false,

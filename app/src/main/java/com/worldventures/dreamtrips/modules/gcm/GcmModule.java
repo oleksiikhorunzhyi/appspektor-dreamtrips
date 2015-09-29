@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.gcm;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.module.qualifier.Global;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.friends.notification.FriendNotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
@@ -11,6 +13,7 @@ import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentServic
 
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 
 @Module(
         injects = {
@@ -26,9 +29,9 @@ import dagger.Provides;
 public class GcmModule {
 
     @Provides
-    NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationDataParser dataParser,
+    NotificationDelegate provideNotificationDelegate(@ForApplication Context context, @Global EventBus bus, SnappyRepository repository, NotificationDataParser dataParser,
                                                      FriendNotificationFactory friendNotificationFactory) {
-        return new NotificationDelegate(context, dataParser, friendNotificationFactory);
+        return new NotificationDelegate(context, bus, repository, dataParser, friendNotificationFactory);
     }
 
     @Provides

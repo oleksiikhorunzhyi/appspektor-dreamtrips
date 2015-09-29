@@ -117,7 +117,7 @@
     <string name="bucket_list_location_popular">Popular Bucket Lists</string>
     <string name="bucket_list_activity_popular">Popular Bucket Lists Activities</string>
     <string name="bucket_list_dinning_popular">Popular Bucket Lists Dining &amp; Entertainment</string>
-    <string name="bucket_list_edit_header">Edit Bucket Item</string>
+    <string name="bucket_list_edit_header">Edit Bucket List Item</string>
     <string name="bucket_list_add">Add %s to your bucket list</string>
     <string name="bucket_list_create_message">Currently you have no Bucket List items. You can choose from popular Bucket List items or create your own goals</string>
     <string name="bucket_list_choose">Choose From Popular Items</string>
@@ -268,7 +268,7 @@
 
     <string name="profile_update_info">Update Info</string>
     <string name="profile_trip_images">%d Trip Images</string>
-    <string name="profile_bucket_list">%d Bucket Items</string>
+    <string name="profile_bucket_list">%d Bucket List Items</string>
     <string name="profile_post">Post</string>
     <string name="profile_friends">Friends</string>
     <string name="profile_messages">Messages</string>
@@ -321,7 +321,7 @@
     <string name="liked">liked a</string>
     <string name="feed_trip">Trip</string>
     <string name="feed_photo">Photo</string>
-    <string name="feed_bucket">Bucket Item</string>
+    <string name="feed_bucket">Bucket List Item</string>
     <string name="coming_soon">Coming Soon</string>
     <string name="loading">Loading…</string>
     <string name="filter_video_title_language">Choose language</string>

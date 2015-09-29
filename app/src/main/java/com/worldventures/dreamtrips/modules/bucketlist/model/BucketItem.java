@@ -6,16 +6,14 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BucketItem extends BaseFeedObject {
+public class BucketItem extends BaseFeedEntity {
 
     public static final String NEW = "new";
     public static final String COMPLETED = "completed";

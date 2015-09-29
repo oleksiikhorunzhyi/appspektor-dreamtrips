@@ -20,11 +20,11 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
@@ -78,7 +78,7 @@ public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter,
 
     @Override
     protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new BaseCommentPresenter(getArgs().getBaseEventModel());
+        return new BaseCommentPresenter(getArgs().getFeedItem());
     }
 
     @Override
@@ -105,10 +105,10 @@ public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter,
 
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
-        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoCommentCell.class);
-        adapter.registerCell(FeedTripEventModel.class, FeedTripCommentCell.class);
-        adapter.registerCell(FeedBucketEventModel.class, FeedBucketCommentCell.class);
-        adapter.registerCell(FeedPostEventModel.class, FeedPostCommentCell.class);
+        adapter.registerCell(PhotoFeedItem.class, FeedPhotoCommentCell.class);
+        adapter.registerCell(TripFeedItem.class, FeedTripCommentCell.class);
+        adapter.registerCell(BucketFeedItem.class, FeedBucketCommentCell.class);
+        adapter.registerCell(PostFeedItem.class, FeedPostCommentCell.class);
 
         linearLayoutManager = new LinearLayoutManager(rootView.getContext());
         commentsList.setLayoutManager(linearLayoutManager);
@@ -158,14 +158,14 @@ public class CommentsFragment extends BaseFragmentWithArgs<BaseCommentPresenter,
     }
 
     @Override
-    public void setHeader(BaseEventModel baseFeedModel) {
+    public void setHeader(FeedItem baseFeedModel) {
         adapter.addItem(0, baseFeedModel);
         adapter.addItem(1, loadMore);
     }
 
     @Override
-    public void updateHeader(BaseEventModel baseEventModel) {
-        adapter.replaceItem(0, baseEventModel);
+    public void updateHeader(FeedItem feedItem) {
+        adapter.replaceItem(0, feedItem);
         adapter.notifyDataSetChanged();
     }
 

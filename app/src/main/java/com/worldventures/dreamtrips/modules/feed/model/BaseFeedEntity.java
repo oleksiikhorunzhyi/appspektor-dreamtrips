@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseFeedObject implements IFeedObject {
+public class BaseFeedEntity implements FeedEntity {
 
     protected String uid;
 
@@ -85,7 +85,7 @@ public class BaseFeedObject implements IFeedObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BaseFeedObject that = (BaseFeedObject) o;
+        BaseFeedEntity that = (BaseFeedEntity) o;
 
         return uid.equals(that.uid);
 
@@ -102,13 +102,13 @@ public class BaseFeedObject implements IFeedObject {
     }
 
     @Override
-    public void updateSocialContent(IFeedObject iFeedObject) {
-        setLikesCount(iFeedObject.getLikesCount());
-        setCommentsCount(iFeedObject.getCommentsCount());
-        setUser(iFeedObject.getUser());
-        setLiked(iFeedObject.isLiked());
-        setComments(iFeedObject.getComments());
-        setFirstUserLikedItem(iFeedObject.getFirstUserLikedItem());
+    public void updateSocialContent(FeedEntity feedEntity) {
+        setLikesCount(feedEntity.getLikesCount());
+        setCommentsCount(feedEntity.getCommentsCount());
+        setUser(feedEntity.getUser());
+        setLiked(feedEntity.isLiked());
+        setComments(feedEntity.getComments());
+        setFirstUserLikedItem(feedEntity.getFirstUserLikedItem());
     }
 
     @Override

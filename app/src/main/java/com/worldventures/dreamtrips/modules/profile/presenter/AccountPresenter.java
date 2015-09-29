@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
@@ -205,12 +205,12 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getRefreshFeedRequest(Date date) {
+    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
         return new GetUserTimelineQuery(user.getId(), date);
     }
 
     @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getNextPageFeedRequest(Date date) {
+    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
         return new GetUserTimelineQuery(user.getId(), date);
     }
 

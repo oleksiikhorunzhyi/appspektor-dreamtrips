@@ -25,12 +25,12 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedUndefinedEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
@@ -94,11 +94,11 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         adapter = new NotificationAdapter(getActivity(), injectorProvider);
         adapter.setHasStableIds(true);
 
-        this.adapter.registerCell(FeedPhotoEventModel.class, NotificationCell.class);
-        this.adapter.registerCell(FeedTripEventModel.class, NotificationCell.class);
-        this.adapter.registerCell(FeedBucketEventModel.class, NotificationCell.class);
-        this.adapter.registerCell(FeedPostEventModel.class, NotificationCell.class);
-        this.adapter.registerCell(FeedUndefinedEventModel.class, NotificationCell.class);
+        this.adapter.registerCell(PhotoFeedItem.class, NotificationCell.class);
+        this.adapter.registerCell(TripFeedItem.class, NotificationCell.class);
+        this.adapter.registerCell(BucketFeedItem.class, NotificationCell.class);
+        this.adapter.registerCell(PostFeedItem.class, NotificationCell.class);
+        this.adapter.registerCell(UndefinedFeedItem.class, NotificationCell.class);
         this.adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
         notifications.setAdapter(adapter);
@@ -119,8 +119,8 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
 
         NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(), R.layout.adapter_item_notification_divider, item -> () -> {
-            if (item instanceof BaseEventModel) {
-                return getString(((BaseEventModel) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
+            if (item instanceof FeedItem) {
+                return getString(((FeedItem) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
             } else return null;
         });
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
@@ -170,7 +170,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
-    public void refreshFeedItems(List<BaseEventModel> events, boolean needLoader) {
+    public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
     }

@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
-import android.app.Dialog;
-import android.support.v7.widget.PopupMenu;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,16 +10,15 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.adapter_post_event)
-public class FeedPostEventCell extends FeedHeaderCell<FeedPostEventModel> {
+public class FeedPostEventCell extends FeedHeaderCell<PostFeedItem> {
 
     @InjectView(R.id.post)
     TextView post;
@@ -36,7 +33,7 @@ public class FeedPostEventCell extends FeedHeaderCell<FeedPostEventModel> {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-        FeedPostEventModel obj = getModelObject();
+        PostFeedItem obj = getModelObject();
         post.setText(obj.getItem().getDescription());
         itemView.setOnClickListener(v -> itemClicked());
     }

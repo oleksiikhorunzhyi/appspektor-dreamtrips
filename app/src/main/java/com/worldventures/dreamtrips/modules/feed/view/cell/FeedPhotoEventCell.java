@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
-public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
+public class FeedPhotoEventCell extends FeedHeaderCell<PhotoFeedItem> {
 
     @InjectView(R.id.photo)
     SimpleDraweeView photo;
@@ -46,7 +46,7 @@ public class FeedPhotoEventCell extends FeedHeaderCell<FeedPhotoEventModel> {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-        FeedPhotoEventModel obj = getModelObject();
+        PhotoFeedItem obj = getModelObject();
         if (obj != null) {
             Photo photoObj = obj.getItem();
             photo.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));

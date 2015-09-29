@@ -10,7 +10,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
@@ -87,7 +87,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     }
 
     @Override
-    public void refreshFeedItems(List<BaseEventModel> events, boolean needLoader) {
+    public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
     }

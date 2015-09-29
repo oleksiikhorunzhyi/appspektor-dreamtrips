@@ -6,12 +6,12 @@ import android.os.Parcel;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-public class FeedPhotoEventModel extends BaseEventModel<Photo> {
+public class PhotoFeedItem extends FeedItem<Photo> {
 
-    public FeedPhotoEventModel() {
+    public PhotoFeedItem() {
     }
 
-    public FeedPhotoEventModel(Parcel in) {
+    public PhotoFeedItem(Parcel in) {
         super(in);
     }
 
@@ -24,15 +24,15 @@ public class FeedPhotoEventModel extends BaseEventModel<Photo> {
         } else return null;
     }
 
-    public static final Creator<FeedPhotoEventModel> CREATOR = new Creator<FeedPhotoEventModel>() {
+    public static final Creator<PhotoFeedItem> CREATOR = new Creator<PhotoFeedItem>() {
         @Override
-        public FeedPhotoEventModel createFromParcel(Parcel in) {
-            return new FeedPhotoEventModel(in);
+        public PhotoFeedItem createFromParcel(Parcel in) {
+            return new PhotoFeedItem(in);
         }
 
         @Override
-        public FeedPhotoEventModel[] newArray(int size) {
-            return new FeedPhotoEventModel[size];
+        public PhotoFeedItem[] newArray(int size) {
+            return new PhotoFeedItem[size];
         }
     };
 }

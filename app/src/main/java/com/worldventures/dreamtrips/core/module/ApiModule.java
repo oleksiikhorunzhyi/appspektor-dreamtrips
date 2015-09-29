@@ -20,8 +20,10 @@ import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedModelDeserializer;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
+import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -84,7 +86,8 @@ public class ApiModule {
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
-                .registerTypeAdapter(BaseEventModel.class, new FeedModelDeserializer())
+                .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
+                .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
                 .create();
     }
 

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsB
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
@@ -73,12 +73,12 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getRefreshFeedRequest(Date date) {
+    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
         return new GetUserTimelineQuery(user.getId(), date);
     }
 
     @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedModel>> getNextPageFeedRequest(Date date) {
+    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
         return new GetUserTimelineQuery(user.getId(), date);
     }
 

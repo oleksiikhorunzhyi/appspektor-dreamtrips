@@ -29,9 +29,9 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
@@ -53,7 +53,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     private boolean noMoreFeeds = false;
 
     @State
-    protected ArrayList<BaseEventModel> feedItems;
+    protected ArrayList<FeedItem> feedItems;
 
     @Inject
     @Named(RouteCreatorModule.PROFILE)
@@ -83,7 +83,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         refreshFeed();
     }
 
-    protected abstract DreamTripsRequest<ArrayList<ParentFeedModel>> getRefreshFeedRequest(Date date);
+    protected abstract DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date);
 
     protected void refreshFeed() {
         view.startLoading();
@@ -96,13 +96,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         view.finishLoading();
     }
 
-    protected void refreshFeedSucceed(List<ParentFeedModel> freshItems) {
+    protected void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
         loading = false;
         noMoreFeeds = freshItems == null || freshItems.size() == 0;
         view.finishLoading();
         feedItems.clear();
         feedItems.addAll(Queryable.from(freshItems)
-                .filter(ParentFeedModel::isSingle)
+                .filter(ParentFeedItem::isSingle)
                 .map(element -> element.getItems().get(0))
                 .toList());
 
@@ -113,7 +113,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     ////// Feed load more
     /////////////////////////////////////
 
-    protected abstract DreamTripsRequest<ArrayList<ParentFeedModel>> getNextPageFeedRequest(Date date);
+    protected abstract DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date);
 
     public void scrolled(int totalItemCount, int lastVisible) {
         if (featureManager.available(Feature.SOCIAL)) {
@@ -132,11 +132,11 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         }
     }
 
-    protected void addFeedItems(List<ParentFeedModel> olderItems) {
+    protected void addFeedItems(List<ParentFeedItem> olderItems) {
         loading = false;
         noMoreFeeds = olderItems == null || olderItems.size() == 0;
         feedItems.addAll(Queryable.from(olderItems)
-                .filter(ParentFeedModel::isSingle)
+                .filter(ParentFeedItem::isSingle)
                 .map(element -> element.getItems().get(0))
                 .toList());
 
@@ -157,7 +157,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(FeedItemAddedEvent event) {
-        feedItems.add(0, event.getBaseEventModel());
+        feedItems.add(0, event.getFeedItem());
         view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
@@ -200,7 +200,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
-            BaseEventModel model = event.getModel();
+            FeedItem model = event.getModel();
             DreamTripsRequest command = model.getItem().isLiked() ?
                     new UnlikeEntityCommand(model.getItem().getUid()) :
                     new LikeEntityCommand(model.getItem().getUid());
@@ -210,7 +210,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     private void itemLiked(String uid) {
         Queryable.from(feedItems).forEachR(event -> {
-            IFeedObject item = event.getItem();
+            FeedEntity item = event.getItem();
 
             if (item.getUid().equals(uid)) {
                 item.setLiked(!item.isLiked());
@@ -260,8 +260,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         }
     }
 
-    private void itemDeleted(BaseEventModel eventModel) {
-        List<BaseEventModel> filteredItems = Queryable.from(feedItems)
+    private void itemDeleted(FeedItem eventModel) {
+        List<FeedItem> filteredItems = Queryable.from(feedItems)
                 .filter(element -> !element.equals(eventModel))
                 .toList();
 
@@ -276,7 +276,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
         void finishLoading();
 
-        void refreshFeedItems(List<BaseEventModel> events, boolean needLoader);
+        void refreshFeedItems(List<FeedItem> events, boolean needLoader);
 
     }
 

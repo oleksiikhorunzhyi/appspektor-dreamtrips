@@ -2,18 +2,18 @@ package com.worldventures.dreamtrips.modules.feed.model.feed.base;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class ParentFeedModel {
+public class ParentFeedItem {
 
     private String type;
-    List<BaseEventModel<IFeedObject>> items;
+    List<FeedItem<FeedEntity>> items;
 
-    public List<BaseEventModel<IFeedObject>> getItems() {
+    public List<FeedItem<FeedEntity>> getItems() {
         return items;
     }
 
@@ -25,7 +25,7 @@ public class ParentFeedModel {
         return type.equals("Single");
     }
 
-    public void setItems(List<BaseEventModel<IFeedObject>> items) {
+    public void setItems(List<FeedItem<FeedEntity>> items) {
         this.items = items;
     }
 }

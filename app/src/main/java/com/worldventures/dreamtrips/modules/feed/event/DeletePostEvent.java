@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public class DeletePostEvent {
 
-    public BaseEventModel feedItem;
+    public FeedItem feedItem;
 
-    public DeletePostEvent(BaseEventModel feedItem) {
+    public DeletePostEvent(FeedItem feedItem) {
         this.feedItem = feedItem;
     }
 
-    public BaseEventModel getEntity() {
+    public FeedItem getEntity() {
         return feedItem;
     }
 }

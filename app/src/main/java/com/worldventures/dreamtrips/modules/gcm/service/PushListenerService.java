@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.techery.spares.application.BaseApplicationWithInjector;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.gcm.model.PushType;
 
@@ -15,6 +16,8 @@ public class PushListenerService extends GcmListenerService {
 
     @Inject
     NotificationDelegate delegate;
+    @Inject
+    NotificationDataParser parser;
 
     @Override
     public void onCreate() {
@@ -25,7 +28,9 @@ public class PushListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         Timber.i("Push message received: " + data);
-        switch (PushType.of(data.getString("type"))) {
+        //
+        PushType type = parser.obtainPushType(data);
+        switch (type) {
             case ACCEPT_REQUEST:
                 delegate.notifyFriendRequestAccepted(data);
                 break;
@@ -36,6 +41,8 @@ public class PushListenerService extends GcmListenerService {
                 Timber.w("Unknown message type: %s", data.getString("type"));
                 break;
         }
+        //
+        delegate.updateNotificationCount(data);
     }
 
 }

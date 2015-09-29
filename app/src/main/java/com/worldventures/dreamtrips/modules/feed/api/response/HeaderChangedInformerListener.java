@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.api.response;
 
 import android.os.Handler;
 
-import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 
 import java.util.List;
@@ -16,14 +15,12 @@ import static com.worldventures.dreamtrips.core.utils.InterceptingOkClient.Respo
 public class HeaderChangedInformerListener implements ResponseHeaderListener {
 
     private static final long DELAY = 1000L;
-
-    Handler handler = new Handler();
-
     private EventBus eventBus;
+    //
+    private Handler handler = new Handler();
+    private Runnable runnable = () -> eventBus.post(new HeaderCountChangedEvent());
 
-    Runnable runnable = () -> eventBus.post(new HeaderCountChangedEvent());
-
-    public HeaderChangedInformerListener(@Global EventBus eventBus) {
+    public HeaderChangedInformerListener(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 

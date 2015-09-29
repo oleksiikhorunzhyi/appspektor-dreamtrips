@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.text.Html;
 import android.text.Spanned;
@@ -35,13 +36,13 @@ public class FeedItemHeaderHelper {
 
     @Optional
     @InjectView(R.id.comments_count)
-    TextView commentsCount;
+    TextView tvCommentsCount;
     @Optional
     @InjectView(R.id.comments)
     ImageView comments;
     @Optional
     @InjectView(R.id.likes_count)
-    TextView likesCount;
+    TextView tvLikesCount;
     @Optional
     @InjectView(R.id.likes)
     ImageView likes;
@@ -50,7 +51,8 @@ public class FeedItemHeaderHelper {
         try {
             User user = feedModel.getLinks().getUsers().get(0);
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-            text.setText(Html.fromHtml(feedModel.infoText(context.getResources())));
+            Resources res = context.getResources();
+            text.setText(Html.fromHtml(feedModel.infoText(res)));
 
             if (TextUtils.isEmpty(feedModel.getItem().place())) {
                 location.setVisibility(View.GONE);
@@ -63,41 +65,35 @@ public class FeedItemHeaderHelper {
             date.setText(DateTimeUtils.convertDateToString(feedModel.getCreatedAt(),
                     DateTimeUtils.FEED_DATE_FORMAT));
 
-            if (likesCount != null) {
-                if (feedModel.getItem().getLikesCount() > 0) {
-                    likesCount.setVisibility(View.VISIBLE);
-                    likesCount.setText(context.getString(R.string.likes, feedModel.getItem().getLikesCount()));
-                } else likesCount.setVisibility(View.GONE);
-            }
+            int likesCount = feedModel.getItem().getLikesCount();
+            int commentsCount = feedModel.getItem().getCommentsCount();
+            if (likesCount > 0) {
+                if (tvLikesCount != null) {
+                    tvLikesCount.setVisibility(View.VISIBLE);
+                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.likes_count, likesCount, likesCount));
+                    tvLikesCount.setText(text);
+                }
 
-            if (usersWhoLiked != null) {
-                if (feedModel.getItem().getLikesCount() > 0) {
+                if (usersWhoLiked != null) {
                     usersWhoLiked.setVisibility(View.VISIBLE);
-
-                    Spanned text;
-                    if (TextUtils.isEmpty(feedModel.getItem().getFirstUserLikedItem())) {
-                        text = Html.fromHtml(context.getResources()
-                                .getQuantityString(R.plurals.users_who_liked,
-                                        feedModel.getItem().getLikesCount(),
-                                        feedModel.getItem().getLikesCount()));
-                    } else {
-                        text = Html.fromHtml(new PluralResources(context.getResources())
-                                .getQuantityString(R.plurals.users_who_liked_with_name,
-                                        feedModel.getItem().getLikesCount() - 1,
-                                        feedModel.getItem().getFirstUserLikedItem(),
-                                        feedModel.getItem().getLikesCount() - 1));
+                    String firstUser = feedModel.getItem().getFirstUserLikedItem();
+                    if (!TextUtils.isEmpty(firstUser)) {
+                        Spanned text = Html.fromHtml(new PluralResources(res)
+                                .getQuantityString(R.plurals.users_who_liked_with_name, likesCount - 1, firstUser, likesCount - 1));
+                        usersWhoLiked.setText(text);
                     }
-
-                    usersWhoLiked.setText(text);
-
-                } else usersWhoLiked.setVisibility(View.GONE);
+                }
+            } else {
+                tvLikesCount.setVisibility(View.GONE);
+                usersWhoLiked.setVisibility(View.GONE);
             }
 
-            if (commentsCount != null) {
-                if (feedModel.getItem().getCommentsCount() > 0) {
-                    commentsCount.setVisibility(View.VISIBLE);
-                    commentsCount.setText(context.getString(R.string.comments, feedModel.getItem().getCommentsCount()));
-                } else commentsCount.setVisibility(View.GONE);
+            if (tvCommentsCount != null) {
+                if (commentsCount > 0) {
+                    tvCommentsCount.setVisibility(View.VISIBLE);
+                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.comments_count, commentsCount, commentsCount));
+                    tvCommentsCount.setText(text);
+                } else tvCommentsCount.setVisibility(View.GONE);
             }
 
             if (likes != null) {

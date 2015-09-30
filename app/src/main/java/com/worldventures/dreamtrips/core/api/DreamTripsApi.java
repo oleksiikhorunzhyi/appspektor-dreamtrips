@@ -333,4 +333,8 @@ public interface DreamTripsApi {
 
     @DELETE("/api/social/push_subscriptions/{token}")
     Void unsubscribeDevice(@Path("token") String token);
+
+    @FormUrlEncoded
+    @POST("/api/{uid}/flags")
+    JsonObject flagItem(@Path("uid") String uid, @Field("reason") String nameOfReason);
 }

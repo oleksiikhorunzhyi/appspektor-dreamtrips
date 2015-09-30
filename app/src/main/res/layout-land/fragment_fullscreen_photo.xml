@@ -228,24 +228,10 @@
                     android:padding="5dp"
                     android:src="@drawable/ic_fs_share"/>
 
-                <FrameLayout
+                <com.worldventures.dreamtrips.modules.common.view.custom.FlagView
+                    android:id="@+id/flag"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/iv_flag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_fs_flag"/>
-
-                    <ProgressBar
-                        android:id="@+id/progress_flag"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="center"
-                        android:visibility="gone"/>
-                </FrameLayout>
+                    android:layout_height="wrap_content"/>
 
                 <ImageView
                     android:id="@+id/delete"

@@ -14,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -29,6 +28,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -76,8 +76,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ImageView ivLike;
     @InjectView(R.id.iv_share)
     protected ImageView ivShare;
-    @InjectView(R.id.iv_flag)
-    protected ImageView ivFlag;
+    @InjectView(R.id.flag)
+    protected FlagView flag;
     @InjectView(R.id.more)
     protected ImageView more;
     @InjectView(R.id.delete)
@@ -86,8 +86,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected SimpleDraweeView civUserPhoto;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
-    @InjectView(R.id.progress_flag)
-    protected ProgressBar progressFlag;
     @InjectView(R.id.iv_comment)
     protected ImageView ivComment;
     @InjectView(R.id.content_divider)
@@ -277,7 +275,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         getPresenter().onLikeAction();
     }
 
-    @OnClick(R.id.iv_flag)
+    @OnClick(R.id.flag)
     public void actionFlag() {
         getPresenter().onFlagAction();
     }
@@ -302,18 +300,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void setFlags(List<Flag> flags) {
-        PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
-        for (int i = 0; i < flags.size(); i++) {
-            Flag flagContent = flags.get(i);
-            popup.getMenu().add(0, i, i, flagContent.getName());
-        }
-        popup.setOnMenuItemClickListener(item -> {
-            getPresenter().showFlagAction(item.getOrder());
-            return true;
-        });
-        popup.show();
+        flag.showFlagsPopup(flags, getActivity(), (reason, desc) -> getPresenter().sendFlagAction(reason, desc));
     }
 
+    @Override
     public void showFlagConfirmDialog(String reason, String desc) {
         String content = getString(R.string.flag_photo_first) + " " + reason.toLowerCase() + " " + getString(R.string.flag_photo_second);
         new MaterialDialog.Builder(getActivity())
@@ -330,6 +320,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
                 .show();
     }
 
+    @Override
     public void showFlagDescription(String reason) {
         MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.flag_description_title)
@@ -455,9 +446,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setFlagVisibility(boolean isVisible) {
         if (isVisible) {
-            ivFlag.setVisibility(View.VISIBLE);
+            flag.setVisibility(View.VISIBLE);
         } else {
-            ivFlag.setVisibility(View.GONE);
+            flag.setVisibility(View.GONE);
         }
     }
 
@@ -481,12 +472,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void showProgress() {
-        progressFlag.setVisibility(View.VISIBLE);
+        flag.showProgress();
     }
 
     @Override
     public void hideProgress() {
-        progressFlag.setVisibility(View.GONE);
+        flag.hideProgress();
     }
 
     private SweetAlertDialog progressDialog;

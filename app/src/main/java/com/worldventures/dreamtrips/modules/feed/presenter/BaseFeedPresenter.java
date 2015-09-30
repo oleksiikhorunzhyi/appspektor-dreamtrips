@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
@@ -267,6 +268,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         feedItems.addAll(filteredItems);
 
         view.refreshFeedItems(feedItems, !noMoreFeeds);
+    }
+
+    public void onEvent(FeedFlaggedEvent event) {
+        /*
+        TODO change flag for feed
+         */
+
     }
 
     public interface View extends Presenter.View {

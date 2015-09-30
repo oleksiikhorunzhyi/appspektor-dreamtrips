@@ -175,7 +175,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(FeedEntityCommentedEvent event) {
         Queryable.from(feedItems).forEachR(item -> {
-            if (item.getItem().equals(event.getFeedEntity())) {
+            if (item.getItem()!=null && item.getItem().equals(event.getFeedEntity())) {
                 item.setItem(event.getFeedEntity());
             }
         });

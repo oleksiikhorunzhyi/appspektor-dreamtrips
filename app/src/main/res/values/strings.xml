@@ -359,7 +359,6 @@
     <string name="week_ago">1 week ago</string>
     <string name="day_ago">1 day ago</string>
 
-
     <string name="social_remove_and_block_friend_title">Unfriend and block</string>
     <string name="social_friend_preference_title">Edit friend preferences</string>
     <string name="friend_pref_create_new_list">Create new list</string>
@@ -390,6 +389,13 @@
         <item quantity="other">@string/users_who_liked_with_first_multiple</item>
     </plurals>
 
+    <plurals name="account_who_liked_item">
+        <item quantity="zero">@string/account_who_liked_with_first_zero</item>
+        <item quantity="one">@string/users_who_liked_with_first_single</item>
+        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
+    </plurals>
+
+    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> like this</string>
     <string name="users_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> likes this</string>
     <string name="users_who_liked_with_first_single" formatted="false">&lt;b>%s and %d other&lt;/b> like this</string>
     <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b>%s and %d others&lt;/b> like this</string>
@@ -432,6 +438,8 @@
 
     <string name="notifaction_new">New</string>
     <string name="notifaction_older">Older</string>
+
+    <string name="you">You</string>
 
     <plurals name="likes_count">
         <item quantity="one">%d like</item>

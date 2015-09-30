@@ -29,8 +29,8 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 
@@ -72,6 +72,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private void loadFullEventInfo() {
         doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedObjectHolder -> {
             feedModel.setItem(feedObjectHolder.getItem());
+            feedEntity = feedModel.getItem();
             view.updateHeader(feedModel);
         });
     }

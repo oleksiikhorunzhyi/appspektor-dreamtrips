@@ -49,7 +49,7 @@ public class FeedItemHeaderHelper {
 
     public void set(FeedItem feedModel, Context context) {
         try {
-            User user = feedModel.getLinks().getUsers().get(0);
+            User user = feedModel.getItem().getUser();
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             Resources res = context.getResources();
             text.setText(Html.fromHtml(feedModel.infoText(res)));
@@ -76,10 +76,16 @@ public class FeedItemHeaderHelper {
 
                 if (usersWhoLiked != null) {
                     usersWhoLiked.setVisibility(View.VISIBLE);
-                    String firstUser = feedModel.getItem().getFirstUserLikedItem();
-                    if (!TextUtils.isEmpty(firstUser)) {
+                    String firstUserName = feedModel.getItem().getFirstUserLikedItem();
+                    if (firstUserName != null && !TextUtils.isEmpty(firstUserName)) {
+                        int stringRes = R.plurals.users_who_liked_with_name;
+                        String appeal = firstUserName;
+                        if (feedModel.getItem().isLiked()) {
+                            stringRes = R.plurals.account_who_liked_item;
+                            appeal = res.getString(R.string.you);
+                        }
                         Spanned text = Html.fromHtml(new PluralResources(res)
-                                .getQuantityString(R.plurals.users_who_liked_with_name, likesCount - 1, firstUser, likesCount - 1));
+                                .getQuantityString(stringRes, likesCount - 1, appeal, likesCount - 1));
                         usersWhoLiked.setText(text);
                     }
                 }

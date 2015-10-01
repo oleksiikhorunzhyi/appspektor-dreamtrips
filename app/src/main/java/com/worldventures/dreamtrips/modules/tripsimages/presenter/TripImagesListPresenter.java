@@ -356,7 +356,6 @@ public abstract class TripImagesListPresenter
 
             if (index != -1) {
                 Photo photo = (Photo) photos.get(index);
-                temp.updateSocialContent(photo);
                 photos.set(index, temp);
                 db.savePhotoEntityList(type, photos);
             }

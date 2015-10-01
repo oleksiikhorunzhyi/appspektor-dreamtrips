@@ -42,7 +42,8 @@
             android:drawableStart="@drawable/ic_feed_location_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
-            tools:text="Katerini, Greece"/>
+            tools:text="Katerini, Greece"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/feed_header_date"
@@ -55,7 +56,8 @@
             android:drawableStart="@drawable/ic_feed_calendar_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
-            tools:text="Jan 27, 2015   9:00AM"/>
+            tools:text="Jan 27, 2015   9:00AM"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </LinearLayout>

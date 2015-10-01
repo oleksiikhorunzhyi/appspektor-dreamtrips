@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -74,8 +73,6 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
     @Inject
     BucketItemManager bucketItemManager;
-    @Inject
-    ForeignBucketItemManager foreignBucketItemManager;
 
     public NotificationCell(View view) {
         super(view);
@@ -174,7 +171,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
         NavigationBuilder.create()
                 .with(activityRouter)
                 .data(new CommentsBundle(getModelObject()))
-                .move(Route.COMMENTS);
+                .move(Route.FEED_ENTITY_DETAILS);
     }
 
     private void openBucketDetails(BucketItem bucketItem) {
@@ -182,14 +179,14 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
         BucketType bucketType = BucketType.valueOf(bucketItem.getType().toUpperCase());
         bundle.setType(bucketType);
-        bundle.setBucketItemId(getModelObject().getItem().getUid());
-        bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+        bundle.setBucketItemUid(getModelObject().getItem().getUid());
+        bucketItemManager.saveSingleBucketItem(bucketItem);
         User user = getModelObject().getLinks().getUsers().get(0);
         Route route = bucketRouteCreator.createRoute(user.getId());
         if (route == Route.DETAIL_BUCKET) {
-            bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+            bucketItemManager.saveSingleBucketItem(bucketItem);
         } else {
-            foreignBucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+            bucketItemManager.saveSingleBucketItem(bucketItem);
         }
         NavigationBuilder.create()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

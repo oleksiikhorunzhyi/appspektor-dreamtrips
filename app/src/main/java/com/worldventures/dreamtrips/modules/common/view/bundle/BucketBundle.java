@@ -4,12 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
 public class BucketBundle implements Parcelable {
 
     protected BucketItem.BucketType type;
-    protected String bucketItemId;
+    protected String bucketItemUid;
     protected boolean lock;
     protected boolean slave;
 
@@ -18,8 +17,12 @@ public class BucketBundle implements Parcelable {
         this.type = type;
     }
 
-    public void setBucketItemId(String bucketItemId) {
-        this.bucketItemId = bucketItemId;
+    public void setType(String type) {
+        this.type = BucketItem.BucketType.valueOf(type.toUpperCase());
+    }
+
+    public void setBucketItemUid(String bucketItemUid) {
+        this.bucketItemUid = bucketItemUid;
     }
 
     public void setLock(boolean lock) {
@@ -30,8 +33,8 @@ public class BucketBundle implements Parcelable {
         return type;
     }
 
-    public String getBucketItemId() {
-        return bucketItemId;
+    public String getBucketItemUid() {
+        return bucketItemUid;
     }
 
     public boolean isLock() {
@@ -55,7 +58,7 @@ public class BucketBundle implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
-        dest.writeString(this.bucketItemId);
+        dest.writeString(this.bucketItemUid);
         dest.writeByte(lock ? (byte) 1 : (byte) 0);
         dest.writeByte(slave ? (byte) 1 : (byte) 0);
     }
@@ -66,7 +69,7 @@ public class BucketBundle implements Parcelable {
     protected BucketBundle(Parcel in) {
         int tmpType = in.readInt();
         this.type = tmpType == -1 ? null : BucketItem.BucketType.values()[tmpType];
-        this.bucketItemId = in.readString();
+        this.bucketItemUid = in.readString();
         this.lock = in.readByte() != 0;
         this.slave = in.readByte() != 0;
     }

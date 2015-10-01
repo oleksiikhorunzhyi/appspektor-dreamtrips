@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -69,8 +68,6 @@ public class FeedBucketEventCell extends FeedHeaderCell<BucketFeedItem> {
     SessionHolder<UserSession> appSessionHolder;
     @Inject
     BucketItemManager bucketItemManager;
-    @Inject
-    ForeignBucketItemManager foreignBucketItemManager;
 
     @Inject
     @Named(RouteCreatorModule.BUCKET_DETAILS)
@@ -98,9 +95,6 @@ public class FeedBucketEventCell extends FeedHeaderCell<BucketFeedItem> {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-
-        if (getModelObject().getItem().getUser() != null)
-            foreignBucketItemManager.setUserId(getModelObject().getItem().getUser().getId());
 
         BucketItem bucketItem = getModelObject().getItem();
         String small = BucketItemInfoUtil.getMediumResUrl(itemView.getContext(), bucketItem);
@@ -140,14 +134,14 @@ public class FeedBucketEventCell extends FeedHeaderCell<BucketFeedItem> {
             BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
             BucketBundle bundle = new BucketBundle();
             bundle.setType(bucketType);
-            bundle.setBucketItemId(getModelObject().getItem().getUid());
-            bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+            bundle.setBucketItemUid(getModelObject().getItem().getUid());
+            bucketItemManager.saveSingleBucketItem(bucketItem);
             User user = getModelObject().getItem().getUser();
             Route route = routeCreator.createRoute(user.getId());
             if(route==Route.DETAIL_BUCKET){
-                bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+                bucketItemManager.saveSingleBucketItem(bucketItem);
             }else{
-                foreignBucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
+                bucketItemManager.saveSingleBucketItem(bucketItem);
             }
             NavigationBuilder.create()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
@@ -180,7 +174,7 @@ public class FeedBucketEventCell extends FeedHeaderCell<BucketFeedItem> {
     @Override
     protected void onEdit() {
         BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
-        bucketItemManager.saveSingleBucketItem(getModelObject().getItem(), bucketType);
+        bucketItemManager.saveSingleBucketItem(getModelObject().getItem());
 
         getEventBus().post(new EditBucketEvent(getModelObject().getItem().getUid(), bucketType));
     }

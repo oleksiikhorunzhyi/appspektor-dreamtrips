@@ -150,7 +150,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     private void openDetails(BucketItem bucketItem) {
         BucketBundle bundle = new BucketBundle();
         bundle.setType(type);
-        bundle.setBucketItemId(bucketItem.getUid());
+        bundle.setBucketItemUid(bucketItem.getUid());
         view.openDetails(bundle);
         // set selected
         Queryable.from(bucketItems).forEachR(item ->

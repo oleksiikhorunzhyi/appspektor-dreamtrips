@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 
 import javax.inject.Inject;
 
@@ -13,7 +13,7 @@ public class ForeignBucketTabPresenter extends BucketTabsPresenter {
     protected int userId;
 
     @Inject
-    ForeignBucketItemManager bucketItemManager;
+    BucketItemManager bucketItemManager;
 
     public ForeignBucketTabPresenter(int userId) {
         this.userId = userId;
@@ -25,8 +25,4 @@ public class ForeignBucketTabPresenter extends BucketTabsPresenter {
         getBucketItemManager().setUserId(userId);
     }
 
-    @Override
-    protected ForeignBucketItemManager getBucketItemManager() {
-        return bucketItemManager;
-    }
 }

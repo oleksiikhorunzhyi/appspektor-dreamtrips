@@ -19,11 +19,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscre
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -50,7 +48,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     BucketItemManager bucketItemManager;
 
     @Inject
-    SnappyRepository db;
+    protected SnappyRepository db;
 
     protected BucketItem.BucketType type;
     protected String bucketItemId;
@@ -59,7 +57,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public BucketDetailsBasePresenter(BucketBundle bundle) {
         super();
         type = bundle.getType();
-        bucketItemId = bundle.getBucketItemId();
+        bucketItemId = bundle.getBucketItemUid();
     }
 
     @Override
@@ -112,10 +110,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
             List<BucketPhoto> photos = bucketItem.getPhotos();
             if (photos != null) {
-                view.getBucketPhotosView().setImages(photos);
+                view.setImages(photos);
             }
 
-            if (!tasks.isEmpty()) view.getBucketPhotosView().addImages(tasks);
+            if (!tasks.isEmpty()) view.addImages(tasks);
         }
     }
 
@@ -135,7 +133,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         photoUploadingSpiceManager.cancelUploading(event.getModelObject());
 
         db.removeUploadTask(event.getModelObject());
-        view.getBucketPhotosView().deleteImage(event.getModelObject());
+        view.deleteImage(event.getModelObject());
     }
 
     public void onCoverClicked() {
@@ -160,7 +158,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                     .position(photos.indexOf(selectedPhoto))
                     .type(TripImagesListFragment.Type.FIXED_LIST)
                     .fixedList(photos)
-                    .foreign(getBucketItemManager() instanceof ForeignBucketItemManager)
+                    .foreign(bucketItem.getUser().getId() != appSessionHolder.get().get().getUser().getId())
                     .build();
 
             view.openFullscreen(data);
@@ -188,7 +186,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     protected void deleted(BucketPhoto bucketPhoto) {
-        view.getBucketPhotosView().deleteImage(bucketPhoto);
+        view.deleteImage(bucketPhoto);
     }
 
     ////////////////////////////////////////
@@ -203,7 +201,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         Timber.d("Starting bucket photo upload");
         uploadTask.setFilePath(filePath);
 
-        view.getBucketPhotosView().addImage(uploadTask);
+        view.addImage(uploadTask);
 
         startUpload(uploadTask);
     }
@@ -224,8 +222,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Override
     public void onStateChanged(int id, TransferState state) {
         if (view != null) {
-            UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
-                    .getBucketPhotoUploadTask(String.valueOf(id));
+            UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(String.valueOf(id));
             if (bucketPhotoUploadTask != null) {
                 if (state.equals(TransferState.COMPLETED)
                         && !bucketPhotoUploadTask.getStatus().equals(UploadTask.Status.COMPLETED)) {
@@ -247,8 +244,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Override
     public void onError(int id, Exception ex) {
-        UploadTask bucketPhotoUploadTask = view.getBucketPhotosView()
-                .getBucketPhotoUploadTask(String.valueOf(id));
+        UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(String.valueOf(id));
         if (bucketPhotoUploadTask != null)
             photoUploadError(bucketPhotoUploadTask);
     }
@@ -260,7 +256,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
-        view.getBucketPhotosView().replace(bucketPhotoUploadTask, bucketPhoto);
+        view.replace(bucketPhotoUploadTask, bucketPhoto);
         db.removeUploadTask(bucketPhotoUploadTask);
 
         getBucketItemManager().updateBucketItemWithPhoto(bucketItem, bucketPhoto);
@@ -269,14 +265,14 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     private void photoUploadError(UploadTask uploadTask) {
         uploadTask.setStatus(UploadTask.Status.FAILED);
         db.saveUploadTask(uploadTask);
-        view.getBucketPhotosView().itemChanged(uploadTask);
+        view.itemChanged(uploadTask);
     }
 
     public void onEvent(BucketPhotoReuploadRequestEvent event) {
         eventBus.cancelEventDelivery(event);
 
         db.removeUploadTask(event.getTask());
-        view.getBucketPhotosView().deleteImage(event.getTask());
+        view.deleteImage(event.getTask());
 
         event.getTask().setStatus(UploadTask.Status.IN_PROGRESS);
         upload(event.getTask(), event.getTask().getFilePath());
@@ -366,8 +362,22 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         void showAddPhotoDialog();
 
-        IBucketPhotoView getBucketPhotosView();
-
         void openFullscreen(FullScreenImagesBundle data);
+
+        void setImages(List<BucketPhoto> photos);
+
+        void addImages(List<UploadTask> tasks);
+
+        void addImage(UploadTask uploadTask);
+
+        void deleteImage(UploadTask task);
+
+        void deleteImage(BucketPhoto bucketPhoto);
+
+        void itemChanged(UploadTask uploadTask);
+
+        void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto);
+
+        UploadTask getBucketPhotoUploadTask(String taskId);
     }
 }

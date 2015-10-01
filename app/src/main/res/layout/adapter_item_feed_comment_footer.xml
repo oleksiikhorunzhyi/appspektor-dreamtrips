@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:background="#c70000">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:paddingBottom="@dimen/spacing_small"
         android:paddingTop="@dimen/spacing_small">
 
@@ -53,6 +53,20 @@
                 android:src="@drawable/ic_feed_thumb_up"/>
 
             <ImageView
+                android:id="@+id/comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_small"
+                android:src="@drawable/ic_feed_footer_comments"/>
+
+            <ImageView
+                android:id="@+id/feed_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_small"
+                android:src="@drawable/ic_feed_footer_share"/>
+
+            <ImageView
                 android:id="@+id/more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,4 +79,21 @@
 
     </RelativeLayout>
 
-</LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@color/gray_lighter"
+                  android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/user_who_liked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:textColor="@android:color/black"
+            tools:text="User and 15 Other liked it"/>
+
+    </LinearLayout>
+
+</merge>

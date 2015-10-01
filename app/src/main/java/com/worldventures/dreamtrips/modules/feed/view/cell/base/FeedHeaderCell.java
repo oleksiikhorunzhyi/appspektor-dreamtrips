@@ -160,7 +160,7 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
     @Optional
     @OnClick(R.id.likes)
     void likeClicked() {
-        getEventBus().post(new LikesPressedEvent(getModelObject()));
+        getEventBus().post(new LikesPressedEvent(getModelObject().getItem()));
     }
 
     protected void openComments(FeedItem baseFeedModel) {

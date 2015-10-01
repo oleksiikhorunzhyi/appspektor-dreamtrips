@@ -2,21 +2,15 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
-import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
-import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
@@ -24,10 +18,8 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -59,36 +51,10 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-
-        view.setHeader(feedModel);
         loadComments();
-
         view.setComment(comment);
-
-        loadFullEventInfo();
-        preloadUsersWhoLiked();
     }
 
-    private void loadFullEventInfo() {
-        doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedObjectHolder -> {
-            feedModel.setItem(feedObjectHolder.getItem());
-            feedEntity = feedModel.getItem();
-            view.updateHeader(feedModel);
-        });
-    }
-
-    private void preloadUsersWhoLiked() {
-        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), this::onUserLoaded,
-                spiceException -> {
-                });
-    }
-
-    private void onUserLoaded(List<User> users) {
-        if (users != null && !users.isEmpty()) {
-            feedModel.getItem().setFirstUserLikedItem(users.get(0).getFullName());
-            view.updateHeader(feedModel);
-        }
-    }
 
     private void loadComments() {
         view.setLoading(true);
@@ -97,30 +63,6 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public void onEvent(LikesPressedEvent event) {
-        if (view.isVisibleOnScreen()) {
-            FeedItem model = event.getModel();
-            DreamTripsRequest command = model.getItem().isLiked() ?
-                    new UnlikeEntityCommand(model.getItem().getUid()) :
-                    new LikeEntityCommand(model.getItem().getUid());
-            doRequest(command, element -> itemLiked());
-        }
-    }
-
-    private void itemLiked() {
-        feedEntity.setLiked(!feedEntity.isLiked());
-        int currentCount = feedEntity.getLikesCount();
-        currentCount = feedEntity.isLiked() ? currentCount + 1 : currentCount - 1;
-        feedEntity.setLikesCount(currentCount);
-
-        view.updateHeader(feedModel);
-        eventBus.post(new FeedEntityCommentedEvent(feedEntity));
-
-        if (feedEntity.getLikesCount() == 1 && feedEntity.isLiked()) {
-            preloadUsersWhoLiked();
-        }
     }
 
     public void post() {
@@ -159,7 +101,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     public void onEvent(EditBucketEvent event) {
         BucketBundle bundle = new BucketBundle();
         bundle.setType(event.getType());
-        bundle.setBucketItemId(event.getUid());
+        bundle.setBucketItemUid(event.getUid());
 
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
@@ -195,17 +137,6 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private void itemDeleted(FeedItem model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         fragmentCompass.pop();
-    }
-
-
-    public void onEvent(FeedEntityChangedEvent event) {
-        if (event.getFeedEntity().equals(feedEntity)) {
-            event.getFeedEntity().updateSocialContent(feedEntity);
-
-            feedModel.setItem(event.getFeedEntity());
-            feedEntity = feedModel.getItem();
-            view.updateHeader(feedModel);
-        }
     }
 
     private void onCommentPosted(Comment comment) {
@@ -247,10 +178,6 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         void setComment(String comment);
 
         void setLoading(boolean loading);
-
-        void setHeader(FeedItem header);
-
-        void updateHeader(FeedItem eventModel);
 
         void editComment(EditCommentPresenter presenter);
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -17,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
+import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -28,6 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -36,6 +39,8 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -270,11 +275,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
-    public void onEvent(FeedFlaggedEvent event) {
-        /*
-        TODO change flag for feed
-         */
+    public void onEvent(LoadFlagEvent event) {
+        doRequest(new GetFlagContentQuery(), flags -> event.getFeedCell().showFlagDialog(flags));
+    }
 
+    public void onEvent(FeedFlaggedEvent event) {
+        doRequest(new FlagItemCommand(event.getEntity().getUid(), event.getNameOfReason()), aVoid -> {
+        });
     }
 
     public interface View extends Presenter.View {

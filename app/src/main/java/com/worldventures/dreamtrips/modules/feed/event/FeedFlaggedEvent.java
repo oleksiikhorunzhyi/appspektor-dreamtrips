@@ -6,11 +6,18 @@ public class FeedFlaggedEvent {
 
     private IFeedObject entity;
 
-    public FeedFlaggedEvent(IFeedObject entity) {
+    private String nameOfReason;
+
+    public FeedFlaggedEvent(IFeedObject entity, String nameOfReason) {
         this.entity = entity;
+        this.nameOfReason = nameOfReason;
     }
 
     public IFeedObject getEntity() {
         return entity;
+    }
+
+    public String getNameOfReason() {
+        return nameOfReason;
     }
 }

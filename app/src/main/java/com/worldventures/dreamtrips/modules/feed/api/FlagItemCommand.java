@@ -1,20 +1,19 @@
 package com.worldventures.dreamtrips.modules.feed.api;
 
-import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.core.api.request.Command;
 
-public class FlagItemCommand extends Command<JsonObject> {
+public class FlagItemCommand extends Command<Void> {
     private String uid;
     private String nameOfReason;
 
     public FlagItemCommand(String uid, String nameOfReason) {
-        super(JsonObject.class);
+        super(Void.class);
         this.uid = uid;
         this.nameOfReason = nameOfReason;
     }
 
     @Override
-    public JsonObject loadDataFromNetwork() throws Exception {
+    public Void loadDataFromNetwork() throws Exception {
         return getService().flagItem(uid, nameOfReason);
     }
 }

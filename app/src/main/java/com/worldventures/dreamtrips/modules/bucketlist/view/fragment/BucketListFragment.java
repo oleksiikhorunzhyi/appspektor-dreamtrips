@@ -51,6 +51,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -265,6 +266,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
         PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
         popupMenu.inflate(R.menu.menu_bucket_filter);
+        PopupMenuUtils.convertItemsToUpperCase(popupMenu);
 
         boolean showCompleted = getPresenter().isShowCompleted();
         boolean showToDO = getPresenter().isShowToDO();

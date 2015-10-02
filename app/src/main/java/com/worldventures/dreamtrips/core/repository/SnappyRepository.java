@@ -52,7 +52,7 @@ public class SnappyRepository {
     public static final String NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
-    public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
+    public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
 
     private Context context;
     private ExecutorService executorService;
@@ -368,8 +368,12 @@ public class SnappyRepository {
         return actWithResult(db -> db.getInt(NOTIFICATIONS_COUNT)).or(0);
     }
 
-    public void saveFriendsRequestsCount(int notificationsCount) {
-        act(db -> db.putInt(FRIEND_REQUEST_COUNT, notificationsCount));
+    public void saveFilterCircle(Circle circle){
+        act(db -> db.put(FILTER_CIRCLE, circle));
+    }
+
+    public Circle getFilterCircle(){
+        return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
     }
 
     public int getFriendsRequestsCount() {

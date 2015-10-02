@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.api;
 
+import android.support.annotation.Nullable;
+
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -11,14 +13,16 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
     public static final int LIMIT = 10;
     private Date before;
+    private String circleId;
 
-    public GetAccountFeedQuery(Date before) {
+    public GetAccountFeedQuery(Date before, @Nullable String circleId) {
         super((Class<ArrayList<ParentFeedItem>>) new ArrayList<ParentFeedItem>().getClass());
         this.before = before;
+        this.circleId = circleId;
     }
 
     @Override
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
-        return getService().getAccountFeed(LIMIT, DateTimeUtils.convertDateToUTCString(before));
+        return getService().getAccountFeed(LIMIT, DateTimeUtils.convertDateToUTCString(before), circleId);
     }
 }

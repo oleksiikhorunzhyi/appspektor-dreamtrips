@@ -21,7 +21,9 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -30,7 +32,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_feed)
-@MenuResource(R.menu.menu_notifications)
+@MenuResource(R.menu.menu_activity_feed)
 public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
@@ -74,6 +76,29 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                         .attach(Route.FRIENDS));
         getPresenter().refreshRequestsCount();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_filter:
+                actionFilter();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void actionFilter() {
+        View menuItemView = getActivity().findViewById(R.id.action_filter);
+        CirclesFilterPopupWindow filterPopupWindow = new CirclesFilterPopupWindow(getContext());
+        filterPopupWindow.setCircles(getPresenter().getFilterItems());
+        filterPopupWindow.setAnchorView(menuItemView);
+        filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            filterPopupWindow.dismiss();
+            getPresenter().applyFilter((Circle) parent.getItemAtPosition(position));
+        });
+        filterPopupWindow.show();
+    }
+
 
     @Override
     protected FeedPresenter createPresenter(Bundle savedInstanceState) {

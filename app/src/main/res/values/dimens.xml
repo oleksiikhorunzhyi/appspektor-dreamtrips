@@ -83,4 +83,8 @@
 
     <dimen name="template_height">260dp</dimen>
 
+    <dimen name="popup_filter_item_height">50dp</dimen>
+    <dimen name="popup_filter_item_padding_left">5dp</dimen>
+    <dimen name="popup_filter_item_padding_right">15dp</dimen>
+
 </resources>

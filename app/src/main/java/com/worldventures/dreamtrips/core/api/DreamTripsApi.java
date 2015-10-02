@@ -268,7 +268,7 @@ public interface DreamTripsApi {
     ArrayList<ParentFeedItem> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/feed")
-    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before, @Query("circle_id") String circleId);
 
     @GET("/api/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);

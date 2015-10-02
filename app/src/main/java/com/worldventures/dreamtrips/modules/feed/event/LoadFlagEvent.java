@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 
 public class LoadFlagEvent {
-    private FeedHeaderCell feedHeaderCell;
+    private Flaggable cell;
 
-    public LoadFlagEvent(FeedHeaderCell feedHeaderCell) {
-        this.feedHeaderCell = feedHeaderCell;
+    public LoadFlagEvent(Flaggable cell) {
+        this.cell = cell;
     }
 
-    public FeedHeaderCell getFeedCell() {
-        return feedHeaderCell;
+    public Flaggable getCell() {
+        return cell;
     }
 }

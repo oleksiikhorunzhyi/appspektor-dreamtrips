@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.IFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 
-public class FeedFlaggedEvent {
+public class ItemFlaggedEvent {
 
-    private IFeedObject entity;
+    private UidItem entity;
 
     private String nameOfReason;
 
-    public FeedFlaggedEvent(IFeedObject entity, String nameOfReason) {
+    public ItemFlaggedEvent(UidItem entity, String nameOfReason) {
         this.entity = entity;
         this.nameOfReason = nameOfReason;
     }
 
-    public IFeedObject getEntity() {
+    public UidItem getEntity() {
         return entity;
     }
 

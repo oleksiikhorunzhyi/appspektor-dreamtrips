@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -64,6 +64,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
+
+    private List<Flag> flagsList;
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -276,11 +278,21 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(LoadFlagEvent event) {
-        doRequest(new GetFlagContentQuery(), flags -> event.getFeedCell().showFlagDialog(flags));
+        if (view.isVisibleOnScreen()) {
+            if (flagsList == null) {
+                doRequest(new GetFlagContentQuery(), flags -> {
+                    flagsList = flags;
+                    event.getCell().showFlagDialog(flagsList);
+                });
+            } else {
+                event.getCell().showFlagDialog(flagsList);
+            }
+        }
     }
 
-    public void onEvent(FeedFlaggedEvent event) {
-        doRequest(new FlagItemCommand(event.getEntity().getUid(), event.getNameOfReason()), aVoid -> {
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            doRequest(new FlagItemCommand(event.getEntity().getUid(), event.getNameOfReason()), aVoid -> {
         });
     }
 

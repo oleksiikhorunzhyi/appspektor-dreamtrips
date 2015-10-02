@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
+import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -20,11 +21,15 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +47,8 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     FeedEntity feedEntity;
     @State
     String comment;
+
+    private List<Flag> flagsList;
 
     public BaseCommentPresenter(FeedItem feedItem) {
         this.feedModel = feedItem;
@@ -137,6 +144,25 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private void itemDeleted(FeedItem model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         fragmentCompass.pop();
+    }
+
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen()) {
+            if (flagsList == null) {
+                doRequest(new GetFlagContentQuery(), flags -> {
+                    flagsList = flags;
+                    event.getCell().showFlagDialog(flagsList);
+                });
+            } else {
+                event.getCell().showFlagDialog(flagsList);
+            }
+        }
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            doRequest(new FlagItemCommand(event.getEntity().getUid(), event.getNameOfReason()), aVoid -> {
+        });
     }
 
     private void onCommentPosted(Comment comment) {

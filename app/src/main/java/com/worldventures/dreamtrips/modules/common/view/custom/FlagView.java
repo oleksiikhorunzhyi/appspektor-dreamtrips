@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,5 +50,9 @@ public class FlagView extends FrameLayout {
                                FlagPopupMenu.DialogConfirmationCallback dialogConfirmationCallback) {
         FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), this);
         popupMenu.show(flags, dialogConfirmationCallback);
+    }
+
+    public void setImageResource(int resource) {
+        ivFlag.setImageResource(resource);
     }
 }

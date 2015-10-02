@@ -225,7 +225,7 @@ public class ProfileCell extends AbstractCell<User> {
     }
 
     private boolean isAccount() {
-        return appSessionHolder.get().get().getUser().getId() == getModelObject().getId();
+        return appSessionHolder.get().isPresent() && appSessionHolder.get().get().getUser().getId() == getModelObject().getId();
     }
 
 

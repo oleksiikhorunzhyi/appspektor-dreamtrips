@@ -403,14 +403,7 @@ public class SnappyRepository {
     }
 
     public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN, String.class)).orNull();
+        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
     }
 
-    public void setGcmRegIdPersisted(boolean persisted) {
-        act(db -> db.put(GCM_REG_ID_PERSISTED, persisted));
-    }
-
-    public boolean getGcmRegIdPersisted() {
-        return actWithResult(db -> db.get(GCM_REG_ID_PERSISTED, Boolean.class)).or(false);
-    }
 }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.gcm.service;
 
 import android.content.Intent;
 import android.os.Build;
+import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -36,16 +37,16 @@ public class RegistrationIntentService extends InjectingIntentService {
 
             Timber.d("GCM Registration Token: %s", token);
 
-            if ((token != null && !token.equals(db.getGcmRegToken()))
-                    || !db.getGcmRegIdPersisted()) {
+            String tokenInRepository = db.getGcmRegToken();
+            if (!TextUtils.isEmpty(token) && !token.equals(tokenInRepository)) {
                 sendRegistrationToServer(token);
             }
+
         } catch (Exception e) {
             Timber.e(e, "Failed to complete token refresh");
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
-            db.setGcmRegIdPersisted(false);
-            db.setGcmRegToken("");
+            db.setGcmRegToken(null);
         }
     }
 
@@ -57,7 +58,6 @@ public class RegistrationIntentService extends InjectingIntentService {
     private void sendRegistrationToServer(String token) {
         dreamTripsApi.subscribeDevice(new PushSubscription("android", token,
                 BuildConfig.VERSION_NAME, Build.VERSION.CODENAME));
-        db.setGcmRegIdPersisted(true);
         db.setGcmRegToken(token);
     }
 }

@@ -331,6 +331,6 @@ public interface DreamTripsApi {
     @POST("/api/social/push_subscriptions")
     Void subscribeDevice(@Body PushSubscription pushSubscription);
 
-    @DELETE("/api/soical/push_subscriptions/{token}")
+    @DELETE("/api/social/push_subscriptions/{token}")
     Void unsubscribeDevice(@Path("token") String token);
 }

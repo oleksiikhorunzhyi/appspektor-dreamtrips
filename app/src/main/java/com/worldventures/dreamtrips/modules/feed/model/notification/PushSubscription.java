@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class PushSubscription {
 
-    private String platform;
-    private String token;
+    public final String token;
+    public final String platform;
     @SerializedName("app_version")
-    private String appVersion;
+    public final String appVersion;
     @SerializedName("os_version")
-    private String osVersion;
+    public final String osVersion;
 
-    public PushSubscription(String platform, String token, String appVersion, String osVersion) {
+    public PushSubscription(String token, String platform, String appVersion, String osVersion) {
         this.platform = platform;
         this.token = token;
         this.appVersion = appVersion;

@@ -68,8 +68,11 @@ public class DreamSpiceManager extends SpiceManager {
         Ln.getConfig().setLoggingLevel(Log.ERROR);
     }
 
-    public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener,
-                            FailureListener failureListener) {
+    public <T> void execute(final SpiceRequest<T> request) {
+        execute(request, SuccessListener.STUB, FailureListener.STUB);
+    }
+
+    public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
         super.execute(request, new RequestListener<T>() {
             @Override
@@ -289,9 +292,15 @@ public class DreamSpiceManager extends SpiceManager {
 
     public interface FailureListener {
         void handleError(SpiceException spiceException);
+
+        FailureListener STUB = spiceException -> {
+        };
     }
 
     public interface SuccessListener<T> {
         void onRequestSuccess(T t);
+
+        SuccessListener STUB = t -> {
+        };
     }
 }

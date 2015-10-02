@@ -77,12 +77,11 @@ public class SnappyRepository {
                 if (isNotFound(e)) Timber.v("Nothing found");
                 else Timber.w(e, "DB fails to act", e);
             } finally {
-                if (snappyDb != null)
-                    try {
-                        snappyDb.close();
-                    } catch (SnappydbException e) {
-                        Timber.w(e, "DB fails to close");
-                    }
+                try {
+                    if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
+                } catch (SnappydbException e) {
+                    Timber.w(e, "DB fails to close");
+                }
             }
         });
     }

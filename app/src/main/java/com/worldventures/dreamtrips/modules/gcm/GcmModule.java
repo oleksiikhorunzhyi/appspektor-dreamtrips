@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.gcm;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -31,12 +32,12 @@ public class GcmModule {
     @Provides
     NotificationDelegate provideNotificationDelegate(@ForApplication Context context, @Global EventBus bus, SnappyRepository repository, NotificationDataParser dataParser,
                                                      FriendNotificationFactory friendNotificationFactory) {
-        return new NotificationDelegate(context, bus, repository, dataParser, friendNotificationFactory);
+        return new NotificationDelegate(context, bus, repository, friendNotificationFactory);
     }
 
     @Provides
-    NotificationDataParser provideDataParser() {
-        return new NotificationDataParser();
+    NotificationDataParser provideDataParser(Gson gson) {
+        return new NotificationDataParser(gson);
     }
 
 }

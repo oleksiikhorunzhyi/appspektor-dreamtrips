@@ -9,6 +9,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
@@ -20,10 +21,10 @@ import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleUtils;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
-import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
+import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -84,6 +85,7 @@ public class ApiModule {
         return new GsonBuilder()
                 .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapterFactory(new LowercaseEnumTypeAdapterFactory("unknown"))
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
                 .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())

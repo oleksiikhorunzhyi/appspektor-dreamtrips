@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
+import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 public class FriendNotificationFactory extends NotificationFactory {
@@ -27,16 +28,16 @@ public class FriendNotificationFactory extends NotificationFactory {
         this.routeCreator = profileRouteCreator;
     }
 
-    public Notification createFriendRequestAccepted(UserNotificationData data) {
+    public Notification createFriendRequestAccepted(UserPushMessage data) {
         String message = context.getString(R.string.notification_message_friend_accepted,
-                TextUtils.join(" ", new String[]{data.firstName, data.lastName}));
+                TextUtils.join(" ", data.alertWrapper.alert.locArgs));
         NotificationCompat.Builder notification = createFriendNotification(data.userId, data.notificationId, message);
         return notification.build();
     }
 
-    public Notification createFriendRequestReceived(UserNotificationData data) {
+    public Notification createFriendRequestReceived(UserPushMessage data) {
         String message = context.getString(R.string.notification_message_friend_request,
-                TextUtils.join(" ", new String[]{data.firstName, data.lastName}));
+                TextUtils.join(" ", data.alertWrapper.alert.locArgs));
         //
         NotificationCompat.Builder notification = createFriendNotification(data.userId, data.notificationId, message);
         // respond actions

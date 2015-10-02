@@ -77,12 +77,11 @@ public class SnappyRepository {
                 if (isNotFound(e)) Timber.v("Nothing found");
                 else Timber.w(e, "DB fails to act", e);
             } finally {
-                if (snappyDb != null)
-                    try {
-                        snappyDb.close();
-                    } catch (SnappydbException e) {
-                        Timber.w(e, "DB fails to close");
-                    }
+                try {
+                    if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
+                } catch (SnappydbException e) {
+                    Timber.w(e, "DB fails to close");
+                }
             }
         });
     }
@@ -403,14 +402,7 @@ public class SnappyRepository {
     }
 
     public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN, String.class)).orNull();
+        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
     }
 
-    public void setGcmRegIdPersisted(boolean persisted) {
-        act(db -> db.put(GCM_REG_ID_PERSISTED, persisted));
-    }
-
-    public boolean getGcmRegIdPersisted() {
-        return actWithResult(db -> db.get(GCM_REG_ID_PERSISTED, Boolean.class)).or(false);
-    }
 }

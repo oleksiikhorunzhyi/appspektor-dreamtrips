@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -16,9 +15,9 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -39,8 +38,6 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,7 +62,11 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
-    private List<Flag> flagsList;
+    private UidItemDelegate uidItemDelegate;
+
+    public BaseFeedPresenter() {
+        uidItemDelegate = new UidItemDelegate(this);
+    }
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -278,22 +279,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen()) {
-            if (flagsList == null) {
-                doRequest(new GetFlagContentQuery(), flags -> {
-                    flagsList = flags;
-                    event.getCell().showFlagDialog(flagsList);
-                });
-            } else {
-                event.getCell().showFlagDialog(flagsList);
-            }
-        }
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getCell());
     }
 
     public void onEvent(ItemFlaggedEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new FlagItemCommand(event.getEntity().getUid(), event.getNameOfReason()), aVoid -> {
-        });
+            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
     public interface View extends Presenter.View {

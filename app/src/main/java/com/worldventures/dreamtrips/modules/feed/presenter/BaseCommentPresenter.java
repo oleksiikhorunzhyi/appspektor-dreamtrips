@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -28,8 +28,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +46,12 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     @State
     String comment;
 
-    private List<Flag> flagsList;
+    private UidItemDelegate uidItemDelegate;
 
     public BaseCommentPresenter(FeedItem feedItem) {
         this.feedModel = feedItem;
         feedEntity = feedItem.getItem();
+        uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
@@ -147,22 +146,13 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen()) {
-            if (flagsList == null) {
-                doRequest(new GetFlagContentQuery(), flags -> {
-                    flagsList = flags;
-                    event.getCell().showFlagDialog(flagsList);
-                });
-            } else {
-                event.getCell().showFlagDialog(flagsList);
-            }
-        }
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getCell());
     }
 
     public void onEvent(ItemFlaggedEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new FlagItemCommand(event.getEntity().getUid(), event.getNameOfReason()), aVoid -> {
-        });
+            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
     private void onCommentPosted(Comment comment) {

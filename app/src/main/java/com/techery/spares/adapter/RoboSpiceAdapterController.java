@@ -21,6 +21,9 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
     public void onStart(LoadType loadType) {
     }
 
+    public void onPreFinish(LoadType type, List<BaseItemClass> items, SpiceException spiceException) {
+    }
+
     public void onFinish(LoadType type, List<BaseItemClass> items, SpiceException spiceException) {
     }
 
@@ -54,25 +57,31 @@ public abstract class RoboSpiceAdapterController<T extends SpiceManager, BaseIte
     protected abstract void executeBaseRequest(SpiceRequest<ArrayList<BaseItemClass>> request);
 
     protected void onNextItemsLoaded(ArrayList<BaseItemClass> baseItemClasses) {
+        onPreFinish(LoadType.APPEND, baseItemClasses, null);
+
         if (hasAdapter()) {
             adapter.addItems(baseItemClasses);
             adapter.notifyDataSetChanged();
         }
+
         onFinish(LoadType.APPEND, baseItemClasses, null);
     }
 
     protected void onFailure(SpiceException spiceException) {
+        onPreFinish(LoadType.APPEND, null, spiceException);
         onFinish(LoadType.APPEND, null, spiceException);
     }
 
     protected void onRefresh(ArrayList<BaseItemClass> baseItemClasses) {
+        onPreFinish(LoadType.RELOAD, baseItemClasses, null);
+
         if (hasAdapter()) {
             adapter.clear();
             adapter.addItems(baseItemClasses);
             adapter.notifyDataSetChanged();
         }
-        onFinish(LoadType.RELOAD, baseItemClasses, null);
 
+        onFinish(LoadType.RELOAD, baseItemClasses, null);
     }
 
     public enum LoadType {

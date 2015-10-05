@@ -160,6 +160,10 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
         eventBus.post(new BackPressedMessageEvent());
     }
 
+    public void setEnabledSaveButton(boolean enabled){
+        btnSave.setEnabled(enabled);
+    }
+
     @Override
     protected PhotoEditPresenter createPresenter(Bundle savedInstanceState) {
         return new PhotoEditPresenter(getArgs());

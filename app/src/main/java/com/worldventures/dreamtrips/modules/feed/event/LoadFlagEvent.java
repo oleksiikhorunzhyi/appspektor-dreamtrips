@@ -3,13 +3,13 @@ package com.worldventures.dreamtrips.modules.feed.event;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 
 public class LoadFlagEvent {
-    private Flaggable cell;
+    private Flaggable flaggableView;
 
-    public LoadFlagEvent(Flaggable cell) {
-        this.cell = cell;
+    public LoadFlagEvent(Flaggable flaggableView) {
+        this.flaggableView = flaggableView;
     }
 
-    public Flaggable getCell() {
-        return cell;
+    public Flaggable getFlaggableView() {
+        return flaggableView;
     }
 }

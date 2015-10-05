@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -10,7 +11,9 @@ import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
@@ -25,9 +28,12 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     @State
     FeedEntity feedEntity;
 
+    private UidItemDelegate uidItemDelegate;
+
     public FeedEntityDetailsPresenter(CommentsBundle args) {
         this.feedModel = args.getFeedItem();
         feedEntity = args.getFeedItem().getItem();
+        uidItemDelegate = new UidItemDelegate(this);
     }
 
 
@@ -80,6 +86,16 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
             feedEntity = feedModel.getItem();
             view.updateHeader(feedModel);
         }
+    }
+
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getFlaggableView());
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
     private void itemLiked() {

@@ -49,7 +49,7 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
         fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
         Pair<Route, Parcelable> routeParcelablePair = fragmentFactory.create(feedItem);
         NavigationBuilder.create().with(fragmentCompass).data(routeParcelablePair.second).move(routeParcelablePair.first);
-        actionView.setState(feedItem);
+        actionView.setState(feedItem, isForeignItem(feedItem));
         feedActionHandler.init(actionView);
         feedItemHeaderHelper.set(feedItem, getContext());
 
@@ -58,7 +58,7 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
 
     @Override
     public void updateHeader(FeedItem feedItem) {
-        actionView.setState(feedItem);
+        actionView.setState(feedItem, isForeignItem(feedItem));
         feedActionHandler.init(actionView);
         feedItemHeaderHelper.set(feedItem, getContext());
     }
@@ -67,5 +67,10 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     @Override
     protected FeedEntityDetailsPresenter createPresenter(Bundle savedInstanceState) {
         return new FeedEntityDetailsPresenter(getArgs());
+    }
+
+    private boolean isForeignItem(FeedItem feedItem) {
+        return feedItem.getItem().getUser() == null
+                || getPresenter().getAccount().getId() == feedItem.getItem().getUser().getId();
     }
 }

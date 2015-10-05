@@ -6,7 +6,9 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 
@@ -49,6 +51,10 @@ public class FeedActionPanelViewActionHandler {
                         }
                     }).show();
         });
+
+        actionView.setOnFlagClickListener(feedItem -> eventBus.post(new LoadFlagEvent(actionView)));
+        actionView.setOnFlagDialogClickListener((feedItem, reason, desc) ->
+                eventBus.post(new ItemFlaggedEvent(feedItem.getItem(), reason + ". " + desc)));
     }
 
 

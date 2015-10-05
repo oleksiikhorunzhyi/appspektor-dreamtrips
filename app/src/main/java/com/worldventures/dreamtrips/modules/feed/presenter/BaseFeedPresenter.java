@@ -280,7 +280,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(LoadFlagEvent event) {
         if (view.isVisibleOnScreen())
-            uidItemDelegate.loadFlags(event.getCell());
+            uidItemDelegate.loadFlags(event.getFlaggableView());
     }
 
     public void onEvent(ItemFlaggedEvent event) {

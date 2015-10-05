@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.custom;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v7.widget.PopupMenu;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -15,15 +16,20 @@ import android.widget.TextView;
 
 import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public class FeedActionPanelView extends LinearLayout {
+public class FeedActionPanelView extends LinearLayout implements Flaggable {
 
     @Optional
     @InjectView(R.id.comments_count)
@@ -37,6 +43,9 @@ public class FeedActionPanelView extends LinearLayout {
     @Optional
     @InjectView(R.id.likes)
     ImageView likes;
+    @Optional
+    @InjectView(R.id.more)
+    ImageView more;
 
     @InjectView(R.id.feed_share)
     ImageView share;
@@ -48,6 +57,9 @@ public class FeedActionPanelView extends LinearLayout {
     OnViewClickListener onLikeIconClickListener;
     OnViewClickListener onLikersClickListener;
     OnViewClickListener onShareClickListener;
+    OnViewClickListener onFlagClickListener;
+
+    OnFlagDialogClickListener onFlagDialogClickListener;
 
     private FeedItem feedItem;
 
@@ -95,7 +107,26 @@ public class FeedActionPanelView extends LinearLayout {
         }
     }
 
-    public void setState(FeedItem feedItem) {
+    @OnClick(R.id.more)
+    public void onMoreClick() {
+        PopupMenu popup = new PopupMenu(getContext(), more);
+        popup.inflate(R.menu.menu_feed_flag);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_flag:
+                    if (onFlagClickListener != null) {
+                        onFlagClickListener.onClick(feedItem);
+                    }
+
+                    break;
+            }
+
+            return true;
+        });
+        popup.show();
+    }
+
+    public void setState(FeedItem feedItem, boolean foreign) {
 
         this.feedItem = feedItem;
         FeedEntity feedEntity = feedItem.getItem();
@@ -153,6 +184,12 @@ public class FeedActionPanelView extends LinearLayout {
             if (comments != null) {
                 comments.setEnabled(true);
             }
+
+            if (foreign) {
+                more.setVisibility(View.GONE);
+            } else {
+                more.setVisibility(View.VISIBLE);
+            }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -175,9 +212,29 @@ public class FeedActionPanelView extends LinearLayout {
         this.onShareClickListener = onShareClickListener;
     }
 
+    public void setOnFlagClickListener(OnViewClickListener onFlagClickListener) {
+        this.onFlagClickListener = onFlagClickListener;
+    }
+
+    public void setOnFlagDialogClickListener(OnFlagDialogClickListener onFlagDialogClickListener) {
+        this.onFlagDialogClickListener = onFlagDialogClickListener;
+    }
+
+    @Override
+    public void showFlagDialog(List<Flag> flags) {
+        FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), more);
+        popupMenu.show(flags, (reason, desc) -> {
+            if (onFlagDialogClickListener != null) {
+                onFlagDialogClickListener.onClick(feedItem, reason, desc);
+            }
+        });
+    }
+
     public interface OnViewClickListener {
         void onClick(FeedItem feedItem);
     }
 
-
+    public interface OnFlagDialogClickListener {
+        void onClick(FeedItem feedItem, String reason, String desc);
+    }
 }

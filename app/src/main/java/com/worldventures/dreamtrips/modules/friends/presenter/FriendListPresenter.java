@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,8 +50,9 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
+    public void onInjected() {
+        super.onInjected();
+        Collections.sort(circles);
         circles.add(0, Circle.all(context.getString(R.string.show_all)));
     }
 

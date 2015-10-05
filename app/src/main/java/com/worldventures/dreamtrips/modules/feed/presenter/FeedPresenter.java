@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     @Inject
     SnappyRepository db;
     //
-    String circleId;
+    Circle filterCircle;
 
     @Override
     public void takeView(View view) {
@@ -31,28 +32,33 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     @Override
     public void restoreInstanceState(Bundle savedState) {
         super.restoreInstanceState(savedState);
-        Circle filterCircle = db.getFilterCircle();
-        if (filterCircle != null) circleId = filterCircle.getId();
+        filterCircle = db.getFilterCircle();
+        if (filterCircle == null) filterCircle = Circle.all(context.getString(R.string.show_all));
     }
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetAccountFeedQuery(date, circleId);
+        return new GetAccountFeedQuery(date, filterCircle.getId());
     }
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-        return new GetAccountFeedQuery(date, circleId);
+        return new GetAccountFeedQuery(date, filterCircle.getId());
     }
 
-    public List<Circle> getFilterItems(){
+    public List<Circle> getFilterCircles(){
         List<Circle> circles = db.getCircles();
-        circles.add(Circle.all(context.getString(R.string.all)));
+        Collections.sort(circles);
+        circles.add(0, Circle.all(context.getString(R.string.show_all)));
         return circles;
     }
 
+    public Circle getAppliedFilterCircle(){
+        return filterCircle;
+    }
+
     public void applyFilter(Circle selectedCircle){
-        circleId = selectedCircle.getId();
+        filterCircle = selectedCircle;
         db.saveFilterCircle(selectedCircle);
         onRefresh();
     }

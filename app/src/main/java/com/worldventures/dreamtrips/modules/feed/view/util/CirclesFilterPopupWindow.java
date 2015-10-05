@@ -3,27 +3,32 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.ListPopupWindow;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 public class CirclesFilterPopupWindow {
 
-    private static final int MAX_ITEM_COUNT = 5;
-
     Context context;
     ListPopupWindow listPopupWindow;
 
+    ArrayAdapter<Circle> adapter;
+    Circle checkedCircle;
+
     private int width = 0;
-    private int height = 0;
 
     public CirclesFilterPopupWindow(Context context){
         this.context = context;
@@ -35,20 +40,13 @@ public class CirclesFilterPopupWindow {
     }
 
     public void setCircles(List<Circle> circles){
-        ArrayAdapter<Circle> filterAdapter = new ArrayAdapter(context, R.layout.filter_item_adapter, R.id.tv_filter_name);
-        filterAdapter.addAll(circles);
-        listPopupWindow.setAdapter(filterAdapter);
-        calculateBounds(circles);
+        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_single_choice, circles);
+        listPopupWindow.setAdapter(adapter);
+        calculateWidth(circles);
     }
 
-    private void calculateBounds(List<Circle> circles){
-        width  = calculateWidth(circles);
-        height = calculateHeight(circles);
-    }
-
-    private int calculateWidth(List<Circle> circles){
-        View view = View.inflate(context, R.layout.filter_item_adapter, null);
-        TextView textView = (TextView) view.findViewById(R.id.tv_filter_name);
+    private void calculateWidth(List<Circle> circles){
+        TextView textView = (CheckedTextView) View.inflate(context, android.R.layout.simple_list_item_single_choice, null);
         Paint paint = textView.getPaint();
         Rect bounds = new Rect();
         int maxWidth = 0;
@@ -60,24 +58,36 @@ public class CirclesFilterPopupWindow {
             if (width > maxWidth) maxWidth = width;
         }
 
-        return context.getResources().getDimensionPixelOffset(R.dimen.popup_filter_item_padding_left)
-                + maxWidth
-                + context.getResources().getDimensionPixelOffset(R.dimen.popup_filter_item_padding_right);
+        width = maxWidth + context.getResources().getDimensionPixelOffset(R.dimen.popup_filter_item_extra_space);
     }
 
-    private int calculateHeight(List<Circle> circles){
-        int itemHeight = context.getResources().getDimensionPixelOffset(R.dimen.popup_filter_item_height);
-        return (circles.size() < MAX_ITEM_COUNT)? itemHeight*circles.size() : itemHeight*MAX_ITEM_COUNT;
+    public void setCheckedCircle(@NonNull Circle checkedCircle) {
+        this.checkedCircle = checkedCircle;
+        checkCircle();
     }
 
     public void show(){
         setBounds();
         listPopupWindow.show();
+        listPopupWindow.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     private void setBounds(){
-        listPopupWindow.setHeight(height);
+        listPopupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
         listPopupWindow.setWidth(width);
+    }
+
+    private void checkCircle(){
+        ListView listView = listPopupWindow.getListView();
+
+        if (listView == null) return;
+
+        for (int position = 0; position < adapter.getCount(); position++){
+            if (StringUtils.equals(adapter.getItem(position).getId(), checkedCircle.getId())){
+                listView.setItemChecked(position, true);
+                break;
+            }
+        }
     }
 
     public void dismiss(){

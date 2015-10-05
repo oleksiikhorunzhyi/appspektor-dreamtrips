@@ -88,17 +88,18 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     private void actionFilter() {
+        FeedPresenter presenter = getPresenter();
         View menuItemView = getActivity().findViewById(R.id.action_filter);
         CirclesFilterPopupWindow filterPopupWindow = new CirclesFilterPopupWindow(getContext());
-        filterPopupWindow.setCircles(getPresenter().getFilterItems());
+        filterPopupWindow.setCircles(presenter.getFilterCircles());
         filterPopupWindow.setAnchorView(menuItemView);
         filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             filterPopupWindow.dismiss();
-            getPresenter().applyFilter((Circle) parent.getItemAtPosition(position));
+            presenter.applyFilter((Circle) parent.getItemAtPosition(position));
         });
         filterPopupWindow.show();
+        filterPopupWindow.setCheckedCircle(presenter.getAppliedFilterCircle());
     }
-
 
     @Override
     protected FeedPresenter createPresenter(Bundle savedInstanceState) {

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.friends.model;
 
 import java.io.Serializable;
 
-public class Circle implements Serializable {
+public class Circle implements Serializable, Comparable<Circle> {
 
     public static Circle all(String title) {
         Circle all = new Circle();
@@ -29,5 +29,10 @@ public class Circle implements Serializable {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Circle another) {
+        return name.compareTo(another.getName());
     }
 }

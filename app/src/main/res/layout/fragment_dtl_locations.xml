@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:textSize="22sp"
-            android:text="Try our city search"
+            android:text="@string/dtl_locations_try_search"
             />
 
         <Button
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_success_story_search"
-            android:text="Search Cities"
+            android:text="@string/dtl_locations_search_caption"
             />
 
         <TextView
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:text="OR"
+            android:text="@string/dtl_locations_or_caption"
             />
 
         <TextView
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            android:text="Select from nearby cities"
+            android:text="@string/dtl_locations_select_nearby_cities"
             />
 
         <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView

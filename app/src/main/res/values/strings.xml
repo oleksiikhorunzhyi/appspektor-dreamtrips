@@ -435,4 +435,8 @@
     <string name="notifaction_older">Older</string>
 
     <string name="dtl_locations_title">Select location</string>
+    <string name="dtl_locations_try_search">Try our city search</string>
+    <string name="dtl_locations_search_caption">Search Cities</string>
+    <string name="dtl_locations_or_caption">OR</string>
+    <string name="dtl_locations_select_nearby_cities">Select from nearby cities</string>
 </resources>

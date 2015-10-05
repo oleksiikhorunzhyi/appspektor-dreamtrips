@@ -38,6 +38,10 @@ public class LocationsPresenter extends Presenter<LocationsPresenter.View> {
                 });
     }
 
+    public void onLocationClicked(DtlLocation location) {
+        db.setSelectedDtlLocation(location);
+        view.openLocation(new PlacesBundle(location));
+    }
     public interface View extends Presenter.View {
 
         BaseArrayListAdapter<DtlLocation> getAdapter();

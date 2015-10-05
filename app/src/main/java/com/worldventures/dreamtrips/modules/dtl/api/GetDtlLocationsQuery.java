@@ -9,7 +9,6 @@ public class GetDtlLocationsQuery extends Query<ArrayList<DtlLocation>> {
 
     private double lat;
     private double lng;
-
     private int rad;
 
     public GetDtlLocationsQuery(double lat, double lng, int rad) {

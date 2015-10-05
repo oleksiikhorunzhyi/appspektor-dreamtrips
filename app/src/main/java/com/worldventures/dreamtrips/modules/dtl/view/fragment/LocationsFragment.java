@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.LocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
@@ -51,6 +52,10 @@ public class LocationsFragment extends BaseFragment<LocationsPresenter> implemen
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
         recyclerView.setAdapter(adapter);
+    }
+
+    public void onEvent(LocationClickedEvent event) {
+        getPresenter().onLocationClicked(event.getLocation());
     }
 
     @Override

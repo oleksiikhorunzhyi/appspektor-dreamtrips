@@ -15,7 +15,8 @@ import dagger.Provides;
         injects = {
                 LocationsPresenter.class,
                 LocationsFragment.class,
-                DtlLocationCell.class
+                DtlLocationCell.class,
+                PlacesTabsFragment.class
         },
         complete = false,
         library = true

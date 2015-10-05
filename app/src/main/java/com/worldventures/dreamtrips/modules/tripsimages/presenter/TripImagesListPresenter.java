@@ -72,8 +72,7 @@ public abstract class TripImagesListPresenter
         view.fillWithItems(photos);
         view.setSelection();
 
-        if (type != Type.FIXED_LIST && !isFullscreen)
-            reload();
+        if (type != Type.FIXED_LIST && !isFullscreen) reload();
     }
 
     private void resetLazyLoadFields() {
@@ -185,7 +184,6 @@ public abstract class TripImagesListPresenter
             uploadTask.setStatus(UploadTask.Status.FAILED);
             updateTask(uploadTask);
         }
-
     }
 
     @Override
@@ -203,13 +201,11 @@ public abstract class TripImagesListPresenter
             db.removeUploadTask(task);
         }, spiceException -> {
             photoError(getCurrentTask(task.getAmazonTaskId()));
-
         });
     }
 
     private void processPhoto(int index, Photo photo) {
-        photos.remove(index);
-        photos.add(index, photo);
+        photos.set(index, photo);
         db.savePhotoEntityList(type, photos);
 
         new Handler().postDelayed(() -> {
@@ -314,8 +310,8 @@ public abstract class TripImagesListPresenter
         }
 
         @Override
-        public void onFinish(RoboSpiceAdapterController.LoadType loadType,
-                             List<IFullScreenObject> items, SpiceException spiceException) {
+        public void onPreFinish(RoboSpiceAdapterController.LoadType loadType,
+                                List<IFullScreenObject> items, SpiceException spiceException) {
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {

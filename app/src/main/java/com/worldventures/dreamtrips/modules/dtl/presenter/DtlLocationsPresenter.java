@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class LocationsPresenter extends Presenter<LocationsPresenter.View> {
+public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View> {
 
     @Inject
     SnappyRepository db;

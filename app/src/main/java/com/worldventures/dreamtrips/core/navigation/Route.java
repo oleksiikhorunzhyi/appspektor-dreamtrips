@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.LocationsFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.PlacesTabsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
@@ -102,8 +102,8 @@ public enum Route {
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
 
-    DTL_LOCATIONS(LocationsFragment.class, R.string.dtl_locations_title),
-    DTL_PLACES_LIST(PlacesTabsFragment.class);
+    DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
+    DTL_PLACES_LIST(DtlPlacesTabsFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

@@ -439,4 +439,6 @@
     <string name="dtl_locations_search_caption">Search Cities</string>
     <string name="dtl_locations_or_caption">OR</string>
     <string name="dtl_locations_select_nearby_cities">Select from nearby cities</string>
+    <string name="dtl_place_tab_offers">Offers</string>
+    <string name="dtl_place_tab_dining">Dining</string>
 </resources>

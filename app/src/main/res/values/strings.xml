@@ -7,6 +7,7 @@
     <string name="membership">Membership</string>
     <string name="trip_images">Trip Images</string>
     <string name="bucket_list">Bucket List</string>
+    <string name="dtl">Discover</string>
     <string name="my_profile">My Profile</string>
     <string name="terms">Terms</string>
     <string name="terms_of_service">Terms of Service</string>
@@ -433,4 +434,9 @@
     <string name="notifaction_new">New</string>
     <string name="notifaction_older">Older</string>
 
+    <string name="dtl_locations_title">Select location</string>
+    <string name="dtl_locations_try_search">Try our city search</string>
+    <string name="dtl_locations_search_caption">Search Cities</string>
+    <string name="dtl_locations_or_caption">OR</string>
+    <string name="dtl_locations_select_nearby_cities">Select from nearby cities</string>
 </resources>

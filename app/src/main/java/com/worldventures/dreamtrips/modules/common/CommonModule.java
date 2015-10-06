@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
@@ -85,6 +86,7 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
+        activeComponents.add(DtlModule.DTL);
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(VideoModule.MEMBERSHIP);

@@ -11,6 +11,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -53,6 +54,7 @@ public class SnappyRepository {
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
+    public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION ";
 
     private Context context;
     private ExecutorService executorService;
@@ -412,5 +414,17 @@ public class SnappyRepository {
 
     public boolean getGcmRegIdPersisted() {
         return actWithResult(db -> db.get(GCM_REG_ID_PERSISTED, Boolean.class)).or(false);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DTL
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void setSelectedDtlLocation(DtlLocation location) {
+        act(db -> db.put(DTL_SELECTED_LOCATION, location));
+    }
+
+    public DtlLocation getSelectedDtlLocation() {
+        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
     }
 }

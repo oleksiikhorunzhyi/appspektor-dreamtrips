@@ -18,6 +18,7 @@ import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -185,10 +186,17 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
                 comments.setEnabled(true);
             }
 
-            if (foreign) {
+            if (foreign || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
                 more.setVisibility(View.GONE);
             } else {
                 more.setVisibility(View.VISIBLE);
+            }
+
+            if (feedItem.getType() == FeedEntityHolder.Type.POST
+                    || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
+                share.setVisibility(View.GONE);
+            } else {
+                share.setVisibility(View.VISIBLE);
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

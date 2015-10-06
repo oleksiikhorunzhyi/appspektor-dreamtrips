@@ -1,16 +1,25 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
+import android.content.Context;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import de.greenrobot.event.EventBus;
 
@@ -44,11 +53,14 @@ public class FeedActionPanelViewActionHandler {
             builder.title(R.string.action_share)
                     .items(R.array.share_dialog_items)
                     .itemsCallback((dialog, view, which, text) -> {
+                        String shareType;
                         if (which == 0) {
-                            fbShare();
+                            shareType = ShareFragment.FB;
                         } else {
-                            twShare();
+                            shareType = ShareFragment.TW;
                         }
+
+                        share(feedItem, actionView.getContext(), shareType);
                     }).show();
         });
 
@@ -57,17 +69,29 @@ public class FeedActionPanelViewActionHandler {
                 eventBus.post(new ItemFlaggedEvent(feedItem.getItem(), reason + ". " + desc)));
     }
 
+    private void share(FeedItem feedItem, Context context, String shareType) {
+        String imageUrl = null, shareUrl = null, text = null;
+        switch (feedItem.getType()) {
+            case PHOTO:
+                Photo photo = (Photo) feedItem.getItem();
+                shareUrl = photo.getFSImage().getUrl();
+                text = photo.getFsShareText();
 
-    private void fbShare() {
-      /*  activityRouter.openShareFacebook(bucketItem.getUrl(), null,
-                String.format(context.getString(R.string.bucketlist_share),
-                        bucketItem.getName())); todo*/
+                break;
+
+            case BUCKET_LIST_ITEM:
+                BucketItem bucketItem = (BucketItem) feedItem.getItem();
+                imageUrl = bucketItem.getUrl();
+                text = String.format(context.getString(R.string.bucketlist_share),
+                        bucketItem.getName());
+
+                break;
+        }
+
+        if (shareType.equals(ShareFragment.FB)) {
+            activityRouter.openShareFacebook(imageUrl, shareUrl, text);
+        } else {
+            activityRouter.openShareTwitter(imageUrl, shareUrl, text);
+        }
     }
-
-    private void twShare() {
-   /*     activityRouter.openShareTwitter(null, bucketItem.getUrl(),
-                String.format(context.getString(R.string.bucketlist_share),
-                        bucketItem.getName())); todo*/
-    }
-
 }

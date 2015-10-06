@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.presenter.LocationsPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_locations)
-public class LocationsFragment extends BaseFragment<LocationsPresenter> implements LocationsPresenter.View {
+public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
 
     @Inject
     @ForActivity
@@ -41,8 +41,8 @@ public class LocationsFragment extends BaseFragment<LocationsPresenter> implemen
     ProgressBar progressBar;
 
     @Override
-    protected LocationsPresenter createPresenter(Bundle savedInstanceState) {
-        return new LocationsPresenter();
+    protected DtlLocationsPresenter createPresenter(Bundle savedInstanceState) {
+        return new DtlLocationsPresenter();
     }
 
     @Override

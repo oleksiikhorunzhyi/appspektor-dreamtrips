@@ -22,8 +22,4 @@ public class SimpleFullscreenPresenter extends FullScreenPresenter {
         return false;
     }
 
-    @Override
-    protected boolean isShareVisible() {
-        return false;
-    }
 }

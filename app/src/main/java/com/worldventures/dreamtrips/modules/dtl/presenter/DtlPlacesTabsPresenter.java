@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.View> {
 
-    private DtlPlace.PlaceType currentType;
+    private DtlPlaceType currentType;
 
     @Override
     public void takeView(View view) {
@@ -21,18 +21,18 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         // TODO : implement places obtaining
     }
 
-    public void onTabChange(DtlPlace.PlaceType type) {
+    public void onTabChange(DtlPlaceType type) {
         currentType = type;
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(DtlPlace.PlaceType.PLACES, DtlPlace.PlaceType.DINING));
+        view.setTypes(Arrays.asList(DtlPlaceType.PLACES, DtlPlaceType.DINING));
         view.updateSelection();
     }
 
     public interface View extends Presenter.View {
 
-        void setTypes(List<DtlPlace.PlaceType> types);
+        void setTypes(List<DtlPlaceType> types);
 
         void updateSelection();
     }

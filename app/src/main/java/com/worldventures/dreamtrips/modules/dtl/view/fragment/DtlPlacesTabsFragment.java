@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPag
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 
 import java.util.List;
@@ -62,6 +62,7 @@ public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter> 
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
+                notifyPosition();
             }
 
             @Override
@@ -77,13 +78,13 @@ public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter> 
     }
 
     private void notifyPosition() {
-        getPresenter().onTabChange(DtlPlace.PlaceType.values()[currentPosition]);
+        getPresenter().onTabChange(DtlPlaceType.values()[currentPosition]);
     }
 
     @Override
-    public void setTypes(List<DtlPlace.PlaceType> types) {
+    public void setTypes(List<DtlPlaceType> types) {
         if (adapter.getCount() == 0) {
-            for (DtlPlace.PlaceType type : types) {
+            for (DtlPlaceType type : types) {
                 adapter.add(new DataFragmentItem<>(DtlPlacesListFragment.class, getString(type.getRes()), type));
             }
             adapter.notifyDataSetChanged();

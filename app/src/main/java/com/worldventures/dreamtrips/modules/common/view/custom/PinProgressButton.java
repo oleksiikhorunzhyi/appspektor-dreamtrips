@@ -37,7 +37,7 @@ import com.worldventures.dreamtrips.R;
  * progress for this content.
  * <p>
  * See <a href="http://developer.android.com/design/building-blocks/progress.html#custom-indicators">Android
- * Design: Progress &amp; Activity</a> for more details on this custom
+ * Design: Progress &amp; Activity</a> for edit details on this custom
  * indicator.
  */
 public class PinProgressButton extends CompoundButton {

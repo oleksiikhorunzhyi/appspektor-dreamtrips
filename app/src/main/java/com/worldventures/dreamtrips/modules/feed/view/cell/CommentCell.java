@@ -95,7 +95,6 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
                 flag.setVisibility(View.GONE);
             } else {
                 flag.setVisibility(View.VISIBLE);
-                flag.setImageResource(R.drawable.ic_flag);
             }
         }
 

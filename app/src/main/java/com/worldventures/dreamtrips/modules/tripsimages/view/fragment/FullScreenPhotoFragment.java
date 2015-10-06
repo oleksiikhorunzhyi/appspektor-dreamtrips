@@ -22,12 +22,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -75,8 +78,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ImageView ivShare;
     @InjectView(R.id.flag)
     protected FlagView flag;
-    @InjectView(R.id.more)
-    protected ImageView more;
+    @InjectView(R.id.edit)
+    protected ImageView edit;
     @InjectView(R.id.delete)
     protected ImageView delete;
     @InjectView(R.id.user_photo)
@@ -220,9 +223,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         }
     }
 
-    @OnClick(R.id.more)
-    public void actionMore() {
-        PopupMenu popup = new PopupMenu(getContext(), more);
+    @OnClick(R.id.edit)
+    public void actionEdit() {
+        PopupMenu popup = new PopupMenu(getContext(), edit);
         popup.inflate(R.menu.menu_photo_edit);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -258,11 +261,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @Override
-    public void setMoreVisibility(boolean visible) {
+    public void setEditVisibility(boolean visible) {
         if (visible) {
-            more.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.VISIBLE);
         } else {
-            more.setVisibility(View.GONE);
+            edit.setVisibility(View.GONE);
         }
 
     }
@@ -277,8 +280,14 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         getPresenter().onFlagAction();
     }
 
-    @OnClick(R.id.iv_comment)
+    @OnClick({R.id.iv_comment, R.id.tv_comments_count})
     public void actionComment() {
+        getPresenter().onCommentsAction();
+    }
+
+    @OnClick(R.id.tv_likes_count)
+    public void actionLikes() {
+        getPresenter().onLikesAction();
     }
 
     @Override

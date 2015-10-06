@@ -63,6 +63,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         }
         if (acceptFriend) {
             acceptClicked();
+            acceptFriend = false;
         }
     }
 
@@ -83,14 +84,18 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     public void addFriendClicked() {
-        if (user.getRelationship() != null) {
-            if (user.getRelationship().equals(User.Relationship.NONE)
-                    || user.getRelationship().equals(User.Relationship.REJECT))
-                view.showAddFriendDialog(circles, this::addAsFriend);
-            else if (user.getRelationship().equals(User.Relationship.FRIEND))
-                view.showFriendDialog(user);
-        }
+        User.Relationship userRelationship = user.getRelationship();
+        if (userRelationship == null) return;
 
+        switch (userRelationship){
+            case REJECT:
+            case NONE:
+                view.showAddFriendDialog(circles, this::addAsFriend);
+                break;
+            case FRIEND:
+                view.showFriendDialog(user);
+                break;
+        }
     }
 
     private void unfriend() {

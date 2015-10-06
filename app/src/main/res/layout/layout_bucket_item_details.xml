@@ -32,20 +32,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"/>
 
-                <ImageView
-                    android:id="@+id/bucketItemEdit"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="1dp"
-                    android:layout_marginRight="@dimen/spacing_normal"
-                    android:layout_marginTop="@dimen/spacing_normal"
-                    android:focusableInTouchMode="false"
-                    android:padding="6dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_bucket_edit"/>
-
                 <me.relex.circleindicator.CircleIndicator
                     android:id="@+id/circleIndicator"
                     android:layout_width="match_parent"

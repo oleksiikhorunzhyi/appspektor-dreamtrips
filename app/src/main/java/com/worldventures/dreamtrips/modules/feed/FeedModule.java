@@ -3,10 +3,8 @@ package com.worldventures.dreamtrips.modules.feed;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
@@ -19,14 +17,10 @@ import com.worldventures.dreamtrips.modules.feed.presenter.TextualPostDetailsPre
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedTripCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
@@ -37,8 +31,6 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetail
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
@@ -48,12 +40,8 @@ import de.greenrobot.event.EventBus;
                 FeedTripEventCell.class,
                 FeedPresenter.class,
                 FeedFragment.class,
-                FeedTripCommentCell.class,
                 FeedPhotoEventCell.class,
-                FeedPhotoCommentCell.class,
                 FeedBucketEventCell.class,
-                FeedBucketCommentCell.class,
-                FeedPostCommentCell.class,
                 LoadMoreCell.class,
                 FeedPhotoEventCell.class,
                 FeedPostEventCell.class,

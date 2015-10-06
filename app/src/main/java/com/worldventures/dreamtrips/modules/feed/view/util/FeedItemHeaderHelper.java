@@ -15,10 +15,13 @@ import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import butterknife.InjectView;
 import butterknife.Optional;
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public class FeedItemHeaderHelper {
@@ -47,26 +50,32 @@ public class FeedItemHeaderHelper {
     @InjectView(R.id.likes)
     ImageView likes;
 
-    public void set(FeedItem feedModel, Context context) {
+    @InjectView(R.id.edit_feed_item)
+    ImageView editFeedItem;
+
+    public FeedItemHeaderHelper() {
+    }
+
+    public void set(FeedItem feedItem, Context context, int accountId) {
         try {
-            User user = feedModel.getItem().getUser();
+            User user = feedItem.getItem().getUser();
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             Resources res = context.getResources();
-            text.setText(Html.fromHtml(feedModel.infoText(res)));
+            text.setText(Html.fromHtml(feedItem.infoText(res)));
 
-            if (TextUtils.isEmpty(feedModel.getItem().place())) {
+            if (TextUtils.isEmpty(feedItem.getItem().place())) {
                 location.setVisibility(View.GONE);
             } else {
                 location.setVisibility(View.VISIBLE);
-                location.setText(feedModel.getItem().place());
+                location.setText(feedItem.getItem().place());
             }
 
 
-            date.setText(DateTimeUtils.convertDateToString(feedModel.getCreatedAt(),
+            date.setText(DateTimeUtils.convertDateToString(feedItem.getCreatedAt(),
                     DateTimeUtils.FEED_DATE_FORMAT));
 
-            int likesCount = feedModel.getItem().getLikesCount();
-            int commentsCount = feedModel.getItem().getCommentsCount();
+            int likesCount = feedItem.getItem().getLikesCount();
+            int commentsCount = feedItem.getItem().getCommentsCount();
             if (likesCount > 0) {
                 if (tvLikesCount != null) {
                     tvLikesCount.setVisibility(View.VISIBLE);
@@ -76,11 +85,11 @@ public class FeedItemHeaderHelper {
 
                 if (usersWhoLiked != null) {
                     usersWhoLiked.setVisibility(View.VISIBLE);
-                    String firstUserName = feedModel.getItem().getFirstUserLikedItem();
+                    String firstUserName = feedItem.getItem().getFirstUserLikedItem();
                     if (firstUserName != null && !TextUtils.isEmpty(firstUserName)) {
                         int stringRes = R.plurals.users_who_liked_with_name;
                         String appeal = firstUserName;
-                        if (feedModel.getItem().isLiked()) {
+                        if (feedItem.getItem().isLiked()) {
                             stringRes = R.plurals.account_who_liked_item;
                             appeal = res.getString(R.string.you);
                         }
@@ -104,7 +113,7 @@ public class FeedItemHeaderHelper {
 
             if (likes != null) {
                 likes.setEnabled(true);
-                likes.setImageResource(feedModel.getItem().isLiked() ?
+                likes.setImageResource(feedItem.getItem().isLiked() ?
                         R.drawable.ic_feed_thumb_up_blue :
                         R.drawable.ic_feed_thumb_up);
             }
@@ -113,9 +122,18 @@ public class FeedItemHeaderHelper {
                 comments.setEnabled(true);
             }
 
+            boolean isCurrentUser = feedItem.getItem().getUser() != null && feedItem.getItem().getUser().getId() == accountId;
+            boolean isEditableType = feedItem.getType() == FeedEntityHolder.Type.POST || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM;
+            editFeedItem.setVisibility(isCurrentUser && isEditableType ? View.VISIBLE : View.GONE);
+
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
         }
     }
 
+    public void setOnEditClickListener(View.OnClickListener onEditClickListener) {
+        if(editFeedItem!=null){
+            editFeedItem.setOnClickListener(onEditClickListener);
+        }
+    }
 }

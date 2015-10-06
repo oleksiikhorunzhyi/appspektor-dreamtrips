@@ -452,4 +452,6 @@
     </plurals>
 
     <string name="all">All</string>
+    <string name="feed_edit_item">Edit</string>
+    <string name="feed_delete_item">Delete</string>
 </resources>

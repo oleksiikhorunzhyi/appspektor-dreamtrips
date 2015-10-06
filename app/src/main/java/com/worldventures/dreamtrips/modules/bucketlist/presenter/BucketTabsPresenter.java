@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
@@ -36,11 +37,11 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         setTabs();
         loadCategories();
         getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
-        getBucketItemManager().loadBucketItems(getUserId(), this);
+        getBucketItemManager().loadBucketItems(getUser(), this);
     }
 
-    protected int getUserId() {
-        return getAccount().getId();
+    protected User getUser() {
+        return getAccount();
     }
 
     @Override

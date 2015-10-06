@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
@@ -30,10 +29,10 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     FeedEntity feedEntity;
 
     private UidItemDelegate uidItemDelegate;
-    
+
     public FeedEntityDetailsPresenter(FeedEntityDetailsBundle args) {
-       this.feedModel = args.getFeedItem();
-        feedEntity = args.getFeedItem().getItem();
+        this.feedModel = args.getFeedItem();
+        this.feedEntity = feedModel.getItem();
         uidItemDelegate = new UidItemDelegate(this);
     }
 

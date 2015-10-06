@@ -176,7 +176,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     public void openBucketList() {
         NavigationBuilder
                 .create()
-                .data(new ForeignBucketTabsBundle(user.getId()))
+                .data(new ForeignBucketTabsBundle(user))
                 .with(activityRouter)
                 .move(Route.FOREIGN_BUCKET_LIST);
     }

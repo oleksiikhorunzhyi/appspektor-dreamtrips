@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
@@ -60,18 +61,19 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
         fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
         Pair<Route, Parcelable> routeParcelablePair = fragmentFactory.create(feedItem);
         NavigationBuilder.create().with(fragmentCompass).data(routeParcelablePair.second).move(routeParcelablePair.first);
-        actionView.setState(feedItem, isForeignItem(feedItem));
-        feedActionHandler.init(actionView);
-        feedItemHeaderHelper.set(feedItem, getContext());
-
+        setupView(feedItem);
     }
-
 
     @Override
     public void updateHeader(FeedItem feedItem) {
+        setupView(feedItem);
+    }
+
+    private void setupView(FeedItem feedItem) {
         actionView.setState(feedItem, isForeignItem(feedItem));
         feedActionHandler.init(actionView);
-        feedItemHeaderHelper.set(feedItem, getContext());
+        feedItemHeaderHelper.set(feedItem, getContext(), getPresenter().getAccount().getId());
+        feedItemHeaderHelper.setOnEditClickListener(v -> eventBus.post(new FeedEntityEditClickEvent(feedItem, v)));
     }
 
 

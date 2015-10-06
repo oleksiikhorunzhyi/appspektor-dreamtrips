@@ -17,9 +17,10 @@
         fresco:roundAsCircle="true"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -42,8 +43,8 @@
             android:drawableStart="@drawable/ic_feed_location_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
-            tools:text="Katerini, Greece"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:text="Katerini, Greece"/>
 
         <TextView
             android:id="@+id/feed_header_date"
@@ -56,8 +57,21 @@
             android:drawableStart="@drawable/ic_feed_calendar_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
-            tools:text="Jan 27, 2015   9:00AM"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:text="Jan 27, 2015   9:00AM"/>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/edit_feed_item"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="1dp"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:focusableInTouchMode="false"
+        android:padding="6dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_commnet_edit"/>
 </LinearLayout>

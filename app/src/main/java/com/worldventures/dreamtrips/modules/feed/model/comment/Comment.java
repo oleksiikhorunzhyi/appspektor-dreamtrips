@@ -22,6 +22,9 @@ public class Comment implements Parcelable, Serializable, UidItem {
     Date updatedAt;
     boolean update;
 
+    public Comment() {
+    }
+
     protected Comment(Parcel in) {
         uid = in.readString();
         parent_id = in.readString();

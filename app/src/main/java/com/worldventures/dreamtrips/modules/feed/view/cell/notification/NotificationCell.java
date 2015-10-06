@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
@@ -109,7 +108,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
             case PHOTO:
             case BUCKET_LIST_ITEM:
             case POST:
-                openComments();
+                openDetails();
                 break;
         }
     }
@@ -139,7 +138,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 .attach(Route.DETAILED_TRIP);
     }
 
-    private void openComments() {
+    private void openDetails() {
         NavigationBuilder.create()
                 .with(activityRouter)
                 .data(new FeedEntityDetailsBundle(getModelObject()))

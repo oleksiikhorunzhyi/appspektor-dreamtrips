@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import java.util.List;
 
@@ -107,6 +108,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             bucketItemManager.saveSingleBucketItem(bucketItem);
             syncUI();
         }
+    }
+
+    public FeedEntity getBucketItem() {
+        return bucketItem;
     }
 
     public interface View extends BucketDetailsBasePresenter.View {

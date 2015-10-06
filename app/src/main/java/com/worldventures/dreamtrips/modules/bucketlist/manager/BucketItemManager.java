@@ -74,25 +74,21 @@ public class BucketItemManager {
         this.dreamSpiceManager = dreamSpiceManager;
     }
 
-    public void loadBucketItems(int userId, DreamSpiceManager.FailureListener failureListener) {
+    public void loadBucketItems(User user, DreamSpiceManager.FailureListener failureListener) {
         if (!snapper.isEmpty(SnappyRepository.BUCKET_LIST)) {
             eventBus.post(new BucketItemsLoadedEvent());
         }
 
-        dreamSpiceManager.execute(getBucketListRequest(), items -> {
-            Queryable.from(items).forEachR(item -> {
-                User user = new User();
-                user.setId(userId);
-                item.setUser(user);
-            });
+        dreamSpiceManager.execute(getBucketListRequest(user.getId()), items -> {
+            Queryable.from(items).forEachR(item -> item.setUser(user));
             saveBucketItems(items);
             eventBus.post(new BucketItemsLoadedEvent());
         }, failureListener);
     }
 
     @NonNull
-    protected GetBucketItemsQuery getBucketListRequest() {
-        return new GetBucketItemsQuery();
+    protected GetBucketItemsQuery getBucketListRequest(int userId) {
+        return new GetBucketItemsQuery(userId);
     }
 
     protected List<BucketItem> readBucketItems(BucketType type) {

@@ -16,6 +16,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -36,7 +41,7 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
 
     private boolean syncUIStateWithModelWasCalled = false;
 
-    FeedItemHeaderHelper feedItemHeaderHelper;
+    FeedItemHeaderHelper feedItemHeaderHelper = new FeedItemHeaderHelper();
     CommentCellHelper commentCellHelper;
 
     @Optional
@@ -57,7 +62,6 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
 
     public FeedHeaderCell(View view) {
         super(view);
-        feedItemHeaderHelper = new FeedItemHeaderHelper();
         ButterKnife.inject(feedItemHeaderHelper, view);
 
         if (commentPreview != null) {
@@ -68,8 +72,8 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
 
     @Override
     protected void syncUIStateWithModel() {
-        feedItemHeaderHelper.set(getModelObject(), itemView.getContext());
-
+        feedItemHeaderHelper.set(getModelObject(), itemView.getContext(), sessionHolder.get().get().getUser().getId());
+        feedItemHeaderHelper.setOnEditClickListener(this::onEditClicked);
         if (commentCellHelper != null) {
             Comment comment = getModelObject().getItem().getComments() == null ? null :
                     Queryable.from(getModelObject().getItem().getComments())
@@ -90,6 +94,9 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
         actionView.setState(getModelObject(), isForeignItem(getModelObject()));
 
         feedActionHandler.init(actionView);
+        itemView.setOnClickListener(v -> {
+            getEventBus().post(new FeedEntityItemClickEvent(getModelObject()));
+        });
     }
 
     private boolean isForeignItem(FeedItem feedItem) {
@@ -130,6 +137,24 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
                             });
                     dialog.setCanceledOnTouchOutside(true);
                     dialog.show();
+                    break;
+                case R.id.action_edit:
+                    onEdit();
+                    break;
+            }
+
+            return true;
+        });
+        popup.show();
+    }
+
+    protected void onEditClicked(View v) {
+        PopupMenu popup = new PopupMenu(v.getContext(), v);
+        popup.inflate(R.menu.menu_feed_entity_edit);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    onDelete();
                     break;
                 case R.id.action_edit:
                     onEdit();

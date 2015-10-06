@@ -7,6 +7,8 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -60,6 +62,9 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.setRequestsCount(db.getFriendsRequestsCount());
     }
+    public void onEventMainThread(FeedEntityItemClickEvent event) {
+        view.openDetails(event.getFeedItem());
+    }
 
     public void refreshRequestsCount() {
         view.setRequestsCount(db.getFriendsRequestsCount());
@@ -67,5 +72,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
 
     public interface View extends BaseFeedPresenter.View {
         void setRequestsCount(int count);
+
+        void openDetails(FeedItem feedItem);
     }
 }

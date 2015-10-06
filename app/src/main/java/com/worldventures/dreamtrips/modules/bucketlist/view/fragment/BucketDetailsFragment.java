@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
@@ -32,11 +33,11 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,7 +45,6 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.layout_bucket_item_details)
@@ -80,9 +80,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @InjectView(R.id.circleIndicator)
     protected CircleIndicator circleIndicator;
-
-    @InjectView(R.id.bucketItemEdit)
-    protected View bucketItemEdit;
 
     @InjectView(R.id.bucket_tags_container)
     View bucketTags;
@@ -140,23 +137,24 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         return (T) new BucketItemDetailsPresenter(getArgs());
     }
 
-    @OnClick(R.id.bucketItemEdit)
-    protected void onEdit() {
-        PopupMenu popup = new PopupMenu(getActivity(), bucketItemEdit);
-        popup.inflate(R.menu.menu_bucket_edit);
-        popup.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_delete:
-                    getPresenter().onDelete();
-                    break;
-                case R.id.action_edit:
-                    getPresenter().onEdit();
-                    break;
-            }
+    public void onEvent(FeedEntityEditClickEvent event) {
+        if (isVisibleOnScreen() && event.getFeedItem().getItem().equals(getPresenter().getBucketItem())) {
+            PopupMenu popup = new PopupMenu(getActivity(), event.getAnchor());
+            popup.inflate(R.menu.menu_bucket_edit);
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_delete:
+                        getPresenter().onDelete();
+                        break;
+                    case R.id.action_edit:
+                        getPresenter().onEdit();
+                        break;
+                }
 
-            return true;
-        });
-        popup.show();
+                return true;
+            });
+            popup.show();
+        }
     }
 
     @Override
@@ -208,11 +206,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     protected void onCheckedChanged(boolean isChecked) {
         getPresenter().onStatusUpdated(isChecked);
     }
-
-    // @OnClick(R.id.imageViewCover)
-    // protected void onCoverClicked() {
-    //     getPresenter().onCoverClicked();
-    // }
 
     private void setForeignIntentAction() {
         diningSite.setOnClickListener(v -> {
@@ -294,10 +287,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
                     @Override
                     public void setArgs(int position, Fragment fragment) {
                         Bundle args = new Bundle();
-                        Object photo = photos.get(position);
-                        if (photo instanceof Serializable) {
-                            args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
-                        }
+                        BucketPhoto bucketPhoto = photos.get(position);
+                        args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, bucketPhoto);
                         fragment.setArguments(args);
                     }
                 };
@@ -311,6 +302,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         }
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);
+    }
+
+
+    public void onEvent(TripImageClickedEvent event) {
+        getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
     }
 
     @Override

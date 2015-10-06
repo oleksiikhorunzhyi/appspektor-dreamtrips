@@ -109,7 +109,9 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.setTime(BucketItemInfoUtil.getTime(context, bucketItem));
 
             List<BucketPhoto> photos = bucketItem.getPhotos();
-            if (photos != null) {
+            if (photos != null && !photos.isEmpty()) {
+                int coverIndex = Math.max(photos.indexOf(bucketItem.getCoverPhoto()), 0);
+                Collections.swap(photos, coverIndex, 0);
                 view.setImages(photos);
             }
 
@@ -143,6 +145,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     public void onEvent(BucketPhotoFullscreenRequestEvent event) {
         openFullScreen(event.getPhoto());
+    }
+
+    public void openFullScreen(int position) {
+        openFullScreen(bucketItem.getPhotos().get(position));
     }
 
     public void openFullScreen(BucketPhoto selectedPhoto) {

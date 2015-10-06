@@ -119,14 +119,6 @@ public class FeedBucketEventCell extends FeedHeaderCell<BucketFeedItem> {
             textViewTags.setText(bucketItem.getBucketTags());
         } else
             bucketTags.setVisibility(View.GONE);
-
-
-        itemView.setOnClickListener(v -> {
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .data(new FeedEntityDetailsBundle(getModelObject()))
-                    .move(Route.FEED_ENTITY_DETAILS);
-        });
     }
 
 

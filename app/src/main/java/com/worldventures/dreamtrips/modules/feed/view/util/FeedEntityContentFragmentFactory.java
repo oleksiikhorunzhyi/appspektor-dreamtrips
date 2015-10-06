@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
 public class FeedEntityContentFragmentFactory {
 
-
     public Pair<Route, Parcelable> create(FeedEntityHolder holder) {
         FeedEntityHolder.Type type = holder.getType();
 

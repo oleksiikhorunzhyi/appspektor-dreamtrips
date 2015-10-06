@@ -6,7 +6,6 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 
 @Layout(R.layout.layout_bucket_item_details)
 public class ForeignBucketDetailsFragment extends BucketDetailsFragment<ForeignBucketItemDetailsPresenter> {
@@ -20,10 +19,5 @@ public class ForeignBucketDetailsFragment extends BucketDetailsFragment<ForeignB
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         checkBox.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected BucketPhotosView.Type getBucketPhotosType() {
-        return BucketPhotosView.Type.FOREIGN;
     }
 }

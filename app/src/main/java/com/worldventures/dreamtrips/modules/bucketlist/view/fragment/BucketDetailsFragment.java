@@ -13,9 +13,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -28,7 +25,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -133,44 +129,16 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         if (!slave) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
-
-            int space = getResources().getDimensionPixelSize(R.dimen.bucket_details_spacing);
-            int spaceTop = getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
-            lp.rightMargin = space;
-            lp.leftMargin = space;
-            if (isTabletLandscape()) {
-                lp.topMargin = spaceTop;
-            }
-            contentView.setLayoutParams(lp);
-
         }
         setForeignIntentAction();
 
         progressDialog = ProgressDialogFragment.create();
     }
 
-    protected BucketPhotosView.Type getBucketPhotosType() {
-        return BucketPhotosView.Type.DETAILS;
-    }
-
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         return (T) new BucketItemDetailsPresenter(getArgs());
     }
-
-    @Override
-    public void setCover(String medium, String original) {
-        loadImage(medium, original);
-    }
-
-    private void loadImage(String lowUrl, String url) {
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
-                .setImageRequest(ImageRequest.fromUri(url))
-                .build();
-    }
-
 
     @OnClick(R.id.bucketItemEdit)
     protected void onEdit() {

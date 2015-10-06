@@ -99,6 +99,9 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
         } else {
             more.setVisibility(View.GONE);
         }
+
+
+
     }
 
 

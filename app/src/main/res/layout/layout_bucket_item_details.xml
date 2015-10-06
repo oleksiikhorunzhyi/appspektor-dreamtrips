@@ -6,13 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/aditional_cover"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_cover_place_holder"/>
-
     <ScrollView
         android:id="@+id/contentView"
         android:layout_width="match_parent"
@@ -28,11 +21,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_cover_place_holder"/>
+
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewPagerBucketGallery"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:background="@color/gray_lighter"/>
+                    android:layout_height="300dp"/>
 
                 <ImageView
                     android:id="@+id/bucketItemEdit"
@@ -129,6 +127,14 @@
 
             <include layout="@layout/include_bucket_item_meta"/>
 
+            <TextView
+                android:id="@+id/textViewDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                />
+
             <LinearLayout
                 android:id="@+id/diningContainer"
                 android:layout_width="match_parent"
@@ -136,13 +142,6 @@
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/textViewDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:textSize="18sp"/>
 
                 <com.worldventures.dreamtrips.modules.bucketlist.view.custom.TagViewGroup
 

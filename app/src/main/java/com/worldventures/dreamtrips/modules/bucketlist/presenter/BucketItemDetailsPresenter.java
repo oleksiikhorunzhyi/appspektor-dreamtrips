@@ -86,9 +86,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                 view.setCategory(s);
             }
             view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
-            String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
-            String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
-            view.setCover(medium, original);
             view.setupDiningView(bucketItem.getDining());
         }
     }
@@ -116,8 +113,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void setCategory(String category);
 
         void setPlace(String place);
-
-        void setCover(String medium, String original);
 
         void disableCheckbox();
 

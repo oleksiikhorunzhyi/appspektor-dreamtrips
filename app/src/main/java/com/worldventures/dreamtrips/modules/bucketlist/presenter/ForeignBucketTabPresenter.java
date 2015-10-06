@@ -19,10 +19,9 @@ public class ForeignBucketTabPresenter extends BucketTabsPresenter {
         this.userId = userId;
     }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        getBucketItemManager().setUserId(userId);
-    }
 
+    @Override
+    protected int getUserId() {
+        return userId;
+    }
 }

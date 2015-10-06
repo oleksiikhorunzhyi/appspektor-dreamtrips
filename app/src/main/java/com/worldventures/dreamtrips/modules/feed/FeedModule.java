@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.modules.feed;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
@@ -34,6 +36,8 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;

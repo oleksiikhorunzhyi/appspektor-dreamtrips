@@ -46,8 +46,6 @@ import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.N
 
 public class BucketItemManager {
 
-    int userId;
-
     @Inject
     SnappyRepository snapper;
 
@@ -72,30 +70,24 @@ public class BucketItemManager {
         injector.inject(this);
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     public void setDreamSpiceManager(DreamSpiceManager dreamSpiceManager) {
         this.dreamSpiceManager = dreamSpiceManager;
     }
 
-    public void loadBucketItems(DreamSpiceManager.FailureListener failureListener) {
+    public void loadBucketItems(int userId, DreamSpiceManager.FailureListener failureListener) {
         if (!snapper.isEmpty(SnappyRepository.BUCKET_LIST)) {
             eventBus.post(new BucketItemsLoadedEvent());
         }
 
         dreamSpiceManager.execute(getBucketListRequest(), items -> {
-            Queryable.from(items).forEachR(item -> item.setUser(getOwner()));
+            Queryable.from(items).forEachR(item -> {
+                User user = new User();
+                user.setId(userId);
+                item.setUser(user);
+            });
             saveBucketItems(items);
             eventBus.post(new BucketItemsLoadedEvent());
         }, failureListener);
-    }
-
-    protected User getOwner() {
-        User user = new User();
-        user.setId(userId);
-        return user;
     }
 
     @NonNull

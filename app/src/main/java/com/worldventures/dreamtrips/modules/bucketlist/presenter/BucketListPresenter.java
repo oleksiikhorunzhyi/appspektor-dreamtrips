@@ -151,7 +151,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         BucketBundle bundle = new BucketBundle();
         bundle.setType(type);
         bundle.setBucketItemUid(bucketItem.getUid());
-        view.openDetails(bundle);
+        view.openDetails(bucketItem);
         // set selected
         Queryable.from(bucketItems).forEachR(item ->
                 item.setSelected(bucketItem.equals(item)));
@@ -239,7 +239,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
         void checkEmpty(int count);
 
-        void openDetails(BucketBundle args);
+        void openDetails(BucketItem bucketItem);
 
         void openPopular(BucketBundle args);
     }

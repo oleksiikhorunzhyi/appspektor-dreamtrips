@@ -20,10 +20,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     SnappyRepository db;
 
-    /**
-     * Use getter getBucketItemManager() because we have
-     * {@link com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager}
-     */
     @Inject
     BucketItemManager bucketItemManager;
 
@@ -32,7 +28,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Override
     public void onInjected() {
         super.onInjected();
-        getBucketItemManager().setUserId(getAccount().getId());
     }
 
     @Override
@@ -41,7 +36,11 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         setTabs();
         loadCategories();
         getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
-        getBucketItemManager().loadBucketItems(this);
+        getBucketItemManager().loadBucketItems(getUserId(), this);
+    }
+
+    protected int getUserId() {
+        return getAccount().getId();
     }
 
     @Override

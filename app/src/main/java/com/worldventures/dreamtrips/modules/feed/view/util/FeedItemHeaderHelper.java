@@ -33,9 +33,6 @@ public class FeedItemHeaderHelper {
     TextView location;
     @InjectView(R.id.feed_header_date)
     TextView date;
-    @Optional
-    @InjectView(R.id.user_who_liked)
-    TextView usersWhoLiked;
 
     @Optional
     @InjectView(R.id.comments_count)
@@ -83,24 +80,9 @@ public class FeedItemHeaderHelper {
                     tvLikesCount.setText(text);
                 }
 
-                if (usersWhoLiked != null) {
-                    usersWhoLiked.setVisibility(View.VISIBLE);
-                    String firstUserName = feedItem.getItem().getFirstUserLikedItem();
-                    if (firstUserName != null && !TextUtils.isEmpty(firstUserName)) {
-                        int stringRes = R.plurals.users_who_liked_with_name;
-                        String appeal = firstUserName;
-                        if (feedItem.getItem().isLiked()) {
-                            stringRes = R.plurals.account_who_liked_item;
-                            appeal = res.getString(R.string.you);
-                        }
-                        Spanned text = Html.fromHtml(new PluralResources(res)
-                                .getQuantityString(stringRes, likesCount - 1, appeal, likesCount - 1));
-                        usersWhoLiked.setText(text);
-                    }
-                }
+
             } else {
                 tvLikesCount.setVisibility(View.GONE);
-                usersWhoLiked.setVisibility(View.GONE);
             }
 
             if (tvCommentsCount != null) {

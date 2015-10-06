@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -52,6 +53,9 @@ public class BaseFeedEntity implements FeedEntity {
 
     @Override
     public List<Comment> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
         return comments;
     }
 

@@ -6,15 +6,15 @@
 
     <com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
         android:id="@+id/actionView"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/comment_divider"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="0.5dp"
-        android:background="@color/gray"/>
+        android:background="@color/gray"
+        android:visibility="gone"/>
 
     <include
         android:id="@+id/comment_preview"

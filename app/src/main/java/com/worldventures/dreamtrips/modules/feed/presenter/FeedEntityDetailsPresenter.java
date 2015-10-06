@@ -56,17 +56,16 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     private void onUserLoaded(List<User> users) {
         if (users != null && !users.isEmpty()) {
             feedModel.getItem().setFirstUserLikedItem(users.get(0).getFullName());
-            view.updateHeader(feedModel);
-            eventBus.post(new FeedEntityChangedEvent(feedModel.getItem()));
+        } else {
+            feedModel.getItem().setFirstUserLikedItem(null);
         }
+        view.updateHeader(feedModel);
+        eventBus.post(new FeedEntityChangedEvent(feedModel.getItem()));
     }
 
     private void loadFullEventInfo() {
         doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedObjectHolder -> {
-            feedModel.setItem(feedObjectHolder.getItem());
-            feedEntity = feedModel.getItem();
-            view.updateHeader(feedModel);
-            eventBus.post(new FeedEntityChangedEvent(feedModel.getItem()));
+            eventBus.post(new FeedEntityChangedEvent(feedObjectHolder.getItem()));
         });
     }
 
@@ -81,9 +80,18 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     }
 
     public void onEvent(FeedEntityChangedEvent event) {
-        if (event.getFeedEntity().equals(feedEntity)) {
-            feedModel.setItem(event.getFeedEntity());
-            feedEntity = feedModel.getItem();
+        onEntityChanged(event.getFeedEntity());
+    }
+
+    public void onEvent(FeedEntityCommentedEvent event) {
+        onEntityChanged(event.getFeedEntity());
+    }
+
+    private void onEntityChanged(FeedEntity feedEntity) {
+        if (feedEntity.equals(this.feedEntity)) {
+            feedEntity.setFirstUserLikedItem(feedModel.getItem().getFirstUserLikedItem());
+            feedModel.setItem(feedEntity);
+            this.feedEntity = feedModel.getItem();
             view.updateHeader(feedModel);
         }
     }

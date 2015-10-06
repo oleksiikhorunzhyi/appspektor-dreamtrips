@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.support.v7.widget.PopupMenu;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -50,9 +48,6 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
 
     @InjectView(R.id.feed_share)
     ImageView share;
-    @Optional
-    @InjectView(R.id.user_who_liked)
-    TextView usersWhoLiked;
 
     OnViewClickListener onCommentIconClickListener;
     OnViewClickListener onLikeIconClickListener;
@@ -94,7 +89,7 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         }
     }
 
-    @OnClick({R.id.user_who_liked, R.id.likes_count})
+    @OnClick(R.id.likes_count)
     public void onLikersClick() {
         if (onLikersClickListener != null) {
             onLikersClickListener.onClick(feedItem);
@@ -128,79 +123,54 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
     }
 
     public void setState(FeedItem feedItem, boolean foreign) {
-
         this.feedItem = feedItem;
         FeedEntity feedEntity = feedItem.getItem();
-        try {
-            Resources res = getResources();
-            FeedEntity item = feedEntity;
+        Resources res = getResources();
 
-            int likesCount = item.getLikesCount();
-            int commentsCount = item.getCommentsCount();
-            if (likesCount > 0) {
-                if (tvLikesCount != null) {
-                    tvLikesCount.setVisibility(View.VISIBLE);
-                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.likes_count, likesCount, likesCount));
-                    tvLikesCount.setText(text);
-                }
-
-                if (usersWhoLiked != null) {
-                    usersWhoLiked.setVisibility(View.VISIBLE);
-                    String firstUserName = item.getFirstUserLikedItem();
-                    if (firstUserName != null && !TextUtils.isEmpty(firstUserName)) {
-                        int stringRes = R.plurals.users_who_liked_with_name;
-                        String appeal = firstUserName;
-                        if (item.isLiked()) {
-                            stringRes = R.plurals.account_who_liked_item;
-                            appeal = res.getString(R.string.you);
-                        }
-                        Spanned text = null;
-                        text = Html.fromHtml(new PluralResources(res)
-                                .getQuantityString(stringRes, likesCount - 1, appeal, likesCount - 1));
-
-                        usersWhoLiked.setText(text);
-                    }
-                }
-
-            } else {
-                tvLikesCount.setVisibility(View.GONE);
-                usersWhoLiked.setVisibility(View.GONE);
+        int likesCount = feedEntity.getLikesCount();
+        int commentsCount = feedEntity.getCommentsCount();
+        if (likesCount > 0) {
+            if (tvLikesCount != null) {
+                tvLikesCount.setVisibility(View.VISIBLE);
+                Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.likes_count, likesCount, likesCount));
+                tvLikesCount.setText(text);
             }
-
-            if (tvCommentsCount != null) {
-                if (commentsCount > 0) {
-                    tvCommentsCount.setVisibility(View.VISIBLE);
-                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.comments_count, commentsCount, commentsCount));
-                    tvCommentsCount.setText(text);
-                } else tvCommentsCount.setVisibility(View.GONE);
-            }
-
-            if (likes != null) {
-                likes.setEnabled(true);
-                likes.setImageResource(item.isLiked() ?
-                        R.drawable.ic_feed_thumb_up_blue :
-                        R.drawable.ic_feed_thumb_up);
-            }
-
-            if (comments != null) {
-                comments.setEnabled(true);
-            }
-
-            if (foreign || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
-                more.setVisibility(View.GONE);
-            } else {
-                more.setVisibility(View.VISIBLE);
-            }
-
-            if (feedItem.getType() == FeedEntityHolder.Type.POST
-                    || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
-                share.setVisibility(View.GONE);
-            } else {
-                share.setVisibility(View.VISIBLE);
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+        } else {
+            tvLikesCount.setVisibility(View.GONE);
         }
+
+        if (tvCommentsCount != null) {
+            if (commentsCount > 0) {
+                tvCommentsCount.setVisibility(View.VISIBLE);
+                Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.comments_count, commentsCount, commentsCount));
+                tvCommentsCount.setText(text);
+            } else tvCommentsCount.setVisibility(View.GONE);
+        }
+
+        if (likes != null) {
+            likes.setEnabled(true);
+            likes.setImageResource(feedEntity.isLiked() ?
+                    R.drawable.ic_feed_thumb_up_blue :
+                    R.drawable.ic_feed_thumb_up);
+        }
+
+        if (comments != null) {
+            comments.setEnabled(true);
+        }
+
+        if (foreign || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
+            more.setVisibility(View.GONE);
+        } else {
+            more.setVisibility(View.VISIBLE);
+        }
+
+        if (feedItem.getType() == FeedEntityHolder.Type.POST
+                || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
+            share.setVisibility(View.GONE);
+        } else {
+            share.setVisibility(View.VISIBLE);
+        }
+
 
     }
 

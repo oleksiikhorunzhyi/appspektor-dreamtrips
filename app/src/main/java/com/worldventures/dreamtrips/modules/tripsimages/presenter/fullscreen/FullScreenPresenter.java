@@ -71,9 +71,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onFlagAction() {
     }
 
-    public void showFlagAction(int order) {
-    }
-
     public void onUserClicked() {
         User user = photo.getUser();
         NavigationBuilder.create().with(activityRouter)
@@ -184,10 +181,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void setDeleteVisibility(boolean isVisible);
 
         void setLikeVisibility(boolean isVisible);
-
-        void showFlagConfirmDialog(String reason, String desc);
-
-        void showFlagDescription(String reason);
 
         void setLikeCountVisibility(boolean likeCountVisible);
 

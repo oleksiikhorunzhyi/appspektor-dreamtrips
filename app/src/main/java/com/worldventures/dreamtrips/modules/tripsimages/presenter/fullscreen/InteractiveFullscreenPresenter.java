@@ -107,7 +107,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     private void loadFlags() {
         view.showProgress();
-        doRequest(new GetFlagContentQuery(), this::flagsLoaded);
+        doRequest(new GetFlagContentQuery(), this::flagsLoaded, spiceException -> view.hideProgress());
     }
 
     private void flagsLoaded(List<Flag> flags) {
@@ -115,16 +115,6 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
             view.hideProgress();
             this.flags = flags;
             view.setFlags(flags);
-        }
-    }
-
-    @Override
-    public void showFlagAction(int order) {
-        Flag flag = flags.get(order);
-        if (flag.isRequireDescription()) {
-            view.showFlagDescription(flag.getName());
-        } else {
-            view.showFlagConfirmDialog(flag.getName(), null);
         }
     }
 

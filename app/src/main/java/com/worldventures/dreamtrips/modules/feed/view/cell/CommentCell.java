@@ -18,11 +18,18 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,7 +41,7 @@ import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.adapter_item_comment)
-public class CommentCell extends AbstractCell<Comment> {
+public class CommentCell extends AbstractCell<Comment> implements Flaggable {
 
     @InjectView(R.id.user_photo)
     SimpleDraweeView userPhoto;
@@ -52,6 +59,9 @@ public class CommentCell extends AbstractCell<Comment> {
     ImageView reply;
     @InjectView(R.id.edited)
     ImageView edited;
+    @Optional
+    @InjectView(R.id.flag)
+    FlagView flag;
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -80,11 +90,27 @@ public class CommentCell extends AbstractCell<Comment> {
                 edit.setVisibility(View.GONE);
             }
 
+        if (flag != null) {
+            if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {
+                flag.setVisibility(View.GONE);
+            } else {
+                flag.setVisibility(View.VISIBLE);
+                flag.setImageResource(R.drawable.ic_flag);
+            }
+        }
+
         if (getModelObject().isUpdate()) {
             edited.setVisibility(View.VISIBLE);
         } else {
             edited.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Optional
+    @OnClick(R.id.flag)
+    void onFlagClicked() {
+        flag.showProgress();
+        getEventBus().post(new LoadFlagEvent(this));
     }
 
     @Optional
@@ -119,6 +145,14 @@ public class CommentCell extends AbstractCell<Comment> {
     @Override
     public void prepareForReuse() {
 
+    }
+
+    @Override
+    public void showFlagDialog(List<Flag> flags) {
+        flag.hideProgress();
+        FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flag);
+        popupMenu.show(flags, (reason, desc) -> getEventBus().post(new ItemFlaggedEvent(getModelObject(),
+                reason + ". " + desc)));
     }
 
     @Optional

@@ -11,13 +11,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -29,8 +26,8 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -76,8 +73,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ImageView ivLike;
     @InjectView(R.id.iv_share)
     protected ImageView ivShare;
-    @InjectView(R.id.iv_flag)
-    protected ImageView ivFlag;
+    @InjectView(R.id.flag)
+    protected FlagView flag;
     @InjectView(R.id.more)
     protected ImageView more;
     @InjectView(R.id.delete)
@@ -86,8 +83,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected SimpleDraweeView civUserPhoto;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
-    @InjectView(R.id.progress_flag)
-    protected ProgressBar progressFlag;
     @InjectView(R.id.iv_comment)
     protected ImageView ivComment;
     @InjectView(R.id.content_divider)
@@ -277,7 +272,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         getPresenter().onLikeAction();
     }
 
-    @OnClick(R.id.iv_flag)
+    @OnClick(R.id.flag)
     public void actionFlag() {
         getPresenter().onFlagAction();
     }
@@ -302,58 +297,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void setFlags(List<Flag> flags) {
-        PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
-        for (int i = 0; i < flags.size(); i++) {
-            Flag flagContent = flags.get(i);
-            popup.getMenu().add(0, i, i, flagContent.getName());
-        }
-        popup.setOnMenuItemClickListener(item -> {
-            getPresenter().showFlagAction(item.getOrder());
-            return true;
-        });
-        popup.show();
-    }
-
-    public void showFlagConfirmDialog(String reason, String desc) {
-        String content = getString(R.string.flag_photo_first) + " " + reason.toLowerCase() + " " + getString(R.string.flag_photo_second);
-        new MaterialDialog.Builder(getActivity())
-                .title(R.string.flag_photo_title)
-                .content(content)
-                .positiveText(R.string.flag_photo_positive)
-                .negativeText(R.string.flag_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().sendFlagAction(reason, desc);
-                    }
-                })
-                .show();
-    }
-
-    public void showFlagDescription(String reason) {
-        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.flag_description_title)
-                .customView(R.layout.dialog_flag_description, true)
-                .positiveText(R.string.flag_description_positive)
-                .negativeText(R.string.flag_description_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        EditText et = ButterKnife.findById(dialog, R.id.tv_description);
-                        String desc = et.getText().toString();
-                        showFlagConfirmDialog(reason, desc);
-                    }
-                }).build();
-        dialog.show();
-        View positiveButton = dialog.getActionButton(DialogAction.POSITIVE);
-        positiveButton.setEnabled(false);
-        EditText etDesc = (EditText) dialog.getCustomView().findViewById(R.id.tv_description);
-        etDesc.addTextChangedListener(new TextWatcherAdapter() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                positiveButton.setEnabled(s.toString().trim().length() > 0);
-            }
-        });
+        flag.showFlagsPopup(flags, (reason, desc) -> getPresenter().sendFlagAction(reason, desc));
     }
 
     @Override
@@ -455,9 +399,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setFlagVisibility(boolean isVisible) {
         if (isVisible) {
-            ivFlag.setVisibility(View.VISIBLE);
+            flag.setVisibility(View.VISIBLE);
         } else {
-            ivFlag.setVisibility(View.GONE);
+            flag.setVisibility(View.GONE);
         }
     }
 
@@ -481,12 +425,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void showProgress() {
-        progressFlag.setVisibility(View.VISIBLE);
+        flag.showProgress();
     }
 
     @Override
     public void hideProgress() {
-        progressFlag.setVisibility(View.GONE);
+        flag.hideProgress();
     }
 
     private SweetAlertDialog progressDialog;

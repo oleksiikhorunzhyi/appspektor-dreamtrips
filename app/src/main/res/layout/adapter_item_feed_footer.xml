@@ -63,10 +63,9 @@
                 android:id="@+id/more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_small"
-                android:layout_marginRight="@dimen/spacing_small"
                 android:padding="@dimen/spacing_small"
                 android:src="@drawable/ic_post_more_normal"/>
+
         </LinearLayout>
 
 

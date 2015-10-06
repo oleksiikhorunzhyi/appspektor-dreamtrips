@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -26,7 +27,9 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -58,6 +61,12 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
+
+    private UidItemDelegate uidItemDelegate;
+
+    public BaseFeedPresenter() {
+        uidItemDelegate = new UidItemDelegate(this);
+    }
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -267,6 +276,16 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         feedItems.addAll(filteredItems);
 
         view.refreshFeedItems(feedItems, !noMoreFeeds);
+    }
+
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getFlaggableView());
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
     public interface View extends Presenter.View {

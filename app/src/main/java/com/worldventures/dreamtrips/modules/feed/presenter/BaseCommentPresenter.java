@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
@@ -20,6 +21,8 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -43,9 +46,12 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     @State
     String comment;
 
+    private UidItemDelegate uidItemDelegate;
+
     public BaseCommentPresenter(FeedItem feedItem) {
         this.feedModel = feedItem;
         feedEntity = feedItem.getItem();
+        uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
@@ -137,6 +143,16 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private void itemDeleted(FeedItem model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         fragmentCompass.pop();
+    }
+
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getFlaggableView());
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
     private void onCommentPosted(Comment comment) {

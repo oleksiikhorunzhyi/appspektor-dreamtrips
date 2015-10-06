@@ -27,7 +27,7 @@ import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import timber.log.Timber;
 
-public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.FailureListener {
+public class Presenter<VT extends Presenter.View> implements RequestingPresenter, DreamSpiceManager.FailureListener {
 
     protected VT view;
 
@@ -130,22 +130,26 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         }
     }
 
-    protected <T> void doRequest(SpiceRequest<T> request) {
+    @Override
+    public <T> void doRequest(SpiceRequest<T> request) {
         dreamSpiceManager.execute(request, r -> {}, this);
     }
 
-    protected <T> void doRequest(SpiceRequest<T> request,
+    @Override
+    public <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, successListener, this);
     }
 
-    protected <T> void doRequestWithCacheKey(SpiceRequest<T> request, String cacheKey,
+    @Override
+    public <T> void doRequestWithCacheKey(SpiceRequest<T> request, String cacheKey,
                                              DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, cacheKey, DurationInMillis.ALWAYS_RETURNED,
                 successListener, this);
     }
 
-    protected <T> void doRequest(SpiceRequest<T> request,
+    @Override
+    public <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener,
                                  DreamSpiceManager.FailureListener failureListener) {
         dreamSpiceManager.execute(request, successListener, failureListener);

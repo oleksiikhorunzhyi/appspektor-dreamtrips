@@ -37,7 +37,6 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -51,6 +50,8 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
 import javax.inject.Inject;
@@ -345,32 +346,28 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         }
     }
 
-    public void openDetails(BucketBundle args) {
-        Route detailsRoute = getDetailsRoute();
+    @Override
+    public void openDetails(BucketItem bucketItem) {
+        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
+
+        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
             fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
             fragmentCompass.clear();
-
-            args.setSlave(true);
-
+            bundle.setSlave(true);
             NavigationBuilder.create()
                     .with(fragmentCompass)
-                    .data(args)
+                    .data(bundle)
                     .attach(detailsRoute);
             showDetailsContainer();
         } else {
             hideDetailContainer();
             NavigationBuilder.create()
                     .with(activityRouter)
-                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .data(args)
+                    .data(bundle)
                     .move(detailsRoute);
         }
-    }
-
-    public Route getDetailsRoute() {
-        return Route.DETAIL_BUCKET;
     }
 }

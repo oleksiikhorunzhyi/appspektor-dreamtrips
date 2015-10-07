@@ -6,11 +6,9 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import java.io.Serializable;
 import java.util.List;
 
-public interface FeedEntity extends Serializable{
+public interface FeedEntity extends Serializable, UidItem {
 
     String place();
-
-    String getUid();
 
     int getCommentsCount();
 
@@ -26,7 +24,7 @@ public interface FeedEntity extends Serializable{
 
     String getFirstUserLikedItem();
 
-    void setFirstUserLikedItem(String firstUserLikedItem);
+    void setFirstUserLikedItem(String  fullName);
 
     boolean isLiked();
 

@@ -35,11 +35,6 @@ public class FeedPostEventCell extends FeedHeaderCell<PostFeedItem> {
         super.syncUIStateWithModel();
         PostFeedItem obj = getModelObject();
         post.setText(obj.getItem().getDescription());
-        itemView.setOnClickListener(v -> itemClicked());
-    }
-
-    protected void itemClicked() {
-        openComments(getModelObject());
     }
 
     @Override

@@ -149,7 +149,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     @Override
     public int getFsCommentCount() {
-        return -1;
+        return commentsCount;
     }
 
     @Override

@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onEdit() {
         BucketBundle bundle = new BucketBundle();
         bundle.setType(type);
-        bundle.setBucketItemId(bucketItemId);
+        bundle.setBucketItemUid(bucketItemId);
 
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
@@ -70,29 +72,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         }
     }
 
-    public void onFbShare() {
-        activityRouter.openShareFacebook(bucketItem.getUrl(), null,
-                String.format(context.getString(R.string.bucketlist_share),
-                        bucketItem.getName()));
-    }
-
-    public void onTwitterShare() {
-        activityRouter.openShareTwitter(null, bucketItem.getUrl(),
-                String.format(context.getString(R.string.bucketlist_share),
-                        bucketItem.getName()));
-    }
-
-    public void onEvent(MarkBucketItemDoneEvent event) {
-        if (event.getBucketItem().equals(bucketItem)) {
-            bucketItem = event.getBucketItem();
-            syncUI();
-        }
-    }
-
-    public void onEvent(BucketItemDeleteConfirmedEvent event) {
-        if (bucketItemId.equals(event.getBucketItemId())) deleteBucketItem(bucketItem);
-    }
-
     @Override
     public void takeView(View view) {
         super.takeView(view);
@@ -108,19 +87,37 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                 view.setCategory(s);
             }
             view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
-            String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
-            String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
-            view.setCover(medium, original);
             view.setupDiningView(bucketItem.getDining());
         }
+    }
+
+    public void onEvent(MarkBucketItemDoneEvent event) {
+        if (event.getBucketItem().getUid().equals(bucketItemId)) {
+            bucketItem = event.getBucketItem();
+            syncUI();
+        }
+    }
+
+    public void onEvent(BucketItemDeleteConfirmedEvent event) {
+        if (bucketItemId.equals(event.getBucketItemId())) deleteBucketItem(bucketItem);
+    }
+
+    public void onEvent(FeedEntityChangedEvent event) {
+        if (event.getFeedEntity().getUid().equals(bucketItemId)) {
+            bucketItem = (BucketItem) event.getFeedEntity();
+            bucketItemManager.saveSingleBucketItem(bucketItem);
+            syncUI();
+        }
+    }
+
+    public FeedEntity getBucketItem() {
+        return bucketItem;
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
         void setCategory(String category);
 
         void setPlace(String place);
-
-        void setCover(String medium, String original);
 
         void disableCheckbox();
 

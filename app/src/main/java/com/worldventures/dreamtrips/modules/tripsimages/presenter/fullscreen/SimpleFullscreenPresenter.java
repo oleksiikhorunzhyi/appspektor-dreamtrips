@@ -18,7 +18,12 @@ public class SimpleFullscreenPresenter extends FullScreenPresenter {
     }
 
     @Override
-    protected boolean isMoreVisible() {
+    protected boolean isEditVisible() {
+        return false;
+    }
+
+    @Override
+    protected boolean isCommentVisible() {
         return false;
     }
 

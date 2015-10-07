@@ -25,11 +25,6 @@ public class ForeignBucketListFragment extends BucketListFragment<ForeignBucketL
     }
 
     @Override
-    public Route getDetailsRoute() {
-        return Route.DETAIL_FOREIGN_BUCKET;
-    }
-
-    @Override
     protected ForeignBucketListPresenter createPresenter(Bundle savedInstanceState) {
         BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
         return new ForeignBucketListPresenter(type, getObjectGraph());

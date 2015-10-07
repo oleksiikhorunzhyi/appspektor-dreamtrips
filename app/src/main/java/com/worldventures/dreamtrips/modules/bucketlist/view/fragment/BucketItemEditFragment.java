@@ -26,11 +26,13 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -267,6 +269,46 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter).data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+    }
+
+    @Override
+    public void setImages(List<BucketPhoto> photos) {
+        bucketPhotosView.setImages(photos);
+    }
+
+    @Override
+    public void addImages(List<UploadTask> tasks) {
+        bucketPhotosView.addImages(tasks);
+    }
+
+    @Override
+    public void addImage(UploadTask uploadTask) {
+        bucketPhotosView.addImage(uploadTask);
+    }
+
+    @Override
+    public void deleteImage(UploadTask task) {
+        bucketPhotosView.deleteImage(task);
+    }
+
+    @Override
+    public void deleteImage(BucketPhoto bucketPhoto) {
+        bucketPhotosView.deleteImage(bucketPhoto);
+    }
+
+    @Override
+    public void itemChanged(UploadTask uploadTask) {
+        bucketPhotosView.itemChanged(uploadTask);
+    }
+
+    @Override
+    public void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
+        bucketPhotosView.replace(bucketPhotoUploadTask, bucketPhoto);
+    }
+
+    @Override
+    public UploadTask getBucketPhotoUploadTask(String taskId) {
+        return bucketPhotosView.getBucketPhotoUploadTask(taskId);
     }
 
     @Override

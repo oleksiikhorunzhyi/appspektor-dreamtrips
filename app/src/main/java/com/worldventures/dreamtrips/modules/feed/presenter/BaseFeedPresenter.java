@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -26,11 +27,13 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
@@ -58,6 +61,12 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
+
+    private UidItemDelegate uidItemDelegate;
+
+    public BaseFeedPresenter() {
+        uidItemDelegate = new UidItemDelegate(this);
+    }
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -143,7 +152,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
-    protected void loadMoreItemsError(SpiceException spiceException){
+    protected void loadMoreItemsError(SpiceException spiceException) {
         addFeedItems(new ArrayList<>());
     }
 
@@ -163,9 +172,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(FeedEntityChangedEvent event) {
         Queryable.from(feedItems).forEachR(item -> {
-            if (item.getItem().equals(event.getFeedEntity())) {
-                event.getFeedEntity().updateSocialContent(item.getItem());
-
+            if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
                 item.setItem(event.getFeedEntity());
             }
         });
@@ -175,7 +182,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(FeedEntityCommentedEvent event) {
         Queryable.from(feedItems).forEachR(item -> {
-            if (item.getItem().equals(event.getFeedEntity())) {
+            if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
                 item.setItem(event.getFeedEntity());
             }
         });
@@ -200,11 +207,11 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
-            FeedItem model = event.getModel();
-            DreamTripsRequest command = model.getItem().isLiked() ?
-                    new UnlikeEntityCommand(model.getItem().getUid()) :
-                    new LikeEntityCommand(model.getItem().getUid());
-            doRequest(command, element -> itemLiked(model.getItem().getUid()));
+            FeedEntity model = event.getModel();
+            DreamTripsRequest command = model.isLiked() ?
+                    new UnlikeEntityCommand(model.getUid()) :
+                    new LikeEntityCommand(model.getUid());
+            doRequest(command, element -> itemLiked(model.getUid()));
         }
     }
 
@@ -246,7 +253,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(EditBucketEvent event) {
         BucketBundle bundle = new BucketBundle();
         bundle.setType(event.getType());
-        bundle.setBucketItemId(event.getUid());
+        bundle.setBucketItemUid(event.getUid());
 
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
@@ -269,6 +276,16 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         feedItems.addAll(filteredItems);
 
         view.refreshFeedItems(feedItems, !noMoreFeeds);
+    }
+
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getFlaggableView());
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
     public interface View extends Presenter.View {

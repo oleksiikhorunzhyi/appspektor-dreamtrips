@@ -71,7 +71,12 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onFlagAction() {
     }
 
-    public void showFlagAction(int order) {
+    public void onCommentsAction() {
+
+    }
+
+    public void onLikesAction() {
+
     }
 
     public void onUserClicked() {
@@ -91,12 +96,12 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         }
 
         view.setLiked(isLiked());
-        view.setCommentVisibility(false);
+        view.setCommentVisibility(isCommentVisible());
 
         view.setLikeVisibility(isLikeVisible());
         view.setLikeCountVisibility(isLikeCountVisible());
         view.setDeleteVisibility(isDeleteVisible());
-        view.setMoreVisibility(isMoreVisible());
+        view.setEditVisibility(isEditVisible());
         view.setShareVisibility(isShareVisible());
         view.setFlagVisibility(isFlagVisible());
         view.loadImage(photo.getFSImage());
@@ -121,7 +126,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     protected abstract boolean isLikeVisible();
 
-    protected abstract boolean isMoreVisible();
+    protected abstract boolean isEditVisible();
+
+    protected abstract boolean isCommentVisible();
 
     protected boolean isLiked() {
         return false;
@@ -185,10 +192,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
         void setLikeVisibility(boolean isVisible);
 
-        void showFlagConfirmDialog(String reason, String desc);
-
-        void showFlagDescription(String reason);
-
         void setLikeCountVisibility(boolean likeCountVisible);
 
         void setUserPhoto(String fsPhoto);
@@ -209,7 +212,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
         void setCommentVisibility(boolean commentVisible);
 
-        void setMoreVisibility(boolean visible);
+        void setEditVisibility(boolean visible);
 
         void openEdit(EditPhotoBundle editPhotoBundle);
 

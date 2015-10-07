@@ -17,23 +17,15 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,8 +33,6 @@ import javax.inject.Named;
 import butterknife.InjectView;
 import butterknife.Optional;
 import timber.log.Timber;
-
-import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 
 @Layout(R.layout.adapter_item_notification)
 public class NotificationCell extends AbstractCell<FeedItem> {
@@ -68,14 +58,9 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> profileRouteCreator;
-    @Inject
-    @Named(RouteCreatorModule.BUCKET_DETAILS)
-    RouteCreator<Integer> bucketRouteCreator;
 
     @Inject
     BucketItemManager bucketItemManager;
-    @Inject
-    ForeignBucketItemManager foreignBucketItemManager;
 
     public NotificationCell(View view) {
         super(view);
@@ -93,7 +78,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 getModelObject().getCreatedAt().getTime());
         notificationTime.setText(relativeTimeSpanString);
 
-        if (getModelObject().getType() == null) {
+        if (getModelObject().getType() == Type.UNDEFINED || getModelObject().getType() == Type.POST) {
             notificationImage.setVisibility(View.GONE);
         } else {
             notificationImage.setVisibility(View.VISIBLE);
@@ -123,7 +108,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
             case PHOTO:
             case BUCKET_LIST_ITEM:
             case POST:
-                openComments();
+                openDetails();
                 break;
         }
     }
@@ -153,49 +138,11 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 .attach(Route.DETAILED_TRIP);
     }
 
-    private void openPhoto(IFullScreenObject item) {
-        ArrayList<IFullScreenObject> items = new ArrayList<>();
-        items.add(item);
-
-        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
-                .position(0)
-                .type(TripImagesListFragment.Type.FIXED_LIST)
-                .fixedList(items)
-                .build();
-
+    private void openDetails() {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .data(data)
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(Route.FULLSCREEN_PHOTO_LIST);
-    }
-
-    private void openComments() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new CommentsBundle(getModelObject()))
-                .move(Route.COMMENTS);
-    }
-
-    private void openBucketDetails(BucketItem bucketItem) {
-        BucketBundle bundle = new BucketBundle();
-
-        BucketType bucketType = BucketType.valueOf(bucketItem.getType().toUpperCase());
-        bundle.setType(bucketType);
-        bundle.setBucketItemId(getModelObject().getItem().getUid());
-        bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
-        User user = getModelObject().getLinks().getUsers().get(0);
-        Route route = bucketRouteCreator.createRoute(user.getId());
-        if (route == Route.DETAIL_BUCKET) {
-            bucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
-        } else {
-            foreignBucketItemManager.saveSingleBucketItem(bucketItem, bucketType);
-        }
-        NavigationBuilder.create()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(bundle)
-                .with(activityRouter)
-                .attach(route);
+                .data(new FeedEntityDetailsBundle(getModelObject()))
+                .move(Route.FEED_ENTITY_DETAILS);
     }
 
     @Override

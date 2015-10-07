@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/rootView"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:id="@+id/aditional_cover"
-        android:src="@drawable/ic_cover_place_holder"
-        android:scaleType="centerCrop"/>
+<RelativeLayout
+    android:id="@+id/rootView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/contentView"
@@ -23,20 +17,124 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/layout_cover_details"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_cover_place_holder"/>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewPagerBucketGallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"/>
+
+                <me.relex.circleindicator.CircleIndicator
+                    android:id="@+id/circleIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_alignBottom="@+id/viewPagerBucketGallery"
+                    android:layout_alignParentBottom="false"
+                    android:layout_gravity="bottom"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/circleIndicator"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/spacing_normal"
+                    android:paddingRight="@dimen/spacing_normal"
+                    android:paddingTop="@dimen/spacing_normal">
+
+                    <TextView
+                        android:id="@+id/textViewName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:textSize="26sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textViewCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:drawableLeft="@drawable/ic_bucket_category"
+                            android:drawablePadding="4dp"
+                            android:singleLine="true"
+                            android:textColor="@color/bucket_detailed_text_color"
+                            tools:text="Dining"/>
+
+                        <TextView
+                            android:id="@+id/textViewDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:drawableLeft="@drawable/ic_bucket_calendar"
+                            android:drawablePadding="4dp"
+                            android:singleLine="true"
+                            android:text="@string/someday"
+                            android:textColor="@color/bucket_detailed_text_color"
+                            tools:text="@string/someday"/>
+
+                        <TextView
+                            android:id="@+id/textViewPlace"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:drawableLeft="@drawable/ic_location"
+                            android:drawablePadding="4dp"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:textColor="@color/bucket_detailed_text_color"
+                            android:visibility="visible"
+                            tools:text="Byron Bay, Australia"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/bucket_item_shadow"/>
+
+            </RelativeLayout>
+
+            <include layout="@layout/include_bucket_item_meta"/>
+
+            <TextView
+                android:id="@+id/textViewDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                />
 
             <LinearLayout
                 android:id="@+id/diningContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:visibility="gone">
 
                 <com.worldventures.dreamtrips.modules.bucketlist.view.custom.TagViewGroup
 
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/diningName"
@@ -91,7 +189,8 @@
                         android:gravity="center"
                         android:padding="4dp"
 
-                        tools:text="www.cafedefore.ukoz.ru"/>
+                        tools:text="www.cafedefore.ukoz.ru"
+                        />
 
 
                     <TextView
@@ -107,41 +206,11 @@
                 </com.worldventures.dreamtrips.modules.bucketlist.view.custom.TagViewGroup>
             </LinearLayout>
 
-            <include layout="@layout/include_bucket_item_meta"/>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#EFEFEF"/>
-
-            <TextView
-                android:id="@+id/textViewDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textSize="18sp"/>
-
-            <TextView
-                android:id="@+id/pictures_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/my_pictures"
-                android:textColor="@android:color/black"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-                <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
-                    android:id="@+id/bucket_photos"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="16dp"
-                    android:overScrollMode="never"/>
-            </LinearLayout>
+                android:layout_marginLeft="32dp"
+                android:background="@color/gray_lighter"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -161,55 +230,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/controllerWrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="12dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/bucketItemDelete"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="1dp"
-            android:background="@drawable/background_button"
-            android:focusableInTouchMode="false"
-            android:padding="6dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_bucket_item_delete"/>
-
-        <ImageView
-            android:id="@+id/bucketItemShare"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="1dp"
-            android:background="@drawable/background_button"
-            android:focusableInTouchMode="false"
-            android:padding="6dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_fs_share"/>
-
-        <ImageView
-            android:id="@+id/bucketItemEdit"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="1dp"
-            android:background="@drawable/background_button_right_corner"
-            android:focusableInTouchMode="false"
-            android:padding="6dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_bucket_edit"/>
-    </LinearLayout>
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_actionbar"
-        style="@style/ToolBarStyle"
-        android:layout_width="match_parent"
-        android:background="@android:color/transparent"/>
 
 </RelativeLayout>

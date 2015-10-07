@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.text.Html;
 import android.text.Spanned;
@@ -14,10 +15,13 @@ import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import butterknife.InjectView;
 import butterknife.Optional;
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public class FeedItemHeaderHelper {
@@ -29,80 +33,69 @@ public class FeedItemHeaderHelper {
     TextView location;
     @InjectView(R.id.feed_header_date)
     TextView date;
-    @Optional
-    @InjectView(R.id.user_who_liked)
-    TextView usersWhoLiked;
 
     @Optional
     @InjectView(R.id.comments_count)
-    TextView commentsCount;
+    TextView tvCommentsCount;
     @Optional
     @InjectView(R.id.comments)
     ImageView comments;
     @Optional
     @InjectView(R.id.likes_count)
-    TextView likesCount;
+    TextView tvLikesCount;
     @Optional
     @InjectView(R.id.likes)
     ImageView likes;
 
-    public void set(FeedItem feedModel, Context context) {
-        try {
-            User user = feedModel.getLinks().getUsers().get(0);
-            avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-            text.setText(Html.fromHtml(feedModel.infoText(context.getResources())));
+    @InjectView(R.id.edit_feed_item)
+    ImageView editFeedItem;
 
-            if (TextUtils.isEmpty(feedModel.getItem().place())) {
+    public FeedItemHeaderHelper() {
+    }
+
+    public void set(FeedItem feedItem, Context context, int accountId) {
+        try {
+            User user = feedItem.getItem().getUser();
+            avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+            Resources res = context.getResources();
+            text.setText(Html.fromHtml(feedItem.infoText(res)));
+
+            if (TextUtils.isEmpty(feedItem.getItem().place())) {
                 location.setVisibility(View.GONE);
             } else {
                 location.setVisibility(View.VISIBLE);
-                location.setText(feedModel.getItem().place());
+                location.setText(feedItem.getItem().place());
             }
 
 
-            date.setText(DateTimeUtils.convertDateToString(feedModel.getCreatedAt(),
+            date.setText(DateTimeUtils.convertDateToString(feedItem.getCreatedAt(),
                     DateTimeUtils.FEED_DATE_FORMAT));
 
-            if (likesCount != null) {
-                if (feedModel.getItem().getLikesCount() > 0) {
-                    likesCount.setVisibility(View.VISIBLE);
-                    likesCount.setText(context.getString(R.string.likes, feedModel.getItem().getLikesCount()));
-                } else likesCount.setVisibility(View.GONE);
+            int likesCount = feedItem.getItem().getLikesCount();
+            int commentsCount = feedItem.getItem().getCommentsCount();
+            if (likesCount > 0) {
+                if (tvLikesCount != null) {
+                    tvLikesCount.setVisibility(View.VISIBLE);
+                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.likes_count, likesCount, likesCount));
+                    tvLikesCount.setText(text);
+                }
+
+
+            } else {
+                tvLikesCount.setVisibility(View.GONE);
             }
 
-            if (usersWhoLiked != null) {
-                if (feedModel.getItem().getLikesCount() > 0) {
-                    usersWhoLiked.setVisibility(View.VISIBLE);
-
-                    Spanned text;
-                    if (TextUtils.isEmpty(feedModel.getItem().getFirstUserLikedItem())) {
-                        text = Html.fromHtml(context.getResources()
-                                .getQuantityString(R.plurals.users_who_liked,
-                                        feedModel.getItem().getLikesCount(),
-                                        feedModel.getItem().getLikesCount()));
-                    } else {
-                        text = Html.fromHtml(new PluralResources(context.getResources())
-                                .getQuantityString(R.plurals.users_who_liked_with_name,
-                                        feedModel.getItem().getLikesCount() - 1,
-                                        feedModel.getItem().getFirstUserLikedItem(),
-                                        feedModel.getItem().getLikesCount() - 1));
-                    }
-
-                    usersWhoLiked.setText(text);
-
-                } else usersWhoLiked.setVisibility(View.GONE);
-            }
-
-            if (commentsCount != null) {
-                if (feedModel.getItem().getCommentsCount() > 0) {
-                    commentsCount.setVisibility(View.VISIBLE);
-                    commentsCount.setText(context.getString(R.string.comments, feedModel.getItem().getCommentsCount()));
-                } else commentsCount.setVisibility(View.GONE);
+            if (tvCommentsCount != null) {
+                if (commentsCount > 0) {
+                    tvCommentsCount.setVisibility(View.VISIBLE);
+                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.comments_count, commentsCount, commentsCount));
+                    tvCommentsCount.setText(text);
+                } else tvCommentsCount.setVisibility(View.GONE);
             }
 
             if (likes != null) {
                 likes.setEnabled(true);
-                likes.setImageResource(feedModel.getItem().isLiked() ?
+                likes.setImageResource(feedItem.getItem().isLiked() ?
                         R.drawable.ic_feed_thumb_up_blue :
                         R.drawable.ic_feed_thumb_up);
             }
@@ -111,9 +104,18 @@ public class FeedItemHeaderHelper {
                 comments.setEnabled(true);
             }
 
+            boolean isCurrentUser = feedItem.getItem().getUser() != null && feedItem.getItem().getUser().getId() == accountId;
+            boolean isEditableType = feedItem.getType() == FeedEntityHolder.Type.POST || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM;
+            editFeedItem.setVisibility(isCurrentUser && isEditableType ? View.VISIBLE : View.GONE);
+
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
         }
     }
 
+    public void setOnEditClickListener(View.OnClickListener onEditClickListener) {
+        if(editFeedItem!=null){
+            editFeedItem.setOnClickListener(onEditClickListener);
+        }
+    }
 }

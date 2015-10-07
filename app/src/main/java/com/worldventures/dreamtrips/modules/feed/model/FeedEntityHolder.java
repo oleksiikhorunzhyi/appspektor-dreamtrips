@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public interface FeedEntityHolder<T extends FeedEntity> {
+public interface FeedEntityHolder<T extends FeedEntity> extends Parcelable {
 
     Type getType();
 

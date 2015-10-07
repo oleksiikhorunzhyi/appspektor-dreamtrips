@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
@@ -20,10 +21,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
     SnappyRepository db;
 
-    /**
-     * Use getter getBucketItemManager() because we have
-     * {@link com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager}
-     */
     @Inject
     BucketItemManager bucketItemManager;
 
@@ -32,7 +29,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Override
     public void onInjected() {
         super.onInjected();
-        getBucketItemManager().setUserId(getAccount().getId());
     }
 
     @Override
@@ -41,7 +37,11 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         setTabs();
         loadCategories();
         getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
-        getBucketItemManager().loadBucketItems(this);
+        getBucketItemManager().loadBucketItems(getUser(), this);
+    }
+
+    protected User getUser() {
+        return getAccount();
     }
 
     @Override

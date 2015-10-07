@@ -51,6 +51,11 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         }
     };
 
+    @Override
+    public String place() {
+        return location != null ? location.getName() : null;
+    }
+
     public String getFsId() {
         return uid;
     }

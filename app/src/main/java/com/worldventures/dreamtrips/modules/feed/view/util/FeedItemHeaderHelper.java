@@ -11,17 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import butterknife.InjectView;
 import butterknife.Optional;
-import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public class FeedItemHeaderHelper {
@@ -53,12 +50,12 @@ public class FeedItemHeaderHelper {
     public FeedItemHeaderHelper() {
     }
 
-    public void set(FeedItem feedItem, Context context, int accountId) {
+    public void set(FeedItem feedItem, Context context, int accountId, boolean isDetails) {
         try {
             User user = feedItem.getItem().getUser();
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             Resources res = context.getResources();
-            text.setText(Html.fromHtml(feedItem.infoText(res)));
+            text.setText(Html.fromHtml(isDetails ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
 
             if (TextUtils.isEmpty(feedItem.getItem().place())) {
                 location.setVisibility(View.GONE);
@@ -105,16 +102,17 @@ public class FeedItemHeaderHelper {
             }
 
             boolean isCurrentUser = feedItem.getItem().getUser() != null && feedItem.getItem().getUser().getId() == accountId;
-            boolean isEditableType = feedItem.getType() == FeedEntityHolder.Type.POST || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM;
-            editFeedItem.setVisibility(isCurrentUser && isEditableType ? View.VISIBLE : View.GONE);
-
+            boolean isEditableItem = feedItem.getType() == FeedEntityHolder.Type.POST
+                    || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM
+                    || feedItem.getType() == FeedEntityHolder.Type.PHOTO;
+            editFeedItem.setVisibility(isCurrentUser && isEditableItem ? View.VISIBLE : View.GONE);
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
         }
     }
 
     public void setOnEditClickListener(View.OnClickListener onEditClickListener) {
-        if(editFeedItem!=null){
+        if (editFeedItem != null) {
             editFeedItem.setOnClickListener(onEditClickListener);
         }
     }

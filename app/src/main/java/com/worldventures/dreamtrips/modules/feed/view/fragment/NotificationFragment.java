@@ -180,6 +180,11 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
+    public void openDetails(FeedItem feedItem) {
+
+    }
+
+    @Override
     public void onRefresh() {
         getPresenter().reload();
     }

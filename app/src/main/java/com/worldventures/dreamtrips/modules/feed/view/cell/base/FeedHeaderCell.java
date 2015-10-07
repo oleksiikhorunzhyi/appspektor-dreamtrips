@@ -16,11 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -72,7 +68,7 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
 
     @Override
     protected void syncUIStateWithModel() {
-        feedItemHeaderHelper.set(getModelObject(), itemView.getContext(), sessionHolder.get().get().getUser().getId());
+        feedItemHeaderHelper.set(getModelObject(), itemView.getContext(), sessionHolder.get().get().getUser().getId(), false);
         feedItemHeaderHelper.setOnEditClickListener(this::onEditClicked);
         if (commentCellHelper != null) {
             Comment comment = getModelObject().getItem().getComments() == null ? null :

@@ -332,6 +332,9 @@ public class BucketItemManager {
         int newPosition = (oldItem.isDone() && !updatedItem.isDone()) ? 0 : oldPosition;
         tempItems.remove(oldPosition);
         tempItems.add(newPosition, updatedItem);
+        if (updatedItem.getUser() == null) {
+            updatedItem.setUser(oldItem.getUser());
+        }
         saveBucketItems(tempItems, bucketType);
 
         eventBus.post(new BucketItemUpdatedEvent(updatedItem));

@@ -138,7 +138,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     public void onEvent(FeedEntityEditClickEvent event) {
-        if (isVisibleOnScreen() && event.getFeedItem().getItem().equals(getPresenter().getBucketItem())) {
+        if (isVisibleOnScreen() && event.getFeedItem().getItem().getUid().equals(getPresenter().getBucketItem().getUid())) {
             PopupMenu popup = new PopupMenu(getActivity(), event.getAnchor());
             popup.inflate(R.menu.menu_bucket_edit);
             popup.setOnMenuItemClickListener(item -> {

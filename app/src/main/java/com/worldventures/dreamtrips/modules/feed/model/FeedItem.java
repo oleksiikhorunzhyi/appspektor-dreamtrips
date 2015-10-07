@@ -175,8 +175,23 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    public String infoText(Resources resources) {
-        String action = getActionCaption(resources);
+    public String detailsText(Resources resources) {
+        String type = getTypeCaption(resources);
+        String action = resources.getString(R.string.added);
+
+        User user = getItem().getUser();
+        if (user == null) {
+            return "";
+        }
+        String companyName = TextUtils.isEmpty(user.getCompany()) ? "" : " - " + user.getCompany();
+        String result = resources.getString(R.string.feed_header, user.getFullName(), companyName, action, type);
+        return result;
+    }
+
+
+    public String infoText(Resources resources, int accountId) {
+        boolean isAccountsItem = item == null || item.getUser() == null || accountId == item.getUser().getId();
+        String action = getActionCaption(resources, isAccountsItem);
         String type = getTypeCaption(resources);
         String result;
 
@@ -202,7 +217,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         return result;
     }
 
-    private String getActionCaption(Resources resources) {
+    private String getActionCaption(Resources resources, boolean isAccountsItem) {
         switch (action) {
             case BOOK:
                 return resources.getString(R.string.booked);
@@ -213,13 +228,13 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
             case SHARE:
                 return resources.getString(R.string.shared);
             case LIKE:
-                return resources.getString(R.string.liked);
+                return isAccountsItem ? resources.getString(R.string.liked) : resources.getString(R.string.liked_foreign);
             case ACCEPT_REQUEST:
                 return resources.getString(R.string.accept_request);
             case REJECT_REQUEST:
                 return resources.getString(R.string.reject_request);
             case COMMENT:
-                return resources.getString(R.string.comment);
+                return isAccountsItem ? resources.getString(R.string.comment) : resources.getString(R.string.comment_foreign);
             case SEND_REQUEST:
                 return resources.getString(R.string.send_request);
         }

@@ -68,9 +68,6 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.setRequestsCount(db.getFriendsRequestsCount());
     }
-    public void onEventMainThread(FeedEntityItemClickEvent event) {
-        view.openDetails(event.getFeedItem());
-    }
 
     public void refreshRequestsCount() {
         view.setRequestsCount(db.getFriendsRequestsCount());
@@ -78,7 +75,5 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
 
     public interface View extends BaseFeedPresenter.View {
         void setRequestsCount(int count);
-
-        void openDetails(FeedItem feedItem);
     }
 }

@@ -49,12 +49,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     BadgeImageView friendsBadge;
 
-    @Optional
-    @InjectView(R.id.detail_container)
-    protected View detailsContainer;
-
-    WeakHandler handler = new WeakHandler();
-
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -140,37 +134,4 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         }
     }
 
-    @Override
-    public void openDetails(FeedItem feedItem) {
-        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(feedItem);
-        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
-        if (isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
-            fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.clear();
-            bundle.setSlave(true);
-            NavigationBuilder.create()
-                    .with(fragmentCompass)
-                    .data(bundle)
-                    .attach(detailsRoute);
-            showDetailsContainer();
-        } else {
-            hideDetailContainer();
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .data(bundle)
-                    .move(detailsRoute);
-        }
-    }
-
-    public void showDetailsContainer() {
-        if (detailsContainer != null)
-            handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
-    }
-
-    public void hideDetailContainer() {
-        if (detailsContainer != null)
-            handler.post(() -> detailsContainer.setVisibility(View.GONE));
-    }
 }

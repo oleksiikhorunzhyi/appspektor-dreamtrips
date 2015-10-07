@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
@@ -18,6 +19,21 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedIte
     @Override
     protected Query<ArrayList<User>> getUserListQuery(int page) {
         return new GetUsersLikedEntityQuery(entityUid, page);
+    }
+
+    @Override
+    protected void onUsersAdded(ArrayList<User> freshUsers) {
+        super.onUsersAdded(updateUserCircles(freshUsers));
+    }
+
+    @Override
+    protected void onUsersLoaded(ArrayList<User> freshUsers) {
+        super.onUsersLoaded(updateUserCircles(freshUsers));
+    }
+
+    private ArrayList<User> updateUserCircles(ArrayList<User> freshUsers){
+        Queryable.from(freshUsers).forEachR(friend -> friend.setCircles(circles));
+        return freshUsers;
     }
 
     @Override

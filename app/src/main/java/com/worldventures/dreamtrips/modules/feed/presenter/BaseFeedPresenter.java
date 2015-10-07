@@ -105,6 +105,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     private void refreshFeedError(SpiceException exception) {
         super.handleError(exception);
         view.finishLoading();
+        view.refreshFeedItems(feedItems, false);
     }
 
     protected void refreshFeedSucceed(List<ParentFeedItem> freshItems) {

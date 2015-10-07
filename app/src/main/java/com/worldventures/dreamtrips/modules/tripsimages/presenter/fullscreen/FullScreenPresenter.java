@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.util.List;
 
@@ -37,13 +38,22 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
-    public static FullScreenPresenter create(IFullScreenObject photo, boolean foreign) {
-        if (photo instanceof Photo) {
-            return new InteractiveFullscreenPresenter();
-        } else if (photo instanceof BucketPhoto) {
-            return new BucketFullscreenPresenter(foreign);
+    public static FullScreenPresenter create(IFullScreenObject photo, Type type, boolean foreign) {
+        switch (type) {
+            case FIXED_LIST:
+            case MEMBER_IMAGES:
+            case MY_IMAGES:
+                if (photo instanceof BucketPhoto) return new BucketFullscreenPresenter(foreign);
+                else if (photo instanceof TripImage) return new SimpleFullscreenPresenter();
+                else return new InteractiveFullscreenPresenter();
+            case YOU_SHOULD_BE_HERE:
+            case INSPIRE_ME:
+                return new InspirationFullscreenPresenter();
+            case FOREIGN_IMAGES:
+            case VIDEO_360:
+            default:
+                return new SimpleFullscreenPresenter();
         }
-        return new SimpleFullscreenPresenter();
     }
 
     public void setPhoto(T photo) {

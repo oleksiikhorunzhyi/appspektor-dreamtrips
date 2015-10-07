@@ -22,15 +22,12 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -151,7 +148,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         IFullScreenObject photo = getArgs().getPhoto();
         type = getArgs().getType();
 
-        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo, getArgs().isForeign());
+        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo, type, getArgs().isForeign());
         if (photo != null) {
             fullScreenPresenter.setPhoto(photo);
             fullScreenPresenter.setType(type);

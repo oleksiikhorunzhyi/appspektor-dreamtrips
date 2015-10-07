@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InspirationFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InteractiveFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SimpleFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
@@ -56,6 +57,7 @@ import dagger.Provides;
                 InteractiveFullscreenPresenter.class,
                 FullScreenPresenter.class,
                 BucketFullscreenPresenter.class,
+                InspirationFullscreenPresenter.class,
                 SimpleFullscreenPresenter.class,
 
                 TripImagesTabsFragment.class,

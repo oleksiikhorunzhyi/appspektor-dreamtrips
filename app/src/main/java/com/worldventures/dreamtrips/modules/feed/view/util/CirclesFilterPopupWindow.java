@@ -40,13 +40,13 @@ public class CirclesFilterPopupWindow {
     }
 
     public void setCircles(List<Circle> circles){
-        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_single_choice, circles);
+        adapter = new ArrayAdapter<>(context, R.layout.list_item_circle_filter, circles);
         listPopupWindow.setAdapter(adapter);
         calculateWidth(circles);
     }
 
     private void calculateWidth(List<Circle> circles){
-        TextView textView = (CheckedTextView) View.inflate(context, android.R.layout.simple_list_item_single_choice, null);
+        TextView textView = (CheckedTextView) View.inflate(context, R.layout.list_item_circle_filter, null);
         Paint paint = textView.getPaint();
         Rect bounds = new Rect();
         int maxWidth = 0;

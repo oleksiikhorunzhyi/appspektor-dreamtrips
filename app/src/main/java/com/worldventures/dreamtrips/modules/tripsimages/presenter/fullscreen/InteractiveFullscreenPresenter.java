@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -28,7 +27,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
 public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
@@ -36,6 +34,18 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     private List<Flag> flags;
 
     private FeedEntity feedEntity;
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        loadEntity(feedEntityHolder -> {
+            feedEntity = feedEntityHolder.getItem();
+            photo.setLiked(feedEntity.isLiked());
+            photo.setCommentsCount(feedEntity.getCommentsCount());
+            photo.setLikesCount(feedEntity.getLikesCount());
+            setupActualViewState();
+        });
+    }
 
     @Override
     public void onDeleteAction() {
@@ -68,13 +78,17 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     @Override
     public void onCommentsAction() {
         if (feedEntity == null) {
-            doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
+            loadEntity(feedEntityHolder -> {
                 feedEntity = feedEntityHolder.getItem();
                 navigateToComments();
             });
         } else {
             navigateToComments();
         }
+    }
+
+    private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {
+        doRequest(new GetFeedEntityQuery(photo.getUid()), successListener);
     }
 
     private void navigateToComments() {

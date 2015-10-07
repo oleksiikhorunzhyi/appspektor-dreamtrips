@@ -58,7 +58,6 @@
             android:drawableStart="@drawable/ic_feed_calendar_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
-            android:visibility="gone"
             tools:text="Jan 27, 2015   9:00AM"/>
     </LinearLayout>
 

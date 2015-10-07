@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 
 @Layout(R.layout.adapter_item_feed_undefined_event)
-public class FeedUndefinedEventCell extends FeedHeaderCell<TripFeedItem> {
+public class UndefinedFeedItemCell extends FeedHeaderCell<TripFeedItem> {
 
-    public FeedUndefinedEventCell(View view) {
+    public UndefinedFeedItemCell(View view) {
         super(view);
     }
 

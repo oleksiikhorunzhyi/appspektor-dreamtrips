@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
-public class FeedPhotoEventCell extends FeedHeaderCell<PhotoFeedItem> {
+public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
 
     @InjectView(R.id.photo)
     SimpleDraweeView photo;
@@ -39,7 +39,7 @@ public class FeedPhotoEventCell extends FeedHeaderCell<PhotoFeedItem> {
     @Inject
     ActivityRouter activityRouter;
 
-    public FeedPhotoEventCell(View view) {
+    public PhotoFeedItemCell(View view) {
         super(view);
     }
 

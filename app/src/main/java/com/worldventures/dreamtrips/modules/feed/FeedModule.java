@@ -14,12 +14,12 @@ import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.TextualPostDetailsPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedBucketEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPhotoEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedTripEventCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedUndefinedEventCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
@@ -37,15 +37,15 @@ import de.greenrobot.event.EventBus;
 
 @Module(
         injects = {
-                FeedTripEventCell.class,
+                TripFeedItemCell.class,
                 FeedPresenter.class,
                 FeedFragment.class,
-                FeedPhotoEventCell.class,
-                FeedBucketEventCell.class,
+                PhotoFeedItemCell.class,
+                BucketFeedItemCell.class,
                 LoadMoreCell.class,
-                FeedPhotoEventCell.class,
-                FeedPostEventCell.class,
-                FeedUndefinedEventCell.class,
+                PhotoFeedItemCell.class,
+                PostFeedItemCell.class,
+                UndefinedFeedItemCell.class,
 
                 EditCommentPresenter.class,
 

@@ -13,14 +13,10 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -31,7 +27,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
-public class FeedBucketEventCell extends FeedHeaderCell<BucketFeedItem> {
+public class BucketFeedItemCell extends FeedHeaderCell<BucketFeedItem> {
 
     @InjectView(R.id.imageViewCover)
     SimpleDraweeView imageViewCover;
@@ -65,7 +61,7 @@ public class FeedBucketEventCell extends FeedHeaderCell<BucketFeedItem> {
     @Inject
     BucketItemManager bucketItemManager;
 
-    public FeedBucketEventCell(View view) {
+    public BucketFeedItemCell(View view) {
         super(view);
     }
 

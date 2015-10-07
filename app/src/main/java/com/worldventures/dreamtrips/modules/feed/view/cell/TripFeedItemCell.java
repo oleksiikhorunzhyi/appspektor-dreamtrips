@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 @Layout(R.layout.adapter_item_feed_trip_event)
-public class FeedTripEventCell extends FeedHeaderCell<TripFeedItem> {
+public class TripFeedItemCell extends FeedHeaderCell<TripFeedItem> {
 
     @Inject
     @ForActivity
@@ -22,7 +22,7 @@ public class FeedTripEventCell extends FeedHeaderCell<TripFeedItem> {
 
     TripCell tripCell;
 
-    public FeedTripEventCell(View view) {
+    public TripFeedItemCell(View view) {
         super(view);
         tripCell = new TripCell(view);
     }

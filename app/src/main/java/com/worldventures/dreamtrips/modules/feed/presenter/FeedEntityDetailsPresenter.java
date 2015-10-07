@@ -24,15 +24,15 @@ import icepick.State;
 public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPresenter.View> {
 
     @State
-    FeedItem feedModel;
+    FeedItem feedItem;
     @State
     FeedEntity feedEntity;
 
     private UidItemDelegate uidItemDelegate;
 
     public FeedEntityDetailsPresenter(FeedEntityDetailsBundle args) {
-        this.feedModel = args.getFeedItem();
-        this.feedEntity = feedModel.getItem();
+        this.feedItem = args.getFeedItem();
+        this.feedEntity = feedItem.getItem();
         uidItemDelegate = new UidItemDelegate(this);
     }
 
@@ -40,7 +40,7 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.setHeader(feedModel);
+        view.setHeader(feedItem);
         loadFullEventInfo();
         preloadUsersWhoLiked();
 
@@ -55,12 +55,12 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
 
     private void onUserLoaded(List<User> users) {
         if (users != null && !users.isEmpty()) {
-            feedModel.getItem().setFirstUserLikedItem(users.get(0).getFullName());
+            feedItem.getItem().setFirstUserLikedItem(users.get(0).getFullName());
         } else {
-            feedModel.getItem().setFirstUserLikedItem(null);
+            feedItem.getItem().setFirstUserLikedItem(null);
         }
-        view.updateHeader(feedModel);
-        eventBus.post(new FeedEntityChangedEvent(feedModel.getItem()));
+        view.updateHeader(feedItem);
+        eventBus.post(new FeedEntityChangedEvent(feedItem.getItem()));
     }
 
     private void loadFullEventInfo() {
@@ -89,10 +89,10 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
 
     private void onEntityChanged(FeedEntity feedEntity) {
         if (feedEntity.equals(this.feedEntity)) {
-            feedEntity.setFirstUserLikedItem(feedModel.getItem().getFirstUserLikedItem());
-            feedModel.setItem(feedEntity);
-            this.feedEntity = feedModel.getItem();
-            view.updateHeader(feedModel);
+            feedEntity.setFirstUserLikedItem(feedItem.getItem().getFirstUserLikedItem());
+            feedItem.setItem(feedEntity);
+            this.feedEntity = feedItem.getItem();
+            view.updateHeader(feedItem);
         }
     }
 
@@ -112,8 +112,8 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
         currentCount = feedEntity.isLiked() ? currentCount + 1 : currentCount - 1;
         feedEntity.setLikesCount(currentCount);
 
-        view.updateHeader(feedModel);
-        eventBus.post(new FeedEntityChangedEvent(feedModel.getItem()));
+        view.updateHeader(feedItem);
+        eventBus.post(new FeedEntityChangedEvent(feedItem.getItem()));
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
 
         if (feedEntity.getLikesCount() == 1 && feedEntity.isLiked()) {

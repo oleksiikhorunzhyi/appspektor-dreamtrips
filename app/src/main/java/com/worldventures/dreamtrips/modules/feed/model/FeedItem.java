@@ -190,7 +190,8 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
 
     public String infoText(Resources resources, int accountId) {
-        String action = getActionCaption(resources, item.getUser() == null || accountId == item.getUser().getId());
+        boolean isAccountsItem = item == null || item.getUser() == null || accountId == item.getUser().getId();
+        String action = getActionCaption(resources, isAccountsItem);
         String type = getTypeCaption(resources);
         String result;
 

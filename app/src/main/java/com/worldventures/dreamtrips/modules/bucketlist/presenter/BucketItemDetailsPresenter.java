@@ -93,7 +93,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void onEvent(MarkBucketItemDoneEvent event) {
         if (event.getBucketItem().getUid().equals(bucketItemId)) {
-            bucketItem = event.getBucketItem();
+            updateBucketItem(event.getBucketItem());
             syncUI();
         }
     }
@@ -104,10 +104,18 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void onEvent(FeedEntityChangedEvent event) {
         if (event.getFeedEntity().getUid().equals(bucketItemId)) {
-            bucketItem = (BucketItem) event.getFeedEntity();
-            bucketItemManager.saveSingleBucketItem(bucketItem);
+            updateBucketItem((BucketItem) event.getFeedEntity());
             syncUI();
         }
+    }
+
+    private void updateBucketItem(BucketItem updatedItem) {
+        BucketItem tempItem = bucketItem;
+        bucketItem = updatedItem;
+        if (bucketItem.getUser() == null) {
+            bucketItem.setUser(tempItem.getUser());
+        }
+        bucketItemManager.saveSingleBucketItem(bucketItem);
     }
 
     public FeedEntity getBucketItem() {

@@ -4,10 +4,5 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/post"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_small"
-        android:textColor="@color/black"/>
+    <include layout="@layout/include_post_body"/>
 </LinearLayout>

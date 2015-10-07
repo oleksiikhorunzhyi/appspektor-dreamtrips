@@ -11,17 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import butterknife.InjectView;
 import butterknife.Optional;
-import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public class FeedItemHeaderHelper {
@@ -58,7 +55,7 @@ public class FeedItemHeaderHelper {
             User user = feedItem.getItem().getUser();
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             Resources res = context.getResources();
-            text.setText(Html.fromHtml(feedItem.infoText(res)));
+            text.setText(Html.fromHtml(feedItem.infoText(res, accountId)));
 
             if (TextUtils.isEmpty(feedItem.getItem().place())) {
                 location.setVisibility(View.GONE);
@@ -114,7 +111,7 @@ public class FeedItemHeaderHelper {
     }
 
     public void setOnEditClickListener(View.OnClickListener onEditClickListener) {
-        if(editFeedItem!=null){
+        if (editFeedItem != null) {
             editFeedItem.setOnClickListener(onEditClickListener);
         }
     }

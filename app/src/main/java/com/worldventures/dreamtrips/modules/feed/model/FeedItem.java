@@ -175,8 +175,8 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    public String infoText(Resources resources) {
-        String action = getActionCaption(resources);
+    public String infoText(Resources resources, int accountId) {
+        String action = getActionCaption(resources, item.getUser() == null || accountId == item.getUser().getId());
         String type = getTypeCaption(resources);
         String result;
 
@@ -202,7 +202,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         return result;
     }
 
-    private String getActionCaption(Resources resources) {
+    private String getActionCaption(Resources resources, boolean isAccountsItem) {
         switch (action) {
             case BOOK:
                 return resources.getString(R.string.booked);
@@ -213,13 +213,13 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
             case SHARE:
                 return resources.getString(R.string.shared);
             case LIKE:
-                return resources.getString(R.string.liked);
+                return isAccountsItem ? resources.getString(R.string.liked) : resources.getString(R.string.liked_foreign);
             case ACCEPT_REQUEST:
                 return resources.getString(R.string.accept_request);
             case REJECT_REQUEST:
                 return resources.getString(R.string.reject_request);
             case COMMENT:
-                return resources.getString(R.string.comment);
+                return isAccountsItem ? resources.getString(R.string.comment) : resources.getString(R.string.comment_foreign);
             case SEND_REQUEST:
                 return resources.getString(R.string.send_request);
         }

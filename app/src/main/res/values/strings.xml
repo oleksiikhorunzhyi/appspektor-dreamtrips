@@ -455,4 +455,8 @@
     <string name="feed_edit_item">Edit</string>
     <string name="feed_delete_item">Delete</string>
 
+    <string name="liked_foreign">liked a</string>
+    <string name="comment_foreign">commented a</string>
+
+
 </resources>

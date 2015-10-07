@@ -9,7 +9,10 @@ import android.view.View;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
@@ -19,6 +22,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Parcelable>
         extends BaseFragmentWithArgs<P, T>
@@ -33,6 +37,12 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     private Bundle savedInstanceState;
 
     protected BaseArrayListAdapter adapter;
+
+    @Optional
+    @InjectView(R.id.detail_container)
+    protected View detailsContainer;
+
+    WeakHandler handler = new WeakHandler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,5 +100,39 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
+    }
+
+    @Override
+    public void openDetails(FeedItem feedItem) {
+        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(feedItem);
+        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
+        if (isTabletLandscape()) {
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+            fragmentCompass.clear();
+            bundle.setSlave(true);
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .data(bundle)
+                    .attach(detailsRoute);
+            showDetailsContainer();
+        } else {
+            hideDetailContainer();
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .data(bundle)
+                    .move(detailsRoute);
+        }
+    }
+
+    public void showDetailsContainer() {
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
+    }
+
+    public void hideDetailContainer() {
+        if (detailsContainer != null)
+            handler.post(() -> detailsContainer.setVisibility(View.GONE));
     }
 }

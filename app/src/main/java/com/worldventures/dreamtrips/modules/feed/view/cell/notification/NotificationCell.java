@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -62,6 +64,9 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     @Inject
     BucketItemManager bucketItemManager;
 
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
+
     public NotificationCell(View view) {
         super(view);
     }
@@ -73,7 +78,8 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
         notificationAvatar.setImageURI(Uri.parse(thumb));
         notificationOwner.setText(user.getFullName());
-        notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources())));
+        int accountId = appSessionHolder.get().get().getUser().getId();
+        notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources(), accountId)));
         CharSequence relativeTimeSpanString = DateTimeUtils.getRelativeTimeSpanString(itemView.getResources(),
                 getModelObject().getCreatedAt().getTime());
         notificationTime.setText(relativeTimeSpanString);

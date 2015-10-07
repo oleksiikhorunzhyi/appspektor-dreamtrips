@@ -179,7 +179,7 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
     protected void openComments(FeedItem baseFeedModel, boolean openKeyboard) {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .data(new CommentsBundle(baseFeedModel, openKeyboard))
+                .data(new CommentsBundle(baseFeedModel.getItem(), openKeyboard))
                 .move(Route.COMMENTS);
     }
 

@@ -67,7 +67,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
-        return (T) new BaseCommentPresenter(getArgs().getFeedItem());
+        return (T) new BaseCommentPresenter(getArgs().getFeedEntity());
     }
 
     @Override

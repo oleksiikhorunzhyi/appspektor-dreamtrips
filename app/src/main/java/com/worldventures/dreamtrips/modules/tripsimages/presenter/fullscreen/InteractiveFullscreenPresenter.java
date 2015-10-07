@@ -1,13 +1,22 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
@@ -24,6 +33,8 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     private List<Flag> flags;
+
+    private FeedEntity feedEntity;
 
     @Override
     public void onDeleteAction() {
@@ -51,6 +62,33 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
                 new LikeEntityCommand(photo.getUid()) :
                 new UnlikeEntityCommand(photo.getUid());
         doRequest(dreamTripsRequest, obj -> onLikeSuccess(), exc -> onLikeFailure());
+    }
+
+    @Override
+    public void onCommentsAction() {
+        if (feedEntity == null) {
+            doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
+                feedEntity = feedEntityHolder.getItem();
+                navigateToComments();
+            });
+        } else {
+            navigateToComments();
+        }
+    }
+
+    private void navigateToComments() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                    .data(new CommentsBundle(feedEntity, false))
+                .move(Route.COMMENTS);
+    }
+
+    @Override
+    public void onLikesAction() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(new UsersLikedEntityBundle(photo.getUid()))
+                .move(Route.USERS_LIKED_CONTENT);
     }
 
     private void onLikeFailure() {
@@ -81,7 +119,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     protected boolean isFlagVisible() {
-        return type == MEMBER_IMAGES && getAccount().getId() != photo.getUser().getId();
+        return photo.getUser() != null && getAccount().getId() != photo.getUser().getId();
     }
 
     @Override
@@ -90,8 +128,13 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     }
 
     @Override
-    protected boolean isMoreVisible() {
+    protected boolean isEditVisible() {
         return photo.getUser() != null && getAccount().getId() == photo.getUser().getId();
+    }
+
+    @Override
+    protected boolean isCommentVisible() {
+        return true;
     }
 
     @Override

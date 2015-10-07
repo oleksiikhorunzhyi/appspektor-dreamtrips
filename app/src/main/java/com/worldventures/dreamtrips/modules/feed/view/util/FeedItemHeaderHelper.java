@@ -14,6 +14,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
@@ -50,26 +51,27 @@ public class FeedItemHeaderHelper {
     public FeedItemHeaderHelper() {
     }
 
-    public void set(FeedItem feedItem, Context context, int accountId, boolean isDetails) {
+    public void set(FeedItem feedItem, Context context, int accountId, boolean forDetails) {
+        Resources res = context.getResources();
+        FeedEntity entity = feedItem.getItem();
         try {
-            User user = feedItem.getItem().getUser();
-            avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-            Resources res = context.getResources();
-            text.setText(Html.fromHtml(isDetails ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
+            User user = (forDetails || !feedItem.getLinks().hasUsers()) ? entity.getUser() : feedItem.getLinks().getUsers().get(0);
+            avatar.setImageURI(user.getAvatar() == null ? null : Uri.parse(user.getAvatar().getThumb()));
+            text.setText(Html.fromHtml(forDetails ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
 
-            if (TextUtils.isEmpty(feedItem.getItem().place())) {
+            if (TextUtils.isEmpty(entity.place())) {
                 location.setVisibility(View.GONE);
             } else {
                 location.setVisibility(View.VISIBLE);
-                location.setText(feedItem.getItem().place());
+                location.setText(entity.place());
             }
 
 
             date.setText(DateTimeUtils.convertDateToString(feedItem.getCreatedAt(),
                     DateTimeUtils.FEED_DATE_FORMAT));
 
-            int likesCount = feedItem.getItem().getLikesCount();
-            int commentsCount = feedItem.getItem().getCommentsCount();
+            int likesCount = entity.getLikesCount();
+            int commentsCount = entity.getCommentsCount();
             if (likesCount > 0) {
                 if (tvLikesCount != null) {
                     tvLikesCount.setVisibility(View.VISIBLE);
@@ -92,7 +94,7 @@ public class FeedItemHeaderHelper {
 
             if (likes != null) {
                 likes.setEnabled(true);
-                likes.setImageResource(feedItem.getItem().isLiked() ?
+                likes.setImageResource(entity.isLiked() ?
                         R.drawable.ic_feed_thumb_up_blue :
                         R.drawable.ic_feed_thumb_up);
             }
@@ -101,7 +103,7 @@ public class FeedItemHeaderHelper {
                 comments.setEnabled(true);
             }
 
-            boolean isCurrentUser = feedItem.getItem().getUser() != null && feedItem.getItem().getUser().getId() == accountId;
+            boolean isCurrentUser = entity.getUser() != null && entity.getUser().getId() == accountId;
             boolean isEditableItem = feedItem.getType() == FeedEntityHolder.Type.POST
                     || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM
                     || feedItem.getType() == FeedEntityHolder.Type.PHOTO;

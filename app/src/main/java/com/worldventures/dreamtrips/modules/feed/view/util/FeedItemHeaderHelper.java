@@ -102,9 +102,10 @@ public class FeedItemHeaderHelper {
             }
 
             boolean isCurrentUser = feedItem.getItem().getUser() != null && feedItem.getItem().getUser().getId() == accountId;
-            boolean isEditableType = feedItem.getType() == FeedEntityHolder.Type.POST || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM;
-            editFeedItem.setVisibility(isCurrentUser && isEditableType ? View.VISIBLE : View.GONE);
-
+            boolean isEditableItem = feedItem.getType() == FeedEntityHolder.Type.POST
+                    || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM
+                    || feedItem.getType() == FeedEntityHolder.Type.PHOTO;
+            editFeedItem.setVisibility(isCurrentUser && isEditableItem ? View.VISIBLE : View.GONE);
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
         }

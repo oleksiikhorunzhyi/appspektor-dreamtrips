@@ -121,8 +121,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setLocation(photo.getFsLocation());
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
-        view.setContentDividerVisibility(isLikeVisible() || isLikeCountVisible() ||
-                isDeleteVisible() || isFlagVisible());
 
         if (photo instanceof Inspiration) {
             TrackingHelper.insprDetails(getAccountUserId(), photo.getFsId());
@@ -217,8 +215,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void showCoverProgress();
 
         void hideCoverProgress();
-
-        void setContentDividerVisibility(boolean b);
 
         void setCommentVisibility(boolean commentVisible);
 

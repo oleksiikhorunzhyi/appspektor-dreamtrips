@@ -85,8 +85,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected CheckBox checkBox;
     @InjectView(R.id.iv_comment)
     protected ImageView ivComment;
-    @InjectView(R.id.content_divider)
-    protected ImageView contentDivider;
 
     private TripImagesListFragment.Type type;
 
@@ -385,11 +383,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         if (type != TripImagesListFragment.Type.FIXED_LIST) {
             actionSeeMore();
         }
-    }
-
-    @Override
-    public void setContentDividerVisibility(boolean show) {
-        contentDivider.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override

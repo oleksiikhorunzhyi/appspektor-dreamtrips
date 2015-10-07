@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-public class SimpleFullscreenPresenter extends FullScreenPresenter {
+public class InspirationFullscreenPresenter extends FullScreenPresenter {
 
     @Override
     protected boolean isFlagVisible() {
@@ -24,11 +24,6 @@ public class SimpleFullscreenPresenter extends FullScreenPresenter {
 
     @Override
     protected boolean isCommentVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isShareVisible() {
         return false;
     }
 }

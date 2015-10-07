@@ -62,6 +62,11 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
         return false;
     }
 
+    @Override
+    protected boolean isShareVisible() {
+        return false;
+    }
+
     public void onEvent(BucketItemUpdatedEvent event) {
         bucketItem = bucketItemManager.getBucketItemByPhoto(photo);
         if (bucketItem != null) view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));

@@ -124,15 +124,6 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:adjustViewBounds="false"
-            android:background="#ff9e9e9e"
-            android:id="@+id/content_divider"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,27 +1,34 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 
 public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Parcelable>
@@ -32,6 +39,15 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     protected FeedView feedView;
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout swipeContainer;
+    @Optional
+    @InjectView(R.id.ll_empty_view)
+    protected ViewGroup emptyView;
+    @Optional
+    @InjectView(R.id.tv_search_friends)
+    protected TextView tvSearchFriends;
+    @Optional
+    @InjectView(R.id.arrow)
+    protected ImageView ivArrow;
 
     private WeakHandler weakHandler;
     private Bundle savedInstanceState;
@@ -57,6 +73,8 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
         swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
         swipeContainer.setOnRefreshListener(this);
 
+        feedView.setEmptyView(emptyView);
+
         adapter = getAdapter();
         feedView.setup(savedInstanceState, adapter);
 
@@ -68,6 +86,21 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
                 getPresenter().scrolled(itemCount, lastVisibleItemPosition);
             }
         });
+
+        if (tvSearchFriends != null)
+            tvSearchFriends.setPaintFlags(tvSearchFriends.getPaintFlags()
+                    | Paint.UNDERLINE_TEXT_FLAG);
+
+        if (ivArrow != null && isPhoneLandscape())
+            ivArrow.setVisibility(View.GONE);
+    }
+
+    @Optional
+    @OnClick(R.id.tv_search_friends)
+    public void onFriendsSearchClicked() {
+        NavigationBuilder.create().with(activityRouter)
+                .data(new FriendGlobalSearchBundle(""))
+                .move(Route.FRIEND_SEARCH);
     }
 
     protected void showPostContainer() {
@@ -135,4 +168,9 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
         if (detailsContainer != null)
             handler.post(() -> detailsContainer.setVisibility(View.GONE));
     }
+
+    private boolean isPhoneLandscape() {
+        return !ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
+    }
+
 }

@@ -458,5 +458,7 @@
     <string name="liked_foreign">liked a</string>
     <string name="comment_foreign">commented a</string>
 
+    <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
+    <string name="search_friends">Search Friends</string>
 
 </resources>

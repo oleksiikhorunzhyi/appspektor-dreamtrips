@@ -35,19 +35,20 @@
                 android:textSize="@dimen/font_small"
                 android:visibility="gone"/>
 
+
             <TextView
-                android:id="@+id/update_info"
+                android:id="@+id/post"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_profile_update_info_selector"
+                android:drawableTop="@drawable/ic_profile_post_selector"
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/coming_soon"
-                android:textSize="@dimen/font_small"/>
+                android:text="@string/post"/>
 
             <View
+                android:id="@+id/divider1"
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
@@ -67,6 +68,7 @@
                 android:textSize="@dimen/font_small"/>
 
             <View
+                android:id="@+id/divider2"
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
@@ -82,27 +84,46 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/coming_soon"
+                android:text="dfijndfi rtign tg ijrth rietnh rthijn rtin "
                 android:textSize="@dimen/font_small"/>
 
             <View
+                android:id="@+id/divider3"
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:background="@color/gray"/>
 
-            <TextView
-                android:id="@+id/dream_trips"
+            <FrameLayout
+                android:id="@+id/fl_friends_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_profile_dreamtrips_selector"
-                android:gravity="center"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:text="@string/coming_soon"
-                android:textSize="@dimen/font_small"/>
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_profile_friends_selector"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/profile_friends"/>
+
+                <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+                    android:id="@+id/badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:visibility="gone"
+                    android:textSize="@dimen/font_small"/>
+
+            </FrameLayout>
+
         </LinearLayout>
 
         <include
@@ -134,98 +155,6 @@
             android:layout_height="1dp"
             android:background="@drawable/ic_profile_divider"
             android:contentDescription="@string/empty"/>
-
-        <LinearLayout
-            android:id="@+id/control_panel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <TextView
-                android:id="@+id/post"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_profile_post_selector"
-                android:gravity="center"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:text="@string/post"/>
-
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/gray"/>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                >
-
-                <TextView
-                    android:id="@+id/friends"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/ic_profile_friends_selector"
-                    android:gravity="center"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:text="@string/profile_friends"
-                    />
-
-                <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
-                    android:id="@+id/badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:visibility="gone"
-                    android:textSize="@dimen/font_small"/>
-
-            </FrameLayout>
-
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/gray"/>
-
-            <TextView
-                android:id="@+id/messages"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_profile_messages_selector"
-                android:gravity="center"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:text="@string/coming_soon"/>
-
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/gray"/>
-
-            <TextView
-                android:id="@+id/control_more"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_profile_more_selector"
-                android:gravity="center"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:text="@string/coming_soon"/>
-        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

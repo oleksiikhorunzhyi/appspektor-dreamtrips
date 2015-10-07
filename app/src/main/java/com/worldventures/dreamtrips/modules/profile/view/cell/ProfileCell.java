@@ -74,10 +74,6 @@ public class ProfileCell extends AbstractCell<User> {
     protected ProgressBar coverProgressBar;
     @InjectView(R.id.trip_images)
     protected TextView tripImages;
-    @InjectView(R.id.dream_trips)
-    protected TextView trips;
-    @InjectView(R.id.update_info)
-    protected TextView updateInfo;
     @InjectView(R.id.add_friend)
     protected TextView addFriend;
     @InjectView(R.id.company_name)
@@ -90,10 +86,6 @@ public class ProfileCell extends AbstractCell<User> {
     protected TextView friends;
     @InjectView(R.id.post)
     protected TextView post;
-    @InjectView(R.id.messages)
-    protected TextView messages;
-    @InjectView(R.id.control_more)
-    protected TextView controllMore;
     @InjectView(R.id.et_user_id)
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
@@ -118,10 +110,14 @@ public class ProfileCell extends AbstractCell<User> {
     protected AppCompatTextView accept;
     @InjectView(R.id.reject)
     protected AppCompatTextView reject;
-    @InjectView(R.id.control_panel)
-    protected ViewGroup controlPanel;
     @InjectView(R.id.badge)
     BadgeView badge;
+    @InjectView(R.id.fl_friends_container)
+    View friendsContainer;
+    @InjectView(R.id.divider1)
+    View divider1;
+    @InjectView(R.id.divider3)
+    View divider3;
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
@@ -144,12 +140,10 @@ public class ProfileCell extends AbstractCell<User> {
             cover.setVisibility(View.VISIBLE);
             avatar.setVisibility(View.VISIBLE);
             addFriend.setVisibility(View.GONE);
-            updateInfo.setVisibility(View.VISIBLE);
             userBalance.setVisibility(View.VISIBLE);
         } else {
             cover.setVisibility(View.GONE);
             avatar.setVisibility(View.GONE);
-            updateInfo.setVisibility(View.GONE);
             userBalance.setVisibility(View.GONE);
             addFriend.setVisibility(View.VISIBLE);
 
@@ -162,10 +156,17 @@ public class ProfileCell extends AbstractCell<User> {
             info.show();
         }
 
-        if (isAccount() && featureManager.available(Feature.SOCIAL))
-            controlPanel.setVisibility(View.VISIBLE);
-        else
-            controlPanel.setVisibility(View.GONE);
+        if (isAccount() && featureManager.available(Feature.SOCIAL)) {
+            post.setVisibility(View.VISIBLE);
+            friendsContainer.setVisibility(View.VISIBLE);
+            divider3.setVisibility(View.VISIBLE);
+        } else {
+            post.setVisibility(View.GONE);
+            friendsContainer.setVisibility(View.GONE);
+            divider3.setVisibility(View.GONE);
+        }
+
+        divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL)? View.GONE : View.VISIBLE);
 
         if (!TextUtils.isEmpty(user.getCompany())) {
             companyName.setVisibility(View.VISIBLE);
@@ -287,10 +288,6 @@ public class ProfileCell extends AbstractCell<User> {
         tripImages.setText(String.format(context.getString(R.string.profile_trip_images), count));
     }
 
-    public void setTripsCount(int count) {
-        trips.setText(String.format(context.getString(R.string.profile_dream_trips), count));
-    }
-
     public void setBucketItemsCount(int count) {
         buckets.setText(String.format(context.getString(R.string.profile_bucket_list), count));
     }
@@ -407,11 +404,6 @@ public class ProfileCell extends AbstractCell<User> {
     @OnClick(R.id.user_cover)
     protected void onCoverClick() {
         getEventBus().post(new OnCoverClickEvent());
-    }
-
-
-    @OnClick(R.id.update_info)
-    void onUpdateInfo() {
     }
 
     @OnClick(R.id.accept)

@@ -84,7 +84,7 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     private void setupView(FeedItem feedItem) {
         actionView.setState(feedItem, isForeignItem(feedItem));
         feedActionHandler.init(actionView);
-        feedItemHeaderHelper.set(feedItem, getContext(), getPresenter().getAccount().getId());
+        feedItemHeaderHelper.set(feedItem, getContext(), getPresenter().getAccount().getId(), true);
         feedItemHeaderHelper.setOnEditClickListener(v -> eventBus.post(new FeedEntityEditClickEvent(feedItem, v)));
         setupLikersPanel(feedItem);
     }

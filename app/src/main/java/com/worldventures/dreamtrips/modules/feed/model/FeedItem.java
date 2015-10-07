@@ -175,6 +175,20 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
+    public String detailsText(Resources resources) {
+        String type = getTypeCaption(resources);
+        String action = resources.getString(R.string.added);
+
+        User user = getItem().getUser();
+        if (user == null) {
+            return "";
+        }
+        String companyName = TextUtils.isEmpty(user.getCompany()) ? "" : " - " + user.getCompany();
+        String result = resources.getString(R.string.feed_header, user.getFullName(), companyName, action, type);
+        return result;
+    }
+
+
     public String infoText(Resources resources, int accountId) {
         String action = getActionCaption(resources, item.getUser() == null || accountId == item.getUser().getId());
         String type = getTypeCaption(resources);

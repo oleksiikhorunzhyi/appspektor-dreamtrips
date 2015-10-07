@@ -50,12 +50,12 @@ public class FeedItemHeaderHelper {
     public FeedItemHeaderHelper() {
     }
 
-    public void set(FeedItem feedItem, Context context, int accountId) {
+    public void set(FeedItem feedItem, Context context, int accountId, boolean isDetails) {
         try {
             User user = feedItem.getItem().getUser();
             avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
             Resources res = context.getResources();
-            text.setText(Html.fromHtml(feedItem.infoText(res, accountId)));
+            text.setText(Html.fromHtml(isDetails ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
 
             if (TextUtils.isEmpty(feedItem.getItem().place())) {
                 location.setVisibility(View.GONE);

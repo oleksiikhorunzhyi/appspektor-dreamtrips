@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -213,6 +214,10 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
                     new LikeEntityCommand(model.getUid());
             doRequest(command, element -> itemLiked(model.getUid()));
         }
+    }
+
+    public void onEvent(EntityLikedEvent event) {
+        itemLiked(event.getId());
     }
 
     private void itemLiked(String uid) {

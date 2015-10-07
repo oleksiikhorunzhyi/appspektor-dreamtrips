@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
@@ -162,13 +163,20 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     }
 
     public void onEvent(FeedEntityChangedEvent event) {
-        if (event.getFeedEntity() instanceof Photo) {
-            Photo temp = (Photo) event.getFeedEntity();
+        updatePhoto(event.getFeedEntity());
+    }
+
+    public void onEvent(FeedEntityCommentedEvent event) {
+        updatePhoto(event.getFeedEntity());
+    }
+
+    private void updatePhoto(FeedEntity feedEntity) {
+        if (feedEntity instanceof Photo) {
+            Photo temp = (Photo) feedEntity;
             if (photo.equals(temp)) {
                 this.photo = temp;
                 setupActualViewState();
             }
-
         }
     }
 }

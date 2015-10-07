@@ -174,7 +174,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/gray_lighter"
+        android:background="@color/grey_lighter"
         android:clickable="true"
         android:orientation="vertical"
         android:padding="@dimen/spacing_small">
@@ -218,7 +218,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/post"
             android:textAllCaps="true"
-            android:textColor="@color/gray"
+            android:textColor="@color/grey"
             android:textSize="@dimen/font_normal"/>
     </RelativeLayout>
 

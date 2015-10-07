@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
@@ -27,6 +29,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.EditCommentViewHolder;
+import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 
 import java.util.List;
 
@@ -48,11 +51,12 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     protected EditText input;
     @InjectView(R.id.post)
     protected Button post;
+    @InjectView(R.id.likers_panel)
+    TextView likersPanel;
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
     protected BaseArrayListAdapter adapter;
-
     private LinearLayoutManager linearLayoutManager;
 
     private TextWatcherAdapter inputWatcher = new TextWatcherAdapter() {
@@ -65,6 +69,8 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
         }
     };
 
+    private LikersPanelHelper likersPanelHelper;
+
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         return (T) new BaseCommentPresenter(getArgs().getFeedEntity());
@@ -75,6 +81,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
         super.onCreate(savedInstanceState);
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
+        likersPanelHelper = new LikersPanelHelper();
     }
 
     @Override
@@ -128,6 +135,11 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @Override
+    public void setEntity(FeedEntity entity) {
+        likersPanelHelper.setup(likersPanel, entity);
     }
 
     @Override

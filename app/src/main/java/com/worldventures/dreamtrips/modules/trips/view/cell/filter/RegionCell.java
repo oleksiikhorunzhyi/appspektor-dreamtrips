@@ -39,7 +39,7 @@ public class RegionCell extends AbstractCell<RegionModel> {
         textViewName.setText(getModelObject().getName());
         textViewName.setTextColor(getModelObject().isChecked() ?
                 context.getResources().getColor(R.color.black) :
-                context.getResources().getColor(R.color.gray));
+                context.getResources().getColor(R.color.grey));
         checkBox.setChecked(getModelObject().isChecked());
     }
 

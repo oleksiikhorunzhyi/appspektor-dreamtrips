@@ -14,7 +14,7 @@
             android:id="@+id/feed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/gray_lighter"/>
+            android:background="@color/grey_lighter"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.v7.widget.Toolbar

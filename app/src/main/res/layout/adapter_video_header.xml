@@ -35,7 +35,7 @@
             android:id="@+id/spinner_language"
             android:layout_width="@dimen/locale_flag_size_width"
             android:layout_height="@dimen/locale_flag_size_height"
-            android:background="@color/gray"
+            android:background="@color/grey"
             android:padding="1dp"
             app:actualImageScaleType="fitXY"
             app:placeholderImage="@drawable/ic_flag_placeholder"

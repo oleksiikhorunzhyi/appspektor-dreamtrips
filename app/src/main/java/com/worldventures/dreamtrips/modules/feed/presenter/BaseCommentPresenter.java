@@ -55,6 +55,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         loadComments();
+        view.setEntity(feedEntity);
         view.setComment(comment);
     }
 
@@ -180,6 +181,8 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public interface View extends Presenter.View {
+        void setEntity(FeedEntity entity);
+
         void addComments(List<Comment> commentList);
 
         void addComment(Comment comment);

@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/gray"/>
+                android:background="@color/grey"/>
 
             <TextView
                 android:id="@+id/trip_images"
@@ -73,7 +73,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/gray"/>
+                android:background="@color/grey"/>
 
             <TextView
                 android:id="@+id/bucket_list"
@@ -93,7 +93,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:background="@color/gray"/>
+                android:background="@color/grey"/>
 
             <FrameLayout
                 android:id="@+id/fl_friends_container"

@@ -30,7 +30,7 @@ public class BucketAddPhotoCell extends AbstractCell<AddBucketPhotoModel> {
         itemView.setVisibility(View.VISIBLE);
         ivPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         ivPhoto.setImageResource(R.drawable.ic_bucket_add_pic);
-        ivPhoto.setBackgroundColor(ivPhoto.getContext().getResources().getColor(R.color.gray_lighter));
+        ivPhoto.setBackgroundColor(ivPhoto.getContext().getResources().getColor(R.color.grey_lighter));
 
 
         itemView.setVisibility(getModelObject().isVisible() ? View.VISIBLE : View.GONE);

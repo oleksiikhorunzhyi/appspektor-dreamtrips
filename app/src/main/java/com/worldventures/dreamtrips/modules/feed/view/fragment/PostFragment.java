@@ -210,7 +210,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void disableButton() {
-        postButton.setTextColor(getResources().getColor(R.color.gray));
+        postButton.setTextColor(getResources().getColor(R.color.grey));
         postButton.setClickable(false);
     }
 

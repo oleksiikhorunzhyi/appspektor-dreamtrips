@@ -23,7 +23,7 @@
         android:layout_height="0.5dp"
         android:layout_below="@+id/content_wrapper"
         android:layout_marginTop="@dimen/spacing_tiny"
-        android:background="@color/gray"/>
+        android:background="@color/grey"/>
 
     <LinearLayout
         android:id="@+id/content_wrapper"

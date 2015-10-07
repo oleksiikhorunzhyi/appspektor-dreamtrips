@@ -34,5 +34,4 @@ public interface FeedEntity extends Serializable, UidItem {
 
     void setUser(User user);
 
-    void updateSocialContent(FeedEntity iFeedItem);
 }

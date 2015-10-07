@@ -17,6 +17,8 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -30,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.EditCommentViewHolder;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
+import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 
 import java.util.List;
 
@@ -140,6 +143,11 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void setEntity(FeedEntity entity) {
         likersPanelHelper.setup(likersPanel, entity);
+        likersPanel.setOnClickListener(v ->
+                NavigationBuilder.create()
+                        .with(activityRouter)
+                        .data(new UsersLikedEntityBundle(entity.getUid()))
+                        .move(Route.USERS_LIKED_CONTENT));
     }
 
     @Override

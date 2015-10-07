@@ -85,17 +85,6 @@ public class BaseFeedEntity implements FeedEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BaseFeedEntity that = (BaseFeedEntity) o;
-
-        return uid.equals(that.uid);
-
-    }
-
-    @Override
     public String getFirstUserLikedItem() {
         return firstUserLikedItem;
     }
@@ -106,13 +95,13 @@ public class BaseFeedEntity implements FeedEntity {
     }
 
     @Override
-    public void updateSocialContent(FeedEntity feedEntity) {
-        setLikesCount(feedEntity.getLikesCount());
-        setCommentsCount(feedEntity.getCommentsCount());
-        setUser(feedEntity.getUser());
-        setLiked(feedEntity.isLiked());
-        setComments(feedEntity.getComments());
-        setFirstUserLikedItem(feedEntity.getFirstUserLikedItem());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseFeedEntity that = (BaseFeedEntity) o;
+
+        return uid.equals(that.uid);
     }
 
     @Override

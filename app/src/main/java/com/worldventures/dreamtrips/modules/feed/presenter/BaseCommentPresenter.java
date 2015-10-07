@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
+import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
@@ -19,6 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
@@ -55,14 +58,17 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         loadComments();
-        view.setEntity(feedEntity);
+        loadLikes();
         view.setComment(comment);
     }
-
 
     private void loadComments() {
         view.setLoading(true);
         doRequest(new GetCommentsQuery(feedEntity.getUid(), page), this::onCommentsLoaded);
+    }
+
+    private void loadLikes() {
+        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), this::onLikersLoaded);
     }
 
     public void setComment(String comment) {
@@ -172,6 +178,16 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         } else {
             view.hideViewMore();
         }
+    }
+
+    private void onLikersLoaded(List<User> users) {
+        if (users != null && !users.isEmpty()) {
+            feedEntity.setFirstUserLikedItem(users.get(0).getFullName());
+        } else {
+            feedEntity.setFirstUserLikedItem(null);
+        }
+        view.setEntity(feedEntity);
+        eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 
     @Override

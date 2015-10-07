@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.core.navigation;
 
-
 import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
@@ -106,6 +106,7 @@ public enum Route {
     DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
     FEED_ENTITY_DETAILS(FeedEntityDetailsFragment.class, R.string.empty),
 
+    DTL_START(DtlStartFragment.class),
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
     DTL_PLACES_LIST(DtlPlacesTabsFragment.class);
 

@@ -49,9 +49,9 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
 
             this.adapter.add(new FragmentItem(UsersImagesListFragment.class, getString(R.string.member_images)));
             this.adapter.add(new FragmentItem(AccountImagesListFragment.class, getString(R.string.my_images)));
-            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
-            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
             this.adapter.add(new FragmentItem(ThreeSixtyVideosFragment.class, getString(R.string.three_sixty)));
+            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
+            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
 
         }
 

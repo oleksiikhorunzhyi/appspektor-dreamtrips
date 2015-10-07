@@ -150,6 +150,7 @@ public class ProfileCell extends AbstractCell<User> {
             itemView.findViewById(R.id.wrapper_enroll).setVisibility(View.GONE);
             itemView.findViewById(R.id.wrapper_from).setVisibility(View.GONE);
             itemView.findViewById(R.id.wrapper_date_of_birth).setVisibility(View.GONE);
+            itemView.findViewById(R.id.wrapper_user_id).setVisibility(View.GONE);
             more.setVisibility(View.INVISIBLE);
 
             setIsExpandEnabled(false);

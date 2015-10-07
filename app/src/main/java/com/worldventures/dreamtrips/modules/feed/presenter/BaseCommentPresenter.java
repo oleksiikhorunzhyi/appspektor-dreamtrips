@@ -40,17 +40,14 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     private int commentsCount = 0;
 
     @State
-    FeedItem feedModel;
-    @State
     FeedEntity feedEntity;
     @State
     String comment;
 
     private UidItemDelegate uidItemDelegate;
 
-    public BaseCommentPresenter(FeedItem feedItem) {
-        this.feedModel = feedItem;
-        feedEntity = feedItem.getItem();
+    public BaseCommentPresenter(FeedEntity feedEntity) {
+        this.feedEntity = feedEntity;
         uidItemDelegate = new UidItemDelegate(this);
     }
 
@@ -92,7 +89,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public void onEvent(EditCommentRequestEvent event) {
-        EditCommentPresenter editCommentPresenter = new EditCommentPresenter(feedModel, event.getComment());
+        EditCommentPresenter editCommentPresenter = new EditCommentPresenter(event.getComment());
         view.editComment(editCommentPresenter);
     }
 

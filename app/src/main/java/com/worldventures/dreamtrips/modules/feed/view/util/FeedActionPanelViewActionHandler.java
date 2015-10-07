@@ -13,10 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -45,7 +42,7 @@ public class FeedActionPanelViewActionHandler {
 
         actionView.setOnCommentIconClickListener(feedEntity -> NavigationBuilder.create()
                 .with(activityRouter)
-                .data(new CommentsBundle(feedEntity, false))
+                .data(new CommentsBundle(feedEntity.getItem(), false))
                 .move(Route.COMMENTS));
 
         actionView.setOnShareClickListener(feedItem -> {

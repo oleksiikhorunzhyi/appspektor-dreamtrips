@@ -119,7 +119,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     /////////////////////////////////////
-    ////// Feed load edit
+    ////// Feed load more
     /////////////////////////////////////
 
     protected abstract DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date);

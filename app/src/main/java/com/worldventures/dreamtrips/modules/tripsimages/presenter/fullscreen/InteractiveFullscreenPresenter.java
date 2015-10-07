@@ -77,10 +77,10 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     }
 
     private void navigateToComments() {
-//        NavigationBuilder.create()
-//                .with(activityRouter)
-//                    .data(new CommentsBundle(feedEntity, false))
-//                .move(Route.COMMENTS);
+        NavigationBuilder.create()
+                .with(activityRouter)
+                    .data(new CommentsBundle(feedEntity, false))
+                .move(Route.COMMENTS);
     }
 
     @Override

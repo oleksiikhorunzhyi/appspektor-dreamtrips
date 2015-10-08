@@ -62,12 +62,12 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void onStatusUpdated(boolean status) {
         if (bucketItem != null && status != bucketItem.isDone()) {
-            view.disableCheckbox();
+            view.disableMarkAsDone();
             getBucketItemManager().updateItemStatus(String.valueOf(bucketItemId),
-                    status, item -> view.enableCheckbox(), spiceException -> {
+                    status, item -> view.enableMarkAsDone(), spiceException -> {
                         BucketItemDetailsPresenter.super.handleError(spiceException);
                         view.setStatus(bucketItem.isDone());
-                        view.enableCheckbox();
+                        view.enableMarkAsDone();
                     });
         }
     }
@@ -127,9 +127,9 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
         void setPlace(String place);
 
-        void disableCheckbox();
+        void disableMarkAsDone();
 
-        void enableCheckbox();
+        void enableMarkAsDone();
 
         void setupDiningView(DiningItem diningItem);
 

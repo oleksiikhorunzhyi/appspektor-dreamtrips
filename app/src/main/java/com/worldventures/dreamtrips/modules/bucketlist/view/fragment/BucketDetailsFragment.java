@@ -73,7 +73,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     protected TextView textViewPlace;
 
     @InjectView(R.id.checkBoxDone)
-    protected CheckBox checkBox;
+    protected CheckBox markAsDone;
 
     @InjectView(R.id.viewPagerBucketGallery)
     protected ViewPager viewPagerBucketGallery;
@@ -199,7 +199,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setStatus(boolean completed) {
-        checkBox.setChecked(completed);
+        markAsDone.setChecked(completed);
     }
 
     @OnCheckedChanged(R.id.checkBoxDone)
@@ -219,13 +219,13 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
-    public void disableCheckbox() {
-        checkBox.setEnabled(false);
+    public void enableMarkAsDone() {
+        markAsDone.setEnabled(true);
     }
 
     @Override
-    public void enableCheckbox() {
-        checkBox.setEnabled(true);
+    public void disableMarkAsDone() {
+        markAsDone.setEnabled(false);
     }
 
     @Override

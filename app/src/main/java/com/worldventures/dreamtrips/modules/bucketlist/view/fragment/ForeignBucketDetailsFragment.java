@@ -18,6 +18,6 @@ public class ForeignBucketDetailsFragment extends BucketDetailsFragment<ForeignB
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        checkBox.setVisibility(View.GONE);
+        markAsDone.setVisibility(View.GONE);
     }
 }

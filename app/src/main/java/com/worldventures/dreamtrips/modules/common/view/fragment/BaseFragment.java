@@ -32,6 +32,8 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     protected ActivityRouter activityRouter;
     @Inject
     protected FragmentCompass fragmentCompass;
+    @Inject
+    protected Presenter.TabletAnalytic tabletAnalytic;
 
     public PM getPresenter() {
         return presenter;
@@ -156,7 +158,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
+        return tabletAnalytic.isTabletLandscape();
     }
 
     @Override

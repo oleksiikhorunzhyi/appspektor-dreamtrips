@@ -188,15 +188,17 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     // View binding
     ///////////////////////////////////////////////////////////////////////////
 
-    public interface View {
+    public interface View extends TabletAnalytic {
         void informUser(int stringId);
 
         void informUser(String string);
 
         void alert(String s);
 
-        boolean isTabletLandscape();
-
         boolean isVisibleOnScreen();
+    }
+
+    public interface TabletAnalytic {
+        boolean isTabletLandscape();
     }
 }

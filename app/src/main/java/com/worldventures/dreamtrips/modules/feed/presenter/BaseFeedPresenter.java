@@ -29,10 +29,10 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -239,21 +239,21 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(DeletePostEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePostCommand(event.getEntity().getItem().getUid()),
+            doRequest(new DeletePostCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
     public void onEvent(DeletePhotoEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePhotoCommand(event.getEntity().getItem().getUid()),
+            doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
 
     }
 
     public void onEvent(DeleteBucketEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeleteBucketItemCommand(event.getEventModel().getItem().getUid()),
-                    aVoid -> itemDeleted(event.getEventModel()));
+            doRequest(new DeleteBucketItemCommand(event.getEntity().getUid()),
+                    aVoid -> itemDeleted(event.getEntity()));
 
     }
 
@@ -274,9 +274,9 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         }
     }
 
-    private void itemDeleted(FeedItem eventModel) {
+    private void itemDeleted(FeedEntity feedEntity) {
         List<FeedItem> filteredItems = Queryable.from(feedItems)
-                .filter(element -> !element.equals(eventModel))
+                .filter(element -> !element.getItem().equals(feedEntity))
                 .toList();
 
         feedItems.clear();

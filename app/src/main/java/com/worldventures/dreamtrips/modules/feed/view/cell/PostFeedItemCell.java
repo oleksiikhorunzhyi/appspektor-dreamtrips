@@ -39,7 +39,7 @@ public class PostFeedItemCell extends FeedHeaderCell<PostFeedItem> {
 
     @Override
     protected void onDelete() {
-        getEventBus().post(new DeletePostEvent(getModelObject()));
+        getEventBus().post(new DeletePostEvent(getModelObject().getItem()));
     }
 
     @Override

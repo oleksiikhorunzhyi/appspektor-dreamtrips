@@ -106,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_commnet_edit"/>
+                android:src="@drawable/ic_comment_edit"/>
         </LinearLayout>
 
     </LinearLayout>

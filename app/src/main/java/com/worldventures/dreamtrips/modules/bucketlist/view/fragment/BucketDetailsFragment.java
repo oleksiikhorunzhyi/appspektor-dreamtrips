@@ -138,7 +138,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     public void onEvent(FeedEntityEditClickEvent event) {
-        if (isVisibleOnScreen() && event.getFeedItem().getItem().getUid().equals(getPresenter().getBucketItem().getUid()))
+        if (isVisibleOnScreen())
             FeedItemMenuBuilder.create(getActivity(), event.getAnchor(), R.menu.menu_feed_entity_edit)
                     .onDelete(() -> getPresenter().onDelete())
                     .onEdit(() -> getPresenter().onEdit())

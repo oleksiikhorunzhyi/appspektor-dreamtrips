@@ -73,5 +73,6 @@
         android:focusableInTouchMode="false"
         android:padding="6dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_commnet_edit"/>
+        android:src="@drawable/ic_comment_edit"
+        android:visibility="gone"/>
 </LinearLayout>

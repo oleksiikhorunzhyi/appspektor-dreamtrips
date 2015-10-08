@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
 public class DeleteBucketEvent {
 
-    private BucketFeedItem eventModel;
+    private BucketItem bucketItem;
 
-    public DeleteBucketEvent(BucketFeedItem eventModel) {
-        this.eventModel = eventModel;
+    public DeleteBucketEvent(BucketItem bucketItem) {
+        this.bucketItem = bucketItem;
     }
 
-    public BucketFeedItem getEventModel() {
-        return eventModel;
+    public BucketItem getEntity() {
+        return bucketItem;
     }
 }

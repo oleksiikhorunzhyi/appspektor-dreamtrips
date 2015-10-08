@@ -62,6 +62,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                updateEmptyCaption(newText.length());
                 getPresenter().setQuery(newText);
                 return false;
             }
@@ -77,4 +78,13 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
         return new FriendSearchPresenter(s);
     }
 
+    private void updateEmptyCaption(int querySize) {
+        if (emptyView.getVisibility() == View.VISIBLE) {
+            if (querySize > 0) {
+                caption.setText(R.string.filter_no_results);
+            } else {
+                caption.setText(R.string.start_searching);
+            }
+        }
+    }
 }

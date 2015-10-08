@@ -92,24 +92,23 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
 
-        setLayoutManager();
+        layoutManager = createLayoutManager();
         recyclerView.setLayoutManager(layoutManager);
         refreshLayout.setOnRefreshListener(this);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
+    protected LinearLayoutManager createLayoutManager() {
+        return ViewUtils.isLandscapeOrientation(getActivity()) ?
+                new GridLayoutManager(getActivity(), ViewUtils.isTablet(getActivity()) ? 3 : 1) :
+                new LinearLayoutManager(getActivity());
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         recyclerView.addOnScrollListener(onScrollListener);
-    }
-
-    private void setLayoutManager() {
-        layoutManager = ViewUtils.isLandscapeOrientation(getActivity()) ?
-                new GridLayoutManager(getActivity(),
-                        ViewUtils.isTablet(getActivity()) ? 3 : 1) :
-                new LinearLayoutManager(getActivity());
     }
 
 

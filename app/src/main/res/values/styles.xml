@@ -17,6 +17,15 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="ToolBarStyle.Header">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="profile_fragment_edit_text">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -73,4 +82,5 @@
         <item name="android:shadowDy">2</item>
         <item name="android:shadowRadius">2</item>
     </style>
+
 </resources>

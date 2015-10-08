@@ -10,6 +10,8 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
@@ -24,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.http.HEAD;
 
 @Layout(R.layout.fragment_feed_entity_details)
 public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDetailsPresenter, FeedEntityDetailsBundle> implements FeedEntityDetailsPresenter.View {
@@ -69,7 +72,7 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
 
     private void setupView(FeedItem feedItem) {
         actionView.setState(feedItem, isForeignItem(feedItem));
-        feedActionHandler.init(actionView);
+        feedActionHandler.init(actionView, createActionPanelNavigationWrapper());
         feedItemHeaderHelper.set(feedItem, getContext(), getPresenter().getAccount().getId(), true);
         feedItemHeaderHelper.setOnEditClickListener(v -> eventBus.post(new FeedEntityEditClickEvent(feedItem, v)));
     }
@@ -77,6 +80,12 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     @Override
     protected FeedEntityDetailsPresenter createPresenter(Bundle savedInstanceState) {
         return new FeedEntityDetailsPresenter(getArgs());
+    }
+
+    private NavigationWrapper createActionPanelNavigationWrapper() {
+        return new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
+                activityRouter, fragmentCompass, this
+        );
     }
 
     private boolean isForeignItem(FeedItem feedItem) {

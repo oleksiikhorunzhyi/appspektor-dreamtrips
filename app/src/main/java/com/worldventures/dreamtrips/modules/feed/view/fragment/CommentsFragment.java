@@ -15,8 +15,9 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -40,7 +41,7 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_comments)
 public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragmentWithArgs<T, CommentsBundle> implements BaseCommentPresenter.View {
 
-    @InjectView(R.id.commentsList)
+    @InjectView(R.id.list)
     protected RecyclerView commentsList;
     @InjectView(R.id.input)
     protected EditText input;
@@ -135,11 +136,12 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void setEntity(FeedEntity entity) {
         likersPanelHelper.setup(likersPanel, entity);
-        likersPanel.setOnClickListener(v ->
-                NavigationBuilder.create()
-                        .with(activityRouter)
-                        .data(new UsersLikedEntityBundle(entity.getUid()))
-                        .move(Route.USERS_LIKED_CONTENT));
+        likersPanel.setOnClickListener(v -> {
+            NavigationWrapper navigationWrapper = new NavigationWrapperFactory()
+                    .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, this);
+            navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid()));
+        });
+
     }
 
     @Override

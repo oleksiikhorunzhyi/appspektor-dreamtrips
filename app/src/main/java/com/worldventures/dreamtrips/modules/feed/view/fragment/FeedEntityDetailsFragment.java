@@ -43,7 +43,7 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         ButterKnife.inject(feedItemHeaderHelper, rootView);
-        if (!getArgs().isSlave()) {
+        if (getArgs().isSlave()) {
             int space = getResources().getDimensionPixelSize(R.dimen.tablet_details_spacing);
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) feedDetailsRootView.getLayoutParams();
             lp.rightMargin = space;

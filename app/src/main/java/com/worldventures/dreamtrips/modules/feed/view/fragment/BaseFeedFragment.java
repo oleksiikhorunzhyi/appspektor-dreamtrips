@@ -58,8 +58,6 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     @InjectView(R.id.detail_container)
     protected View detailsContainer;
 
-    WeakHandler handler = new WeakHandler();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,36 +135,15 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
     @Override
     public void openDetails(FeedItem feedItem) {
-        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(feedItem);
         Route detailsRoute = Route.FEED_ENTITY_DETAILS;
+        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(feedItem);
         if (isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
-            fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.clear();
             bundle.setSlave(true);
-            NavigationBuilder.create()
-                    .with(fragmentCompass)
-                    .data(bundle)
-                    .attach(detailsRoute);
-            showDetailsContainer();
-        } else {
-            hideDetailContainer();
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .data(bundle)
-                    .move(detailsRoute);
         }
-    }
-
-    public void showDetailsContainer() {
-        if (detailsContainer != null)
-            handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
-    }
-
-    public void hideDetailContainer() {
-        if (detailsContainer != null)
-            handler.post(() -> detailsContainer.setVisibility(View.GONE));
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(bundle)
+                .move(detailsRoute);
     }
 
     private boolean isPhoneLandscape() {

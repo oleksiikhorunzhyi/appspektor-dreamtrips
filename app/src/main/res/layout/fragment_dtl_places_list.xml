@@ -4,11 +4,22 @@
              android:layout_height="match_parent"
     >
 
-    <TextView
+    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+        android:id="@+id/lv_items"
+        style="@style/myRecyclerViewStyle"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadingEdgeLength="0dp"
+        android:overScrollMode="never"
+        android:padding="@dimen/spacing_tiniest"
+        android:visibility="visible"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:text="STUB!"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
         />
 </FrameLayout>

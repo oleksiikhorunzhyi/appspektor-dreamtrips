@@ -62,6 +62,6 @@ public class PostFeedItemCell extends FeedHeaderCell<PostFeedItem> {
 
     @Override
     protected void onMore() {
-        showMoreDialog(R.menu.menu_post_edit, R.string.post_delete, R.string.post_delete_caption);
+        showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
     }
 }

@@ -85,7 +85,7 @@ public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
 
     @Override
     protected void onMore() {
-        showMoreDialog(R.menu.menu_photo_edit, R.string.photo_delete, R.string.photo_delete_caption);
+        showMoreDialog(R.menu.menu_feed_entity_edit, R.string.photo_delete, R.string.photo_delete_caption);
     }
 
     @Override

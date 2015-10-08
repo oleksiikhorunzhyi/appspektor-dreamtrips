@@ -286,13 +286,13 @@ public class SnappyRepository {
     // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
 
-    public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
-        putList(IMAGE + ":" + type, items);
+    public void savePhotoEntityList(Type type, int userId, List<IFullScreenObject> items) {
+        putList(IMAGE + ":" + type + ":" + userId, items);
 
     }
 
-    public List<IFullScreenObject> readPhotoEntityList(Type type) {
-        return readList(IMAGE + ":" + type, IFullScreenObject.class);
+    public List<IFullScreenObject> readPhotoEntityList(Type type, int userId) {
+        return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
     }
 
     ///////////////////////////////////////////////////////////////////////////

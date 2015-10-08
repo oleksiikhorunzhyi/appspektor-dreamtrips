@@ -50,6 +50,8 @@ public abstract class TripImagesListPresenter
     private TripImagesRoboSpiceController roboSpiceAdapterController;
     protected List<IFullScreenObject> photos = new ArrayList<>();
 
+    protected int userId;
+
     public TripImagesListPresenter(Type type) {
         super();
         this.type = type;
@@ -62,7 +64,7 @@ public abstract class TripImagesListPresenter
     }
 
     protected void syncPhotos() {
-        photos.addAll(db.readPhotoEntityList(type));
+        photos.addAll(db.readPhotoEntityList(type, userId));
     }
 
     @Override
@@ -146,7 +148,7 @@ public abstract class TripImagesListPresenter
 
         photos.add(0, uploadTask);
         view.add(0, uploadTask);
-        db.savePhotoEntityList(type, photos);
+        db.savePhotoEntityList(type, userId, photos);
         startUpload(uploadTask);
     }
 
@@ -206,7 +208,7 @@ public abstract class TripImagesListPresenter
 
     private void processPhoto(int index, Photo photo) {
         photos.set(index, photo);
-        db.savePhotoEntityList(type, photos);
+        db.savePhotoEntityList(type, userId, photos);
 
         new Handler().postDelayed(() -> {
             if (view != null) view.replace(index, photo);
@@ -240,7 +242,7 @@ public abstract class TripImagesListPresenter
             if (o.getFsId().equals(event.getPhotoId())) {
                 photos.remove(i);
                 view.remove(i);
-                db.savePhotoEntityList(type, photos);
+                db.savePhotoEntityList(type, userId, photos);
             }
         }
     }
@@ -268,6 +270,10 @@ public abstract class TripImagesListPresenter
         this.isFullscreen = isFullscreen;
     }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos, int userId) {
         TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES);
         switch (type) {
@@ -287,10 +293,11 @@ public abstract class TripImagesListPresenter
                 presenter = new FixedPhotoFsPresenter(photos);
                 break;
             case FOREIGN_IMAGES:
-                presenter = new ForeignImagesPresenter(userId);
+                presenter = new ForeignImagesPresenter();
                 break;
         }
         presenter.setFullscreen(isFullscreen);
+        presenter.setUserId(userId);
         return presenter;
     }
 
@@ -324,7 +331,7 @@ public abstract class TripImagesListPresenter
                         photos.addAll(items);
                     }
 
-                    db.savePhotoEntityList(type, photos);
+                    db.savePhotoEntityList(type, userId, photos);
                 } else {
                     handleError(spiceException);
                 }
@@ -353,7 +360,7 @@ public abstract class TripImagesListPresenter
             if (index != -1) {
                 Photo photo = (Photo) photos.get(index);
                 photos.set(index, temp);
-                db.savePhotoEntityList(type, photos);
+                db.savePhotoEntityList(type, userId, photos);
             }
         }
     }

@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
@@ -26,7 +27,8 @@ import dagger.Provides;
                 DtlPlacesTabsFragment.class,
                 DtlPlacesTabsPresenter.class,
                 DtlPlacesListFragment.class,
-                DtlPlacesListPresenter.class
+                DtlPlacesListPresenter.class,
+                DtlPlaceCell.class
         },
         complete = false,
         library = true

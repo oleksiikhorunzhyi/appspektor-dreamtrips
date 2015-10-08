@@ -295,7 +295,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
             uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
-    public void onEventMainThread(FeedEntityItemClickEvent event) {
+    public void onEvent(FeedEntityItemClickEvent event) {
+        eventBus.cancelEventDelivery(event);
         view.openDetails(event.getFeedItem());
     }
 

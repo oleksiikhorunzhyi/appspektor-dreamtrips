@@ -31,8 +31,8 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.objectGraph = getInitialObjectGraph();
-        FragmentHelper.inject(activity, this);
+        objectGraph = getInitialObjectGraph();
+        objectGraph.inject(this);
     }
 
     @Override

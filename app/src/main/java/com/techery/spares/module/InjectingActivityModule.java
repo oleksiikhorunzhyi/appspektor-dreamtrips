@@ -46,7 +46,7 @@ public class InjectingActivityModule {
     }
 
     @Provides
-    AdapterBuilder provideAdapterBuilder(Context context, Injector injector) {
+    AdapterBuilder provideAdapterBuilder(Context context, @ForActivity Injector injector) {
         return new AdapterBuilder(injector, context);
     }
 

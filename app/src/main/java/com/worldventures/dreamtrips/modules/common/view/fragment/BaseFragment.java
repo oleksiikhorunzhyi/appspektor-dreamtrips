@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import dagger.ObjectGraph;
 import icepick.Icepick;
 
 
@@ -38,6 +39,11 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     }
 
     protected abstract PM createPresenter(Bundle savedInstanceState);
+
+    @Override
+    protected ObjectGraph getInitialObjectGraph() {
+        return super.getInitialObjectGraph().plus(new BaseFragmentModule(this, this, this));
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Lifecycle

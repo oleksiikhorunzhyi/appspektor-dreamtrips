@@ -8,14 +8,15 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 
 @Module(
         complete = false,
-        library = true
+        library = true,
+        includes = {
+                UiUtilModule.class
+        }
 )
 public class ActivityModule {
 

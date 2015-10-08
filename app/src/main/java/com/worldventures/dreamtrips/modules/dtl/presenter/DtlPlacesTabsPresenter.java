@@ -9,11 +9,15 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacesQuery;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -43,22 +47,22 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     private void loadPlaces() {
         doRequest(new GetDtlPlacesQuery(location.getId()),
                 dtlPlaces -> {
-                    db.saveDtlPlaces(Queryable
-                            .from(dtlPlaces)
-                            .filter(element -> element.getType().equals(DtlPlaceType.DINING.getName()))
-                            .toList());
-                    eventBus.post(new PlacesUpdatedEvent(DtlPlaceType.DINING));
-                    db.saveDtlPlaces(Queryable
-                            .from(dtlPlaces)
-                            .filter(element -> element.getType().equals(DtlPlaceType.OFFER.getName()))
-                            .toList());
-                    eventBus.post(new PlacesUpdatedEvent(DtlPlaceType.OFFER));
+                    Map<DtlPlaceType, Collection<DtlPlace>> byType = Queryable.from(dtlPlaces).groupToMap(DtlPlace::getType);
+                    for (DtlPlaceType type : byType.keySet()) {
+                        updatePlacesByType(type, byType.get(type));
+                    }
                 },
                 spiceException -> {
                     super.handleError(spiceException);
                     eventBus.post(new PlacesUpdatedEvent(true));
                 }
         );
+    }
+
+    private void updatePlacesByType(DtlPlaceType type, Collection<DtlPlace> dtlPlaces) {
+        db.saveDtlPlaces(type, new ArrayList<>(dtlPlaces));
+        eventBus.post(new PlacesUpdatedEvent(type));
+
     }
 
     public void setTabs() {

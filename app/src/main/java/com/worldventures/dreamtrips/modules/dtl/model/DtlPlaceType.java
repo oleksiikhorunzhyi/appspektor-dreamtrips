@@ -5,20 +5,14 @@ import android.support.annotation.StringRes;
 import com.worldventures.dreamtrips.R;
 
 public enum DtlPlaceType {
-    OFFER("offer", R.string.dtl_place_tab_offers),
-    DINING("dining", R.string.dtl_place_tab_dining);
+    OFFER(R.string.dtl_place_tab_offers),
+    DINING(R.string.dtl_place_tab_dining);
 
-    protected String name;
     @StringRes
     protected int typedListCaptionResId;
 
-    DtlPlaceType(String name, @StringRes int resId) {
-        this.name = name;
+    DtlPlaceType(@StringRes int resId) {
         this.typedListCaptionResId = resId;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @StringRes

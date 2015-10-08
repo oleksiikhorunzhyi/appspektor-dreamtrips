@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -23,21 +24,21 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.getAdapter().setItems(db.getDtlPlaces(placeType));
-        if (view.getAdapter().getCount() < 1) view.showProgress();
+        List<DtlPlace> dtlPlaces = db.getDtlPlaces(placeType);
+        view.setItems(dtlPlaces);
+        if (dtlPlaces.isEmpty()) view.showProgress();
     }
 
     public void onEventMainThread(PlacesUpdatedEvent event) {
-        if (event.getType().equals(placeType)) {
-            view.getAdapter().setItems(db.getDtlPlaces(placeType));
-            // TODO : check if empty - show empty view
-        }
+        if (!event.getType().equals(placeType)) return;
+        //
+        view.setItems(db.getDtlPlaces(placeType));
         view.hideProgress();
     }
 
     public interface View extends Presenter.View {
 
-        BaseArrayListAdapter<DtlPlace> getAdapter();
+        void setItems(List<DtlPlace> places);
 
         void showProgress();
 

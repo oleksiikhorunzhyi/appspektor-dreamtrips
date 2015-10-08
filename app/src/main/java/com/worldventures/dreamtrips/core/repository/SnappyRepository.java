@@ -426,18 +426,12 @@ public class SnappyRepository {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
     }
 
-    public void saveDtlPlaces(List<DtlPlace> places) {
-        if (!places.isEmpty()) {
-            saveDtlPlaces(places, places.get(0).getType());
-        }
-    }
-
-    private void saveDtlPlaces(List<DtlPlace> places, String typeString) {
-        clearAllForKey(DTL_PLACES_PREFIX + typeString.toUpperCase());
-        act(db -> putList(DTL_PLACES_PREFIX + typeString.toUpperCase(), places));
+    public void saveDtlPlaces(DtlPlaceType type, List<DtlPlace> places) {
+        clearAllForKey(DTL_PLACES_PREFIX + type);
+        putList(DTL_PLACES_PREFIX + type, places);
     }
 
     public List<DtlPlace> getDtlPlaces(DtlPlaceType type) {
-        return readList(DTL_PLACES_PREFIX + type.getName().toUpperCase(), DtlPlace.class);
+        return readList(DTL_PLACES_PREFIX + type, DtlPlace.class);
     }
 }

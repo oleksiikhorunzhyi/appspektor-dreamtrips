@@ -17,7 +17,7 @@ public class DtlPlace implements Parcelable {
     private String state;
     private String address;
     private String description;
-    private String type;
+    private DtlPlaceType type;
     private String website;
     private String cityName;
     private Location location;
@@ -70,11 +70,11 @@ public class DtlPlace implements Parcelable {
         this.description = description;
     }
 
-    public String getType() {
+    public DtlPlaceType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DtlPlaceType type) {
         this.type = type;
     }
 
@@ -152,7 +152,7 @@ public class DtlPlace implements Parcelable {
         state = in.readString();
         address = in.readString();
         description = in.readString();
-        type = in.readString();
+        type = (DtlPlaceType) in.readSerializable();
         website = in.readString();
         cityName = in.readString();
         location = in.readParcelable(Location.class.getClassLoader());
@@ -187,7 +187,7 @@ public class DtlPlace implements Parcelable {
         dest.writeString(state);
         dest.writeString(address);
         dest.writeString(description);
-        dest.writeString(type);
+        dest.writeSerializable(type);
         dest.writeString(website);
         dest.writeString(cityName);
         dest.writeParcelable(location, flags);

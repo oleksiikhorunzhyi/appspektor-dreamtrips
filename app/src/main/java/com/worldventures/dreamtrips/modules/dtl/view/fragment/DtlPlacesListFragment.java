@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -36,8 +38,9 @@ public class DtlPlacesListFragment
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.progressBar)
-    protected ProgressBar progressBar;
-    protected BaseArrayListAdapter<DtlPlace> adapter;
+    ProgressBar progressBar;
+    //
+    BaseArrayListAdapter<DtlPlace> adapter;
 
     @Override
     protected DtlPlacesListPresenter createPresenter(Bundle savedInstanceState) {
@@ -54,8 +57,8 @@ public class DtlPlacesListFragment
     }
 
     @Override
-    public BaseArrayListAdapter<DtlPlace> getAdapter() {
-        return adapter;
+    public void setItems(List<DtlPlace> places) {
+        adapter.setItems(places);
     }
 
     @Override

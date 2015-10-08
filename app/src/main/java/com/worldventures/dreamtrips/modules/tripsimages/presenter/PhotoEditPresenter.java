@@ -37,9 +37,9 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
 
     private void syncUi() {
 
-        Date date = photo.getShotAt() != null ? photo.getShotAt() : Calendar.getInstance().getTime();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        Date photoDate = photo.getShotAt();
+        if (photoDate != null) calendar.setTime(photoDate);
 
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -69,26 +69,27 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
     }
 
     public void saveAction() {
-        if (view != null) {
-            UploadTask imageUploadTask = new UploadTask();
-            imageUploadTask.setTitle(view.getTitle());
+        view.setEnabledSaveButton(false);
+        UploadTask imageUploadTask = new UploadTask();
+        imageUploadTask.setTitle(view.getTitle());
 
-            List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
-            imageUploadTask.setTags(new ArrayList<>(tags));
-            imageUploadTask.setLatitude(0);
-            imageUploadTask.setLongitude(0);
-            imageUploadTask.setLocationName(view.getLocation());
+        List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
+        imageUploadTask.setTags(new ArrayList<>(tags));
+        imageUploadTask.setLatitude(0);
+        imageUploadTask.setLongitude(0);
+        imageUploadTask.setLocationName(view.getLocation());
 
-            Date date = DateTimeUtils.dateFromString(view.getDate());
-            Date time = DateTimeUtils.timeFromString(view.getTime());
-            imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+        Date date = DateTimeUtils.dateFromString(view.getDate());
+        Date time = DateTimeUtils.timeFromString(view.getTime());
+        imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
 
-            doRequest(new EditTripPhotoCommand(photo.getUid(), imageUploadTask), updatedPhoto -> {
-                eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
-                view.finish();
-                view = null;
-            });
-        }
+        doRequest(new EditTripPhotoCommand(photo.getUid(), imageUploadTask), updatedPhoto -> {
+            eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
+            view.finish();
+        }, spiceException -> {
+            super.handleError(spiceException);
+            view.setEnabledSaveButton(true);
+        });
     }
 
     public interface View extends Presenter.View {
@@ -117,5 +118,6 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
 
         void setTime(String format);
 
+        void setEnabledSaveButton(boolean enabled);
     }
 }

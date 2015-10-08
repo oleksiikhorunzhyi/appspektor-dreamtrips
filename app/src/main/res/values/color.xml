@@ -10,8 +10,8 @@
     <color name="black_semi_transparent_darker">#b8000000</color>
     <color name="black_semi_transparent">#6a000000</color>
 
-    <color name="gray">#A0A0A0</color>
-    <color name="gray_lighter">#e6e6e6</color>
+    <color name="grey">#A0A0A0</color>
+    <color name="grey_lighter">#e6e6e6</color>
 
     <color name="bg_tablet_menu">#0F2639</color>
 

@@ -326,7 +326,7 @@
     <string name="loading">正在載入...</string>
     <string name="filter_video_title_language">選擇語言</string>
     <string name="filter_video_title_country">選擇國家</string>
-    <string name="comments_title">評論</string>
+    <string name="comments_title"></string>
     <string name="comment_add_hint">添加評論</string>
     <string name="comment_post_btn_title">張貼</string>
     <string name="comment_view_more">查看更多評論</string>

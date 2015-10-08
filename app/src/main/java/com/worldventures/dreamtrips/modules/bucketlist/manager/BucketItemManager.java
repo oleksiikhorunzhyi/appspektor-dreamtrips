@@ -7,9 +7,11 @@ import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.AddBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
@@ -28,7 +30,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -40,19 +41,16 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.*;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
 
 public class BucketItemManager {
 
-    public BucketItemManager(Injector injector) {
-        injector.inject(this);
-    }
-
-    int userId;
-
-
     @Inject
     SnappyRepository snapper;
+
+    @Inject
+    protected SessionHolder<UserSession> appSessionHolder;
 
     @Inject
     Prefs prefs;
@@ -62,49 +60,39 @@ public class BucketItemManager {
     EventBus eventBus;
 
     List<BucketItem> bucketItemsLocation;
+
     List<BucketItem> bucketItemsActivity;
     List<BucketItem> bucketItemsDining;
 
     DreamSpiceManager dreamSpiceManager;
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public BucketItemManager(Injector injector) {
+        injector.inject(this);
     }
 
     public void setDreamSpiceManager(DreamSpiceManager dreamSpiceManager) {
         this.dreamSpiceManager = dreamSpiceManager;
     }
 
-    public void loadBucketItems(DreamSpiceManager.FailureListener failureListener) {
+    public void loadBucketItems(User user, DreamSpiceManager.FailureListener failureListener) {
         if (!snapper.isEmpty(SnappyRepository.BUCKET_LIST)) {
             eventBus.post(new BucketItemsLoadedEvent());
         }
 
-        dreamSpiceManager.execute(getBucketListRequest(), items -> {
-            Queryable.from(items).forEachR(item -> item.setUser(getOwner()));
+        dreamSpiceManager.execute(getBucketListRequest(user.getId()), items -> {
+            Queryable.from(items).forEachR(item -> item.setUser(user));
             saveBucketItems(items);
             eventBus.post(new BucketItemsLoadedEvent());
         }, failureListener);
     }
 
-    protected User getOwner() {
-        User user = new User();
-        user.setId(userId);
-        return user;
-    }
-
     @NonNull
-    protected GetBucketItemsQuery getBucketListRequest() {
-        return new GetBucketItemsQuery();
+    protected GetBucketItemsQuery getBucketListRequest(int userId) {
+        return new GetBucketItemsQuery(userId);
     }
 
     protected List<BucketItem> readBucketItems(BucketType type) {
-        return snapper.readBucketList(type.name());
-    }
-
-
-    protected void doLocalSave(List<BucketItem> bucketItems, BucketType type) {
-        snapper.saveBucketList(bucketItems, type.name());
+        return snapper.readBucketList(type.name(), appSessionHolder.get().get().getUser().getId());
     }
 
     private void saveBucketItems(List<BucketItem> bucketItems) {
@@ -115,13 +103,17 @@ public class BucketItemManager {
         }
     }
 
-    public void saveSingleBucketItem(BucketItem bucketItem, BucketType type) {
+    public void saveSingleBucketItem(BucketItem bucketItem) {
         List<BucketItem> items = new ArrayList<>();
         items.add(bucketItem);
-        saveBucketItems(items, type);
+        snapper.saveBucketList(items, bucketItem.getType(), bucketItem.getUser().getId());
     }
 
     public void saveBucketItems(List<BucketItem> bucketItems, BucketType type) {
+        saveBucketItems(bucketItems, type, appSessionHolder.get().get().getUser().getId());
+    }
+
+    public void saveBucketItems(List<BucketItem> bucketItems, BucketType type, int userId) {
         switch (type) {
             case LOCATION:
                 bucketItemsLocation = bucketItems;
@@ -133,7 +125,7 @@ public class BucketItemManager {
                 bucketItemsDining = bucketItems;
                 break;
         }
-        doLocalSave(bucketItems, type);
+        snapper.saveBucketList(bucketItems, type.name(), userId);
     }
 
     public void addBucketItem(BucketItem item, BucketType type, boolean asFirst) {
@@ -340,6 +332,9 @@ public class BucketItemManager {
         int newPosition = (oldItem.isDone() && !updatedItem.isDone()) ? 0 : oldPosition;
         tempItems.remove(oldPosition);
         tempItems.add(newPosition, updatedItem);
+        if (updatedItem.getUser() == null) {
+            updatedItem.setUser(oldItem.getUser());
+        }
         saveBucketItems(tempItems, bucketType);
 
         eventBus.post(new BucketItemUpdatedEvent(updatedItem));

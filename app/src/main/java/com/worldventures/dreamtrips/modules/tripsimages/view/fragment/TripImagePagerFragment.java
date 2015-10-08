@@ -19,7 +19,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePresenter;
 
 import butterknife.InjectView;
@@ -50,7 +50,7 @@ public class TripImagePagerFragment extends BaseFragment<DetailedImagePresenter>
             ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
         }
 
-        getPresenter().setPhoto((TripImage) photo);
+        getPresenter().setPhoto((IFullScreenObject) photo);
 
         ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -99,7 +99,7 @@ public class TripImagePagerFragment extends BaseFragment<DetailedImagePresenter>
         };
 
         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setUri(Uri.parse(getPresenter().getPhoto().getUrl(width, height)))
+                .setUri(Uri.parse(getPresenter().getPhoto().getFSImage().getUrl(width, height)))
                 .setControllerListener(controllerListener)
                 .build();
 

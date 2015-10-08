@@ -62,7 +62,7 @@
 
     <dimen name="feed_item_height">250dp</dimen>
     <dimen name="feed_spacing">0dp</dimen>
-    <dimen name="bucket_details_spacing">0dp</dimen>
+    <dimen name="tablet_details_spacing">0dp</dimen>
 
     <dimen name="locale_flag_size_width">38dp</dimen>
     <dimen name="locale_flag_size_height">22dp</dimen>
@@ -82,5 +82,7 @@
     <dimen name="post_spacing_vertical">16dp</dimen>
 
     <dimen name="template_height">260dp</dimen>
+
+    <dimen name="popup_filter_item_extra_space">80dp</dimen>
 
 </resources>

@@ -6,9 +6,7 @@ import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -17,6 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
+import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.friends.bundle.BaseUsersBundle;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -39,7 +38,6 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
     @InjectView(R.id.search)
     DelaySearchView search;
 
-    private ListPopupWindow popupWindow;
 
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
@@ -91,22 +89,15 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
 
     @Override
     public void showFilters(List<Circle> circles, int position) {
-        popupWindow = new ListPopupWindow(getActivity());
-        ArrayAdapter<Circle> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_single_choice, circles);
-        popupWindow.setAdapter(adapter);
-        popupWindow.setAnchorView(filter);
-        popupWindow.setWidth(getResources().getDimensionPixelSize(R.dimen.filter_popup_width));
-        popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
-        popupWindow.setModal(true);
-        popupWindow.show();
-
-        popupWindow.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        popupWindow.setSelection(position);
-        popupWindow.getListView().setOnItemClickListener((adapterView, view, i, l) -> {
-            popupWindow.dismiss();
-            getPresenter().reloadWithFilter(i);
+        CirclesFilterPopupWindow filterPopupWindow = new CirclesFilterPopupWindow(getContext());
+        filterPopupWindow.setCircles(circles);
+        filterPopupWindow.setAnchorView(filter);
+        filterPopupWindow.setOnItemClickListener((parent, view, pos, id) -> {
+            filterPopupWindow.dismiss();
+            getPresenter().reloadWithFilter(pos);
         });
+        filterPopupWindow.show();
+        filterPopupWindow.setCheckedCircle(circles.get(position));
     }
 
     @Override

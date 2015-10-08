@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_post_event)
-public class FeedPostEventCell extends FeedHeaderCell<PostFeedItem> {
+public class PostFeedItemCell extends FeedHeaderCell<PostFeedItem> {
 
     @InjectView(R.id.post)
     TextView post;
@@ -26,7 +26,7 @@ public class FeedPostEventCell extends FeedHeaderCell<PostFeedItem> {
     @Inject
     FragmentCompass fragmentCompass;
 
-    public FeedPostEventCell(View view) {
+    public PostFeedItemCell(View view) {
         super(view);
     }
 
@@ -35,11 +35,6 @@ public class FeedPostEventCell extends FeedHeaderCell<PostFeedItem> {
         super.syncUIStateWithModel();
         PostFeedItem obj = getModelObject();
         post.setText(obj.getItem().getDescription());
-        itemView.setOnClickListener(v -> itemClicked());
-    }
-
-    protected void itemClicked() {
-        openComments(getModelObject());
     }
 
     @Override

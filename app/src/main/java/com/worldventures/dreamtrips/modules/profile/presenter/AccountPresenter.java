@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.core.utils.DeleteTokenGcmTask;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
@@ -116,21 +117,24 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void logout() {
-        if (snappyRepository.getGcmRegToken() != null)
-            doRequest(new UnsubscribeDeviceCommand(snappyRepository.getGcmRegToken()), aVoid -> {
-                this.appSessionHolder.destroy();
-                snappyRepository.clearAll();
-                activityRouter.finish();
-            });
-        else
-            logoutSucceed();
+        String token = snappyRepository.getGcmRegToken();
+        if (token != null) {
+            doRequest(new UnsubscribeDeviceCommand(token), aVoid -> deleteTokenInGcm());
+        } else {
+            clearUserDataAndFinish();
+        }
     }
 
-    private void logoutSucceed() {
-        this.appSessionHolder.destroy();
-        snappyRepository.clearAll();
-        activityRouter.finish();
+    private void deleteTokenInGcm (){
+        new DeleteTokenGcmTask(context, (task, removeGcmTokenSucceed) -> {
+            clearUserDataAndFinish();
+        }).execute();
+    }
 
+    private void clearUserDataAndFinish(){
+        snappyRepository.clearAll();
+        appSessionHolder.destroy();
+        activityRouter.finish();
     }
 
     @Override

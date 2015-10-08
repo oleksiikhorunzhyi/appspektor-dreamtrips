@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     public void onEdit() {
         BucketBundle bundle = new BucketBundle();
         bundle.setType(type);
-        bundle.setBucketItemId(bucketItemId);
+        bundle.setBucketItemUid(bucketItemId);
 
         fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
@@ -60,37 +62,14 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void onStatusUpdated(boolean status) {
         if (bucketItem != null && status != bucketItem.isDone()) {
-            view.disableCheckbox();
+            view.disableMarkAsDone();
             getBucketItemManager().updateItemStatus(String.valueOf(bucketItemId),
-                    status, item -> view.enableCheckbox(), spiceException -> {
+                    status, item -> view.enableMarkAsDone(), spiceException -> {
                         BucketItemDetailsPresenter.super.handleError(spiceException);
                         view.setStatus(bucketItem.isDone());
-                        view.enableCheckbox();
+                        view.enableMarkAsDone();
                     });
         }
-    }
-
-    public void onFbShare() {
-        activityRouter.openShareFacebook(bucketItem.getUrl(), null,
-                String.format(context.getString(R.string.bucketlist_share),
-                        bucketItem.getName()));
-    }
-
-    public void onTwitterShare() {
-        activityRouter.openShareTwitter(null, bucketItem.getUrl(),
-                String.format(context.getString(R.string.bucketlist_share),
-                        bucketItem.getName()));
-    }
-
-    public void onEvent(MarkBucketItemDoneEvent event) {
-        if (event.getBucketItem().equals(bucketItem)) {
-            bucketItem = event.getBucketItem();
-            syncUI();
-        }
-    }
-
-    public void onEvent(BucketItemDeleteConfirmedEvent event) {
-        if (bucketItemId.equals(event.getBucketItemId())) deleteBucketItem(bucketItem);
     }
 
     @Override
@@ -108,11 +87,39 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                 view.setCategory(s);
             }
             view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
-            String medium = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
-            String original = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
-            view.setCover(medium, original);
             view.setupDiningView(bucketItem.getDining());
         }
+    }
+
+    public void onEvent(MarkBucketItemDoneEvent event) {
+        if (event.getBucketItem().getUid().equals(bucketItemId)) {
+            updateBucketItem(event.getBucketItem());
+            syncUI();
+        }
+    }
+
+    public void onEvent(BucketItemDeleteConfirmedEvent event) {
+        if (bucketItemId.equals(event.getBucketItemId())) deleteBucketItem(bucketItem);
+    }
+
+    public void onEvent(FeedEntityChangedEvent event) {
+        if (event.getFeedEntity().getUid().equals(bucketItemId)) {
+            updateBucketItem((BucketItem) event.getFeedEntity());
+            syncUI();
+        }
+    }
+
+    private void updateBucketItem(BucketItem updatedItem) {
+        BucketItem tempItem = bucketItem;
+        bucketItem = updatedItem;
+        if (bucketItem.getUser() == null) {
+            bucketItem.setUser(tempItem.getUser());
+        }
+        bucketItemManager.saveSingleBucketItem(bucketItem);
+    }
+
+    public FeedEntity getBucketItem() {
+        return bucketItem;
     }
 
     public interface View extends BucketDetailsBasePresenter.View {
@@ -120,11 +127,9 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
         void setPlace(String place);
 
-        void setCover(String medium, String original);
+        void disableMarkAsDone();
 
-        void disableCheckbox();
-
-        void enableCheckbox();
+        void enableMarkAsDone();
 
         void setupDiningView(DiningItem diningItem);
 

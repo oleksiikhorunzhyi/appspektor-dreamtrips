@@ -31,7 +31,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         likesCount = in.readInt();
         liked = in.readInt() == 1;
         title = in.readString();
-        shotAt = new Date(in.readLong());
+        shotAt = (Date) in.readSerializable();
         location = in.readParcelable(Location.class.getClassLoader());
         tags = in.createStringArrayList();
         images = in.readParcelable(Image.class.getClassLoader());
@@ -50,6 +50,11 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
             return new Photo[size];
         }
     };
+
+    @Override
+    public String place() {
+        return location != null ? location.getName() : null;
+    }
 
     public String getFsId() {
         return uid;
@@ -149,7 +154,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     @Override
     public int getFsCommentCount() {
-        return -1;
+        return commentsCount;
     }
 
     @Override
@@ -191,7 +196,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         parcel.writeInt(likesCount);
         parcel.writeInt(liked ? 1 : 0);
         parcel.writeString(title);
-        parcel.writeLong(shotAt.getTime());
+        parcel.writeSerializable(shotAt);
         parcel.writeParcelable(location, i);
         parcel.writeStringList(tags);
         parcel.writeParcelable(images, i);

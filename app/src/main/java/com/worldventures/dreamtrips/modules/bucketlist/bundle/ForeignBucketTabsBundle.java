@@ -3,32 +3,19 @@ package com.worldventures.dreamtrips.modules.bucketlist.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.common.model.User;
+
 public class ForeignBucketTabsBundle implements Parcelable {
 
-    private int userId;
+    private User user;
 
-    public ForeignBucketTabsBundle(int userId) {
-        this.userId = userId;
+    public ForeignBucketTabsBundle(User user) {
+        this.user = user;
     }
 
-    protected ForeignBucketTabsBundle(Parcel in) {
-        userId = in.readInt();
-    }
 
-    public static final Creator<ForeignBucketTabsBundle> CREATOR = new Creator<ForeignBucketTabsBundle>() {
-        @Override
-        public ForeignBucketTabsBundle createFromParcel(Parcel in) {
-            return new ForeignBucketTabsBundle(in);
-        }
-
-        @Override
-        public ForeignBucketTabsBundle[] newArray(int size) {
-            return new ForeignBucketTabsBundle[size];
-        }
-    };
-
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     @Override
@@ -37,7 +24,21 @@ public class ForeignBucketTabsBundle implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(userId);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.user, 0);
     }
+
+    protected ForeignBucketTabsBundle(Parcel in) {
+        this.user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Creator<ForeignBucketTabsBundle> CREATOR = new Creator<ForeignBucketTabsBundle>() {
+        public ForeignBucketTabsBundle createFromParcel(Parcel source) {
+            return new ForeignBucketTabsBundle(source);
+        }
+
+        public ForeignBucketTabsBundle[] newArray(int size) {
+            return new ForeignBucketTabsBundle[size];
+        }
+    };
 }

@@ -49,6 +49,11 @@ public class TripModel extends BaseFeedEntity implements Filterable {
     private boolean recentlyAdded;
     private boolean inBucketList;
 
+    @Override
+    public String place() {
+        return location != null ? location.getName() : null;
+    }
+
     public String getTripId() {
         return tripId;
     }

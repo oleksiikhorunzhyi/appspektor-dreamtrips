@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,16 +27,18 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_user)
 public class UserCell extends AbstractCell<User> {
 
-    @InjectView(R.id.avatar)
-    SimpleDraweeView avatar;
-    @InjectView(R.id.name)
-    TextView name;
-    @InjectView(R.id.mutual)
-    TextView mutual;
-    @InjectView(R.id.company)
-    TextView company;
-    @InjectView(R.id.status)
-    ImageView status;
+    @InjectView(R.id.sdv_avatar)
+    SimpleDraweeView sdvAvatar;
+    @InjectView(R.id.tv_name)
+    TextView tvName;
+    @InjectView(R.id.tv_mutual)
+    TextView tvMutual;
+    @InjectView(R.id.tv_company)
+    TextView tvCompany;
+    @InjectView(R.id.tv_group)
+    TextView tvGroup;
+    @InjectView(R.id.iv_status)
+    ImageView ivStatus;
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
@@ -47,53 +50,48 @@ public class UserCell extends AbstractCell<User> {
     @Override
     protected void syncUIStateWithModel() {
         User user = getModelObject();
-        avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+        sdvAvatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
 
-        name.setText(user.getFullName());
+        tvName.setText(user.getFullName());
 
-        if (!TextUtils.isEmpty(getModelObject().getCompany())) {
-            company.setText(getModelObject().getCompany());
-            company.setVisibility(View.VISIBLE);
-        } else {
-            company.setVisibility(View.GONE);
-        }
+        String companyName = getModelObject().getCompany();
+        tvCompany.setVisibility(TextUtils.isEmpty(companyName)? View.GONE : View.VISIBLE);
+        tvCompany.setText(companyName);
 
-        if (getModelObject().getMutualFriends() == 0) {
-            mutual.setVisibility(View.GONE);
-        } else {
-            mutual.setVisibility(View.VISIBLE);
-            mutual.setText(itemView.getContext().getString(R.string.social_postfix_mutual_friends,
-                    getModelObject().getMutualFriends()));
-        }
+        String circleName = user.getCircles();
+        tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
+        tvGroup.setText(circleName);
+
+        String mutualText = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
+        tvMutual.setVisibility(getModelObject().getMutualFriends() == 0 ? View.GONE : View.VISIBLE);
+        tvMutual.setText(mutualText);
 
         if (!appSessionHolder.get().get().getUser().equals(user)
                 && user.getRelationship() != null) {
-            status.setVisibility(View.VISIBLE);
+            ivStatus.setVisibility(View.VISIBLE);
             switch (user.getRelationship()) {
                 case FRIEND:
-                    status.setImageResource(R.drawable.ic_profile_friend);
-                    status.setOnClickListener(v -> openFriendActionDialog());
+                    setStatusParameters(R.drawable.ic_profile_friend, v -> openFriendActionDialog());
                     break;
                 case OUTGOING_REQUEST:
-                    status.setImageResource(R.drawable.ic_profile_friend_respond);
-                    status.setOnClickListener(null);
-                    break;
                 case REJECT:
-                    status.setImageResource(R.drawable.ic_profile_friend_respond);
-                    status.setOnClickListener(null);
+                    setStatusParameters(R.drawable.ic_profile_friend_respond, null);
                     break;
                 case INCOMING_REQUEST:
-                    status.setImageResource(R.drawable.ic_profile_add_friend_selector);
-                    status.setOnClickListener(v -> acceptRequest());
+                    setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> acceptRequest());
                     break;
                 default:
-                    status.setImageResource(R.drawable.ic_profile_add_friend_selector);
-                    status.setOnClickListener(v -> addUser());
+                    setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> addUser());
                     break;
             }
         } else {
-            status.setVisibility(View.GONE);
+            ivStatus.setVisibility(View.GONE);
         }
+    }
+
+    private void setStatusParameters(int drawableId, @Nullable View.OnClickListener listener){
+        ivStatus.setImageResource(drawableId);
+        ivStatus.setOnClickListener(listener);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class UserCell extends AbstractCell<User> {
 
     }
 
-    @OnClick(R.id.avatar)
+    @OnClick(R.id.sdv_avatar)
     void userClicked() {
         getEventBus().post(new UserClickedEvent(getModelObject()));
     }
@@ -116,7 +114,7 @@ public class UserCell extends AbstractCell<User> {
 
     private void openFriendActionDialog() {
         new FriendActionDialogDelegate(itemView.getContext(), getEventBus())
-                .showFriendDialog(getModelObject(), avatar.getDrawable());
+                .showFriendDialog(getModelObject(), sdvAvatar.getDrawable());
     }
 
 

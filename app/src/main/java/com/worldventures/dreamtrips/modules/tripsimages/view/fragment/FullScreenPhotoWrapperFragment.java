@@ -69,11 +69,9 @@ public class FullScreenPhotoWrapperFragment
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
-                //nothing to here
             }
 
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                //nothing to here
             }
 
             public void onPageSelected(int position) {
@@ -100,8 +98,7 @@ public class FullScreenPhotoWrapperFragment
 
             @Override
             public void addItems(ArrayList baseItemClasses) {
-                super.addItems(baseItemClasses);
-                fill(baseItemClasses);
+                addToAdapter(baseItemClasses);
             }
         };
     }
@@ -109,12 +106,10 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     public void startLoading() {
-        //nothing to here
     }
 
     @Override
     public void finishLoading() {
-        //nothing to here
     }
 
     @Override
@@ -141,33 +136,29 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     public void fillWithItems(List<IFullScreenObject> items) {
-        fill(items);
+        addToAdapter(items);
+        adapter.notifyDataSetChanged();
     }
 
-    private void fill(List<IFullScreenObject> items) {
+    private void addToAdapter(List<IFullScreenObject> items) {
         Queryable.from(items).forEachR(item ->
                 adapter.add(new FragmentItem(FullScreenPhotoFragment.class, "")));
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void add(IFullScreenObject item) {
-        //nothing to here
     }
 
     @Override
     public void add(int position, IFullScreenObject item) {
-        //nothing to here
     }
 
     @Override
     public void clear() {
-        //nothing to here
     }
 
     @Override
     public void replace(int position, IFullScreenObject item) {
-        //nothing to here
     }
 
     @Override

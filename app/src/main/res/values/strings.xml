@@ -118,7 +118,7 @@
     <string name="bucket_list_location_popular">Popular Bucket Lists</string>
     <string name="bucket_list_activity_popular">Popular Bucket Lists Activities</string>
     <string name="bucket_list_dinning_popular">Popular Bucket Lists Dining &amp; Entertainment</string>
-    <string name="bucket_list_edit_header">Edit Bucket Item</string>
+    <string name="bucket_list_edit_header">Edit Bucket List Item</string>
     <string name="bucket_list_add">Add %s to your bucket list</string>
     <string name="bucket_list_create_message">Currently you have no Bucket List items. You can choose from popular Bucket List items or create your own goals</string>
     <string name="bucket_list_choose">Choose From Popular Items</string>
@@ -269,7 +269,7 @@
 
     <string name="profile_update_info">Update Info</string>
     <string name="profile_trip_images">%d Trip Images</string>
-    <string name="profile_bucket_list">%d Bucket Items</string>
+    <string name="profile_bucket_list">%d Bucket List Items</string>
     <string name="profile_post">Post</string>
     <string name="profile_friends">Friends</string>
     <string name="profile_messages">Messages</string>
@@ -319,10 +319,10 @@
     <string name="booked">booked a</string>
     <string name="shared">shared a</string>
     <string name="updated">updated a</string>
-    <string name="liked">liked a</string>
+    <string name="liked">liked your</string>
     <string name="feed_trip">Trip</string>
     <string name="feed_photo">Photo</string>
-    <string name="feed_bucket">Bucket Item</string>
+    <string name="feed_bucket">Bucket List Item</string>
     <string name="coming_soon">Coming Soon</string>
     <string name="loading">Loading…</string>
     <string name="filter_video_title_language">Choose language</string>
@@ -360,7 +360,6 @@
     <string name="week_ago">1 week ago</string>
     <string name="day_ago">1 day ago</string>
 
-
     <string name="social_remove_and_block_friend_title">Unfriend and block</string>
     <string name="social_friend_preference_title">Edit friend preferences</string>
     <string name="friend_pref_create_new_list">Create new list</string>
@@ -391,16 +390,23 @@
         <item quantity="other">@string/users_who_liked_with_first_multiple</item>
     </plurals>
 
-    <string name="users_who_liked_with_first_zero"  formatted="false">&lt;b>%s&lt;/b> likes this</string>
-    <string name="users_who_liked_with_first_single"  formatted="false">&lt;b>%s and %d other&lt;/b> like this</string>
-    <string name="users_who_liked_with_first_multiple"  formatted="false">&lt;b>%s and %d others&lt;/b> like this</string>
+    <plurals name="account_who_liked_item">
+        <item quantity="zero">@string/account_who_liked_with_first_zero</item>
+        <item quantity="one">@string/users_who_liked_with_first_single</item>
+        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
+    </plurals>
+
+    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> like this</string>
+    <string name="users_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> likes this</string>
+    <string name="users_who_liked_with_first_single" formatted="false">&lt;b>%s and %d other&lt;/b> like this</string>
+    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b>%s and %d others&lt;/b> like this</string>
 
     <string name="users_who_liked_title">People who liked</string>
     <string name="users_who_liked_empty">Nobody has liked this item</string>
     <string name="notifications_title">Notifications</string>
-    <string name="accept_request">accepted request</string>
-    <string name="reject_request">rejected request</string>
-    <string name="comment">comment a</string>
+    <string name="accept_request">accepted your request</string>
+    <string name="reject_request">rejected your request</string>
+    <string name="comment">commented on your</string>
     <string name="send_request">send you a friend request</string>
 
     <string name="post_delete">Delete post</string>
@@ -434,6 +440,28 @@
     <string name="notifaction_new">New</string>
     <string name="notifaction_older">Older</string>
 
+    <string name="all">All</string>
+    <string name="you">You</string>
+
+    <plurals name="likes_count">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+
+    <plurals name="comments_count">
+        <item quantity="one">%d comment</item>
+        <item quantity="other">%d comments</item>
+    </plurals>
+
+    <string name="feed_edit_item">Edit</string>
+    <string name="feed_delete_item">Delete</string>
+
+    <string name="liked_foreign">liked a</string>
+    <string name="comment_foreign">commented a</string>
+
+    <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
+    <string name="search_friends">Search Friends</string>
+
     <string name="dtl_locations_title">Select location</string>
     <string name="dtl_locations_try_search">Try our city search</string>
     <string name="dtl_locations_search_caption">Search Cities</string>
@@ -441,4 +469,5 @@
     <string name="dtl_locations_select_nearby_cities">Select from nearby cities</string>
     <string name="dtl_place_tab_offers">Offers</string>
     <string name="dtl_place_tab_dining">Dining</string>
+
 </resources>

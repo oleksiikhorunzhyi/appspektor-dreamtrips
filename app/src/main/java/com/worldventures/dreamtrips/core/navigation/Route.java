@@ -20,9 +20,11 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragm
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendSearchFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
@@ -101,6 +103,8 @@ public enum Route {
     SHARE(ShareFragment.class, R.string.feed_title),
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
+    DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
+    FEED_ENTITY_DETAILS(FeedEntityDetailsFragment.class, R.string.empty),
 
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
     DTL_PLACES_LIST(DtlPlacesTabsFragment.class);

@@ -269,7 +269,7 @@ public interface DreamTripsApi {
     ArrayList<ParentFeedItem> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/feed")
-    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before, @Query("circle_id") String circleId);
 
     @GET("/api/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
@@ -332,9 +332,14 @@ public interface DreamTripsApi {
     @POST("/api/social/push_subscriptions")
     Void subscribeDevice(@Body PushSubscription pushSubscription);
 
-    @DELETE("/api/soical/push_subscriptions/{token}")
+    @DELETE("/api/social/push_subscriptions/{token}")
     Void unsubscribeDevice(@Path("token") String token);
+
+    @FormUrlEncoded
+    @POST("/api/{uid}/flags")
+    Void flagItem(@Path("uid") String uid, @Field("reason") String nameOfReason);
 
     @GET("/api/dtl/cities")
     DtlLocationsHolder getDtlLocations(@Query("lat") double lat, @Query("lng") double lng, @Query("rad") int rad);
+
 }

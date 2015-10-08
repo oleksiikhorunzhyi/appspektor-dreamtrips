@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
 
@@ -10,23 +11,18 @@ import icepick.State;
 public class ForeignBucketTabPresenter extends BucketTabsPresenter {
 
     @State
-    protected int userId;
+    User user;
 
     @Inject
-    ForeignBucketItemManager bucketItemManager;
+    BucketItemManager bucketItemManager;
 
-    public ForeignBucketTabPresenter(int userId) {
-        this.userId = userId;
+    public ForeignBucketTabPresenter(User user) {
+        this.user = user;
     }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        getBucketItemManager().setUserId(userId);
-    }
 
     @Override
-    protected ForeignBucketItemManager getBucketItemManager() {
-        return bucketItemManager;
+    protected User getUser() {
+        return user;
     }
 }

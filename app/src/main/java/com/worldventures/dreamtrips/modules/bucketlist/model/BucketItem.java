@@ -35,6 +35,11 @@ public class BucketItem extends BaseFeedEntity {
 
     private transient boolean selected;
 
+    @Override
+    public String place() {
+        return location != null ? location.getName() : null;
+    }
+
     public String getName() {
         return name;
     }

@@ -205,9 +205,9 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     public enum Type {
         MEMBER_IMAGES,
         MY_IMAGES,
-        YOU_SHOULD_BE_HERE,
-        INSPIRE_ME,
         VIDEO_360,
+        INSPIRE_ME,
+        YOU_SHOULD_BE_HERE,
         FIXED_LIST,
         FOREIGN_IMAGES
     }

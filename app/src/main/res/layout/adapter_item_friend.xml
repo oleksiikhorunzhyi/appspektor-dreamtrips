@@ -1,62 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center_vertical"
               android:orientation="horizontal">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="24dp"
-        fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-        fresco:placeholderImageScaleType="centerInside"
-        fresco:roundAsCircle="true"/>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            tools:text="Jon Snow"/>
-
-        <TextView
-            android:id="@+id/company"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            tools:text="Adobe"/>
-
-        <TextView
-            android:id="@+id/tvGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textSize="15sp"
-            tools:text="Close friends"/>
-
-        <TextView
-            android:id="@+id/tvMutual"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textSize="15sp"
-            tools:text="10 mutual friends"/>
-    </LinearLayout>
+    <include layout="@layout/include_user_info"/>
 
     <com.dd.ShadowLayout
         android:layout_width="wrap_content"
@@ -66,7 +16,7 @@
         app:sl_shadowColor="@color/black_semi_transparent">
 
         <TextView
-            android:id="@+id/actions"
+            android:id="@+id/tv_actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_button_white"

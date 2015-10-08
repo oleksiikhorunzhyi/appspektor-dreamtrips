@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.util.List;
 
@@ -37,13 +38,22 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
-    public static FullScreenPresenter create(IFullScreenObject photo, boolean foreign) {
-        if (photo instanceof Photo) {
-            return new InteractiveFullscreenPresenter();
-        } else if (photo instanceof BucketPhoto) {
-            return new BucketFullscreenPresenter(foreign);
+    public static FullScreenPresenter create(IFullScreenObject photo, Type type, boolean foreign) {
+        switch (type) {
+            case FIXED_LIST:
+            case MEMBER_IMAGES:
+            case MY_IMAGES:
+                if (photo instanceof BucketPhoto) return new BucketFullscreenPresenter(foreign);
+                else if (photo instanceof TripImage) return new SimpleFullscreenPresenter();
+                else return new InteractiveFullscreenPresenter();
+            case YOU_SHOULD_BE_HERE:
+            case INSPIRE_ME:
+                return new InspirationFullscreenPresenter();
+            case FOREIGN_IMAGES:
+            case VIDEO_360:
+            default:
+                return new SimpleFullscreenPresenter();
         }
-        return new SimpleFullscreenPresenter();
     }
 
     public void setPhoto(T photo) {
@@ -71,7 +81,12 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onFlagAction() {
     }
 
-    public void showFlagAction(int order) {
+    public void onCommentsAction() {
+
+    }
+
+    public void onLikesAction() {
+
     }
 
     public void onUserClicked() {
@@ -91,12 +106,12 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         }
 
         view.setLiked(isLiked());
-        view.setCommentVisibility(false);
+        view.setCommentVisibility(isCommentVisible());
 
         view.setLikeVisibility(isLikeVisible());
         view.setLikeCountVisibility(isLikeCountVisible());
         view.setDeleteVisibility(isDeleteVisible());
-        view.setMoreVisibility(isMoreVisible());
+        view.setEditVisibility(isEditVisible());
         view.setShareVisibility(isShareVisible());
         view.setFlagVisibility(isFlagVisible());
         view.loadImage(photo.getFSImage());
@@ -106,8 +121,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         view.setLocation(photo.getFsLocation());
         view.setDate(photo.getFsDate());
         view.setUserPhoto(photo.getFsUserPhoto());
-        view.setContentDividerVisibility(isLikeVisible() || isLikeCountVisible() ||
-                isDeleteVisible() || isFlagVisible());
 
         if (photo instanceof Inspiration) {
             TrackingHelper.insprDetails(getAccountUserId(), photo.getFsId());
@@ -121,7 +134,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
     protected abstract boolean isLikeVisible();
 
-    protected abstract boolean isMoreVisible();
+    protected abstract boolean isEditVisible();
+
+    protected abstract boolean isCommentVisible();
 
     protected boolean isLiked() {
         return false;
@@ -185,10 +200,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
         void setLikeVisibility(boolean isVisible);
 
-        void showFlagConfirmDialog(String reason, String desc);
-
-        void showFlagDescription(String reason);
-
         void setLikeCountVisibility(boolean likeCountVisible);
 
         void setUserPhoto(String fsPhoto);
@@ -205,11 +216,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
 
         void hideCoverProgress();
 
-        void setContentDividerVisibility(boolean b);
-
         void setCommentVisibility(boolean commentVisible);
 
-        void setMoreVisibility(boolean visible);
+        void setEditVisibility(boolean visible);
 
         void openEdit(EditPhotoBundle editPhotoBundle);
 

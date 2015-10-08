@@ -18,5 +18,5 @@
     android:shape="rectangle"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <size android:height="1px"/>
-    <solid android:color="@color/gray"/>
+    <solid android:color="@color/grey"/>
 </shape>

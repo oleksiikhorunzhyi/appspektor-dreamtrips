@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.eowise.recyclerview.stickyheaders.OnHeaderClickListener;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -126,6 +127,9 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setStickyHeadersAdapter(headerAdapter, false)
+                .setOnHeaderClickListener((header, headerId) -> {
+                    // make sticky header clickable to make items below it not clickable
+                })
                 .setRecyclerView(notifications)
                 .build();
         notifications.addItemDecoration(decoration);
@@ -173,6 +177,11 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
+    }
+
+    @Override
+    public void openDetails(FeedItem feedItem) {
+
     }
 
     @Override

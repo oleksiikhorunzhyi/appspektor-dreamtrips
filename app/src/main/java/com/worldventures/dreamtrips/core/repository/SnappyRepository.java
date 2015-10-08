@@ -40,7 +40,6 @@ public class SnappyRepository {
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
-    public static final String FOREIGN_BUCKET_LIST = "foreign_bucket_list";
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
@@ -53,8 +52,14 @@ public class SnappyRepository {
     public static final String NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+<<<<<<< HEAD
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION ";
+||||||| merged common ancestors
+    public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
+=======
+    public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
+>>>>>>> develop
 
     private Context context;
     private ExecutorService executorService;
@@ -79,12 +84,11 @@ public class SnappyRepository {
                 if (isNotFound(e)) Timber.v("Nothing found");
                 else Timber.w(e, "DB fails to act", e);
             } finally {
-                if (snappyDb != null)
-                    try {
-                        snappyDb.close();
-                    } catch (SnappydbException e) {
-                        Timber.w(e, "DB fails to close");
-                    }
+                try {
+                    if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
+                } catch (SnappydbException e) {
+                    Timber.w(e, "DB fails to close");
+                }
             }
         });
     }
@@ -159,28 +163,14 @@ public class SnappyRepository {
         putList(key, items);
     }
 
-
-    public void deleteAllForeignBucketList() {
-        act(db -> {
-            String[] keys = db.findKeys(FOREIGN_BUCKET_LIST);
-            for (String key : keys) {
-                db.del(key);
-            }
-        });
-    }
-
-
     @NonNull
     private String getBucketKey(String type, int userId) {
-        String key = (userId == 0 ? BUCKET_LIST : FOREIGN_BUCKET_LIST) + ":" + type;
-        if (userId != 0) {
-            key += "_" + userId;
-        }
-        return key;
-    }
-
-    public List<BucketItem> readBucketList(String type) {
-        return readBucketList(type, 0);
+     if(userId==0){
+         throw  new IllegalStateException("userId can't be 0");
+     }
+        String key = (BUCKET_LIST) + ":" + type;
+        key += "_" + userId;
+        return key.toLowerCase();
     }
 
     public List<BucketItem> readBucketList(String type, int userId) {
@@ -371,8 +361,12 @@ public class SnappyRepository {
         return actWithResult(db -> db.getInt(NOTIFICATIONS_COUNT)).or(0);
     }
 
-    public void saveFriendsRequestsCount(int notificationsCount) {
-        act(db -> db.putInt(FRIEND_REQUEST_COUNT, notificationsCount));
+    public void saveFilterCircle(Circle circle){
+        act(db -> db.put(FILTER_CIRCLE, circle));
+    }
+
+    public Circle getFilterCircle(){
+        return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
     }
 
     public int getFriendsRequestsCount() {
@@ -405,15 +399,7 @@ public class SnappyRepository {
     }
 
     public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN, String.class)).orNull();
-    }
-
-    public void setGcmRegIdPersisted(boolean persisted) {
-        act(db -> db.put(GCM_REG_ID_PERSISTED, persisted));
-    }
-
-    public boolean getGcmRegIdPersisted() {
-        return actWithResult(db -> db.get(GCM_REG_ID_PERSISTED, Boolean.class)).or(false);
+        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////

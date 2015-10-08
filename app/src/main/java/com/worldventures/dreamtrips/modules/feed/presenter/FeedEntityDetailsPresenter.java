@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
@@ -16,8 +15,6 @@ import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-
-import java.util.List;
 
 import icepick.State;
 
@@ -40,32 +37,29 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.setHeader(feedItem);
         loadFullEventInfo();
-        preloadUsersWhoLiked();
-
+        loadUsersWhoLiked();
     }
 
-
-    private void preloadUsersWhoLiked() {
-        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), this::onUserLoaded,
-                spiceException -> {
-                });
-    }
-
-    private void onUserLoaded(List<User> users) {
-        if (users != null && !users.isEmpty()) {
-            feedItem.getItem().setFirstUserLikedItem(users.get(0).getFullName());
-        } else {
-            feedItem.getItem().setFirstUserLikedItem(null);
-        }
-        view.updateHeader(feedItem);
-        eventBus.post(new FeedEntityChangedEvent(feedItem.getItem()));
-    }
 
     private void loadFullEventInfo() {
-        doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedObjectHolder -> {
-            eventBus.post(new FeedEntityChangedEvent(feedObjectHolder.getItem()));
+        doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
+            feedItem.setItem(feedEntityHolder.getItem());
+            feedEntity = feedItem.getItem();
+            view.setHeader(feedItem);
+            eventBus.post(new FeedEntityChangedEvent(feedEntity));
+        });
+    }
+
+    private void loadUsersWhoLiked() {
+        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), likers -> {
+            if (likers != null && !likers.isEmpty()) {
+                feedItem.getItem().setFirstUserLikedItem(likers.get(0).getFullName());
+            } else {
+                feedItem.getItem().setFirstUserLikedItem(null);
+            }
+            view.updateHeader(feedItem);
+            eventBus.post(new FeedEntityChangedEvent(feedItem.getItem()));
         });
     }
 
@@ -117,7 +111,7 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
 
         if (feedEntity.getLikesCount() == 1 && feedEntity.isLiked()) {
-            preloadUsersWhoLiked();
+            loadUsersWhoLiked();
         }
     }
 

@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class DeletePhotoEvent {
 
-    public PhotoFeedItem feedItem;
+    public Photo feedItem;
 
-    public DeletePhotoEvent(PhotoFeedItem feedItem) {
+    public DeletePhotoEvent(Photo feedItem) {
         this.feedItem = feedItem;
     }
 
-    public FeedItem getEntity() {
+    public Photo getEntity() {
         return feedItem;
     }
 }

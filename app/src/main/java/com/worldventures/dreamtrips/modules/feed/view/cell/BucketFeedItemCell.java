@@ -134,7 +134,7 @@ public class BucketFeedItemCell extends FeedHeaderCell<BucketFeedItem> {
 
     @Override
     protected void onDelete() {
-        getEventBus().post(new DeleteBucketEvent(getModelObject()));
+        getEventBus().post(new DeleteBucketEvent(getModelObject().getItem()));
     }
 
     @Override

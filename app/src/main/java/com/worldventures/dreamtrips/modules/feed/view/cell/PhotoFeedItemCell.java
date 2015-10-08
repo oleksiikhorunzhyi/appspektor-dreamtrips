@@ -91,7 +91,7 @@ public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
 
     @Override
     protected void onDelete() {
-        getEventBus().post(new DeletePhotoEvent(getModelObject()));
+        getEventBus().post(new DeletePhotoEvent(getModelObject().getItem()));
     }
 
     @Override

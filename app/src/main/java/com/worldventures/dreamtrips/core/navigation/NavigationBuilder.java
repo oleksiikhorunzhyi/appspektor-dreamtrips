@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
@@ -23,6 +24,11 @@ public class NavigationBuilder {
 
     public NavigationBuilder with(ActivityRouter activityRouter) {
         navigator = new ActivityNavigator(activityRouter);
+        return this;
+    }
+
+    public NavigationBuilder forDialog(FragmentManager fm) {
+        navigator = new DialogFragmentNavigator(fm);
         return this;
     }
 

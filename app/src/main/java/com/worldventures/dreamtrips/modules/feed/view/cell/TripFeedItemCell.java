@@ -41,6 +41,11 @@ public class TripFeedItemCell extends FeedHeaderCell<TripFeedItem> {
     }
 
     @Override
+    protected void itemClicked() {
+        tripCell.actionItemClick();
+    }
+
+    @Override
     protected void onDelete() {
 
     }

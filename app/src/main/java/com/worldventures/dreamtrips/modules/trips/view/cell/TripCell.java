@@ -117,7 +117,7 @@ public class TripCell extends AbstractCell<TripModel> {
     }
 
     @OnClick(R.id.itemLayout)
-    void actionItemClick() {
+    public void actionItemClick() {
         NavigationBuilder.create()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .with(activityRouter)

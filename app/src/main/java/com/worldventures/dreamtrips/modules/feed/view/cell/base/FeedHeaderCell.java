@@ -93,9 +93,7 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
         actionView.setState(getModelObject(), isForeignItem(getModelObject()));
 
         feedActionHandler.init(actionView);
-        itemView.setOnClickListener(v -> {
-            getEventBus().post(new FeedEntityItemClickEvent(getModelObject()));
-        });
+        itemView.setOnClickListener(v -> itemClicked());
     }
 
     private boolean isForeignItem(FeedItem feedItem) {
@@ -117,6 +115,10 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
     @OnClick(R.id.comment_preview)
     void commentsCountClicked() {
         openComments(getModelObject());
+    }
+
+    protected void itemClicked() {
+        getEventBus().post(new FeedEntityItemClickEvent(getModelObject()));
     }
 
     protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {

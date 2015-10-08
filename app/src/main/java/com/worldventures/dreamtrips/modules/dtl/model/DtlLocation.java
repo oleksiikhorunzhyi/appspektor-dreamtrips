@@ -15,6 +15,9 @@ public class DtlLocation implements Parcelable {
     protected String countryName;
     protected Location location;
 
+    public DtlLocation() {
+    }
+
     public int getId() {
         return id;
     }

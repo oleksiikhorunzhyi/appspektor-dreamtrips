@@ -12,6 +12,8 @@ import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -53,8 +55,10 @@ public class SnappyRepository {
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
-    public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
+
+    public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
+    public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
 
     private Context context;
     private ExecutorService executorService;
@@ -143,6 +147,19 @@ public class SnappyRepository {
     public <T> List<T> readList(String key, Class<T> clazz) {
         return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
                 .or(new ArrayList<>());
+    }
+
+    /**
+     * Method is intended to delete all records for given key.
+     * @param key key to be deleted.
+     */
+    public void clearAllForKey(String key) {
+        act(db -> {
+            String[] placesKeys = db.findKeys(key);
+            for (String placeKey : placesKeys) {
+                db.del(placeKey);
+            }
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -401,11 +418,26 @@ public class SnappyRepository {
     // DTL
     ///////////////////////////////////////////////////////////////////////////
 
-    public void setSelectedDtlLocation(DtlLocation location) {
+    public void saveSelectedDtlLocation(DtlLocation location) {
         act(db -> db.put(DTL_SELECTED_LOCATION, location));
     }
 
     public DtlLocation getSelectedDtlLocation() {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
+    }
+
+    public void saveDtlPlaces(List<DtlPlace> places) {
+        if (!places.isEmpty()) {
+            saveDtlPlaces(places, places.get(0).getType());
+        }
+    }
+
+    private void saveDtlPlaces(List<DtlPlace> places, String typeString) {
+        clearAllForKey(DTL_PLACES_PREFIX + typeString.toUpperCase());
+        act(db -> putList(DTL_PLACES_PREFIX + typeString.toUpperCase(), places));
+    }
+
+    public List<DtlPlace> getDtlPlaces(DtlPlaceType type) {
+        return readList(DTL_PLACES_PREFIX + type.getName().toUpperCase(), DtlPlace.class);
     }
 }

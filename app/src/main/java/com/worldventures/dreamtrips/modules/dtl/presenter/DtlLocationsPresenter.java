@@ -39,7 +39,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     public void onLocationClicked(DtlLocation location) {
-        db.setSelectedDtlLocation(location);
+        db.saveSelectedDtlLocation(location);
         view.openLocation(new PlacesBundle(location));
     }
     public interface View extends Presenter.View {

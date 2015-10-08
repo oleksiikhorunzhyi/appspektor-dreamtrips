@@ -26,7 +26,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(DtlPlaceType.PLACES, DtlPlaceType.DINING));
+        view.setTypes(Arrays.asList(DtlPlaceType.OFFER, DtlPlaceType.DINING));
         view.updateSelection();
     }
 

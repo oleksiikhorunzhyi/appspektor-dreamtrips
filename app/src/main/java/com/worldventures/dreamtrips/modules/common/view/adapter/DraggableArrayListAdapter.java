@@ -28,15 +28,13 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
-import javax.inject.Provider;
-
 public abstract class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
         implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
 
     private MoveListener moveListener;
     private SparseBooleanArray dragMarkers;
 
-    public DraggableArrayListAdapter(Context context, Provider<Injector> injector) {
+    public DraggableArrayListAdapter(Context context, Injector injector) {
         super(context, injector);
         setHasStableIds(true);
         dragMarkers = new SparseBooleanArray();

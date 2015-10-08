@@ -5,11 +5,9 @@ import android.content.Context;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 
-import javax.inject.Provider;
-
 public class IgnoreFirstItemAdapter extends BaseArrayListAdapter {
 
-    public IgnoreFirstItemAdapter(Context context, Provider<Injector> injector) {
+    public IgnoreFirstItemAdapter(Context context, Injector injector) {
         super(context, injector);
     }
 

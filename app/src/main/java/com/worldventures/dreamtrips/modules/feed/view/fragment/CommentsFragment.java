@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -36,9 +34,6 @@ import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundl
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -47,9 +42,6 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
 
     @InjectView(R.id.commentsList)
     protected RecyclerView commentsList;
-    @Inject
-    @ForActivity
-    protected Provider<Injector> injectorProvider;
     @InjectView(R.id.input)
     protected EditText input;
     @InjectView(R.id.post)
@@ -100,7 +92,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
         loadMore = new LoadMore();
         loadMore.setVisible(true);
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new BaseArrayListAdapter<>(getActivity(), this);
 
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
@@ -190,7 +182,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void editComment(EditCommentPresenter presenter) {
         EditCommentViewHolder editCommentViewHolder = new EditCommentViewHolder();
-        injectorProvider.get().inject(presenter);
+        inject(presenter);
         editCommentViewHolder.setPresenter(presenter);
 
         DialogPlus editDialog = DialogPlus.newDialog(getActivity())

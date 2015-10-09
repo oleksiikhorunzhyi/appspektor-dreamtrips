@@ -42,4 +42,5 @@
             android:textSize="@dimen/dtlPlaceListEmptyViewTextSize"
             />
     </FrameLayout>
+
 </FrameLayout>

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
  * or Dtl Locations screen (if not).
  */
 @Layout(R.layout.fragment_dtl_start_empty)
+@MenuResource(R.menu.menu_mock)
 public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements DtlStartPresenter.View {
 
     @Override

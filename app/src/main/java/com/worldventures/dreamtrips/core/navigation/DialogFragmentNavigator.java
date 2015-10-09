@@ -31,7 +31,7 @@ public class DialogFragmentNavigator implements Navigator {
 
     @Override
     public void move(Route route, Bundle bundle) {
-        NavigationDialogFragment.newInstance(route, bundle).show(fragmentManager);
+        NavigationDialogFragment.newInstance(route, bundle).show(fragmentManager, route.name());
     }
 
     @Layout(R.layout.dialog_container)

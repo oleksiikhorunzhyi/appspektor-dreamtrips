@@ -20,12 +20,12 @@ public class UserImagesPresenter extends TripImagesListPresenter {
 
     public static final int REQUESTER_ID = -10;
 
-    public UserImagesPresenter() {
-        this(Type.MEMBER_IMAGES);
+    public UserImagesPresenter(int userId) {
+        this(Type.MEMBER_IMAGES, userId);
     }
 
-    public UserImagesPresenter(Type type) {
-        super(type);
+    public UserImagesPresenter(Type type, int userId) {
+        super(type, userId);
     }
 
     @Override

@@ -13,11 +13,8 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 
 public class ForeignImagesPresenter extends TripImagesListPresenter {
 
-    private int userId;
-
     public ForeignImagesPresenter(int userId) {
-        super(Type.FOREIGN_IMAGES);
-        this.userId = userId;
+        super(Type.FOREIGN_IMAGES, userId);
     }
 
     @Override

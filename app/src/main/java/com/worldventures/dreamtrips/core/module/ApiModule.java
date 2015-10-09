@@ -99,6 +99,12 @@ public class ApiModule {
         return createRestAdapter(BuildConfig.S3Api, gsonConverter).create(ConfigApi.class);
     }
 
+    @Provides
+    @Singleton
+    ConfigApi provideDtlApi(GsonConverter gsonConverter) {
+        return createRestAdapter(BuildConfig.DtlApi, gsonConverter).create(ConfigApi.class);
+    }
+
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {
         return new RestAdapter.Builder()
                 .setEndpoint(endpoint)

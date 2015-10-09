@@ -5,7 +5,7 @@
         <item name="color">@android:color/white</item>
     </style>
 
-    <style name="ToolBarStyle" parent="">
+    <style name="ToolBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="android:layout_width">match_parent</item>
@@ -13,7 +13,7 @@
         <item name="android:background">?attr/colorPrimary</item>
     </style>
 
-    <style name="TransientToolBarStyle" parent="ToolBarStyle">
+    <style name="ToolBarStyle.Transient">
         <item name="android:background">@android:color/transparent</item>
     </style>
 

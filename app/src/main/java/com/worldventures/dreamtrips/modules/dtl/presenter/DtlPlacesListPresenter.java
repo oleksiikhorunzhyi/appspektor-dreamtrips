@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -33,6 +34,9 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         if (!event.getType().equals(placeType)) return;
         //
         view.setItems(db.getDtlPlaces(placeType));
+    }
+
+    public void onEventMainThread(PlacesUpdateFinished event) {
         view.hideProgress();
     }
 

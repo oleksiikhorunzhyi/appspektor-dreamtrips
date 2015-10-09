@@ -7,6 +7,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacesQuery;
+import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -47,14 +48,16 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     private void loadPlaces() {
         doRequest(new GetDtlPlacesQuery(location.getId()),
                 dtlPlaces -> {
-                    Map<DtlPlaceType, Collection<DtlPlace>> byType = Queryable.from(dtlPlaces).groupToMap(DtlPlace::getType);
+                    Map<DtlPlaceType, Collection<DtlPlace>> byType =
+                            Queryable.from(dtlPlaces).groupToMap(DtlPlace::getType);
                     for (DtlPlaceType type : byType.keySet()) {
                         updatePlacesByType(type, byType.get(type));
                     }
+                    eventBus.post(new PlacesUpdateFinished());
                 },
                 spiceException -> {
                     super.handleError(spiceException);
-                    eventBus.post(new PlacesUpdatedEvent(true));
+                    eventBus.post(new PlacesUpdateFinished());
                 }
         );
     }
@@ -62,7 +65,6 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     private void updatePlacesByType(DtlPlaceType type, Collection<DtlPlace> dtlPlaces) {
         db.saveDtlPlaces(type, new ArrayList<>(dtlPlaces));
         eventBus.post(new PlacesUpdatedEvent(type));
-
     }
 
     public void setTabs() {

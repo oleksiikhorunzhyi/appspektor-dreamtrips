@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.ProgressBar;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -37,14 +38,23 @@ public class DtlPlacesListFragment
 
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
-    @InjectView(R.id.progressBar)
-    ProgressBar progressBar;
+    @InjectView(R.id.swipe_container)
+    protected SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.emptyView)
+    protected View emptyView;
     //
     BaseArrayListAdapter<DtlPlace> adapter;
+    private WeakHandler weakHandler;
 
     @Override
     protected DtlPlacesListPresenter createPresenter(Bundle savedInstanceState) {
         return new DtlPlacesListPresenter((DtlPlaceType) getArguments().getSerializable(EXTRA_TYPE));
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        weakHandler = new WeakHandler();
     }
 
     @Override
@@ -54,6 +64,11 @@ public class DtlPlacesListFragment
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
         adapter.registerCell(DtlPlace.class, DtlPlaceCell.class);
         recyclerView.setAdapter(adapter);
+        recyclerView.setEmptyView(emptyView);
+        //
+        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
+        refreshLayout.setEnabled(false);
     }
 
     @Override
@@ -63,11 +78,15 @@ public class DtlPlacesListFragment
 
     @Override
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+        });
     }
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
     }
 }

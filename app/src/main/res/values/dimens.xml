@@ -85,7 +85,11 @@
 
     <dimen name="popup_filter_item_extra_space">80dp</dimen>
 
-    <!-- dimen for trip items -->
+    <!-- dimen for dtl place items -->
+    <dimen name="dtlPlaceListEmptyViewTextSize">22sp</dimen>
+    <dimen name="dtlPlaceListEmptyViewMargin">15dp</dimen>
+
+    <!-- dimen for dtl place items -->
     <dimen name="dtlPlaceItemMargin">8dp</dimen>
     <dimen name="dtlPlaceItemRoundRadius">5dp</dimen>
     <dimen name="dtlPlaceImageHeight">172dp</dimen>

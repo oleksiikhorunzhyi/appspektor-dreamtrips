@@ -67,6 +67,22 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="DtlTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/dtl_tab_indicator</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabPaddingStart">0dp</item>
+        <item name="tabPaddingEnd">0dp</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorHeight">2dp</item>
+    </style>
+
+    <style name="DtlTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/dtl_tab_text_normal</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="UserStatusTextAppearance" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:shadowColor">@color/user_status_text_shadow</item>
         <item name="android:shadowDx">2</item>

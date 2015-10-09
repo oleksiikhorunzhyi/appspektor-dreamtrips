@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -338,8 +337,5 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/{uid}/flags")
     Void flagItem(@Path("uid") String uid, @Field("reason") String nameOfReason);
-
-    @GET("/api/dtl/cities")
-    DtlLocationsHolder getDtlLocations(@Query("lat") double lat, @Query("lng") double lng, @Query("rad") int rad);
 
 }

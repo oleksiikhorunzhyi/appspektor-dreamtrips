@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.api;
 
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
 import java.util.ArrayList;
 
-public class GetDtlLocationsQuery extends Query<ArrayList<DtlLocation>> {
+public class GetDtlLocationsQuery extends DtlRequest<ArrayList<DtlLocation>> {
 
     private double lat;
     private double lng;

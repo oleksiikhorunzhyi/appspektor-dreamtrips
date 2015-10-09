@@ -29,6 +29,8 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
 
     @Inject
     protected ConfigApi configApi;
+    @Inject
+    protected DtlApi dtlApi;
 
     @Override
     protected NetworkStateChecker getNetworkStateChecker() {
@@ -52,6 +54,7 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
         addRetrofitInterface(DreamTripsApi.class);
         addRetrofitInterface(SharedServicesApi.class);
         addRetrofitInterface(ConfigApi.class);
+        addRetrofitInterface(DtlApi.class);
     }
 
     @Override
@@ -73,6 +76,8 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
             t = (T) sharedServicesApi.get();
         } else if (serviceClass == ConfigApi.class) {
             t = (T) configApi;
+        } else if (serviceClass == DtlApi.class) {
+            t = (T) dtlApi;
         }
         return t;
     }

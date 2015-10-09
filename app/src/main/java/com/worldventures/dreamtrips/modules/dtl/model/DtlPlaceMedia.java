@@ -5,10 +5,19 @@ import android.os.Parcelable;
 
 public class DtlPlaceMedia implements Parcelable {
 
+    private boolean isDefault;
     private int mediaId;
     private String mediaFileName;
 
     public DtlPlaceMedia() {
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public int getMediaId() {
@@ -32,6 +41,7 @@ public class DtlPlaceMedia implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected DtlPlaceMedia(Parcel in) {
+        isDefault = in.readByte() == 1;
         mediaId = in.readInt();
         mediaFileName = in.readString();
     }
@@ -55,6 +65,7 @@ public class DtlPlaceMedia implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isDefault ? 1 : 0));
         dest.writeInt(mediaId);
         dest.writeString(mediaFileName);
     }

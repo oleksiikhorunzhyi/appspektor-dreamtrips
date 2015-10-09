@@ -11,12 +11,12 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 
 public class AccountImagesPresenter extends UserImagesPresenter {
 
-    public AccountImagesPresenter() {
-        this(Type.MY_IMAGES);
+    public AccountImagesPresenter(int userId) {
+        this(Type.MY_IMAGES, userId);
     }
 
-    public AccountImagesPresenter(Type type) {
-        super(type);
+    public AccountImagesPresenter(Type type, int userId) {
+        super(type, userId);
     }
 
     @Override

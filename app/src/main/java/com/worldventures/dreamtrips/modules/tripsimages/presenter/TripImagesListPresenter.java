@@ -52,9 +52,10 @@ public abstract class TripImagesListPresenter
 
     protected int userId;
 
-    public TripImagesListPresenter(Type type) {
+    public TripImagesListPresenter(Type type, int userId) {
         super();
         this.type = type;
+        this.userId = userId;
     }
 
     @Override
@@ -270,34 +271,29 @@ public abstract class TripImagesListPresenter
         this.isFullscreen = isFullscreen;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos, int userId) {
-        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES);
+        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES, userId);
         switch (type) {
             case MEMBER_IMAGES:
-                presenter = new UserImagesPresenter();
+                presenter = new UserImagesPresenter(userId);
                 break;
             case MY_IMAGES:
-                presenter = new AccountImagesPresenter();
+                presenter = new AccountImagesPresenter(userId);
                 break;
             case YOU_SHOULD_BE_HERE:
-                presenter = new YSBHPresenter();
+                presenter = new YSBHPresenter(userId);
                 break;
             case INSPIRE_ME:
-                presenter = new InspireMePresenter();
+                presenter = new InspireMePresenter(userId);
                 break;
             case FIXED_LIST:
-                presenter = new FixedPhotoFsPresenter(photos);
+                presenter = new FixedPhotoFsPresenter(photos, userId);
                 break;
             case FOREIGN_IMAGES:
-                presenter = new ForeignImagesPresenter();
+                presenter = new ForeignImagesPresenter(userId);
                 break;
         }
         presenter.setFullscreen(isFullscreen);
-        presenter.setUserId(userId);
         return presenter;
     }
 

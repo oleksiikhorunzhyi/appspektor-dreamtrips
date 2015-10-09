@@ -470,4 +470,6 @@
     <string name="dtl_place_tab_offers">Offers</string>
     <string name="dtl_place_tab_dining">Dining</string>
 
+    <string name="dtl_place_list_empty_text">There are no places of selected type</string>
+
 </resources>

@@ -85,4 +85,23 @@
 
     <dimen name="popup_filter_item_extra_space">80dp</dimen>
 
+    <!-- dimen for dtl place items -->
+    <dimen name="dtlPlaceListEmptyViewTextSize">22sp</dimen>
+    <dimen name="dtlPlaceListEmptyViewMargin">15dp</dimen>
+
+    <!-- dimen for dtl place items -->
+    <dimen name="dtlPlaceItemMargin">8dp</dimen>
+    <dimen name="dtlPlaceItemRoundRadius">5dp</dimen>
+    <dimen name="dtlPlaceImageHeight">172dp</dimen>
+    <dimen name="dtlPlaceBadgeSize">65dp</dimen>
+    <dimen name="dtlPlaceBadgeMargin">16dp</dimen>
+    <dimen name="dtlPlaceNameTextSize">20sp</dimen>
+    <dimen name="dtlPlaceNameMarginLeft">16dp</dimen>
+    <dimen name="dtlPlaceNameMarginBottom">12dp</dimen>
+    <dimen name="dtlPlaceRatingWidth">80dp</dimen>
+    <dimen name="dtlPlaceRatingMargin">16dp</dimen>
+    <dimen name="dtlPlaceInfoLayoutPadding">16dp</dimen>
+    <dimen name="dtlPlaceCategoryNameTextSize">18sp</dimen>
+    <dimen name="dtlPlacePriceWidth">38dp</dimen>
+
 </resources>

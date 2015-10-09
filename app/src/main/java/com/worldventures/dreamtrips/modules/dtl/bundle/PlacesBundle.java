@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
+/**
+ * Bundle to be supplied when navigating to {@link com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment}
+ */
 public class PlacesBundle implements Parcelable {
 
     private DtlLocation location;

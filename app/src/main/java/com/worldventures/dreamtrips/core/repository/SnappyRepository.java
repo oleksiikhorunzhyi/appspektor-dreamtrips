@@ -52,14 +52,9 @@ public class SnappyRepository {
     public static final String NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
-<<<<<<< HEAD
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION ";
-||||||| merged common ancestors
-    public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
-=======
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
->>>>>>> develop
 
     private Context context;
     private ExecutorService executorService;

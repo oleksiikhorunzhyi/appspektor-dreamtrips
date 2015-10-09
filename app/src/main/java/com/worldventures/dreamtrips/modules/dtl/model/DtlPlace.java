@@ -15,7 +15,8 @@ public class DtlPlace implements Parcelable {
     private int id;
     private String name;
     private String state;
-    private String address;
+    private String address1;
+    private String address2;
     private String description;
     private DtlPlaceType type;
     private String website;
@@ -54,12 +55,20 @@ public class DtlPlace implements Parcelable {
         this.state = state;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddress1() {
+        return address1;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress1(String address1) {
+        this.address1 = address1;
+    }
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
     }
 
     public String getDescription() {
@@ -150,7 +159,8 @@ public class DtlPlace implements Parcelable {
         id = in.readInt();
         name = in.readString();
         state = in.readString();
-        address = in.readString();
+        address1 = in.readString();
+        address2 = in.readString();
         description = in.readString();
         type = (DtlPlaceType) in.readSerializable();
         website = in.readString();
@@ -185,7 +195,8 @@ public class DtlPlace implements Parcelable {
         dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(state);
-        dest.writeString(address);
+        dest.writeString(address1);
+        dest.writeString(address2);
         dest.writeString(description);
         dest.writeSerializable(type);
         dest.writeString(website);

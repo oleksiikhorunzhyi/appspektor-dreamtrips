@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
@@ -101,8 +102,8 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    ConfigApi provideDtlApi(GsonConverter gsonConverter) {
-        return createRestAdapter(BuildConfig.DtlApi, gsonConverter).create(ConfigApi.class);
+    DtlApi provideDtlApi(GsonConverter gsonConverter) {
+        return createRestAdapter(BuildConfig.DtlApi, gsonConverter).create(DtlApi.class);
     }
 
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {

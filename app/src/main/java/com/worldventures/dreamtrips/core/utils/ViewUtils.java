@@ -81,8 +81,15 @@ public class ViewUtils {
         activity.getWindow().getDecorView().getGlobalVisibleRect(screenRect);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        boolean inHorizontalBounds = screenRect.left <= location[0] && screenRect.right >= location[0] + view.getWidth() && view.getWidth() > 0;
-        boolean inVerticalBounds = screenRect.top <= location[1] && screenRect.bottom >= location[1] + view.getHeight() && view.getHeight() > 0;
-        return view.isShown() && inHorizontalBounds && inVerticalBounds;
+
+        if (view.getWidth() <= 0 || view.getHeight() <= 0) {
+            return false;
+        }
+
+        Rect viewRect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
+        if (screenRect.left > viewRect.right || screenRect.right < viewRect.left || screenRect.top > viewRect.bottom || screenRect.bottom < viewRect.top) {
+            return false;
+        }
+        return true;
     }
 }

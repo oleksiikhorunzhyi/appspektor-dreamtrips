@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -124,9 +125,10 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         super.afterCreateView(view);
 
         boolean slave = getArgs().isSlave();
-        if (!slave) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (!slave && actionBar != null && ViewUtils.isFullVisibleOnScreen(this)) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("");
         }
         setForeignIntentAction();
 

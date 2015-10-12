@@ -161,7 +161,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public boolean isVisibleOnScreen() {
-        return ViewUtils.isVisibleOnScreen(this);
+        return ViewUtils.isFullVisibleOnScreen(this);
     }
 
     public void hideSoftInput(View view) {

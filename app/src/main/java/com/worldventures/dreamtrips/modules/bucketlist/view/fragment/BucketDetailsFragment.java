@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -143,6 +144,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
                     .onDelete(() -> getPresenter().onDelete())
                     .onEdit(() -> getPresenter().onEdit())
                     .show();
+    }
+
+    @Override
+    public boolean isVisibleOnScreen() {
+        return ViewUtils.isPartVisibleOnScreen(this);
     }
 
     @Override

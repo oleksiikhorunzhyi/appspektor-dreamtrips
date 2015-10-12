@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconte
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.MailTo;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -21,7 +20,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -225,7 +223,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     protected void lockOrientationIfNeeded() {
         lockHandler.postDelayed(() -> {
-            if (ViewUtils.isVisibleOnScreen(this)) {
+            if (ViewUtils.isFullVisibleOnScreen(this)) {
                 lockHandler.postDelayed(() -> lockOrientation(getActivity()), 300L);
             } else {
                 unlockOrientation(getActivity());
@@ -234,7 +232,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     protected void unlockOrientationIfNeeded() {
-        if (ViewUtils.isVisibleOnScreen(this)) unlockOrientation(getActivity());
+        if (ViewUtils.isFullVisibleOnScreen(this)) unlockOrientation(getActivity());
     }
 
     @Override

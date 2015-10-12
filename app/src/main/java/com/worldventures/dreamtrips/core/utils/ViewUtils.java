@@ -69,11 +69,28 @@ public class ViewUtils {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
-    public static boolean isVisibleOnScreen(Fragment fragment) {
-        return isVisibleOnScreen(fragment.getActivity(), fragment.getView());
+    public static boolean isFullVisibleOnScreen(Fragment fragment) {
+        return isFullVisibleOnScreen(fragment.getActivity(), fragment.getView());
     }
 
-    public static boolean isVisibleOnScreen(Activity activity, View view) {
+    public static boolean isFullVisibleOnScreen(Activity activity, View view) {
+        if (activity == null || view == null) {
+            return false; // ASK better throw exception?
+        }
+        Rect screenRect = new Rect();
+        activity.getWindow().getDecorView().getGlobalVisibleRect(screenRect);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        boolean inHorizontalBounds = screenRect.left <= location[0] && screenRect.right >= location[0] + view.getWidth() && view.getWidth() > 0;
+        boolean inVerticalBounds = screenRect.top <= location[1] && screenRect.bottom >= location[1] + view.getHeight() && view.getHeight() > 0;
+        return view.isShown() && inHorizontalBounds && inVerticalBounds;
+    }
+
+    public static boolean isPartVisibleOnScreen(Fragment fragment) {
+        return isPartVisibleOnScreen(fragment.getActivity(), fragment.getView());
+    }
+
+    public static boolean isPartVisibleOnScreen(Activity activity, View view) {
         if (activity == null || view == null) {
             return false; // ASK better throw exception?
         }

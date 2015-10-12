@@ -14,4 +14,7 @@ public interface DtlApi {
 
     @GET("/api/dtl/cities/{id}/places")
     DtlPlacesHolder getDtlPlaces(@Path("id") int locationId);
+
+    @GET("/api/dtl/places/{id}/points")
+    Float getDtlPlacePointsEstimation(@Path("id") int id, @Query("price") float price);
 }

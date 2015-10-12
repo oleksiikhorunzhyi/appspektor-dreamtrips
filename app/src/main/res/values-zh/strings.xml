@@ -358,4 +358,107 @@
     <string name="month_ago">一個月前</string>
     <string name="week_ago">一週前</string>
     <string name="day_ago">一天前</string>
+
+    <string name="social_friend_preference_title">編輯好友偏好</string>
+    <string name="friend_pref_create_new_list">Create new list</string>
+    <string name="friend_pref_lists_title">列表</string>
+    <string name="friend_pref_lists_header">朋友偏好</string>
+    <string name="social_unfriend_confirmation_title">你确定要从朋友中删除用户吗？</string>
+    <string name="social_unfriend_confiramation_accept">是的</string>
+    <string name="social_unfriend_confiramation_cancel">没有</string>
+    <string name="feed_title">活動摘要</string>
+    <string name="post_cancel_message">你确定要放弃更改？</string>
+    <string name="pictures">Pictures</string>
+    <string name="bucket_list_foreign_message">Currently this user has no Bucket List items.</string>
+
+    <string name="user_name" formatted="false">&lt;b>%s&lt;/b></string>
+    <string name="user_name_with_company" formatted="false">&lt;b>%s&lt;/b>, %s</string>
+    <string name="configuration_acitve_button">Try again</string>
+    <string name="configuration_failed">Configuration loading failed</string>
+    <string name="email_app_choose_dialog_title">Choose Application</string>
+
+    <plurals name="users_who_liked">
+        <item quantity="one">&lt;b>%d User&lt;/b> likes this</item>
+        <item quantity="other">&lt;b>%d Users&lt;/b> like this</item>
+    </plurals>
+
+    <plurals name="users_who_liked_with_name">
+        <item quantity="zero">@string/users_who_liked_with_first_zero</item>
+        <item quantity="one">@string/users_who_liked_with_first_single</item>
+        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
+    </plurals>
+
+    <plurals name="account_who_liked_item">
+        <item quantity="zero">@string/account_who_liked_with_first_zero</item>
+        <item quantity="one">@string/users_who_liked_with_first_single</item>
+        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
+    </plurals>
+
+    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> like this</string>
+    <string name="users_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> likes this</string>
+    <string name="users_who_liked_with_first_single" formatted="false">&lt;b>%s and %d other&lt;/b> like this</string>
+    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b>%s and %d others&lt;/b> like this</string>
+
+    <string name="users_who_liked_title">People who liked</string>
+    <string name="users_who_liked_empty">Nobody has liked this item</string>
+    <string name="notifications_title">通知</string>
+    <string name="accept_request">接受了您的好友請求</string>
+    <string name="reject_request">rejected your request</string>
+    <string name="comment">評論了帖子</string>
+    <string name="send_request">向您發送好友請求</string>
+
+    <string name="post_delete">Delete post</string>
+    <string name="post_edit">Edit post</string>
+    <string name="post_delete_caption">Are you sure you want to delete this post?</string>
+    <string name="post_delete_confirm">Yes, delete it!</string>
+
+    <string name="photo_delete">删除照片</string>
+    <string name="photo_edit">Edit photo</string>
+    <string name="photo_delete_caption">您要删除该图片吗？</string>
+
+    <string name="bucket_delete">Delete bucket item</string>
+    <string name="bucket_edit">Edit bucket item</string>
+    <string name="bucket_delete_caption">您确定您要删除目标清单项目吗？</string>
+
+    <string name="feed_header_two" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s%s&lt;/b> %s &lt;b>%s&lt;/b></string>
+    <string name="feed_header_many" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s of your friends&lt;/b> %s &lt;b>%s&lt;/b></string>
+
+    <string name="player_error_header">Playback error</string>
+    <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
+
+    <string name="retry">Retry</string>
+
+    <string name="no_notifications">你有沒有通知還</string>
+    <string name="notification_message_friend_accepted">%s 接受了您的好友請求</string>
+    <string name="notification_message_friend_request">%s 向您發送好友請求</string>
+
+    <string name="error_webview_no_internet">There is no internet connection. Please, fix the problem and reload page.</string>
+    <string name="error_webview_default">There is a connection problem. Try to reload page.</string>
+
+    <string name="notifaction_new">New</string>
+    <string name="notifaction_older">Older</string>
+
+    <string name="all">全部</string>
+    <string name="you">You</string>
+
+    <plurals name="likes_count">
+        <item quantity="one">%d 個贊</item>
+        <item quantity="other">%d 個贊</item>
+    </plurals>
+
+    <plurals name="comments_count">
+        <item quantity="one">%d 條評論</item>
+        <item quantity="other">%d 條評論</item>
+    </plurals>
+
+    <string name="feed_edit_item">Edit</string>
+    <string name="feed_delete_item">删除</string>
+
+    <string name="liked_foreign">點讚了帖子</string>
+    <string name="comment_foreign">評論了帖子</string>
+
+    <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
+    <string name="search_friends">Search Friends</string>
+    <string name="start_searching">鍵入開始搜索</string>
+
 </resources>

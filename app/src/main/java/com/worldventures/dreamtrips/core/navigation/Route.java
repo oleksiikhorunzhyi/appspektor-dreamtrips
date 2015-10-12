@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationDialog;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
@@ -110,7 +111,8 @@ public enum Route {
     DTL_START(DtlStartFragment.class),
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
     DTL_PLACES_LIST(DtlPlacesTabsFragment.class),
-    DTL_MAP(DtlMapFragment.class);
+    DTL_MAP(DtlMapFragment.class),
+    DTL_POINTS_ESTIMATION(DtlPointsEstimationDialog.class);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

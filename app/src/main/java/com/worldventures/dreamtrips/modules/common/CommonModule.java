@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -63,8 +64,8 @@ import dagger.Provides;
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,
-                ProgressDialogFragment.class
-
+                ProgressDialogFragment.class,
+                DialogFragmentNavigator.NavigationDialogFragment.class
         },
         complete = false,
         library = true

@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -33,9 +31,6 @@ import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDeco
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -44,10 +39,6 @@ public class InviteFragment
         extends BaseFragment<InvitePresenter>
         implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.frameContactCount)
     LinearLayout frameContactCount;
@@ -100,7 +91,7 @@ public class InviteFragment
         lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL_LIST));
-        adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(Member.class, MemberCell.class);
 
         lvUsers.setAdapter(adapter);

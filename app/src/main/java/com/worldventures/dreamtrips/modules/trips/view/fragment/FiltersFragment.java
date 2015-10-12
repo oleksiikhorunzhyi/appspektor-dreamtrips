@@ -45,9 +45,6 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
     @InjectView(R.id.recyclerViewRegions)
     protected EmptyRecyclerView recyclerView;
     protected BaseArrayListAdapter<Object> arrayListAdapter;
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -56,7 +53,7 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         this.recyclerView.setLayoutManager(layoutManager);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), injector);
+        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), this);
         this.arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
         this.arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
         this.arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);

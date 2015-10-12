@@ -12,13 +12,12 @@ import android.widget.TextView;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -36,20 +35,14 @@ import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundl
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_comments)
 public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragmentWithArgs<T, CommentsBundle> implements BaseCommentPresenter.View {
 
-    @InjectView(R.id.commentsList)
+    @InjectView(R.id.list)
     protected RecyclerView commentsList;
-    @Inject
-    @ForActivity
-    protected Provider<Injector> injectorProvider;
     @InjectView(R.id.input)
     protected EditText input;
     @InjectView(R.id.post)
@@ -100,7 +93,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
         loadMore = new LoadMore();
         loadMore.setVisible(true);
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new BaseArrayListAdapter<>(getActivity(), this);
 
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
@@ -143,11 +136,12 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void setEntity(FeedEntity entity) {
         likersPanelHelper.setup(likersPanel, entity);
-        likersPanel.setOnClickListener(v ->
-                NavigationBuilder.create()
-                        .with(activityRouter)
-                        .data(new UsersLikedEntityBundle(entity.getUid()))
-                        .move(Route.USERS_LIKED_CONTENT));
+        likersPanel.setOnClickListener(v -> {
+            NavigationWrapper navigationWrapper = new NavigationWrapperFactory()
+                    .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, this);
+            navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid()));
+        });
+
     }
 
     @Override
@@ -190,7 +184,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void editComment(EditCommentPresenter presenter) {
         EditCommentViewHolder editCommentViewHolder = new EditCommentViewHolder();
-        injectorProvider.get().inject(presenter);
+        inject(presenter);
         editCommentViewHolder.setPresenter(presenter);
 
         DialogPlus editDialog = DialogPlus.newDialog(getActivity())

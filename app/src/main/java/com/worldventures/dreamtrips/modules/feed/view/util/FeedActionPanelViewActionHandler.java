@@ -5,7 +5,7 @@ import android.content.Context;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
@@ -30,20 +30,16 @@ public class FeedActionPanelViewActionHandler {
         this.eventBus = eventBus;
     }
 
-    public void init(FeedActionPanelView actionView) {
-
-
+    public void init(FeedActionPanelView actionView, NavigationWrapper navigationWrapper) {
         actionView.setOnLikeIconClickListener(feedItem -> eventBus.post(new LikesPressedEvent(feedItem.getItem())));
 
-        actionView.setOnLikersClickListener(feedItem -> NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new UsersLikedEntityBundle(feedItem.getItem().getUid()))
-                .move(Route.USERS_LIKED_CONTENT));
+        actionView.setOnLikersClickListener(feedItem -> {
+            navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem().getUid()));
+        });
 
-        actionView.setOnCommentIconClickListener(feedEntity -> NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new CommentsBundle(feedEntity.getItem(), false))
-                .move(Route.COMMENTS));
+        actionView.setOnCommentIconClickListener(feedItem -> {
+            navigationWrapper.navigate(Route.COMMENTS, new CommentsBundle(feedItem.getItem(), false));
+        });
 
         actionView.setOnShareClickListener(feedItem -> {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(actionView.getContext());
@@ -91,4 +87,5 @@ public class FeedActionPanelViewActionHandler {
             activityRouter.openShareTwitter(imageUrl, shareUrl, text);
         }
     }
+
 }

@@ -11,8 +11,6 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -26,18 +24,11 @@ import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHe
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_select_template)
 public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter>
         implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
 
     @InjectView(R.id.lv_templates)
     RecyclerView lvTemplates;
@@ -62,7 +53,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         lvTemplates.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FilterableArrayListAdapter<>(getActivity(), injector);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(InviteTemplate.class, InviteTemplateCell.class);
         adapter.setHasStableIds(true);
 

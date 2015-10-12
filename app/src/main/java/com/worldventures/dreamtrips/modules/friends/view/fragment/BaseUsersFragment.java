@@ -14,8 +14,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -37,7 +35,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 
@@ -51,9 +48,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
@@ -92,30 +86,29 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        adapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
+        adapter = new LoaderRecycleAdapter<>(getActivity(), this);
         adapter.registerCell(User.class, FriendCell.class);
 
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
 
-        setLayoutManager();
+        layoutManager = createLayoutManager();
         recyclerView.setLayoutManager(layoutManager);
         refreshLayout.setOnRefreshListener(this);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
+    protected LinearLayoutManager createLayoutManager() {
+        return ViewUtils.isLandscapeOrientation(getActivity()) ?
+                new GridLayoutManager(getActivity(), ViewUtils.isTablet(getActivity()) ? 3 : 1) :
+                new LinearLayoutManager(getActivity());
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         recyclerView.addOnScrollListener(onScrollListener);
-    }
-
-    private void setLayoutManager() {
-        layoutManager = ViewUtils.isLandscapeOrientation(getActivity()) ?
-                new GridLayoutManager(getActivity(),
-                        ViewUtils.isTablet(getActivity()) ? 3 : 1) :
-                new LinearLayoutManager(getActivity());
     }
 
 

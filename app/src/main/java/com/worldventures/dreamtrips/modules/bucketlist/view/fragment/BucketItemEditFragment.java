@@ -18,11 +18,8 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -40,9 +37,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -52,8 +46,6 @@ import butterknife.Optional;
 public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
-    @Inject
-    protected FragmentCompass fragmentCompass;
     @Optional
     @InjectView(R.id.done)
     protected ImageView imageViewDone;
@@ -73,9 +65,6 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     protected Spinner spinnerCategory;
     @InjectView(R.id.lv_items)
     protected BucketPhotosView bucketPhotosView;
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
 
     private boolean categorySelected = false;
 
@@ -144,7 +133,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        bucketPhotosView.init(injector, BucketPhotosView.Type.EDIT);
+        bucketPhotosView.init(this, BucketPhotosView.Type.EDIT);
 
         if (imageViewDone != null) {
             setHasOptionsMenu(false);

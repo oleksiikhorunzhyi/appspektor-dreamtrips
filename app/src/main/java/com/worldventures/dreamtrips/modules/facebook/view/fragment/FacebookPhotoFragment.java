@@ -14,8 +14,6 @@ import com.facebook.model.GraphObject;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -28,19 +26,13 @@ import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.dialog_facebook_select_photo)
 public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> implements FacebookPhotoPresenter.View {
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
-
     public static final String BUNDLE_ALBUM_ID = "BUNDLE_ALBUM_ID";
+
     @InjectView(R.id.lv_items)
     protected RecyclerView lvItems;
     @InjectView(R.id.toolbar_actionbar)
@@ -51,7 +43,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        adapter = new BaseArrayListAdapter(getActivity(), injector);
+        adapter = new BaseArrayListAdapter(getActivity(), this);
         adapter.registerCell(FacebookPhoto.class, FacebookPhotoCell.class);
 
         toolbar.setTitle(R.string.fab_select_photo);

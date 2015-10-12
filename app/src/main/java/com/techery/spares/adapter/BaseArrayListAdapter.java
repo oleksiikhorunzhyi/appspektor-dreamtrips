@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import de.greenrobot.event.EventBus;
 
@@ -26,7 +25,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
 
     private final AdapterHelper adapterHelper;
-    private final Provider<Injector> injector;
+    private final Injector injector;
     protected List<BaseItemClass> items = new ArrayList<>();
 
     @Inject
@@ -35,9 +34,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     private List<Class> viewTypes = new ArrayList<>();
 
-    public BaseArrayListAdapter(Context context, Provider<Injector> injector) {
+    public BaseArrayListAdapter(Context context, Injector injector) {
         this.injector = injector;
-        this.injector.get().inject(this);
+        this.injector.inject(this);
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
@@ -56,7 +55,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
         if (cell.shouldInject()) {
-            this.injector.get().inject(cell);
+            this.injector.inject(cell);
             cell.afterInject();
         }
         return cell;

@@ -16,8 +16,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -32,9 +30,6 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
@@ -44,10 +39,6 @@ import icepick.State;
 @MenuResource(R.menu.menu_dream_trips)
 public class TripListFragment extends BaseFragment<TripListPresenter> implements
         TripListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.recyclerViewTrips)
     protected EmptyRecyclerView recyclerView;
@@ -91,7 +82,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getSpanCount()));
         recyclerView.setEmptyView(emptyView);
 
-        adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(TripModel.class, TripCell.class);
 
         recyclerView.setAdapter(adapter);

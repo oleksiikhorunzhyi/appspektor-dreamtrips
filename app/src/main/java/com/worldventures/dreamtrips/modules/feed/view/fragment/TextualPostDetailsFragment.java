@@ -9,6 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
@@ -56,12 +57,15 @@ public class TextualPostDetailsFragment extends BaseFragmentWithArgs<TextualPost
         post.setText(textualPost.getDescription());
     }
 
-
-
     public void onEvent(FeedEntityEditClickEvent event) {
         if (isVisibleOnScreen()) {
             showActionPopup(event.getAnchor());
         }
+    }
+
+    @Override
+    public boolean isVisibleOnScreen() {
+        return ViewUtils.isPartVisibleOnScreen(this);
     }
 
     private void showDeleteDialog() {

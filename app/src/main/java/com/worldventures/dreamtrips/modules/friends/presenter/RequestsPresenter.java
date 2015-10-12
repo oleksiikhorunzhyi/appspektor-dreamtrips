@@ -63,7 +63,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(UserClickedEvent event) {
-        view.openUser(new UserBundle(event.getUser()));
+        if (view.isVisibleOnScreen())
+            view.openUser(new UserBundle(event.getUser()));
     }
 
     private void addItems(List<User> items) {

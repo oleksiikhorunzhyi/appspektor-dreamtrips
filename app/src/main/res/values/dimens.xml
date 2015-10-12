@@ -105,7 +105,6 @@
     <dimen name="dtlPlacePriceWidth">38dp</dimen>
 
     <!-- dimen for dtl points calculation dialog -->
-    <dimen name="dtlCalculationLayoutSideMargin">25dp</dimen>
     <dimen name="dtlCalculationCalculateButtonTextSize">18sp</dimen>
     <dimen name="dtlCalculationInputTextSize">18sp</dimen>
     <dimen name="dtlCalculationResultTextSize">24sp</dimen>

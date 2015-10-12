@@ -360,7 +360,7 @@
     <string name="day_ago">一天前</string>
 
     <string name="social_friend_preference_title">編輯好友偏好</string>
-    <string name="friend_pref_create_new_list">Create new list</string>
+    <string name="friend_pref_create_new_list">创建新的清单</string>
     <string name="friend_pref_lists_title">列表</string>
     <string name="friend_pref_lists_header">朋友偏好</string>
     <string name="social_unfriend_confirmation_title">你确定要从朋友中删除用户吗？</string>
@@ -368,13 +368,13 @@
     <string name="social_unfriend_confiramation_cancel">没有</string>
     <string name="feed_title">活動摘要</string>
     <string name="post_cancel_message">你确定要放弃更改？</string>
-    <string name="pictures">Pictures</string>
-    <string name="bucket_list_foreign_message">Currently this user has no Bucket List items.</string>
+    <string name="pictures">图片</string>
+    <string name="bucket_list_foreign_message">当前该用户没有愿望清单项目。</string>
 
     <string name="user_name" formatted="false">&lt;b>%s&lt;/b></string>
     <string name="user_name_with_company" formatted="false">&lt;b>%s&lt;/b>, %s</string>
-    <string name="configuration_acitve_button">Try again</string>
-    <string name="configuration_failed">Configuration loading failed</string>
+    <string name="configuration_acitve_button">再试一次</string>
+    <string name="configuration_failed">配置加载失败</string>
     <string name="email_app_choose_dialog_title">Choose Application</string>
 
     <plurals name="users_who_liked">

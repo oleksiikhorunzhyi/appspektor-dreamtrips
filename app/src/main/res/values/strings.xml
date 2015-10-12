@@ -471,5 +471,10 @@
     <string name="dtl_place_tab_dining">Dining</string>
 
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
+    
+    <string name="dtl_points_estimation_explanation">Points calculation explanation goes here</string>
+    <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
+    <string name="dtl_points_estimation_input_hint">Enter price</string>
+    <string name="dtl_points_estimation_default_result">0.0</string>
 
 </resources>

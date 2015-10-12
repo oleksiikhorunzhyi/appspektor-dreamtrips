@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -13,6 +14,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -58,6 +60,11 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void onDestroyView() {
         super.onDestroyView();
         eventBus.post(new ActionBarTransparentEvent(false));
+    }
+
+    @Override
+    protected BaseArrayListAdapter getAdapter() {
+        return new IgnoreFirstExpandedItemAdapter(feedView.getContext(), injectorProvider);
     }
 
     @Override

@@ -211,23 +211,24 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
             FeedEntity model = event.getModel();
-            DreamTripsRequest command = model.isLiked() ?
+            boolean isLiked = model.isLiked();
+            DreamTripsRequest command = isLiked ?
                     new UnlikeEntityCommand(model.getUid()) :
                     new LikeEntityCommand(model.getUid());
-            doRequest(command, element -> itemLiked(model.getUid()));
+            doRequest(command, element -> itemLiked(model.getUid(), !isLiked));
         }
     }
 
     public void onEvent(EntityLikedEvent event) {
-        itemLiked(event.getId());
+        itemLiked(event.getId(), event.isLiked());
     }
 
-    private void itemLiked(String uid) {
+    private void itemLiked(String uid, boolean isLiked) {
         Queryable.from(feedItems).forEachR(event -> {
             FeedEntity item = event.getItem();
 
-            if (item.getUid().equals(uid)) {
-                item.setLiked(!item.isLiked());
+            if (item.getUid().equals(uid) && item.isLiked() != isLiked) {
+                item.setLiked(isLiked);
                 int currentCount = item.getLikesCount();
                 currentCount = item.isLiked() ? currentCount + 1 : currentCount - 1;
                 item.setLikesCount(currentCount);

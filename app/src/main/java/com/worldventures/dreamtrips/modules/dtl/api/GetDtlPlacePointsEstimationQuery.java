@@ -13,8 +13,6 @@ public class GetDtlPlacePointsEstimationQuery extends DtlRequest<Float> {
 
     @Override
     public Float loadDataFromNetwork() {
-        Float points = getService().getDtlPlacePointsEstimation(id, price);
-        if (points == null) points = 0F;
-        return points;
+        return getService().getDtlPlacePointsEstimation(id, price).getPoints();
     }
 }

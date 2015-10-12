@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.auth.presenter;
 
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.techery.spares.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -16,14 +16,14 @@ import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
     @Inject
-    protected Prefs prefs;
+    protected TermsConditionsValidator termsConditionsValidator;
 
     private boolean isTermsAccepted;
 
     @Override
     public void onResume() {
         super.onResume();
-        isTermsAccepted = prefs.getBoolean(Prefs.TERMS_ACCEPTED);
+        isTermsAccepted = termsConditionsValidator.newVersionAccepted();
 
         if (!isTermsAccepted) {
             view.showTerms();
@@ -61,7 +61,7 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
                 TrackingHelper.login(loginResponse.getSession().getUser().getEmail());
 
                 if (appSessionHolder.get().get().getGlobalConfig() != null) {
-                    prefs.put(Prefs.TERMS_ACCEPTED, true);
+                    termsConditionsValidator.setNewVersionAccepted(true);
                     activityRouter.openMain();
                     activityRouter.finish();
                 } else {

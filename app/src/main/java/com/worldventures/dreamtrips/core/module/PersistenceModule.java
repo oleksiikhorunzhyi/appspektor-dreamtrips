@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 
 import javax.inject.Singleton;
 
@@ -18,6 +19,12 @@ public class PersistenceModule {
     @Singleton
     public Prefs providePrefs(SharedPreferences sharedPreferences) {
         return new Prefs(sharedPreferences);
+    }
+
+    @Provides
+    @Singleton
+    public TermsConditionsValidator provideTermsConditionsValidator(SharedPreferences sharedPreferences){
+        return new TermsConditionsValidator(sharedPreferences);
     }
 
     @Provides

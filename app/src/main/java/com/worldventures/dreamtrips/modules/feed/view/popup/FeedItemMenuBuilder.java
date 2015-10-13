@@ -15,6 +15,7 @@ public class FeedItemMenuBuilder {
     private int menuRes;
     private Action onDeleteAction;
     private Action onEditAction;
+    private PopupMenu.OnDismissListener dismissListener;
 
     private FeedItemMenuBuilder() {
     }
@@ -37,6 +38,11 @@ public class FeedItemMenuBuilder {
         return this;
     }
 
+    public FeedItemMenuBuilder dismissListener(PopupMenu.OnDismissListener listener){
+        this.dismissListener = listener;
+        return this;
+    }
+
     public void show() {
         PopupMenu popup = new PopupMenu(context, anchor);
         popup.inflate(menuRes);
@@ -52,6 +58,7 @@ public class FeedItemMenuBuilder {
 
             return true;
         });
+        popup.setOnDismissListener(dismissListener);
         popup.show();
     }
 

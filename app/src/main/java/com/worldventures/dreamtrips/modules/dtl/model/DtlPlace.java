@@ -152,6 +152,47 @@ public class DtlPlace implements Parcelable {
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Misc
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DtlPlace dtlPlace = (DtlPlace) o;
+
+        return id == dtlPlace.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "DtlPlace{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", state='" + state + '\'' +
+                ", address1='" + address1 + '\'' +
+                ", address2='" + address2 + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                ", website='" + website + '\'' +
+                ", cityName='" + cityName + '\'' +
+                ", location=" + location +
+                ", phone='" + phone + '\'' +
+                ", zip='" + zip + '\'' +
+                ", avgPrice=" + avgPrice +
+                ", categories=" + categories +
+                ", mediaList=" + mediaList +
+                '}';
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 

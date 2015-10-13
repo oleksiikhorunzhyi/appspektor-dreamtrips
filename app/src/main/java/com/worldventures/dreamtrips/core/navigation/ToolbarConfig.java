@@ -7,6 +7,9 @@ public class ToolbarConfig implements Serializable {
     private boolean visible = true;
     private float alpha = 1.0f;
 
+    private ToolbarConfig() {
+    }
+
     public boolean isVisible() {
         return visible;
     }
@@ -33,7 +36,7 @@ public class ToolbarConfig implements Serializable {
             return this;
         }
 
-        public ToolbarConfig.Builder apha(float alpha) {
+        public ToolbarConfig.Builder alpha(float alpha) {
             toolbarConfig.alpha = alpha;
             return this;
         }

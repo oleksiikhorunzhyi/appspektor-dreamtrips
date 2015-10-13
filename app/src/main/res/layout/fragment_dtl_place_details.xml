@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/list_divider"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/place_details_cover_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <me.relex.circleindicator.CircleIndicator
+                android:id="@+id/place_details_cover_pager_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/spacing_large"
+                />
+
+            <TextView
+                android:id="@+id/place_details_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_toLeftOf="@+id/place_details_rating"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                tools:text="Corner Backery Caffe"
+                />
+
+            <RatingBar
+                android:id="@+id/place_details_rating"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:textColor="@color/white"
+                />
+
+            <ImageView
+                android:id="@+id/place_details_points_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:src="@drawable/badge_placeholder"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="@dimen/spacing_normal"
+            >
+
+            <TextView
+                android:id="@+id/place_details_category"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:textColor="#9b9b9b"
+                android:textStyle="bold"
+                tools:text="Coffee Sweets"
+                />
+
+            <RatingBar
+                android:id="@+id/place_details_pricing"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/place_details_category"
+                android:layout_alignParentRight="true"
+                android:numStars="4"
+                />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/place_details_earn_wrapper"
+            style="@style/Widget.AppCompat.ButtonBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#eeeeee"
+            android:orientation="horizontal"
+            android:padding="@dimen/spacing_normal"
+            >
+
+            <Button
+                android:id="@+id/place_details_earn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Check-in &amp; earn"
+                android:textColor="@android:color/primary_text_dark"
+                />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/place_details_estimate_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Point estimator"
+                android:textColor="@android:color/primary_text_light"
+                />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/place_details_merchant_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#eeeeee"
+            android:orientation="horizontal"
+            android:padding="@dimen/spacing_normal"
+            android:visibility="gone"
+            >
+
+            <Button
+                android:id="@+id/place_details_suggest_merchant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Suggest Merchant"
+                android:textColor="@android:color/white"
+                />
+
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/place_details_description"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_normal"
+            android:textColor="#535353"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#eeeeee"
+            android:divider="@drawable/list_divider_vertical"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            >
+
+            <LinearLayout
+                android:id="@+id/place_details_additional"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.75"
+                android:divider="@drawable/list_divider"
+                android:orientation="vertical"
+                android:showDividers="middle"/>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:minHeight="140dp">
+
+                <fragment
+                    android:id="@+id/place_details_map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    map:cameraZoom="10"
+                    map:liteMode="true"
+                    map:mapType="normal"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="@color/white_overlay"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_small"
+                    android:text="Directions"
+                    android:textAllCaps="true"
+                    android:textColor="#005e92"
+                    android:textSize="14sp"/>
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

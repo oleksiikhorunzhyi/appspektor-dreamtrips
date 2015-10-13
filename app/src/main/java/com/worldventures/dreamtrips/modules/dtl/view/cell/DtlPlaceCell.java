@@ -4,13 +4,15 @@ import android.graphics.PointF;
 import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig.Builder;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 
 import javax.inject.Inject;
@@ -52,13 +54,11 @@ public class DtlPlaceCell extends AbstractCell<DtlPlace> {
     }
 
     @OnClick(R.id.itemLayout) void placeClicked() {
-//        NavigationBuilder
-//                .create()
-//                .with(activityRouter)
-//                .data()
-//                .move(Route.DTL_PLACE_DETAILS);
-        Toast.makeText(itemView.getContext(),
-                "Hold your horses, cowboy!\nNot implemented yet!", Toast.LENGTH_SHORT).show();
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(getModelObject())
+                .toolbarConfig(Builder.create().alpha(0f).build())
+                .move(Route.DTL_PLACE_DETAILS);
     }
 
     @Override

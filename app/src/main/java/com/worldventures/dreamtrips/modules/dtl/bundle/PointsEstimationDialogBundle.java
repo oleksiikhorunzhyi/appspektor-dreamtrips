@@ -27,6 +27,11 @@ public class PointsEstimationDialogBundle implements Parcelable {
         placeId = in.readInt();
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(placeId);
+    }
+
     public static final Creator<PointsEstimationDialogBundle> CREATOR = new Creator<PointsEstimationDialogBundle>() {
         @Override
         public PointsEstimationDialogBundle createFromParcel(Parcel in) {
@@ -42,10 +47,5 @@ public class PointsEstimationDialogBundle implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(placeId);
     }
 }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.dialog;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,14 +12,13 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.CalculateDtlPointsClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationDialogPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.dialog_dtl_points_estimation)
-public class DtlPointsEstimationDialog extends BaseFragmentWithArgs<DtlPointsEstimationDialogPresenter, PointsEstimationDialogBundle>
+@Layout(R.layout.fragment_dtl_points_estimation)
+public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsEstimationDialogPresenter, PointsEstimationDialogBundle>
         implements DtlPointsEstimationDialogPresenter.View {
 
     @InjectView(R.id.inputPoints)
@@ -50,8 +50,8 @@ public class DtlPointsEstimationDialog extends BaseFragmentWithArgs<DtlPointsEst
     }
 
     @Override
-    public void showError(String errorMessage) {
-        inputPoints.setError(errorMessage);
+    public void showError(@StringRes int errorRes) {
+        inputPoints.setError(getString(errorRes));
     }
 
     @Override
@@ -61,6 +61,6 @@ public class DtlPointsEstimationDialog extends BaseFragmentWithArgs<DtlPointsEst
 
     @OnClick(R.id.calculateButton)
     void calculateClicked() {
-        eventBus.post(new CalculateDtlPointsClickedEvent(inputPoints.getText().toString()));
+        getPresenter().onCalculateClicked(inputPoints.getText().toString());
     }
 }

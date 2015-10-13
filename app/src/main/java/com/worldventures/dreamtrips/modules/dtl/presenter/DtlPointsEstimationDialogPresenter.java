@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import android.widget.Toast;
+import android.support.annotation.StringRes;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacePointsEstimationQuery;
-import com.worldventures.dreamtrips.modules.dtl.event.CalculateDtlPointsClickedEvent;
 
 public class DtlPointsEstimationDialogPresenter extends Presenter<DtlPointsEstimationDialogPresenter.View> {
 
@@ -14,31 +14,30 @@ public class DtlPointsEstimationDialogPresenter extends Presenter<DtlPointsEstim
         this.placeId = placeId;
     }
 
-    public void onEventMainThread(CalculateDtlPointsClickedEvent event) {
-        if (!validateInput(event.getUserInput())) return;
+    public void onCalculateClicked(String userInput) {
+        if (!validateInput(userInput)) return;
         //
         view.showProgress();
         doRequest(new GetDtlPlacePointsEstimationQuery(placeId,
-                Float.valueOf(event.getUserInput())), aFloat -> {
+                Double.valueOf(userInput)), aDouble -> {
             view.stopProgress();
-            view.showEstimatedPoints(String.valueOf(aFloat));
+            view.showEstimatedPoints(String.valueOf(aDouble));
         }, spiceException -> {
-            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+            super.handleError(spiceException);
             view.stopProgress();
         });
     }
 
     protected boolean validateInput(String pointsInput) {
-        boolean valid = true;
         if (pointsInput.isEmpty()) {
-            view.showError("Cannot be empty!");
-            valid = false;
+            view.showError(R.string.dtl_points_estimation_empty_input_error);
+            return false;
         }
-        if (valid && Float.valueOf(pointsInput) < 0F) {
-            view.showError("Cannot be less than 0!");
-            valid = false;
+        if (Double.valueOf(pointsInput) < 0D) {
+            view.showError(R.string.dtl_points_estimation_negative_input_error);
+            return false;
         }
-        return valid;
+        return true;
     }
 
     public interface View extends Presenter.View {
@@ -47,7 +46,7 @@ public class DtlPointsEstimationDialogPresenter extends Presenter<DtlPointsEstim
 
         void stopProgress();
 
-        void showError(String errorMessage);
+        void showError(@StringRes int errorRes);
 
         void showEstimatedPoints(String value);
     }

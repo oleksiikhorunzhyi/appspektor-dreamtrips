@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 
 public class EstimationPointsHolder {
 
-    private float points;
+    private double points;
 
-    public float getPoints() {
+    public double getPoints() {
         return points;
     }
 
-    public void setPoints(float points) {
+    public void setPoints(double points) {
         this.points = points;
     }
 }

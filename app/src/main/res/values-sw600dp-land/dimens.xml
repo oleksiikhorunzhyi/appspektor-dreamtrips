@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="feed_spacing">200dp</dimen>
     <dimen name="tablet_details_spacing">200dp</dimen>
 
 

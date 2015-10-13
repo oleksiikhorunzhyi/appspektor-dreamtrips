@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -27,6 +28,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        view.setupAccount(appSessionHolder.get().get().getUser());
     }
 
     @Override
@@ -46,7 +48,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return new GetAccountFeedQuery(date, filterCircle.getId());
     }
 
-    public List<Circle> getFilterCircles(){
+    public List<Circle> getFilterCircles() {
         List<Circle> circles = db.getCircles();
         Collections.sort(circles);
         circles.add(0, createDefaultFilterCircle());
@@ -57,11 +59,11 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return Circle.all(context.getString(R.string.all));
     }
 
-    public Circle getAppliedFilterCircle(){
+    public Circle getAppliedFilterCircle() {
         return filterCircle;
     }
 
-    public void applyFilter(Circle selectedCircle){
+    public void applyFilter(Circle selectedCircle) {
         filterCircle = selectedCircle;
         db.saveFilterCircle(selectedCircle);
         onRefresh();
@@ -75,7 +77,13 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         view.setRequestsCount(db.getFriendsRequestsCount());
     }
 
+    public void onUserClick() {
+        openUser(appSessionHolder.get().get().getUser());
+    }
+
     public interface View extends BaseFeedPresenter.View {
         void setRequestsCount(int count);
+
+        void setupAccount(User user);
     }
 }

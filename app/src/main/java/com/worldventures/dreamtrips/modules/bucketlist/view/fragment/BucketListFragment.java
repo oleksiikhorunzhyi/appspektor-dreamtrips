@@ -359,7 +359,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
             NavigationBuilder.create()
                     .with(fragmentCompass)
                     .data(bundle)
-                    .attach(detailsRoute);
+                    .move(detailsRoute);
             showDetailsContainer();
         } else {
             hideDetailContainer();

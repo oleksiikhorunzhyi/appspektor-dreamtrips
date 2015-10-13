@@ -219,10 +219,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @OnClick(R.id.edit)
-    public void actionEdit() {
+    public void actionEdit(View view) {
+        view.setEnabled(false);
         FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
                 .onDelete(this::deletePhoto)
                 .onEdit(() -> getPresenter().onEdit())
+                .dismissListener(menu -> view.setEnabled(true))
                 .show();
     }
 

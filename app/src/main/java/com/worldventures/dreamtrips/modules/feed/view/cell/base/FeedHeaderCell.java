@@ -122,9 +122,11 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
     }
 
     protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
+        editFeedItem.setEnabled(false);
         FeedItemMenuBuilder.create(itemView.getContext(), editFeedItem, menuRes)
                 .onDelete(() -> showDeleteDialog(headerDelete, textDelete))
                 .onEdit(this::onEdit)
+                .dismissListener(menu -> editFeedItem.setEnabled(true))
                 .show();
     }
 

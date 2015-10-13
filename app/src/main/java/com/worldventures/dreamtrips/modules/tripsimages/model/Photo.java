@@ -130,6 +130,11 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     @Override
+    public String getImagePath() {
+        return images.getUrl();
+    }
+
+    @Override
     public Image getFSImage() {
         return images;
     }

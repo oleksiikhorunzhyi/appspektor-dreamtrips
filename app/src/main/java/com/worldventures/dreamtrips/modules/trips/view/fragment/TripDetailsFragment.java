@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.linearlistview.LinearListView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -21,7 +21,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
+import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
+import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -31,9 +32,9 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -137,29 +138,22 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
         getPresenter().setTrip(getArgs().tripModel());
 
-        BaseStatePagerAdapter adapter =
-                new BaseStatePagerAdapter(getChildFragmentManager()) {
-                    @Override
-                    public void setArgs(int position, Fragment fragment) {
-                        Bundle args = new Bundle();
-                        Object photo = getPresenter().getFilteredImages().get(position);
-                        if (photo instanceof Serializable) {
-                            args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, (Serializable) photo);
-                        }
-                        fragment.setArguments(args);
-                    }
-                };
-
-        for (Object photo : getPresenter().getFilteredImages()) {
+        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+            @Override
+            public void setArgs(int position, Fragment fragment) {
+                TripImage photo = getPresenter().getFilteredImages().get(position);
+                ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+            }
+        };
+        Queryable.from(getPresenter().getFilteredImages()).forEachR(image -> {
             adapter.add(new FragmentItem(TripImagePagerFragment.class, ""));
-        }
-
+        });
         viewPagerGallery.setAdapter(adapter);
         viewPagerGallery.setCurrentItem(0);
         circleIndicator.setViewPager(viewPagerGallery);
     }
 
-    public void onEvent(TripImageClickedEvent event) {
+    public void onEvent(ImageClickedEvent event) {
         getPresenter().onItemClick(viewPagerGallery.getCurrentItem());
     }
 

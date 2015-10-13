@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DtlPlaceMedia implements Parcelable {
+import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
+
+public class DtlPlaceMedia implements ImagePathHolder, Parcelable {
 
     private boolean isDefault;
     private int mediaId;
@@ -34,6 +36,11 @@ public class DtlPlaceMedia implements Parcelable {
 
     public void setMediaFileName(String mediaFileName) {
         this.mediaFileName = mediaFileName;
+    }
+
+    @Override
+    public String getImagePath() {
+        return getMediaFileName();
     }
 
     ///////////////////////////////////////////////////////////////////////////

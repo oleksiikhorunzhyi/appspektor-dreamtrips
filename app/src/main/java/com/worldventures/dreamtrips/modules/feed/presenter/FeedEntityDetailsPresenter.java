@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
-import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
@@ -15,6 +14,7 @@ import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 
 import icepick.State;
 
@@ -37,6 +37,11 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        if (feedEntity.getUser() != null) {
+            view.setHeader(feedItem);
+            view.setContent(feedItem);
+        }
+        view.setSocial(feedItem);
         loadFullEventInfo();
     }
 
@@ -46,6 +51,8 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
             feedItem.setItem(feedEntityHolder.getItem());
             feedEntity = feedItem.getItem();
             view.setHeader(feedItem);
+            view.updateContent(feedItem);
+            view.setSocial(feedItem);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
         });
     }
@@ -73,7 +80,7 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
             feedEntity.setFirstUserLikedItem(feedItem.getItem().getFirstUserLikedItem());
             feedItem.setItem(feedEntity);
             this.feedEntity = feedItem.getItem();
-            view.updateHeader(feedItem);
+            view.setHeader(feedItem);
         }
     }
 
@@ -93,7 +100,7 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
         currentCount = feedEntity.isLiked() ? currentCount + 1 : currentCount - 1;
         feedEntity.setLikesCount(currentCount);
 
-        view.updateHeader(feedItem);
+        view.setHeader(feedItem);
         eventBus.post(new FeedEntityChangedEvent(feedItem.getItem()));
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
     }
@@ -101,10 +108,13 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
 
     public interface View extends Presenter.View {
 
-        void setHeader(FeedItem header);
+        void setHeader(FeedItem feedItem);
 
-        void updateHeader(FeedItem eventModel);
+        void setContent(FeedItem feedItem);
 
+        void setSocial(FeedItem feedItem);
+
+        void updateContent(FeedItem feedItem);
     }
 }
 

@@ -38,7 +38,6 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
     public void takeView(View view) {
         super.takeView(view);
         loadFullEventInfo();
-        loadUsersWhoLiked();
     }
 
 
@@ -48,18 +47,6 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
             feedEntity = feedItem.getItem();
             view.setHeader(feedItem);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
-        });
-    }
-
-    private void loadUsersWhoLiked() {
-        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), likers -> {
-            if (likers != null && !likers.isEmpty()) {
-                feedItem.getItem().setFirstUserLikedItem(likers.get(0).getFullName());
-            } else {
-                feedItem.getItem().setFirstUserLikedItem(null);
-            }
-            view.updateHeader(feedItem);
-            eventBus.post(new FeedEntityChangedEvent(feedItem.getItem()));
         });
     }
 
@@ -109,10 +96,6 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
         view.updateHeader(feedItem);
         eventBus.post(new FeedEntityChangedEvent(feedItem.getItem()));
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
-
-        if (feedEntity.getLikesCount() == 1 && feedEntity.isLiked()) {
-            loadUsersWhoLiked();
-        }
     }
 
 

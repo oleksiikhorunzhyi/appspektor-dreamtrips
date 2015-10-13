@@ -20,6 +20,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -29,9 +32,13 @@ import com.worldventures.dreamtrips.modules.dtl.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -76,6 +83,10 @@ public class DtlPlaceDetailsFragment
     SupportMapFragment destinationMap;
 
     DtlPlaceHelper helper;
+
+    @Inject
+    @Named(RouteCreatorModule.DTL_TRANSACTION)
+    RouteCreator<DtlTransaction> routeCreator;
 
     @Override
     protected DtlPlaceDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -125,6 +136,24 @@ public class DtlPlaceDetailsFragment
         });
         coverPager.setAdapter(adapter);
         if (mediaList.size() > 1) coverPagerIndicator.setViewPager(coverPager);
+    }
+
+    @Override
+    public void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(dtlPlace)
+                .move(routeCreator.createRoute(dtlTransaction));
+    }
+
+    @Override
+    public void setTransaction(DtlTransaction dtlTransaction) {
+        earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
+    }
+
+    @OnClick(R.id.place_details_earn)
+    void onCheckInClicked() {
+        getPresenter().onCheckInClicked();
     }
 
     private void setType(DtlPlaceType type) {

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/congratulations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_huge"
+        android:gravity="center"
+        android:padding="@dimen/spacing_huge"
+        android:text="@string/dtl_success"
+        android:textSize="@dimen/font_large"/>
+
+
+    <RatingBar
+        android:id="@+id/rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/congratulations"
+        android:layout_centerHorizontal="true"/>
+
+
+    <TextView
+        android:id="@+id/rate_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rating_bar"
+        android:gravity="center"
+        android:text="@string/rate_hint"
+        android:textSize="@dimen/font_normal"/>
+
+    <Button
+        android:id="@+id/done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rate_hint"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_huge"
+        android:paddingLeft="@dimen/spacing_huge"
+        android:paddingRight="@dimen/spacing_huge"
+        android:text="@string/action_done"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/shadow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/done"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="@dimen/spacing_huge"
+        android:paddingRight="@dimen/spacing_huge"
+        android:text="@string/action_share"/>
+</RelativeLayout>

@@ -469,6 +469,7 @@
     <string name="dtl_locations_select_nearby_cities">Select from nearby</string>
     <string name="dtl_place_tab_offers">Offers</string>
     <string name="dtl_place_tab_dining">Dining</string>
+
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
     <string name="dtl_points_estimation_explanation">Points calculation explanation goes here</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
@@ -478,5 +479,27 @@
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance(miles)</string>
+
+    <string name="dtl_receipt_hint">Enter amount in USD</string>
+    <string name="dtl_receipt_note"><b>*Note:</b> the amount should be the total on bill, <b>not including tips and tax</b></string>
+    <string name="dtl_receipt_scan">Scan Receipt</string>
+    <string name="dtl_receipt_rescan">Rescan</string>
+    <string name="dtl_receipt_verify">Verify Amount</string>
+    <string name="dtl_receipt_verify_hint">This amount will be verified by the merchant. Any discrepancy in the amount entered will result in delay in earning DreamTrips points.</string>
+    <string name="dtl_action_next">Next</string>
+
+g    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
+    <string name="dtl_barcode_title">Scan QR Code</string>
+    <string name="barcode_hint">Center the QR Code and wait it is scanned</string>
+    <string name="dtl_success" formatted="false">Congratulations, you have earned %d DreamTrips points this meal and you now have a total of %d DreamTrips points available.</string>
+    <string name="wait">Wait a little…</string>
+    <string name="rate_hint">Rate this experience</string>
+    <string name="dtl_success_title">Congratulations</string>
+    <string name="dtl_amount_invalid">Amount is invalid</string>
+
+    <string name="dtl_check_in">Check in &amp; earn</string>
+    <string name="dtl_earn">Earn</string>
 
 </resources>

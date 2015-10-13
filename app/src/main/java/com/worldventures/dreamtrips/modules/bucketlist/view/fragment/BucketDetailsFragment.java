@@ -302,7 +302,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
 
     public void onEvent(TripImageClickedEvent event) {
-        getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
+        if (ViewUtils.isFullVisibleOnScreen(this))
+            getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
     }
 
     @Override

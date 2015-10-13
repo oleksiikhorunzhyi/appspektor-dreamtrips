@@ -6,6 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -41,6 +42,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             view.setCategoryItems(list);
             view.setCategory(list.indexOf(bucketItem.getCategory()));
         }
+
+        ImagePickedEvent event = eventBus.getStickyEvent(ImagePickedEvent.class);
+        if (event != null) onEvent(event);
     }
 
     public void saveItem() {
@@ -92,5 +96,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         } else {
             return Queryable.from(temp.split(",")).map(String::trim).toList();
         }
+    }
+
+    public void onEvent(ImagePickedEvent event) {
+        imagePicked(event);
     }
 }

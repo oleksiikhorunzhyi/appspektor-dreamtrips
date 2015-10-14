@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/action_dtl_filter"
-        android:icon="@drawable/ic_menu_trip_filters"
+        android:icon="@drawable/filter_icon"
         android:title="@string/action_filter"
         app:showAsAction="ifRoom"/>
     <item

@@ -34,7 +34,7 @@ android {
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 22
 
         multiDexEnabled true
 
@@ -193,9 +193,9 @@ dependencies {
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'com.google.android.gms:play-services-maps:8.1.0'
-    compile 'com.google.android.gms:play-services-analytics:8.1.0'
-    compile 'com.google.android.gms:play-services-gcm:8.1.0'
+    compile 'com.google.android.gms:play-services-maps:7.8.0'
+    compile 'com.google.android.gms:play-services-analytics:7.8.0'
+    compile 'com.google.android.gms:play-services-gcm:7.8.0'
     compile 'me.dm7.barcodescanner:zbar:1.8.3'
     compile 'com.instabug.library:instabugsupport:1.7'
     compile 'net.hockeyapp.android:HockeySDK:3.5.0'

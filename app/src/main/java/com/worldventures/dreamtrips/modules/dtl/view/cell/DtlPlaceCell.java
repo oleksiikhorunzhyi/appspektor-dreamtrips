@@ -53,11 +53,12 @@ public class DtlPlaceCell extends AbstractCell<DtlPlace> {
         }
     }
 
-    @OnClick(R.id.itemLayout) void placeClicked() {
+    @OnClick(R.id.itemLayout)
+    void placeClicked() {
         NavigationBuilder.create()
                 .with(activityRouter)
                 .data(getModelObject())
-                .toolbarConfig(Builder.create().alpha(0f).build())
+                .toolbarConfig(Builder.create().visible(false).build())
                 .move(Route.DTL_PLACE_DETAILS);
     }
 

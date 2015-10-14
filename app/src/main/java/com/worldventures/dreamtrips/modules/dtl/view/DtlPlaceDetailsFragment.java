@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +82,8 @@ public class DtlPlaceDetailsFragment
     TextView description;
     @InjectView(R.id.place_details_additional)
     ViewGroup additionalContainer;
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
     SupportMapFragment destinationMap;
 
     DtlPlaceHelper helper;
@@ -102,6 +106,12 @@ public class DtlPlaceDetailsFragment
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        if (toolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+            toolbar.getBackground().setAlpha(0);
+        }
         destinationMap = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.place_details_map);
     }
 

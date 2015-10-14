@@ -79,6 +79,12 @@
                 android:layout_marginTop="@dimen/spacing_large"
                 android:src="@drawable/badge_placeholder"/>
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_actionbar"
+                style="@style/ToolBarStyle"
+                android:layout_width="match_parent"/>
+
+
         </RelativeLayout>
 
         <RelativeLayout

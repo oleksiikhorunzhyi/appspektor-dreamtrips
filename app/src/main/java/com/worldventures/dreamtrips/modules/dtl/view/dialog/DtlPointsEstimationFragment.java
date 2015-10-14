@@ -12,14 +12,14 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationDialogPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_points_estimation)
-public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsEstimationDialogPresenter, PointsEstimationDialogBundle>
-        implements DtlPointsEstimationDialogPresenter.View {
+public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsEstimationPresenter, PointsEstimationDialogBundle>
+        implements DtlPointsEstimationPresenter.View {
 
     @InjectView(R.id.inputPoints)
     EditText inputPoints;
@@ -31,8 +31,8 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     ProgressBar progressBar;
 
     @Override
-    protected DtlPointsEstimationDialogPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPointsEstimationDialogPresenter(getArgs().getPlaceId());
+    protected DtlPointsEstimationPresenter createPresenter(Bundle savedInstanceState) {
+        return new DtlPointsEstimationPresenter(getArgs().getPlaceId());
     }
 
     @Override

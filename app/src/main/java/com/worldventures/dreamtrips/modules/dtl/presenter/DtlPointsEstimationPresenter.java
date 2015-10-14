@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacePointsEstimationQuery;
 
-public class DtlPointsEstimationDialogPresenter extends Presenter<DtlPointsEstimationDialogPresenter.View> {
+public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
     protected int placeId;
 
-    public DtlPointsEstimationDialogPresenter(int placeId) {
+    public DtlPointsEstimationPresenter(int placeId) {
         this.placeId = placeId;
     }
 

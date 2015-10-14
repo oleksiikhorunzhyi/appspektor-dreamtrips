@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresent
 import java.util.List;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.fragment_dtl_place_details)
@@ -153,6 +154,11 @@ public class DtlPlaceDetailsFragment
             );
             googleMap.animateCamera(CameraUpdateFactory.newLatLng(pos));
         });
+    }
+
+    @OnClick(R.id.place_details_estimate_points)
+    void onEstimatorClick() {
+        getPresenter().onEstimationClick(getChildFragmentManager());
     }
 
 

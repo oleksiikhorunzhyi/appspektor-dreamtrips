@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,8 +15,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     @Inject
     SnappyRepository db;
-
-    List<DtlLocation> locationsList;
 
     @Override
     public void takeView(View view) {
@@ -29,7 +27,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         super.onResume();
         doRequest(new GetDtlLocationsQuery(5D, 6D, 60),
                 dtlLocations -> {
-                    view.getAdapter().setItems(dtlLocations);
+                    view.setItems(dtlLocations);
                     view.finishLoading();
                 },
                 spiceException -> {
@@ -45,7 +43,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public interface View extends Presenter.View {
 
-        BaseArrayListAdapter<DtlLocation> getAdapter();
+        void setItems(List<DtlLocation> dtlLocations);
 
         void startLoading();
 

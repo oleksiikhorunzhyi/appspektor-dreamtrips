@@ -16,4 +16,24 @@ public class TextUtils {
         }
         return text;
     }
+
+    /**
+     * Returns a string containing the tokens joined by delimiters.
+     *
+     * @param tokens varargs to be joined. Strings will be formed from
+     *               the objects by calling object.toString().
+     */
+    public static String join(CharSequence delimiter, Object... tokens) {
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        for (Object token : tokens) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                sb.append(delimiter);
+            }
+            sb.append(token);
+        }
+        return sb.toString();
+    }
 }

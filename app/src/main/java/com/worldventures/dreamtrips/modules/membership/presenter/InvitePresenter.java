@@ -194,7 +194,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void searchHidden() {
-        if (selectedMembers != null && selectedMembers.size() > 0) {
+        if (selectedMembers != null && selectedMembers.size() > 0 && view != null) {
             view.showContinue();
         }
     }

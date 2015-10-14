@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterObject;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
@@ -24,7 +24,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     SnappyRepository db;
 
     @State
-    DtlFilterObject dtlFilterObject;
+    DtlFilterData dtlFilterData;
 
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
@@ -34,8 +34,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        if (dtlFilterObject == null) {
-            dtlFilterObject = new DtlFilterObject();
+        if (dtlFilterData == null) {
+            dtlFilterData = new DtlFilterData();
         }
     }
 
@@ -64,7 +64,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         if (view != null) {
             view.clearMap();
             List<DtlPlace> filtered = Queryable.from(dtlPlaces).filter(dtlPlace ->
-                    dtlPlace.applyFilter(dtlFilterObject, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList();
+                    dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList();
 
             for (DtlPlace dtlPlace : filtered) {
                 view.addPin(dtlPlace.getType(),
@@ -90,7 +90,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     public void onEventMainThread(DtlFilterEvent event) {
-        dtlFilterObject = event.getDtlFilterObject();
+        dtlFilterData = event.getDtlFilterData();
         if (mapReady)
             showPins();
     }

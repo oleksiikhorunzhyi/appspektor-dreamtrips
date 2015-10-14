@@ -251,7 +251,7 @@ public class DtlPlace implements Parcelable {
         dest.writeTypedList(mediaList);
     }
 
-    public boolean applyFilter(DtlFilterObject filterObject, LatLng currentLocation) {
+    public boolean applyFilter(DtlFilterData filterObject, LatLng currentLocation) {
         return checkPrice(filterObject.getMinPrice(), filterObject.getMaxPrice()) &&
                 checkLocation(filterObject.getMaxDistance(), currentLocation);
     }

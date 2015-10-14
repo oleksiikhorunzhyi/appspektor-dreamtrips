@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DtlFilterObject implements Parcelable {
+public class DtlFilterData implements Parcelable {
 
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
@@ -14,25 +14,25 @@ public class DtlFilterObject implements Parcelable {
 
     private int maxDistance;
 
-    public DtlFilterObject() {
+    public DtlFilterData() {
         reset();
     }
 
-    protected DtlFilterObject(Parcel in) {
+    protected DtlFilterData(Parcel in) {
         minPrice = in.readInt();
         maxPrice = in.readInt();
         maxDistance = in.readInt();
     }
 
-    public static final Creator<DtlFilterObject> CREATOR = new Creator<DtlFilterObject>() {
+    public static final Creator<DtlFilterData> CREATOR = new Creator<DtlFilterData>() {
         @Override
-        public DtlFilterObject createFromParcel(Parcel in) {
-            return new DtlFilterObject(in);
+        public DtlFilterData createFromParcel(Parcel in) {
+            return new DtlFilterData(in);
         }
 
         @Override
-        public DtlFilterObject[] newArray(int size) {
-            return new DtlFilterObject[size];
+        public DtlFilterData[] newArray(int size) {
+            return new DtlFilterData[size];
         }
     };
 

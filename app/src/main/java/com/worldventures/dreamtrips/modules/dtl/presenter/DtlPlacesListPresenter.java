@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterObject;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
@@ -28,7 +28,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     private List<DtlPlace> dtlPlaces;
 
     @State
-    DtlFilterObject dtlFilterObject;
+    DtlFilterData dtlFilterData;
 
     public DtlPlacesListPresenter(DtlPlaceType placeType) {
         this.placeType = placeType;
@@ -41,8 +41,8 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
         if (dtlPlaces.isEmpty()) view.showProgress();
 
-        if (dtlFilterObject == null) {
-            dtlFilterObject = new DtlFilterObject();
+        if (dtlFilterData == null) {
+            dtlFilterData = new DtlFilterData();
         }
 
         performFiltering();
@@ -55,13 +55,13 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     }
 
     public void onEventMainThread(DtlFilterEvent event) {
-        dtlFilterObject = event.getDtlFilterObject();
+        dtlFilterData = event.getDtlFilterData();
         performFiltering();
     }
 
     private void performFiltering() {
         view.setItems(Queryable.from(dtlPlaces).filter(dtlPlace ->
-                dtlPlace.applyFilter(dtlFilterObject, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList());
+                dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList());
     }
 
     public void onEventMainThread(PlacesUpdateFinished event) {

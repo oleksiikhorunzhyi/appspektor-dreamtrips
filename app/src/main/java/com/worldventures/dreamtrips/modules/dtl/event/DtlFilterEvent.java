@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl.event;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterObject;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 
 public class DtlFilterEvent {
 
-    DtlFilterObject dtlFilterObject;
+    DtlFilterData dtlFilterData;
 
-    public DtlFilterEvent(DtlFilterObject dtlFilterObject) {
-        this.dtlFilterObject = dtlFilterObject;
+    public DtlFilterEvent(DtlFilterData dtlFilterData) {
+        this.dtlFilterData = dtlFilterData;
     }
 
-    public DtlFilterObject getDtlFilterObject() {
-        return dtlFilterObject;
+    public DtlFilterData getDtlFilterData() {
+        return dtlFilterData;
     }
 }

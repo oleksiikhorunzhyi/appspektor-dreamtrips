@@ -111,4 +111,11 @@
     <dimen name="dtlCalculationInputTextSize">18sp</dimen>
     <dimen name="dtlCalculationResultTextSize">24sp</dimen>
 
+    <!-- dimen for dtl suggest merchant screen -->
+    <dimen name="suggest_merchant_layout_padding">16dp</dimen>
+    <dimen name="suggest_merchant_input_text_size">16sp</dimen>
+    <dimen name="suggest_merchant_default_vertical_margin">8dp</dimen>
+    <dimen name="suggest_merchant_default_vertical_margin_big">16dp</dimen>
+    <dimen name="suggest_merchant_pickers_left_margin">50dp</dimen>
+
 </resources>

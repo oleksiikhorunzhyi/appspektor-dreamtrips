@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -66,6 +67,10 @@ public class DtlPlacesTabsFragment extends BaseFragmentWithArgs<DtlPlacesTabsPre
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        fragmentCompass.setContainerId(R.id.container_filters);
+        fragmentCompass.disableBackStack();
+        fragmentCompass.switchBranch(Route.DTL_FILTERS, null);
     }
 
     @Override

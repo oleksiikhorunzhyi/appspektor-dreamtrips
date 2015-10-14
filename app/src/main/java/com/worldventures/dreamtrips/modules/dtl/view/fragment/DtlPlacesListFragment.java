@@ -15,6 +15,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -81,6 +82,9 @@ public class DtlPlacesListFragment
         switch (item.getItemId()) {
             case R.id.action_map:
                 NavigationBuilder.create().with(fragmentCompass).move(Route.DTL_MAP);
+                break;
+            case R.id.action_dtl_filter:
+                ((MainActivity) getActivity()).openRightDrawer();
                 break;
         }
         return super.onOptionsItemSelected(item);

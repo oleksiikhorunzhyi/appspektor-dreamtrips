@@ -20,6 +20,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
@@ -98,6 +99,10 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+
+        fragmentCompass.setContainerId(R.id.container_filters);
+        fragmentCompass.disableBackStack();
+        fragmentCompass.switchBranch(Route.TRIP_FILTERS, null);
     }
 
     @Override

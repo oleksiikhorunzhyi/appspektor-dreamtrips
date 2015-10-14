@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -35,6 +36,9 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         switch (item.getItemId()) {
             case R.id.action_list:
                 fragmentCompass.pop();
+                break;
+            case R.id.action_dtl_filter:
+                ((MainActivity) getActivity()).openRightDrawer();
                 break;
         }
         return super.onOptionsItemSelected(item);

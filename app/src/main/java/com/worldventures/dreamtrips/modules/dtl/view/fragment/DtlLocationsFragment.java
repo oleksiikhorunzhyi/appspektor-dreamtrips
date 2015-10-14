@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -19,7 +20,10 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -34,7 +38,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     @ForActivity
     Provider<Injector> injectorProvider;
 
-    BaseArrayListAdapter<DtlLocation> adapter;
+    BaseArrayListAdapter adapter;
 
     @InjectView(R.id.locationsList)
     protected EmptyRecyclerView recyclerView;
@@ -51,18 +55,17 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
+                .getDrawable(R.drawable.list_divider), true));
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
+        adapter.registerCell(String.class, DtlHeaderCell.class);
         recyclerView.setAdapter(adapter);
     }
 
     public void onEvent(LocationClickedEvent event) {
         getPresenter().onLocationClicked(event.getLocation());
-    }
-
-    @Override
-    public BaseArrayListAdapter<DtlLocation> getAdapter() {
-        return adapter;
     }
 
     @Override
@@ -78,6 +81,12 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     @Override
     public void showSearch() {
 
+    }
+
+    @Override
+    public void setItems(List<DtlLocation> dtlLocations) {
+        adapter.setItems(dtlLocations);
+        adapter.addItem(0, getString(R.string.dtl_locations_select_nearby_cities));
     }
 
     @Override

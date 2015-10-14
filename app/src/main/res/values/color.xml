@@ -46,4 +46,7 @@
     <color name="dtl_tab_indicator">#53b5fe</color>
     <color name="dtl_tab_background_normal">@android:color/white</color>
     <color name="dtl_tab_background_selected">#EDEDED</color>
+
+    <color name="dtl_cities_background">#eeeeee</color>
+    <color name="dtl_cities_text_color">#929292</color>
 </resources>

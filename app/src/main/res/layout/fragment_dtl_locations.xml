@@ -1,65 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:background="@color/dtl_cities_background"
     >
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/imageViewTripImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        fresco:actualImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-        fresco:placeholderImageScaleType="centerCrop"
-        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="22sp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:paddingBottom="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_large"
             android:text="@string/dtl_locations_try_search"
+            android:textColor="@color/dtl_cities_text_color"
+            android:textSize="@dimen/font_normal"
             />
 
-        <Button
-            android:id="@+id/searchButton"
-            android:layout_width="wrap_content"
+        <com.dd.ShadowLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_success_story_search"
-            android:text="@string/dtl_locations_search_caption"
-            />
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            app:sl_cornerRadius="2dp"
+            app:sl_shadowColor="@color/black_semi_transparent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:text="@string/dtl_locations_or_caption"
-            />
+            <TextView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button_white"
+                android:drawableLeft="@drawable/ic_success_story_search"
+                android:drawablePadding="@dimen/spacing_large"
+                android:drawableStart="@drawable/ic_success_story_search"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="@dimen/font_large"
+                android:gravity="center_vertical"
+                android:padding="@dimen/spacing_small"
+                android:text="@string/dtl_locations_search_caption"
+                android:textColor="@color/dtl_cities_text_color"
+                />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:text="@string/dtl_locations_select_nearby_cities"
-            />
+        </com.dd.ShadowLayout>
 
         <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/locationsList"
             style="@style/myRecyclerViewStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:fadingEdgeLength="0dp"
             android:overScrollMode="never"
             android:padding="@dimen/spacing_tiniest"

@@ -176,7 +176,11 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(FeedEntityChangedEvent event) {
         Queryable.from(feedItems).forEachR(item -> {
             if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-                item.setItem(event.getFeedEntity());
+                FeedEntity feedEntity = event.getFeedEntity();
+                if (feedEntity.getUser() == null) {
+                    feedEntity.setUser(item.getItem().getUser());
+                }
+                item.setItem(feedEntity);
             }
         });
 

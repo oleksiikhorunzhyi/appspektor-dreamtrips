@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.DtlPlaceDetailsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
@@ -28,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragm
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlSuggestMerchantFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -63,7 +65,9 @@ import dagger.Provides;
                 DtlScanQrCodePresenter.class,
                 DtlTransactionSucceedFragment.class,
                 DtlTransactionSucceedPresenter.class,
-                DtlPlaceCell.class
+                DtlPlaceCell.class,
+                DtlSuggestMerchantFragment.class,
+                DtlSuggestMerchantPresenter.class
         },
         complete = false,
         library = true

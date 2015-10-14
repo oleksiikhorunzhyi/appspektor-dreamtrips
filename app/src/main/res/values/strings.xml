@@ -488,7 +488,7 @@
     <string name="dtl_receipt_verify_hint">This amount will be verified by the merchant. Any discrepancy in the amount entered will result in delay in earning DreamTrips points.</string>
     <string name="dtl_action_next">Next</string>
 
-g    <string name="ok">OK</string>
+    <string name="ok">OK</string>
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
     <string name="dtl_barcode_title">Scan QR Code</string>
@@ -502,4 +502,19 @@ g    <string name="ok">OK</string>
     <string name="dtl_check_in">Check in &amp; earn</string>
     <string name="dtl_earn">Earn</string>
 
+    <string name="suggest_merchant_title">Suggest Merchant</string>
+    <string name="suggest_merchant_restaurant_name_hint">Restaurant Name</string>
+    <string name="suggest_merchant_contact_name_hint">Contact Name</string>
+    <string name="suggest_merchant_phone_number_hint">Phone Number</string>
+    <string name="suggest_merchant_best_time_contact_caption">Best time for contact</string>
+    <string name="suggest_merchant_best_time_contact_from_caption">From:</string>
+    <string name="suggest_merchant_best_time_contact_to_caption">To:</string>
+    <string name="suggest_merchant_rate_experience_caption">Rate your experience</string>
+    <string name="suggest_merchant_food_caption">Food</string>
+    <string name="suggest_merchant_service_caption">Service</string>
+    <string name="suggest_merchant_cleanliness_caption">Cleanliness</string>
+    <string name="suggest_merchant_uniqueness_caption">Uniqueness</string>
+    <string name="suggest_merchant_additional_info_caption">Additional information</string>
+    <string name="suggest_merchant_additional_info_symbols_entered_format">%1$d / %2$s</string>
+    <string name="suggest_merchant_submit_button_caption">Submit</string>
 </resources>

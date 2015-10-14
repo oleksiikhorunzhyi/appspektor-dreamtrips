@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -200,5 +201,9 @@ public class DtlPlaceDetailsFragment
         getPresenter().onEstimationClick(getChildFragmentManager());
     }
 
-
+    @OnClick(R.id.place_details_suggest_merchant) void suggestMerchantClicked() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .move(Route.DTL_SUGGEST_MERCHANT);
+    }
 }

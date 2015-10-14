@@ -5,14 +5,17 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
@@ -22,12 +25,14 @@ import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemHeaderHelper;
+import com.worldventures.dreamtrips.modules.feed.view.util.FeedTabletViewManager;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import retrofit.http.HEAD;
 
 @Layout(R.layout.fragment_feed_entity_details)
 public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDetailsPresenter, FeedEntityDetailsBundle> implements FeedEntityDetailsPresenter.View {
@@ -38,22 +43,19 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     FeedActionPanelViewActionHandler feedActionHandler;
     @InjectView(R.id.actionView)
     FeedActionPanelView actionView;
-    @InjectView(R.id.feedDetailsRootView)
-    ViewGroup feedDetailsRootView;
 
     FeedItemHeaderHelper feedItemHeaderHelper = new FeedItemHeaderHelper();
+    FeedTabletViewManager feedTabletViewManager;
+
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         ButterKnife.inject(feedItemHeaderHelper, rootView);
-        if (getArgs().isSlave()) {
-            int space = getResources().getDimensionPixelSize(R.dimen.tablet_details_spacing);
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) feedDetailsRootView.getLayoutParams();
-            lp.rightMargin = space;
-            lp.leftMargin = space;
-            feedDetailsRootView.setLayoutParams(lp);
-        }
+        feedTabletViewManager = new FeedTabletViewManager(rootView);
 
     }
 
@@ -75,6 +77,14 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     public void setSocial(FeedItem feedItem) {
         actionView.setState(feedItem, isForeignItem(feedItem));
         feedActionHandler.init(actionView, createActionPanelNavigationWrapper());
+        feedItemHeaderHelper.set(feedItem, getContext(), getPresenter().getAccount().getId(), true);
+        feedItemHeaderHelper.setOnEditClickListener(v -> eventBus.post(new FeedEntityEditClickEvent(feedItem, v)));
+        User user = feedItem.getItem().getUser();
+        feedTabletViewManager.setUser(user, false);
+        feedTabletViewManager.setOnUserClick(() -> NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(routeCreator.createRoute(user.getId())));
     }
 
     @Override

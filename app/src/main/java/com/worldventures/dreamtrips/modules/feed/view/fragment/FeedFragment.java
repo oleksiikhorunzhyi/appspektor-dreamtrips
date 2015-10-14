@@ -57,6 +57,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         super.afterCreateView(rootView);
         restorePostIfNeeded();
         feedTabletViewManager = new FeedTabletViewManager(rootView);
+        feedTabletViewManager.setOnUserClick(() -> getPresenter().onUserClick());
+        feedTabletViewManager.setOnCreatePostClick(this::openPost);
     }
 
     private void restorePostIfNeeded() {
@@ -68,7 +70,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     @Optional
-    @OnClick({R.id.fab_post, R.id.share_post})
+    @OnClick({R.id.fab_post})
     void onPostClicked() {
         openPost();
     }
@@ -164,7 +166,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Override
     public void setupAccount(User user) {
         if (isTabletLandscape()) {
-            feedTabletViewManager.setUser(user);
+            feedTabletViewManager.setUser(user, true);
             fabPost.setVisibility(View.GONE);
         }
     }

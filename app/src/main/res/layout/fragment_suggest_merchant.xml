@@ -281,6 +281,7 @@
             android:hint="@string/suggest_merchant_additional_info_caption"
             android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin_big"
             android:layout_marginBottom="0dp"
+            android:imeOptions="actionDone"
             />
 
         <Button

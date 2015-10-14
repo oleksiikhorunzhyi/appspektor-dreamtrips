@@ -1,15 +1,22 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.DtlModule;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import icepick.State;
 
 public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> {
 
@@ -18,6 +25,11 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     protected DtlPlaceType placeType;
 
+    private List<DtlPlace> dtlPlaces;
+
+    @State
+    DtlFilterData dtlFilterData;
+
     public DtlPlacesListPresenter(DtlPlaceType placeType) {
         this.placeType = placeType;
     }
@@ -25,15 +37,31 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        List<DtlPlace> dtlPlaces = db.getDtlPlaces(placeType);
-        view.setItems(dtlPlaces);
+        dtlPlaces = db.getDtlPlaces(placeType);
+
         if (dtlPlaces.isEmpty()) view.showProgress();
+
+        if (dtlFilterData == null) {
+            dtlFilterData = new DtlFilterData();
+        }
+
+        performFiltering();
     }
 
     public void onEventMainThread(PlacesUpdatedEvent event) {
         if (!event.getType().equals(placeType)) return;
         //
         view.setItems(db.getDtlPlaces(placeType));
+    }
+
+    public void onEventMainThread(DtlFilterEvent event) {
+        dtlFilterData = event.getDtlFilterData();
+        performFiltering();
+    }
+
+    private void performFiltering() {
+        view.setItems(Queryable.from(dtlPlaces).filter(dtlPlace ->
+                dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList());
     }
 
     public void onEventMainThread(PlacesUpdateFinished event) {

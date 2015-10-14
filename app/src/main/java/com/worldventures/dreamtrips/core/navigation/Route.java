@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.DtlPlaceDetailsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
@@ -44,6 +45,7 @@ import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragmen
 import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
@@ -76,6 +78,7 @@ public enum Route {
     MAP(TripMapFragment.class),
     ENROLL(StaticInfoFragment.EnrollFragment.class),
     TRIPLIST(TripListFragment.class),
+    TRIP_FILTERS(FiltersFragment.class),
     OTA(OtaFragment.class),
     TRIP_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
     FOREIGN_TRIP_IMAGES(TripImagesListFragment.class, R.string.trip_images),
@@ -113,8 +116,9 @@ public enum Route {
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
     DTL_MAP(DtlMapFragment.class),
     DTL_PLACES_LIST(DtlPlacesTabsFragment.class),
-    DTL_PLACE_DETAILS(DtlPlaceDetailsFragment.class),
-    DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class);
+    DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
+    DTL_FILTERS(DtlFiltersFragment.class),
+    DTL_PLACE_DETAILS(DtlPlaceDetailsFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

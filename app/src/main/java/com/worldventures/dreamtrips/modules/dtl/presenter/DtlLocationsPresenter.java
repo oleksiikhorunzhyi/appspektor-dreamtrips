@@ -42,6 +42,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         db.saveSelectedDtlLocation(location);
         view.openLocation(new PlacesBundle(location));
     }
+
     public interface View extends Presenter.View {
 
         BaseArrayListAdapter<DtlLocation> getAdapter();

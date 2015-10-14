@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -59,6 +60,7 @@ public class SnappyRepository {
 
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
+    public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
 
     private Context context;
     private ExecutorService executorService;
@@ -151,6 +153,7 @@ public class SnappyRepository {
 
     /**
      * Method is intended to delete all records for given key.
+     *
      * @param key key to be deleted.
      */
     public void clearAllForKey(String key) {
@@ -177,9 +180,9 @@ public class SnappyRepository {
 
     @NonNull
     private String getBucketKey(String type, int userId) {
-     if(userId==0){
-         throw  new IllegalStateException("userId can't be 0");
-     }
+        if (userId == 0) {
+            throw new IllegalStateException("userId can't be 0");
+        }
         String key = (BUCKET_LIST) + ":" + type;
         key += "_" + userId;
         return key.toLowerCase();
@@ -373,11 +376,11 @@ public class SnappyRepository {
         return actWithResult(db -> db.getInt(NOTIFICATIONS_COUNT)).or(0);
     }
 
-    public void saveFilterCircle(Circle circle){
+    public void saveFilterCircle(Circle circle) {
         act(db -> db.put(FILTER_CIRCLE, circle));
     }
 
-    public Circle getFilterCircle(){
+    public Circle getFilterCircle() {
         return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
     }
 
@@ -434,4 +437,21 @@ public class SnappyRepository {
     public List<DtlPlace> getDtlPlaces(DtlPlaceType type) {
         return readList(DTL_PLACES_PREFIX + type, DtlPlace.class);
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DTL Transaction
+    ///////////////////////////////////////////////////////////////////////////
+
+    public DtlTransaction getDtlTransaction(int id) {
+        return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();
+    }
+
+    public void saveDtlTransaction(int id, DtlTransaction dtlTransaction) {
+        act(db -> db.put(DTL_TRANSACTION_PREFIX + id, dtlTransaction));
+    }
+
+    public void deleteDtlTransaction(int id) {
+        act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
+    }
+
 }

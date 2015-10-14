@@ -28,9 +28,18 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     public void permissionGranted() {
+        double latitude;
+        double longitude;
         Location currentLocation = locationDelegate.getLastKnownLocation();
-        doRequest(new GetDtlLocationsQuery(currentLocation.getLatitude(),
-                        currentLocation.getLongitude(), 50),
+        if (currentLocation != null) {
+            latitude = currentLocation.getLatitude();
+            longitude = currentLocation.getLongitude();
+        } else {
+            // use stub data for location request
+            latitude = 5d;
+            longitude = 6d;
+        }
+        doRequest(new GetDtlLocationsQuery(latitude, longitude, 50),
                 dtlLocations -> {
                     view.setItems(dtlLocations);
                     view.finishLoading();

@@ -106,14 +106,17 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) loadErrorText(view, errorCode);
             }
 
-            private void loadErrorText (WebView webView, int errorCode){
+            private void loadErrorText(WebView webView, int errorCode) {
+                String errorText;
                 switch (errorCode) {
                     case ERROR_HOST_LOOKUP:
-                        webView.loadData(getString(R.string.error_webview_no_internet), "text", "utf-8");
+                        errorText = webView.getContext().getString(R.string.error_webview_no_internet);
                         break;
                     default:
-                        webView.loadData(getString(R.string.error_webview_default), "text", "utf-8");
+                        errorText = webView.getContext().getString(R.string.error_webview_default);
+                        break;
                 }
+                webView.loadData(errorText, "text", "utf-8");
             }
 
             @Override

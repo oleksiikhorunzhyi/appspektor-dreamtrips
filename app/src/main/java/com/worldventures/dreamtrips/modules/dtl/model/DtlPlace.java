@@ -253,18 +253,18 @@ public class DtlPlace implements Parcelable {
 
     public boolean applyFilter(DtlFilterObject filterObject, LatLng currentLocation) {
         return checkPrice(filterObject.getMinPrice(), filterObject.getMaxPrice()) &&
-                checkLocation(filterObject.getMinDistance(), filterObject.getMaxDistance(), currentLocation);
+                checkLocation(filterObject.getMaxDistance(), currentLocation);
     }
 
     private boolean checkPrice(int minPrice, int maxPrice) {
         return avgPrice >= minPrice && avgPrice <= maxPrice;
     }
 
-    private boolean checkLocation(int minDistance, int maxDistance, LatLng currentLocation) {
+    private boolean checkLocation(int maxDistance, LatLng currentLocation) {
         float[] distance = new float[1];
         android.location.Location.distanceBetween(location.getLat(), location.getLng(),
                 currentLocation.latitude, currentLocation.longitude, distance);
         double distanceInMiles = 0.000621371d * distance[0];
-        return distanceInMiles > minDistance && distanceInMiles < maxDistance;
+        return distanceInMiles < maxDistance;
     }
 }

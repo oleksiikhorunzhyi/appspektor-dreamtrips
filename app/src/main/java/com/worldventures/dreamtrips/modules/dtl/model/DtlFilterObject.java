@@ -7,13 +7,11 @@ public class DtlFilterObject implements Parcelable {
 
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
-    public static final int MIN_DISTANCE = 0;
     public static final int MAX_DISTANCE = 50;
 
     private int minPrice;
     private int maxPrice;
 
-    private int minDistance;
     private int maxDistance;
 
     public DtlFilterObject() {
@@ -23,7 +21,6 @@ public class DtlFilterObject implements Parcelable {
     protected DtlFilterObject(Parcel in) {
         minPrice = in.readInt();
         maxPrice = in.readInt();
-        minDistance = in.readInt();
         maxDistance = in.readInt();
     }
 
@@ -42,7 +39,6 @@ public class DtlFilterObject implements Parcelable {
     public void reset() {
         minPrice = MIN_PRICE;
         maxPrice = MAX_PRICE;
-        minDistance = MIN_DISTANCE;
         maxDistance = MAX_DISTANCE;
     }
 
@@ -59,16 +55,11 @@ public class DtlFilterObject implements Parcelable {
         this.maxPrice = maxPrice;
     }
 
-    public int getMinDistance() {
-        return minDistance;
-    }
-
     public int getMaxDistance() {
         return maxDistance;
     }
 
-    public void setDistance(int minDistance, int maxDistance) {
-        this.minDistance = minDistance;
+    public void setDistance(int maxDistance) {
         this.maxDistance = maxDistance;
     }
 
@@ -81,7 +72,6 @@ public class DtlFilterObject implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(minPrice);
         dest.writeInt(maxPrice);
-        dest.writeInt(minDistance);
         dest.writeInt(maxDistance);
     }
 }

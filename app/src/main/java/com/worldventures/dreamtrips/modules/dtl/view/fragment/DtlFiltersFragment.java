@@ -25,7 +25,7 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         rangeBarDistance.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
-                getPresenter().distanceChanged(Integer.valueOf(leftValue), Integer.valueOf(rightValue)));
+                getPresenter().distanceChanged(Integer.valueOf(rightValue)));
         rangeBarPrice.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
                 getPresenter().priceChanged(Integer.valueOf(leftValue), Integer.valueOf(rightValue)));
     }

@@ -23,8 +23,8 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         dtlFilterObject.setPrice(left, right);
     }
 
-    public void distanceChanged(int left, int right) {
-        dtlFilterObject.setDistance(left, right);
+    public void distanceChanged(int right) {
+        dtlFilterObject.setDistance(right);
     }
 
     public void apply() {

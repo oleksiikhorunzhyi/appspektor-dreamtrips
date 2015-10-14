@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl;
 
+import android.content.Context;
+
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
@@ -82,7 +86,13 @@ public class DtlModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideDtlComponent() {
-        return new ComponentDescription(DTL, R.string.dtl, R.string.dtl, R.drawable.ic_dtl, DtlStartFragment.class);
+        return new ComponentDescription(DTL, R.string.dtl, R.string.dtl, R.drawable.ic_dtl,
+                DtlStartFragment.class);
+    }
+
+    @Provides
+    LocationDelegate provideLocationDelegate(@ForApplication Context context) {
+        return new LocationDelegate(context);
     }
 
 }

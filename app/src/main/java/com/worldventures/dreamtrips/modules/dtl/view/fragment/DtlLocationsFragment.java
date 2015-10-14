@@ -1,6 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -34,6 +40,9 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_mock)
 public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
 
+    // permission request codes need to be < 256
+    private static final int RC_HANDLE_LOCATION_PERM = 3;
+
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
@@ -62,6 +71,32 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
         adapter.registerCell(String.class, DtlHeaderCell.class);
         recyclerView.setAdapter(adapter);
+
+        checkPermissions();
+    }
+
+    public void checkPermissions() {
+        int rc = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+        if (rc == PackageManager.PERMISSION_GRANTED) {
+            getPresenter().permissionGranted();
+        } else {
+            requestLocationPermission();
+        }
+    }
+
+    private void requestLocationPermission() {
+        final String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(getActivity(), permissions, RC_HANDLE_LOCATION_PERM);
+        } else {
+            Snackbar.make(recyclerView, R.string.permission_camera_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, view -> ActivityCompat.requestPermissions(getActivity(), permissions,
+                            RC_HANDLE_LOCATION_PERM))
+                    .show();
+        }
     }
 
     public void onEvent(LocationClickedEvent event) {
@@ -96,4 +131,24 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
                 .data(bundle)
                 .move(Route.DTL_PLACES_LIST);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode != RC_HANDLE_LOCATION_PERM) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+
+        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getPresenter().permissionGranted();
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.app_name)
+                .setMessage(R.string.no_location_permission)
+                .setPositiveButton(R.string.ok, (dialog, id) -> getActivity().finish())
+                .show();
+    }
+
 }

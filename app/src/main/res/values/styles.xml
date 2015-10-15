@@ -97,7 +97,8 @@
         <item name="met_primaryColor">@color/suggest_merchant_hint_text</item>
         <item name="android:singleLine">true</item>
         <item name="android:imeOptions">actionNext</item>
-        <item name="android:layout_marginBottom">@dimen/suggest_merchant_default_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/suggest_merchant_default_vertical_margin
+        </item>
     </style>
 
     <style name="SuggestMerchantBigCaption">
@@ -110,4 +111,13 @@
         <item name="android:textColor">@color/suggest_merchant_input_text</item>
         <item name="android:gravity">center</item>
     </style>
+
+    <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/selector_verify_button_color</item>
+    </style>
+
+    <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/white</item>
+    </style>
+
 </resources>

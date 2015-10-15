@@ -41,12 +41,14 @@
                 />
 
             <ImageView
-                android:layout_width="@dimen/dtlPlaceBadgeSize"
-                android:layout_height="@dimen/dtlPlaceBadgeSize"
+                android:id="@+id/place_details_points_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_margin="@dimen/dtlPlaceBadgeMargin"
-                android:src="@drawable/ic_points_badge"
-                />
+                android:layout_alignParentTop="true"
+                android:layout_margin="@dimen/spacing_small"
+                android:src="@drawable/badge_placeholder"/>
 
             <FrameLayout
                 android:id="@+id/ratingLayout"

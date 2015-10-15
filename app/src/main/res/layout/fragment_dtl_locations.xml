@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/dtl_cities_background"
     >
 
-    <LinearLayout
+    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+        android:id="@+id/locationsList"
+        style="@style/myRecyclerViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:fadingEdgeLength="0dp"
+        android:overScrollMode="never"
+        android:padding="@dimen/spacing_tiniest"
+        android:visibility="visible"
+        />
+
+    <LinearLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
+        android:visibility="gone"
         >
 
         <TextView
@@ -25,43 +37,22 @@
             android:textSize="@dimen/font_normal"
             />
 
-        <com.dd.ShadowLayout
+        <Button
+            android:id="@+id/scan_merchant_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:layout_marginRight="@dimen/spacing_small"
-            app:sl_cornerRadius="2dp"
-            app:sl_shadowColor="@color/black_semi_transparent">
+            android:layout_marginLeft="@dimen/spacing_tiny"
+            android:layout_marginStart="@dimen/spacing_tiny"
+            android:drawableLeft="@drawable/ic_success_story_search"
+            android:drawablePadding="@dimen/spacing_large"
+            android:drawableStart="@drawable/ic_success_story_search"
+            android:gravity="start|center_vertical"
+            android:text="@string/dtl_locations_search_caption"
+            android:textAllCaps="false"
+            android:textColor="@color/dtl_cities_text_color"
+            android:textSize="@dimen/font_large"
+            android:theme="@style/WhiteButtonTheme"/>
 
-            <TextView
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_white"
-                android:drawableLeft="@drawable/ic_success_story_search"
-                android:drawablePadding="@dimen/spacing_large"
-                android:drawableStart="@drawable/ic_success_story_search"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="@dimen/font_large"
-                android:gravity="center_vertical"
-                android:padding="@dimen/spacing_small"
-                android:text="@string/dtl_locations_search_caption"
-                android:textColor="@color/dtl_cities_text_color"
-                />
-
-        </com.dd.ShadowLayout>
-
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-            android:id="@+id/locationsList"
-            style="@style/myRecyclerViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing_large"
-            android:fadingEdgeLength="0dp"
-            android:overScrollMode="never"
-            android:padding="@dimen/spacing_tiniest"
-            android:visibility="visible"
-            />
     </LinearLayout>
 
     <ProgressBar

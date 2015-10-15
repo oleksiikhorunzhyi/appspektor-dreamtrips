@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFrag
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlSuggestMerchantFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
@@ -123,9 +124,10 @@ public enum Route {
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
     DTL_FILTERS(DtlFiltersFragment.class),
     DTL_MAP(DtlMapFragment.class),
-    DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class),
+    DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_PLACE_DETAILS(DtlPlaceDetailsFragment.class),
+    DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
     DTL_SUGGEST_MERCHANT(DtlSuggestMerchantFragment.class, R.string.suggest_merchant_title);
 
     private Class<? extends BaseFragment> fragmentClass;

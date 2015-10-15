@@ -51,6 +51,7 @@ public class FeedTabletViewManager {
     @Optional
     @InjectView(R.id.details)
     ViewGroup details;
+    @Optional
     @InjectView(R.id.view_profile)
     TextView viewProfile;
 
@@ -59,8 +60,8 @@ public class FeedTabletViewManager {
 
     public FeedTabletViewManager(View view) {
         ButterKnife.inject(this, view);
-        details.setVisibility(View.GONE);
-        viewProfile.setVisibility(View.GONE);
+        if (details != null) details.setVisibility(View.GONE);
+        if (viewProfile != null) viewProfile.setVisibility(View.GONE);
     }
 
     public void setUser(User user, boolean withDetails) {

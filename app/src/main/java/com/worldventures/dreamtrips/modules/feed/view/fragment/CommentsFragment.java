@@ -153,6 +153,8 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
         if (scrollToBottom) {
             commentsList.smoothScrollToPosition(linearLayoutManager.getItemCount());
         }
+        commentsList.invalidate();
+        commentsList.requestLayout();
     }
 
     @Override

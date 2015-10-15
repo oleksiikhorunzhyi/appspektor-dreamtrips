@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -91,6 +92,10 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     public void updateContent(FeedItem feedItem) {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.entity_content_container);
         if (fragment == null) setContent(feedItem);
+
+        fragmentCompass.setContainerId(R.id.entity_coments_container);
+        NavigationBuilder.create().with(fragmentCompass).data(new CommentsBundle(feedItem.getItem())).attach(Route.COMMENTS);
+
     }
 
     @Override

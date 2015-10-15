@@ -111,7 +111,7 @@ public enum Route {
     FRIEND_PREFERENCES(FriendPreferenceFragment.class, R.string.friend_pref_lists_header),
     FEED(FeedFragment.class, R.string.feed_title),
     NOTIFICATIONS(NotificationFragment.class, R.string.notifications_title),
-    SHARE(ShareFragment.class, R.string.feed_title),
+    SHARE(ShareFragment.class, R.string.action_share),
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
     DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),

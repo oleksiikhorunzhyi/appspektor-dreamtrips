@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -10,25 +11,37 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 
 import icepick.State;
 
-@Layout(R.layout.fragment_trip_map)
+@Layout(R.layout.fragment_map_with_info)
 @MenuResource(R.menu.menu_dtl_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
+    FragmentCompass infoFragmentCompass;
+    //
     @State
     LatLng selectedLocation;
 
     @Override
     protected DtlMapPresenter createPresenter(Bundle savedInstanceState) {
         return new DtlMapPresenter();
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        infoFragmentCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.container_info);
+        infoFragmentCompass.setSupportFragmentManager(getChildFragmentManager());
     }
 
     @Override
@@ -68,16 +81,19 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     private void hideInfoIfShown() {
-        //TODO implement after actual PlaceMapInfoFragment implemented
+        infoFragmentCompass.remove(Route.DTL_MAP_INFO);
     }
 
     @Override
     public void showPlaceInfo(DtlPlace dtlPlace) {
-        //TODO implement after actual PlaceMapInfoFragment implemented
+        NavigationBuilder.create()
+                .with(infoFragmentCompass)
+                .data(dtlPlace)
+                .move(Route.DTL_MAP_INFO);
     }
 
     @Override
-    public void addPin(DtlPlaceType placeType, LatLng latLng, String id) {
+    public void addPin(LatLng latLng, String id) {
         googleMap.addMarker(new MarkerOptions()
                 .snippet(id)
                 .position(latLng)
@@ -90,7 +106,11 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void prepareInfoWindow(int offset) {
+    public void prepareInfoWindow(int height) {
+        int ownHeight = getView().getHeight();
+        int centerY = ownHeight / 2;
+        int resultY = height + getResources().getDimensionPixelSize(R.dimen.spacing_huge);
+        int offset = resultY - centerY;
         animateToMarker(selectedLocation, offset);
     }
 }

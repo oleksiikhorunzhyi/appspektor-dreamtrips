@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import icepick.State;
 
 
-@Layout(R.layout.fragment_trip_map)
+@Layout(R.layout.fragment_map_with_info)
 @MenuResource(R.menu.menu_map)
 public class TripMapFragment extends MapFragment<TripMapPresenter> implements TripMapPresenter.View {
 

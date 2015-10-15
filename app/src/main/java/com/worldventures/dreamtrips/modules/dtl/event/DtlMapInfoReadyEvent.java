@@ -2,17 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.event;
 
 public class DtlMapInfoReadyEvent {
 
-    private int offset;
+    public final int height;
 
-    public DtlMapInfoReadyEvent(int offset) {
-        this.offset = offset;
+    public DtlMapInfoReadyEvent(int height) {
+        this.height = height;
     }
 
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
 }

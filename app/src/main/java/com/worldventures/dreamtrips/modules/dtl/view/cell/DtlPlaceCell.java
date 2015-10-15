@@ -43,7 +43,7 @@ public class DtlPlaceCell extends AbstractCell<DtlPlace> {
         categoryDataInflater.apply(getModelObject());
     }
 
-    @OnClick(R.id.dtl_place_root)
+    @OnClick(R.id.place_details_root)
     void placeClicked() {
         NavigationBuilder.create()
                 .with(activityRouter)

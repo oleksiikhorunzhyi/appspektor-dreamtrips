@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
@@ -28,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationF
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
@@ -49,6 +51,8 @@ import dagger.Provides;
                 DtlLocationCell.class,
                 DtlMapFragment.class,
                 DtlMapPresenter.class,
+                DtlMapInfoFragment.class,
+                DtlMapInfoPresenter.class,
                 DtlPlacesTabsFragment.class,
                 DtlPlacesTabsPresenter.class,
                 DtlScanReceiptFragment.class,

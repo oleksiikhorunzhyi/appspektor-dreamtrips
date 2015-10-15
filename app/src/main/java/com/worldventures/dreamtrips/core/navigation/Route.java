@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationF
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
@@ -124,6 +125,7 @@ public enum Route {
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
     DTL_FILTERS(DtlFiltersFragment.class),
     DTL_MAP(DtlMapFragment.class),
+    DTL_MAP_INFO(DtlMapInfoFragment.class),
     DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_PLACE_DETAILS(DtlPlaceDetailsFragment.class),

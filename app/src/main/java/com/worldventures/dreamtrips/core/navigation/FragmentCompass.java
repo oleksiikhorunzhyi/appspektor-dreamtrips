@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.util.Log;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -83,6 +82,10 @@ public class FragmentCompass {
 
     public void removePost() {
         remove(Route.POST_CREATE.getClazzName());
+    }
+
+    public void remove(Route route) {
+        remove(route.getClazzName());
     }
 
     public void remove(String name) {

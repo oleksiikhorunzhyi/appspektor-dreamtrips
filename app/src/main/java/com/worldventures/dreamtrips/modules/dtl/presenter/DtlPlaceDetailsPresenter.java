@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
@@ -20,22 +19,15 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
-public class DtlPlaceDetailsPresenter extends Presenter<DtlPlaceDetailsPresenter.View> {
+public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<DtlPlaceDetailsPresenter.View> {
 
-    private final DtlPlace place;
     private DtlTransaction dtlTransaction;
 
     @Inject
     SnappyRepository snapper;
 
     public DtlPlaceDetailsPresenter(DtlPlace place) {
-        this.place = place;
-    }
-
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        view.setPlace(place);
+        super(place);
     }
 
     @Override
@@ -98,12 +90,8 @@ public class DtlPlaceDetailsPresenter extends Presenter<DtlPlaceDetailsPresenter
         }).show();
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends DtlPlaceCommonDetailsPresenter.View {
         void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
-
-        void setPlace(DtlPlace place);
-
         void setTransaction(DtlTransaction dtlTransaction);
-
     }
 }

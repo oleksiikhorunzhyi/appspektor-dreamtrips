@@ -56,8 +56,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     private void showPlaceInfo(DtlPlace place) {
-        if (place != null)
-            view.showPlaceInfo(place);
+        view.showPlaceInfo(place);
     }
 
     private void showPins() {
@@ -67,7 +66,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
                     dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList();
 
             for (DtlPlace dtlPlace : filtered) {
-                view.addPin(dtlPlace.getType(),
+                view.addPin(
                         new LatLng(dtlPlace.getLocation().getLat(), dtlPlace.getLocation().getLng()),
                         String.valueOf(dtlPlace.getId()));
             }
@@ -76,7 +75,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
     private void checkPendingMapInfo() {
         if (pendingMapInfoEvent != null) {
-            view.prepareInfoWindow(pendingMapInfoEvent.getOffset());
+            view.prepareInfoWindow(pendingMapInfoEvent.height);
             pendingMapInfoEvent = null;
         }
     }
@@ -85,7 +84,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         if (!mapReady) pendingMapInfoEvent = event;
         else {
             pendingMapInfoEvent = null;
-            view.prepareInfoWindow(event.getOffset());
+            view.prepareInfoWindow(event.height);
         }
     }
 
@@ -96,12 +95,12 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        void addPin(DtlPlaceType placeType, LatLng latLng, String id);
+        void addPin(LatLng latLng, String id);
 
         void clearMap();
 
         void showPlaceInfo(DtlPlace dtlPlace);
 
-        void prepareInfoWindow(int offset);
+        void prepareInfoWindow(int height);
     }
 }

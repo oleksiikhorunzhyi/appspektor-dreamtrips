@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.view;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -12,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,55 +22,39 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
-import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.dtl.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCategoryDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.util.SpanUtils;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import io.techery.properratingbar.ProperRatingBar;
-import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.fragment_dtl_place_details)
 public class DtlPlaceDetailsFragment
         extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, DtlPlace>
         implements DtlPlaceDetailsPresenter.View {
 
+    DtlPlaceCommonDataInflater commonDataInflater;
+    DtlPlaceCategoryDataInflater categoryDataInflater;
+    DtlPlaceHelper helper;
+
+    @Inject
+    @Named(RouteCreatorModule.DTL_TRANSACTION)
+    RouteCreator<DtlTransaction> routeCreator;
+
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
-    @InjectView(R.id.place_details_cover_pager)
-    ViewPager coverPager;
-    @InjectView(R.id.place_details_cover_pager_indicator)
-    CircleIndicator coverPagerIndicator;
-    @InjectView(R.id.place_details_conver_stub)
-    View converStub;
-    @InjectView(R.id.place_details_title)
-    TextView title;
-    @InjectView(R.id.place_details_rating)
-    ProperRatingBar rating;
-    @InjectView(R.id.place_details_points_badge)
-    ImageView earnPointsBadge;
-    @InjectView(R.id.place_details_category)
-    TextView category;
-    @InjectView(R.id.place_details_pricing)
-    ProperRatingBar pricing;
     @InjectView(R.id.place_details_earn_wrapper)
     ViewGroup earnWrapper;
     @InjectView(R.id.place_details_earn)
@@ -90,13 +71,8 @@ public class DtlPlaceDetailsFragment
     ViewGroup additionalContainer;
     @InjectView(R.id.place_details_share)
     Button share;
+    //
     SupportMapFragment destinationMap;
-
-    DtlPlaceHelper helper;
-
-    @Inject
-    @Named(RouteCreatorModule.DTL_TRANSACTION)
-    RouteCreator<DtlTransaction> routeCreator;
 
     @Override
     protected DtlPlaceDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -107,6 +83,8 @@ public class DtlPlaceDetailsFragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         helper = new DtlPlaceHelper(activity);
+        commonDataInflater = new DtlPlaceManyImagesDataInflater(helper, getChildFragmentManager());
+        categoryDataInflater = new DtlPlaceCategoryDataInflater(helper);
     }
 
     @Override
@@ -119,6 +97,8 @@ public class DtlPlaceDetailsFragment
             activity.getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
         }
+        commonDataInflater.setView(rootView);
+        categoryDataInflater.setView(rootView);
         destinationMap = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.place_details_map);
         destinationMap.getMapAsync(googleMap -> {
             googleMap.getUiSettings().setMapToolbarEnabled(false);
@@ -127,45 +107,22 @@ public class DtlPlaceDetailsFragment
 
     @Override
     public void setPlace(DtlPlace place) {
-        title.setText(place.getName());
-        description.setText(place.getDescription());
-        description.setVisibility(TextUtils.isEmpty(place.getDescription()) ? View.GONE : View.VISIBLE);
-        category.setText(helper.getFirstCategoryName(place));
-        rating.setVisibility(View.GONE); // TODO set rating on API change
-        pricing.setRating(place.getAvgPrice());
-        setImages(place.getMediaList());
+        commonDataInflater.apply(place);
+        categoryDataInflater.apply(place);
         setType(place.getType());
+        setDescription(place.getDescription());
         setAdditional(place);
         setMap(place);
     }
 
-    private void setImages(List<DtlPlaceMedia> mediaList) {
-        if (mediaList.isEmpty()) {
-            converStub.setVisibility(View.VISIBLE);
-            return;
-        }
-        converStub.setVisibility(View.GONE);
-        //
-        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
-            @Override
-            public void setArgs(int position, Fragment fragment) {
-                DtlPlaceMedia photo = mediaList.get(position);
-                ((BaseImageFragment) fragment).setArgs(new ImageBundle<>(photo));
-            }
-        };
-        Queryable.from(mediaList).forEachR(image -> {
-            adapter.add(new FragmentItem(BaseImageFragment.class, ""));
-        });
-        coverPager.setAdapter(adapter);
-        if (mediaList.size() > 1) coverPagerIndicator.setViewPager(coverPager);
+    private void setType(DtlPlaceType type) {
+        earnWrapper.setVisibility((type == DtlPlaceType.OFFER) ? View.VISIBLE : View.GONE);
+        merchantWrapper.setVisibility((type == DtlPlaceType.DINING) ? View.VISIBLE : View.GONE);
     }
 
-    private void setType(DtlPlaceType type) {
-        int offerVisibility = (type == DtlPlaceType.OFFER) ? View.VISIBLE : View.GONE;
-        int merchantVisibility = (type == DtlPlaceType.DINING) ? View.VISIBLE : View.GONE;
-        earnPointsBadge.setVisibility(offerVisibility);
-        earnWrapper.setVisibility(offerVisibility);
-        merchantWrapper.setVisibility(merchantVisibility);
+    private void setDescription(String description) {
+        this.description.setText(description);
+        this.description.setVisibility(TextUtils.isEmpty(description) ? View.GONE : View.VISIBLE);
     }
 
     private void setAdditional(DtlPlace place) {

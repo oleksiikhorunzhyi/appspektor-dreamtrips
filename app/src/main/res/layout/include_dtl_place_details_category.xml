@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="@dimen/spacing_normal"
+    tools:showIn="@layout/fragment_dtl_place_details">
+
+    <TextView
+        android:id="@+id/place_details_category"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:textColor="#9b9b9b"
+        android:textStyle="bold"
+        tools:text="Coffee Sweets"
+        />
+
+    <io.techery.properratingbar.ProperRatingBar
+        android:id="@+id/place_details_pricing"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/place_details_category"
+        android:layout_alignParentRight="true"
+        app:symbolicTick="$"
+        app:symbolicTickNormalColor="@color/grey"
+        app:symbolicTickSelectedColor="#005e92"
+        app:totalTicks="4"
+        app:usable="false"
+        />
+</RelativeLayout>

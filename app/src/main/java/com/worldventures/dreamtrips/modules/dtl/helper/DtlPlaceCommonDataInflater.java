@@ -1,0 +1,38 @@
+package com.worldventures.dreamtrips.modules.dtl.helper;
+
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+
+import butterknife.InjectView;
+import io.techery.properratingbar.ProperRatingBar;
+
+public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
+
+    protected DtlPlaceHelper helper;
+    //
+    @InjectView(R.id.place_details_cover_stub)
+    View coverStub;
+    @InjectView(R.id.place_details_title)
+    TextView title;
+    @InjectView(R.id.place_details_rating)
+    ProperRatingBar rating;
+    @InjectView(R.id.place_details_points_badge)
+    ImageView earnPointsBadge;
+
+    public DtlPlaceCommonDataInflater(DtlPlaceHelper helper) {
+        this.helper = helper;
+    }
+
+    @Override
+    protected void onPlaceApply(DtlPlace place) {
+        coverStub.setVisibility(place.getMediaList().isEmpty() ? View.VISIBLE : View.GONE);
+        title.setText(place.getName());
+        rating.setVisibility(View.GONE); // TODO set rating on API change
+        earnPointsBadge.setVisibility(place.getType() == DtlPlaceType.OFFER ? View.VISIBLE : View.GONE);
+    }
+}

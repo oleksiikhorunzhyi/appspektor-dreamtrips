@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl;
+package com.worldventures.dreamtrips.modules.dtl.helper;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;

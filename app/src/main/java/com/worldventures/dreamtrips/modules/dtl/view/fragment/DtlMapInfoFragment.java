@@ -14,14 +14,13 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceCommonDetailsPresenter;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_map_info)
 public class DtlMapInfoFragment
         extends BaseFragmentWithArgs<DtlMapInfoPresenter, DtlPlace>
-        implements DtlPlaceCommonDetailsPresenter.View {
+        implements DtlMapInfoPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
     DtlPlaceCategoryDataInflater categoryDataInflater;
@@ -71,4 +70,13 @@ public class DtlMapInfoFragment
         getPresenter().onPlaceClick();
     }
 
+    @Override
+    public void hideLayout() {
+        getView().setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showLayout() {
+        getView().setVisibility(View.VISIBLE);
+    }
 }

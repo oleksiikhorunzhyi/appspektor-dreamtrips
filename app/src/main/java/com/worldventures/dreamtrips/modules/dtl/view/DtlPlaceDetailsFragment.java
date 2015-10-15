@@ -6,12 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,10 +25,10 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -38,6 +39,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
+import com.worldventures.dreamtrips.util.SpanUtils;
 
 import java.util.List;
 
@@ -46,6 +48,7 @@ import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.properratingbar.ProperRatingBar;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.fragment_dtl_place_details)
@@ -53,7 +56,8 @@ public class DtlPlaceDetailsFragment
         extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, DtlPlace>
         implements DtlPlaceDetailsPresenter.View {
 
-
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
     @InjectView(R.id.place_details_cover_pager)
     ViewPager coverPager;
     @InjectView(R.id.place_details_cover_pager_indicator)
@@ -63,13 +67,13 @@ public class DtlPlaceDetailsFragment
     @InjectView(R.id.place_details_title)
     TextView title;
     @InjectView(R.id.place_details_rating)
-    RatingBar rating;
+    ProperRatingBar rating;
     @InjectView(R.id.place_details_points_badge)
     ImageView earnPointsBadge;
     @InjectView(R.id.place_details_category)
     TextView category;
     @InjectView(R.id.place_details_pricing)
-    RatingBar pricing;
+    ProperRatingBar pricing;
     @InjectView(R.id.place_details_earn_wrapper)
     ViewGroup earnWrapper;
     @InjectView(R.id.place_details_earn)
@@ -84,8 +88,6 @@ public class DtlPlaceDetailsFragment
     TextView description;
     @InjectView(R.id.place_details_additional)
     ViewGroup additionalContainer;
-    @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
     @InjectView(R.id.place_details_share)
     Button share;
     SupportMapFragment destinationMap;
@@ -111,19 +113,25 @@ public class DtlPlaceDetailsFragment
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            activity.setSupportActionBar(toolbar);
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            activity.getSupportActionBar().setTitle("");
             toolbar.getBackground().setAlpha(0);
         }
         destinationMap = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.place_details_map);
+        destinationMap.getMapAsync(googleMap -> {
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+        });
     }
 
     @Override
     public void setPlace(DtlPlace place) {
         title.setText(place.getName());
         description.setText(place.getDescription());
+        description.setVisibility(TextUtils.isEmpty(place.getDescription()) ? View.GONE : View.VISIBLE);
         category.setText(helper.getFirstCategoryName(place));
+        rating.setVisibility(View.GONE); // TODO set rating on API change
         pricing.setRating(place.getAvgPrice());
         setImages(place.getMediaList());
         setType(place.getType());
@@ -152,32 +160,6 @@ public class DtlPlaceDetailsFragment
         if (mediaList.size() > 1) coverPagerIndicator.setViewPager(coverPager);
     }
 
-    @Override
-    public void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(dtlPlace)
-                .move(routeCreator.createRoute(dtlTransaction));
-    }
-
-    @Override
-    public void setTransaction(DtlTransaction dtlTransaction) {
-        earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
-    }
-
-    @Override
-    public void toSuggestMerchant(DtlPlace place) {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new SuggestMerchantBundle(place))
-                .move(Route.DTL_SUGGEST_MERCHANT);
-    }
-
-    @OnClick(R.id.place_details_earn)
-    void onCheckInClicked() {
-        getPresenter().onCheckInClicked();
-    }
-
     private void setType(DtlPlaceType type) {
         int offerVisibility = (type == DtlPlaceType.OFFER) ? View.VISIBLE : View.GONE;
         int merchantVisibility = (type == DtlPlaceType.DINING) ? View.VISIBLE : View.GONE;
@@ -189,8 +171,9 @@ public class DtlPlaceDetailsFragment
     private void setAdditional(DtlPlace place) {
         Queryable.from(helper.getContactsData(place)).forEachR(contact -> {
             TextView contactView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.list_item_dtl_place_contact, additionalContainer, false);
-            contactView.setText(contact.text);
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
+            contactView.setText(contact.text);
+            if (Linkify.addLinks(contactView, Linkify.ALL)) SpanUtils.stripUnderlines(contactView);
             additionalContainer.addView(contactView);
         });
 
@@ -207,13 +190,32 @@ public class DtlPlaceDetailsFragment
         });
     }
 
+    @Override
+    public void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(dtlPlace)
+                .move(routeCreator.createRoute(dtlTransaction));
+    }
+
+    @Override
+    public void setTransaction(DtlTransaction dtlTransaction) {
+        earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
+    }
+
+    @OnClick(R.id.place_details_earn)
+    void onCheckInClicked() {
+        getPresenter().onCheckInClicked();
+    }
+
     @OnClick(R.id.place_details_estimate_points)
     void onEstimatorClick() {
         getPresenter().onEstimationClick(getChildFragmentManager());
     }
 
-    @OnClick(R.id.place_details_suggest_merchant) void suggestMerchantClicked() {
-        getPresenter().onSuggestMerchantClicked();
+    @OnClick(R.id.place_details_suggest_merchant)
+    void suggestMerchantClick() {
+        getPresenter().onMerchantClick();
     }
 
     @OnClick(R.id.place_details_share)

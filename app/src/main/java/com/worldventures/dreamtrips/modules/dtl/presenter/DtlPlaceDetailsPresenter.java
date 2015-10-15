@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
@@ -75,13 +76,10 @@ public class DtlPlaceDetailsPresenter extends Presenter<DtlPlaceDetailsPresenter
                 .move(Route.DTL_POINTS_ESTIMATION);
     }
 
-    public void onSuggestMerchantClicked() {
-        view.toSuggestMerchant(place);
-    }
-
     public void onMerchantClick() {
         NavigationBuilder.create()
                 .with(activityRouter)
+                .data(new SuggestMerchantBundle(place))
                 .move(Route.DTL_SUGGEST_MERCHANT);
     }
 
@@ -107,6 +105,5 @@ public class DtlPlaceDetailsPresenter extends Presenter<DtlPlaceDetailsPresenter
 
         void setTransaction(DtlTransaction dtlTransaction);
 
-        void toSuggestMerchant(DtlPlace place);
     }
 }

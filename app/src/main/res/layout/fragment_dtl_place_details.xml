@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -40,6 +41,14 @@
                 android:layout_marginTop="@dimen/spacing_large"
                 />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignTop="@+id/place_details_title"
+                android:background="@drawable/bucket_item_shadow"
+                />
+
             <TextView
                 android:id="@+id/place_details_title"
                 style="@style/TextAppearance.AppCompat.Title"
@@ -53,20 +62,24 @@
                 android:layout_toLeftOf="@+id/place_details_rating"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:paddingTop="@dimen/spacing_normal"
                 android:textColor="@color/white"
                 tools:text="Corner Backery Caffe"
                 />
 
-            <RatingBar
+            <io.techery.properratingbar.ProperRatingBar
                 android:id="@+id/place_details_rating"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_alignBottom="@+id/place_details_title"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginBottom="2dp"
                 android:layout_marginRight="@dimen/spacing_normal"
-                android:textColor="@color/white"
+                app:tickNormalDrawable="@drawable/ic_star_normal"
+                app:tickSelectedDrawable="@drawable/ic_star_selected"
+                app:totalTicks="5"
+                app:usable="false"
                 />
 
             <ImageView
@@ -105,14 +118,18 @@
                 tools:text="Coffee Sweets"
                 />
 
-            <RatingBar
+            <io.techery.properratingbar.ProperRatingBar
                 android:id="@+id/place_details_pricing"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/place_details_category"
                 android:layout_alignParentRight="true"
-                android:numStars="4"
+                app:symbolicTick="$"
+                app:symbolicTickNormalColor="@color/grey"
+                app:symbolicTickSelectedColor="#005e92"
+                app:totalTicks="4"
+                app:usable="false"
                 />
 
 
@@ -204,7 +221,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.75"
-                android:divider="@drawable/list_divider"
+                android:divider="@drawable/list_divider_with_padding"
                 android:orientation="vertical"
                 android:showDividers="middle"/>
 
@@ -220,16 +237,15 @@
                     xmlns:map="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    map:cameraZoom="10"
+                    map:cameraZoom="17"
                     map:liteMode="true"
-                    map:mapType="normal"
                     />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="@color/white_overlay"
+                    android:background="#96c2c2c2"
                     android:gravity="center"
                     android:padding="@dimen/spacing_small"
                     android:text="Directions"

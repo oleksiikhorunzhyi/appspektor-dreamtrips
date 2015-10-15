@@ -475,7 +475,7 @@
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
     <string name="dtl_points_estimation_input_hint">Enter price</string>
     <string name="dtl_points_estimation_default_result">0.0</string>
-    <string name="dtl_points_estimation_empty_input_error">Cannot be empty!</string>
+    <string name="dtl_field_validation_empty_input_error">Cannot be empty!</string>
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance(miles)</string>
@@ -497,7 +497,7 @@
     <string name="dtl_barcode_merchant">Scan Merchant Code</string>
     <string name="dtl_enter_amount">Enter Amount</string>
     <string name="barcode_hint">Center the QR Code and wait it is scanned</string>
-    <string name="dtl_success" formatted="false">Congratulations, you have earned %d DreamTrips points this meal and you now have a total of %d DreamTrips points available.</string>
+    <string name="dtl_success" formatted="false">Congratulations, you have earned %d DreamTrips points with this meal and you now have a total of %d DreamTrips points available.</string>
     <string name="wait">Wait a little…</string>
     <string name="rate_hint">Rate this experience</string>
     <string name="dtl_success_title">Congratulations</string>
@@ -525,4 +525,7 @@
     <string name="suggest_merchant_additional_info_caption">Additional information</string>
     <string name="suggest_merchant_additional_info_symbols_entered_format">%1$d / %2$s</string>
     <string name="suggest_merchant_submit_button_caption">Submit</string>
+    <string name="suggest_merchant_additional_info_length_error">Input too long!</string>
+    <string name="suggest_merchant_to_date_overlap_error">Cannot be earlier than \'To\' date!</string>
+    <string name="suggest_merchant_to_date_past_error">Cannot be in the past!</string>
 </resources>

@@ -110,6 +110,7 @@
         <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
         <item name="android:textColor">@color/suggest_merchant_input_text</item>
         <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">

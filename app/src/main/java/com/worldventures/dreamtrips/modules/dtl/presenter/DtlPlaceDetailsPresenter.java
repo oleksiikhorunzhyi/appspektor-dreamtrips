@@ -51,6 +51,10 @@ public class DtlPlaceDetailsPresenter extends Presenter<DtlPlaceDetailsPresenter
                 .move(Route.DTL_POINTS_ESTIMATION);
     }
 
+    public void onSuggestMerchantClicked() {
+        view.toSuggestMerchant(place);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -77,5 +81,7 @@ public class DtlPlaceDetailsPresenter extends Presenter<DtlPlaceDetailsPresenter
         void setPlace(DtlPlace place);
 
         void setTransaction(DtlTransaction dtlTransaction);
+
+        void toSuggestMerchant(DtlPlace place);
     }
 }

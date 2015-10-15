@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.dtl.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -162,6 +163,14 @@ public class DtlPlaceDetailsFragment
         earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
     }
 
+    @Override
+    public void toSuggestMerchant(DtlPlace place) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(new SuggestMerchantBundle(place))
+                .move(Route.DTL_SUGGEST_MERCHANT);
+    }
+
     @OnClick(R.id.place_details_earn)
     void onCheckInClicked() {
         getPresenter().onCheckInClicked();
@@ -202,8 +211,6 @@ public class DtlPlaceDetailsFragment
     }
 
     @OnClick(R.id.place_details_suggest_merchant) void suggestMerchantClicked() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .move(Route.DTL_SUGGEST_MERCHANT);
+        getPresenter().onSuggestMerchantClicked();
     }
 }

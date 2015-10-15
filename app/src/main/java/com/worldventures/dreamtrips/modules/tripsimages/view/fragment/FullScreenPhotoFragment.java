@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -26,7 +25,9 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
@@ -42,6 +43,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
@@ -158,16 +160,18 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @OnClick(R.id.iv_share)
     public void actionShare() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.action_share)
-                .items(R.array.share_dialog_items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    if (which == 0) {
-                        getPresenter().onFbShare();
-                    } else {
-                        getPresenter().onTwitterShare();
-                    }
-                }).show();
+        new ShareDialog(getActivity(), type -> {
+            switch (type) {
+                case ShareFragment.FB:
+                    getPresenter().onFbShare();
+                    break;
+                case ShareFragment.TW:
+                    getPresenter().onTwitterShare();
+                    break;
+                default:
+                    Timber.w("Sharing of this type is not implemented");
+            }
+        }).show();
     }
 
     public void toggleContent() {

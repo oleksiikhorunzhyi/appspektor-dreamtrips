@@ -86,6 +86,8 @@ public class DtlPlaceDetailsFragment
     ViewGroup additionalContainer;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    @InjectView(R.id.place_details_share)
+    Button share;
     SupportMapFragment destinationMap;
 
     DtlPlaceHelper helper;
@@ -212,5 +214,10 @@ public class DtlPlaceDetailsFragment
 
     @OnClick(R.id.place_details_suggest_merchant) void suggestMerchantClicked() {
         getPresenter().onSuggestMerchantClicked();
+    }
+
+    @OnClick(R.id.place_details_share)
+    void shareClick() {
+        getPresenter().onShareClick();
     }
 }

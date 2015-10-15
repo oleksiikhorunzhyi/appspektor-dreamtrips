@@ -528,4 +528,7 @@
     <string name="suggest_merchant_additional_info_length_error">Input too long!</string>
     <string name="suggest_merchant_to_date_overlap_error">Cannot be earlier than \'To\' date!</string>
     <string name="suggest_merchant_to_date_past_error">Cannot be in the past!</string>
+
+    <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
+
 </resources>

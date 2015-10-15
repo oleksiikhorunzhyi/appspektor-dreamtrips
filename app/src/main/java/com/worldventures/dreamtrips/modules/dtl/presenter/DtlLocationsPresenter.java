@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.dtl.api.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -36,8 +37,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
             longitude = currentLocation.getLongitude();
         } else {
             // use stub data for location request
-            latitude = 5d;
-            longitude = 6d;
+            latitude = DtlModule.LAT;
+            longitude = DtlModule.LNG;
         }
         doRequest(new GetDtlLocationsQuery(latitude, longitude, 50),
                 dtlLocations -> {
@@ -62,8 +63,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         void startLoading();
 
         void finishLoading();
-
-        void showSearch();
 
         void openLocation(PlacesBundle bundle);
     }

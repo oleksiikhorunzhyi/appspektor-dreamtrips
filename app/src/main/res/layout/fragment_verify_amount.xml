@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/dtl_cities_background"
+              android:orientation="vertical"
+              android:padding="@dimen/spacing_normal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dtl_total_amount"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/spent_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/dtl_total_amount"
+            android:textColor="@color/black"
+            tools:text="$ 129"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dtl_verify_earn_hint"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/dt_points"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:drawableLeft="@drawable/dt_points_icon"
+            android:drawablePadding="@dimen/spacing_tiniest"
+            android:drawableStart="@drawable/dt_points_icon"
+            android:text="@string/dtl_total_amount"
+            android:textColor="@color/black"
+            tools:text="12 DreamTrip Points"/>
+    </LinearLayout>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/receipt"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dtlReceiptHeight"
+        android:layout_marginTop="@dimen/spacing_medium"
+        fresco:actualImageScaleType="centerInside"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/rescan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_tiny"
+            android:layout_marginRight="@dimen/spacing_tiny"
+            android:layout_weight="1"
+            android:text="@string/dtl_receipt_rescan"
+            android:theme="@style/WhiteButtonTheme"/>
+
+        <Button
+            android:id="@+id/scan_merchant_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_tiny"
+            android:layout_marginStart="@dimen/spacing_tiny"
+            android:layout_weight="2"
+            android:text="@string/dtl_barcode_merchant"
+            android:textColor="@color/white"
+            android:theme="@style/DtlButtonTheme"/>
+    </LinearLayout>
+
+</LinearLayout>

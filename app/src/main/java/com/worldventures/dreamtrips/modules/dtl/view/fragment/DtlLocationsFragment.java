@@ -50,7 +50,9 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     BaseArrayListAdapter adapter;
 
     @InjectView(R.id.locationsList)
-    protected EmptyRecyclerView recyclerView;
+    EmptyRecyclerView recyclerView;
+    @InjectView(R.id.empty_view)
+    View emptyView;
 
     @InjectView(R.id.progressBarImage)
     ProgressBar progressBar;
@@ -64,8 +66,10 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setEmptyView(emptyView);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
+
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
 
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
@@ -111,11 +115,6 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     @Override
     public void finishLoading() {
         progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showSearch() {
-
     }
 
     @Override

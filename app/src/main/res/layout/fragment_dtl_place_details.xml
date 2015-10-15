@@ -134,7 +134,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="Check-in &amp; earn"
-                android:textColor="@android:color/primary_text_dark"
+                android:textColor="@color/white"
+                android:theme="@style/DtlButtonTheme"
                 />
 
             <Space
@@ -148,7 +149,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="Point estimator"
-                android:textColor="@android:color/primary_text_light"
+                android:textColor="@color/black"
+                android:theme="@style/WhiteButtonTheme"
                 />
 
         </LinearLayout>
@@ -169,7 +171,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Suggest Merchant"
-                android:textColor="@android:color/white"
+                android:textColor="@color/black"
+                android:theme="@style/WhiteButtonTheme"
                 />
 
         </FrameLayout>

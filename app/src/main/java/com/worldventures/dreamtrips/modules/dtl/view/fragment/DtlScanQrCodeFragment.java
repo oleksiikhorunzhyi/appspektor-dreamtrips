@@ -1,19 +1,24 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -41,6 +46,23 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Named(RouteCreatorModule.DTL_TRANSACTION)
     RouteCreator<DtlTransaction> routeCreator;
 
+    @InjectView(R.id.name)
+    TextView name;
+    @InjectView(R.id.category)
+    TextView category;
+    @InjectView(R.id.address)
+    TextView address;
+    @InjectView(R.id.place_image)
+    SimpleDraweeView placeImage;
+
+    DtlPlaceHelper helper;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        helper = new DtlPlaceHelper(activity);
+    }
+
     @Override
     protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
         return new DtlScanQrCodePresenter(getArgs());
@@ -58,6 +80,16 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
             requestCameraPermission();
         }
         scanner.setResultHandler(this); // Register ourselves as a handler for scan results.
+    }
+
+    @Override
+    public void setPlace(DtlPlace place) {
+        name.setText(place.getName());
+        category.setText(helper.getFirstCategoryName(place));
+        address.setText(String.format("%s\n%s", place.getAddress1(), place.getAddress2()));
+        if (!place.getMediaList().isEmpty()) {
+            placeImage.setImageURI(Uri.parse(place.getMediaList().get(0).getMediaFileName()));
+        }
     }
 
     /**
@@ -116,8 +148,9 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     public void openTransactionSuccess(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+        getActivity().finish();
         NavigationBuilder.create()
-                .with(fragmentCompass)
+                .with(activityRouter)
                 .data(dtlPlace)
                 .move(routeCreator.createRoute(dtlTransaction));
     }

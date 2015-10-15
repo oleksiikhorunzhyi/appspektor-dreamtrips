@@ -21,7 +21,7 @@ public class DtlTransactionRouteCreator implements RouteCreator<DtlTransaction> 
             return Route.DTL_SCAN_RECEIPT;
         } else if (TextUtils.isEmpty(dtlTransaction.getCode()) ||
                 dtlTransaction.getDtlTransactionResult() == null) {
-            return Route.DTL_SCAN_QR;
+            return Route.DTL_VERIFY;
         } else {
             return Route.DTL_TRANSACTION_SUCCEED;
         }

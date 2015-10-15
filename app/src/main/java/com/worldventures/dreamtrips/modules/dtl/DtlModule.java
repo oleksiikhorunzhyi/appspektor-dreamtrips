@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresente
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.DtlPlaceDetailsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFrag
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlSuggestMerchantFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -71,7 +73,10 @@ import dagger.Provides;
                 DtlTransactionSucceedPresenter.class,
                 DtlPlaceCell.class,
                 DtlSuggestMerchantFragment.class,
-                DtlSuggestMerchantPresenter.class
+                DtlSuggestMerchantPresenter.class,
+
+                DtlVerifyAmountFragment.class,
+                DtlVerifyAmountPresenter.class,
         },
         complete = false,
         library = true
@@ -81,8 +86,8 @@ public class DtlModule {
     public static final String DTL = Route.DTL_START.name();
 
     //TODO replace it after MVP
-    public static final double LAT = 33.499561d;
-    public static final double LNG = -86.802372d;
+    public static final double LAT = 32.609855651855d;
+    public static final double LNG = -85.480781555176d;
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideDtlComponent() {

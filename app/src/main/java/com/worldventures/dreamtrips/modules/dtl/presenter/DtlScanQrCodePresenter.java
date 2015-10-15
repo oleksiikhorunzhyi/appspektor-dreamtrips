@@ -27,6 +27,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     public void takeView(View view) {
         super.takeView(view);
         dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
+        view.setPlace(dtlPlace);
     }
 
     public void codeScanned(String content) {
@@ -55,5 +56,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         void showProgress();
 
         void hideProgress();
+
+        void setPlace(DtlPlace dtlPlace);
     }
 }

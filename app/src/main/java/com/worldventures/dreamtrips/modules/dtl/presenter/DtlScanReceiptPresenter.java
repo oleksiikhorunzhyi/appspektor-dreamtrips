@@ -130,7 +130,13 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     private void uploadPhoto(String filePath) {
         imageUploadTask.setFilePath(filePath);
         view.attachReceipt(Uri.parse(filePath));
-        startUpload(imageUploadTask);
+
+        //TODO upload photo after demo
+        imageUploadTask.setOriginUrl(filePath);
+        dtlTransaction.setReceiptPhoto(imageUploadTask.getOriginUrl());
+        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
+
+        checkVerification();
     }
 
     private void startUpload(UploadTask uploadTask) {

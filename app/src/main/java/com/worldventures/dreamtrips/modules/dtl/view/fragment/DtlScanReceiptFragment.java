@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
@@ -37,8 +39,6 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     Button verify;
     @InjectView(R.id.scan_receipt)
     Button scanReceipt;
-    @InjectView(R.id.rescan_receipt)
-    Button rescanReceipt;
     @InjectView(R.id.receipt)
     SimpleDraweeView receipt;
     @InjectView(R.id.shadow)
@@ -49,6 +49,8 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     CircleImageView circleView;
     @InjectView(R.id.amount_input)
     DTEditText amountInput;
+    @InjectView(R.id.scan_receipt_note)
+    TextView scanReceiptNode;
 
     @Inject
     @Named(RouteCreatorModule.DTL_TRANSACTION)
@@ -65,6 +67,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         amountInput.addValidator(new AmountValidator(getString(R.string.dtl_amount_invalid)));
+        scanReceiptNode.setText(Html.fromHtml(getString(R.string.dtl_receipt_note)));
     }
 
     @Override
@@ -94,15 +97,11 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         getPresenter().scanReceipt();
     }
 
-    @OnClick(R.id.rescan_receipt)
-    void onRescan() {
-        getPresenter().rescanReceipt();
-    }
-
     @Override
     public void openScanQr(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+        getActivity().finish();
         NavigationBuilder.create()
-                .with(fragmentCompass)
+                .with(activityRouter)
                 .data(dtlPlace)
                 .move(routeCreator.createRoute(dtlTransaction));
     }
@@ -119,8 +118,12 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
 
     @Override
     public void attachReceipt(Uri uri) {
-        rescanReceipt.setVisibility(View.VISIBLE);
+        fabProgress.setVisibility(View.VISIBLE);
         receipt.setImageURI(uri);
+        fabProgress.showProgress(false);
+        fabProgress.setIcon(R.drawable.ic_upload_done, R.drawable.ic_upload_done);
+        int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);
+        circleView.setColor(color);
     }
 
     @Override

@@ -11,22 +11,6 @@
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-            android:id="@+id/amount_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/dtl_receipt_hint"
-            android:inputType="numberDecimal"
-            android:singleLine="true"
-            android:textColor="@color/theme_main"
-            app:met_baseColor="@color/theme_main"
-            app:met_floatingLabel="highlight"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/dtl_receipt_note"/>
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dtlReceiptHeight"
@@ -69,16 +53,26 @@
                 android:text="@string/dtl_receipt_scan"
                 android:textColor="@color/white"/>
 
-            <Button
-                android:id="@+id/rescan_receipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:text="@string/dtl_receipt_rescan"
-                android:textColor="@color/white"
-                android:visibility="gone"/>
-
         </FrameLayout>
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+            android:id="@+id/amount_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:hint="@string/dtl_receipt_hint"
+            android:inputType="numberDecimal"
+            android:singleLine="true"
+            android:textColor="@color/theme_main"
+            app:met_baseColor="@color/theme_main"
+            app:met_floatingLabel="highlight"/>
+
+        <TextView
+            android:id="@+id/scan_receipt_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dtl_receipt_note"/>
+
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -87,13 +81,15 @@
 
             <Button
                 android:id="@+id/verify"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:gravity="center"
                 android:text="@string/dtl_receipt_verify"
-                android:textSize="22sp"/>
+                android:textColor="@color/button_text_color"
+                android:textSize="@dimen/font_medium"
+                android:theme="@style/DtlButtonTheme"/>
         </FrameLayout>
 
         <TextView

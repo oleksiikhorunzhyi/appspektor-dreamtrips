@@ -238,7 +238,7 @@ dependencies {
     compile 'com.github.techery:AndroidImageZoomCrop:1.0.7'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
-    compile 'com.github.techery:ProperRatingBar:b239ea5ea8'
+    compile 'com.github.techery:ProperRatingBar:77350bf31b'
 
     // Util
     compile 'com.android.support:multidex:1.0.1'

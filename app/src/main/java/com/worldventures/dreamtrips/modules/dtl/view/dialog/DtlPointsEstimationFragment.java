@@ -40,12 +40,14 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         // clear possible previous result
         pointsEstimated.setText(R.string.dtl_points_estimation_default_result);
         progressBar.setVisibility(View.VISIBLE);
+        calculateButton.setVisibility(View.GONE);
         calculateButton.setEnabled(false);
     }
 
     @Override
     public void stopProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
+        calculateButton.setVisibility(View.VISIBLE);
         calculateButton.setEnabled(true);
     }
 

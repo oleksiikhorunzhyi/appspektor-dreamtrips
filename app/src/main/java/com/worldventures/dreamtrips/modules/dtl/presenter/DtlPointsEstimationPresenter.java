@@ -30,7 +30,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
 
     protected boolean validateInput(String pointsInput) {
         if (pointsInput.isEmpty()) {
-            view.showError(R.string.dtl_points_estimation_empty_input_error);
+            view.showError(R.string.dtl_field_validation_empty_input_error);
             return false;
         }
         if (Double.valueOf(pointsInput) < 0D) {

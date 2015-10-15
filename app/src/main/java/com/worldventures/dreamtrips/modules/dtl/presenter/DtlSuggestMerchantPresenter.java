@@ -1,15 +1,22 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import android.widget.Toast;
-
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.api.PostDtlDiningPlaceQuery;
+import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.RateContainer;
 
 import java.util.Calendar;
 
-import timber.log.Timber;
-
 public class DtlSuggestMerchantPresenter extends Presenter<DtlSuggestMerchantPresenter.View> {
+
+    private DtlPlace place;
+
+    public DtlSuggestMerchantPresenter(SuggestMerchantBundle data) {
+        place = data.getPlace();
+    }
 
     @Override
     public void takeView(View view) {
@@ -18,13 +25,19 @@ public class DtlSuggestMerchantPresenter extends Presenter<DtlSuggestMerchantPre
     }
 
     public void submitClicked() {
-        String temp = "From Timestamp: " + view.getFromTimestamp() + "\nTo Timestamp: "
-                + view.getToTimestamp() + "\nFood rating: " + view.getFoodRating()
-                + "\nService rating: " + view.getServiceRating()
-                + "\nCleanliness rating: " + view.getCleanlinessRating()
-                + "\nUniqueness rating: " + view.getUniquenessRating();
-        Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
-        Timber.i(temp);
+        if (validate()) {
+            view.showProgress();
+            doRequest(new PostDtlDiningPlaceQuery(place.getId(), view.getContactName(), view.getPhone(),
+                    new ContactTime(view.getFromTimestamp(), view.getToTimestamp()),
+                    new RateContainer(view.getFoodRating(), view.getServiceRating(),
+                            view.getCleanlinessRating(), view.getUniquenessRating()),
+                    view.getAdditionalInfo()),
+                    aVoid -> view.hideProgress(),
+                    spiceException -> {
+                        super.handleError(spiceException);
+                        view.hideProgress();
+                    });
+        }
     }
 
     private void syncUi() {
@@ -36,48 +49,63 @@ public class DtlSuggestMerchantPresenter extends Presenter<DtlSuggestMerchantPre
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
-        onFromDateSet(year, month, day);
-        onFromTimeSet(hour, minute);
-        onToDateSet(year, month + 1, day);
-        onToTimeSet(hour, minute);
-    }
+        view.setFromDate(year, month, day);
+        view.setFromTime(hour, minute);
+        view.setToDate(year, month + 1, day);
+        view.setToTime(hour, minute);
 
-    public void onFromDateSet(int year, int month, int day) {
-        String format = DateTimeUtils.convertDateToString(year, month, day);
-        view.setFromDate(format);
-    }
-
-    public void onFromTimeSet(int hours, int minutes) {
-        String format = DateTimeUtils.convertTimeToString(hours, minutes);
-        view.setFromTime(format);
-    }
-
-    public void onToDateSet(int year, int month, int day) {
-        String format = DateTimeUtils.convertDateToString(year, month, day);
-        view.setToDate(format);
-    }
-
-    public void onToTimeSet(int hours, int minutes) {
-        String format = DateTimeUtils.convertTimeToString(hours, minutes);
-        view.setToTime(format);
+        view.setPlaceName(place.getName());
     }
 
     private boolean validate() {
-        // TODO
+        long from = view.getFromTimestamp(), to = view.getToTimestamp();
+        if (from > to) {
+            view.showToDateError(context.getString(R.string.suggest_merchant_to_date_overlap_error));
+            return false;
+        }
+        if (to < System.currentTimeMillis()) {
+            view.showToDateError(context.getString(R.string.suggest_merchant_to_date_past_error));
+            return false;
+        }
         return true;
     }
 
     public interface View extends Presenter.View {
 
-        void setFromDate(String value);
-        void setFromTime(String value);
-        void setToDate(String value);
-        void setToTime(String value);
+        void setFromDate(int year, int month, int day);
+
+        void setFromTime(int hours, int minutes);
+
+        void setToDate(int year, int month, int day);
+
+        void setToTime(int hours, int minutes);
+
         long getToTimestamp();
+
         long getFromTimestamp();
+
         int getFoodRating();
+
         int getServiceRating();
+
         int getCleanlinessRating();
+
         int getUniquenessRating();
+
+        String getContactName();
+
+        String getPhone();
+
+        String getAdditionalInfo();
+
+        void setPlaceName(String placeName);
+
+        void showToDateError(String message);
+
+        void showProgress();
+
+        void hideProgress();
+
+        void dismiss();
     }
 }

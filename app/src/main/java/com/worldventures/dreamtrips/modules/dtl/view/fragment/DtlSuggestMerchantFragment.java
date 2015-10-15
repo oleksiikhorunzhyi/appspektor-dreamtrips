@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -10,18 +11,22 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
+import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;
+import com.worldventures.dreamtrips.modules.dtl.validator.InputLengthValidator;
 
 import java.util.Calendar;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_suggest_merchant)
 public class DtlSuggestMerchantFragment
-        extends BaseFragment<DtlSuggestMerchantPresenter>
+        extends BaseFragmentWithArgs<DtlSuggestMerchantPresenter, SuggestMerchantBundle>
         implements DtlSuggestMerchantPresenter.View, DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
 
@@ -59,39 +64,25 @@ public class DtlSuggestMerchantFragment
     @InjectView(R.id.additionalInfo)
     DTEditText additionalInfo;
 
+    private SweetAlertDialog progressDialog;
+
     @Override
     protected DtlSuggestMerchantPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlSuggestMerchantPresenter();
+        return new DtlSuggestMerchantPresenter(getArgs());
     }
 
     @Override
-    public void setFromDate(String value) {
-        fromDate.setText(value);
-    }
-
-    @Override
-    public void setFromTime(String value) {
-        fromTime.setText(value);
-    }
-
-    @Override
-    public void setToDate(String value) {
-        toDate.setText(value);
-    }
-
-    @Override
-    public void setToTime(String value) {
-        toTime.setText(value);
-    }
-
-    @Override
-    public long getToTimestamp() {
-        return DateTimeUtils.mergeDateTime(toDate.getText().toString(), toTime.getText().toString()).getTime();
-    }
-
-    @Override
-    public long getFromTimestamp() {
-        return DateTimeUtils.mergeDateTime(fromDate.getText().toString(), fromTime.getText().toString()).getTime();
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        contactName.addValidator(new EmptyValidator(getString(R.string.dtl_field_validation_empty_input_error)));
+        phoneNumber.addValidator(new EmptyValidator(getString(R.string.dtl_field_validation_empty_input_error)));
+        additionalInfo.addValidator(new InputLengthValidator(120,
+                getString(R.string.suggest_merchant_additional_info_length_error)));
+        //
+        progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+        progressDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
+        progressDialog.setTitleText(getString(R.string.pleasewait));
+        progressDialog.setCancelable(false);
     }
 
     @OnClick(R.id.fromDate) void fromDateClicked() {
@@ -129,24 +120,72 @@ public class DtlSuggestMerchantFragment
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         if (datePickerDialog.getTag().equals(PICKER_FROM_TAG)) {
-            getPresenter().onFromDateSet(year, month, day);
+            fromDate.setText(DateTimeUtils.convertDateToString(year, month, day));
         } else {
-            getPresenter().onToDateSet(year, month, day);
+            toDate.setText(DateTimeUtils.convertDateToString(year, month, day));
         }
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
         if (lastTimePickerTag != null && lastTimePickerTag.equals(PICKER_FROM_TAG)) {
-            getPresenter().onFromTimeSet(hourOfDay, minute);
+            fromTime.setText(DateTimeUtils.convertTimeToString(hourOfDay, minute));
         } else if (lastTimePickerTag != null && lastTimePickerTag.equals(PICKER_TO_TAG)) {
-            getPresenter().onToTimeSet(hourOfDay, minute);
+            toTime.setText(DateTimeUtils.convertTimeToString(hourOfDay, minute));
+            toTime.setError(null);
         }
         lastTimePickerTag = null;
     }
 
     @OnClick(R.id.submit) void submitClicked() {
-        getPresenter().submitClicked();
+        if (contactName.validate() && phoneNumber.validate() && additionalInfo.validate()) {
+            getPresenter().submitClicked();
+        }
+    }
+
+    @Override
+    public void setPlaceName(String placeName) {
+        restaurantName.setText(placeName);
+    }
+
+    @Override
+    public String getContactName() {
+        return contactName.getText().toString().trim();
+    }
+
+    @Override
+    public String getPhone() {
+        return phoneNumber.getText().toString().trim();
+    }
+
+    @Override
+    public void setFromDate(int year, int month, int day) {
+        fromDate.setText(formatDate(year, month, day));
+    }
+
+    @Override
+    public void setFromTime(int hours, int minutes) {
+        fromTime.setText(formatTime(hours, minutes));
+    }
+
+    @Override
+    public void setToDate(int year, int month, int day) {
+        toDate.setText(formatDate(year, month, day));
+    }
+
+    @Override
+    public void setToTime(int hours, int minutes) {
+        toTime.setText(formatTime(hours, minutes));
+    }
+
+    @Override
+    public long getToTimestamp() {
+        return DateTimeUtils.mergeDateTime(toDate.getText().toString(), toTime.getText().toString()).getTime();
+    }
+
+    @Override
+    public long getFromTimestamp() {
+        return DateTimeUtils.mergeDateTime(fromDate.getText().toString(), fromTime.getText().toString()).getTime();
     }
 
     @Override
@@ -167,5 +206,38 @@ public class DtlSuggestMerchantFragment
     @Override
     public int getUniquenessRating() {
         return uniquenessRatingBar.getRating();
+    }
+
+    @Override
+    public String getAdditionalInfo() {
+        return additionalInfo.getText().toString().trim();
+    }
+
+    @Override
+    public void showToDateError(String message) {
+        toDate.setError(message);
+    }
+
+    @Override
+    public void showProgress() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgress() {
+        progressDialog.dismissWithAnimation();
+    }
+
+    @Override
+    public void dismiss() {
+        getActivity().onBackPressed();
+    }
+
+    private String formatDate(int year, int month, int day) {
+        return DateTimeUtils.convertDateToString(year, month, day);
+    }
+
+    private String formatTime(int hours, int minutes) {
+        return DateTimeUtils.convertTimeToString(hours, minutes);
     }
 }

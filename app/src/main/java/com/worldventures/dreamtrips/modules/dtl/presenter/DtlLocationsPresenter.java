@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
@@ -21,6 +22,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     @Inject
     LocationDelegate locationDelegate;
+
+    private List<DtlLocation> dtlLocations;
 
     @Override
     public void takeView(View view) {
@@ -42,6 +45,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         }
         doRequest(new GetDtlLocationsQuery(latitude, longitude, 50),
                 dtlLocations -> {
+                    this.dtlLocations = dtlLocations;
                     view.setItems(dtlLocations);
                     view.finishLoading();
                 },
@@ -50,6 +54,17 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
                     view.finishLoading();
                 });
     }
+
+    public void search(String caption) {
+        view.setItems(Queryable.from(dtlLocations).filter(dtlLocation ->
+                dtlLocation.getName().toLowerCase().contains(caption) ||
+                        dtlLocation.getCountryName().toLowerCase().contains(caption)).toList());
+    }
+
+    public void flushSearch() {
+        view.setItems(dtlLocations);
+    }
+
 
     public void onLocationClicked(DtlLocation location) {
         db.saveSelectedDtlLocation(location);

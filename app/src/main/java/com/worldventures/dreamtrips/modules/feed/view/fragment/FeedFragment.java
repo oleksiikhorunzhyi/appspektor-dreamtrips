@@ -27,6 +27,8 @@ import com.worldventures.dreamtrips.modules.feed.view.util.FeedTabletViewManager
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -59,6 +61,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         feedTabletViewManager = new FeedTabletViewManager(rootView);
         feedTabletViewManager.setOnUserClick(() -> getPresenter().onUserClick());
         feedTabletViewManager.setOnCreatePostClick(this::openPost);
+        feedTabletViewManager.setOnFriendsMoreClick(this::openFriends);
     }
 
     private void restorePostIfNeeded() {
@@ -156,6 +159,12 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .attach(Route.POST_CREATE);
     }
 
+    public void openFriends() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .move(Route.FRIENDS);
+    }
+
     @Override
     public void setRequestsCount(int count) {
         if (friendsBadge != null) {
@@ -169,6 +178,11 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
             feedTabletViewManager.setUser(user, true);
             fabPost.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void setupCloseFriends(List<User> friends) {
+        feedTabletViewManager.setCloseFriends(friends, this);
     }
 
 }

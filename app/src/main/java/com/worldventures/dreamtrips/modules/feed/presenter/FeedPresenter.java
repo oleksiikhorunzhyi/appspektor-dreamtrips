@@ -3,12 +3,14 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         view.setupAccount(appSessionHolder.get().get().getUser());
+        
+        if (view.isTabletLandscape())
+            loadFriends();
     }
 
     @Override
@@ -81,9 +86,15 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         openUser(appSessionHolder.get().get().getUser());
     }
 
+    private void loadFriends() {
+        doRequest(new GetFriendsQuery(createDefaultFilterCircle(), null, 0), view::setupCloseFriends);
+    }
+
     public interface View extends BaseFeedPresenter.View {
         void setRequestsCount(int count);
 
         void setupAccount(User user);
+
+        void setupCloseFriends(List<User> friends);
     }
 }

@@ -463,6 +463,7 @@
     <string name="feed_share_post">Share Post</string>
     <string name="feed_share_photos">Share Photo</string>
     <string name="feed_view_profile_btn">View Profile</string>
+    <string name="feed_close_friends">Close Friends</string>
     <string name="start_searching">Type to start searching</string>
 
     <plurals name="people_liked">

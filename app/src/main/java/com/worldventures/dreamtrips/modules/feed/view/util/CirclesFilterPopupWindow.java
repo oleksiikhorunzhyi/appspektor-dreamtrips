@@ -12,7 +12,6 @@ import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -21,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 public class CirclesFilterPopupWindow {
+    private static final int DISMISS_DELAY = 200;
 
     Context context;
     ListPopupWindow listPopupWindow;
@@ -30,9 +30,12 @@ public class CirclesFilterPopupWindow {
 
     private int width = 0;
 
+    private long timeWhenDismissed;
+
     public CirclesFilterPopupWindow(Context context){
         this.context = context;
         listPopupWindow = new ListPopupWindow(context);
+        listPopupWindow.setOnDismissListener(() -> timeWhenDismissed = System.currentTimeMillis());
     }
 
     public void setAnchorView(View view){
@@ -96,5 +99,9 @@ public class CirclesFilterPopupWindow {
 
     public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener) {
         listPopupWindow.setOnItemClickListener(clickListener);
+    }
+
+    public boolean dismissPassed() {
+        return timeWhenDismissed != 0L && (System.currentTimeMillis() - timeWhenDismissed) > DISMISS_DELAY;
     }
 }

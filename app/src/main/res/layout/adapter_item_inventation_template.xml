@@ -14,9 +14,9 @@
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        fresco:actualImageScaleType="centerCrop"
+        fresco:actualImageScaleType="fitCenter"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-        fresco:placeholderImageScaleType="centerCrop"/>
+        fresco:placeholderImageScaleType="fitCenter"/>
 
     <Button
         android:id="@+id/btn_select"

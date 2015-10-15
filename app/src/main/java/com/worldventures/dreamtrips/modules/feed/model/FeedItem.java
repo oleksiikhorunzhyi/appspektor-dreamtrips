@@ -190,34 +190,32 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
 
     public String infoText(Resources resources, int accountId) {
-        boolean isAccountsItem = item == null || item.getUser() == null || accountId == item.getUser().getId();
-        String action = getActionCaption(resources, isAccountsItem);
-        String type = getTypeCaption(resources);
+        if (!links.hasUsers()) return null;
+
         String result;
+        User actionOwner = links.getUsers().get(0);
+        boolean isAccountsItem = item == null || item.getUser() == null || accountId == item.getUser().getId();
+        boolean ownAction = isAccountsItem && accountId == actionOwner.getId();
+        String action = getActionCaption(resources, isAccountsItem, ownAction);
+        String type = getTypeCaption(resources);
+        String companyName = TextUtils.isEmpty(actionOwner.getCompany()) ? "" : " - " + actionOwner.getCompany();
 
         int usersCount = links.getUsers().size();
-        if (usersCount == 0) {
-            return null;
-        }
-
-        User user = links.getUsers().get(0);
-        String companyName = TextUtils.isEmpty(user.getCompany()) ? "" : " - " + user.getCompany();
-
         if (usersCount == 1) {
-            result = resources.getString(R.string.feed_header, user.getFullName(), companyName, action, type);
+            result = resources.getString(R.string.feed_header, actionOwner.getFullName(), companyName, action, type);
         } else if (usersCount == 2) {
             User user2 = links.getUsers().get(1);
             String companyName2 = TextUtils.isEmpty(user2.getCompany()) ? "" : " - " + user2.getCompany();
-            result = resources.getString(R.string.feed_header_two, user.getFullName(), companyName,
+            result = resources.getString(R.string.feed_header_two, actionOwner.getFullName(), companyName,
                     user2.getFullName(), companyName2, action, type);
         } else {
-            result = resources.getString(R.string.feed_header_many, user.getFullName(),
+            result = resources.getString(R.string.feed_header_many, actionOwner.getFullName(),
                     companyName, "" + (usersCount - 1), action, type);
         }
         return result;
     }
 
-    private String getActionCaption(Resources resources, boolean isAccountsItem) {
+    private String getActionCaption(Resources resources, boolean isAccountsItem, boolean ownAction) {
         switch (action) {
             case BOOK:
                 return resources.getString(R.string.booked);
@@ -228,13 +226,13 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
             case SHARE:
                 return resources.getString(R.string.shared);
             case LIKE:
-                return isAccountsItem ? resources.getString(R.string.liked) : resources.getString(R.string.liked_foreign);
+                return isAccountsItem && !ownAction ? resources.getString(R.string.liked) : resources.getString(R.string.liked_foreign);
             case ACCEPT_REQUEST:
                 return resources.getString(R.string.accept_request);
             case REJECT_REQUEST:
                 return resources.getString(R.string.reject_request);
             case COMMENT:
-                return isAccountsItem ? resources.getString(R.string.comment) : resources.getString(R.string.comment_foreign);
+                return isAccountsItem && !ownAction ? resources.getString(R.string.comment) : resources.getString(R.string.comment_foreign);
             case SEND_REQUEST:
                 return resources.getString(R.string.send_request);
         }

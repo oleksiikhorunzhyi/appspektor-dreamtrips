@@ -208,7 +208,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void onEvent(UserClickedEvent event) {
-        view.openUser(new UserBundle(event.getUser()));
+        if (view.isVisibleOnScreen())
+            view.openUser(new UserBundle(event.getUser()));
     }
 
     protected abstract void userStateChanged(User user);

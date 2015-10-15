@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconte
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.MailTo;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -21,7 +20,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -108,14 +106,17 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) loadErrorText(view, errorCode);
             }
 
-            private void loadErrorText (WebView webView, int errorCode){
+            private void loadErrorText(WebView webView, int errorCode) {
+                String errorText;
                 switch (errorCode) {
                     case ERROR_HOST_LOOKUP:
-                        webView.loadData(getString(R.string.error_webview_no_internet), "text", "utf-8");
+                        errorText = webView.getContext().getString(R.string.error_webview_no_internet);
                         break;
                     default:
-                        webView.loadData(getString(R.string.error_webview_default), "text", "utf-8");
+                        errorText = webView.getContext().getString(R.string.error_webview_default);
+                        break;
                 }
+                webView.loadData(errorText, "text", "utf-8");
             }
 
             @Override
@@ -225,7 +226,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     protected void lockOrientationIfNeeded() {
         lockHandler.postDelayed(() -> {
-            if (ViewUtils.isVisibleOnScreen(this)) {
+            if (ViewUtils.isFullVisibleOnScreen(this)) {
                 lockHandler.postDelayed(() -> lockOrientation(getActivity()), 300L);
             } else {
                 unlockOrientation(getActivity());
@@ -234,7 +235,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     protected void unlockOrientationIfNeeded() {
-        if (ViewUtils.isVisibleOnScreen(this)) unlockOrientation(getActivity());
+        if (ViewUtils.isFullVisibleOnScreen(this)) unlockOrientation(getActivity());
     }
 
     @Override

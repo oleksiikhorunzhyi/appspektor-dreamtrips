@@ -50,9 +50,12 @@ public abstract class TripImagesListPresenter
     private TripImagesRoboSpiceController roboSpiceAdapterController;
     protected List<IFullScreenObject> photos = new ArrayList<>();
 
-    public TripImagesListPresenter(Type type) {
+    protected int userId;
+
+    public TripImagesListPresenter(Type type, int userId) {
         super();
         this.type = type;
+        this.userId = userId;
     }
 
     @Override
@@ -62,7 +65,7 @@ public abstract class TripImagesListPresenter
     }
 
     protected void syncPhotos() {
-        photos.addAll(db.readPhotoEntityList(type));
+        photos.addAll(db.readPhotoEntityList(type, userId));
     }
 
     @Override
@@ -146,7 +149,7 @@ public abstract class TripImagesListPresenter
 
         photos.add(0, uploadTask);
         view.add(0, uploadTask);
-        db.savePhotoEntityList(type, photos);
+        db.savePhotoEntityList(type, userId, photos);
         startUpload(uploadTask);
     }
 
@@ -206,7 +209,7 @@ public abstract class TripImagesListPresenter
 
     private void processPhoto(int index, Photo photo) {
         photos.set(index, photo);
-        db.savePhotoEntityList(type, photos);
+        db.savePhotoEntityList(type, userId, photos);
 
         new Handler().postDelayed(() -> {
             if (view != null) view.replace(index, photo);
@@ -240,7 +243,7 @@ public abstract class TripImagesListPresenter
             if (o.getFsId().equals(event.getPhotoId())) {
                 photos.remove(i);
                 view.remove(i);
-                db.savePhotoEntityList(type, photos);
+                db.savePhotoEntityList(type, userId, photos);
             }
         }
     }
@@ -269,22 +272,22 @@ public abstract class TripImagesListPresenter
     }
 
     public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos, int userId) {
-        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES);
+        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES, userId);
         switch (type) {
             case MEMBER_IMAGES:
-                presenter = new UserImagesPresenter();
+                presenter = new UserImagesPresenter(userId);
                 break;
             case MY_IMAGES:
-                presenter = new AccountImagesPresenter();
+                presenter = new AccountImagesPresenter(userId);
                 break;
             case YOU_SHOULD_BE_HERE:
-                presenter = new YSBHPresenter();
+                presenter = new YSBHPresenter(userId);
                 break;
             case INSPIRE_ME:
-                presenter = new InspireMePresenter();
+                presenter = new InspireMePresenter(userId);
                 break;
             case FIXED_LIST:
-                presenter = new FixedPhotoFsPresenter(photos);
+                presenter = new FixedPhotoFsPresenter(photos, userId);
                 break;
             case FOREIGN_IMAGES:
                 presenter = new ForeignImagesPresenter(userId);
@@ -324,7 +327,7 @@ public abstract class TripImagesListPresenter
                         photos.addAll(items);
                     }
 
-                    db.savePhotoEntityList(type, photos);
+                    db.savePhotoEntityList(type, userId, photos);
                 } else {
                     handleError(spiceException);
                 }
@@ -353,7 +356,7 @@ public abstract class TripImagesListPresenter
             if (index != -1) {
                 Photo photo = (Photo) photos.get(index);
                 photos.set(index, temp);
-                db.savePhotoEntityList(type, photos);
+                db.savePhotoEntityList(type, userId, photos);
             }
         }
     }

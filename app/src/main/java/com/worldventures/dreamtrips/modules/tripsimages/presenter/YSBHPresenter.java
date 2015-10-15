@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class YSBHPresenter extends TripImagesListPresenter {
-    public YSBHPresenter() {
-        super(Type.YOU_SHOULD_BE_HERE);
+    public YSBHPresenter(int userId) {
+        super(Type.YOU_SHOULD_BE_HERE, userId);
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
@@ -29,6 +28,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -223,22 +223,13 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @OnClick(R.id.edit)
-    public void actionEdit() {
-        PopupMenu popup = new PopupMenu(getContext(), edit);
-        popup.inflate(R.menu.menu_photo_edit);
-        popup.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_delete:
-                    deletePhoto();
-                    break;
-                case R.id.action_edit:
-                    getPresenter().onEdit();
-                    break;
-            }
-
-            return true;
-        });
-        popup.show();
+    public void actionEdit(View view) {
+        view.setEnabled(false);
+        FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
+                .onDelete(this::deletePhoto)
+                .onEdit(() -> getPresenter().onEdit())
+                .dismissListener(menu -> view.setEnabled(true))
+                .show();
     }
 
     @OnClick(R.id.delete)

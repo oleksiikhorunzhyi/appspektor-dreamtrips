@@ -1,17 +1,12 @@
 package com.worldventures.dreamtrips.core.preference;
 
 import android.content.SharedPreferences;
-import android.support.v4.util.ArrayMap;
 
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
-
-import java.util.Map;
 
 public class Prefs extends SimpleKeyValueStorage {
 
     public static final String LAST_SYNC = "LAST_SYNC";
-    public static final String LAST_SYNC_BUCKET = "LAST_SYNC_BUCKET";
-    public static final String TERMS_ACCEPTED = "terms_accepted";
 
     public Prefs(SharedPreferences preferences) {
         super(preferences);

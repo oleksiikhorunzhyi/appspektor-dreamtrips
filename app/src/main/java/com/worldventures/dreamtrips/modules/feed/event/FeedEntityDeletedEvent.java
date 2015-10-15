@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class FeedEntityDeletedEvent {
 
-    FeedItem eventModel;
+    FeedEntity eventModel;
 
-    public FeedEntityDeletedEvent(FeedItem eventModel) {
+    public FeedEntityDeletedEvent(FeedEntity eventModel) {
         this.eventModel = eventModel;
     }
 
-    public FeedItem getEventModel() {
+    public FeedEntity getEventModel() {
         return eventModel;
     }
 }

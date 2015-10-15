@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -31,6 +30,8 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.profile.adapters.Expandable;
+import com.worldventures.dreamtrips.modules.profile.adapters.OnExpandedListener;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
@@ -41,6 +42,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoCli
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
+import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
 
 import java.text.DecimalFormat;
 
@@ -50,7 +52,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_profile)
-public class ProfileCell extends AbstractCell<User> {
+public class ProfileCell extends AbstractCell<User> implements Expandable{
 
     private DecimalFormat df = new DecimalFormat("#0.00");
 
@@ -127,6 +129,7 @@ public class ProfileCell extends AbstractCell<User> {
     FeatureManager featureManager;
 
     Context context;
+    OnExpandedListener onExpandedListener;
 
     public ProfileCell(View view) {
         super(view);
@@ -429,11 +432,28 @@ public class ProfileCell extends AbstractCell<User> {
             if (info.isOpened()) {
                 info.hide();
                 more.setVisibility(View.VISIBLE);
+                if (onExpandedListener != null) onExpandedListener.onItemExpanded(false);
             } else {
                 info.show();
                 more.setVisibility(View.INVISIBLE);
+                if (onExpandedListener != null) onExpandedListener.onItemExpanded(true);
             }
         }
     }
 
+    @Override
+    public void setListener(OnExpandedListener expandedListener) {
+        this.onExpandedListener = expandedListener;
+    }
+
+    @Override
+    public void setExpanded(boolean expanded) {
+        if (expanded){
+            info.showWithoutAnimation();
+            more.setVisibility(View.INVISIBLE);
+        } else {
+            info.hideWithoutAnimation();
+            more.setVisibility(View.VISIBLE);
+        }
+    }
 }

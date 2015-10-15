@@ -461,6 +461,7 @@
 
     <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
     <string name="search_friends">Search Friends</string>
+    <string name="start_searching">Type to start searching</string>
 
     <string name="dtl_locations_title">Select location</string>
     <string name="dtl_locations_try_search">We could not locate a City close to you.\n Try our city search</string>

@@ -80,10 +80,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
 
         syncUI(tasks);
-
-        ImagePickedEvent event = eventBus.getStickyEvent(ImagePickedEvent.class);
-        if (event != null) onEvent(event);
-
     }
 
     private void restoreBucketItem() {
@@ -293,10 +289,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ////////////////////////////////////////
     public void pickImage(int requestType) {
         eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId.hashCode()));
-    }
-
-    public void onEvent(ImagePickedEvent event) {
-        imagePicked(event);
     }
 
     public void imagePicked(ImagePickedEvent event) {

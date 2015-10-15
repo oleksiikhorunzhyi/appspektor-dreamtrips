@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,23 +56,28 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
 
     @Override
     public void setHeader(FeedItem feedItem) {
+        feedItemHeaderHelper.set(feedItem, getContext(), getPresenter().getAccount().getId(), true);
+        feedItemHeaderHelper.setOnEditClickListener(v -> eventBus.post(new FeedEntityEditClickEvent(feedItem, v)));
+    }
+
+    @Override
+    public void setContent(FeedItem feedItem) {
         fragmentCompass.setContainerId(R.id.entity_content_container);
         fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
         Pair<Route, Parcelable> routeParcelablePair = fragmentFactory.create(feedItem);
         NavigationBuilder.create().with(fragmentCompass).data(routeParcelablePair.second).move(routeParcelablePair.first);
-        setupView(feedItem);
     }
 
     @Override
-    public void updateHeader(FeedItem feedItem) {
-        setupView(feedItem);
-    }
-
-    private void setupView(FeedItem feedItem) {
+    public void setSocial(FeedItem feedItem) {
         actionView.setState(feedItem, isForeignItem(feedItem));
         feedActionHandler.init(actionView);
-        feedItemHeaderHelper.set(feedItem, getContext(), getPresenter().getAccount().getId(), true);
-        feedItemHeaderHelper.setOnEditClickListener(v -> eventBus.post(new FeedEntityEditClickEvent(feedItem, v)));
+    }
+
+    @Override
+    public void updateContent(FeedItem feedItem) {
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.entity_content_container);
+        if (fragment == null) setContent(feedItem);
     }
 
     @Override

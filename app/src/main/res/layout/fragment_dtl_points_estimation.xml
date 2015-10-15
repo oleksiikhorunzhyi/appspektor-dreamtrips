@@ -23,36 +23,45 @@
             android:layout_margin="8dp"
             android:layout_weight="4"
             android:gravity="center"
+            android:hint="@string/dtl_points_estimation_input_hint"
             android:inputType="numberDecimal"
             android:singleLine="true"
-            android:hint="@string/dtl_points_estimation_input_hint"
             />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="invisible"
-            />
-
-        <Button
-            android:id="@+id/calculateButton"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:layout_weight="3"
-            android:text="@string/dtl_points_estimation_calculate_button_caption"
-            android:textAllCaps="false"
-            android:textSize="@dimen/dtlCalculationCalculateButtonTextSize"
-            />
+            >
+
+            <Button
+                android:id="@+id/calculateButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:text="@string/dtl_points_estimation_calculate_button_caption"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dtlCalculationCalculateButtonTextSize"
+                android:theme="@style/DtlButtonTheme"
+                />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                />
+
+        </FrameLayout>
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/pointsEstimated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/inputLayout"
         android:layout_marginTop="10dp"
         android:background="@android:color/white"
         android:gravity="center"

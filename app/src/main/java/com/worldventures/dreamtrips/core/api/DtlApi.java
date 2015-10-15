@@ -32,4 +32,6 @@ public interface DtlApi {
     Void suggestDining(@Path("id") int placeId, @Query("contact_name") String contactName,
                        @Query("phone") String phone, @Query("contact_time") ContactTime contactTime,
                        @Query("rate") RateContainer rateContainer, @Query("description") String desc);
+    @POST("/api/dtl/places/{id}/rating")
+    Void rate(@Path("id") int locationId, @Query("stars") int stars);
 }

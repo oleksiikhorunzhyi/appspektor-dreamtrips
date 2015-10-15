@@ -166,7 +166,7 @@
                 app:selectedTicks="3"
                 app:tickNormalDrawable="@drawable/ic_star_normal"
                 app:tickSelectedDrawable="@drawable/ic_star_selected"
-                app:tickSideMargin="8dp"
+                app:tickMargin="8dp"
                 app:totalTicks="5"
                 app:usable="true"
                 />
@@ -197,7 +197,7 @@
                 app:selectedTicks="3"
                 app:tickNormalDrawable="@drawable/ic_star_normal"
                 app:tickSelectedDrawable="@drawable/ic_star_selected"
-                app:tickSideMargin="8dp"
+                app:tickMargin="8dp"
                 app:totalTicks="5"
                 app:usable="true"
                 />
@@ -228,7 +228,7 @@
                 app:selectedTicks="3"
                 app:tickNormalDrawable="@drawable/ic_star_normal"
                 app:tickSelectedDrawable="@drawable/ic_star_selected"
-                app:tickSideMargin="8dp"
+                app:tickMargin="8dp"
                 app:totalTicks="5"
                 app:usable="true"
                 />
@@ -260,7 +260,7 @@
                 app:selectedTicks="3"
                 app:tickNormalDrawable="@drawable/ic_star_normal"
                 app:tickSelectedDrawable="@drawable/ic_star_selected"
-                app:tickSideMargin="8dp"
+                app:tickMargin="8dp"
                 app:totalTicks="5"
                 app:usable="true"
                 />

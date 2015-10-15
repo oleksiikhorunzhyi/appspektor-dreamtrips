@@ -6,8 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -37,7 +42,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_locations)
-@MenuResource(R.menu.menu_mock)
+@MenuResource(R.menu.menu_locations)
 public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
 
     // permission request codes need to be < 256
@@ -77,6 +82,32 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         recyclerView.setAdapter(adapter);
 
         checkPermissions();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        if (searchItem != null) {
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView.setQueryHint(getString(R.string.dtl_locations_search_caption));
+            searchView.setOnCloseListener(() -> {
+                getPresenter().flushSearch();
+                return false;
+            });
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    getPresenter().search(newText.toLowerCase());
+                    return false;
+                }
+            });
+        }
     }
 
     public void checkPermissions() {
@@ -119,8 +150,9 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
 
     @Override
     public void setItems(List<DtlLocation> dtlLocations) {
-        adapter.setItems(dtlLocations);
+        adapter.clear();
         adapter.addItem(0, getString(R.string.dtl_locations_select_nearby_cities));
+        adapter.addItems(dtlLocations);
     }
 
     @Override

@@ -189,6 +189,7 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
     private void clearTempDirectory() {
         snappyRepository.removeAllUploadTasks();
         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
+        if (!directory.exists()) return;
         try {
             FileUtils.cleanDirectory(context, directory);
         } catch (IOException e) {

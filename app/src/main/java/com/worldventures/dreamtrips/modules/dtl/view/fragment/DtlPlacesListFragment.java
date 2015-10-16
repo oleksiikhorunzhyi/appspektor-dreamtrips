@@ -3,19 +3,14 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -31,7 +26,6 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_places_list)
-@MenuResource(R.menu.menu_dtl_list)
 public class DtlPlacesListFragment
         extends BaseFragment<DtlPlacesListPresenter>
         implements DtlPlacesListPresenter.View {
@@ -75,19 +69,6 @@ public class DtlPlacesListFragment
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
         refreshLayout.setEnabled(false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_map:
-                NavigationBuilder.create().with(fragmentCompass).move(Route.DTL_MAP);
-                break;
-            case R.id.action_dtl_filter:
-                ((MainActivity) getActivity()).openRightDrawer();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

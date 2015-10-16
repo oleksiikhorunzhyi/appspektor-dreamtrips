@@ -10,7 +10,6 @@ public class FragmentNavigator implements Navigator {
         this.fragmentCompass = fragmentCompass;
     }
 
-
     @Override
     public void move(Route route, Bundle bundle) {
         fragmentCompass.replace(route, bundle);

@@ -24,6 +24,8 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentCompass.disableBackStack();
+        fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+        fragmentCompass.setContainerId(R.id.dtl_container);
     }
 
     @Override

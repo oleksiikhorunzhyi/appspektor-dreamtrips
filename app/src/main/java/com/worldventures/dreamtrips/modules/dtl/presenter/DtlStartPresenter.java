@@ -7,14 +7,21 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
 import javax.inject.Inject;
 
+import icepick.State;
+
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
     @Inject
     SnappyRepository db;
+    @State
+    boolean initialized;
 
     @Override
     public void takeView(View view) {
         super.onInjected();
+        if (initialized) return;
+        initialized = true;
+        //
         DtlLocation location = db.getSelectedDtlLocation();
         if (location == null) {
             view.openDtlLocationsScreen();

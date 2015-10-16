@@ -5,9 +5,11 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
@@ -29,14 +31,17 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
+    DtlLocation location;
     List<DtlPlace> dtlPlaces = new ArrayList<>();
 
-    public DtlMapPresenter() {
+    public DtlMapPresenter(PlacesBundle bundle) {
+        location = bundle.getLocation();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        view.initToolbar(location);
         if (dtlFilterData == null) {
             dtlFilterData = new DtlFilterData();
         }
@@ -105,5 +110,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         void showPlaceInfo(DtlPlace dtlPlace);
 
         void prepareInfoWindow(int height);
+
+        void initToolbar(DtlLocation location);
     }
 }

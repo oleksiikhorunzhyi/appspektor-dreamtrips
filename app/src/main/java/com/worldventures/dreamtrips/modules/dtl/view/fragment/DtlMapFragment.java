@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -19,13 +18,15 @@ import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlacesToolbarHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 
 import icepick.State;
 
-@Layout(R.layout.fragment_map_with_info)
+@Layout(R.layout.fragment_dtl_places_map)
 @MenuResource(R.menu.menu_dtl_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
@@ -33,17 +34,36 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @State
     LatLng selectedLocation;
     //
+    DtlPlacesToolbarHelper toolbarHelper;
     FragmentCompass infoFragmentCompass;
 
     @Override
     protected DtlMapPresenter createPresenter(Bundle savedInstanceState) {
         bundle = getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
-        return new DtlMapPresenter();
+        return new DtlMapPresenter(bundle);
     }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        toolbarHelper = new DtlPlacesToolbarHelper(getActivity(), fragmentCompass, eventBus);
+        toolbarHelper.attach(rootView);
+        toolbarHelper.inflateMenu(R.menu.menu_dtl_map, item -> {
+            switch (item.getItemId()) {
+                case R.id.action_list:
+                    fragmentCompass.disableBackStack();
+                    NavigationBuilder.create().with(fragmentCompass)
+                            .data(bundle)
+                            .move(Route.DTL_PLACES_LIST);
+                    fragmentCompass.enableBackStack();
+                    return true;
+                case R.id.action_dtl_filter:
+                    ((MainActivity) getActivity()).openRightDrawer();
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        });
         infoFragmentCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.container_info);
         infoFragmentCompass.setSupportFragmentManager(getChildFragmentManager());
         fragmentCompass.setSupportFragmentManager(getFragmentManager());
@@ -51,21 +71,16 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_list:
-                NavigationBuilder.create().with(fragmentCompass)
-                        .data(bundle)
-                        .move(Route.DTL_PLACES_LIST);
-                return true;
-            case R.id.action_dtl_filter:
-                ((MainActivity) getActivity()).openRightDrawer();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void onResume() {
+        super.onResume();
+        toolbarHelper.onResume();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        toolbarHelper.onPause();
+    }
 
     @Override
     protected boolean onMarkerClick(Marker marker) {
@@ -121,5 +136,10 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         int resultY = height + getResources().getDimensionPixelSize(R.dimen.spacing_huge);
         int offset = resultY - centerY;
         animateToMarker(selectedLocation, offset);
+    }
+
+    @Override
+    public void initToolbar(DtlLocation location) {
+        toolbarHelper.setPlaceForToolbar(location);
     }
 }

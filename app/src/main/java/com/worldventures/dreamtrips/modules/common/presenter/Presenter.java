@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.module.qualifier.Global;
@@ -16,7 +17,6 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.Navigator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -27,7 +27,7 @@ import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import timber.log.Timber;
 
-public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.FailureListener {
+public class Presenter<VT extends Presenter.View> implements RequestingPresenter, DreamSpiceManager.FailureListener {
 
     protected VT view;
 
@@ -130,12 +130,26 @@ public class Presenter<VT extends Presenter.View> implements DreamSpiceManager.F
         }
     }
 
-    protected <T> void doRequest(SpiceRequest<T> request,
+    @Override
+    public <T> void doRequest(SpiceRequest<T> request) {
+        dreamSpiceManager.execute(request, r -> {}, this);
+    }
+
+    @Override
+    public <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, successListener, this);
     }
 
-    protected <T> void doRequest(SpiceRequest<T> request,
+    @Override
+    public <T> void doRequestWithCacheKey(SpiceRequest<T> request, String cacheKey,
+                                             DreamSpiceManager.SuccessListener<T> successListener) {
+        dreamSpiceManager.execute(request, cacheKey, DurationInMillis.ALWAYS_RETURNED,
+                successListener, this);
+    }
+
+    @Override
+    public <T> void doRequest(SpiceRequest<T> request,
                                  DreamSpiceManager.SuccessListener<T> successListener,
                                  DreamSpiceManager.FailureListener failureListener) {
         dreamSpiceManager.execute(request, successListener, failureListener);

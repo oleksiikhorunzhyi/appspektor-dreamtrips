@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.andexert.expandablelayout.library.ExpandableLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -23,12 +22,16 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.profile.adapters.Expandable;
+import com.worldventures.dreamtrips.modules.profile.adapters.OnExpandedListener;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
@@ -39,6 +42,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoCli
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
+import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
 
 import java.text.DecimalFormat;
 
@@ -48,7 +52,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_profile)
-public class ProfileCell extends AbstractCell<User> {
+public class ProfileCell extends AbstractCell<User> implements Expandable{
 
     private DecimalFormat df = new DecimalFormat("#0.00");
 
@@ -72,10 +76,6 @@ public class ProfileCell extends AbstractCell<User> {
     protected ProgressBar coverProgressBar;
     @InjectView(R.id.trip_images)
     protected TextView tripImages;
-    @InjectView(R.id.dream_trips)
-    protected TextView trips;
-    @InjectView(R.id.update_info)
-    protected TextView updateInfo;
     @InjectView(R.id.add_friend)
     protected TextView addFriend;
     @InjectView(R.id.company_name)
@@ -88,10 +88,6 @@ public class ProfileCell extends AbstractCell<User> {
     protected TextView friends;
     @InjectView(R.id.post)
     protected TextView post;
-    @InjectView(R.id.messages)
-    protected TextView messages;
-    @InjectView(R.id.control_more)
-    protected TextView controllMore;
     @InjectView(R.id.et_user_id)
     protected DTEditText etUserId;
     @InjectView(R.id.et_from)
@@ -116,17 +112,24 @@ public class ProfileCell extends AbstractCell<User> {
     protected AppCompatTextView accept;
     @InjectView(R.id.reject)
     protected AppCompatTextView reject;
-    @InjectView(R.id.control_panel)
-    protected ViewGroup controlPanel;
-
+    @InjectView(R.id.badge)
+    BadgeView badge;
+    @InjectView(R.id.fl_friends_container)
+    View friendsContainer;
+    @InjectView(R.id.divider1)
+    View divider1;
+    @InjectView(R.id.divider3)
+    View divider3;
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
+    @Inject
+    SnappyRepository snapper;
     @Inject
     FeatureManager featureManager;
 
     Context context;
+    OnExpandedListener onExpandedListener;
 
     public ProfileCell(View view) {
         super(view);
@@ -140,28 +143,34 @@ public class ProfileCell extends AbstractCell<User> {
             cover.setVisibility(View.VISIBLE);
             avatar.setVisibility(View.VISIBLE);
             addFriend.setVisibility(View.GONE);
-            updateInfo.setVisibility(View.VISIBLE);
             userBalance.setVisibility(View.VISIBLE);
         } else {
             cover.setVisibility(View.GONE);
             avatar.setVisibility(View.GONE);
-            updateInfo.setVisibility(View.GONE);
             userBalance.setVisibility(View.GONE);
             addFriend.setVisibility(View.VISIBLE);
 
             itemView.findViewById(R.id.wrapper_enroll).setVisibility(View.GONE);
             itemView.findViewById(R.id.wrapper_from).setVisibility(View.GONE);
             itemView.findViewById(R.id.wrapper_date_of_birth).setVisibility(View.GONE);
+            itemView.findViewById(R.id.wrapper_user_id).setVisibility(View.GONE);
             more.setVisibility(View.INVISIBLE);
 
             setIsExpandEnabled(false);
             info.show();
         }
 
-        if (isAccount() && featureManager.available(Feature.SOCIAL))
-            controlPanel.setVisibility(View.VISIBLE);
-        else
-            controlPanel.setVisibility(View.GONE);
+        if (isAccount() && featureManager.available(Feature.SOCIAL)) {
+            post.setVisibility(View.VISIBLE);
+            friendsContainer.setVisibility(View.VISIBLE);
+            divider3.setVisibility(View.VISIBLE);
+        } else {
+            post.setVisibility(View.GONE);
+            friendsContainer.setVisibility(View.GONE);
+            divider3.setVisibility(View.GONE);
+        }
+
+        divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL)? View.GONE : View.VISIBLE);
 
         if (!TextUtils.isEmpty(user.getCompany())) {
             companyName.setVisibility(View.VISIBLE);
@@ -179,7 +188,7 @@ public class ProfileCell extends AbstractCell<User> {
 
         ProfileViewUtils.setUserStatus(user, userStatus, context.getResources());
 
-        setAvatarImage(Uri.parse(user.getAvatar().getMedium()));
+        setAvatarImage(Uri.parse(user.getAvatar() == null ? "" : user.getAvatar().getMedium()));
         setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
         setFriendButtonText(R.string.profile_friends);
 
@@ -217,10 +226,11 @@ public class ProfileCell extends AbstractCell<User> {
         progressBar.setVisibility(user.isAvatarUploadInProgress() ? View.VISIBLE : View.GONE);
         coverProgressBar.setVisibility(user.isCoverUploadInProgress() ? View.VISIBLE : View.GONE);
 
+        setBadgeValue();
     }
 
     private boolean isAccount() {
-        return appSessionHolder.get().get().getUser().getId() == getModelObject().getId();
+        return appSessionHolder.get().isPresent() && appSessionHolder.get().get().getUser().getId() == getModelObject().getId();
     }
 
 
@@ -245,8 +255,12 @@ public class ProfileCell extends AbstractCell<User> {
     private void setImage(Uri uri, SimpleDraweeView draweeView) {
         PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
         if (draweeView.getTag() != null) {
+            if (uri.equals(draweeView.getTag())) {
+                return;
+            }
             builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
         }
+        builder.setOldController(draweeView.getController());
         builder.setImageRequest(ImageRequest.fromUri(uri));
         DraweeController dc = builder.build();
         draweeView.setController(dc);
@@ -276,10 +290,6 @@ public class ProfileCell extends AbstractCell<User> {
 
     public void setTripImagesCount(int count) {
         tripImages.setText(String.format(context.getString(R.string.profile_trip_images), count));
-    }
-
-    public void setTripsCount(int count) {
-        trips.setText(String.format(context.getString(R.string.profile_dream_trips), count));
     }
 
     public void setBucketItemsCount(int count) {
@@ -341,6 +351,26 @@ public class ProfileCell extends AbstractCell<User> {
         friendRequest.setVisibility(View.GONE);
     }
 
+    @Override
+    public void clearResources() {
+        super.clearResources();
+        if (getEventBus().isRegistered(this))
+            getEventBus().unregister(this);
+    }
+
+    private void setBadgeValue() {
+        if (isAccount()) {
+            int badgeCount = snapper.getFriendsRequestsCount();
+            if (badgeCount > 0) {
+                badge.setVisibility(View.VISIBLE);
+                badge.setText(String.valueOf(badgeCount));
+            } else {
+                badge.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            badge.setVisibility(View.INVISIBLE);
+        }
+    }
 
     /***
      * View Events
@@ -380,11 +410,6 @@ public class ProfileCell extends AbstractCell<User> {
         getEventBus().post(new OnCoverClickEvent());
     }
 
-
-    @OnClick(R.id.update_info)
-    void onUpdateInfo() {
-    }
-
     @OnClick(R.id.accept)
     protected void onAcceptRequest() {
         getEventBus().post(new OnAcceptRequestEvent());
@@ -394,13 +419,11 @@ public class ProfileCell extends AbstractCell<User> {
     @OnClick(R.id.reject)
     protected void onRejectRequest() {
         getEventBus().post(new OnRejectRequestEvent());
-
     }
 
     @OnClick(R.id.add_friend)
     protected void onAddFriend() {
         getEventBus().post(new OnAddFriendEvent());
-
     }
 
     @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
@@ -409,12 +432,28 @@ public class ProfileCell extends AbstractCell<User> {
             if (info.isOpened()) {
                 info.hide();
                 more.setVisibility(View.VISIBLE);
+                if (onExpandedListener != null) onExpandedListener.onItemExpanded(false);
             } else {
                 info.show();
                 more.setVisibility(View.INVISIBLE);
+                if (onExpandedListener != null) onExpandedListener.onItemExpanded(true);
             }
         }
     }
 
+    @Override
+    public void setListener(OnExpandedListener expandedListener) {
+        this.onExpandedListener = expandedListener;
+    }
 
+    @Override
+    public void setExpanded(boolean expanded) {
+        if (expanded){
+            info.showWithoutAnimation();
+            more.setVisibility(View.INVISIBLE);
+        } else {
+            info.hideWithoutAnimation();
+            more.setVisibility(View.VISIBLE);
+        }
+    }
 }

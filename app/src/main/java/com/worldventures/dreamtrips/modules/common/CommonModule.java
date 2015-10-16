@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
-
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
@@ -18,20 +17,22 @@ import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.Palyer360Activity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.SimpleStreamPlayerActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
-import com.worldventures.dreamtrips.modules.membership.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
+import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +53,8 @@ import dagger.Provides;
                 LaunchActivity.class,
                 MainActivity.class,
                 PlayerActivity.class,
-                ShareActivity.class,
-                SimpleStreamPlayerActivity.class,
+                ShareFragment.class,
+                Palyer360Activity.class,
                 FilterableArrayListAdapter.class,
                 DraggableArrayListAdapter.class,
                 NavigationDrawerFragment.class,
@@ -61,7 +62,8 @@ import dagger.Provides;
                 PresentationVideosPresenter.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
-                CopyFileCommand.class
+                CopyFileCommand.class,
+                ProgressDialogFragment.class
 
         },
         complete = false,
@@ -82,9 +84,10 @@ public class CommonModule {
 
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
+        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
-        activeComponents.add(InfoModule.MEMBERSHIP);
+        activeComponents.add(VideoModule.MEMBERSHIP);
         activeComponents.add(BucketListModule.BUCKETLIST);
         activeComponents.add(ProfileModule.MY_PROFILE);
 

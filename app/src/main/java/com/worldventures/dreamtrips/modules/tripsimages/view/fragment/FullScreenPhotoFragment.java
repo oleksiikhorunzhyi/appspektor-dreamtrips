@@ -1,22 +1,19 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -24,9 +21,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -42,10 +45,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
-        extends BaseFragment<FullScreenPresenter<T>> implements FullScreenPresenter.View {
-
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
-    public static final String EXTRA_PHOTO = "EXTRA_PHOTO";
+        extends BaseFragmentWithArgs<FullScreenPresenter<T>, FullScreenPhotoBundle> implements FullScreenPresenter.View {
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;
@@ -73,20 +73,18 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     protected ImageView ivLike;
     @InjectView(R.id.iv_share)
     protected ImageView ivShare;
-    @InjectView(R.id.iv_flag)
-    protected ImageView ivFlag;
-    @InjectView(R.id.iv_delete)
-    protected ImageView ivDelete;
+    @InjectView(R.id.flag)
+    protected FlagView flag;
+    @InjectView(R.id.edit)
+    protected ImageView edit;
+    @InjectView(R.id.delete)
+    protected ImageView delete;
     @InjectView(R.id.user_photo)
     protected SimpleDraweeView civUserPhoto;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
-    @InjectView(R.id.progress_flag)
-    protected ProgressBar progressFlag;
     @InjectView(R.id.iv_comment)
     protected ImageView ivComment;
-    @InjectView(R.id.content_divider)
-    protected ImageView contentDivider;
 
     private TripImagesListFragment.Type type;
 
@@ -95,7 +93,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         super.afterCreateView(rootView);
 
         if (type == TripImagesListFragment.Type.FIXED_LIST) {
-            ivShare.setVisibility(View.GONE);
             tvSeeMore.setVisibility(View.GONE);
         }
 
@@ -146,11 +143,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
-        IFullScreenObject photo = (IFullScreenObject) getArguments().getSerializable(EXTRA_PHOTO);
-        type = (TripImagesListFragment.Type) getArguments().getSerializable(EXTRA_TYPE);
+        IFullScreenObject photo = getArgs().getPhoto();
+        type = getArgs().getType();
 
-        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo,
-                getArguments().getBoolean(FullScreenPhotoWrapperFragment.EXTRA_FOREIGN));
+        FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo, type, getArgs().isForeign());
         if (photo != null) {
             fullScreenPresenter.setPhoto(photo);
             fullScreenPresenter.setType(type);
@@ -222,24 +218,42 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         }
     }
 
-    @OnClick(R.id.iv_delete)
-    public void actionDelete() {
-        new MaterialDialog.Builder(getActivity())
-                .title(R.string.delete_photo_title)
-                .content(R.string.delete_photo_text)
-                .positiveText(R.string.delete_photo_positiove)
-                .negativeText(R.string.delete_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().onDeleteAction();
-                    }
+    @OnClick(R.id.edit)
+    public void actionEdit(View view) {
+        view.setEnabled(false);
+        FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
+                .onDelete(this::deletePhoto)
+                .onEdit(() -> getPresenter().onEdit())
+                .dismissListener(menu -> view.setEnabled(true))
+                .show();
+    }
 
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
+    @OnClick(R.id.delete)
+    public void delete() {
+        deletePhoto();
+    }
+
+    private void deletePhoto() {
+        Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(R.string.photo_delete))
+                .setContentText(getResources().getString(R.string.photo_delete_caption))
+                .setConfirmText(getResources().getString(R.string.post_delete_confirm))
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    getPresenter().onDeleteAction();
+                });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+
+    @Override
+    public void setEditVisibility(boolean visible) {
+        if (visible) {
+            edit.setVisibility(View.VISIBLE);
+        } else {
+            edit.setVisibility(View.GONE);
+        }
+
     }
 
     @OnClick(R.id.iv_like)
@@ -247,70 +261,38 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         getPresenter().onLikeAction();
     }
 
-    @OnClick(R.id.iv_flag)
+    @OnClick(R.id.flag)
     public void actionFlag() {
         getPresenter().onFlagAction();
     }
 
-    @OnClick(R.id.iv_comment)
+    @OnClick({R.id.iv_comment, R.id.tv_comments_count})
     public void actionComment() {
+        getPresenter().onCommentsAction();
     }
 
+    @OnClick(R.id.tv_likes_count)
+    public void actionLikes() {
+        getPresenter().onLikesAction();
+    }
+
+    @Override
+    public void openEdit(EditPhotoBundle bundle) {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .data(bundle)
+                .attach(Route.PHOTO_EDIT);
+    }
+
+    @Override
+    public void setShareVisibility(boolean shareVisible) {
+        ivShare.setVisibility(shareVisible ? View.VISIBLE : View.GONE);
+    }
 
     @Override
     public void setFlags(List<Flag> flags) {
-        PopupMenu popup = new PopupMenu(getActivity(), ivFlag);
-        for (int i = 0; i < flags.size(); i++) {
-            Flag flagContent = flags.get(i);
-            popup.getMenu().add(0, i, i, flagContent.getName());
-        }
-        popup.setOnMenuItemClickListener(item -> {
-            getPresenter().showFlagAction(item.getOrder());
-            return true;
-        });
-        popup.show();
-    }
-
-    public void showFlagConfirmDialog(String reason, String desc) {
-        String content = getString(R.string.flag_photo_first) + " " + reason.toLowerCase() + " " + getString(R.string.flag_photo_second);
-        new MaterialDialog.Builder(getActivity())
-                .title(R.string.flag_photo_title)
-                .content(content)
-                .positiveText(R.string.flag_photo_positive)
-                .negativeText(R.string.flag_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getPresenter().sendFlagAction(reason, desc);
-                    }
-                })
-                .show();
-    }
-
-    public void showFlagDescription(String reason) {
-        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.flag_description_title)
-                .customView(R.layout.dialog_flag_description, true)
-                .positiveText(R.string.flag_description_positive)
-                .negativeText(R.string.flag_description_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        EditText et = ButterKnife.findById(dialog, R.id.tv_description);
-                        String desc = et.getText().toString();
-                        showFlagConfirmDialog(reason, desc);
-                    }
-                }).build();
-        dialog.show();
-        View positiveButton = dialog.getActionButton(DialogAction.POSITIVE);
-        positiveButton.setEnabled(false);
-        EditText etDesc = (EditText) dialog.getCustomView().findViewById(R.id.tv_description);
-        etDesc.addTextChangedListener(new TextWatcherAdapter() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                positiveButton.setEnabled(s.toString().trim().length() > 0);
-            }
-        });
+        flag.showFlagsPopup(flags, (reason, desc) -> getPresenter().sendFlagAction(reason, desc));
     }
 
     @Override
@@ -395,11 +377,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @Override
-    public void setContentDividerVisibility(boolean show) {
-        contentDivider.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
     public void setCommentVisibility(boolean commentVisible) {
         ivComment.setVisibility(commentVisible ? View.VISIBLE : View.GONE);
     }
@@ -412,18 +389,18 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setFlagVisibility(boolean isVisible) {
         if (isVisible) {
-            ivFlag.setVisibility(View.VISIBLE);
+            flag.setVisibility(View.VISIBLE);
         } else {
-            ivFlag.setVisibility(View.GONE);
+            flag.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void setDeleteVisibility(boolean isVisible) {
         if (isVisible) {
-            ivDelete.setVisibility(View.VISIBLE);
+            delete.setVisibility(View.VISIBLE);
         } else {
-            ivDelete.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
         }
     }
 
@@ -438,12 +415,12 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     public void showProgress() {
-        progressFlag.setVisibility(View.VISIBLE);
+        flag.showProgress();
     }
 
     @Override
     public void hideProgress() {
-        progressFlag.setVisibility(View.GONE);
+        flag.hideProgress();
     }
 
     private SweetAlertDialog progressDialog;

@@ -6,9 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
+import com.techery.spares.adapter.HeaderItem;
 
-public class SuccessStory extends BaseEntity implements Parcelable, Filterable, HeaderAdapter.HeaderItem {
+public class SuccessStory extends BaseEntity implements Parcelable, Filterable, HeaderItem {
 
     public static final Creator<SuccessStory> CREATOR = new Creator<SuccessStory>() {
         public SuccessStory createFromParcel(Parcel source) {

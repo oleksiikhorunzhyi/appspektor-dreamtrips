@@ -35,50 +35,51 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     @Inject
     protected SnappyRepository db;
 
-    @Icicle
+    @State
     ArrayList<RegionModel> regions = new ArrayList<>();
-    @Icicle
+    @State
     ArrayList<ActivityModel> activities = new ArrayList<>();
-    @Icicle
+    @State
     ArrayList<ActivityModel> parentActivities = new ArrayList<>();
 
     /**
      * variables for filtering
      */
-    @Icicle
+    @State
     double maxPrice = Double.MAX_VALUE;
-    @Icicle
+    @State
     double minPrice = 0.0d;
-    @Icicle
+    @State
     int maxNights = Integer.MAX_VALUE;
-    @Icicle
+    @State
     int minNights = 0;
-    @Icicle
+    @State
     boolean showSoldOut = false;
-    @Icicle
+    @State
     boolean showFavorites = false;
-    @Icicle
+    @State
     boolean showRecentlyAdded = false;
-    @Icicle
+    @State
     FilterModel filterModel;
-    @Icicle
+    @State
     ThemeHeaderModel themeHeaderModel;
-    @Icicle
+    @State
     RegionHeaderModel regionHeaderModel;
-    @Icicle
+    @State
     FilterSoldOutModel soldOutModel;
-    @Icicle
+    @State
     FilterRecentlyAddedModel recentlyAddedModel;
-    @Icicle
+    @State
     FilterFavoriteModel favoriteModel;
-    @Icicle
+    @State
     DateFilterItem dateFilterItem;
 
     @Override

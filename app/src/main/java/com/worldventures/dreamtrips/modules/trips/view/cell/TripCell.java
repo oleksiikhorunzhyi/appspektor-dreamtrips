@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.trips.view.cell;
 
 import android.graphics.PointF;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckedTextView;
@@ -23,7 +22,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
 import javax.inject.Inject;
 
@@ -118,13 +117,11 @@ public class TripCell extends AbstractCell<TripModel> {
     }
 
     @OnClick(R.id.itemLayout)
-    void actionItemClick() {
-        Bundle args = new Bundle();
-        args.putSerializable(DetailTripActivity.EXTRA_TRIP, getModelObject());
+    public void actionItemClick() {
         NavigationBuilder.create()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .with(activityRouter)
-                .args(args)
+                .data(new TripDetailsBundle(getModelObject()))
                 .attach(Route.DETAILED_TRIP);
     }
 

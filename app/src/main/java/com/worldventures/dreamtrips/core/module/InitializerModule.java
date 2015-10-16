@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.module;
 
 import com.techery.spares.application.AppInitializer;
+import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.HockeyInitializer;
@@ -20,6 +21,7 @@ import dagger.Provides;
                 FabricInitializer.class,
                 FrescoInitializer.class,
                 SoftInputInitializer.class,
+                BadgeCountObserverInitializer.class
         },
         library = true, complete = false)
 public class InitializerModule {
@@ -64,5 +66,10 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideFrescoInitializer() {
         return new FrescoInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideBadgeCountObserverInitializer() {
+        return new BadgeCountObserverInitializer();
     }
 }

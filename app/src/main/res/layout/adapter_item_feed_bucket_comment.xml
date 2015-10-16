@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:background="@color/gray_lighter"
+             android:background="@color/grey_lighter"
              android:layout_marginLeft="@dimen/feed_spacing"
              android:layout_marginRight="@dimen/feed_spacing"
     >
@@ -24,6 +24,10 @@
             <include layout="@layout/adapter_item_feed_bucket_child"/>
 
             <include layout="@layout/include_bucket_item_meta"/>
+
+            <include layout="@layout/adapter_item_feed_comment_footer"/>
+
+            <include layout="@layout/include_user_liked"/>
 
         </LinearLayout>
 

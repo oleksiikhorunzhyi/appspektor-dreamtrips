@@ -8,6 +8,9 @@ import com.techery.spares.module.DebugModule;
 import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
+import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
+import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
+import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,7 +32,15 @@ import dagger.Provides;
                 ApiModule.class,
                 AmazonModule.class,
                 //
-                UiBindingModule.class
+                UiBindingModule.class,
+                //
+                RouteCreatorModule.class,
+                //
+                GcmModule.class,
+                ActionReceiverModule.class,
+                //
+                ResponseSnifferModule.class,
+                BadgeCountObserverModule.class
         },
         library = true,
         complete = false,

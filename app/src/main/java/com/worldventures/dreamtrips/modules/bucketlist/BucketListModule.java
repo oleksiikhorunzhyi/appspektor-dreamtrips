@@ -25,15 +25,17 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
-import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopuralFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopularFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
+import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.FixedPhotoFsPresenter;
 
 import dagger.Module;
@@ -47,7 +49,7 @@ import dagger.Provides;
                 BucketTabsPresenter.class,
                 BucketListPresenter.class,
                 BucketPopularPresenter.class,
-                BucketListPopuralFragment.class,
+                BucketListPopularFragment.class,
                 BucketTabsFragment.class,
                 BucketPopularTabsFragment.class,
                 BucketListFragment.class,
@@ -58,6 +60,7 @@ import dagger.Provides;
                 AutoCompleteAdapter.class,
                 BucketItemAdapter.class,
                 IgnoreFirstItemAdapter.class,
+                IgnoreFirstExpandedItemAdapter.class,
                 BucketAddPhotoCell.class,
                 BucketPhotoUploadCell.class,
                 BucketPhotoCell.class,
@@ -71,17 +74,14 @@ import dagger.Provides;
                 ForeignBucketTabPresenter.class,
                 ForeignBucketListFragment.class,
                 BucketItemStaticCell.class,
-                ForeignBucketListPresenter.class
+                ForeignBucketListPresenter.class,
+                DeleteBucketDialog.class
         },
         complete = false,
         library = true
 )
 public class BucketListModule {
 
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
-    public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
-    public static final String EXTRA_ITEM = "EXTRA_ITEM";
-        public static final String EXTRA_LOCK = "EXTRA_LOCK";
     public static final String BUCKETLIST = Route.BUCKET_LIST.name();
 
     @Provides(type = Provides.Type.SET)

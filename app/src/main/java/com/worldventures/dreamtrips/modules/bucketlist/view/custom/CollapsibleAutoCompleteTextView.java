@@ -32,4 +32,11 @@ public class CollapsibleAutoCompleteTextView extends AutoCompleteTextView implem
         SoftInputUtil.hideSoftInputMethod(this);
     }
 
+    //fix bug on meizu
+    @Override
+    protected void replaceText(CharSequence text) {
+        setText(null);
+        super.replaceText(text);
+    }
+
 }

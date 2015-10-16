@@ -1,27 +1,51 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
+import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.MEMBER_IMAGES;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
 public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     private List<Flag> flags;
+
+    private FeedEntity feedEntity;
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        loadEntity(feedEntityHolder -> {
+            feedEntity = feedEntityHolder.getItem();
+            photo.setLiked(feedEntity.isLiked());
+            photo.setCommentsCount(feedEntity.getCommentsCount());
+            photo.setLikesCount(feedEntity.getLikesCount());
+            setupActualViewState();
+        });
+    }
 
     @Override
     public void onDeleteAction() {
@@ -51,6 +75,37 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         doRequest(dreamTripsRequest, obj -> onLikeSuccess(), exc -> onLikeFailure());
     }
 
+    @Override
+    public void onCommentsAction() {
+        if (feedEntity == null) {
+            loadEntity(feedEntityHolder -> {
+                feedEntity = feedEntityHolder.getItem();
+                navigateToComments();
+            });
+        } else {
+            navigateToComments();
+        }
+    }
+
+    private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {
+        doRequest(new GetFeedEntityQuery(photo.getUid()), successListener);
+    }
+
+    private void navigateToComments() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                    .data(new CommentsBundle(feedEntity, false))
+                .move(Route.COMMENTS);
+    }
+
+    @Override
+    public void onLikesAction() {
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(new UsersLikedEntityBundle(photo.getUid()))
+                .move(Route.USERS_LIKED_CONTENT);
+    }
+
     private void onLikeFailure() {
         view.informUser(context.getString(R.string.can_not_like_photo));
     }
@@ -72,15 +127,29 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         return photo.isLiked();
     }
 
+    @Override
+    public void onEdit() {
+        view.openEdit(new EditPhotoBundle(photo));
+    }
 
     @Override
     protected boolean isFlagVisible() {
-        return type == MEMBER_IMAGES && getAccount().getId() != photo.getUser().getId();
+        return photo.getUser() != null && getAccount().getId() != photo.getUser().getId();
     }
 
     @Override
     protected boolean isDeleteVisible() {
+        return false;
+    }
+
+    @Override
+    protected boolean isEditVisible() {
         return photo.getUser() != null && getAccount().getId() == photo.getUser().getId();
+    }
+
+    @Override
+    protected boolean isCommentVisible() {
+        return true;
     }
 
     @Override
@@ -96,7 +165,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     private void loadFlags() {
         view.showProgress();
-        doRequest(new GetFlagContentQuery(), this::flagsLoaded);
+        doRequest(new GetFlagContentQuery(), this::flagsLoaded, spiceException -> view.hideProgress());
     }
 
     private void flagsLoaded(List<Flag> flags) {
@@ -107,13 +176,21 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         }
     }
 
-    @Override
-    public void showFlagAction(int order) {
-        Flag flag = flags.get(order);
-        if (flag.isRequireDescription()) {
-            view.showFlagDescription(flag.getName());
-        } else {
-            view.showFlagConfirmDialog(flag.getName(), null);
+    public void onEvent(FeedEntityChangedEvent event) {
+        updatePhoto(event.getFeedEntity());
+    }
+
+    public void onEvent(FeedEntityCommentedEvent event) {
+        updatePhoto(event.getFeedEntity());
+    }
+
+    private void updatePhoto(FeedEntity feedEntity) {
+        if (feedEntity instanceof Photo) {
+            Photo temp = (Photo) feedEntity;
+            if (photo.equals(temp)) {
+                this.photo = temp;
+                setupActualViewState();
+            }
         }
     }
 }

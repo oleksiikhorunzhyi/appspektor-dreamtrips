@@ -3,7 +3,7 @@
     <solid android:color="@color/white"/>
     <stroke
         android:width="@dimen/spacing_tiniest"
-        android:color="@color/gray_lighter"/>
+        android:color="@color/grey_lighter"/>
     <corners
         android:radius="@dimen/spacing_tiny"/>
 

@@ -11,15 +11,28 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
+import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+
+import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -28,7 +41,7 @@ import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.adapter_item_comment)
-public class CommentCell extends AbstractCell<Comment> {
+public class CommentCell extends AbstractCell<Comment> implements Flaggable {
 
     @InjectView(R.id.user_photo)
     SimpleDraweeView userPhoto;
@@ -46,11 +59,16 @@ public class CommentCell extends AbstractCell<Comment> {
     ImageView reply;
     @InjectView(R.id.edited)
     ImageView edited;
+    @Optional
+    @InjectView(R.id.flag)
+    FlagView flag;
 
     @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
+    SessionHolder<UserSession> appSessionHolder;
     @Inject
     ActivityRouter activityRouter;
+    @Inject @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     private CommentCellHelper commentCellHelper;
 
@@ -72,11 +90,26 @@ public class CommentCell extends AbstractCell<Comment> {
                 edit.setVisibility(View.GONE);
             }
 
+        if (flag != null) {
+            if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {
+                flag.setVisibility(View.GONE);
+            } else {
+                flag.setVisibility(View.VISIBLE);
+            }
+        }
+
         if (getModelObject().isUpdate()) {
             edited.setVisibility(View.VISIBLE);
         } else {
             edited.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Optional
+    @OnClick(R.id.flag)
+    void onFlagClicked() {
+        flag.showProgress();
+        getEventBus().post(new LoadFlagEvent(this));
     }
 
     @Optional
@@ -113,6 +146,14 @@ public class CommentCell extends AbstractCell<Comment> {
 
     }
 
+    @Override
+    public void showFlagDialog(List<Flag> flags) {
+        flag.hideProgress();
+        FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flag);
+        popupMenu.show(flags, (reason, desc) -> getEventBus().post(new ItemFlaggedEvent(getModelObject(),
+                reason + ". " + desc)));
+    }
+
     @Optional
     @OnClick(R.id.user_photo)
     void commentOwnerClicked() {
@@ -121,7 +162,10 @@ public class CommentCell extends AbstractCell<Comment> {
     }
 
     private void openUser(User user) {
-        activityRouter.openUserProfile(user);
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(routeCreator.createRoute(user.getId()));
     }
 
 }

@@ -12,6 +12,6 @@ public class DateTimeSerializer implements JsonSerializer<Date> {
 
     @Override
     public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-        return context.serialize(DateTimeUtils.getDefaultISOFormat().format(src));
+        return context.serialize(DateTimeUtils.convertDateToUTCString(src));
     }
 }

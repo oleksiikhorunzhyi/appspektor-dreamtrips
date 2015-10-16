@@ -4,15 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Comment implements Parcelable, Serializable {
+public class Comment implements Parcelable, Serializable, UidItem {
 
     String uid;
-    long parent_id;
+    String parent_id;
     String text;
     User user;
     @SerializedName("created_at")
@@ -21,9 +22,12 @@ public class Comment implements Parcelable, Serializable {
     Date updatedAt;
     boolean update;
 
+    public Comment() {
+    }
+
     protected Comment(Parcel in) {
         uid = in.readString();
-        parent_id = in.readLong();
+        parent_id = in.readString();
         text = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
     }
@@ -60,6 +64,7 @@ public class Comment implements Parcelable, Serializable {
         return createdAt;
     }
 
+    @Override
     public String getUid() {
         return uid;
     }
@@ -76,7 +81,7 @@ public class Comment implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(uid);
-        parcel.writeLong(parent_id);
+        parcel.writeString(parent_id);
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
     }

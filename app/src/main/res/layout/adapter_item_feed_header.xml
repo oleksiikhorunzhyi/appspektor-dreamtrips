@@ -17,16 +17,21 @@
         fresco:roundAsCircle="true"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/feed_header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:singleLine="false"
             android:textSize="@dimen/abc_text_size_subhead_material"
+            android:layout_marginRight="@dimen/spacing_normal"
             tools:text="John Doe, Adobe booked a DreamTrip"/>
 
         <TextView
@@ -35,10 +40,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:drawableLeft="@drawable/ic_feed_location_small"
-            android:drawableStart="@drawable/ic_feed_location_small"
             android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_feed_location_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
+            android:visibility="gone"
             tools:text="Katerini, Greece"/>
 
         <TextView
@@ -48,11 +54,25 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:drawableLeft="@drawable/ic_feed_calendar_small"
-            android:drawableStart="@drawable/ic_feed_calendar_small"
             android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_feed_calendar_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
             tools:text="Jan 27, 2015   9:00AM"/>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/edit_feed_item"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="1dp"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:focusableInTouchMode="false"
+        android:padding="6dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_comment_edit"
+        android:visibility="gone"/>
 </LinearLayout>

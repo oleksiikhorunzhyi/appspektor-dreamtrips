@@ -25,8 +25,6 @@ import dagger.Provides;
                 SuccessStoryDetailsPresenter.class,
                 RepToolsFragment.class,
                 RepToolsPresenter.class,
-                TrainingVideosFragment.class,
-                TrainingVideosPresenter.class
         },
         complete = false,
         library = true

@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -15,87 +17,48 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.event.PostClosedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
-import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import icepick.Icicle;
 
 @Layout(R.layout.fragment_feed)
-@MenuResource(R.menu.menu_mock)
-public class FeedFragment extends BaseFragment<FeedPresenter>
+@MenuResource(R.menu.menu_activity_feed)
+public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
+
     @InjectView(R.id.fab_post)
     FloatingActionButton fabPost;
-    @InjectView(R.id.feedview)
-    FeedView feedView;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout swipeContainer;
 
-    private WeakHandler weakHandler;
-    private Bundle savedInstanceState;
+    BadgeImageView friendsBadge;
 
-    private BaseArrayListAdapter<BaseEventModel> adapter;
-
-    @Icicle
-    ArrayList<BaseEventModel> items;
-    @Icicle
-    boolean postShown;
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (adapter != null) {
-            List<BaseEventModel> items = adapter.getItems();
-            this.items = new ArrayList<>(items);
-        }
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.savedInstanceState = savedInstanceState;
-        weakHandler = new WeakHandler();
-    }
+    private CirclesFilterPopupWindow filterPopupWindow;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
-        swipeContainer.setOnRefreshListener(this);
-        adapter = new BaseArrayListAdapter<>(feedView.getContext(), injectorProvider);
-        feedView.setup(savedInstanceState, adapter);
-        if (items != null) {
-            adapter.addItems(items);
+        restorePostIfNeeded();
+    }
+
+    private void restorePostIfNeeded() {
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        if (baseFragment instanceof PostFragment) {
+            showPostContainer();
         }
-        adapter.notifyDataSetChanged();
-
-        feedView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int itemCount = feedView.getLayoutManager().getItemCount();
-                int lastVisibleItemPosition = feedView.getLayoutManager().findLastVisibleItemPosition();
-                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
-            }
-        });
-
-        if (postShown) openPost();
     }
 
     @OnClick(R.id.fab_post)
@@ -104,8 +67,48 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
     }
 
     @Override
-    public void onRefresh() {
-        getPresenter().reloadFeed();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem item = menu.findItem(R.id.action_friend_requests);
+        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(item);
+        friendsBadge.setOnClickListener(v ->
+                NavigationBuilder.create()
+                        .with(activityRouter)
+                        .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+                        .attach(Route.FRIENDS));
+        getPresenter().refreshRequestsCount();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_filter:
+                if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
+                    actionFilter();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        filterPopupWindow = null;
+    }
+
+    private void actionFilter() {
+        FeedPresenter presenter = getPresenter();
+        View menuItemView = getActivity().findViewById(R.id.action_filter);
+        filterPopupWindow = new CirclesFilterPopupWindow(getContext());
+        filterPopupWindow.setCircles(presenter.getFilterCircles());
+        filterPopupWindow.setAnchorView(menuItemView);
+        filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            filterPopupWindow.dismiss();
+            presenter.applyFilter((Circle) parent.getItemAtPosition(position));
+        });
+        filterPopupWindow.show();
+        filterPopupWindow.setCheckedCircle(presenter.getAppliedFilterCircle());
     }
 
     @Override
@@ -114,26 +117,11 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
     }
 
     @Override
-    public void startLoading() {
-        weakHandler.post(() -> {
-            if (swipeContainer != null) swipeContainer.setRefreshing(true);
-        });
-    }
-
-    @Override
-    public void finishLoading() {
-        weakHandler.post(() -> {
-            if (swipeContainer != null) swipeContainer.setRefreshing(false);
-        });
-    }
-
-    @Override
-    public BaseArrayListAdapter<BaseEventModel> getAdapter() {
-        return adapter;
+    public BaseArrayListAdapter getAdapter() {
+        return new BaseArrayListAdapter<>(feedView.getContext(), injectorProvider);
     }
 
     public void openPost() {
-        postShown = true;
         showPostContainer();
 
         fragmentCompass.removePost();
@@ -145,25 +133,11 @@ public class FeedFragment extends BaseFragment<FeedPresenter>
                 .attach(Route.POST_CREATE);
     }
 
-    public void onEvent(PostClosedEvent event) {
-        postShown = false;
-    }
-
     @Override
-    public void setEmptyViewVisibility(boolean visible) {
-        //TODO
-    }
-
-    private void showPostContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void insertItem(BaseEventModel baseEventModel) {
-        feedView.getAdapter().addItem(0, baseEventModel);
-        feedView.getAdapter().notifyItemInserted(0);
-        feedView.scrollToPosition(0);
+    public void setRequestsCount(int count) {
+        if (friendsBadge != null) {
+            friendsBadge.setBadgeValue(count);
+        }
     }
 
 }

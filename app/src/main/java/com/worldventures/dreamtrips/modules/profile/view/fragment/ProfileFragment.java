@@ -2,42 +2,34 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.event.PostClosedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
-import icepick.Icicle;
 
 
-public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFragment<T>
-        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFeedFragment<T, UserBundle>
+        implements ProfilePresenter.View {
 
     @Inject
     @ForActivity
@@ -52,68 +44,33 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @InjectView(R.id.profile_user_status)
     protected TextView profileToolbarUserStatus;
 
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout swipeContainer;
-
-    @InjectView(R.id.feedview)
-    FeedView feedView;
-
-    private WeakHandler weakHandler;
-    private Bundle savedInstanceState;
-
-    private IgnoreFirstItemAdapter adapter;
-
-    @Icicle
-    ArrayList<Object> items;
-    @Icicle
-    boolean postShown;
-    private int screenHeight;
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (adapter != null) {
-            List<Object> items = adapter.getItems();
-            this.items = new ArrayList<>(items);
-        }
-        super.onSaveInstanceState(outState);
-    }
+    private int scrollArea;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
-        weakHandler = new WeakHandler();
-        screenHeight = ViewUtils.getScreenHeight(getActivity());
+        calculateScrollArea();
     }
 
+    private void calculateScrollArea(){
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 0;
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+        int profilePhotoHeight = getResources().getDimensionPixelSize(R.dimen.profile_cover_height);
+        scrollArea = profilePhotoHeight - actionBarHeight;
+    }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
-        layoutConfiguration();
-        adapter = new IgnoreFirstItemAdapter(feedView.getContext(), injectorProvider);
-        feedView.setup(savedInstanceState, adapter);
-        if (items != null) {
-            adapter.addItems(items);
-        }
-        adapter.notifyDataSetChanged();
-
-        feedView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int itemCount = feedView.getLayoutManager().getItemCount();
-                int lastVisibleItemPosition = feedView.getLayoutManager().findLastVisibleItemPosition();
-
-                if (itemCount > 0)
-                    getPresenter().scrolled(itemCount, lastVisibleItemPosition);
-            }
-        });
 
         feedView.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);
-            if (percent >= 0.6) {
+            if (percent >= 1.0) {
                 profileToolbarTitle.setVisibility(View.VISIBLE);
                 profileToolbarUserStatus.setVisibility(View.VISIBLE);
             } else {
@@ -122,7 +79,18 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
             }
         });
 
-        if (postShown) openPost();
+        initialToolbar();
+        restorePostIfNeeded();
+    }
+
+    protected abstract void initialToolbar();
+
+    private void restorePostIfNeeded() {
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        if (baseFragment instanceof PostFragment) {
+            showPostContainer();
+        }
     }
 
     @Override
@@ -137,7 +105,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     @Override
     public void setUser(User user) {
         if (adapter.getItems().contains(user)) {
-            adapter.itemUpdated(user);
+            adapter.updateItem(user);
         } else {
             adapter.addItem(0, user);
             adapter.notifyItemInserted(0);
@@ -148,7 +116,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
     }
 
     private float calculateOffset() {
-        return Math.min(feedView.getScrollOffset() / (float) screenHeight, 1);
+        return Math.min(feedView.getScrollOffset() / (float) scrollArea, 1);
     }
 
     private void setToolbarAlpha(float percentage) {
@@ -156,32 +124,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
         int round = Math.round(Math.min(1, percentage * 2) * 255);
         c.setAlpha(round);
         profileToolbar.setBackgroundDrawable(c);
-    }
-
-    private void layoutConfiguration() {
-        swipeContainer.setOnRefreshListener(this);
-    }
-
-
-    @Override
-    public void onRefresh() {
-        getPresenter().onRefresh();
-    }
-
-    @Override
-    public void startLoading() {
-        weakHandler.postDelayed(() -> {
-            if (swipeContainer != null) swipeContainer.setRefreshing(true);
-        }, 100);
-    }
-
-    @Override
-    public void finishLoading() {
-        weakHandler.postDelayed(() -> {
-            if (swipeContainer != null) {
-                swipeContainer.setRefreshing(false);
-            }
-        }, 100);
     }
 
     @Override
@@ -193,7 +135,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
 
     @Override
     public void openPost() {
-        postShown = true;
         showPostContainer();
 
         fragmentCompass.removePost();
@@ -205,30 +146,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFr
                 .attach(Route.POST_CREATE);
     }
 
-    public void onEvent(PostClosedEvent event) {
-        postShown = false;
-    }
-
     @Override
-    public BaseArrayListAdapter getAdapter() {
-        return feedView.getAdapter();
+    protected BaseArrayListAdapter getAdapter() {
+        return new IgnoreFirstItemAdapter(feedView.getContext(), injectorProvider);
     }
-
 
     @Override
     public void notifyUserChanged() {
-        feedView.getAdapter().notifyItemChanged(0);
+        feedView.getAdapter().notifyDataSetChanged();
     }
 
-    private void showPostContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void insertItem(BaseEventModel baseEventModel) {
-        feedView.getAdapter().addItem(ProfilePresenter.HEADER_RELOAD_POSITION, baseEventModel);
-        feedView.getAdapter().notifyItemInserted(ProfilePresenter.HEADER_RELOAD_POSITION);
-        feedView.scrollToPosition(ProfilePresenter.HEADER_RELOAD_POSITION);
-    }
 }

@@ -11,7 +11,6 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -40,7 +39,6 @@ public class SnappyRepository {
     public static final String CATEGORIES = "categories";
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
-    public static final String FOREIGN_BUCKET_LIST = "foreign_bucket_list";
     public static final String TRIP_KEY = "trip_rezopia_v2";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
@@ -49,7 +47,13 @@ public class SnappyRepository {
     public static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
-    private static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
+    public static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
+    public static final String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
+    public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
+    public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
+    public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+    public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
+
     private Context context;
     private ExecutorService executorService;
 
@@ -73,12 +77,11 @@ public class SnappyRepository {
                 if (isNotFound(e)) Timber.v("Nothing found");
                 else Timber.w(e, "DB fails to act", e);
             } finally {
-                if (snappyDb != null)
-                    try {
-                        snappyDb.close();
-                    } catch (SnappydbException e) {
-                        Timber.w(e, "DB fails to close");
-                    }
+                try {
+                    if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
+                } catch (SnappydbException e) {
+                    Timber.w(e, "DB fails to close");
+                }
             }
         });
     }
@@ -153,28 +156,14 @@ public class SnappyRepository {
         putList(key, items);
     }
 
-
-    public void deleteAllForeignBucketList() {
-        act(db -> {
-            String[] keys = db.findKeys(FOREIGN_BUCKET_LIST);
-            for (String key : keys) {
-                db.del(key);
-            }
-        });
-    }
-
-
     @NonNull
     private String getBucketKey(String type, int userId) {
-        String key = (userId == 0 ? BUCKET_LIST : FOREIGN_BUCKET_LIST) + ":" + type;
-        if (userId != 0) {
-            key += "_" + userId;
-        }
-        return key;
-    }
-
-    public List<BucketItem> readBucketList(String type) {
-        return readBucketList(type, 0);
+     if(userId==0){
+         throw  new IllegalStateException("userId can't be 0");
+     }
+        String key = (BUCKET_LIST) + ":" + type;
+        key += "_" + userId;
+        return key.toLowerCase();
     }
 
     public List<BucketItem> readBucketList(String type, int userId) {
@@ -194,29 +183,6 @@ public class SnappyRepository {
 
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // POST
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void savePost(CachedPostEntity post) {
-        act(db -> db.put(POST, post));
-    }
-
-    public boolean hasPost() {
-        return actWithResult(db -> {
-            String[] keys = db.findKeys(POST);
-            return keys != null && keys.length > 0;
-        }).or(false);
-    }
-
-    public CachedPostEntity getPost() {
-        return actWithResult(db -> db.get(POST, CachedPostEntity.class)).orNull();
-    }
-
-    public void removePost() {
-        act(db -> db.del(POST));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -321,13 +287,13 @@ public class SnappyRepository {
     // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
 
-    public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
-        putList(IMAGE + ":" + type, items);
+    public void savePhotoEntityList(Type type, int userId, List<IFullScreenObject> items) {
+        putList(IMAGE + ":" + type + ":" + userId, items);
 
     }
 
-    public List<IFullScreenObject> readPhotoEntityList(Type type) {
-        return readList(IMAGE + ":" + type, IFullScreenObject.class);
+    public List<IFullScreenObject> readPhotoEntityList(Type type, int userId) {
+        return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -367,6 +333,31 @@ public class SnappyRepository {
                 .orNull();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Notifications counters
+    ///////////////////////////////////////////////////////////////////////////
+
+    /** All notifications */
+    public void saveBadgeNotificationsCount(int notificationsCount) {
+        act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
+    }
+
+    /** All notifications */
+    public int getBadgeNotificationsCount() {
+        return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
+    }
+
+    public void saveCountFromHeader(String headerKey, int count) {
+        act(db -> db.putInt(headerKey, count));
+    }
+
+    public int getExclusiveNotificationsCount() {
+        return actWithResult(db -> db.getInt(EXCLUSIVE_NOTIFICATIONS_COUNT)).or(0);
+    }
+
+    public int getFriendsRequestsCount() {
+        return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Circles
@@ -378,6 +369,14 @@ public class SnappyRepository {
 
     public List<Circle> getCircles() {
         return readList(CIRCLES, Circle.class);
+    }
+
+    public void saveFilterCircle(Circle circle){
+        act(db -> db.put(FILTER_CIRCLE, circle));
+    }
+
+    public Circle getFilterCircle(){
+        return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -392,4 +391,17 @@ public class SnappyRepository {
     private interface SnappyResult<T> {
         T call(DB db) throws SnappydbException;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // GCM
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void setGcmRegToken(String token) {
+        act(db -> db.put(GCM_REG_TOKEN, token));
+    }
+
+    public String getGcmRegToken() {
+        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
+    }
+
 }

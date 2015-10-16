@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
 import java.util.List;
@@ -39,6 +39,9 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_success_stories)
 public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPresenter> implements SwipeRefreshLayout.OnRefreshListener, SuccessStoryListPresenter.View {
+
+    private static final String EXTRA_IS_SEARCH_ICONIFIED = "extra_is_search_iconified";
+    private static final String EXTRA_IS_SEARCH_FOCUSED= "extra_is_search_focused";
 
     @InjectView(R.id.recyclerViewStories)
     protected EmptyRecyclerView recyclerView;
@@ -91,6 +94,22 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (outState == null || search == null) return;
+        outState.putBoolean(EXTRA_IS_SEARCH_ICONIFIED, search.isIconified());
+        outState.putBoolean(EXTRA_IS_SEARCH_FOCUSED, search.isFocused());
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) return;
+        search.setIconified(savedInstanceState.getBoolean(EXTRA_IS_SEARCH_ICONIFIED, true));
+        if ( savedInstanceState.getBoolean(EXTRA_IS_SEARCH_FOCUSED, false) ) search.requestFocus();
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
@@ -107,7 +126,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(recyclerView)
-                .setStickyHeadersAdapter(new HeaderAdapter(adapter.getItems(),
+                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems(),
                         R.layout.adapter_item_succes_story_header), false)
                 .build();
 
@@ -192,7 +211,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     public void openStory(Bundle bundle) {
         if (isTabletLandscape()) {
             fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.setSupportFragmentManager(getSupportFragmentManager());
+            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
 
             bundle.putBoolean(SuccessStoryDetailsFragment.EXTRA_SLAVE, true);
             NavigationBuilder.create().with(fragmentCompass).args(bundle).move(Route.SUCCESS_STORES_DETAILS);

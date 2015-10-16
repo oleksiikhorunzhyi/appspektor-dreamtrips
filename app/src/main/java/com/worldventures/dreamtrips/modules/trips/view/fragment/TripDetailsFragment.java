@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,15 +22,15 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.activity.DetailTripActivity;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.io.Serializable;
@@ -42,7 +43,7 @@ import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.fragment_trip_details)
 @MenuResource(R.menu.menu_detailed_trip)
-public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
+public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresenter, TripDetailsBundle>
         implements TripDetailsPresenter.View {
 
     @InjectView(R.id.textViewName)
@@ -75,8 +76,6 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
     protected FrameLayout pointsCountLayout;
     @InjectView(R.id.textViewFeatured)
     protected TextView textViewFeatured;
-    @InjectView(R.id.layoutBookIt)
-    protected View layoutBookIt;
     @InjectView(R.id.textViewBookIt)
     protected TextView textViewBookIt;
 
@@ -96,7 +95,7 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
         return new TripDetailsPresenter();
     }
 
-    @OnClick(R.id.layoutBookIt)
+    @OnClick(R.id.textViewBookIt)
     public void bookIt() {
         getPresenter().actionBookIt();
     }
@@ -136,7 +135,7 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
             toolbarLanscape.getBackground().setAlpha(255);
         }
 
-        getPresenter().setTrip((TripModel) getArguments().getSerializable(DetailTripActivity.EXTRA_TRIP));
+        getPresenter().setTrip(getArgs().tripModel());
 
         BaseStatePagerAdapter adapter =
                 new BaseStatePagerAdapter(getChildFragmentManager()) {
@@ -232,15 +231,20 @@ public class TripDetailsFragment extends BaseFragment<TripDetailsPresenter>
 
     @Override
     public void hideBookIt() {
-        layoutBookIt.setEnabled(false);
+        textViewBookIt.setEnabled(false);
         textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
+    public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+    }
+
+    @Override
+    public void openBookIt(String url) {
+        NavigationBuilder.create().with(activityRouter).data(new UrlBundle(url)).move(Route.BOOK_IT);
     }
 
     @Override

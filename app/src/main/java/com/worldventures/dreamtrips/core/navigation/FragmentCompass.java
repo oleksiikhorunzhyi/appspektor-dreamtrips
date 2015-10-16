@@ -5,6 +5,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.util.Log;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -15,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class FragmentCompass {
@@ -34,6 +37,11 @@ public class FragmentCompass {
 
     public void setContainerId(int containerId) {
         this.containerId = containerId;
+    }
+
+    public void showContainer() {
+        View container = ButterKnife.findById(activity, containerId);
+        if (container != null) container.setVisibility(View.VISIBLE);
     }
 
     public void add(Route route) {
@@ -192,8 +200,7 @@ public class FragmentCompass {
 
     protected void clearBackStack() {
         try {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            supportFragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } catch (IllegalStateException e) {
             Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
         }

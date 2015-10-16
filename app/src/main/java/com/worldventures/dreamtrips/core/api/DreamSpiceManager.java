@@ -16,6 +16,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
+import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
@@ -25,7 +26,6 @@ import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,20 +45,22 @@ import retrofit.mime.TypedInput;
 import roboguice.util.temp.Ln;
 import timber.log.Timber;
 
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
+
 public class DreamSpiceManager extends SpiceManager {
 
     @Inject
+    protected Context context;
+    @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
     @Inject
     protected LocalesHolder localeStorage;
-
     @Inject
     @Global
     protected EventBus eventBus;
-
     @Inject
-    protected Context context;
+    AuthorizedDataUpdater authorizedDataUpdater;
+
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
@@ -66,10 +68,35 @@ public class DreamSpiceManager extends SpiceManager {
         Ln.getConfig().setLoggingLevel(Log.ERROR);
     }
 
-    public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener,
-                            FailureListener failureListener) {
+    public <T> void execute(final SpiceRequest<T> request) {
+        execute(request, SuccessListener.STUB, FailureListener.STUB);
+    }
+
+    public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
         super.execute(request, new RequestListener<T>() {
+            @Override
+            public void onRequestFailure(SpiceException error) {
+                processError(error, failureListener, (loginResponse, exception) -> {
+                    if (loginResponse != null) {
+                        execute(request, successListener, failureListener);
+                    } else {
+                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                    }
+                });
+            }
+
+            @Override
+            public void onRequestSuccess(T t) {
+                successListener.onRequestSuccess(t);
+            }
+        });
+    }
+
+    public <T> void execute(final SpiceRequest<T> request, String cacheKey, long cacheExpiryDuration,
+                            SuccessListener<T> successListener, FailureListener failureListener) {
+        request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
+        super.execute(request, cacheKey, cacheExpiryDuration, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
                 processError(error, failureListener, (loginResponse, exception) -> {
@@ -126,6 +153,7 @@ public class DreamSpiceManager extends SpiceManager {
             loginResponse.setSession(session);
             handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
                     username, userPassword);
+            authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
         }, spiceError -> {
             onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
@@ -135,10 +163,10 @@ public class DreamSpiceManager extends SpiceManager {
     public static boolean isLoginError(Exception error) {
         if (error instanceof RetrofitError) {
             RetrofitError cause = (RetrofitError) error;
-            return cause.getResponse() != null && cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
+            return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
         } else if (error.getCause() instanceof RetrofitError) {
             RetrofitError cause = (RetrofitError) error.getCause();
-            return cause.getResponse() != null && cause.getResponse().getStatus() == HttpStatus.SC_UNAUTHORIZED;
+            return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
         }
         return false;
     }
@@ -264,9 +292,15 @@ public class DreamSpiceManager extends SpiceManager {
 
     public interface FailureListener {
         void handleError(SpiceException spiceException);
+
+        FailureListener STUB = spiceException -> {
+        };
     }
 
     public interface SuccessListener<T> {
         void onRequestSuccess(T t);
+
+        SuccessListener STUB = t -> {
+        };
     }
 }

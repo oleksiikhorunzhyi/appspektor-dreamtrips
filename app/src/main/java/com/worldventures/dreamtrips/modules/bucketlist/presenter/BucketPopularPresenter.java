@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocationQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -27,7 +28,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     @Inject
     BucketItemManager bucketItemManager;
 
-    private BucketTabsPresenter.BucketType type;
+    private BucketItem.BucketType type;
 
     SweetDialogHelper sweetDialogHelper;
 
@@ -53,7 +54,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         }
     };
 
-    public BucketPopularPresenter(BucketTabsPresenter.BucketType type) {
+    public BucketPopularPresenter(BucketItem.BucketType type) {
         super();
         this.type = type;
         sweetDialogHelper = new SweetDialogHelper();

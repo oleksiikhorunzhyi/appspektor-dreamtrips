@@ -10,8 +10,11 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
@@ -26,12 +29,14 @@ public class UserFragment extends ProfileFragment<UserPresenter>
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
-        return new UserPresenter(getArguments());
+        return new UserPresenter(getArgs());
     }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        profileToolbarTitle.setVisibility(View.INVISIBLE);
+        profileToolbarUserStatus.setVisibility(View.INVISIBLE);
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
@@ -53,5 +58,16 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         if (userPhoto != null) {
             new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, userPhoto.getDrawable());
         }
+    }
+
+    @Override
+    public void openFriendPrefs(UserBundle userBundle) {
+        NavigationBuilder.create().with(activityRouter).data(userBundle).move(Route.FRIEND_PREFERENCES);
+    }
+
+    @Override
+    protected void initialToolbar() {
+        profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 }

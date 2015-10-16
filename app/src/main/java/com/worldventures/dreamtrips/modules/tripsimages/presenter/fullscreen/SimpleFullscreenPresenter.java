@@ -16,4 +16,19 @@ public class SimpleFullscreenPresenter extends FullScreenPresenter {
     protected boolean isLikeVisible() {
         return false;
     }
+
+    @Override
+    protected boolean isEditVisible() {
+        return false;
+    }
+
+    @Override
+    protected boolean isCommentVisible() {
+        return false;
+    }
+
+    @Override
+    protected boolean isShareVisible() {
+        return false;
+    }
 }

@@ -6,6 +6,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketListPresenter;
 
@@ -24,13 +25,8 @@ public class ForeignBucketListFragment extends BucketListFragment<ForeignBucketL
     }
 
     @Override
-    public Route getDetailsRoute() {
-        return Route.DETAIL_FOREIGN_BUCKET;
-    }
-
-    @Override
     protected ForeignBucketListPresenter createPresenter(Bundle savedInstanceState) {
-        BucketTabsPresenter.BucketType type = (BucketTabsPresenter.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
+        BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
         return new ForeignBucketListPresenter(type, getObjectGraph());
     }
 }

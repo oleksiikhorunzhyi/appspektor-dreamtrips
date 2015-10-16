@@ -119,26 +119,26 @@ public abstract class Optional<T> implements Serializable {
      * <p>Note about generics: The signature {@code public T or(T defaultValue)} is overly
      * restrictive. However, the ideal signature, {@code public <S super T> S or(S)}, is not legal
      * Java. As a result, some sensible operations involving subtypes are compile errors:
-     * <pre>   {@code
+     * <configurationStarted>   {@code
      * <p>
      *   Optional<Integer> optionalInt = getSomeOptionalInt();
      *   Number value = optionalInt.or(0.5); // error
      * <p>
      *   FluentIterable<? extends Number> numbers = getSomeNumbers();
      *   Optional<? extends Number> first = numbers.first();
-     *   Number value = first.or(0.5); // error}</pre>
+     *   Number value = first.or(0.5); // error}</configurationStarted>
      * <p>
      * <p>As a workaround, it is always safe to cast an {@code Optional<? extends T>} to {@code
      * Optional<T>}. Casting either of the above example {@code Optional} instances to {@code
      * Optional<Number>} (where {@code Number} is the desired output type) solves the problem:
-     * <pre>   {@code
+     * <configurationStarted>   {@code
      * <p>
      *   Optional<Number> optionalInt = (Optional) getSomeOptionalInt();
      *   Number value = optionalInt.or(0.5); // fine
      * <p>
      *   FluentIterable<? extends Number> numbers = getSomeNumbers();
      *   Optional<Number> first = (Optional) numbers.first();
-     *   Number value = first.or(0.5); // fine}</pre>
+     *   Number value = first.or(0.5); // fine}</configurationStarted>
      */
     public abstract T or(T defaultValue);
 

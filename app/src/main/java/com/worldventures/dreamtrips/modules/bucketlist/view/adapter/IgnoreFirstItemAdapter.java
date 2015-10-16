@@ -5,8 +5,6 @@ import android.content.Context;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 
-import java.util.List;
-
 import javax.inject.Provider;
 
 public class IgnoreFirstItemAdapter extends BaseArrayListAdapter {

@@ -17,6 +17,10 @@ public class Links implements Serializable {
         return users;
     }
 
+    public boolean hasUsers() {
+        return users != null && users.size() > 0;
+    }
+
     public static Links forUser(User user) {
         Links links = new Links();
         links.users = new ArrayList<>();

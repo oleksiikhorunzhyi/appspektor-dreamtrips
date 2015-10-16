@@ -33,7 +33,6 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Inject
     protected FragmentCompass fragmentCompass;
 
-
     public PM getPresenter() {
         return presenter;
     }
@@ -55,6 +54,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         this.presenter.onInjected();
         Icepick.restoreInstanceState(this, savedInstanceState);
         this.presenter.restoreInstanceState(savedInstanceState);
+        this.presenter.onCreate(savedInstanceState);
     }
 
     @Override
@@ -91,6 +91,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         super.onPrepareOptionsMenu(menu);
         if (this.presenter != null && isAdded()) this.presenter.onMenuPrepared();
     }
+
 
     @Override
     public void onStart() {
@@ -160,7 +161,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public boolean isVisibleOnScreen() {
-        return ViewUtils.isVisibleOnScreen(this);
+        return ViewUtils.isFullVisibleOnScreen(this);
     }
 
     public void hideSoftInput(View view) {

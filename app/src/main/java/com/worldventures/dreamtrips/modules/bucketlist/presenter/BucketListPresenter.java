@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -9,7 +8,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
@@ -17,6 +15,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +24,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
-import icepick.Icicle;
+import icepick.State;
+
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
@@ -34,18 +34,18 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     BucketItemManager bucketItemManager;
 
-    private BucketTabsPresenter.BucketType type;
+    private BucketItem.BucketType type;
 
-    @Icicle
+    @State
     boolean showToDO = true;
-    @Icicle
+    @State
     boolean showCompleted = true;
 
     BucketItem currentItem;
 
     private List<BucketItem> bucketItems = new ArrayList<>();
 
-    public BucketListPresenter(BucketTabsPresenter.BucketType type, ObjectGraph objectGraph) {
+    public BucketListPresenter(BucketItem.BucketType type, ObjectGraph objectGraph) {
         super();
         this.type = type;
         bucketItemManager = objectGraph.get(getBucketItemManagerClass());
@@ -148,11 +148,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void openDetails(BucketItem bucketItem) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
-        bundle.putString(BucketListModule.EXTRA_ITEM_ID, bucketItem.getUid());
-
-        view.openDetails(bundle);
+        BucketBundle bundle = new BucketBundle();
+        bundle.setType(type);
+        bundle.setBucketItemUid(bucketItem.getUid());
+        view.openDetails(bucketItem);
         // set selected
         Queryable.from(bucketItems).forEachR(item ->
                 item.setSelected(bucketItem.equals(item)));
@@ -161,8 +160,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public void popularClicked() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(BucketListModule.EXTRA_TYPE, type);
+        BucketBundle bundle = new BucketBundle();
+        bundle.setType(type);
         view.openPopular(bundle);
     }
 
@@ -240,8 +239,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
         void checkEmpty(int count);
 
-        void openDetails(Bundle args);
+        void openDetails(BucketItem bucketItem);
 
-        void openPopular(Bundle args);
+        void openPopular(BucketBundle args);
     }
 }

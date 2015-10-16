@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -17,24 +17,22 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedBucketEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPhotoEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedPostEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.FeedTripEventModel;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedPostCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedBucketCommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedPhotoCommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.comment.FeedTripCommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.EditCommentViewHolder;
+import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
+import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 
 import java.util.List;
 
@@ -45,32 +43,40 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_comments)
-public class CommentsFragment extends BaseFragment<BaseCommentPresenter> implements BaseCommentPresenter.View {
-    public static final String EXTRA_FEED_ITEM = "item";
-    public static final String EXTRA_OPEN_COMMENT_KEYBOARD = "EXTRA_OPEN_COMMENT_KEYBOARD";
-    public static final int HEADER_COUNT = 2;
+public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragmentWithArgs<T, CommentsBundle> implements BaseCommentPresenter.View {
 
     @InjectView(R.id.commentsList)
-    RecyclerView commentsList;
+    protected RecyclerView commentsList;
     @Inject
     @ForActivity
-    Provider<Injector> injectorProvider;
+    protected Provider<Injector> injectorProvider;
     @InjectView(R.id.input)
-    EditText input;
+    protected EditText input;
     @InjectView(R.id.post)
-    Button post;
+    protected Button post;
+    @InjectView(R.id.likers_panel)
+    TextView likersPanel;
 
-    LoadMore loadMore;
-
-    RecyclerViewStateDelegate stateDelegate;
-
-    BaseArrayListAdapter adapter;
+    protected LoadMore loadMore;
+    protected RecyclerViewStateDelegate stateDelegate;
+    protected BaseArrayListAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
 
+    private TextWatcherAdapter inputWatcher = new TextWatcherAdapter() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            super.onTextChanged(s, start, before, count);
+            String text = s.toString().trim();
+            getPresenter().setComment(text);
+            post.setEnabled(text.length() > 0);
+        }
+    };
+
+    private LikersPanelHelper likersPanelHelper;
+
     @Override
-    protected BaseCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new BaseCommentPresenter((BaseEventModel) getArguments().
-                getSerializable(EXTRA_FEED_ITEM));
+    protected T createPresenter(Bundle savedInstanceState) {
+        return (T) new BaseCommentPresenter(getArgs().getFeedEntity());
     }
 
     @Override
@@ -78,6 +84,7 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         super.onCreate(savedInstanceState);
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
+        likersPanelHelper = new LikersPanelHelper();
     }
 
     @Override
@@ -97,46 +104,61 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
 
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
-        adapter.registerCell(FeedPhotoEventModel.class, FeedPhotoCommentCell.class);
-        adapter.registerCell(FeedTripEventModel.class, FeedTripCommentCell.class);
-        adapter.registerCell(FeedBucketEventModel.class, FeedBucketCommentCell.class);
-        adapter.registerCell(FeedPostEventModel.class, FeedPostCommentCell.class);
 
         linearLayoutManager = new LinearLayoutManager(rootView.getContext());
         commentsList.setLayoutManager(linearLayoutManager);
         commentsList.setAdapter(adapter);
 
-        input.addTextChangedListener(new TextWatcherAdapter() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                super.onTextChanged(s, start, before, count);
-                String text = s.toString().trim();
-                getPresenter().setComment(text);
-                post.setEnabled(text.length() > 0);
-            }
-        });
-
-        if (getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false)) {
+        if (getArgs().isOpenKeyboard()) {
             SoftInputUtil.showSoftInputMethod(input);
+        }
+        restorePostIfNeeded();
+    }
+
+    private void restorePostIfNeeded() {
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        if (baseFragment instanceof PostFragment) {
+            fragmentCompass.showContainer();
         }
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        input.addTextChangedListener(inputWatcher);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        input.removeTextChangedListener(inputWatcher);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void setEntity(FeedEntity entity) {
+        likersPanelHelper.setup(likersPanel, entity);
+        likersPanel.setOnClickListener(v ->
+                NavigationBuilder.create()
+                        .with(activityRouter)
+                        .data(new UsersLikedEntityBundle(entity.getUid()))
+                        .move(Route.USERS_LIKED_CONTENT));
+    }
+
+    @Override
     public void addComments(List<Comment> commentList) {
-        boolean scrollToBottom = adapter.getItems().size() <= HEADER_COUNT
-                && getArguments().getBoolean(EXTRA_OPEN_COMMENT_KEYBOARD, false);
-        adapter.addItems(HEADER_COUNT, commentList);
+        boolean scrollToBottom = adapter.getItems().size() <= getHeaderCount() && getArgs().isOpenKeyboard();
+        adapter.addItems(getHeaderCount(), commentList);
         stateDelegate.restoreStateIfNeeded();
 
         if (scrollToBottom) {
             commentsList.smoothScrollToPosition(linearLayoutManager.getItemCount());
         }
-    }
-
-    @Override
-    public void setHeader(BaseEventModel baseFeedModel) {
-        adapter.addItem(0, baseFeedModel);
-        adapter.addItem(1, loadMore);
     }
 
     @Override
@@ -213,4 +235,9 @@ public class CommentsFragment extends BaseFragment<BaseCommentPresenter> impleme
         loadMore.setLoading(loading);
         adapter.notifyItemChanged(1);
     }
+
+    protected int getHeaderCount() {
+        return 0;
+    }
+
 }

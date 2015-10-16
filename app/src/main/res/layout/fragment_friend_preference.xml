@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginLeft="50dp"
-        android:background="@color/gray_lighter"
+        android:background="@color/grey_lighter"
         android:visibility="gone"/>
 
 

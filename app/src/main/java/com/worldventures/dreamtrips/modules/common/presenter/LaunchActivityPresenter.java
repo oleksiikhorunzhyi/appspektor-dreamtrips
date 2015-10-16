@@ -1,9 +1,19 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 
+import android.support.annotation.NonNull;
+
+import com.github.pwittchen.networkevents.library.BusWrapper;
+import com.github.pwittchen.networkevents.library.ConnectivityStatus;
+import com.github.pwittchen.networkevents.library.NetworkEvents;
+import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
@@ -12,6 +22,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
@@ -30,9 +41,18 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-public class LaunchActivityPresenter extends Presenter<Presenter.View> {
+import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
+import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
+import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
+
+public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.View> {
+
+    private BusWrapper busWrapper;
+    private NetworkEvents networkEvents;
+
 
     @Inject
     LocalesHolder localeStorage;
@@ -44,24 +64,31 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
     SnappyRepository snappyRepository;
 
     @Inject
-    Prefs prefs;
+    TermsConditionsValidator termsConditionsValidator;
+    private boolean requestInProgress = false;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        GetLocaleQuery getLocaleQuery = new GetLocaleQuery();
-        doRequest(getLocaleQuery, this::onLocaleSuccess);
         clearTempDirectory();
+        busWrapper = getGreenRobotBusWrapper(eventBus);
+        networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
+        networkEvents.register();
+
+        startPreloadChain();
     }
 
-    private void clearTempDirectory() {
-        snappyRepository.removeAllUploadTasks();
-        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
-        try {
-            FileUtils.cleanDirectory(context, directory);
-        } catch (IOException e) {
-            Timber.e(e, "Problem with remove temp image directory");
-        }
+    @Override
+    public void dropView() {
+        super.dropView();
+        networkEvents.unregister();
+    }
+
+    public void startPreloadChain() {
+        doRequest(new GetLocaleQuery(), this::onLocaleSuccess);
+        view.configurationStarted();
+        requestInProgress = true;
+
     }
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
@@ -113,7 +140,7 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
 
     private void done() {
         if (DreamSpiceManager.isCredentialExist(appSessionHolder)
-                && prefs.getBoolean(Prefs.TERMS_ACCEPTED)) {
+                && termsConditionsValidator.newVersionAccepted()) {
             UserSession userSession = appSessionHolder.get().get();
             if (userSession.getFeatures() == null ||
                     userSession.getFeatures().isEmpty()) {
@@ -123,7 +150,10 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
             }
             activityRouter.openMain();
         } else {
-            activityRouter.openLogin();
+            termsConditionsValidator.clearPreviousAcceptedTerms();
+            NavigationBuilder.create()
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .with(activityRouter).move(Route.LOGIN);
         }
         activityRouter.finish();
     }
@@ -143,4 +173,55 @@ public class LaunchActivityPresenter extends Presenter<Presenter.View> {
         return !contains ? Locale.US : localeCurrent;
     }
 
+    public void onEvent(ConnectivityChanged event) {
+        ConnectivityStatus status = event.getConnectivityStatus();
+        boolean internetConnected = status == MOBILE_CONNECTED || status == WIFI_CONNECTED_HAS_INTERNET || status == WIFI_CONNECTED;
+        if (internetConnected && !requestInProgress) {
+            startPreloadChain();
+        }
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        requestInProgress = false;
+        view.configurationFailed();
+    }
+
+    private void clearTempDirectory() {
+        snappyRepository.removeAllUploadTasks();
+        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
+        try {
+            FileUtils.cleanDirectory(context, directory);
+        } catch (IOException e) {
+            Timber.e(e, "Problem with remove temp image directory");
+        }
+    }
+
+    @NonNull
+    private BusWrapper getGreenRobotBusWrapper(final EventBus bus) {
+        return new BusWrapper() {
+            @Override
+            public void register(Object object) {
+                bus.register(object);
+            }
+
+            @Override
+            public void unregister(Object object) {
+                bus.unregister(object);
+            }
+
+            @Override
+            public void post(Object event) {
+                bus.post(event);
+            }
+        };
+    }
+
+
+    public interface View extends Presenter.View {
+        void configurationFailed();
+
+        void configurationStarted();
+    }
 }

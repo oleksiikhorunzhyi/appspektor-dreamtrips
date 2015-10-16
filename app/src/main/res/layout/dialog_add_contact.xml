@@ -14,8 +14,8 @@
         android:singleLine="true"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
-        app:floatingLabel="normal"
-        app:primaryColor="@color/theme_main_darker"
+        app:met_floatingLabel="normal"
+        app:met_primaryColor="@color/theme_main_darker"
         android:inputType="textCapWords" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -27,8 +27,8 @@
         android:singleLine="true"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
-        app:floatingLabel="normal"
-        app:primaryColor="@color/theme_main_darker" />
+        app:met_floatingLabel="normal"
+        app:met_primaryColor="@color/theme_main_darker" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/et_phone"
@@ -39,8 +39,8 @@
         android:singleLine="true"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
-        app:floatingLabel="normal"
-        app:primaryColor="@color/theme_main_darker"
+        app:met_floatingLabel="normal"
+        app:met_primaryColor="@color/theme_main_darker"
         android:inputType="phone" />
 
 </LinearLayout>

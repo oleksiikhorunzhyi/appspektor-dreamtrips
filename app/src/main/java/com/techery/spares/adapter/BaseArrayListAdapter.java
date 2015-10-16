@@ -55,8 +55,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
-        this.injector.get().inject(cell);
-        cell.afterInject();
+        if (cell.shouldInject()) {
+            this.injector.get().inject(cell);
+            cell.afterInject();
+        }
         return cell;
     }
 
@@ -171,7 +173,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         this.notifyDataSetChanged();
     }
 
-    public void itemUpdated(BaseItemClass changedItem) {
+    public void updateItem(BaseItemClass changedItem) {
         Queryable.from(items).forEachR(item -> {
             int position = items.indexOf(item);
             if (changedItem.equals(item)) {
@@ -179,6 +181,12 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
                 notifyItemChanged(position);
             }
         });
+    }
+
+    public void clearAndUpdateItems(List<BaseItemClass> updatedItems) {
+        clear();
+        getItems().addAll(updatedItems);
+        notifyDataSetChanged();
     }
 
     public List<BaseItemClass> getItems() {

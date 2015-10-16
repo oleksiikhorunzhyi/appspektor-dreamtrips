@@ -35,7 +35,8 @@ import javax.inject.Provider;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
+
 
 public class FilterLanguageDialogFragment extends InjectingDialogFragment {
 
@@ -50,7 +51,7 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
     @ForActivity
     Provider<Injector> provider;
 
-    @Icicle
+    @State
     ArrayList<VideoLocale> locales;
 
     private FilterableArrayListAdapter adapter;

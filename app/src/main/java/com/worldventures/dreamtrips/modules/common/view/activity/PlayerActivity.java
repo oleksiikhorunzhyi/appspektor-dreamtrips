@@ -1,73 +1,95 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
-import tv.danmaku.ijk.media.widget.MediaController;
-import tv.danmaku.ijk.media.widget.VideoView;
+import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import timber.log.Timber;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+import tv.danmaku.ijk.media.widget.media.AndroidMediaController;
+import tv.danmaku.ijk.media.widget.media.IjkVideoView;
 
-/**
- * 1 on 04.02.15.
- */
+
 @Layout(R.layout.player_activity_simple)
 public class PlayerActivity extends BaseActivity {
 
     @InjectView(R.id.myVideo)
-    protected VideoView videoView;
+    protected IjkVideoView videoView;
+    @InjectView(R.id.retry)
+    protected TextView retry;
+    protected AndroidMediaController mediaController;
 
-    private ProgressDialog pDialog;
-    private boolean paused = false;
+    private boolean mBackPressed;
+
+    Uri uri;
 
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage(getString(R.string.buffering));
-        pDialog.setCancelable(false);
-        pDialog.show();
+        uri = getIntent().getData();
+        // init player
+        IjkMediaPlayer.loadLibrariesOnce(null);
 
-        Uri uri = getIntent().getData();
-        try {
-            // Start the MediaController
-            MediaController mediacontroller = new MediaController(
-                    this);
-            mediacontroller.setAnchorView(videoView);
-            // Get the URL from String VideoURL
-            videoView.setMediaController(mediacontroller);
-            videoView.setVideoURI(uri);
+        mediaController = new AndroidMediaController(this, false);
 
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-        }
+        videoView.setMediaController(mediaController);
 
-        videoView.requestFocus();
-        videoView.setOnPreparedListener((mp) -> {
-            pDialog.dismiss();
-            videoView.start();
+        videoView.setOnErrorListener((iMediaPlayer, i, i1) -> {
+            Dialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText(getString(R.string.player_error_header))
+                    .setContentText(getString(R.string.player_error));
+
+            retry.setVisibility(View.VISIBLE);
+            sweetAlertDialog.setOnCancelListener(dialog -> finish());
+            sweetAlertDialog.show();
+            return true;
         });
+
+        playVideo();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (paused) {
-            paused = false;
-            videoView.resume();
+    @OnClick(R.id.retry)
+    void onRetry() {
+        playVideo();
+    }
+
+    private void playVideo() {
+        retry.setVisibility(View.GONE);
+        if (uri != null) {
+            videoView.setVideoURI(uri);
+            videoView.start();
+        } else {
+            Timber.e("Null Data Source\n");
+            finish();
         }
 
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        paused = true;
-        videoView.pause();
+    public void onBackPressed() {
+        mBackPressed = true;
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mBackPressed || !videoView.isBackgroundPlayEnabled()) {
+            videoView.stopPlayback();
+            videoView.release(true);
+            videoView.stopBackgroundPlay();
+        } else {
+            videoView.enterBackground();
+        }
     }
 
 }

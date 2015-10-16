@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/black">
@@ -79,7 +80,7 @@
                         android:drawableLeft="@drawable/ic_feed_location_small"
                         android:drawableStart="@drawable/ic_feed_location_small"
                         android:gravity="end"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/grey"
                         android:visibility="gone"/>
 
                     <TextView
@@ -89,7 +90,7 @@
                         android:layout_marginLeft="16dp"
                         android:drawableLeft="@drawable/ic_feed_calendar_small"
                         android:drawableStart="@drawable/ic_feed_calendar_small"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/grey"
                         android:visibility="gone"/>
                 </LinearLayout>
             </LinearLayout>
@@ -217,8 +218,7 @@
                     android:layout_centerInParent="true"
                     android:padding="5dp"
                     android:src="@drawable/ic_fs_comments"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone"/>
 
                 <ImageView
                     android:id="@+id/iv_share"
@@ -228,31 +228,26 @@
                     android:padding="5dp"
                     android:src="@drawable/ic_fs_share"/>
 
-                <FrameLayout
+                <com.worldventures.dreamtrips.modules.common.view.custom.FlagView
+                    android:id="@+id/flag"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/iv_flag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_fs_flag"/>
-
-                    <ProgressBar
-                        android:id="@+id/progress_flag"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="center"
-                        android:visibility="gone"/>
-                </FrameLayout>
+                    android:layout_height="wrap_content"
+                    custom:icon="@drawable/ic_fs_flag"/>
 
                 <ImageView
-                    android:id="@+id/iv_delete"
+                    android:id="@+id/delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:src="@drawable/ic_fs_delete"/>
+
+
+                <ImageView
+                    android:id="@+id/edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_fs_edit"/>
 
             </LinearLayout>
         </LinearLayout>

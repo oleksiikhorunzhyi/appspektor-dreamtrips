@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
@@ -8,10 +9,10 @@ import java.util.ArrayList;
 
 public class GetPopularLocationQuery extends DreamTripsRequest<ArrayList<PopularBucketItem>> {
 
-    private BucketTabsPresenter.BucketType type;
+    private BucketItem.BucketType type;
     private String query;
 
-    public GetPopularLocationQuery(BucketTabsPresenter.BucketType type, String query) {
+    public GetPopularLocationQuery(BucketItem.BucketType type, String query) {
         super((Class<ArrayList<PopularBucketItem>>) new ArrayList<PopularBucketItem>().getClass());
         this.type = type;
         this.query = query;
@@ -21,9 +22,9 @@ public class GetPopularLocationQuery extends DreamTripsRequest<ArrayList<Popular
     public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
         ArrayList<PopularBucketItem> items = new ArrayList<>();
 
-        if (type == BucketTabsPresenter.BucketType.LOCATION) {
+        if (type == BucketItem.BucketType.LOCATION) {
             items.addAll(getService().getLocationPopularSuggestions(query));
-        } else if (type == BucketTabsPresenter.BucketType.DINING) {
+        } else if (type == BucketItem.BucketType.DINING) {
             items.addAll(getService().getDiningPopularSuggestions(query));
         } else {
             items.addAll(getService().getActivityPopularSuggestions(query));

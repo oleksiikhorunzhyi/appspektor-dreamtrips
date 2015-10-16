@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -30,7 +31,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_navigation_drawer)
-public class NavigationDrawerFragment extends BaseFragment<Presenter> implements Presenter.View, NavigationDrawerListener {
+public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPresenter> implements NavigationDrawerPresenter.View, NavigationDrawerListener {
 
     @Inject
     @ForApplication
@@ -50,8 +51,8 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
     private ComponentDescription currentComponent;
 
     @Override
-    protected Presenter createPresenter(Bundle savedInstanceState) {
-        return new Presenter();
+    protected NavigationDrawerPresenter createPresenter(Bundle savedInstanceState) {
+        return new NavigationDrawerPresenter();
     }
 
     @Override
@@ -135,5 +136,10 @@ public class NavigationDrawerFragment extends BaseFragment<Presenter> implements
             currentComponent = newComponent;
             adapter.selectComponent(newComponent);
         });
+    }
+
+    @Override
+    public void notificationCountChanged(int count) {
+        adapter.setNotificationCount(count);
     }
 }

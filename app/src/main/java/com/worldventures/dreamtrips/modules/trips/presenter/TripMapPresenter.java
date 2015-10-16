@@ -17,7 +17,8 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragm
 import java.util.ArrayList;
 import java.util.List;
 
-import icepick.Icicle;
+import icepick.State;
+
 
 public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> {
 
@@ -25,7 +26,7 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
     private boolean mapReady;
     private MapInfoReadyEvent pendingMapInfoEvent;
 
-    @Icicle
+    @State
     String query;
 
     public TripMapPresenter() {

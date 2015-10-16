@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.view.adapter;
 
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
@@ -14,9 +15,9 @@ public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
 
     protected DreamTripsApi api;
 
-    private BucketTabsPresenter.BucketType type;
+    private BucketItem.BucketType type;
 
-    public SuggestionLoader(BucketTabsPresenter.BucketType type,
+    public SuggestionLoader(BucketItem.BucketType type,
                             DreamSpiceManager dreamSpiceManager,
                             DreamTripsApi api) {
         this.type = type;
@@ -26,11 +27,11 @@ public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
 
     @Override
     protected List<Suggestion> request(String query) {
-        if (type == BucketTabsPresenter.BucketType.LOCATION) {
+        if (type == BucketItem.BucketType.LOCATION) {
             return api.getLocationSuggestions(query);
-        } else if (type == BucketTabsPresenter.BucketType.ACTIVITY) {
+        } else if (type == BucketItem.BucketType.ACTIVITY) {
             return api.getActivitySuggestions(query);
-        } else if (type == BucketTabsPresenter.BucketType.DINING) {
+        } else if (type == BucketItem.BucketType.DINING) {
             return api.getDiningSuggestions(query);
         }
         return Collections.emptyList();

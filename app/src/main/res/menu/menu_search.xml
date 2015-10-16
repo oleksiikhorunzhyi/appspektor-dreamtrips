@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_search"
         android:title="@string/action_filter"
-        android:icon="@drawable/ic_menu_search_white"
+        android:icon="@drawable/ic_menu_search"
         app:showAsAction="always|collapseActionView"
         app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView"/>
 

@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
@@ -25,12 +25,11 @@ import dagger.Provides;
         injects = {
                 DreamSpiceManager.class,
                 DreamSpiceService.class,
+                AuthorizedDataUpdater.class,
                 VideoCachingDelegate.class,
                 VideoDownloadSpiceService.class,
                 PhotoUploadingManager.class,
                 BucketItemManager.class,
-                ForeignBucketItemManager.class,
-
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
@@ -42,6 +41,11 @@ public class ManagerModule {
     @Provides
     public DreamSpiceManager provideSpiceManager(@ForApplication Injector injector) {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
+    }
+
+    @Provides
+    public AuthorizedDataUpdater provideDataUpdater(@ForApplication Injector injector) {
+        return new AuthorizedDataUpdater(injector);
     }
 
     @Provides
@@ -66,10 +70,5 @@ public class ManagerModule {
     @Provides
     public BucketItemManager provideBucketItemManager(@ForApplication Injector injector) {
         return new BucketItemManager(injector);
-    }
-    @Singleton
-    @Provides
-    public ForeignBucketItemManager provideForeignBucketItemManager(@ForApplication Injector injector) {
-        return new ForeignBucketItemManager(injector);
     }
 }

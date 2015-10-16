@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -14,16 +13,19 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.model.BaseEventModel;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.core.utils.DeleteTokenGcmTask;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
@@ -31,11 +33,11 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
+import icepick.State;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
 
@@ -46,10 +48,12 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     private String coverTempFilePath;
 
-    @Icicle
+    @State
     boolean shouldReload;
-    @Icicle
+    @State
     int callbackType;
+
+    int REQUESTER_ID = 3745742;
 
     public AccountPresenter() {
         super();
@@ -113,10 +117,24 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void logout() {
-        this.appSessionHolder.destroy();
+        String token = snappyRepository.getGcmRegToken();
+        if (token != null) {
+            doRequest(new UnsubscribeDeviceCommand(token), aVoid -> deleteTokenInGcm());
+        } else {
+            clearUserDataAndFinish();
+        }
+    }
+
+    private void deleteTokenInGcm (){
+        new DeleteTokenGcmTask(context, (task, removeGcmTokenSucceed) -> {
+            clearUserDataAndFinish();
+        }).execute();
+    }
+
+    private void clearUserDataAndFinish(){
         snappyRepository.clearAll();
+        appSessionHolder.destroy();
         activityRouter.finish();
-        activityRouter.openLogin();
     }
 
     @Override
@@ -133,9 +151,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Override
     public void openTripImages() {
-        Bundle args = new Bundle();
-        args.putSerializable(TripImagesListFragment.BUNDLE_TYPE, TripImagesListFragment.Type.MY_IMAGES);
-        NavigationBuilder.create().with(activityRouter).args(args).move(Route.ACCOUNT_IMAGES);
+        NavigationBuilder
+                .create()
+                .with(activityRouter)
+                .data(new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES))
+                .move(Route.ACCOUNT_IMAGES);
     }
 
     public void photoClicked() {
@@ -153,6 +173,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         this.user.setAvatarUploadInProgress(true);
         view.notifyUserChanged();
         doRequest(new UploadAvatarCommand(typedFile), this::onAvatarUploadSuccess, spiceException -> {
+            handleError(spiceException);
             user.setAvatarUploadInProgress(false);
             view.notifyUserChanged();
         });
@@ -168,6 +189,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             view.notifyUserChanged();
             TrackingHelper.profileUploadStart(getAccountUserId());
             doRequest(new UploadCoverCommand(typedFile), this::onCoverUploadSuccess, spiceException -> {
+                handleError(spiceException);
                 user.setCoverUploadInProgress(false);
                 view.notifyUserChanged();
             });
@@ -187,16 +209,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     @Override
-    protected SpiceRequest<ArrayList<ParentFeedModel>> getNextPageRequest() {
-        if (view.getAdapter().getItemCount() > 0) {
-            Object lastItem = view.getAdapter().getItems().get(view.getAdapter().getItemCount() - 1);
-            return new GetUserTimelineQuery(user.getId(), ((BaseEventModel) lastItem).getCreatedAt());
-        } else return null;
+    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
+        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     @Override
-    protected SpiceRequest<ArrayList<ParentFeedModel>> getRefreshRequest() {
-        return new GetUserTimelineQuery(user.getId(), Calendar.getInstance().getTime());
+    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
+        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     ////////////////////////////////////////
@@ -208,15 +227,20 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, this.hashCode()));
+        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == this.hashCode()) {
+        if (event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(ImagePickedEvent.class);
             imageSelected(event.getImages()[0]);
         }
+    }
+
+
+    public void onEventMainThread(HeaderCountChangedEvent event) {
+        view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
     }
 
     private void imageSelected(ChosenImage chosenImage) {
@@ -265,6 +289,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         void openAvatarPicker();
 
         void openCoverPicker();
+
+        void updateBadgeCount(int count);
     }
 
 }

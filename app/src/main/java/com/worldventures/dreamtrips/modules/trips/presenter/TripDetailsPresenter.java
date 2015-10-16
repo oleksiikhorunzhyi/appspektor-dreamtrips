@@ -1,16 +1,14 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import android.os.Bundle;
-
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ import java.util.List;
 
 public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
 
-    private List<Object> filteredImages;
+    private List<TripImage> filteredImages;
 
     public void setTrip(TripModel trip) {
         super.setTrip(trip);
@@ -38,13 +36,22 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
         }
     }
 
-    public List<Object> getFilteredImages() {
+    public List<TripImage> getFilteredImages() {
         return filteredImages;
     }
 
     public void actionBookIt() {
         TrackingHelper.bookIt(String.valueOf(trip.getTripId()), getAccountUserId());
-        activityRouter.openBookItActivity(trip.getTripId());
+        UserSession userSession = appSessionHolder.get().get();
+
+        AppConfig.URLS urls = userSession.getGlobalConfig().getUrls();
+        AppConfig.URLS.Config config = urls.getProduction();
+
+        String url = config.getBookingPageURL()
+                .replace(AppConfig.TRIP_ID, trip.getTripId())
+                .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
+                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+        view.openBookIt(url);
     }
 
     @Override
@@ -69,19 +76,22 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     }
 
     public void onItemClick(int position) {
-        if (filteredImages.get(position) instanceof TripImage) {
-            Bundle args = new Bundle();
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, position);
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, TripImagesListFragment.Type.FIXED_LIST);
-            args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_FIXED_LIST, new ArrayList<>(filteredImages));
-view.openFullscreen(args);
-        }
+        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                .position(position)
+                .type(TripImagesListFragment.Type.FIXED_LIST)
+                .fixedList(new ArrayList<>(filteredImages))
+                .build();
+
+        view.openFullscreen(data);
     }
 
     public interface View extends BaseTripPresenter.View {
         void setContent(List<ContentItem> contentItems);
 
         void hideBookIt();
-        void openFullscreen(Bundle args);
+
+        void openFullscreen(FullScreenImagesBundle data);
+
+        void openBookIt(String url);
     }
 }

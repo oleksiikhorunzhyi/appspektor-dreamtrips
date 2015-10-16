@@ -14,12 +14,15 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
-import com.worldventures.dreamtrips.modules.reptools.view.adapter.HeaderAdapter;
+import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 
 import java.util.ArrayList;
 
@@ -29,7 +32,8 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_select_template)
-public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter> implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter>
+        implements SelectTemplatePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     @ForActivity
@@ -69,7 +73,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
         StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
                 .setAdapter(adapter)
                 .setRecyclerView(lvTemplates)
-                .setStickyHeadersAdapter(new HeaderAdapter(adapter.getItems(),
+                .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems(),
                         R.layout.adapter_template_header), false)
                 .build();
 
@@ -99,5 +103,10 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     @Override
     public void onRefresh() {
         getPresenter().reload();
+    }
+
+    @Override
+    public void openTemplate(TemplateBundle templateBundle) {
+        NavigationBuilder.create().with(fragmentCompass).data(templateBundle).move(Route.EDIT_INVITE_TEMPLATE);
     }
 }

@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.support.annotation.StringRes;
-
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
@@ -15,19 +14,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.ACTIVITY;
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.DINING;
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType.LOCATION;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Inject
     SnappyRepository db;
 
-    /**
-     * Use getter getBucketItemManager() because we have
-     * {@link com.worldventures.dreamtrips.modules.bucketlist.manager.ForeignBucketItemManager}
-     */
     @Inject
     BucketItemManager bucketItemManager;
 
@@ -36,7 +29,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Override
     public void onInjected() {
         super.onInjected();
-        getBucketItemManager().setUserId(getAccount().getId());
     }
 
     @Override
@@ -45,11 +37,16 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         setTabs();
         loadCategories();
         getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
-        getBucketItemManager().loadBucketItems(this);
+        getBucketItemManager().loadBucketItems(getUser(), this);
+    }
+
+    protected User getUser() {
+        return getAccount();
     }
 
     @Override
     public void onResume() {
+        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
         setRecentBucketItemsCounts();
     }
 
@@ -59,7 +56,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(LOCATION, ACTIVITY, DINING));
+        view.setTypes(Arrays.asList(BucketType.LOCATION, BucketType.ACTIVITY, BucketType.DINING));
         view.updateSelection();
     }
 
@@ -70,7 +67,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     private void setRecentBucketItemsCounts() {
-        Map<BucketType, Integer> recentBucketItems = new HashMap<>();
+        Map<BucketItem.BucketType, Integer> recentBucketItems = new HashMap<>();
         for (BucketType type : BucketType.values()) {
             recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name()));
         }
@@ -92,29 +89,4 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     protected <T extends BucketItemManager> T getBucketItemManager() {
         return (T) bucketItemManager;
     }
-
-    public enum BucketType {
-        LOCATION("location", R.string.bucket_locations),
-        ACTIVITY("activity", R.string.bucket_activities),
-        DINING("dining", R.string.bucket_restaurants);
-
-        protected String name;
-        protected int res;
-
-        BucketType(String name, @StringRes int res) {
-            this.name = name;
-            this.res = res;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        @StringRes
-        public int getRes() {
-            return res;
-        }
-
-    }
-
 }

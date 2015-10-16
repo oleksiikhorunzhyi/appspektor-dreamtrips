@@ -8,12 +8,17 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
+import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -36,9 +41,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     @ForApplication
     protected Injector injector;
 
-    public EditTemplatePresenter(InviteTemplate template) {
+    public EditTemplatePresenter(TemplateBundle templateBundle) {
         super();
-        this.template = template;
+        this.template = templateBundle.getInviteTemplate();
     }
 
     @Override
@@ -109,7 +114,9 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
             template.setLink(inviteTemplate.getLink());
             if (preview) {
                 preview = false;
-                activityRouter.openPreviewActivity(inviteTemplate.getLink());
+                NavigationBuilder.create().with(activityRouter)
+                        .data(new UrlBundle(inviteTemplate.getLink()))
+                        .move(Route.PREVIEW_TEMPLATE);
             }
         } else {
             handleError(new SpiceException(""));

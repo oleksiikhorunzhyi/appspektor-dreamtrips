@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,23 +13,20 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
+import icepick.State;
 
 @Layout(R.layout.fragment_edit_template)
 @MenuResource(R.menu.menu_edit_template)
-public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> implements EditTemplatePresenter.View {
-    public static final String TEMPLATE = "TEMPLATE";
-
-    public static final String EXTRA_MESSAGE = "message";
+public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePresenter, TemplateBundle>
+        implements EditTemplatePresenter.View {
 
     @Inject
     @ForActivity
@@ -51,6 +47,24 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     @InjectView(R.id.photoContainer)
     ViewGroup photoContainer;
 
+    @State
+    String savedMessage;
+
+    @Override
+    protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
+        return new EditTemplatePresenter(getArgs());
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        etMessage.setText(savedMessage);
+        wvPreview.getSettings().setJavaScriptEnabled(true);
+        wvPreview.getSettings().setLoadWithOverviewMode(true);
+        wvPreview.getSettings().setUseWideViewPort(true);
+        progressView.setVisibility(View.GONE);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -62,40 +76,6 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_MESSAGE, etMessage.getText().toString());
-    }
-
-    @Override
-    protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
-        InviteTemplate template = getArguments().getParcelable(TEMPLATE);
-        return new EditTemplatePresenter(template);
-    }
-
-    @Override
-    public void hidePhotoUpload() {
-        photoContainer.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        wvPreview.getSettings().setJavaScriptEnabled(true);
-        wvPreview.getSettings().setLoadWithOverviewMode(true);
-        wvPreview.getSettings().setUseWideViewPort(true);
-        progressView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null) {
-            etMessage.setText(savedInstanceState.getString(EXTRA_MESSAGE));
-        }
     }
 
     @Override
@@ -134,6 +114,11 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     }
 
     @Override
+    public void hidePhotoUpload() {
+        photoContainer.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onResume() {
         wvPreview.onResume();
         super.onResume();
@@ -143,6 +128,13 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
     public void onPause() {
         super.onPause();
         wvPreview.onPause();
+        cacheMessage();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        cacheMessage();
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -152,5 +144,9 @@ public class EditTemplateFragment extends BaseFragment<EditTemplatePresenter> im
             wvPreview.destroy();
             wvPreview = null;
         }
+    }
+
+    private void cacheMessage() {
+        if (etMessage != null) savedMessage = getMessage();
     }
 }

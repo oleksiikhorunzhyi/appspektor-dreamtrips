@@ -9,6 +9,9 @@ import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -22,6 +25,7 @@ import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.video.VideoModule;
 
 import java.util.List;
 
@@ -94,6 +98,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new ReptoolsModule());
         modules.add(new TripsModule());
         modules.add(new TripsImagesModule());
+        modules.add(new VideoModule());
         modules.add(new MembershipModule());
         modules.add(new FriendsModule());
         modules.add(new FeedModule());
@@ -101,7 +106,9 @@ public abstract class BaseActivity extends InjectingActivity {
     }
 
     public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
-        this.router.openLogin();
+        NavigationBuilder.create()
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .with(router).move(Route.LOGIN);
     }
 
     @Override

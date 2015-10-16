@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -20,11 +23,10 @@ import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.infopages.WebViewInEvent;
-import com.worldventures.dreamtrips.modules.infopages.WebViewOutEvent;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 import javax.inject.Inject;
 
@@ -35,7 +37,7 @@ import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragment<T>
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragmentWithArgs<T, UrlBundle>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String PRIVACY_TITLE = "Privacy Policy";
@@ -72,6 +74,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
     }
 
+    @Override
+    public UrlBundle getArgs() {
+        return super.getArgs();
+    }
+
     private boolean isWebViewSavedState(Bundle savedInstanceState) {
         return savedInstanceState != null &&
                 (savedInstanceState.containsKey("WEBVIEW_CHROMIUM_STATE")
@@ -86,6 +93,32 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
 
+            @TargetApi(Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                loadErrorText(view, error.getErrorCode());
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) loadErrorText(view, errorCode);
+            }
+
+            private void loadErrorText(WebView webView, int errorCode) {
+                String errorText;
+                switch (errorCode) {
+                    case ERROR_HOST_LOOKUP:
+                        errorText = webView.getContext().getString(R.string.error_webview_no_internet);
+                        break;
+                    default:
+                        errorText = webView.getContext().getString(R.string.error_webview_default);
+                        break;
+                }
+                webView.loadData(errorText, "text", "utf-8");
+            }
+
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 handler.proceed();
@@ -93,6 +126,14 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                if (url.startsWith("mailto:")) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
+                    startActivity(Intent.createChooser(emailIntent, getString(R.string.email_app_choose_dialog_title)));
+                    view.reload();
+                    return true;
+                }
+
                 if (url.endsWith(".pdf")) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     return true;
@@ -185,7 +226,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     protected void lockOrientationIfNeeded() {
         lockHandler.postDelayed(() -> {
-            if (ViewUtils.isVisibleOnScreen(this)) {
+            if (ViewUtils.isFullVisibleOnScreen(this)) {
                 lockHandler.postDelayed(() -> lockOrientation(getActivity()), 300L);
             } else {
                 unlockOrientation(getActivity());
@@ -194,7 +235,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     protected void unlockOrientationIfNeeded() {
-        if (ViewUtils.isVisibleOnScreen(this)) unlockOrientation(getActivity());
+        if (ViewUtils.isFullVisibleOnScreen(this)) unlockOrientation(getActivity());
     }
 
     @Override
@@ -297,11 +338,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @Layout(R.layout.fragment_webview)
     public static class BundleUrlFragment extends StaticInfoFragment {
 
-        public static final String URL_EXTRA = "URL_EXTRA";
-
         @Override
         protected String getURL() {
-            return getArguments().getString(URL_EXTRA);
+            return getArgs().getUrl();
         }
 
         @Override

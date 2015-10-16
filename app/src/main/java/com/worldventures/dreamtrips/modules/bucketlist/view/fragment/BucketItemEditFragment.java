@@ -26,13 +26,16 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.List;
@@ -46,7 +49,7 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter>
+public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
     @Inject
@@ -88,6 +91,14 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     public void onResume() {
         super.onResume();
         initAutoCompleteDate();
+
+        if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Optional
@@ -127,17 +138,13 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketItemEditPresenter(getArguments());
+        return new BucketItemEditPresenter(getArgs());
     }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         bucketPhotosView.init(injector, BucketPhotosView.Type.EDIT);
-
-        boolean lock = getArguments().getBoolean(BucketListModule.EXTRA_LOCK);
-
-        if (lock) OrientationUtil.lockOrientation(getActivity());
 
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
@@ -260,8 +267,48 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
-        NavigationBuilder.create().with(activityRouter).args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+    public void openFullscreen(FullScreenImagesBundle data) {
+        NavigationBuilder.create().with(activityRouter).data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+    }
+
+    @Override
+    public void setImages(List<BucketPhoto> photos) {
+        bucketPhotosView.setImages(photos);
+    }
+
+    @Override
+    public void addImages(List<UploadTask> tasks) {
+        bucketPhotosView.addImages(tasks);
+    }
+
+    @Override
+    public void addImage(UploadTask uploadTask) {
+        bucketPhotosView.addImage(uploadTask);
+    }
+
+    @Override
+    public void deleteImage(UploadTask task) {
+        bucketPhotosView.deleteImage(task);
+    }
+
+    @Override
+    public void deleteImage(BucketPhoto bucketPhoto) {
+        bucketPhotosView.deleteImage(bucketPhoto);
+    }
+
+    @Override
+    public void itemChanged(UploadTask uploadTask) {
+        bucketPhotosView.itemChanged(uploadTask);
+    }
+
+    @Override
+    public void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
+        bucketPhotosView.replace(bucketPhotoUploadTask, bucketPhoto);
+    }
+
+    @Override
+    public UploadTask getBucketPhotoUploadTask(String taskId) {
+        return bucketPhotosView.getBucketPhotoUploadTask(taskId);
     }
 
     @Override
@@ -302,7 +349,7 @@ public class BucketItemEditFragment extends BaseFragment<BucketItemEditPresenter
 
     @Override
     public void showError() {
-        editTextDescription.checkCharactersCount();
+        editTextDescription.validate();
     }
 
 

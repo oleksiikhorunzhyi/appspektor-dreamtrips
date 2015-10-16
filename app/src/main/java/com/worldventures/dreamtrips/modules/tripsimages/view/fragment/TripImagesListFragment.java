@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,6 +25,9 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -39,10 +43,9 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment<T extends TripImagesListPresenter> extends BaseFragment<T> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
-    public static final String BUNDLE_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
+public class TripImagesListFragment<T extends TripImagesListPresenter>
+        extends BaseFragmentWithArgs<T, TripsImagesBundle>
+        implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     @ForActivity
@@ -129,8 +132,8 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends B
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
-        Type type = (Type) getArguments().getSerializable(BUNDLE_TYPE);
-        int foreignUserId = getArguments().getInt(BUNDLE_FOREIGN_USER_ID);
+        Type type = getArgs().getType();
+        int foreignUserId = getArgs().getForeignUserId();
         return (T) TripImagesListPresenter.create(type, false, null, foreignUserId);
     }
 
@@ -155,10 +158,10 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends B
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
+    public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override
@@ -202,9 +205,9 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends B
     public enum Type {
         MEMBER_IMAGES,
         MY_IMAGES,
-        YOU_SHOULD_BE_HERE,
-        INSPIRE_ME,
         VIDEO_360,
+        INSPIRE_ME,
+        YOU_SHOULD_BE_HERE,
         FIXED_LIST,
         FOREIGN_IMAGES
     }

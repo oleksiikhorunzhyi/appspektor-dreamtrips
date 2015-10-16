@@ -5,12 +5,13 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetForeignPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.ForeignImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.AccountImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
@@ -18,10 +19,10 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InspirationFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InteractiveFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SimpleFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.FullScreenTripImageActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhot
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenTripImageFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
@@ -39,7 +41,6 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                FullScreenTripImageActivity.class,
                 CreatePhotoActivity.class,
                 TripImagesTabsPresenter.class,
                 TripImagesListPresenter.class,
@@ -56,12 +57,15 @@ import dagger.Provides;
                 InteractiveFullscreenPresenter.class,
                 FullScreenPresenter.class,
                 BucketFullscreenPresenter.class,
+                InspirationFullscreenPresenter.class,
                 SimpleFullscreenPresenter.class,
 
                 TripImagesTabsFragment.class,
                 TripImagesListFragment.class,
                 TripImagesTabsFragment.class,
                 TripImagePagerFragment.class,
+                PhotoEditFragment.class,
+                PhotoEditPresenter.class,
                 FullScreenTripImageFragment.class,
                 CreatePhotoFragment.class,
                 PhotoCell.class,

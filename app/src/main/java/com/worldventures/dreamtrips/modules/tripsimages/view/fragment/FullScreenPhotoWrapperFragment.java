@@ -14,9 +14,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 
@@ -24,17 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
-import icepick.Icicle;
+import icepick.State;
+
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
-public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListPresenter> implements TripImagesListPresenter.View {
-
-    public static final String EXTRA_POSITION = "EXTRA_POSITION";
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
-    public static final String EXTRA_FIXED_LIST = "EXTRA_FIXED_LIST";
-    public static final String EXTRA_FOREIGN = "EXTRA_FOREIGN";
-    public static final String EXTRA_FOREIGN_USER_ID = "EXTRA_FOREIGN_USER_ID";
-
+public class FullScreenPhotoWrapperFragment
+        extends BaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+        implements TripImagesListPresenter.View {
 
     @InjectView(R.id.pager)
     protected ViewPager pager;
@@ -42,20 +40,17 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
     protected Toolbar toolbar;
     protected BaseStatePagerAdapter<FragmentItem> adapter;
 
-    @Icicle
+    @State
     int position;
-
 
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        TripImagesListFragment.Type type = (TripImagesListFragment.Type) args.getSerializable(EXTRA_TYPE);
-        int foreignUserId = args.getInt(EXTRA_FOREIGN_USER_ID);
-        position = args.getInt(EXTRA_POSITION);
-        ArrayList<IFullScreenObject> fixedList = (ArrayList<IFullScreenObject>) args.getSerializable(EXTRA_FIXED_LIST);
+        TripImagesListFragment.Type type = getArgs().getType();
+        int foreignUserId = getArgs().getForeignUserId();
+        position = getArgs().getPosition();
+        ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
         return TripImagesListPresenter.create(type, true, fixedList, foreignUserId);
     }
-
 
     @Override
     public void afterCreateView(View rootView) {
@@ -74,11 +69,9 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
-                //nothing to here
             }
 
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                //nothing to here
             }
 
             public void onPageSelected(int position) {
@@ -98,17 +91,14 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
         adapter = new BaseStatePagerAdapter<FragmentItem>(getActivity().getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
-                Bundle args = new Bundle();
-                args.putSerializable(FullScreenPhotoFragment.EXTRA_TYPE, getArguments().getSerializable(EXTRA_TYPE));
-                args.putSerializable(FullScreenPhotoFragment.EXTRA_PHOTO, getPresenter().getPhoto(position));
-                args.putBoolean(EXTRA_FOREIGN, getArguments().getBoolean(EXTRA_FOREIGN));
-                fragment.setArguments(args);
+                FullScreenPhotoBundle data = new FullScreenPhotoBundle(getPresenter().getPhoto(position),
+                        getArgs().getType(), getArgs().isForeign());
+                ((BaseFragmentWithArgs) fragment).setArgs(data);
             }
 
             @Override
             public void addItems(ArrayList baseItemClasses) {
-                super.addItems(baseItemClasses);
-                fill(baseItemClasses);
+                addToAdapter(baseItemClasses);
             }
         };
     }
@@ -116,12 +106,10 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
 
     @Override
     public void startLoading() {
-        //nothing to here
     }
 
     @Override
     public void finishLoading() {
-        //nothing to here
     }
 
     @Override
@@ -135,10 +123,10 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
     }
 
     @Override
-    public void openFullscreen(Bundle args) {
+    public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .args(args).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     @Override
@@ -148,33 +136,29 @@ public class FullScreenPhotoWrapperFragment extends BaseFragment<TripImagesListP
 
     @Override
     public void fillWithItems(List<IFullScreenObject> items) {
-        fill(items);
+        addToAdapter(items);
+        adapter.notifyDataSetChanged();
     }
 
-    private void fill(List<IFullScreenObject> items) {
+    private void addToAdapter(List<IFullScreenObject> items) {
         Queryable.from(items).forEachR(item ->
                 adapter.add(new FragmentItem(FullScreenPhotoFragment.class, "")));
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void add(IFullScreenObject item) {
-        //nothing to here
     }
 
     @Override
     public void add(int position, IFullScreenObject item) {
-        //nothing to here
     }
 
     @Override
     public void clear() {
-        //nothing to here
     }
 
     @Override
     public void replace(int position, IFullScreenObject item) {
-        //nothing to here
     }
 
     @Override

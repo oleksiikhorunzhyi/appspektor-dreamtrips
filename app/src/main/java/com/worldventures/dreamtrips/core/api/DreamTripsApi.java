@@ -14,9 +14,11 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedModel;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
@@ -121,6 +123,9 @@ public interface DreamTripsApi {
 
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body UploadTask uploadTask);
+
+    @PUT("/api/photos/{uid}")
+    Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
 
     @POST("/api/bucket_list_items/{uid}/photos")
     BucketPhoto uploadBucketPhoto(@Path("uid") String uid, @Body BucketPhoto bucketPhoto);
@@ -257,13 +262,13 @@ public interface DreamTripsApi {
     JSONObject unfriend(@Path("user_id") int userId);
 
     @GET("/api/social/users/{user_id}/timeline")
-    ArrayList<ParentFeedModel> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/timeline")
-    ArrayList<ParentFeedModel> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
     @GET("/api/social/feed")
-    ArrayList<ParentFeedModel> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before);
+    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before, @Query("circle_id") String circleId);
 
     @GET("/api/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
@@ -279,6 +284,13 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/social/posts")
     TextualPost post(@Field("description") String description);
+
+    @FormUrlEncoded
+    @PUT("/api/social/posts/{uid}")
+    TextualPost editPost(@Path("uid") String uid, @Field("description") String description);
+
+    @DELETE("/api/social/posts/{uid}")
+    Void deletePost(@Path("uid") String uid);
 
     @DELETE("/api/social/comments/{id}")
     JSONObject deleteComment(@Path("id") String commentId);
@@ -300,4 +312,29 @@ public interface DreamTripsApi {
 
     @DELETE("/api/{uid}/likes")
     Void dislikeEntity(@Path("uid") String uid);
+
+    @GET("/api/{uid}/likes")
+    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
+
+    @GET("/api/social/notifications")
+    ArrayList<ParentFeedItem> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
+
+    @GET("/api/{uid}")
+    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
+
+    @PUT("/api/social/notifications")
+    Void markAsRead(@Query("since") String since, @Query("before") String before);
+
+    @PUT("/api/social/notifications/{id}")
+    Void markAsRead(@Path("id") int id);
+
+    @POST("/api/social/push_subscriptions")
+    Void subscribeDevice(@Body PushSubscription pushSubscription);
+
+    @DELETE("/api/social/push_subscriptions/{token}")
+    Void unsubscribeDevice(@Path("token") String token);
+
+    @FormUrlEncoded
+    @POST("/api/{uid}/flags")
+    Void flagItem(@Path("uid") String uid, @Field("reason") String nameOfReason);
 }

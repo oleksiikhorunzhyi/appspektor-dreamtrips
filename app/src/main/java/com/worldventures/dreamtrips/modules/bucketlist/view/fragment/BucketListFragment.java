@@ -37,7 +37,6 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -48,8 +47,12 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -58,7 +61,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter.BucketType;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
@@ -120,14 +122,15 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         recyclerView.setScrollbarFadingEnabled(false);
         recyclerView.setFadingEdgeLength(0);
         // setup empty view
-        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
+        BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
 
         if (textViewEmptyAdd != null)
             textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
         recyclerView.setEmptyView(emptyView);
         // setup drag&drop with adapter
         dragDropManager = new RecyclerViewDragDropManager();
-        dragDropManager.setInitiateOnLongPress(true); // not working :(
+        dragDropManager.setInitiateOnLongPress(true);
+        dragDropManager.setInitiateOnMove(false);
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
         adapter = new BucketItemAdapter(getActivity(), injector);
 
@@ -252,10 +255,10 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     }
 
     @Override
-    public void openPopular(Bundle args) {
+    public void openPopular(BucketBundle args) {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .args(args)
+                .data(args)
                 .move(Route.POPULAR_TAB_BUCKER);
     }
 
@@ -264,6 +267,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
         PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
         popupMenu.inflate(R.menu.menu_bucket_filter);
+        PopupMenuUtils.convertItemsToUpperCase(popupMenu);
 
         boolean showCompleted = getPresenter().isShowCompleted();
         boolean showToDO = getPresenter().isShowToDO();
@@ -315,7 +319,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
-        BucketType type = (BucketType) getArguments().getSerializable(BUNDLE_TYPE);
+        BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
         return (T) new BucketListPresenter(type, getObjectGraph());
     }
 
@@ -342,31 +346,27 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         }
     }
 
-    public void openDetails(Bundle args) {
-        Route detailsRoute = getDetailsRoute();
+    @Override
+    public void openDetails(BucketItem bucketItem) {
+        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
+
+        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
             fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
-
-            args.putBoolean(BucketDetailsFragment.EXTRA_SLAVE, true);
-
+            fragmentCompass.clear();
             NavigationBuilder.create()
                     .with(fragmentCompass)
-                    .args(args)
-                    .attach(detailsRoute);
+                    .data(bundle)
+                    .move(detailsRoute);
             showDetailsContainer();
         } else {
             hideDetailContainer();
             NavigationBuilder.create()
                     .with(activityRouter)
-                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .args(args)
+                    .data(bundle)
                     .move(detailsRoute);
         }
-    }
-
-    public Route getDetailsRoute() {
-        return Route.DETAIL_BUCKET;
     }
 }

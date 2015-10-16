@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
@@ -20,10 +19,11 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,18 +48,24 @@ public abstract class TripImagesListPresenter
     private boolean loading = true;
 
     private TripImagesRoboSpiceController roboSpiceAdapterController;
-    private List<IFullScreenObject> photos = new ArrayList<>();
+    protected List<IFullScreenObject> photos = new ArrayList<>();
 
-    public TripImagesListPresenter(Type type) {
+    protected int userId;
+
+    public TripImagesListPresenter(Type type, int userId) {
         super();
         this.type = type;
+        this.userId = userId;
     }
 
     @Override
     public void onInjected() {
         super.onInjected();
-        photos.clear();
-        photos.addAll(db.readPhotoEntityList(type));
+        syncPhotos();
+    }
+
+    protected void syncPhotos() {
+        photos.addAll(db.readPhotoEntityList(type, userId));
     }
 
     @Override
@@ -69,8 +75,7 @@ public abstract class TripImagesListPresenter
         view.fillWithItems(photos);
         view.setSelection();
 
-        if (type != Type.FIXED_LIST && !isFullscreen)
-            reload();
+        if (type != Type.FIXED_LIST && !isFullscreen) reload();
     }
 
     private void resetLazyLoadFields() {
@@ -121,18 +126,16 @@ public abstract class TripImagesListPresenter
                     startUpload((UploadTask) obj);
                 }
             } else {
-                Bundle args = getFullscreenArgs(position);
-                view.openFullscreen(args);
+                view.openFullscreen(getFullscreenArgs(position).build());
             }
         }
     }
 
     @NonNull
-    protected Bundle getFullscreenArgs(int position) {
-        Bundle args = new Bundle();
-        args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_POSITION, position);
-        args.putSerializable(FullScreenPhotoWrapperFragment.EXTRA_TYPE, type);
-        return args;
+    protected FullScreenImagesBundle.Builder getFullscreenArgs(int position) {
+        return new FullScreenImagesBundle.Builder()
+                .position(position)
+                .type(type);
     }
 
     private void savePhotoIfNeeded(UploadTask uploadTask) {
@@ -146,7 +149,7 @@ public abstract class TripImagesListPresenter
 
         photos.add(0, uploadTask);
         view.add(0, uploadTask);
-        db.savePhotoEntityList(type, photos);
+        db.savePhotoEntityList(type, userId, photos);
         startUpload(uploadTask);
     }
 
@@ -184,7 +187,6 @@ public abstract class TripImagesListPresenter
             uploadTask.setStatus(UploadTask.Status.FAILED);
             updateTask(uploadTask);
         }
-
     }
 
     @Override
@@ -202,14 +204,12 @@ public abstract class TripImagesListPresenter
             db.removeUploadTask(task);
         }, spiceException -> {
             photoError(getCurrentTask(task.getAmazonTaskId()));
-
         });
     }
 
     private void processPhoto(int index, Photo photo) {
-        photos.remove(index);
-        photos.add(index, photo);
-        db.savePhotoEntityList(type, photos);
+        photos.set(index, photo);
+        db.savePhotoEntityList(type, userId, photos);
 
         new Handler().postDelayed(() -> {
             if (view != null) view.replace(index, photo);
@@ -243,7 +243,7 @@ public abstract class TripImagesListPresenter
             if (o.getFsId().equals(event.getPhotoId())) {
                 photos.remove(i);
                 view.remove(i);
-                db.savePhotoEntityList(type, photos);
+                db.savePhotoEntityList(type, userId, photos);
             }
         }
     }
@@ -272,22 +272,22 @@ public abstract class TripImagesListPresenter
     }
 
     public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos, int userId) {
-        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES);
+        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES, userId);
         switch (type) {
             case MEMBER_IMAGES:
-                presenter = new UserImagesPresenter();
+                presenter = new UserImagesPresenter(userId);
                 break;
             case MY_IMAGES:
-                presenter = new AccountImagesPresenter();
+                presenter = new AccountImagesPresenter(userId);
                 break;
             case YOU_SHOULD_BE_HERE:
-                presenter = new YSBHPresenter();
+                presenter = new YSBHPresenter(userId);
                 break;
             case INSPIRE_ME:
-                presenter = new InspireMePresenter();
+                presenter = new InspireMePresenter(userId);
                 break;
             case FIXED_LIST:
-                presenter = new FixedPhotoFsPresenter(photos);
+                presenter = new FixedPhotoFsPresenter(photos, userId);
                 break;
             case FOREIGN_IMAGES:
                 presenter = new ForeignImagesPresenter(userId);
@@ -313,8 +313,8 @@ public abstract class TripImagesListPresenter
         }
 
         @Override
-        public void onFinish(RoboSpiceAdapterController.LoadType loadType,
-                             List<IFullScreenObject> items, SpiceException spiceException) {
+        public void onPreFinish(RoboSpiceAdapterController.LoadType loadType,
+                                List<IFullScreenObject> items, SpiceException spiceException) {
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
@@ -327,7 +327,7 @@ public abstract class TripImagesListPresenter
                         photos.addAll(items);
                     }
 
-                    db.savePhotoEntityList(type, photos);
+                    db.savePhotoEntityList(type, userId, photos);
                 } else {
                     handleError(spiceException);
                 }
@@ -348,6 +348,19 @@ public abstract class TripImagesListPresenter
         onStateChanged(transferObserver.getId(), transferObserver.getState());
     }
 
+    public void onEvent(FeedEntityChangedEvent event) {
+        if (event.getFeedEntity() instanceof Photo) {
+            Photo temp = (Photo) event.getFeedEntity();
+            int index = photos.indexOf(temp);
+
+            if (index != -1) {
+                Photo photo = (Photo) photos.get(index);
+                photos.set(index, temp);
+                db.savePhotoEntityList(type, userId, photos);
+            }
+        }
+    }
+
     public interface View extends Presenter.View, AdapterView<IFullScreenObject> {
         void startLoading();
 
@@ -359,9 +372,8 @@ public abstract class TripImagesListPresenter
 
         IRoboSpiceAdapter getAdapter();
 
-        void openFullscreen(Bundle args);
+        void openFullscreen(FullScreenImagesBundle data);
 
         void inject(Object getMyPhotosQuery);
     }
-
 }

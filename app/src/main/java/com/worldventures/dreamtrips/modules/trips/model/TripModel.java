@@ -9,17 +9,15 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel extends BaseFeedObject implements Filterable, Serializable {
+public class TripModel extends BaseFeedEntity implements Filterable {
     public static final String PATTERN = "?width=%d&height=%d";
 
     public static final long serialVersionUID = 123L;
@@ -50,6 +48,11 @@ public class TripModel extends BaseFeedObject implements Filterable, Serializabl
     @SerializedName("recent")
     private boolean recentlyAdded;
     private boolean inBucketList;
+
+    @Override
+    public String place() {
+        return location != null ? location.getName() : null;
+    }
 
     public String getTripId() {
         return tripId;

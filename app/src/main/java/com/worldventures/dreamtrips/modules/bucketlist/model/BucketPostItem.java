@@ -59,4 +59,27 @@ public class BucketPostItem  extends BucketBasePostItem {
         this.description = description;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
 }

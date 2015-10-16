@@ -4,70 +4,17 @@
               android:layout_height="wrap_content"
               android:orientation="vertical">
 
-    <RelativeLayout
+    <com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
+        android:id="@+id/actionView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingBottom="@dimen/spacing_small"
-        android:paddingTop="@dimen/spacing_small">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:layout_toLeftOf="@+id/likes"
-            android:layout_toStartOf="@+id/likes"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/likes_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/theme_main_darker"
-                />
-
-            <TextView
-                android:id="@+id/comments_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/theme_main_darker"
-                />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/likes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/comments"
-            android:layout_toStartOf="@+id/comments"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_feed_thumb_up"/>
-
-        <ImageView
-            android:id="@+id/comments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/likes"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:padding="@dimen/spacing_small"
-            android:src="@drawable/ic_feed_footer_comments"/>
-
-    </RelativeLayout>
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/comment_divider"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="0.5dp"
-        android:background="@color/gray"/>
+        android:background="@color/grey"
+        android:visibility="gone"/>
 
     <include
         android:id="@+id/comment_preview"

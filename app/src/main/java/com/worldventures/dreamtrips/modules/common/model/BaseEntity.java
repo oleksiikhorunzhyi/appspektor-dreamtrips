@@ -12,20 +12,11 @@ import java.io.Serializable;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BaseEntity implements Serializable, Parcelable {
 
+    public BaseEntity() {
+    }
+
     @TaggedFieldSerializer.Tag(0)
     protected int id;
-
-    public static final Creator<BaseEntity> CREATOR = new Creator<BaseEntity>() {
-        @Override
-        public BaseEntity createFromParcel(Parcel in) {
-            return new BaseEntity(in);
-        }
-
-        @Override
-        public BaseEntity[] newArray(int size) {
-            return new BaseEntity[size];
-        }
-    };
 
     public int getId() {
         return id;
@@ -43,18 +34,14 @@ public class BaseEntity implements Serializable, Parcelable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         BaseEntity that = (BaseEntity) o;
-
         return id == that.id;
-
     }
 
     @Override
     public int hashCode() {
         return id;
     }
-
 
     @Override
     public int describeContents() {
@@ -66,11 +53,20 @@ public class BaseEntity implements Serializable, Parcelable {
         dest.writeInt(this.id);
     }
 
-    public BaseEntity() {
-    }
-
     protected BaseEntity(Parcel in) {
         this.id = in.readInt();
     }
+
+    public static final Creator<BaseEntity> CREATOR = new Creator<BaseEntity>() {
+        @Override
+        public BaseEntity createFromParcel(Parcel in) {
+            return new BaseEntity(in);
+        }
+
+        @Override
+        public BaseEntity[] newArray(int size) {
+            return new BaseEntity[size];
+        }
+    };
 
 }

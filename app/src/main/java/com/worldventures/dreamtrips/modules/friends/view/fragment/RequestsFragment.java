@@ -20,6 +20,11 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -27,10 +32,12 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
@@ -52,6 +59,10 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     RecyclerViewStateDelegate stateDelegate;
     BaseArrayListAdapter<Object> adapter;
 
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
+
     private WeakHandler weakHandler;
 
     @Override
@@ -72,7 +83,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_friend:
-                activityRouter.openFriendsSearch();
+                NavigationBuilder.create().with(activityRouter).move(Route.FRIEND_SEARCH);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -139,6 +150,16 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
+    }
+
+    @Override
+    public void openUser(UserBundle userBundle) {
+        if (isVisibleOnScreen())
+            NavigationBuilder.create().with(activityRouter)
+                    .data(userBundle)
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .move(routeCreator.createRoute(userBundle.getUser().getId()));
+
     }
 
     @Override

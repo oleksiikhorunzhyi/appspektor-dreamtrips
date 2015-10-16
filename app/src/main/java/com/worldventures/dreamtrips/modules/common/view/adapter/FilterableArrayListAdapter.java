@@ -19,12 +19,14 @@ import java.util.List;
 import javax.inject.Provider;
 
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
+
 
 public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extends LoaderRecycleAdapter<BaseItemClass> {
 
     protected volatile List<BaseItemClass> cachedItems;
-    @Icicle volatile String query;
+    @State
+    volatile String query;
 
     protected WeakHandler mainHandler;
     protected WeakHandler filterHandler;

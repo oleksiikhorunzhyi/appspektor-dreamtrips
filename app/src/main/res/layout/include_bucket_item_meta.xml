@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:showIn="@layout/layout_bucket_item_details">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/bucket_who_container"
@@ -13,7 +12,8 @@
         android:layout_height="wrap_content"
         android:background="#F6F6F6"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="12dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,9 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#F6F6F6"
-        android:gravity="center"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="12dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"

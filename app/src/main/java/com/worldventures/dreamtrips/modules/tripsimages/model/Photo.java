@@ -1,22 +1,19 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
-
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.model.BaseFeedObject;
+import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class Photo extends BaseFeedObject implements Serializable, IFullScreenObject, Parcelable {
+public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     private String title;
     private Date shotAt;
@@ -34,6 +31,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
         likesCount = in.readInt();
         liked = in.readInt() == 1;
         title = in.readString();
+        shotAt = (Date) in.readSerializable();
         location = in.readParcelable(Location.class.getClassLoader());
         tags = in.createStringArrayList();
         images = in.readParcelable(Image.class.getClassLoader());
@@ -52,6 +50,11 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
             return new Photo[size];
         }
     };
+
+    @Override
+    public String place() {
+        return location != null ? location.getName() : null;
+    }
 
     public String getFsId() {
         return uid;
@@ -151,7 +154,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
 
     @Override
     public int getFsCommentCount() {
-        return -1;
+        return commentsCount;
     }
 
     @Override
@@ -193,6 +196,7 @@ public class Photo extends BaseFeedObject implements Serializable, IFullScreenOb
         parcel.writeInt(likesCount);
         parcel.writeInt(liked ? 1 : 0);
         parcel.writeString(title);
+        parcel.writeSerializable(shotAt);
         parcel.writeParcelable(location, i);
         parcel.writeStringList(tags);
         parcel.writeParcelable(images, i);

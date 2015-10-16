@@ -12,6 +12,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 
 import butterknife.InjectView;
@@ -70,5 +71,10 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     @OnClick(R.id.calculateButton)
     void calculateClicked() {
         getPresenter().onCalculateClicked(inputPoints.getText().toString());
+    }
+
+    @OnClick(R.id.button_cancel)
+    void onCancel() {
+        eventBus.post(new CloseDialogEvent());
     }
 }

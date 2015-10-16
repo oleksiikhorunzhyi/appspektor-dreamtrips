@@ -11,6 +11,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
@@ -21,7 +22,6 @@ import java.util.Calendar;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_suggest_merchant)
@@ -64,7 +64,7 @@ public class DtlSuggestMerchantFragment
     @InjectView(R.id.additionalInfo)
     DTEditText additionalInfo;
 
-    private SweetAlertDialog progressDialog;
+    private ProgressDialogFragment progressDialog;
 
     @Override
     protected DtlSuggestMerchantPresenter createPresenter(Bundle savedInstanceState) {
@@ -79,10 +79,7 @@ public class DtlSuggestMerchantFragment
         additionalInfo.addValidator(new InputLengthValidator(120,
                 getString(R.string.suggest_merchant_additional_info_length_error)));
         //
-        progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
-        progressDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
-        progressDialog.setTitleText(getString(R.string.pleasewait));
-        progressDialog.setCancelable(false);
+        progressDialog = ProgressDialogFragment.create();
     }
 
     @OnClick(R.id.fromDate) void fromDateClicked() {
@@ -220,12 +217,12 @@ public class DtlSuggestMerchantFragment
 
     @Override
     public void showProgress() {
-        progressDialog.show();
+        progressDialog.show(getFragmentManager());
     }
 
     @Override
     public void hideProgress() {
-        progressDialog.dismissWithAnimation();
+        progressDialog.dismiss();
     }
 
     @Override

@@ -145,7 +145,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin"
             >
 
             <TextView
@@ -176,7 +175,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin"
             >
 
             <TextView
@@ -207,7 +205,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin"
             >
 
             <TextView
@@ -238,7 +235,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin"
             android:layout_marginBottom="0dp"
             >
 

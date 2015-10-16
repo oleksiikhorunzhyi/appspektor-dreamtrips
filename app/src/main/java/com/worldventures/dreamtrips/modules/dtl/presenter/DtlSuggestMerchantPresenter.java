@@ -28,11 +28,14 @@ public class DtlSuggestMerchantPresenter extends Presenter<DtlSuggestMerchantPre
         if (validate()) {
             view.showProgress();
             doRequest(new DtlSuggestMerchantCommand(place.getId(), view.getContactName(), view.getPhone(),
-                    new ContactTime(view.getFromTimestamp(), view.getToTimestamp()),
-                    new RateContainer(view.getFoodRating(), view.getServiceRating(),
-                            view.getCleanlinessRating(), view.getUniquenessRating()),
-                    view.getAdditionalInfo()),
-                    aVoid -> view.hideProgress(),
+                            new ContactTime(view.getFromTimestamp(), view.getToTimestamp()),
+                            new RateContainer(view.getFoodRating(), view.getServiceRating(),
+                                    view.getCleanlinessRating(), view.getUniquenessRating()),
+                            view.getAdditionalInfo()),
+                    aVoid -> {
+                        view.hideProgress();
+                        view.dismiss();
+                    },
                     spiceException -> {
                         super.handleError(spiceException);
                         view.hideProgress();

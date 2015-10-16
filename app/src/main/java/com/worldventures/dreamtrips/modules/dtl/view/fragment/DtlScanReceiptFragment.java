@@ -31,7 +31,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.fragment_scan_receipt)
-@MenuResource(R.menu.menu_scan_receipt)
+@MenuResource(R.menu.menu_mock)
 public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, DtlPlace>
         implements DtlScanReceiptPresenter.View {
 
@@ -104,11 +104,6 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
                 .with(activityRouter)
                 .data(dtlPlace)
                 .move(routeCreator.createRoute(dtlTransaction));
-    }
-
-    @OnClick(R.id.fab_progress)
-    void onProgressClick() {
-        getPresenter().onProgressClicked();
     }
 
     @Override

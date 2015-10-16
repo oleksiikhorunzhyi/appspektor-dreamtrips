@@ -21,7 +21,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
         doRequest(new GetDtlPlacePointsEstimationQuery(placeId,
                 Double.valueOf(userInput)), aDouble -> {
             view.stopProgress();
-            view.showEstimatedPoints(String.valueOf(aDouble));
+            view.showEstimatedPoints(aDouble.intValue());
         }, spiceException -> {
             super.handleError(spiceException);
             view.stopProgress();
@@ -48,6 +48,6 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
 
         void showError(@StringRes int errorRes);
 
-        void showEstimatedPoints(String value);
+        void showEstimatedPoints(int value);
     }
 }

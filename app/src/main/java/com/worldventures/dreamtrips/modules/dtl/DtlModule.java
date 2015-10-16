@@ -90,8 +90,8 @@ public class DtlModule {
     public static final String DTL = Route.DTL_START.name();
 
     //TODO replace it after MVP
-    public static final double LAT = 32.609855651855d;
-    public static final double LNG = -85.480781555176d;
+    public static final double LAT = 29.7630556;
+    public static final double LNG = -95.3630556;
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideDtlComponent() {

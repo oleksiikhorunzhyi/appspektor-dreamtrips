@@ -239,7 +239,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
     }
 
-    public void onEvent(BackPressedMessageEvent event){
+    public void onEvent(BackPressedMessageEvent event) {
         if (isVisibleOnScreen() && !handleComponentChange()) {
             fragmentCompass.clear();
             FragmentManager fm = getSupportFragmentManager();

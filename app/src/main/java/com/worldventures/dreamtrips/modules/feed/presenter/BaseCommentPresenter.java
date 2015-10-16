@@ -127,24 +127,24 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     public void onEvent(DeletePostEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePostCommand(event.getEntity().getItem().getUid()),
+            doRequest(new DeletePostCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
     public void onEvent(DeletePhotoEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePhotoCommand(event.getEntity().getItem().getUid()),
+            doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
     public void onEvent(DeleteBucketEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeleteBucketItemCommand(event.getEventModel().getItem().getUid()),
-                    aVoid -> itemDeleted(event.getEventModel()));
+            doRequest(new DeleteBucketItemCommand(event.getEntity().getUid()),
+                    aVoid -> itemDeleted(event.getEntity()));
 
     }
 
-    private void itemDeleted(FeedItem model) {
+    private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         fragmentCompass.pop();
     }

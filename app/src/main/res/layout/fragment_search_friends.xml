@@ -34,7 +34,7 @@
             android:alpha="0.54"
             android:gravity="center"
             android:padding="25dp"
-            android:text="@string/filter_no_results"
+            android:text="@string/start_searching"
             android:textColor="@android:color/black"
             android:textSize="18dp"/>
 

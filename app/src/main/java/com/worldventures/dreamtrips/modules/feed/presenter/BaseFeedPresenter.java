@@ -29,10 +29,10 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -176,7 +176,11 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(FeedEntityChangedEvent event) {
         Queryable.from(feedItems).forEachR(item -> {
             if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-                item.setItem(event.getFeedEntity());
+                FeedEntity feedEntity = event.getFeedEntity();
+                if (feedEntity.getUser() == null) {
+                    feedEntity.setUser(item.getItem().getUser());
+                }
+                item.setItem(feedEntity);
             }
         });
 
@@ -211,23 +215,24 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
             FeedEntity model = event.getModel();
-            DreamTripsRequest command = model.isLiked() ?
+            boolean isLiked = model.isLiked();
+            DreamTripsRequest command = isLiked ?
                     new UnlikeEntityCommand(model.getUid()) :
                     new LikeEntityCommand(model.getUid());
-            doRequest(command, element -> itemLiked(model.getUid()));
+            doRequest(command, element -> itemLiked(model.getUid(), !isLiked));
         }
     }
 
     public void onEvent(EntityLikedEvent event) {
-        itemLiked(event.getId());
+        itemLiked(event.getId(), event.isLiked());
     }
 
-    private void itemLiked(String uid) {
+    private void itemLiked(String uid, boolean isLiked) {
         Queryable.from(feedItems).forEachR(event -> {
             FeedEntity item = event.getItem();
 
-            if (item.getUid().equals(uid)) {
-                item.setLiked(!item.isLiked());
+            if (item.getUid().equals(uid) && item.isLiked() != isLiked) {
+                item.setLiked(isLiked);
                 int currentCount = item.getLikesCount();
                 currentCount = item.isLiked() ? currentCount + 1 : currentCount - 1;
                 item.setLikesCount(currentCount);
@@ -239,21 +244,21 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(DeletePostEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePostCommand(event.getEntity().getItem().getUid()),
+            doRequest(new DeletePostCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
     public void onEvent(DeletePhotoEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePhotoCommand(event.getEntity().getItem().getUid()),
+            doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
 
     }
 
     public void onEvent(DeleteBucketEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeleteBucketItemCommand(event.getEventModel().getItem().getUid()),
-                    aVoid -> itemDeleted(event.getEventModel()));
+            doRequest(new DeleteBucketItemCommand(event.getEntity().getUid()),
+                    aVoid -> itemDeleted(event.getEntity()));
 
     }
 
@@ -274,9 +279,9 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         }
     }
 
-    private void itemDeleted(FeedItem eventModel) {
+    private void itemDeleted(FeedEntity feedEntity) {
         List<FeedItem> filteredItems = Queryable.from(feedItems)
-                .filter(element -> !element.equals(eventModel))
+                .filter(element -> !element.getItem().equals(feedEntity))
                 .toList();
 
         feedItems.clear();
@@ -295,7 +300,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
             uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
     }
 
-    public void onEventMainThread(FeedEntityItemClickEvent event) {
+    public void onEvent(FeedEntityItemClickEvent event) {
+        eventBus.cancelEventDelivery(event);
         view.openDetails(event.getFeedItem());
     }
 

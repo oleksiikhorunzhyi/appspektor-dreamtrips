@@ -118,10 +118,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         bucketItemManager.saveSingleBucketItem(bucketItem);
     }
 
-    public FeedEntity getBucketItem() {
-        return bucketItem;
-    }
-
     public interface View extends BucketDetailsBasePresenter.View {
         void setCategory(String category);
 

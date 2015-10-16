@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -19,8 +18,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
@@ -28,7 +25,6 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Optional;
 
 @Layout(R.layout.fragment_feed)
 @MenuResource(R.menu.menu_activity_feed)
@@ -39,6 +35,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     FloatingActionButton fabPost;
 
     BadgeImageView friendsBadge;
+
+    private CirclesFilterPopupWindow filterPopupWindow;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -76,16 +74,24 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
-                actionFilter();
+                if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
+                    actionFilter();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        filterPopupWindow = null;
+    }
+
     private void actionFilter() {
         FeedPresenter presenter = getPresenter();
         View menuItemView = getActivity().findViewById(R.id.action_filter);
-        CirclesFilterPopupWindow filterPopupWindow = new CirclesFilterPopupWindow(getContext());
+        filterPopupWindow = new CirclesFilterPopupWindow(getContext());
         filterPopupWindow.setCircles(presenter.getFilterCircles());
         filterPopupWindow.setAnchorView(menuItemView);
         filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.github.ben-manes.versions'
 
 repositories {
@@ -24,7 +23,7 @@ android {
     def versionMajor = 1
     def versionMinor = 3
     def versionPatch = 0
-    def versionBuild = 7  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 12  // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -34,7 +33,7 @@ android {
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 22
 
         multiDexEnabled true
 

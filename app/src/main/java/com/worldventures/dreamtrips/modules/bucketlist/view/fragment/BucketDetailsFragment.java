@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
+import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
@@ -123,9 +125,10 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         super.afterCreateView(view);
 
         boolean slave = getArgs().isSlave();
-        if (!slave) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (!slave && actionBar != null && ViewUtils.isFullVisibleOnScreen(this)) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("");
         }
         setForeignIntentAction();
 
@@ -138,23 +141,19 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     public void onEvent(FeedEntityEditClickEvent event) {
-        if (isVisibleOnScreen() && event.getFeedItem().getItem().getUid().equals(getPresenter().getBucketItem().getUid())) {
-            PopupMenu popup = new PopupMenu(getActivity(), event.getAnchor());
-            popup.inflate(R.menu.menu_bucket_edit);
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.action_delete:
-                        getPresenter().onDelete();
-                        break;
-                    case R.id.action_edit:
-                        getPresenter().onEdit();
-                        break;
-                }
-
-                return true;
-            });
-            popup.show();
+        if (isVisibleOnScreen()) {
+            event.getAnchor().setEnabled(false);
+            FeedItemMenuBuilder.create(getActivity(), event.getAnchor(), R.menu.menu_feed_entity_edit)
+                    .onDelete(() -> getPresenter().onDelete())
+                    .onEdit(() -> getPresenter().onEdit())
+                    .dismissListener(menu -> event.getAnchor().setEnabled(true))
+                    .show();
         }
+    }
+
+    @Override
+    public boolean isVisibleOnScreen() {
+        return ViewUtils.isPartVisibleOnScreen(this);
     }
 
     @Override
@@ -306,7 +305,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
 
     public void onEvent(TripImageClickedEvent event) {
-        getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
+        if (ViewUtils.isFullVisibleOnScreen(this))
+            getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
     }
 
     @Override

@@ -12,7 +12,7 @@ public class NavigationDrawerPresenter extends Presenter<NavigationDrawerPresent
     SnappyRepository db;
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.notificationCountChanged(db.getNotificationCount());
+        view.notificationCountChanged(db.getExclusiveNotificationsCount());
     }
 
 

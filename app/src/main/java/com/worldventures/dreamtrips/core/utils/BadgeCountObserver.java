@@ -3,12 +3,8 @@ package com.worldventures.dreamtrips.core.utils;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
-
-import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -26,7 +22,7 @@ public class BadgeCountObserver {
         this.eventBus.register(this);
     }
 
-    public void onEvent(HeaderCountChangedEvent event){
-        ShortcutBadger.with(context).count(database.getNotificationCount());
+    public void onEvent(HeaderCountChangedEvent event) {
+        ShortcutBadger.with(context).count(database.getBadgeNotificationsCount());
     }
 }

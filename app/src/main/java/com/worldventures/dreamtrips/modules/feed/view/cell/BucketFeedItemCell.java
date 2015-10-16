@@ -129,12 +129,12 @@ public class BucketFeedItemCell extends FeedHeaderCell<BucketFeedItem> {
 
     @Override
     protected void onMore() {
-        showMoreDialog(R.menu.menu_bucket_edit, R.string.bucket_delete, R.string.bucket_delete_caption);
+        showMoreDialog(R.menu.menu_feed_entity_edit, R.string.bucket_delete, R.string.bucket_delete_caption);
     }
 
     @Override
     protected void onDelete() {
-        getEventBus().post(new DeleteBucketEvent(getModelObject()));
+        getEventBus().post(new DeleteBucketEvent(getModelObject().getItem()));
     }
 
     @Override

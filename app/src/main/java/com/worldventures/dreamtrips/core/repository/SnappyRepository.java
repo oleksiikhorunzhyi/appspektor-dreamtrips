@@ -48,8 +48,9 @@ public class SnappyRepository {
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
     public static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
-    public static final String NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
-    public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
+    public static final String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
+    public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
+    public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
 
@@ -286,13 +287,13 @@ public class SnappyRepository {
     // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
 
-    public void savePhotoEntityList(Type type, List<IFullScreenObject> items) {
-        putList(IMAGE + ":" + type, items);
+    public void savePhotoEntityList(Type type, int userId, List<IFullScreenObject> items) {
+        putList(IMAGE + ":" + type + ":" + userId, items);
 
     }
 
-    public List<IFullScreenObject> readPhotoEntityList(Type type) {
-        return readList(IMAGE + ":" + type, IFullScreenObject.class);
+    public List<IFullScreenObject> readPhotoEntityList(Type type, int userId) {
+        return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -332,6 +333,31 @@ public class SnappyRepository {
                 .orNull();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Notifications counters
+    ///////////////////////////////////////////////////////////////////////////
+
+    /** All notifications */
+    public void saveBadgeNotificationsCount(int notificationsCount) {
+        act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
+    }
+
+    /** All notifications */
+    public int getBadgeNotificationsCount() {
+        return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
+    }
+
+    public void saveCountFromHeader(String headerKey, int count) {
+        act(db -> db.putInt(headerKey, count));
+    }
+
+    public int getExclusiveNotificationsCount() {
+        return actWithResult(db -> db.getInt(EXCLUSIVE_NOTIFICATIONS_COUNT)).or(0);
+    }
+
+    public int getFriendsRequestsCount() {
+        return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Circles
@@ -345,28 +371,12 @@ public class SnappyRepository {
         return readList(CIRCLES, Circle.class);
     }
 
-    public void saveNotificationsCount(int notificationsCount) {
-        act(db -> db.putInt(NOTIFICATIONS_COUNT, notificationsCount));
-    }
-
-    public int getNotificationCount() {
-        return actWithResult(db -> db.getInt(NOTIFICATIONS_COUNT)).or(0);
-    }
-
     public void saveFilterCircle(Circle circle){
         act(db -> db.put(FILTER_CIRCLE, circle));
     }
 
     public Circle getFilterCircle(){
         return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
-    }
-
-    public int getFriendsRequestsCount() {
-        return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
-    }
-
-    public void saveCountFromHeader(String headerKey, int count) {
-        act(db -> db.putInt(headerKey, count));
     }
 
     ///////////////////////////////////////////////////////////////////////////

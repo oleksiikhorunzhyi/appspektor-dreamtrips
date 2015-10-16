@@ -240,7 +240,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.setUser(user); //Notify to update ProfileCell
+        view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
     }
 
     private void imageSelected(ChosenImage chosenImage) {
@@ -289,6 +289,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         void openAvatarPicker();
 
         void openCoverPicker();
+
+        void updateBadgeCount(int count);
     }
 
 }

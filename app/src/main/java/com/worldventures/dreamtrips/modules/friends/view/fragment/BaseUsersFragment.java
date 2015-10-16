@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
@@ -47,6 +48,8 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     protected EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.caption)
+    protected TextView caption;
 
     @Inject
     @Named(RouteCreatorModule.PROFILE)

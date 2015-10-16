@@ -58,23 +58,24 @@ public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
                 title.setVisibility(View.GONE);
             }
         }
+    }
 
-        itemView.setOnClickListener(v -> {
-            ArrayList<IFullScreenObject> items = new ArrayList<>();
-            items.add(getModelObject().getItem());
+    @Override
+    protected void itemClicked() {
+        ArrayList<IFullScreenObject> items = new ArrayList<>();
+        items.add(getModelObject().getItem());
 
-            FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
-                    .position(0)
-                    .type(TripImagesListFragment.Type.FIXED_LIST)
-                    .fixedList(items)
-                    .build();
+        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                .position(0)
+                .type(TripImagesListFragment.Type.FIXED_LIST)
+                .fixedList(items)
+                .build();
 
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .data(data)
-                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .move(Route.FULLSCREEN_PHOTO_LIST);
-        });
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(data)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(Route.FULLSCREEN_PHOTO_LIST);
     }
 
     private void loadPhoto(Photo photoObj) {
@@ -85,12 +86,12 @@ public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
 
     @Override
     protected void onMore() {
-        showMoreDialog(R.menu.menu_photo_edit, R.string.photo_delete, R.string.photo_delete_caption);
+        showMoreDialog(R.menu.menu_feed_entity_edit, R.string.photo_delete, R.string.photo_delete_caption);
     }
 
     @Override
     protected void onDelete() {
-        getEventBus().post(new DeletePhotoEvent(getModelObject()));
+        getEventBus().post(new DeletePhotoEvent(getModelObject().getItem()));
     }
 
     @Override

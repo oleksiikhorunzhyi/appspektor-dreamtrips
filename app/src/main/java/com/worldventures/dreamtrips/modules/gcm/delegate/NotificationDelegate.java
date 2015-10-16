@@ -30,7 +30,9 @@ public class NotificationDelegate {
     }
 
     public void updateNotificationCount(PushMessage data){
-        repository.saveNotificationsCount(data.alertWrapper.badge);
+        repository.saveBadgeNotificationsCount(data.alertWrapper.badge);
+        repository.saveCountFromHeader(SnappyRepository.EXCLUSIVE_NOTIFICATIONS_COUNT, data.notificationsCount);
+        repository.saveCountFromHeader(SnappyRepository.FRIEND_REQUEST_COUNT, data.requestsCount);
         bus.post(new HeaderCountChangedEvent());
     }
 

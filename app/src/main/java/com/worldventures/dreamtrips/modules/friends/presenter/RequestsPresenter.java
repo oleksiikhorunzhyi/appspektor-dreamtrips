@@ -54,7 +54,9 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         doRequest(new GetRequestsQuery(),
                 items -> {
                     view.finishLoading();
-                    eventBus.post(new RequestsLoadedEvent(items.size()));
+                    eventBus.post(new RequestsLoadedEvent(Queryable.from(items)
+                            .filter(item -> item.getRelationship() == INCOMING_REQUEST)
+                            .toList().size()));
                     addItems(items);
                 }, exception -> {
                     view.finishLoading();
@@ -63,7 +65,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(UserClickedEvent event) {
-        view.openUser(new UserBundle(event.getUser()));
+        if (view.isVisibleOnScreen())
+            view.openUser(new UserBundle(event.getUser()));
     }
 
     private void addItems(List<User> items) {

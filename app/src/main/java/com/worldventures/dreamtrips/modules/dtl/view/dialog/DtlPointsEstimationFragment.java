@@ -36,17 +36,23 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     }
 
     @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        pointsEstimated.setText(R.string.dtl_points_estimation_default_result);
+    }
+
+    @Override
     public void showProgress() {
         // clear possible previous result
         pointsEstimated.setText(R.string.dtl_points_estimation_default_result);
         progressBar.setVisibility(View.VISIBLE);
-        calculateButton.setVisibility(View.GONE);
+        calculateButton.setVisibility(View.INVISIBLE);
         calculateButton.setEnabled(false);
     }
 
     @Override
     public void stopProgress() {
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.INVISIBLE);
         calculateButton.setVisibility(View.VISIBLE);
         calculateButton.setEnabled(true);
     }
@@ -57,8 +63,8 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     }
 
     @Override
-    public void showEstimatedPoints(String value) {
-        pointsEstimated.setText(value);
+    public void showEstimatedPoints(int value) {
+        pointsEstimated.setText(getString(R.string.dtl_dt_points, value));
     }
 
     @OnClick(R.id.calculateButton)

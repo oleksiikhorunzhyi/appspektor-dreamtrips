@@ -22,6 +22,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCategoryDataInflater;
@@ -149,10 +150,15 @@ public class DtlPlaceDetailsFragment
 
     @Override
     public void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(dtlPlace)
-                .move(routeCreator.createRoute(dtlTransaction));
+        Route route = routeCreator.createRoute(dtlTransaction);
+
+        NavigationBuilder navigationBuilder = NavigationBuilder.create();
+        if (route == Route.DTL_TRANSACTION_SUCCEED)
+            navigationBuilder.forDialog(getChildFragmentManager());
+        else
+            navigationBuilder.with(activityRouter);
+
+        navigationBuilder.data(dtlPlace).move(route);
     }
 
     @Override

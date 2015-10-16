@@ -1,57 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:background="#DDDDDD"
+              android:background="@android:color/white"
               android:orientation="vertical"
-              android:padding="10dp"
     >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:gravity="center"
+        android:text="@string/dtl_header"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_normal"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:text="@string/dtl_points_estimation_input_hint"
+        android:textSize="@dimen/font_small"/>
 
     <LinearLayout
         android:id="@+id/inputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         android:orientation="horizontal"
         >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:text="$"
+            android:textSize="@dimen/font_large"/>
 
         <EditText
             android:id="@+id/inputPoints"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="4"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_weight="2"
             android:gravity="center"
-            android:hint="@string/dtl_points_estimation_input_hint"
             android:inputType="numberDecimal"
             android:singleLine="true"
             />
 
         <FrameLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
             >
 
             <Button
                 android:id="@+id/calculateButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/dtl_points_estimation_calculate_button_caption"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="@dimen/dtlCalculationCalculateButtonTextSize"
-                android:theme="@style/DtlButtonTheme"
+                android:theme="@style/WhiteButtonTheme"
                 />
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"
+                android:layout_gravity="center"
+                android:visibility="invisible"
                 />
 
         </FrameLayout>
@@ -59,24 +84,40 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/pointsEstimated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@android:color/white"
         android:gravity="center"
-        android:padding="6dp"
-        android:text="@string/dtl_points_estimation_default_result"
-        android:textColor="#1D74A2"
-        android:textSize="@dimen/dtlCalculationResultTextSize"
-        tools:text="42"
+        android:padding="@dimen/spacing_small"
+        android:text="@string/dtl_verify_earn_hint"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_normal"
         />
 
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/dtl_points_estimation_explanation"
-        />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/pointsEstimated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/dt_points_icon"
+            android:drawablePadding="@dimen/spacing_small"
+            android:drawableStart="@drawable/dt_points_icon"
+            android:gravity="center"
+            android:text="@string/dtl_points_estimation_default_result"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_normal"
+            tools:text="42 DreamTrips Point"
+            />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/spacing_small"/>
+
 </LinearLayout>

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 
 public class DialogFragmentNavigator implements Navigator {
 
@@ -55,7 +56,6 @@ public class DialogFragmentNavigator implements Navigator {
         public void onAttach(Activity activity) {
             super.onAttach(activity);
             compass = new FragmentCompass((BaseActivity) activity, -1);
-
         }
 
         @Override
@@ -97,6 +97,11 @@ public class DialogFragmentNavigator implements Navigator {
         public void onPause() {
             super.onPause();
             OrientationUtil.unlockOrientation(getActivity());
+        }
+
+        public void onEvent(CloseDialogEvent event) {
+            if (isVisible())
+                dismiss();
         }
     }
 }

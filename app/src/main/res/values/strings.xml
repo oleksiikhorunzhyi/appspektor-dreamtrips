@@ -474,7 +474,8 @@
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
     <string name="dtl_points_estimation_explanation">Points calculation explanation goes here</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
-    <string name="dtl_points_estimation_input_hint">Enter price</string>
+    <string name="dtl_points_estimation_input_hint">Enter amount in USD</string>
+    <string name="dtl_header">Point Estimator</string>
     <string name="dtl_points_estimation_default_result">0.0</string>
     <string name="dtl_field_validation_empty_input_error">Cannot be empty!</string>
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
@@ -498,9 +499,11 @@
     <string name="dtl_barcode_merchant">Scan Merchant Code</string>
     <string name="dtl_enter_amount">Enter Amount</string>
     <string name="barcode_hint">Center the QR Code and wait it is scanned</string>
-    <string name="dtl_success" formatted="false">Congratulations, you have earned %d DreamTrips points with this meal and you now have a total of %d DreamTrips points available.</string>
+    <string name="dtl_congrats">Congratulations!</string>
+    <string name="dtl_you_earned">You have earned</string>
+    <string name="dtl_total">Total DreamTrip Points:</string>
+    <string name="rate_hint">Please, rate this experience</string>
     <string name="wait">Wait a little…</string>
-    <string name="rate_hint">Rate this experience</string>
     <string name="dtl_success_title">Congratulations</string>
     <string name="dtl_amount_invalid">Amount is invalid</string>
     <string name="dtl_verify_amount">Verify Amount</string>
@@ -531,5 +534,6 @@
     <string name="suggest_merchant_to_date_past_error">Cannot be in the past!</string>
 
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
+    <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>
 
 </resources>

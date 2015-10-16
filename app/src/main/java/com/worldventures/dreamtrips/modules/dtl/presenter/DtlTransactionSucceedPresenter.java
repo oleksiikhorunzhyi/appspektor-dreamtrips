@@ -13,7 +13,7 @@ import javax.inject.Inject;
 public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucceedPresenter.View> {
 
     private final DtlPlace dtlPlace;
-
+    private DtlTransaction dtlTransaction;
     @Inject
     SnappyRepository snapper;
 
@@ -33,14 +33,20 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
         view.hideProgress();
     }
 
+    public void share() {
+        view.showShareDialog((int) dtlTransaction.getDtlTransactionResult().getEarnedPoints(), dtlPlace);
+    }
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        DtlTransaction dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
+        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
         view.setCongratulations(dtlTransaction.getDtlTransactionResult());
     }
 
     public interface View extends Presenter.View {
+        void showShareDialog(int amount, DtlPlace dtlPlace);
+
         void setCongratulations(DtlTransactionResult result);
 
         void showProgress();

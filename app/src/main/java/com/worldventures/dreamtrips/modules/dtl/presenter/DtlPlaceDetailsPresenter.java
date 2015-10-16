@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
@@ -36,13 +37,21 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         dtlTransaction = snapper.getDtlTransaction(place.getId());
         checkTransaction();
         updateTransactionStatus();
+        checkSucceedEvent();
+    }
+
+    private void checkSucceedEvent() {
+        DtlTransactionSucceedEvent event = eventBus.getStickyEvent(DtlTransactionSucceedEvent.class);
+        if (event != null) {
+            eventBus.removeStickyEvent(event);
+            view.openTransaction(place, dtlTransaction);
+        }
     }
 
     private void checkTransaction() {
         if (dtlTransaction != null && dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
             snapper.deleteDtlTransaction(place.getId());
             dtlTransaction = null;
-            updateTransactionStatus();
         }
     }
 
@@ -92,6 +101,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
     public interface View extends DtlPlaceCommonDetailsPresenter.View {
         void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+
         void setTransaction(DtlTransaction dtlTransaction);
     }
 }

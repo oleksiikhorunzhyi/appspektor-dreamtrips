@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.api.PostDtlDiningPlaceQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.DtlSuggestMerchantCommand;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -27,7 +27,7 @@ public class DtlSuggestMerchantPresenter extends Presenter<DtlSuggestMerchantPre
     public void submitClicked() {
         if (validate()) {
             view.showProgress();
-            doRequest(new PostDtlDiningPlaceQuery(place.getId(), view.getContactName(), view.getPhone(),
+            doRequest(new DtlSuggestMerchantCommand(place.getId(), view.getContactName(), view.getPhone(),
                     new ContactTime(view.getFromTimestamp(), view.getToTimestamp()),
                     new RateContainer(view.getFoodRating(), view.getServiceRating(),
                             view.getCleanlinessRating(), view.getUniquenessRating()),

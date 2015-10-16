@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
-import com.worldventures.dreamtrips.modules.dtl.model.RateContainer;
+import com.worldventures.dreamtrips.modules.dtl.model.SuggestMerchantPostData;
 
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -29,9 +28,8 @@ public interface DtlApi {
     DtlTransactionResult earnPoints(@Path("id") int locationId, @Body DtlTransaction request);
 
     @POST("/api/dtl/places/{id}/suggestion")
-    Void suggestDining(@Path("id") int placeId, @Query("contact_name") String contactName,
-                       @Query("phone") String phone, @Query("contact_time") ContactTime contactTime,
-                       @Query("rate") RateContainer rateContainer, @Query("description") String desc);
+    Void suggestDining(@Path("id") int placeId, @Body SuggestMerchantPostData request);
+
     @POST("/api/dtl/places/{id}/rating")
     Void rate(@Path("id") int locationId, @Query("stars") int stars);
 }

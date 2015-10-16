@@ -1,9 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.api;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
 import com.worldventures.dreamtrips.modules.dtl.model.RateContainer;
+import com.worldventures.dreamtrips.modules.dtl.model.SuggestMerchantPostData;
 
-public class PostDtlDiningPlaceQuery extends DtlRequest<Void> {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class DtlSuggestMerchantCommand extends DtlRequest<Void> {
 
     private int id;
     private String contactName;
@@ -12,8 +16,8 @@ public class PostDtlDiningPlaceQuery extends DtlRequest<Void> {
     private RateContainer rateContainer;
     private String description;
 
-    public PostDtlDiningPlaceQuery(int id, String contactName, String phone,
-                                   ContactTime contactTime, RateContainer rateContainer, String description) {
+    public DtlSuggestMerchantCommand(int id, String contactName, String phone,
+                                     ContactTime contactTime, RateContainer rateContainer, String description) {
         super(Void.class);
         this.id = id;
         this.contactName = contactName;
@@ -25,6 +29,7 @@ public class PostDtlDiningPlaceQuery extends DtlRequest<Void> {
 
     @Override
     public Void loadDataFromNetwork() {
-        return getService().suggestDining(id, contactName, phone, contactTime, rateContainer, description);
+        return getService().suggestDining(id,
+                new SuggestMerchantPostData(contactName, phone, contactTime, rateContainer, description));
     }
 }

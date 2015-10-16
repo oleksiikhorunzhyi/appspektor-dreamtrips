@@ -14,8 +14,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
@@ -27,13 +29,15 @@ import icepick.State;
 @MenuResource(R.menu.menu_dtl_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
-    FragmentCompass infoFragmentCompass;
-    //
+    PlacesBundle bundle;
     @State
     LatLng selectedLocation;
+    //
+    FragmentCompass infoFragmentCompass;
 
     @Override
     protected DtlMapPresenter createPresenter(Bundle savedInstanceState) {
+        bundle = getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
         return new DtlMapPresenter();
     }
 
@@ -42,19 +46,24 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         super.afterCreateView(rootView);
         infoFragmentCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.container_info);
         infoFragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+        fragmentCompass.setSupportFragmentManager(getFragmentManager());
+        fragmentCompass.setContainerId(R.id.dtl_container);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_list:
-                fragmentCompass.pop();
-                break;
+                NavigationBuilder.create().with(fragmentCompass)
+                        .data(bundle)
+                        .move(Route.DTL_PLACES_LIST);
+                return true;
             case R.id.action_dtl_filter:
                 ((MainActivity) getActivity()).openRightDrawer();
-                break;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
 

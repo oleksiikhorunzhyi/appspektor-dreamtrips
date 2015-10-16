@@ -31,6 +31,9 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
     List<DtlPlace> dtlPlaces = new ArrayList<>();
 
+    public DtlMapPresenter() {
+    }
+
     @Override
     public void takeView(View view) {
         super.takeView(view);

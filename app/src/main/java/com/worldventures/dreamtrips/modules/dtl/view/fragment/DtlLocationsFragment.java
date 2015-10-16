@@ -157,6 +157,12 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
 
     @Override
     public void openLocation(PlacesBundle bundle) {
+        fragmentCompass.setContainerId(R.id.dtl_container);
+        fragmentCompass.setSupportFragmentManager(getFragmentManager());
+        fragmentCompass.disableBackStack();
+
+        fragmentCompass.remove(Route.DTL_PLACES_LIST);
+
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .data(bundle)

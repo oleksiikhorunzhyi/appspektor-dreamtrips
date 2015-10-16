@@ -4,16 +4,22 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.events.ActionBarHideEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 
@@ -23,8 +29,14 @@ import butterknife.InjectView;
 import icepick.State;
 
 @Layout(R.layout.fragment_dtl_places_tabs)
-public class DtlPlacesTabsFragment extends BaseFragmentWithArgs<DtlPlacesTabsPresenter, PlacesBundle> implements DtlPlacesTabsPresenter.View {
+public class DtlPlacesTabsFragment
+        extends BaseFragmentWithArgs<DtlPlacesTabsPresenter, PlacesBundle>
+        implements DtlPlacesTabsPresenter.View {
 
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
+    @InjectView(R.id.spinnerStyledTitle)
+    TextView title;
     @InjectView(R.id.tabs)
     TabLayout tabStrip;
     @InjectView(R.id.pager)
@@ -40,8 +52,39 @@ public class DtlPlacesTabsFragment extends BaseFragmentWithArgs<DtlPlacesTabsPre
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        toolbar.setVisibility(View.VISIBLE);
+        eventBus.post(new ActionBarHideEvent(true));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        toolbar.setVisibility(View.GONE);
+        eventBus.post(new ActionBarHideEvent(false));
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        toolbar.inflateMenu(R.menu.menu_dtl_list);
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_map:
+                    fragmentCompass.enableBackStack();
+                    NavigationBuilder.create().with(fragmentCompass)
+                            .data(getArgs())
+                            .move(Route.DTL_MAP);
+                    fragmentCompass.disableBackStack();
+                    break;
+                case R.id.action_dtl_filter:
+                    ((MainActivity) getActivity()).openRightDrawer();
+                    break;
+            }
+            return super.onOptionsItemSelected(item);
+        });
+        //
         if (adapter == null) {
             adapter = new BasePagerAdapter<DataFragmentItem>(getChildFragmentManager()) {
                 @Override
@@ -67,10 +110,14 @@ public class DtlPlacesTabsFragment extends BaseFragmentWithArgs<DtlPlacesTabsPre
             public void onPageScrollStateChanged(int state) {
             }
         });
-
+        //
         fragmentCompass.setContainerId(R.id.container_filters);
         fragmentCompass.disableBackStack();
-        fragmentCompass.switchBranch(Route.DTL_FILTERS, null);
+        fragmentCompass.replace(Route.DTL_FILTERS);
+        //
+        fragmentCompass.setSupportFragmentManager(getFragmentManager());
+        fragmentCompass.enableBackStack();
+        fragmentCompass.setContainerId(R.id.dtl_container);
     }
 
     @Override
@@ -87,5 +134,18 @@ public class DtlPlacesTabsFragment extends BaseFragmentWithArgs<DtlPlacesTabsPre
     @Override
     public void updateSelection() {
         pager.setCurrentItem(currentPosition);
+    }
+
+    @Override
+    public void initToolbar(DtlLocation location) {
+        if (!isTabletLandscape()) {
+            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+        }
+        toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+        title.setText(location.getName());
+        title.setOnClickListener(v -> {
+            fragmentCompass.disableBackStack();
+            NavigationBuilder.create().with(fragmentCompass).move(Route.DTL_LOCATIONS);
+        });
     }
 }

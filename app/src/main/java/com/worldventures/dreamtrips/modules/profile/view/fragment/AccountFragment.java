@@ -11,7 +11,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
+import com.worldventures.dreamtrips.core.utils.events.ActionBarHideEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
@@ -53,13 +53,13 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void onResume() {
         super.onResume();
-        eventBus.post(new ActionBarTransparentEvent(true));
+        eventBus.post(new ActionBarHideEvent(true));
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        eventBus.post(new ActionBarTransparentEvent(false));
+        eventBus.post(new ActionBarHideEvent(false));
     }
 
     @Override

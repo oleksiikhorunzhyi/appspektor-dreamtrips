@@ -41,6 +41,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        view.initToolbar(location);
         setTabs();
         loadPlaces();
     }
@@ -83,5 +84,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         void setTypes(List<DtlPlaceType> types);
 
         void updateSelection();
+
+        void initToolbar(DtlLocation location);
     }
 }

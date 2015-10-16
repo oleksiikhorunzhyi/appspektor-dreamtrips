@@ -142,9 +142,9 @@ public class FragmentCompass {
                 }
 
                 if (BuildConfig.DEBUG) {
-                    fragmentTransaction.commit();
-                } else {
                     fragmentTransaction.commitAllowingStateLoss();
+                } else {
+                    fragmentTransaction.commit();
                 }
             } catch (Exception e) {
                 Timber.e("TransitionManager error", e);
@@ -182,6 +182,10 @@ public class FragmentCompass {
 
     public void disableBackStack() {
         backStackEnabled = false;
+    }
+
+    public void enableBackStack() {
+        backStackEnabled = true;
     }
 
     private void setArgsToFragment(BaseFragment fragment, Bundle bundle) {
@@ -223,6 +227,19 @@ public class FragmentCompass {
         if (onTransactionListener != null) {
             onTransactionListener.onTransactionDone(null, Action.POP);
         }
+    }
+
+    public void popFixed() {
+        try {
+            if (supportFragmentManager.getBackStackEntryCount() >= 1) {
+                supportFragmentManager.popBackStack();
+            } else {
+                activity.finish();
+            }
+        } catch (IllegalStateException e) {
+            Timber.e(e, "Can't pop fragment"); //for avoid application crash when called at runtime
+        }
+
     }
 
     public enum Action {

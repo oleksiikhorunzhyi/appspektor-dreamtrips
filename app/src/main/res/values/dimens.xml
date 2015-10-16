@@ -85,9 +85,12 @@
 
     <dimen name="popup_filter_item_extra_space">80dp</dimen>
 
-    <!-- dimen for dtl place items -->
+    <!-- dimen for dtl place list -->
     <dimen name="dtlPlaceListEmptyViewTextSize">22sp</dimen>
     <dimen name="dtlPlaceListEmptyViewMargin">15dp</dimen>
+
+    <dimen name="toolbar_spinner_styled_title_text_size">20sp</dimen>
+    <dimen name="toolbar_spinner_styled_icon_margin">10dp</dimen>
 
     <!-- dimen for dtl place items -->
     <dimen name="dtlPlaceItemMargin">8dp</dimen>

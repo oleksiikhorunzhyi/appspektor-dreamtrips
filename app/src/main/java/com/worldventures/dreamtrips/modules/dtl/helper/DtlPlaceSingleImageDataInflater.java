@@ -21,7 +21,7 @@ public class DtlPlaceSingleImageDataInflater extends DtlPlaceCommonDataInflater 
     final static PointF FOCUS_POINT;
 
     static {
-        FOCUS_POINT = new PointF(0.5f, 0.0f);
+        FOCUS_POINT = new PointF(0.5f, 0.5f);
     }
 
     public DtlPlaceSingleImageDataInflater(DtlPlaceHelper helper) {

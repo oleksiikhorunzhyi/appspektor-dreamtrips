@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.RatePlaceRequest;
@@ -22,15 +21,7 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
     }
 
     public void rate(int stars) {
-        view.showProgress();
-        doRequest(new RatePlaceRequest(dtlPlace.getId(), stars), aVoid ->
-                view.rateSucceed());
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.hideProgress();
+        doRequest(new RatePlaceRequest(dtlPlace.getId(), stars));
     }
 
     public void share() {
@@ -48,11 +39,5 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
         void showShareDialog(int amount, DtlPlace dtlPlace);
 
         void setCongratulations(DtlTransactionResult result);
-
-        void showProgress();
-
-        void hideProgress();
-
-        void rateSucceed();
     }
 }

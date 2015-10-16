@@ -71,7 +71,7 @@ public class DtlPlaceDetailsFragment
     @InjectView(R.id.place_details_additional)
     ViewGroup additionalContainer;
     @InjectView(R.id.place_details_share)
-    Button share;
+    View share;
     //
     SupportMapFragment destinationMap;
 

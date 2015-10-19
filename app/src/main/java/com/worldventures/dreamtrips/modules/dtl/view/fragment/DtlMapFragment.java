@@ -51,11 +51,9 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         toolbarHelper.inflateMenu(R.menu.menu_dtl_map, item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:
-                    fragmentCompass.disableBackStack();
                     NavigationBuilder.create().with(fragmentCompass)
                             .data(bundle)
                             .move(Route.DTL_PLACES_LIST);
-                    fragmentCompass.enableBackStack();
                     return true;
                 case R.id.action_dtl_filter:
                     ((MainActivity) getActivity()).openRightDrawer();

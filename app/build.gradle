@@ -194,10 +194,11 @@ dependencies {
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.2.7'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.7'
-    compile 'com.google.android.gms:play-services-maps:7.8.0'
-    compile 'com.google.android.gms:play-services-analytics:7.8.0'
-    compile 'com.google.android.gms:play-services-gcm:7.8.0'
-    compile 'me.dm7.barcodescanner:zbar:1.8.3'
+    compile 'com.google.android.gms:play-services-maps:8.1.0'
+    compile 'com.google.android.gms:play-services-analytics:8.1.0'
+    compile 'com.google.android.gms:play-services-gcm:8.1.0'
+    compile 'com.google.android.gms:play-services-location:8.1.0'
+g    compile 'me.dm7.barcodescanner:zbar:1.8.3'
     compile 'com.instabug.library:instabugsupport:1.7'
     compile 'net.hockeyapp.android:HockeySDK:3.6.2'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
@@ -205,6 +206,7 @@ dependencies {
         transitive = true;
     }
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
+    compile 'io.reactivex:rxjava:1.0.14'
     // Ui
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile 'com.android.support:design:23.1.0'
@@ -240,6 +242,7 @@ dependencies {
     compile 'com.github.techery:ProperRatingBar:77350bf31b'
 
     // Util
+    compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-annotations:23.1.0'
     compile 'com.jakewharton:butterknife:6.1.0'

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.Manifest;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +15,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -30,21 +32,22 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_locations)
 @MenuResource(R.menu.menu_locations)
 public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
 
+    private static final int REQUEST_CHECK_SETTINGS = 0;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_LOCATION_PERM = 3;
 
@@ -58,9 +61,10 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.empty_view)
     View emptyView;
-
-    @InjectView(R.id.progressBarImage)
-    ProgressBar progressBar;
+    @InjectView(R.id.progress_text)
+    TextView progressText;
+    @InjectView(R.id.progress)
+    View progress;
 
     @Override
     protected DtlLocationsPresenter createPresenter(Bundle savedInstanceState) {
@@ -126,7 +130,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             ActivityCompat.requestPermissions(getActivity(), permissions, RC_HANDLE_LOCATION_PERM);
         } else {
-            Snackbar.make(recyclerView, R.string.permission_camera_rationale,
+            Snackbar.make(recyclerView, R.string.permission_location_rationale,
                     Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.ok, view -> ActivityCompat.requestPermissions(getActivity(), permissions,
                             RC_HANDLE_LOCATION_PERM))
@@ -140,26 +144,45 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
 
     @Override
     public void startLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void finishLoading() {
-        progressBar.setVisibility(View.GONE);
+        progress.setVisibility(View.GONE);
     }
 
     @Override
-    public void setItems(List<DtlLocation> dtlLocations) {
+    public void citiesLoadingStarted() {
+        progressText.setText(R.string.dtl_wait_for_cities);
+    }
+
+    @Override
+    public void resolutionRequired(Status status) {
+        try {
+            status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
+        } catch (IntentSender.SendIntentException th) {
+            Timber.e(th, "Error opening settings activity.");
+        }
+    }
+
+    @Override
+    public void setItems(DtlLocationsHolder dtlLocationsHolder) {
         adapter.clear();
-        adapter.addItem(0, getString(R.string.dtl_locations_select_nearby_cities));
-        adapter.addItems(dtlLocations);
+        if (!dtlLocationsHolder.getNearby().isEmpty()) {
+            adapter.addItem(getString(R.string.dtl_locations_select_nearby_cities));
+            adapter.addItems(dtlLocationsHolder.getNearby());
+        }
+        if (!dtlLocationsHolder.getCities().isEmpty()) {
+            adapter.addItem(getString(R.string.dtl_locations_select_popular));
+            adapter.addItems(dtlLocationsHolder.getCities());
+        }
     }
 
     @Override
     public void openLocation(PlacesBundle bundle) {
         fragmentCompass.setContainerId(R.id.dtl_container);
         fragmentCompass.setSupportFragmentManager(getFragmentManager());
-        fragmentCompass.disableBackStack();
 
         fragmentCompass.remove(Route.DTL_PLACES_LIST);
 

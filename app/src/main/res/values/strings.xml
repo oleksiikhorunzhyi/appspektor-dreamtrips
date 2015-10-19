@@ -468,6 +468,7 @@
     <string name="dtl_locations_search_caption">Search City</string>
     <string name="dtl_locations_or_caption">OR</string>
     <string name="dtl_locations_select_nearby_cities">Select from nearby</string>
+    <string name="dtl_locations_select_popular">Discover popular</string>
     <string name="dtl_place_tab_offers">Offers</string>
     <string name="dtl_place_tab_dining">Dining</string>
 
@@ -535,5 +536,7 @@
 
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>
+    <string name="dtl_wait_for_location">Wait… Obtaining current location</string>
+    <string name="dtl_wait_for_cities">Wait… Obtaining nearest cities</string>
 
 </resources>

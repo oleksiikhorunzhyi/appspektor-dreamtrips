@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsItemPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.TextualPostDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
@@ -25,7 +26,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsItemFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
@@ -42,7 +43,6 @@ import de.greenrobot.event.EventBus;
                 TripFeedItemCell.class,
                 FeedPresenter.class,
                 FeedFragment.class,
-                PhotoFeedItemCell.class,
                 BucketFeedItemCell.class,
                 LoadMoreCell.class,
                 PhotoFeedItemCell.class,
@@ -53,6 +53,8 @@ import de.greenrobot.event.EventBus;
 
                 CommentsFragment.class,
                 ComponentPresenter.class,
+                FeedDetailsItemFragment.class,
+                FeedDetailsItemPresenter.class,
                 CommentCell.class,
                 BaseCommentPresenter.class,
                 PostPresenter.class,
@@ -63,11 +65,11 @@ import de.greenrobot.event.EventBus;
                 NotificationPresenter.class,
                 NotificationCell.class,
                 NotificationFragment.NotificationAdapter.class,
-                FeedEntityDetailsFragment.class,
-                FeedEntityDetailsPresenter.class,
 
                 TextualPostDetailsFragment.class,
-                TextualPostDetailsPresenter.class
+                TextualPostDetailsPresenter.class,
+
+                FeedEntityDetailsCell.class
         },
         complete = false,
         library = true

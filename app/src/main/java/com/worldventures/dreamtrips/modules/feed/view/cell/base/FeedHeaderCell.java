@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFac
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -173,7 +173,7 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
     protected void openComments(FeedItem baseFeedModel, boolean openKeyboard) {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .data(new CommentsBundle(baseFeedModel.getItem(), openKeyboard))
+                .data(new FeedEntityDetailsBundle(baseFeedModel, openKeyboard))
                 .move(Route.COMMENTS);
     }
 

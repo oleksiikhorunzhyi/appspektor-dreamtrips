@@ -42,13 +42,4 @@ public class CommentsBundle implements Parcelable {
         this.openKeyboard = in.readByte() != 0;
     }
 
-    public static final Creator<CommentsBundle> CREATOR = new Creator<CommentsBundle>() {
-        public CommentsBundle createFromParcel(Parcel source) {
-            return new CommentsBundle(source);
-        }
-
-        public CommentsBundle[] newArray(int size) {
-            return new CommentsBundle[size];
-        }
-    };
 }

@@ -5,11 +5,11 @@ import android.content.Context;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -38,7 +38,7 @@ public class FeedActionPanelViewActionHandler {
         });
 
         actionView.setOnCommentIconClickListener(feedItem -> {
-            navigationWrapper.navigate(Route.COMMENTS, new CommentsBundle(feedItem.getItem(), false));
+            navigationWrapper.navigate(Route.COMMENTS, new FeedEntityDetailsBundle(feedItem));
         });
 
         actionView.setOnShareClickListener(feedItem -> {

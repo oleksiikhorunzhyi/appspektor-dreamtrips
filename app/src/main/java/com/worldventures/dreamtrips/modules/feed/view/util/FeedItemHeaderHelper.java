@@ -56,7 +56,9 @@ public class FeedItemHeaderHelper {
         FeedEntity entity = feedItem.getItem();
         try {
             User user = (forDetails || !feedItem.getLinks().hasUsers()) ? entity.getUser() : feedItem.getLinks().getUsers().get(0);
-            avatar.setImageURI(user.getAvatar() == null ? null : Uri.parse(user.getAvatar().getThumb()));
+            if (user != null) {
+                avatar.setImageURI(user.getAvatar() == null ? null : Uri.parse(user.getAvatar().getThumb()));
+            }
             text.setText(Html.fromHtml(forDetails ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
 
             if (TextUtils.isEmpty(entity.place())) {

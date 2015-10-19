@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
-public class FeedEntityDetailsBundle implements Parcelable {
+public class FeedEntityDetailsBundle extends CommentsBundle implements Parcelable {
 
     FeedItem feedItem;
     boolean slave;
@@ -16,8 +16,10 @@ public class FeedEntityDetailsBundle implements Parcelable {
     }
 
     public FeedEntityDetailsBundle(FeedItem feedItem, boolean slave) {
+        super(feedItem.getItem());
         this.feedItem = feedItem;
         this.slave = slave;
+
     }
 
 
@@ -45,14 +47,13 @@ public class FeedEntityDetailsBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeParcelable(this.feedItem, 0);
         dest.writeByte(slave ? (byte) 1 : (byte) 0);
     }
 
-    public FeedEntityDetailsBundle() {
-    }
-
     protected FeedEntityDetailsBundle(Parcel in) {
+        super(in);
         this.feedItem = in.readParcelable(FeedItem.class.getClassLoader());
         this.slave = in.readByte() != 0;
     }

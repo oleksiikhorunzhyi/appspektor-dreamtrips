@@ -17,7 +17,7 @@ public class LikersPanelHelper {
         String firstLiker = feedEntity.getFirstUserLikedItem();
         int likesCount = feedEntity.getLikesCount();
         if (likesCount == 0) {
-            panel.setVisibility(View.GONE);
+            panel.setVisibility(View.INVISIBLE);
             return;
         }
         //

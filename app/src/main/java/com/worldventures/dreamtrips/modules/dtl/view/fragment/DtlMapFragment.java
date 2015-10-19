@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -90,6 +91,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     protected void onMapLoaded() {
         getPresenter().onMapLoaded();
+    }
+
+    @Override
+    public void centerIn(DtlLocation location) {
+        LatLng latLng = new LatLng(location.getLocation().getLat(), location.getLocation().getLng());
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10.0f));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -51,9 +53,11 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         mapReady = true;
         dtlPlaces.clear();
 
+        view.centerIn(location);
+
         for (DtlPlaceType type : DtlPlaceType.values()) {
             dtlPlaces.addAll(db.getDtlPlaces(type));
-        }
+    }
 
         showPins();
         checkPendingMapInfo();
@@ -112,5 +116,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         void prepareInfoWindow(int height);
 
         void initToolbar(DtlLocation location);
+
+        void centerIn(DtlLocation location);
     }
 }

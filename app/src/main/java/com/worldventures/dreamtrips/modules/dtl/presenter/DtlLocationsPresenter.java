@@ -42,30 +42,32 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     private Subscription locationSubscription;
 
     public void permissionGranted() {
-        if (dtlLocationsHolder == null) {
-            LocationRequest request = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                    .setNumUpdates(1)
-                    .setInterval(1000);
-
-            ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(context);
-            locationSubscription = locationProvider.checkLocationSettings(
-                    new LocationSettingsRequest.Builder()
-                            .addLocationRequest(request)
-                            .setAlwaysShow(true)
-                            .build()
-            ).doOnNext(locationSettingsResult -> {
-                Status status = locationSettingsResult.getStatus();
-                if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                    view.resolutionRequired(status);
-                }
-            }).flatMap(locationSettingsResult -> locationProvider.getUpdatedLocation(request)
-            ).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::onLocationObtained, this::onLocationError);
-        } else {
+        if (dtlLocationsHolder != null) {
             onLocationLoaded(dtlLocationsHolder);
+            return;
         }
+        //
+        LocationRequest request = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+                .setNumUpdates(1)
+                .setInterval(1000);
+
+        ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(context);
+        locationSubscription = locationProvider.checkLocationSettings(
+                new LocationSettingsRequest.Builder()
+                        .addLocationRequest(request)
+                        .setAlwaysShow(true)
+                        .build()
+        ).doOnNext(locationSettingsResult -> {
+            Status status = locationSettingsResult.getStatus();
+            if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+                view.resolutionRequired(status);
+            }
+        }).flatMap(locationSettingsResult -> locationProvider.getUpdatedLocation(request)
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onLocationObtained, this::onLocationError);
+
     }
 
     private void unsubscribeFromLocationUpdate() {

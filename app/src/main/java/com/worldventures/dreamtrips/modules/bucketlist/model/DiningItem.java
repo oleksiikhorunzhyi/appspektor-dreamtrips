@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import android.os.Parcel;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
@@ -23,6 +25,10 @@ public class DiningItem extends BaseEntity {
     DiningCoverPhoto coverPhoto;
     @SerializedName("price_range")
     String priceRange;
+
+    public DiningItem() {
+
+    }
 
     public String getName() {
         return name;
@@ -67,4 +73,47 @@ public class DiningItem extends BaseEntity {
     public DiningCoverPhoto getCoverPhoto() {
         return coverPhoto;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.name);
+        dest.writeString(this.country);
+        dest.writeString(this.city);
+        dest.writeString(this.address);
+        dest.writeString(this.cuisine);
+        dest.writeString(this.phone_number);
+        dest.writeString(this.url);
+        dest.writeString(this.description);
+        dest.writeString(this.shortDescription);
+        dest.writeSerializable(this.coverPhoto);
+        dest.writeString(this.priceRange);
+    }
+
+    public DiningItem(Parcel in) {
+        super(in);
+        this.name = in.readString();
+        this.country = in.readString();
+        this.city = in.readString();
+        this.address = in.readString();
+        this.cuisine = in.readString();
+        this.phone_number = in.readString();
+        this.url = in.readString();
+        this.description = in.readString();
+        this.shortDescription = in.readString();
+        this.coverPhoto = (DiningCoverPhoto) in.readSerializable();
+        this.priceRange = in.readString();
+    }
+
+    public static final Creator<DiningItem> CREATOR = new Creator<DiningItem>() {
+        @Override
+        public DiningItem createFromParcel(Parcel in) {
+            return new DiningItem(in);
+        }
+
+        @Override
+        public DiningItem[] newArray(int size) {
+            return new DiningItem[size];
+        }
+    };
 }

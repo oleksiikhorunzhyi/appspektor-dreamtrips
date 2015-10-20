@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 
@@ -44,4 +46,33 @@ public class Session extends BaseEntity {
     public void setPermissions(List<Feature> permissions) {
         this.permissions = permissions;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.token);
+        dest.writeString(this.ssoToken);
+        dest.writeParcelable(this.user, flags);
+        dest.writeList(this.permissions);
+    }
+
+    public Session(Parcel in) {
+        super(in);
+        this.token = in.readString();
+        this.ssoToken = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+        in.readList(this.permissions, Feature.class.getClassLoader());
+    }
+
+    public static final Creator<Session> CREATOR = new Creator<Session>() {
+        @Override
+        public Session createFromParcel(Parcel in) {
+            return new Session(in);
+        }
+
+        @Override
+        public Session[] newArray(int size) {
+            return new Session[size];
+        }
+    };
 }

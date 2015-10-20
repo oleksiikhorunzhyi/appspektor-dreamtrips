@@ -242,7 +242,6 @@ dependencies {
     compile 'com.github.techery:ProperRatingBar:77350bf31b'
 
     // Util
-    compile 'io.reactivex:rxandroid:0.25.0'
     compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-annotations:23.1.0'

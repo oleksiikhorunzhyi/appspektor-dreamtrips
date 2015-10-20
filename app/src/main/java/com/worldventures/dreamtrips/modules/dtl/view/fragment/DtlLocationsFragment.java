@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -47,13 +50,16 @@ import timber.log.Timber;
 @MenuResource(R.menu.menu_locations)
 public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
 
-    private static final int REQUEST_CHECK_SETTINGS = 0;
+    private static final int REQUEST_CHECK_SETTINGS = 1488;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_LOCATION_PERM = 3;
 
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
+
+    @Inject
+    ActivityResultDelegate activityResultDelegate;
 
     BaseArrayListAdapter adapter;
 
@@ -86,6 +92,13 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         recyclerView.setAdapter(adapter);
 
         checkPermissions();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        activityResult(activityResultDelegate.getRequestCode(),
+                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
     }
 
     @Override
@@ -209,6 +222,24 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
                 .setMessage(R.string.no_location_permission)
                 .setPositiveButton(R.string.ok, (dialog, id) -> getActivity().finish())
                 .show();
+    }
+
+    public void activityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        getPresenter().locationNotGranted();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
     }
 
 }

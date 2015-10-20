@@ -14,16 +14,12 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View> {
@@ -59,7 +55,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
                 view.resolutionRequired(status);
             }
         }).flatMap(locationSettingsResult -> locationProvider.getUpdatedLocation(request)
-                        .timeout(10, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
         ).subscribe(this::onLocationObtained, this::onLocationError);
     }
 
@@ -72,6 +67,10 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void dropView() {
         super.dropView();
         unsubscribeFromLocationUpdate();
+    }
+
+    public void locationNotGranted() {
+        loadCities(DtlModule.LAT, DtlModule.LNG);
     }
 
     private void onLocationError(Throwable e) {

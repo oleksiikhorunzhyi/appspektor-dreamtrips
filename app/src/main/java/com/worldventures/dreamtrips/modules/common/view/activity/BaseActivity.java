@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -41,6 +43,9 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Inject
     protected FragmentCompass fragmentCompass;
+
+    @Inject
+    protected ActivityResultDelegate activityResultDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,12 @@ public abstract class BaseActivity extends InjectingActivity {
         NavigationBuilder.create()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .with(router).move(Route.LOGIN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        activityResultDelegate.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

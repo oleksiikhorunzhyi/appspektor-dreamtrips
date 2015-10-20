@@ -59,10 +59,7 @@ public class MemberCell extends AbstractCell<Member> {
         ivPhone.setVisibility(View.GONE);
         if (getModelObject().getHistory() != null) {
             llResend.setVisibility(View.VISIBLE);
-            tvDate.setText(DateTimeUtils.convertDateToJodaString(
-                            getModelObject().getHistory().getDate()
-                            , DateTimeUtils.MEMBER_FORMAT)
-            );
+            tvDate.setText(DateTimeUtils.convertDateToString(getModelObject().getHistory().getDate(), DateTimeUtils.MEMBER_FORMAT));
         } else {
             tvDate.setText("");
             llResend.setVisibility(View.GONE);

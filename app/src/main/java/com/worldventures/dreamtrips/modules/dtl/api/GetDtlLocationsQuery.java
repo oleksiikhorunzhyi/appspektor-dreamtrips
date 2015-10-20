@@ -1,27 +1,20 @@
 package com.worldventures.dreamtrips.modules.dtl.api;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
 
-import java.util.ArrayList;
-
-public class GetDtlLocationsQuery extends DtlRequest<ArrayList<DtlLocation>> {
+public class GetDtlLocationsQuery extends DtlRequest<DtlLocationsHolder> {
 
     private double lat;
     private double lng;
-    private int rad;
 
-    public GetDtlLocationsQuery(double lat, double lng, int rad) {
-        super((Class<ArrayList<DtlLocation>>) new ArrayList<DtlLocation>().getClass());
+    public GetDtlLocationsQuery(double lat, double lng) {
+        super(DtlLocationsHolder.class);
         this.lat = lat;
         this.lng = lng;
-        this.rad = rad;
     }
 
     @Override
-    public ArrayList<DtlLocation> loadDataFromNetwork() {
-        ArrayList<DtlLocation> result = getService().getDtlLocations(lat, lng, rad).getCities();
-        if (result == null)
-            result = new ArrayList<>();
-        return result;
+    public DtlLocationsHolder loadDataFromNetwork() {
+        return getService().getDtlLocations(lat, lng);
     }
 }

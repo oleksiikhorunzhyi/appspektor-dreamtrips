@@ -207,7 +207,8 @@ dependencies {
     }
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
     compile 'io.reactivex:rxjava:1.0.14'
-    // Ui
+    compile 'io.reactivex:rxandroid:1.0.1'
+// Ui
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile 'com.android.support:design:23.1.0'
     compile 'com.github.traex.expandablelayout:library:1.3'

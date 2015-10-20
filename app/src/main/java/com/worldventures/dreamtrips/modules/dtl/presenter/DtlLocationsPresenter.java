@@ -6,6 +6,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
@@ -20,6 +21,8 @@ import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View> {
@@ -27,7 +30,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     @Inject
     SnappyRepository db;
 
-    private DtlLocationsHolder dtlLocationsHolder;
+    @State
+    DtlLocationsHolder dtlLocationsHolder;
 
     @Override
     public void takeView(View view) {
@@ -38,24 +42,30 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     private Subscription locationSubscription;
 
     public void permissionGranted() {
-        LocationRequest request = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                .setNumUpdates(1)
-                .setInterval(1000);
+        if (dtlLocationsHolder == null) {
+            LocationRequest request = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+                    .setNumUpdates(1)
+                    .setInterval(1000);
 
-        ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(context);
-        locationSubscription = locationProvider.checkLocationSettings(
-                new LocationSettingsRequest.Builder()
-                        .addLocationRequest(request)
-                        .setAlwaysShow(true)
-                        .build()
-        ).doOnNext(locationSettingsResult -> {
-            Status status = locationSettingsResult.getStatus();
-            if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                view.resolutionRequired(status);
-            }
-        }).flatMap(locationSettingsResult -> locationProvider.getUpdatedLocation(request)
-        ).subscribe(this::onLocationObtained, this::onLocationError);
+            ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(context);
+            locationSubscription = locationProvider.checkLocationSettings(
+                    new LocationSettingsRequest.Builder()
+                            .addLocationRequest(request)
+                            .setAlwaysShow(true)
+                            .build()
+            ).doOnNext(locationSettingsResult -> {
+                Status status = locationSettingsResult.getStatus();
+                if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+                    view.resolutionRequired(status);
+                }
+            }).flatMap(locationSettingsResult -> locationProvider.getUpdatedLocation(request)
+            ).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::onLocationObtained, this::onLocationError);
+        } else {
+            onLocationLoaded(dtlLocationsHolder);
+        }
     }
 
     private void unsubscribeFromLocationUpdate() {
@@ -74,7 +84,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     private void onLocationError(Throwable e) {
-        unsubscribeFromLocationUpdate();
         Timber.e(e, "Location update error");
         loadCities(DtlModule.LAT, DtlModule.LNG);
     }
@@ -106,7 +115,9 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
                 subscriber.onNext(dtlLocationsHolder.filter(caption));
                 subscriber.onCompleted();
             }
-        }).subscribe(view::setItems);
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(view::setItems);
     }
 
     public void flushSearch() {

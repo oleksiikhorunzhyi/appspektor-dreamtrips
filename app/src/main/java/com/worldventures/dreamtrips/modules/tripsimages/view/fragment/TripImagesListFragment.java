@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripImageBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
@@ -113,7 +114,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     }
 
     @Override
-    public void setSelection() {
+    public void setSelection(int photoPosition) {
         //nothing to do here
     }
 
@@ -132,7 +133,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     protected T createPresenter(Bundle savedInstanceState) {
         Type type = getArgs().getType();
         int foreignUserId = getArgs().getForeignUserId();
-        return (T) TripImagesListPresenter.create(type, false, null, foreignUserId);
+        return (T) TripImagesListPresenter.create(new TripImageBundle(type, false, foreignUserId, null, 0));
     }
 
     @Override

@@ -248,8 +248,8 @@
     <string name="error_personal_message_is_empty">個人信息不應為空</string>
     <string name="email_is_not_valid">電子郵件無效</string>
     <string name="invitation_deselect_all">全部取消</string>
-    <string name="invitation_text_template" formatted="false"></string>
-    <string name="terms_and_conditions"></string>
+    <string name="invitation_text_template" formatted="false"><![CDATA[ %s您好,%s <br/>請點擊 <a href="%s">這裡</a>查看。]]></string>
+    <string name="terms_and_conditions"><![CDATA[ 我已閱讀并接受e <a href="http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html">條款和條例</a> ]]></string>
     <string name="invite_add_photo">添加圖片</string>
     <string name="invite_select_first">首先選擇聯繫人</string>
     <string name="filters_show_favorite">顯示收藏夾旅程</string>
@@ -287,10 +287,10 @@
     <string name="profile_reject">刪除請求</string>
     <string name="title_activity_friends">好友</string>
     <string name="profile_request">請求</string>
-    <string name="profile_respond"></string>
-    <string name="profile_waiting"></string>
-    <string name="social_my_friends"></string>
-    <string name="social_requests"></string>
+    <string name="profile_respond">回復</string>
+    <string name="profile_waiting">等待</string>
+    <string name="social_my_friends">我的好友</string>
+    <string name="social_requests">請求</string>
     <string name="social_add_friend_yes">是</string>
     <string name="social_add_friend_no">否</string>
     <string name="social_add_friend_title">添加好友</string>
@@ -331,7 +331,7 @@
     <string name="comment_post_btn_title">發佈</string>
     <string name="comment_view_more">查看更多評論</string>
     <string name="comment_edit">編輯評論</string>
-    <string name="save"></string>
+    <string name="save">保存</string>
     <string name="comment_delete">刪除評論</string>
     <string name="comment_delete_caption">您確定要刪除這條評論嗎？</string>
     <string name="comment_delete_confirm">是的，刪除！</string>
@@ -355,7 +355,7 @@
     <string name="last_year">去年</string>
     <string name="yesterday">昨天</string>
     <string name="year_ago">一年前</string>
-    <string name="month_ago"></string>
+    <string name="month_ago">一個月前</string>
     <string name="week_ago">一週前</string>
     <string name="day_ago">一天前</string>
 
@@ -379,8 +379,8 @@
     <string name="email_app_choose_dialog_title">選擇應用程序</string>
 
     <plurals name="users_who_liked">
-        <item quantity="one"></item>
-        <item quantity="other"></item>
+        <item quantity="one">%d用戶點了贊</item>
+        <item quantity="other">%d用戶點了贊</item>
     </plurals>
 
     <plurals name="users_who_liked_with_name">
@@ -395,10 +395,10 @@
         <item quantity="other">@string/users_who_liked_with_first_multiple</item>
     </plurals>
 
-    <string name="account_who_liked_with_first_zero" formatted="false"></string>
-    <string name="users_who_liked_with_first_zero" formatted="false"></string>
-    <string name="users_who_liked_with_first_single" formatted="false"></string>
-    <string name="users_who_liked_with_first_multiple" formatted="false"></string>
+    <string name="account_who_liked_with_first_zero" formatted="false">%s點了贊</string>
+    <string name="users_who_liked_with_first_zero" formatted="false">%s點了贊</string>
+    <string name="users_who_liked_with_first_single" formatted="false">%s和其他%d點了贊</string>
+    <string name="users_who_liked_with_first_multiple" formatted="false">%s和其他%d點了贊</string>
 
     <string name="users_who_liked_title">點讚的人</string>
     <string name="users_who_liked_empty">還沒有人點讚</string>
@@ -421,13 +421,13 @@
     <string name="bucket_edit">編輯願望項目</string>
     <string name="bucket_delete_caption">您確定要刪除這項願望項目嗎？</string>
 
-    <string name="feed_header_two" formatted="false"></string>
-    <string name="feed_header_many" formatted="false"></string>
+    <string name="feed_header_two" formatted="false">%s%s 和%s%s %s%s</string>
+    <string name="feed_header_many" formatted="false">%s%s 和您好友中的%s%s</string>
 
     <string name="player_error_header">回放錯誤</string>
     <string name="player_error">抱歉，我們無法播放這條視頻，請檢查您的網絡連接或重試</string>
 
-    <string name="retry"></string>
+    <string name="retry">重試</string>
 
     <string name="no_notifications">您還沒有任何通知</string>
     <string name="notification_message_friend_accepted">%s接受了您的好友請求</string>

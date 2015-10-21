@@ -70,6 +70,7 @@ public class User extends BaseEntity implements Parcelable {
     private transient boolean coverUploadInProgress;
 
     public User() {
+        super();
     }
 
     public User(int id) {

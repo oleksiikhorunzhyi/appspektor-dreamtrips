@@ -27,7 +27,7 @@ public class DiningItem extends BaseEntity {
     String priceRange;
 
     public DiningItem() {
-
+        super();
     }
 
     public String getName() {

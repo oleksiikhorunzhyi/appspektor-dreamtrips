@@ -9,7 +9,7 @@ public class Suggestion extends BaseEntity {
     private String name;
 
     public Suggestion() {
-
+        super();
     }
 
     public String getName() {

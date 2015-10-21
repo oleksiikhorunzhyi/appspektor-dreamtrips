@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -53,6 +52,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
 
             adapter.add(new FragmentItem(TrainingVideosFragment.class, getString(R.string.training_videos)));
             adapter.add(new FragmentItem(StaticInfoFragment.EnrollRepFragment.class, getString(R.string.rep_enrollment)));
+            adapter.add(new FragmentItem(SuggestRestaurantFragment.class, getString(R.string.rep_suggest_restaurant)));
             adapter.add(new FragmentItem(SuccessStoryListFragment.class, getString(R.string.success_stories)));
 
             if (getPresenter().showInvite()) {

@@ -39,31 +39,31 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     protected String lastTimePickerTag;
 
     @InjectView(R.id.restaurantName)
-    DTEditText restaurantName;
+    protected DTEditText restaurantName;
     @InjectView(R.id.city)
-    DTEditText city;
+    protected DTEditText city;
     @InjectView(R.id.contactName)
-    DTEditText contactName;
+    protected DTEditText contactName;
     @InjectView(R.id.phoneNumber)
-    DTEditText phoneNumber;
+    protected DTEditText phoneNumber;
     @InjectView(R.id.fromDate)
-    TextView fromDate;
+    protected TextView fromDate;
     @InjectView(R.id.fromTime)
-    TextView fromTime;
+    protected TextView fromTime;
     @InjectView(R.id.toDate)
-    TextView toDate;
+    protected TextView toDate;
     @InjectView(R.id.toTime)
-    TextView toTime;
+    protected TextView toTime;
     @InjectView(R.id.foodRatingBar)
-    ProperRatingBar foodRatingBar;
+    protected ProperRatingBar foodRatingBar;
     @InjectView(R.id.serviceRatingBar)
-    ProperRatingBar serviceRatingBar;
+    protected ProperRatingBar serviceRatingBar;
     @InjectView(R.id.cleanlinessRatingBar)
-    ProperRatingBar cleanlinessRatingBar;
+    protected ProperRatingBar cleanlinessRatingBar;
     @InjectView(R.id.uniquenessRatingBar)
-    ProperRatingBar uniquenessRatingBar;
+    protected ProperRatingBar uniquenessRatingBar;
     @InjectView(R.id.additionalInfo)
-    DTEditText additionalInfo;
+    protected DTEditText additionalInfo;
 
     protected ProgressDialogFragment progressDialog;
 

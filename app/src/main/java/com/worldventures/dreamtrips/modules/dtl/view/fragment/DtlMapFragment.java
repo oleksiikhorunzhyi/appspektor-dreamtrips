@@ -8,6 +8,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -23,6 +26,8 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlacesToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
+import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
+import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 
 import icepick.State;
@@ -37,6 +42,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     //
     DtlPlacesToolbarHelper toolbarHelper;
     FragmentCompass infoFragmentCompass;
+
+    private ClusterManager<DtlClusterItem> clusterManager;
 
     @Override
     protected DtlMapPresenter createPresenter(Bundle savedInstanceState) {
@@ -83,13 +90,30 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     protected boolean onMarkerClick(Marker marker) {
-        selectedLocation = marker.getPosition();
-        getPresenter().onMarkerClick(Integer.valueOf(marker.getSnippet()));
-        return true;
+        //not needed
+        return false;
     }
 
     @Override
     protected void onMapLoaded() {
+        clusterManager = new ClusterManager<>(getActivity(), googleMap);
+        clusterManager.setRenderer(new DtClusterRenderer(getActivity().getApplicationContext(),
+                googleMap, clusterManager));
+        googleMap.setOnCameraChangeListener(clusterManager);
+        googleMap.setOnMarkerClickListener(clusterManager);
+
+        clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
+            selectedLocation = dtlClusterItem.getPosition();
+            getPresenter().onMarkerClick(dtlClusterItem.getId());
+            return true;
+        });
+
+        clusterManager.setOnClusterClickListener(cluster -> {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
+                    googleMap.getCameraPosition().zoom + 1.0f));
+            return true;
+        });
+
         getPresenter().onMapLoaded();
     }
 
@@ -122,11 +146,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void addPin(LatLng latLng, String id) {
-        googleMap.addMarker(new MarkerOptions()
-                .snippet(id)
-                .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin)));
+    public void addPin(LatLng latLng, int id) {
+        clusterManager.addItem(new DtlClusterItem(latLng, id));
     }
 
     @Override
@@ -138,7 +159,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     public void prepareInfoWindow(int height) {
         int ownHeight = getView().getHeight();
         int centerY = ownHeight / 2;
-        int resultY = height + getResources().getDimensionPixelSize(R.dimen.spacing_huge);
+        int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;
         animateToMarker(selectedLocation, offset);
     }

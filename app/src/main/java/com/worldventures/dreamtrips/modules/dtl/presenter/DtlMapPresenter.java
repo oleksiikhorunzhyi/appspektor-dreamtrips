@@ -57,7 +57,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
         for (DtlPlaceType type : DtlPlaceType.values()) {
             dtlPlaces.addAll(db.getDtlPlaces(type));
-    }
+        }
 
         showPins();
         checkPendingMapInfo();
@@ -78,9 +78,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
                     dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList();
 
             for (DtlPlace dtlPlace : filtered) {
-                view.addPin(
-                        new LatLng(dtlPlace.getLocation().getLat(), dtlPlace.getLocation().getLng()),
-                        String.valueOf(dtlPlace.getId()));
+                view.addPin(new LatLng(dtlPlace.getLocation().getLat(),
+                        dtlPlace.getLocation().getLng()), dtlPlace.getId());
             }
         }
     }
@@ -107,7 +106,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        void addPin(LatLng latLng, String id);
+        void addPin(LatLng latLng, int id);
 
         void clearMap();
 

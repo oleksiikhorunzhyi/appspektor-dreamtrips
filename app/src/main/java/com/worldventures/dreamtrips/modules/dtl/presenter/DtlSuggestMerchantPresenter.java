@@ -2,11 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.api.DtlSuggestMerchantCommand;
+import com.worldventures.dreamtrips.modules.dtl.api.SuggestPlaceCommand;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.RateContainer;
+import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
 
 import java.util.Calendar;
 
@@ -27,11 +28,12 @@ public class DtlSuggestMerchantPresenter extends Presenter<DtlSuggestMerchantPre
     public void submitClicked() {
         if (validate()) {
             view.showProgress();
-            doRequest(new DtlSuggestMerchantCommand(place.getId(), view.getContactName(), view.getPhone(),
+            doRequest(new SuggestPlaceCommand(new SuggestPlacePostData(place.getId(),
+                            view.getContactName(), view.getPhone(),
                             new ContactTime(view.getFromTimestamp(), view.getToTimestamp()),
                             new RateContainer(view.getFoodRating(), view.getServiceRating(),
                                     view.getCleanlinessRating(), view.getUniquenessRating()),
-                            view.getAdditionalInfo()),
+                            view.getAdditionalInfo())),
                     aVoid -> {
                         view.hideProgress();
                         view.dismiss();

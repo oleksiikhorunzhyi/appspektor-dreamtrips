@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
@@ -80,7 +80,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     public void onMerchantClick() {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .data(new SuggestMerchantBundle(place))
+                .data(new SuggestPlaceBundle(place))
                 .move(Route.DTL_SUGGEST_MERCHANT);
     }
 

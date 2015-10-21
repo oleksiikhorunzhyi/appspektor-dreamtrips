@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -51,6 +52,7 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
         dreamSpiceManager.loginUser(userPassword, username, (loginResponse, error) -> {
             if (error != null) {
+                TrackingHelper.loginError();
                 if (TextUtils.isEmpty(error.getMessage())) {
                     view.showLoginErrorMessage();
                 } else {
@@ -58,7 +60,9 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
                 }
             } else {
                 view.showLoginSuccess();
-                TrackingHelper.login(loginResponse.getSession().getUser().getEmail());
+                User user = loginResponse.getSession().getUser();
+                TrackingHelper.login(user.getEmail());
+                TrackingHelper.setUserId(Integer.toString(user.getId()));
 
                 if (appSessionHolder.get().get().getGlobalConfig() != null) {
                     termsConditionsValidator.setNewVersionAccepted(true);

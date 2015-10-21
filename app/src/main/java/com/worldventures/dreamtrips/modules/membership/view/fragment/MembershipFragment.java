@@ -9,6 +9,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -55,6 +56,7 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         adapter.notifyDataSetChanged();
 
         tabs.setupWithPagerBadged(pager);
+        TrackingHelper.viewMembershipScreen(TrackingHelper.ACTION_MEMBERSHIP);
     }
 
     @Override
@@ -66,6 +68,7 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         getPresenter().trackState(position);
         SoftInputUtil.hideSoftInputMethod(pager);
         eventBus.post(new ScreenChangedEvent());
+        TrackingHelper.viewMembershipScreen(position == 0 ? TrackingHelper.ACTION_MEMBERSHIP : TrackingHelper.ACTION_MEMBERSHIP_ENROLL);
     }
 
     @Override

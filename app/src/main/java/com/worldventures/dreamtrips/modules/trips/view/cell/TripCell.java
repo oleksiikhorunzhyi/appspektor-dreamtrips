@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
@@ -104,16 +106,20 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @OnClick(R.id.imageViewLike)
     void onLike() {
+        TripModel tripModel = getModelObject();
         getModelObject().setLiked(!getModelObject().isLiked());
         syncUIStateWithModel();
         getEventBus().post(new LikeTripEvent(getModelObject()));
+        getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_LIKE, tripModel.getTripId()));
     }
 
     @OnClick(R.id.imageViewAddToBucket)
     void onAddToBucket() {
+        TripModel tripModel = getModelObject();
         getModelObject().setInBucketList(true);
         syncUIStateWithModel();
-        getEventBus().post(new AddToBucketEvent(getModelObject()));
+        getEventBus().post(new AddToBucketEvent(tripModel));
+        getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_BUCKET_LIST, tripModel.getTripId()));
     }
 
     @OnClick(R.id.itemLayout)
@@ -123,6 +129,8 @@ public class TripCell extends AbstractCell<TripModel> {
                 .with(activityRouter)
                 .data(new TripDetailsBundle(getModelObject()))
                 .attach(Route.DETAILED_TRIP);
+
+        getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getTripId()));
     }
 
     @OnClick(R.id.layoutInfo)

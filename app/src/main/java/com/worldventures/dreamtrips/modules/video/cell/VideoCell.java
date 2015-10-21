@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
+import com.worldventures.dreamtrips.modules.video.event.MemberVideoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
@@ -75,22 +76,24 @@ public class VideoCell extends AbstractCell<Video> {
 
     @OnClick(R.id.iv_play)
     public void onPlayClick() {
-        CachedEntity videoEntity = getModelObject().getCacheEntity();
+        Video video = getModelObject();
+        CachedEntity videoEntity = video.getCacheEntity();
         Uri parse = Uri.parse(getModelObject().getMp4Url());
         if (videoEntity.isCached(context)) {
             parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
         }
         Intent intent = new Intent(context, PlayerActivity.class).setData(parse);
-        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_PLAY,
-                getModelObject().getVideoName()));
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_PLAY, video.getVideoName()));
+        getEventBus().post(new MemberVideoAnalyticEvent(video.getUid(), TrackingHelper.ATTRIBUTE_VIEW));
         context.startActivity(intent);
     }
 
     @OnClick(R.id.download_progress)
     public void onDownloadClick() {
+        Video video = getModelObject();
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
-        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_LOAD_START,
-                getModelObject().getVideoName()));
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_LOAD_START, video.getVideoName()));
+        getEventBus().post(new MemberVideoAnalyticEvent(video.getUid(), TrackingHelper.ATTRIBUTE_VIEW));
     }
 
     @Override

@@ -1,22 +1,47 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public interface ITracker {
+import icepick.Icepick;
+import icepick.State;
 
-    void onCreate(BaseActivity activity);
+public abstract class ITracker {
 
-    void onStart(Activity activity);
+    @State
+    protected HashMap headerData;
 
-    void onStop(Activity activity);
+    public abstract void onCreate(BaseActivity activity);
 
-    void onResume(Activity activity);
+    public void onStart(Activity activity) {
+    }
 
-    void onPause(Activity activity);
+    public void onStop(Activity activity) {
+    }
 
-    void trackEvent(String category, String action, Map<String, Object> data);
+    public void onResume(Activity activity) {
+    }
+
+    public void onPause(Activity activity) {
+    }
+
+    public void setHeaderData(HashMap data) {
+        headerData = data;
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        Icepick.restoreInstanceState(this, savedInstanceState);
+    }
+
+    public abstract void trackEvent(String category, String action, Map<String, Object> data);
+
 }

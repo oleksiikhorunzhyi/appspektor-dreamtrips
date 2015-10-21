@@ -32,6 +32,7 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable, 
     private boolean selected = false;
 
     public SuccessStory() {
+        super();
     }
 
     private SuccessStory(Parcel in) {

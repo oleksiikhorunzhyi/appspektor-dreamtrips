@@ -18,7 +18,7 @@ public class History extends BaseEntity {
     Date date;
 
     public History() {
-
+        super();
     }
 
     public int getTemplateId() {

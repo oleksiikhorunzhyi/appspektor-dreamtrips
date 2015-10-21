@@ -15,6 +15,10 @@ public class Session extends BaseEntity {
     private User user;
     private List<Feature> permissions;
 
+    public Session() {
+        super();
+    }
+
     public String getToken() {
         return token;
     }

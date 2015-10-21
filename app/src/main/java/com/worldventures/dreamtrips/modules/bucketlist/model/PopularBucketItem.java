@@ -21,7 +21,7 @@ public class PopularBucketItem extends BaseEntity implements Filterable {
     private transient boolean loading = false;
 
     public PopularBucketItem() {
-
+        super();
     }
 
     public String getCoverPhotoUrl(int w, int h) {

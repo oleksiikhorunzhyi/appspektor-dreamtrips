@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -68,11 +69,28 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Layout layout = this.getClass().getAnnotation(Layout.class);
+        Layout layout = getLayoutFromAnnotation(this.getClass());
         if (layout == null) {
             throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
         }
         return inflater.inflate(layout.value(), container, false);
+    }
+
+    /**
+     * Recursively scans class hierarchy searching for {@link Layout} annotation defined.
+     * @param clazz class to search for annotation
+     * @return defined layout if any or <b>null</b>
+     */
+    @Nullable
+    private Layout getLayoutFromAnnotation(Class clazz) {
+        if (clazz == null || clazz.equals(Object.class)) return null;
+        //
+        Layout layout = (Layout) clazz.getAnnotation(Layout.class);
+        if (layout != null) {
+            return layout;
+        } else {
+            return getLayoutFromAnnotation(clazz.getSuperclass());
+        }
     }
 
     @Override

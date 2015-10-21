@@ -21,7 +21,9 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     }
 
     public void rescan() {
-        dtlTransaction.setReceiptPhoto(null);
+        photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+        dtlTransaction.setUploadTask(null);
+
         snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
 
         view.openScanReceipt();

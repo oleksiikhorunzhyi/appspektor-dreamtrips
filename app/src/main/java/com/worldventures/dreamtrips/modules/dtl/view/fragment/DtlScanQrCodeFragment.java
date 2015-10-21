@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -162,11 +163,13 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     }
 
     @Override
-    public void showProgress() {
-        pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
-        pDialog.setTitleText(getString(R.string.wait));
-        pDialog.setCancelable(false);
-        pDialog.show();
+    public void showProgress(@StringRes int titleText) {
+        if (pDialog == null) {
+            pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
+            pDialog.setTitleText(getString(titleText));
+            pDialog.setCancelable(false);
+            pDialog.show();
+        } else pDialog.setTitleText(getString(titleText));
     }
 }

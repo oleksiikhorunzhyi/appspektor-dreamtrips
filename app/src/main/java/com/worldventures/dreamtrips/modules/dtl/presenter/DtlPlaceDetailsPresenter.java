@@ -34,29 +34,41 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Override
     public void onResume() {
         super.onResume();
-        dtlTransaction = snapper.getDtlTransaction(place.getId());
-        checkTransaction();
-        updateTransactionStatus();
-        checkSucceedEvent();
+        processTransaction();
     }
 
-    private void checkSucceedEvent() {
+    private void processTransaction() {
+        dtlTransaction = snapper.getDtlTransaction(place.getId());
+
+        // check if transaction was succeeded, so that to show success popup
+        if (!checkSucceedEvent())
+            // check if transaction is out of date, so that to clean transaction
+            if (!checkTransactionOutOfDate()) {
+                // we should clean transaction, as for now we don't allow user to save his progress
+                // in the enrollment wizard(maybe needed in future)
+                if (dtlTransaction.getUploadTask() != null)
+                    photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+                snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
+            }
+        //
+        view.setTransaction(dtlTransaction);
+    }
+
+    private boolean checkSucceedEvent() {
         DtlTransactionSucceedEvent event = eventBus.getStickyEvent(DtlTransactionSucceedEvent.class);
         if (event != null) {
             eventBus.removeStickyEvent(event);
             view.openTransaction(place, dtlTransaction);
-        }
+            return true;
+        } else return false;
     }
 
-    private void checkTransaction() {
+    private boolean checkTransactionOutOfDate() {
         if (dtlTransaction != null && dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
             snapper.deleteDtlTransaction(place.getId());
             dtlTransaction = null;
-        }
-    }
-
-    private void updateTransactionStatus() {
-        view.setTransaction(dtlTransaction);
+            return true;
+        } else return false;
     }
 
     public void onCheckInClicked() {
@@ -66,7 +78,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
             dtlTransaction = new DtlTransaction();
             dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
             snapper.saveDtlTransaction(place.getId(), dtlTransaction);
-            updateTransactionStatus();
+            view.setTransaction(dtlTransaction);
         }
     }
 

@@ -456,6 +456,15 @@ public class SnappyRepository {
         return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();
     }
 
+    public void cleanDtlTransaction(int id, DtlTransaction dtlTransaction) {
+        dtlTransaction.setUploadTask(null);
+        dtlTransaction.setAmount(0.0d);
+        dtlTransaction.setReceiptPhoto(null);
+        dtlTransaction.setCode(null);
+        dtlTransaction.setDtlTransactionResult(null);
+        saveDtlTransaction(id, dtlTransaction);
+    }
+
     public void saveDtlTransaction(int id, DtlTransaction dtlTransaction) {
         act(db -> db.put(DTL_TRANSACTION_PREFIX + id, dtlTransaction));
     }

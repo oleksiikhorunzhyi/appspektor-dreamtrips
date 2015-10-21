@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlTransaction {
@@ -13,6 +14,8 @@ public class DtlTransaction {
     String receiptPhoto;
     String code;
     DtlTransactionResult dtlTransactionResult;
+
+    UploadTask uploadTask;
 
     public DtlTransaction() {
     }
@@ -42,6 +45,14 @@ public class DtlTransaction {
 
     public void setDtlTransactionResult(DtlTransactionResult dtlTransactionResult) {
         this.dtlTransactionResult = dtlTransactionResult;
+    }
+
+    public UploadTask getUploadTask() {
+        return uploadTask;
+    }
+
+    public void setUploadTask(UploadTask uploadTask) {
+        this.uploadTask = uploadTask;
     }
 
     public long getTimestamp() {

@@ -21,12 +21,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/SuggestMerchantInput"
-            android:editable="false"
-            android:focusable="false"
-            android:clickable="false"
-            android:focusableInTouchMode="false"
             android:hint="@string/suggest_merchant_restaurant_name_hint"
             />
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+            android:id="@+id/city"
+            style="@style/SuggestMerchantInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/suggest_merchant_restaurant_city_hint"
+            />
+
 
         <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
             android:id="@+id/contactName"

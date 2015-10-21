@@ -177,6 +177,7 @@
     <string name="my_pictures">My pictures</string>
     <string name="today">Today</string>
     <string name="rep_enrollment">Rep Enrollment</string>
+    <string name="rep_suggest_restaurant">Suggest Restaurant</string>
     <string name="no_connection">No Internet Connection</string>
     <string name="popular_add">ADD</string>
     <string name="popular_done">DONE</string>
@@ -517,6 +518,7 @@
 
     <string name="suggest_merchant_title">Suggest Merchant</string>
     <string name="suggest_merchant_restaurant_name_hint">Restaurant Name</string>
+    <string name="suggest_merchant_restaurant_city_hint">City</string>
     <string name="suggest_merchant_contact_name_hint">Contact Name</string>
     <string name="suggest_merchant_phone_number_hint">Phone Number</string>
     <string name="suggest_merchant_best_time_contact_caption">Best time for contact</string>
@@ -533,6 +535,7 @@
     <string name="suggest_merchant_additional_info_length_error">Input too long!</string>
     <string name="suggest_merchant_to_date_overlap_error">Cannot be earlier than \'To\' date!</string>
     <string name="suggest_merchant_to_date_past_error">Cannot be in the past!</string>
+    <string name="suggest_merchant_success_snack">Successfully posted!</string>
 
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>

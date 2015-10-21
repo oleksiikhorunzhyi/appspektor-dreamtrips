@@ -14,7 +14,7 @@ public class RegionModel extends BaseEntity {
     private boolean checked = true;
 
     public RegionModel() {
-
+        super();
     }
 
     public boolean isChecked() {

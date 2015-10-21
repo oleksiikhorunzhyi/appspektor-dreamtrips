@@ -17,7 +17,7 @@ public class ActivityModel extends BaseEntity {
     private String name;
 
     public ActivityModel() {
-
+        super();
     }
 
     private boolean checked = true;

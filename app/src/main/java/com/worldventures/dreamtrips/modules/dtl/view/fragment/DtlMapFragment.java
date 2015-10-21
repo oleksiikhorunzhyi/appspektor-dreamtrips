@@ -147,8 +147,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void addPin(LatLng latLng, int id) {
-        if (clusterManager != null)
-            clusterManager.addItem(new DtlClusterItem(latLng, id));
+        clusterManager.addItem(new DtlClusterItem(latLng, id));
     }
 
     @Override

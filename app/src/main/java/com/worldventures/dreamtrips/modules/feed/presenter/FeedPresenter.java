@@ -5,8 +5,11 @@ import android.os.Bundle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -46,7 +49,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return new GetAccountFeedQuery(date, filterCircle.getId());
     }
 
-    public List<Circle> getFilterCircles(){
+    public List<Circle> getFilterCircles() {
         List<Circle> circles = db.getCircles();
         Collections.sort(circles);
         circles.add(0, createDefaultFilterCircle());
@@ -57,11 +60,11 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return Circle.all(context.getString(R.string.all));
     }
 
-    public Circle getAppliedFilterCircle(){
+    public Circle getAppliedFilterCircle() {
         return filterCircle;
     }
 
-    public void applyFilter(Circle selectedCircle){
+    public void applyFilter(Circle selectedCircle) {
         filterCircle = selectedCircle;
         db.saveFilterCircle(selectedCircle);
         onRefresh();
@@ -69,6 +72,10 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.setRequestsCount(db.getFriendsRequestsCount());
+    }
+
+    public void onEvent(FeedItemAnalyticEvent event) {
+        TrackingHelper.sendActionItemFeed(event.getActionAttribute(), event.getEntityId(), event.getType());
     }
 
     public void refreshRequestsCount() {

@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.view.fragment;
 
-
 import android.os.Bundle;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +11,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
@@ -51,6 +50,8 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
         switch (item.getItemId()) {
             case R.id.add_friend:
                 onGlobalSearchClicked();
+                TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_ADD_FRIENDS);
+                TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_SEARCH_FRIENDS);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -95,6 +96,7 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
         filterPopupWindow.setOnItemClickListener((parent, view, pos, id) -> {
             filterPopupWindow.dismiss();
             getPresenter().reloadWithFilter(pos);
+            TrackingHelper.filterMyFriendsFeed(circles.get(pos).getName());
         });
         filterPopupWindow.show();
         filterPopupWindow.setCheckedCircle(circles.get(position));

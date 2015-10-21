@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -126,6 +127,10 @@ public abstract class TripImagesListPresenter
                     startUpload((UploadTask) obj);
                 }
             } else {
+                if (this instanceof UserImagesPresenter) {
+                    IFullScreenObject screenObject = photos.get(position);
+                    eventBus.post(new TripImageAnalyticEvent(screenObject.getFsId(), TrackingHelper.ATTRIBUTE_VIEW));
+                }
                 view.openFullscreen(getFullscreenArgs(position).build());
             }
         }

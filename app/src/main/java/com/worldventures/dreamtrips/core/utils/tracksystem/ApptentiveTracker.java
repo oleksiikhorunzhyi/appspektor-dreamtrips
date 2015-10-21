@@ -1,17 +1,20 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.apptentive.android.sdk.Apptentive;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Map;
 
+import icepick.Icepick;
 import timber.log.Timber;
 
-public class ApptentiveTracker implements ITracker {
+public class ApptentiveTracker extends ITracker {
 
     private WeakReference<Activity> activity;
 
@@ -33,7 +36,6 @@ public class ApptentiveTracker implements ITracker {
     @Override
     public void onResume(Activity activity) {
         Timber.v("onResume");
-
     }
 
     @Override

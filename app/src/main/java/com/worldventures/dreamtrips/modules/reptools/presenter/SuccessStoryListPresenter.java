@@ -6,10 +6,9 @@ import android.support.v4.app.FragmentManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
-import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
@@ -99,6 +98,7 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
     }
 
     private void handleListItemClick(SuccessStory successStory, int position) {
+        TrackingHelper.actionRepToolsSuccessStories(TrackingHelper.ATTRIBUTE_VIEW);
         lastSelectedPosition = position;
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);

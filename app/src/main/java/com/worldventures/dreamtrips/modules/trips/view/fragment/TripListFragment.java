@@ -22,6 +22,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -101,6 +102,12 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        TrackingHelper.viewDreamTripsScreen();
+    }
+
+    @Override
     protected void restoreState(Bundle savedInstanceState) {
         super.restoreState(savedInstanceState);
         adapter.restoreState(savedInstanceState);
@@ -147,6 +154,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     searchOpened = true;
+                    TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_SEARCH);
                     return true;
                 }
 
@@ -172,9 +180,11 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         switch (item.getItemId()) {
             case R.id.action_filter:
                 ((MainActivity) getActivity()).openRightDrawer();
+                TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_FILTER);
                 break;
             case R.id.action_map:
                 getPresenter().actionMap();
+                TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_MAP);
                 break;
         }
         return super.onOptionsItemSelected(item);

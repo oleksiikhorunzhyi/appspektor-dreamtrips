@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.MarkAsReadNotificationsCommand;
@@ -55,6 +56,12 @@ public class NotificationPresenter extends BaseFeedPresenter<NotificationPresent
             doRequest(new MarkAsReadNotificationsCommand(since, before), aVoid -> {
             });
         }
+    }
+
+    @Override
+    protected void loadMore() {
+        super.loadMore();
+        TrackingHelper.loadMoreNotifications();
     }
 
     public void onEventMainThread(HeaderCountChangedEvent event) {

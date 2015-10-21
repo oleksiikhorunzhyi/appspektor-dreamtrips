@@ -11,6 +11,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
@@ -95,6 +96,7 @@ public class RequestCell extends AbstractCell<User> {
     @OnClick(R.id.reject)
     void onReject() {
         getEventBus().post(new RejectRequestEvent(getModelObject(), getAdapterPosition()));
+        TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_REJECT_FRIEND_REQUEST);
     }
 
     @OnClick(R.id.hide)
@@ -105,6 +107,7 @@ public class RequestCell extends AbstractCell<User> {
     @OnClick(R.id.cancel)
     void onCancel() {
         getEventBus().post(new CancelRequestEvent(getModelObject(), getAdapterPosition()));
+        TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_CANCEL_FRIEND_REQUEST);
     }
 
     @Override

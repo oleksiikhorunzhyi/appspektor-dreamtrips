@@ -235,6 +235,7 @@ dependencies {
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
 
     // Util
+    compile 'com.intellij:annotations:12.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-annotations:23.0.1'
     compile 'com.jakewharton:butterknife:6.1.0'

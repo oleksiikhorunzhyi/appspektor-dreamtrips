@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
-import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -23,6 +22,7 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
@@ -148,6 +148,8 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
                 userSession.setFeatures(legacyFeatures);
                 appSessionHolder.put(userSession);
             }
+
+            TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
         } else {
             termsConditionsValidator.clearPreviousAcceptedTerms();

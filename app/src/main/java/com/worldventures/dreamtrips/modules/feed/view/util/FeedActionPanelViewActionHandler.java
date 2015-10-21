@@ -7,12 +7,16 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
@@ -33,7 +37,15 @@ public class FeedActionPanelViewActionHandler {
     public void init(FeedActionPanelView actionView) {
 
 
-        actionView.setOnLikeIconClickListener(feedItem -> eventBus.post(new LikesPressedEvent(feedItem.getItem())));
+        actionView.setOnLikeIconClickListener(feedItem -> {
+            eventBus.post(new LikesPressedEvent(feedItem.getItem()));
+
+            String id = feedItem.getItem().getUid();
+            FeedEntityHolder.Type type = feedItem.getType();
+            if (type != FeedEntityHolder.Type.UNDEFINED) {
+                eventBus.post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_LIKE, id, type));
+            }
+        });
 
         actionView.setOnLikersClickListener(feedItem -> NavigationBuilder.create()
                 .with(activityRouter)
@@ -85,6 +97,7 @@ public class FeedActionPanelViewActionHandler {
                 }
                 text = String.format(context.getString(R.string.bucketlist_share),
                         bucketItem.getName());
+                eventBus.post(new BucketItemShared());
 
                 break;
         }

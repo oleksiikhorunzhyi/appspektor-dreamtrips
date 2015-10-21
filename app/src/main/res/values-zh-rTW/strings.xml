@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DreamTrips</string>
-    <string name="web_title">捲筒紙</string>
-    <string name="new_photo">捲筒紙</string>
-    <string name="detailed_trip">詳細行程Trip</string>
-    <string name="membership">會籍</string>
-    <string name="trip_images">圖片之旅</string>
+    <string name="web_title">網頁標題</string>
+    <string name="new_photo">新圖片</string>
+    <string name="detailed_trip">詳細行程</string>
+    <string name="membership">會員</string>
+    <string name="trip_images">旅行圖片</string>
     <string name="bucket_list">願望清單</string>
     <string name="my_profile">我的個人資料</string>
     <string name="terms">條款</string>
     <string name="terms_of_service">服務條款</string>
-    <string name="faq">常問問題</string>
+    <string name="faq">常見問題</string>
     <string name="privacy">隱私政策</string>
-    <string name="cookie"> Cookie政策</string>
+    <string name="cookie">Cookie政策</string>
     <string name="action_settings">設置</string>
     <string name="action_quick_input">快速添加</string>
-    <string name="action_popular_string">從添加流行</string>
-    <string name="action_done">Done</string>
-    <string name="action_enroll">注冊</string>
-    <string name="action_filter">過濾器</string>
+    <string name="action_popular_string">受歡迎的</string>
+    <string name="action_done">完成</string>
+    <string name="action_enroll">註冊</string>
+    <string name="action_filter">篩選條件</string>
     <string name="action_map">地圖</string>
-    <string name="action_like">喜歡</string>
+    <string name="action_like">點讚</string>
     <string name="title_activity_login">登錄活動</string>
-    <string name="trips">DreamTrips</string>
+    <string name="trips">旅行</string>
     <string name="drawer_open">已打開的目錄</string>
     <string name="drawer_close">已關閉的目錄</string>
     <string name="empty"/>
     <string name="logout_dialog_title">退出</string>
     <string name="logout_dialog_message">您確定您要退出嗎?</string>
-    <string name="logout_dialog_positive_btn">Logout</string>
+    <string name="logout_dialog_positive_btn">退出</string>
     <string name="logout_dialog_negative_btn">取消</string>
     <string name="member_images">會員圖片</string>
     <string name="my_images">我的圖片</string>
     <string name="you_should_be_here">您應該在這</string>
-    <string name="title_activity_full_screen_photo">DreamTrips</string>
+    <string name="title_activity_full_screen_photo">顯示全屏圖片</string>
     <string name="skip_login">跳過登錄</string>
     <string name="duration">%d 晚</string>
     <string name="smth_went_wrong">出現問題=(</string>
     <string name="inspire_me">給我靈感</string>
     <string name="three_sixty">360度體驗</string>
-    <string name="book_it">預訂!</string>
-    <string name="reload_trip_details">重新載入旅行詳情</string>
+    <string name="book_it">預訂</string>
+    <string name="reload_trip_details">Reload Trip Details</string>
     <string name="title_book_it">預訂</string>
     <string name="title_enroll_it">註冊</string>
-    <string name="user_id_hint"> WV 會員 ID </string>
-    <string name="user_password_hint"> WV 會員密碼</string>
+    <string name="user_id_hint">WV 會員 ID</string>
+    <string name="user_password_hint">WV 會員密碼</string>
     <string name="type_your_reason">輸入您的原因</string>
     <string name="filter_region_header">地區</string>
-    <string name="filter_duration_header">旅行期（ 晚）</string>
+    <string name="filter_duration_header">旅行期（晚）</string>
     <string name="filter_price_header">價格 ($)</string>
     <string name="filter_select_all">選擇全部</string>
     <string name="filter_show_sold_out">顯示已售完旅行</string>
@@ -55,14 +55,14 @@
     <string name="filter_no_results">抱歉，沒有符合您要求的結果</string>
     <string name="filter_apply_all">應用篩檢程式</string>
     <string name="filter_reset_all">重置全部</string>
-    <string name="filter_reset">重置篩檢程式</string>
+    <string name="filter_reset">重置篩選條件</string>
     <string name="trip_details">旅行詳情</string>
     <string name="trip_featured">特色旅行</string>
     <string name="profile_from_hint">自</string>
     <string name="profile_location_hint">居住地</string>
-    <string name="profile_enroll_hint">註冊日期</string>
-    <string name="profile_birth_hint">生日</string>
-    <string name="profile_user_id_hint">用戶 ID </string>
+    <string name="profile_enroll_hint">註冊</string>
+    <string name="profile_birth_hint">出生日期</string>
+    <string name="profile_user_id_hint">用戶 ID</string>
     <string name="bucket_locations">地點</string>
     <string name="bucket_activities">活動</string>
     <string name="bucket_restaurants">餐飲</string>
@@ -81,31 +81,31 @@
     <string name="delete_photo_text">您確定您要刪除該照片嗎?</string>
     <string name="delete_photo_positiove">刪除</string>
     <string name="delete_photo_negative">取消</string>
-    <string name="flag_photo_first">將通知 WorldVentures 工作人員審核該圖片 </string>
-    <string name="flag_photo_second">.您要繼續嗎？</string>
+    <string name="flag_photo_first">將通知 WorldVentures 工作人員審核該圖片</string>
+    <string name="flag_photo_second">您要繼續嗎？</string>
     <string name="flag_photo_title">確認</string>
     <string name="flag_photo_positive">發送</string>
     <string name="flag_photo_negative">取消</string>
     <string name="flag_description_title">標記</string>
     <string name="flag_description_positive">接受</string>
     <string name="flag_description_negative">取消</string>
-    <string name="log_in">Log in</string>
+    <string name="log_in">登錄</string>
     <string name="error_log_in">您的登錄 ID 和/或密碼不正確——請使用您的 WorldVentures 會員 ID 和密碼登錄</string>
     <string name="error_image_not_loaded">圖片尚未載入</string>
     <string name="error_while_loading">載入圖片時出現錯誤</string>
     <string name="fab_select_album">選擇相冊</string>
     <string name="fab_select_photo">選擇照片</string>
-    <string name="fab_posted">成功在 Facebook 發佈</string>-
+    <string name="fab_posted">成功在 Facebook 發佈</string>
     <string-array name="photo_dialog_items">
-        <item>拍攝照片</item>
-        <item>選擇照片</item>
+        <item>照相</item>
+        <item>選擇圖片</item>
         <item>@string/choose_fb</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>Facebook</item>
         <item>Twitter</item>
     </string-array>
-    <string name="buffering">正在緩衝。…</string>
+    <string name="buffering">正在緩衝…</string>
     <string name="profile_select_avatar_header">選擇頭像</string>
     <string name="profile_select_cover_header">選擇封面</string>
     <string name="error_internal_server">內部伺服器錯誤</string>
@@ -125,22 +125,22 @@
     <string name="bucket_hint_title">標題</string>
     <string name="bucket_hint_description">描述</string>
     <string name="bucket_hint_description_text">在此輸入您的描述</string>
-    <string name="bucket_hint_time">Time</string>
-    <string name="bucket_hint_time_text">您想何時完成該目標?</string>
+    <string name="bucket_hint_time">時間</string>
+    <string name="bucket_hint_time_text">您想何時完成這個目標？</string>
     <string name="bucket_hint_location">地點</string>
     <string name="bucket_hint_location_text">該目標有確切的地點嗎？</string>
-    <string name="bucket_hint_people">人</string>
+    <string name="bucket_hint_people">人物</string>
     <string name="bucket_hint_people_text">添加您想與誰完成該目標</string>
     <string name="bucket_hint_tags">標籤</string>
     <string name="bucket_hint_tags_text">添加描述您的目標清單項目的標籤</string>
     <string name="bucket_item_edit_done">清單項目已保存！</string>
     <string name="bucket_item_edit_error">保存項目時遇到錯誤</string>
     <string name="bucket_item_photos">添加圖片</string>
-    <string name="category">分類</string>
+    <string name="category">類別</string>
     <string name="bucket_added">%s 已放入您的願望清單中</string>
     <string name="trip_liked">%s 已添加至您的收藏夾</string>
     <string name="trip_unliked">%s 已從您的收藏夾移出</string>
-    <string name="congrats">恭喜!</string>
+    <string name="congrats">恭喜</string>
     <string name="bucket_delete_undo">項目已刪除</string>
     <string name="undo">撤銷</string>
     <string name="location">地點</string>
@@ -148,17 +148,17 @@
     <string name="dinning">餐飲</string>
     <string name="show_all">顯示全部</string>
     <string name="show_completed">顯示已完成</string>
-    <string name="show_to_do">顯示需完成的事項</string>
+    <string name="show_to_do">顯示待辦事項</string>
     <string name="rep_tools">代表工具</string>
     <string name="success_stories">成功故事</string>
-    <string name="to_do">需完成的事項</string>
+    <string name="to_do">待辦事項</string>
     <string name="completed">已完成</string>
     <string name="action_share">分享</string>
-    <string name="recent_header">最近添加的 360 Experience </string>
+    <string name="recent_header">最近添加的360度體驗</string>
     <string name="recent_videos">最近添加</string>
-    <string name="featured_header">有特色的 360 Experience</string>
-    <string name="title_activity_success_story_details">成功故事詳情活動</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="featured_header">特色360體驗</string>
+    <string name="title_activity_success_story_details">成功故事詳細活動</string>
+    <string name="hello_world">你好，世界！</string>
     <string name="ss_has_been_added_to_favorites">已添加成功故事至收藏夾</string>
     <string name="ss_has_been_removed_from_favorites">已從收藏夾移出成功故事</string>
     <string name="ss_filter_show_favorites">顯示收藏</string>
@@ -166,31 +166,31 @@
     <string name="training_videos">培訓視頻</string>
     <string name="error_while_sync">出現問題</string>
     <string name="can_not_like_photo">不能點贊照片</string>
-    <string name="likes">贊</string>
-    <string name="comments">評論</string>
+    <string name="likes">%d贊</string>
+    <string name="comments">%d評論</string>
     <string name="wrong_image">錯誤圖片</string>
-    <string name="could_not_load">不能載入</string>
+    <string name="could_not_load">無法加載</string>
     <string name="someday">日後</string>
-    <string name="who">誰: </string>
-    <string name="tags">標籤: </string>
+    <string name="who">誰：</string>
+    <string name="tags">標籤：</string>
     <string name="my_pictures">我的圖片</string>
-    <string name="today">今兒</string>
-    <string name="rep_enrollment">眾議員招生</string>
-    <string name="no_connection">沒有互聯網連接</string>
+    <string name="today">今天</string>
+    <string name="rep_enrollment">代表註冊</string>
+    <string name="no_connection">無互聯網連接</string>
     <string name="popular_add">添加</string>
     <string name="popular_done">完成</string>
     <string name="see_more">查看更多</string>
-    <string name="alert">警戒</string>
-    <string name="OK">行</string>
-    <string name="share_error">不能共享文件</string>
+    <string name="alert">警告</string>
+    <string name="OK">OK</string>
+    <string name="share_error">無法共享文件</string>
     <string-array name="bucket_date_items">
         <item>具體日期</item>
         <item>明日</item>
-        <item>本星期</item>
+        <item>本週</item>
         <item>下週</item>
-        <item>這個月</item>
-        <item>下個月</item>
-        <item>在6個月</item>
+        <item>本月</item>
+        <item>下月</item>
+        <item>6個月內</item>
         <item>今年</item>
         <item>明年</item>
         <item>@string/someday</item>
@@ -200,64 +200,64 @@
         <item>@string/choose_camera</item>
         <item>@string/choose_gallery</item>
     </string-array>
-    <string name="choose_fb">從Facebook的選擇</string>
+    <string name="choose_fb">從Facebook中選擇</string>
     <string name="choose_camera">拍照</string>
-    <string name="choose_gallery">選擇照片</string>
+    <string name="choose_gallery">選擇一張照片</string>
     <string-array name="dialog_action_bucket_photo">
-        <item>設為封面</item>
-        <item>刪</item>
+        <item>@string/bucket_photo_cover</item>
+        <item>@string/bucket_photo_delete</item>
     </string-array>
-    <string name="uploading_photo">照片上傳中</string>
+    <string name="uploading_photo">上傳照片</string>
     <string name="bucket_photo_cover">設為封面</string>
-    <string name="bucket_photo_delete">刪</string>
+    <string name="bucket_photo_delete">刪除</string>
     <string name="add_pictures">添加圖片</string>
     <string name="select_photo">選擇照片</string>
-    <string name="bucket_photo_dialog">鬥照片</string>
+    <string name="bucket_photo_dialog">願望圖片</string>
     <string name="download_in_progress">正在下載</string>
     <string name="delete_cached_video_title">視頻</string>
-    <string name="delete_cached_video_text">你確定你想從您的設備刪除</string>
-    <string name="fail">Failure</string>
+    <string name="delete_cached_video_text">您確定想從緩存中刪除視頻嗎？</string>
+    <string name="fail">失敗</string>
     <string name="cancel_cached_video_title">視頻</string>
-    <string name="cancel_cached_video_text">您確定要取消文件下載?</string>
-    <string name="cancel_photo_positiove">對</string>
-    <string name="cancel_photo_negative">不</string>
-    <string name="presentations">贈送</string>
+    <string name="cancel_cached_video_text">您確定要取消文件下載？</string>
+    <string name="cancel_photo_positiove">是</string>
+    <string name="cancel_photo_negative">否</string>
+    <string name="presentations">視頻</string>
     <string name="enroll_member">註冊會員</string>
-    <string name="invite_and_share">邀請和共享</string>
+    <string name="invite_and_share">邀請并分享</string>
     <string name="add_contact">添加聯繫人</string>
-    <string name="add">還說</string>
-    <string name="invite_add_name">名義</string>
+    <string name="add">添加</string>
+    <string name="invite_add_name">姓名</string>
     <string name="invite_email">電子郵件</string>
     <string name="invite_phone">電話號碼</string>
     <string name="invite_add_message">添加個人信息</string>
-    <string name="action_send">遞送</string>
+    <string name="action_send">發送</string>
     <string name="action_preview">預覽</string>
     <string name="title_edit_template">編輯模板</string>
     <string name="title_activity_invite">邀請</string>
-    <string name="invitation_continue">賡</string>
+    <string name="invitation_continue">繼續</string>
     <string name="invitation_select_contacts">選擇聯繫人</string>
-    <string name="invitation_select_template">選擇模板邀請函</string>
-    <string name="invitation_select">芼</string>
-    <string name="invitation_from">從:</string>
-    <string name="invitation_to">遏:</string>
-    <string name="invitation_subject">主題:</string>
+    <string name="invitation_select_template">選擇邀請模板</string>
+    <string name="invitation_select">選擇</string>
+    <string name="invitation_from">從：</string>
+    <string name="invitation_to">至：</string>
+    <string name="invitation_subject">主題：</string>
 
-    <string name="invite_add_last_name">姓名</string>
-    <string name="preview_template">預覽範本</string>
-    <string name="selected">已選取 %1$d</string>
-    <string name="error_personal_message_is_empty">個人訊息不應該是空的</string>
+    <string name="invite_add_last_name">姓氏</string>
+    <string name="preview_template">預覽模板</string>
+    <string name="selected">已選擇%d </string>
+    <string name="error_personal_message_is_empty">個人信息不應為空</string>
     <string name="email_is_not_valid">電子郵件無效</string>
     <string name="invitation_deselect_all">全部取消</string>
-    <string name="invitation_text_template" formatted="false"><![CDATA[%s 您好，%s <br/>若要深入瞭解，請按 <a href=\"%s\">這裡</a>。]]></string>
-    <string name="terms_and_conditions"><![CDATA[我已經閱讀和接受此<a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">條款和條件</a>]]></string>
-    <string name="invite_add_photo">新增照片</string>
-    <string name="invite_select_first">在第一選擇聯繫人</string>
-    <string name="filters_show_favorite">只顯示喜愛旅程</string>
-    <string name="filter_recently_added">先顯示近期旅程</string>
-    <string name="bucketlist_share" formatted="false">On my Bucket-List: %s</string>
-    <string name="choose_multiselect">選擇照片</string>
-    <string name="last_sent">此前發送的</string>
-    <string name="search_trips">搜索旅行</string>
+    <string name="invitation_text_template" formatted="false"></string>
+    <string name="terms_and_conditions"></string>
+    <string name="invite_add_photo">添加圖片</string>
+    <string name="invite_select_first">首先選擇聯繫人</string>
+    <string name="filters_show_favorite">顯示收藏夾旅程</string>
+    <string name="filter_recently_added">顯示最近添加</string>
+    <string name="bucketlist_share" formatted="false">在我的願望清單：%s</string>
+    <string name="choose_multiselect">選擇圖片</string>
+    <string name="last_sent">最後發送</string>
+    <string name="search_trips">搜索旅程</string>
     <string name="search">搜索</string>
 
     <string-array name="dialog_add_bucket_photo_multiselect">
@@ -267,40 +267,40 @@
     </string-array>
 
     <string name="profile_update_info">資料更新</string>
-    <string name="profile_trip_images">%d 旅行圖片</string>
-    <string name="profile_bucket_list">%d 目標清單</string>
-    <string name="profile_post">新文章</string>
-    <string name="profile_friends">朋友</string>
-    <string name="profile_messages">訊息</string>
+    <string name="profile_trip_images">%d旅行圖片</string>
+    <string name="profile_bucket_list">%d願望清單</string>
+    <string name="profile_post">發佈</string>
+    <string name="profile_friends">好友</string>
+    <string name="profile_messages">信息</string>
     <string name="profile_more">更多</string>
     <string name="profile_platinum">白金會員</string>
     <string name="profile_golden">黃金會員</string>
-    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT 點數</string>
-    <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia 幣</string>
-    <string name="bucket_delete_dialog">您確定您要刪除目標清單項目嗎?</string>
+    <string name="profile_dt_points">DT點數</string>
+    <string name="profile_rovia_bucks">Rovia幣</string>
+    <string name="bucket_delete_dialog">您確定要刪除目標清單項目嗎?</string>
 
-    <string name="action_add_to_bucket">添加到清單列表</string>
-    <string name="profile_dream_trips">%1$d DreamTrips</string>
-    <string name="profile_add_friend">添加朋友</string>
-    <string name="profile_friend_request" formatted="false">%s向你發出交友請求</string>
+    <string name="action_add_to_bucket">添加至願望清單</string>
+    <string name="profile_dream_trips">%d Dream Trips</string>
+    <string name="profile_add_friend">添加好友</string>
+    <string name="profile_friend_request" formatted="false">%s向您發送了好友請求</string>
     <string name="profile_accept">確認</string>
-    <string name="profile_reject">刪除要求</string>
-    <string name="title_activity_friends">朋友們</string>
+    <string name="profile_reject">刪除請求</string>
+    <string name="title_activity_friends">好友</string>
     <string name="profile_request">請求</string>
-    <string name="profile_respond">回复</string>
-    <string name="profile_waiting">等候</string>
-    <string name="social_my_friends">我的朋友們</string>
-    <string name="social_requests">要求</string>
+    <string name="profile_respond"></string>
+    <string name="profile_waiting"></string>
+    <string name="social_my_friends"></string>
+    <string name="social_requests"></string>
     <string name="social_add_friend_yes">是</string>
     <string name="social_add_friend_no">否</string>
-    <string name="social_add_friend_title">添加朋友</string>
-    <string name="social_add_friend_content" formatted="false">添加 %s作為你的朋友？</string>
-    <string name="social_postfix_mutual_friends">%1$d共同朋友</string>
+    <string name="social_add_friend_title">添加好友</string>
+    <string name="social_add_friend_content" formatted="false">添加%s為您的好友？</string>
+    <string name="social_postfix_mutual_friends">%d共同好友</string>
     <string name="social_user_wrapper_cell_actions">行動</string>
-    <string name="social_remove_friend_title">解除朋友關係</string>
+    <string name="social_remove_friend_title">解除好友</string>
     <string name="action_social_show_all">顯示全部</string>
     <string name="friend_search_placeholder">搜索名字，團體</string>
-    <string name="bucket_photo_upload_error">無法上傳照片</string>
+    <string name="bucket_photo_upload_error">無法上傳圖片</string>
     <string name="training_video_hint">選擇語言</string>
     <string name="friend_reject">拒絕</string>
     <string name="friend_accept">接受</string>
@@ -309,45 +309,45 @@
     <string name="request_incoming">傳入</string>
     <string name="request_outgoing">傳出</string>
     <string name="friend_global_search">搜索所有會員</string>
-    <string name="friend_add_to">添加：</string>
+    <string name="friend_add_to">添加至：</string>
     <string name="bucket_current_cover">當前封面</string>
     <string name="bucket_item_edit_completed">標記為已完成！</string>
     <string name="reload_feed">重新載入來源</string>
     <string name="feed_header" formatted="false">&lt;b>%s%s&lt;/b> %s &lt;b>%s&lt;/b></string>
-    <string name="added">已添加</string>
-    <string name="booked">已預訂</string>
-    <string name="shared">分享的</string>
-    <string name="updated">已更新</string>
-    <string name="liked">點贊的</string>
-    <string name="feed_trip">旅程</string>
-    <string name="feed_photo">照片</string>
-    <string name="feed_bucket">清單項目</string>
+    <string name="added">已添加一個</string>
+    <string name="booked">已預訂一個</string>
+    <string name="shared">已分享一個</string>
+    <string name="updated">已更新一個</string>
+    <string name="liked">點讚了您的</string>
+    <string name="feed_trip">旅行</string>
+    <string name="feed_photo">圖片</string>
+    <string name="feed_bucket">願望清單項目</string>
     <string name="coming_soon">即將推出</string>
-    <string name="loading">正在載入...</string>
+    <string name="loading">加載中…</string>
     <string name="filter_video_title_language">選擇語言</string>
     <string name="filter_video_title_country">選擇國家</string>
-    <string name="comments_title"></string>
-    <string name="comment_add_hint">添加評論</string>
-    <string name="comment_post_btn_title">張貼</string>
+    <string name="comments_title">評論</string>
+    <string name="comment_add_hint">添加一條評論</string>
+    <string name="comment_post_btn_title">發佈</string>
     <string name="comment_view_more">查看更多評論</string>
     <string name="comment_edit">編輯評論</string>
-    <string name="save">儲存</string>
+    <string name="save"></string>
     <string name="comment_delete">刪除評論</string>
-    <string name="comment_delete_caption">你確信要刪除這個評論嗎？</string>
-    <string name="comment_delete_confirm">是，刪除它！</string>
-    <string name="post_visibility_public">公眾</string>
-    <string name="post_hint">你要做什麼？</string>
-    <string name="photo_hint">說說照片…</string>
-    <string name="post">張貼</string>
+    <string name="comment_delete_caption">您確定要刪除這條評論嗎？</string>
+    <string name="comment_delete_confirm">是的，刪除！</string>
+    <string name="post_visibility_public">公開</string>
+    <string name="post_hint">您要做什麼？</string>
+    <string name="photo_hint">說說這張照片…</string>
+    <string name="post">發佈</string>
 
     /////////Date time relative strings
-    <string name="just_now">現在</string>
-    <string name="days_ago">%1$d天前</string>
-    <string name="hours_ago">%1$d小時前 </string>
-    <string name="minutes_ago">%1$d分鐘前</string>
-    <string name="months_ago">%1$d月前</string>
-    <string name="weeks_ago">%1$d星期前</string>
-    <string name="seconds_ago">%1$d秒前</string>
+    <string name="just_now">剛剛</string>
+    <string name="days_ago">%d天前</string>
+    <string name="hours_ago">%d小時前</string>
+    <string name="minutes_ago">%d分鐘前</string>
+    <string name="months_ago">%d個月前</string>
+    <string name="weeks_ago">%d週前</string>
+    <string name="seconds_ago">%d秒前</string>
     <string name="minute_ago">一分鐘前</string>
     <string name="hour_ago">一小時前</string>
     <string name="last_month">上個月</string>
@@ -355,31 +355,32 @@
     <string name="last_year">去年</string>
     <string name="yesterday">昨天</string>
     <string name="year_ago">一年前</string>
-    <string name="month_ago">一個月前</string>
+    <string name="month_ago"></string>
     <string name="week_ago">一週前</string>
     <string name="day_ago">一天前</string>
 
+    <string name="social_remove_and_block_friend_title">解除好友并屏蔽</string>
     <string name="social_friend_preference_title">編輯好友偏好</string>
-    <string name="friend_pref_create_new_list">创建新的清单</string>
-    <string name="friend_pref_lists_title">列表</string>
+    <string name="friend_pref_create_new_list">創建新清單</string>
+    <string name="friend_pref_lists_title">清單</string>
     <string name="friend_pref_lists_header">朋友偏好</string>
-    <string name="social_unfriend_confirmation_title">你确定要从朋友中删除用户吗？</string>
-    <string name="social_unfriend_confiramation_accept">是的</string>
-    <string name="social_unfriend_confiramation_cancel">没有</string>
+    <string name="social_unfriend_confirmation_title">您確定要刪除該用戶嗎？</string>
+    <string name="social_unfriend_confiramation_accept">是</string>
+    <string name="social_unfriend_confiramation_cancel">否</string>
     <string name="feed_title">活動摘要</string>
-    <string name="post_cancel_message">你确定要放弃更改？</string>
-    <string name="pictures">图片</string>
-    <string name="bucket_list_foreign_message">当前该用户没有愿望清单项目。</string>
+    <string name="post_cancel_message">您確定要放棄修改嗎？</string>
+    <string name="pictures">圖片</string>
+    <string name="bucket_list_foreign_message">當前該用戶還沒有願望清單項目。</string>
 
     <string name="user_name" formatted="false">&lt;b>%s&lt;/b></string>
     <string name="user_name_with_company" formatted="false">&lt;b>%s&lt;/b>, %s</string>
-    <string name="configuration_acitve_button">再试一次</string>
-    <string name="configuration_failed">配置加载失败</string>
-    <string name="email_app_choose_dialog_title">Choose Application</string>
+    <string name="configuration_acitve_button">重試</string>
+    <string name="configuration_failed">配置加載失敗</string>
+    <string name="email_app_choose_dialog_title">選擇應用程序</string>
 
     <plurals name="users_who_liked">
-        <item quantity="one">&lt;b>%d User&lt;/b> likes this</item>
-        <item quantity="other">&lt;b>%d Users&lt;/b> like this</item>
+        <item quantity="one"></item>
+        <item quantity="other"></item>
     </plurals>
 
     <plurals name="users_who_liked_with_name">
@@ -394,71 +395,71 @@
         <item quantity="other">@string/users_who_liked_with_first_multiple</item>
     </plurals>
 
-    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> like this</string>
-    <string name="users_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> likes this</string>
-    <string name="users_who_liked_with_first_single" formatted="false">&lt;b>%s and %d other&lt;/b> like this</string>
-    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b>%s and %d others&lt;/b> like this</string>
+    <string name="account_who_liked_with_first_zero" formatted="false"></string>
+    <string name="users_who_liked_with_first_zero" formatted="false"></string>
+    <string name="users_who_liked_with_first_single" formatted="false"></string>
+    <string name="users_who_liked_with_first_multiple" formatted="false"></string>
 
-    <string name="users_who_liked_title">People who liked</string>
-    <string name="users_who_liked_empty">Nobody has liked this item</string>
+    <string name="users_who_liked_title">點讚的人</string>
+    <string name="users_who_liked_empty">還沒有人點讚</string>
     <string name="notifications_title">通知</string>
     <string name="accept_request">接受了您的好友請求</string>
-    <string name="reject_request">rejected your request</string>
-    <string name="comment">評論了帖子</string>
-    <string name="send_request">向您發送好友請求</string>
+    <string name="reject_request">拒絕了您的請求</string>
+    <string name="comment">評論了您的</string>
+    <string name="send_request">向您發送了好友請求</string>
 
-    <string name="post_delete">Delete post</string>
-    <string name="post_edit">Edit post</string>
-    <string name="post_delete_caption">Are you sure you want to delete this post?</string>
-    <string name="post_delete_confirm">Yes, delete it!</string>
+    <string name="post_delete">刪除帖子</string>
+    <string name="post_edit">編輯帖子</string>
+    <string name="post_delete_caption">您確定要刪除這條帖子嗎？</string>
+    <string name="post_delete_confirm">是的，刪除！</string>
 
-    <string name="photo_delete">删除照片</string>
-    <string name="photo_edit">Edit photo</string>
-    <string name="photo_delete_caption">您要删除该图片吗？</string>
+    <string name="photo_delete">刪除圖片</string>
+    <string name="photo_edit">編輯圖片</string>
+    <string name="photo_delete_caption">您確定要刪除這張照片嗎？</string>
 
-    <string name="bucket_delete">Delete bucket item</string>
-    <string name="bucket_edit">Edit bucket item</string>
-    <string name="bucket_delete_caption">您确定您要删除目标清单项目吗？</string>
+    <string name="bucket_delete">刪除願望項目</string>
+    <string name="bucket_edit">編輯願望項目</string>
+    <string name="bucket_delete_caption">您確定要刪除這項願望項目嗎？</string>
 
-    <string name="feed_header_two" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s%s&lt;/b> %s &lt;b>%s&lt;/b></string>
-    <string name="feed_header_many" formatted="false">&lt;b>%s%s&lt;/b> and &lt;b>%s of your friends&lt;/b> %s &lt;b>%s&lt;/b></string>
+    <string name="feed_header_two" formatted="false"></string>
+    <string name="feed_header_many" formatted="false"></string>
 
-    <string name="player_error_header">Playback error</string>
-    <string name="player_error">Sorry, we could not play this video now, please check your connection or try again</string>
+    <string name="player_error_header">回放錯誤</string>
+    <string name="player_error">抱歉，我們無法播放這條視頻，請檢查您的網絡連接或重試</string>
 
-    <string name="retry">Retry</string>
+    <string name="retry"></string>
 
-    <string name="no_notifications">你有沒有通知還</string>
-    <string name="notification_message_friend_accepted">%s 接受了您的好友請求</string>
-    <string name="notification_message_friend_request">%s 向您發送好友請求</string>
+    <string name="no_notifications">您還沒有任何通知</string>
+    <string name="notification_message_friend_accepted">%s接受了您的好友請求</string>
+    <string name="notification_message_friend_request">%s向您發送了好友請求</string>
 
-    <string name="error_webview_no_internet">There is no internet connection. Please, fix the problem and reload page.</string>
-    <string name="error_webview_default">There is a connection problem. Try to reload page.</string>
+    <string name="error_webview_no_internet">無網絡鏈接，請檢查并重新加載頁面。</string>
+    <string name="error_webview_default">網絡連接有問題。嘗試重新加載頁面。</string>
 
-    <string name="notifaction_new">New</string>
-    <string name="notifaction_older">Older</string>
+    <string name="notifaction_new">新</string>
+    <string name="notifaction_older">舊</string>
 
     <string name="all">全部</string>
-    <string name="you">You</string>
+    <string name="you">您</string>
 
     <plurals name="likes_count">
-        <item quantity="one">%d 個贊</item>
-        <item quantity="other">%d 個贊</item>
+        <item quantity="one">%d個贊</item>
+        <item quantity="other">%d個贊</item>
     </plurals>
 
     <plurals name="comments_count">
-        <item quantity="one">%d 條評論</item>
-        <item quantity="other">%d 條評論</item>
+        <item quantity="one">%d條評論</item>
+        <item quantity="other">%d條評論</item>
     </plurals>
 
-    <string name="feed_edit_item">Edit</string>
-    <string name="feed_delete_item">删除</string>
+    <string name="feed_edit_item">編輯</string>
+    <string name="feed_delete_item">刪除</string>
 
-    <string name="liked_foreign">點讚了帖子</string>
-    <string name="comment_foreign">評論了帖子</string>
+    <string name="liked_foreign">點讚</string>
+    <string name="comment_foreign">評論了一個</string>
 
-    <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
-    <string name="search_friends">Search Friends</string>
+    <string name="no_feed">您將在此看到您好友的活動。點擊下方鏈接尋找您的好友</string>
+    <string name="search_friends">搜索好友</string>
     <string name="start_searching">鍵入開始搜索</string>
 
 </resources>

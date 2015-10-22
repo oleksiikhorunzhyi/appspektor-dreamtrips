@@ -197,7 +197,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         fragmentCompass.setContainerId(R.id.dtl_container);
         fragmentCompass.setSupportFragmentManager(getFragmentManager());
 
-        fragmentCompass.remove(Route.DTL_PLACES_LIST);
+        fragmentCompass.disableBackStack();
 
         NavigationBuilder.create()
                 .with(fragmentCompass)

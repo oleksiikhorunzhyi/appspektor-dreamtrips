@@ -71,7 +71,6 @@ public class DtlPlacesTabsFragment
                     NavigationBuilder.create().with(fragmentCompass)
                             .data(getArgs())
                             .move(Route.DTL_MAP);
-                    fragmentCompass.disableBackStack();
                     break;
                 case R.id.action_dtl_filter:
                     ((MainActivity) getActivity()).openRightDrawer();

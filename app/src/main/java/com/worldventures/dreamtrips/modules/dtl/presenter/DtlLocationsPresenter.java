@@ -111,15 +111,16 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     public void search(String caption) {
-        Observable.create(new Observable.OnSubscribe<DtlLocationsHolder>() {
-            @Override
-            public void call(Subscriber<? super DtlLocationsHolder> subscriber) {
-                subscriber.onNext(dtlLocationsHolder.filter(caption));
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(view::setItems);
+        if (view != null)
+            Observable.create(new Observable.OnSubscribe<DtlLocationsHolder>() {
+                @Override
+                public void call(Subscriber<? super DtlLocationsHolder> subscriber) {
+                    subscriber.onNext(dtlLocationsHolder.filter(caption));
+                    subscriber.onCompleted();
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(view::setItems);
     }
 
     public void flushSearch() {

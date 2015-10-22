@@ -68,7 +68,7 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
 
     @Override
     public void onBackPressed() {
-        if (isVisibleOnScreen() && !handleComponentChange()) {
+        if (!handleComponentChange()) {
             super.onBackPressed();
         }
     }

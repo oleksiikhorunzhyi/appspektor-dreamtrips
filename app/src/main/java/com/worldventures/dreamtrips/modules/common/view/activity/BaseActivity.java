@@ -10,6 +10,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -46,6 +47,9 @@ public abstract class BaseActivity extends InjectingActivity {
     @Inject
     protected ActivityResultDelegate activityResultDelegate;
 
+    @Inject
+    BackStackDelegate backStackDelegate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,9 +82,16 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Override
     public void onBackPressed() {
-        if (!checkChildFragments(getSupportFragmentManager())) {
-            super.onBackPressed();
-            topLevelBackStackPopped();
+        if (!backStackDelegate.onBackPressed() &&
+                !checkChildFragments(getSupportFragmentManager())) {
+            FragmentManager fm = getSupportFragmentManager();
+
+            if (fm.getBackStackEntryCount() > 1) {
+                fm.popBackStack();
+                topLevelBackStackPopped();
+            } else {
+                finish();
+            }
         }
     }
 

@@ -55,7 +55,7 @@ public class RootComponentsProvider {
 
     public ComponentDescription getComponent(FragmentManager fm) {
         int size = fm.getBackStackEntryCount();
-        for (int i = size - 1; i >= 0; i--) {
+        for (int i = size - 2; i >= 0; i--) {
             ComponentDescription component = getComponentByKey(fm.getBackStackEntryAt(i).getName());
             if (component != null) {
                 return component;

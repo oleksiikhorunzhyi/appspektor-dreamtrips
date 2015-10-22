@@ -13,7 +13,6 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
@@ -55,9 +54,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     protected boolean toolbarGone;
 
     private NavigationDrawerFragment navigationDrawerFragment;
-
-    @Inject
-    BackStackDelegate backStackDelegate;
 
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -236,7 +232,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void onBackPressed() {
-        if (!handleBackPressed() && !backStackDelegate.onBackPressed()) {
+        if (!handleBackPressed()) {
             super.onBackPressed();
         }
     }

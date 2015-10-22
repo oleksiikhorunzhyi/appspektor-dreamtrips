@@ -51,7 +51,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     public void onResume() {
         super.onResume();
         view.startLoading();
-        loadVideos();
+        loadOnStart();
         if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
         }
@@ -79,7 +79,11 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         loadVideos();
     }
 
-    private void loadVideos() {
+    protected void loadOnStart() {
+        loadVideos();
+    }
+
+    protected void loadVideos() {
         doRequest(getMemberVideosRequest(), categories -> {
             view.finishLoading();
             attachCacheToVideos(categories);

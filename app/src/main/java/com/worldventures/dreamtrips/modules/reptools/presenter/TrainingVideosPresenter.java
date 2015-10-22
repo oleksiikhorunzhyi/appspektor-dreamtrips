@@ -31,7 +31,12 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     public void onResume() {
         videoLocale = db.getLastSelectedVideoLocale();
         videoLanguage = db.getLastSelectedVideoLanguage();
+
         super.onResume();
+    }
+
+    @Override
+    protected void loadOnStart() {
         loadLocales();
     }
 
@@ -53,6 +58,8 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
             setHeaderLocale();
             view.setLocales(locales, videoLocale);
         }
+
+        loadVideos();
     }
 
     private VideoLocale getCurrentLocale(ArrayList<VideoLocale> locales, Locale locale) {
@@ -99,7 +106,8 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     protected MemberVideosRequest getMemberVideosRequest() {
         if (videoLocale != null && videoLanguage != null)
             return new MemberVideosRequest(DreamTripsApi.TYPE_REP, videoLanguage.getLocaleName());
-        else return new MemberVideosRequest(DreamTripsApi.TYPE_REP);
+        else
+            return new MemberVideosRequest(DreamTripsApi.TYPE_REP);
     }
 
     public interface View extends PresentationVideosPresenter.View {

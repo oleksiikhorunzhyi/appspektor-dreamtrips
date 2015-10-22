@@ -5,11 +5,11 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 
-public class SuggestMerchantBundle implements Parcelable {
+public class SuggestPlaceBundle implements Parcelable {
 
     private DtlPlace place;
 
-    public SuggestMerchantBundle(DtlPlace place) {
+    public SuggestPlaceBundle(DtlPlace place) {
         this.place = place;
     }
 
@@ -25,7 +25,7 @@ public class SuggestMerchantBundle implements Parcelable {
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    protected SuggestMerchantBundle(Parcel in) {
+    protected SuggestPlaceBundle(Parcel in) {
         place = in.readParcelable(DtlPlace.class.getClassLoader());
     }
 
@@ -34,15 +34,15 @@ public class SuggestMerchantBundle implements Parcelable {
         dest.writeParcelable(place, flags);
     }
 
-    public static final Creator<SuggestMerchantBundle> CREATOR = new Creator<SuggestMerchantBundle>() {
+    public static final Creator<SuggestPlaceBundle> CREATOR = new Creator<SuggestPlaceBundle>() {
         @Override
-        public SuggestMerchantBundle createFromParcel(Parcel in) {
-            return new SuggestMerchantBundle(in);
+        public SuggestPlaceBundle createFromParcel(Parcel in) {
+            return new SuggestPlaceBundle(in);
         }
 
         @Override
-        public SuggestMerchantBundle[] newArray(int size) {
-            return new SuggestMerchantBundle[size];
+        public SuggestPlaceBundle[] newArray(int size) {
+            return new SuggestPlaceBundle[size];
         }
     };
 

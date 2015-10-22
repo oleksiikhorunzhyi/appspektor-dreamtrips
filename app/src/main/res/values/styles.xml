@@ -97,8 +97,8 @@
         <item name="met_primaryColor">@color/suggest_merchant_hint_text</item>
         <item name="android:singleLine">true</item>
         <item name="android:imeOptions">actionNext</item>
-        <item name="android:layout_marginBottom">@dimen/suggest_merchant_default_vertical_margin
-        </item>
+        <item name="android:layout_marginBottom">@dimen/suggest_merchant_default_vertical_margin</item>
+        <item name="requestFocusOnValidationFail">true</item>
     </style>
 
     <style name="SuggestMerchantBigCaption">

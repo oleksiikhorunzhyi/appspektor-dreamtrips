@@ -185,10 +185,12 @@ public abstract class TripImagesListPresenter
             UploadTask uploadTask = getCurrentTask(String.valueOf(id));
             if (uploadTask != null) {
                 if (state.equals(TransferState.COMPLETED)) {
-                    uploadTask.setStatus(UploadTask.Status.COMPLETED);
-                    uploadTask.setOriginUrl
-                            (photoUploadingSpiceManager.getResultUrl(uploadTask));
-                    photoUploaded(uploadTask);
+                    if (uploadTask.getStatus() != UploadTask.Status.COMPLETED) {
+                        uploadTask.setStatus(UploadTask.Status.COMPLETED);
+                        uploadTask.setOriginUrl
+                                (photoUploadingSpiceManager.getResultUrl(uploadTask));
+                        photoUploaded(uploadTask);
+                    }
                 } else if (state.equals(TransferState.FAILED)) {
                     photoError(getCurrentTask(String.valueOf(id)));
                 }

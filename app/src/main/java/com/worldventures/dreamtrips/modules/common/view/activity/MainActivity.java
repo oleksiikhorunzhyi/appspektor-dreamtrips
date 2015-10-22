@@ -70,8 +70,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     protected void afterCreateView(Bundle savedInstanceState) {
         setupToolbar();
         super.afterCreateView(savedInstanceState);
-        fragmentCompass.clear();
-        //
         setUpBurger();
         setUpMenu();
         //

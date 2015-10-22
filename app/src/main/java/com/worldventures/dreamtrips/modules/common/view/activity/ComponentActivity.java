@@ -50,7 +50,6 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
 
     boolean handleComponentChange() {
         if (detailsFloatingContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeEdit();
             detailsFloatingContainer.setVisibility(View.GONE);
             return true;
         }

@@ -67,17 +67,8 @@ public class FragmentCompass {
         action(Action.REPLACE, route, bundle);
     }
 
-    public void clear() {
-        removeDetailed();
-        removeEdit();
-    }
-
     public void removeDetailed() {
         remove(Route.DETAIL_BUCKET.getClazzName());
-    }
-
-    public void removeEdit() {
-        remove(Route.BUCKET_EDIT.getClazzName());
     }
 
     public void removePost() {

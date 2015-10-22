@@ -35,7 +35,7 @@ public class DtlPlaceManyImagesDataInflater extends DtlPlaceCommonDataInflater {
     @Override
     protected void onPlaceApply(DtlPlace place) {
         super.onPlaceApply(place);
-        setImages(place.getMediaList());
+        setImages(place.getImages());
     }
 
     private void setImages(List<DtlPlaceMedia> mediaList) {

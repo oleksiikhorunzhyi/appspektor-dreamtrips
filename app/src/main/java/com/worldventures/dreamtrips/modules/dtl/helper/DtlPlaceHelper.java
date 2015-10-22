@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceCategory;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 
 import java.util.ArrayList;
@@ -23,10 +23,11 @@ public class DtlPlaceHelper {
     }
 
     public String getFirstCategoryName(DtlPlace place) {
-        List<DtlPlaceCategory> categories = place.getCategories();
+        List<DtlPlaceAttribute> categories = place.getAttributes();
         if (categories == null) return null;
-        DtlPlaceCategory category = Queryable.from(categories).firstOrDefault();
-        return category == null ? null : category.getName();
+        DtlPlaceAttribute category = Queryable.from(categories).firstOrDefault(element ->
+                element.getName().equals("categories"));
+        return category == null ? null : Queryable.from(category.getAttributes()).firstOrDefault();
     }
 
     public List<ImageTextItem> getContactsData(DtlPlace place) {

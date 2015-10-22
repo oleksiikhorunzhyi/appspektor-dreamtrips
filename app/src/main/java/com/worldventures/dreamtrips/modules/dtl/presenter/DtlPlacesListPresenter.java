@@ -51,7 +51,8 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     public void onEventMainThread(PlacesUpdatedEvent event) {
         if (!event.getType().equals(placeType)) return;
         //
-        view.setItems(db.getDtlPlaces(placeType));
+        dtlPlaces = db.getDtlPlaces(placeType);
+        performFiltering();
     }
 
     public void onEventMainThread(DtlFilterEvent event) {

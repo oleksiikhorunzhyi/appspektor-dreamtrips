@@ -60,7 +60,7 @@ public class DtlPlacesToolbarHelper {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
         }
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) activity).openLeftDrawer());
-        title.setText(location.getName());
+        title.setText(location.getLongName());
         title.setOnClickListener(v -> {
             fragmentCompass.disableBackStack();
             NavigationBuilder.create().with(fragmentCompass).move(Route.DTL_LOCATIONS);

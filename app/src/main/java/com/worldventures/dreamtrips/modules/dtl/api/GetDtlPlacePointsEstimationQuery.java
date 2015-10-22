@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.api;
 
 public class GetDtlPlacePointsEstimationQuery extends DtlRequest<Double> {
 
-    private int id;
+    private String id;
     private double price;
 
-    public GetDtlPlacePointsEstimationQuery(int id, double price) {
+    public GetDtlPlacePointsEstimationQuery(String id, double price) {
         super(Double.class);
         this.id = id;
         this.price = price;

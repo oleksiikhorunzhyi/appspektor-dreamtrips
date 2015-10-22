@@ -114,7 +114,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void centerIn(DtlLocation location) {
-        LatLng latLng = new LatLng(location.getLocation().getLat(), location.getLocation().getLng());
+        LatLng latLng = new LatLng(location.getGeoCoordinate().getLat(), location.getGeoCoordinate().getLng());
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10.0f));
     }
 
@@ -141,7 +141,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void addPin(LatLng latLng, int id) {
+    public void addPin(LatLng latLng, String id) {
         clusterManager.addItem(new DtlClusterItem(latLng, id));
     }
 

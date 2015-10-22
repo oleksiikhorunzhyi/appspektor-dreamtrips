@@ -24,7 +24,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
         photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
         dtlTransaction.setUploadTask(null);
 
-        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
 
         view.openScanReceipt();
     }
@@ -32,10 +32,10 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
+        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
         view.attachTransaction(dtlTransaction);
 
-        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getId(), dtlTransaction.getAmount()),
+        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getMerchantId(), dtlTransaction.getAmount()),
                 points -> view.attachDtPoints(points.intValue()));
     }
 

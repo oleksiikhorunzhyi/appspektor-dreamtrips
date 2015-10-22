@@ -125,9 +125,9 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
             adapter.addItem(getString(R.string.dtl_locations_select_nearby_cities));
             adapter.addItems(dtlLocationsHolder.getNearby());
         }
-        if (!dtlLocationsHolder.getCities().isEmpty()) {
+        if (!dtlLocationsHolder.getLocations().isEmpty()) {
             adapter.addItem(getString(R.string.dtl_locations_select_popular));
-            adapter.addItems(dtlLocationsHolder.getCities());
+            adapter.addItems(dtlLocationsHolder.getLocations());
         }
     }
 

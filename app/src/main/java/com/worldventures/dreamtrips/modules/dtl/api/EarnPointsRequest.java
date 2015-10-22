@@ -5,10 +5,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 
 public class EarnPointsRequest extends DtlRequest<DtlTransactionResult> {
 
-    private int id;
+    private String id;
     private DtlTransaction request;
 
-    public EarnPointsRequest(int id, DtlTransaction request) {
+    public EarnPointsRequest(String id, DtlTransaction request) {
         super(DtlTransactionResult.class);
         this.id = id;
         this.request = request;

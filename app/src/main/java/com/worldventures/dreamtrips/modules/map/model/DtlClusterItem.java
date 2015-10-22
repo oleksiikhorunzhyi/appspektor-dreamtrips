@@ -6,9 +6,9 @@ import com.google.maps.android.clustering.ClusterItem;
 public class DtlClusterItem implements ClusterItem {
 
     private final LatLng latLng;
-    private final int id;
+    private final String id;
 
-    public DtlClusterItem(LatLng latLng, int id) {
+    public DtlClusterItem(LatLng latLng, String id) {
         this.latLng = latLng;
         this.id = id;
     }
@@ -18,7 +18,7 @@ public class DtlClusterItem implements ClusterItem {
         return latLng;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 }

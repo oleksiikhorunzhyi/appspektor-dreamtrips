@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.cell;
 import android.view.View;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -26,8 +27,13 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
 
     @Override
     protected void syncUIStateWithModel() {
-        city.setText(TextUtils.join(", ", getModelObject().getName(),
-                getModelObject().getCountryName()));
+        StringBuilder sb = new StringBuilder();
+        sb.append(getModelObject().getLongName());
+        Queryable.from(getModelObject().getWithinLocations()).forEachR(tempLocation -> {
+            sb.append(", ");
+            sb.append(tempLocation.getLongName());
+        });
+        city.setText(sb.toString());
     }
 
     @OnClick(R.id.dtlLocationCellRoot)

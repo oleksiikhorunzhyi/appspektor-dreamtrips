@@ -6,18 +6,15 @@ import java.util.ArrayList;
 
 public class GetDtlPlacesQuery extends DtlRequest<ArrayList<DtlPlace>> {
 
-    private int id;
+    private String id;
 
-    public GetDtlPlacesQuery(int id) {
+    public GetDtlPlacesQuery(String id) {
         super((Class<ArrayList<DtlPlace>>) new ArrayList<DtlPlace>().getClass());
         this.id = id;
     }
 
     @Override
     public ArrayList<DtlPlace> loadDataFromNetwork() {
-        ArrayList<DtlPlace> result = getService().getDtlPlaces(id).getPlaces();
-        if (result == null)
-            result = new ArrayList<>();
-        return result;
+        return getService().getDtlPlaces(id);
     }
 }

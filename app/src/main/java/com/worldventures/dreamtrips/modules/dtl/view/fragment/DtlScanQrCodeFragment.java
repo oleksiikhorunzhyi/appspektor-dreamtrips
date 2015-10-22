@@ -86,11 +86,11 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     public void setPlace(DtlPlace place) {
-        name.setText(place.getName());
+        name.setText(place.getDisplayName());
         category.setText(helper.getFirstCategoryName(place));
         address.setText(String.format("%s\n%s", place.getAddress1(), place.getAddress2()));
-        if (!place.getMediaList().isEmpty()) {
-            placeImage.setImageURI(Uri.parse(place.getMediaList().get(0).getMediaFileName()));
+        if (!place.getImages().isEmpty()) {
+            placeImage.setImageURI(Uri.parse(place.getImages().get(0).getImagePath()));
         }
     }
 

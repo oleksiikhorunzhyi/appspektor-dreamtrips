@@ -42,7 +42,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
+        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
 
         if (!TextUtils.isEmpty(dtlTransaction.getReceiptPhoto())) {
             view.hideScanButton();
@@ -66,7 +66,8 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
     public void verify() {
         dtlTransaction.setAmount(Double.parseDouble(amount));
-        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
+
+        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
         view.openVerify(dtlPlace, dtlTransaction);
     }
 
@@ -102,7 +103,6 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
     private void attachPhoto(String filePath) {
         view.attachReceipt(Uri.parse(filePath));
-        dtlTransaction.setReceiptPhoto(filePath);
 
         UploadTask uploadTask = new UploadTask();
         uploadTask.setFilePath(filePath);
@@ -111,7 +111,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
         dtlTransaction.setUploadTask(uploadTask);
 
-        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
 
         checkVerification();
     }

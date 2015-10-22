@@ -19,7 +19,7 @@ public class DtlSuggestMerchantFragment extends SuggestPlaceBaseFragment<DtlSugg
 
     @Override
     public void syncUiWithPlace(DtlPlace place) {
-        restaurantName.setText(place.getName());
+        restaurantName.setText(place.getDisplayName());
         restaurantName.setFocusable(false);
         restaurantName.setFocusableInTouchMode(false);
         restaurantName.setClickable(false);

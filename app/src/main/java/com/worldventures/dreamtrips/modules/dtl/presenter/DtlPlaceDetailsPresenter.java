@@ -38,7 +38,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     }
 
     private void processTransaction() {
-        dtlTransaction = snapper.getDtlTransaction(place.getId());
+        dtlTransaction = snapper.getDtlTransaction(place.getMerchantId());
 
         if (dtlTransaction != null
                 && !checkSucceedEvent()
@@ -47,7 +47,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
             // in the enrollment wizard(maybe needed in future)
             if (dtlTransaction.getUploadTask() != null)
                 photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-            snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
+            snapper.cleanDtlTransaction(place.getMerchantId(), dtlTransaction);
         }
         //
         view.setTransaction(dtlTransaction);
@@ -64,7 +64,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
     private boolean checkTransactionOutOfDate() {
         if (dtlTransaction != null && dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
-            snapper.deleteDtlTransaction(place.getId());
+            snapper.deleteDtlTransaction(place.getMerchantId());
             dtlTransaction = null;
             return true;
         } else return false;
@@ -76,7 +76,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         } else {
             dtlTransaction = new DtlTransaction();
             dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
-            snapper.saveDtlTransaction(place.getId(), dtlTransaction);
+
+            snapper.saveDtlTransaction(place.getMerchantId(), dtlTransaction);
             view.setTransaction(dtlTransaction);
         }
     }
@@ -84,7 +85,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     public void onEstimationClick(FragmentManager fm) {
         NavigationBuilder.create()
                 .forDialog(fm)
-                .data(new PointsEstimationDialogBundle(place.getId()))
+                .data(new PointsEstimationDialogBundle(place.getMerchantId()))
                 .move(Route.DTL_POINTS_ESTIMATION);
     }
 
@@ -99,9 +100,9 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            shareBundle.setText(context.getString(R.string.dtl_details_share_title, place.getName()));
+            shareBundle.setText(context.getString(R.string.dtl_details_share_title, place.getDisplayName()));
             shareBundle.setShareUrl(place.getWebsite());
-            DtlPlaceMedia media = Queryable.from(place.getMediaList()).firstOrDefault();
+            DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
             NavigationBuilder.create()
                     .with(activityRouter)

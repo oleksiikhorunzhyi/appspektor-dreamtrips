@@ -24,6 +24,6 @@ public class DtlPlaceCategoryDataInflater extends DtlPlaceDataInflater {
     @Override
     protected void onPlaceApply(DtlPlace place) {
         category.setText(helper.getFirstCategoryName(place));
-        pricing.setRating(place.getAvgPrice());
+        pricing.setRating(place.getBudget());
     }
 }

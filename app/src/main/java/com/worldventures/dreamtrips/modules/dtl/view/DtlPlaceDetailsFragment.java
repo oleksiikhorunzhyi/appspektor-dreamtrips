@@ -110,7 +110,7 @@ public class DtlPlaceDetailsFragment
     public void setPlace(DtlPlace place) {
         commonDataInflater.apply(place);
         categoryDataInflater.apply(place);
-        setType(place.getType());
+        setType(place.getPartnerStatus());
         setDescription(place.getDescription());
         setAdditional(place);
         setMap(place);
@@ -139,7 +139,7 @@ public class DtlPlaceDetailsFragment
 
     private void setMap(DtlPlace place) {
         destinationMap.getMapAsync(googleMap -> {
-            LatLng pos = new LatLng(place.getLocation().getLat(), place.getLocation().getLng());
+            LatLng pos = new LatLng(place.getCoordinates().getLat(), place.getCoordinates().getLng());
             googleMap.addMarker(new MarkerOptions()
                             .position(pos)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))

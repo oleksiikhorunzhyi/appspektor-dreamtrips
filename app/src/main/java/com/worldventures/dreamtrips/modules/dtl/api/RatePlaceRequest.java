@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.api;
 
 public class RatePlaceRequest extends DtlRequest<Void> {
 
-    private int id;
+    private String id;
     private int stars;
 
-    public RatePlaceRequest(int id, int stars) {
+    public RatePlaceRequest(String id, int stars) {
         super(Void.class);
         this.id = id;
         this.stars = stars;

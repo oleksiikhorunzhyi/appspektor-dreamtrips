@@ -47,10 +47,10 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void loadPlaces() {
-        doRequest(new GetDtlPlacesQuery(location.getId()),
+        doRequest(new GetDtlPlacesQuery(location.getLocationId()),
                 dtlPlaces -> {
                     Map<DtlPlaceType, Collection<DtlPlace>> byType =
-                            Queryable.from(dtlPlaces).groupToMap(DtlPlace::getType);
+                            Queryable.from(dtlPlaces).groupToMap(DtlPlace::getPartnerStatus);
                     for (DtlPlaceType type : byType.keySet()) {
                         updatePlacesByType(type, byType.get(type));
                     }

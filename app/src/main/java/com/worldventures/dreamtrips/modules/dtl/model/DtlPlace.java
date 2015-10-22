@@ -13,184 +13,104 @@ import java.util.List;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlPlace implements Parcelable {
 
-    private int id;
-    private String name;
-    private String state;
-    private String address1;
-    private String address2;
-    private String description;
-    private DtlPlaceType type;
-    private String website;
-    private String cityName;
-    private Location location;
-    private String phone;
-    private String zip;
-    private int avgPrice;
-    private List<DtlPlaceCategory> categories;
-    private List<DtlPlaceMedia> mediaList;
+    String merchantId;
+    String merchantType;
+    DtlPlaceType partnerStatus;
+    String legalName;
+    String displayName;
+    String address1;
+    String address2;
+    String city;
+    String state;
+    String country;
+    String zip;
+    Location coordinates;
+    String phone;
+    String email;
+    String description;
+    String website;
+    int budget;
+    float rating;
+    List<DtlPlaceAttribute> attributes;
+    List<DtlPlaceMedia> images;
 
     public DtlPlace() {
     }
 
-    public int getId() {
-        return id;
+    public String getMerchantId() {
+        return merchantId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getMerchantType() {
+        return merchantType;
     }
 
-    public String getName() {
-        return name;
+    public String getLegalName() {
+        return legalName;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getAddress1() {
         return address1;
     }
 
-    public void setAddress1(String address1) {
-        this.address1 = address1;
-    }
-
     public String getAddress2() {
         return address2;
     }
 
-    public void setAddress2(String address2) {
-        this.address2 = address2;
+    public String getCity() {
+        return city;
     }
 
-    public String getDescription() {
-        return description;
+    public String getState() {
+        return state;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public DtlPlaceType getType() {
-        return type;
-    }
-
-    public void setType(DtlPlaceType type) {
-        this.type = type;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public String getCountry() {
+        return country;
     }
 
     public String getZip() {
         return zip;
     }
 
-    public void setZip(String zip) {
-        this.zip = zip;
+    public Location getCoordinates() {
+        return coordinates;
     }
 
-    public int getAvgPrice() {
-        return avgPrice;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setAvgPrice(int avgPrice) {
-        this.avgPrice = avgPrice;
+    public String getEmail() {
+        return email;
     }
 
-    public List<DtlPlaceCategory> getCategories() {
-        return categories;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCategories(List<DtlPlaceCategory> categories) {
-        this.categories = categories;
+    public String getWebsite() {
+        return website;
     }
 
-    public List<DtlPlaceMedia> getMediaList() {
-        return mediaList;
+    public int getBudget() {
+        return budget;
     }
 
-    public void setMediaList(List<DtlPlaceMedia> mediaList) {
-        this.mediaList = mediaList;
+    public float getRating() {
+        return rating;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Misc
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DtlPlace dtlPlace = (DtlPlace) o;
-
-        return id == dtlPlace.id;
-
+    public List<DtlPlaceAttribute> getAttributes() {
+        return attributes;
     }
 
-    @Override
-    public int hashCode() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return "DtlPlace{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", state='" + state + '\'' +
-                ", address1='" + address1 + '\'' +
-                ", address2='" + address2 + '\'' +
-                ", description='" + description + '\'' +
-                ", type=" + type +
-                ", website='" + website + '\'' +
-                ", cityName='" + cityName + '\'' +
-                ", location=" + location +
-                ", phone='" + phone + '\'' +
-                ", zip='" + zip + '\'' +
-                ", avgPrice=" + avgPrice +
-                ", categories=" + categories +
-                ", mediaList=" + mediaList +
-                '}';
+    public List<DtlPlaceMedia> getImages() {
+        return images;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -198,21 +118,26 @@ public class DtlPlace implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected DtlPlace(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        state = in.readString();
+        merchantId = in.readString();
+        merchantType = in.readString();
+        legalName = in.readString();
+        displayName = in.readString();
         address1 = in.readString();
         address2 = in.readString();
-        description = in.readString();
-        type = (DtlPlaceType) in.readSerializable();
-        website = in.readString();
-        cityName = in.readString();
-        location = in.readParcelable(Location.class.getClassLoader());
-        phone = in.readString();
+        city = in.readString();
+        state = in.readString();
+        country = in.readString();
         zip = in.readString();
-        avgPrice = in.readInt();
-        categories = in.createTypedArrayList(DtlPlaceCategory.CREATOR);
-        mediaList = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
+        coordinates = in.readParcelable(Location.class.getClassLoader());
+        phone = in.readString();
+        email = in.readString();
+        description = in.readString();
+        website = in.readString();
+        budget = in.readInt();
+        rating = in.readFloat();
+        attributes = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
+        images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
+        partnerStatus = (DtlPlaceType) in.readSerializable();
     }
 
     public static final Creator<DtlPlace> CREATOR = new Creator<DtlPlace>() {
@@ -234,37 +159,51 @@ public class DtlPlace implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeString(state);
+        dest.writeString(merchantId);
+        dest.writeString(merchantType);
+        dest.writeString(legalName);
+        dest.writeString(displayName);
         dest.writeString(address1);
         dest.writeString(address2);
-        dest.writeString(description);
-        dest.writeSerializable(type);
-        dest.writeString(website);
-        dest.writeString(cityName);
-        dest.writeParcelable(location, flags);
-        dest.writeString(phone);
+        dest.writeString(city);
+        dest.writeString(state);
+        dest.writeString(country);
         dest.writeString(zip);
-        dest.writeInt(avgPrice);
-        dest.writeTypedList(categories);
-        dest.writeTypedList(mediaList);
+        dest.writeParcelable(coordinates, flags);
+        dest.writeString(phone);
+        dest.writeString(email);
+        dest.writeString(description);
+        dest.writeString(website);
+        dest.writeInt(budget);
+        dest.writeFloat(rating);
+        dest.writeTypedList(attributes);
+        dest.writeTypedList(images);
+        dest.writeSerializable(partnerStatus);
     }
 
+    public DtlPlaceType getPartnerStatus() {
+        return partnerStatus;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Filtering part
+    ///////////////////////////////////////////////////////////////////////////
+
     public boolean applyFilter(DtlFilterData filterObject, LatLng currentLocation) {
-        return checkPrice(filterObject.getMinPrice(), filterObject.getMaxPrice()) &&
-                checkLocation(filterObject.getMaxDistance(), currentLocation);
+        return checkPrice(filterObject.getMinPrice(), filterObject.getMaxPrice())
+                && checkLocation(filterObject.getMaxDistance(), currentLocation);
     }
 
     private boolean checkPrice(int minPrice, int maxPrice) {
-        return avgPrice >= minPrice && avgPrice <= maxPrice;
+        return budget >= minPrice && budget <= maxPrice;
     }
 
     private boolean checkLocation(int maxDistance, LatLng currentLocation) {
         float[] distance = new float[1];
-        android.location.Location.distanceBetween(location.getLat(), location.getLng(),
+        android.location.Location.distanceBetween(coordinates.getLat(), coordinates.getLng(),
                 currentLocation.latitude, currentLocation.longitude, distance);
         double distanceInMiles = 0.000621371d * distance[0];
         return distanceInMiles < maxDistance;
     }
+
 }

@@ -341,7 +341,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     public void openDetails(BucketItem bucketItem) {
         FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
 
-        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
+        Route detailsRoute = Route.FEED_ITEM_DETAILS;
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
             fragmentCompass.setSupportFragmentManager(getChildFragmentManager());

@@ -155,7 +155,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
         NavigationBuilder.create()
                 .with(activityRouter)
                 .data(new FeedItemDetailsBundle(getModelObject()))
-                .move(Route.FEED_ENTITY_DETAILS);
+                .move(Route.FEED_ITEM_DETAILS);
     }
 
     private void openPhoto() {

@@ -17,9 +17,11 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CommendableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
@@ -89,7 +91,7 @@ public enum Route {
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),
     COOKIE_POLICY(StaticInfoFragment.CookiePolicyFragment.class),
     PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
-    COMMENTS(CommentsFragment.class, R.string.comments_title),
+    COMMENTS(CommendableFragment.class, R.string.comments_title),
     POST_CREATE(PostFragment.class),
     PHOTO_EDIT(PhotoEditFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),
@@ -102,7 +104,9 @@ public enum Route {
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
     DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
-    FEED_ENTITY_DETAILS(FeedItemDetailsFragment.class, R.string.empty);
+    FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
+    FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
+    FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

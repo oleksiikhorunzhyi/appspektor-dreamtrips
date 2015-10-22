@@ -135,7 +135,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
     @Override
     public void openDetails(FeedItem feedItem) {
-        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
+        Route detailsRoute = Route.FEED_ITEM_DETAILS;
         FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(feedItem);
         if (isTabletLandscape()) {
             bundle.setSlave(true);

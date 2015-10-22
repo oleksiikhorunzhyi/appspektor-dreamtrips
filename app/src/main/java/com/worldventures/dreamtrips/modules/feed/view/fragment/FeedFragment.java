@@ -17,17 +17,14 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
-import com.worldventures.dreamtrips.modules.feed.view.util.IFeedTabletViewDelegate;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,8 +47,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     BadgeImageView friendsBadge;
 
-    @Inject
-    IFeedTabletViewDelegate feedTabletViewManager;
 
     private CirclesFilterPopupWindow filterPopupWindow;
 
@@ -59,10 +54,19 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         restorePostIfNeeded();
-        feedTabletViewManager.setRootView(rootView);
-        feedTabletViewManager.setOnUserClick(() -> getPresenter().onUserClick());
-        feedTabletViewManager.setOnCreatePostClick(this::openPost);
-        feedTabletViewManager.setOnFriendsMoreClick(this::openFriends);
+
+        if (isTabletLandscape()) {
+            fragmentCompass.removePost();
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setContainerId(R.id.additional_info_container);
+
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .data(new FeedAdditionalInfoBundle(getPresenter().getAccount()))
+                    .attach(Route.FEED_LIST_ADDITIONAL_INFO);
+            fabPost.setVisibility(View.GONE);
+        }
+
     }
 
     private void restorePostIfNeeded() {
@@ -157,19 +161,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         if (friendsBadge != null) {
             friendsBadge.setBadgeValue(count);
         }
-    }
-
-    @Override
-    public void setupAccount(User user) {
-        if (isTabletLandscape()) {
-            feedTabletViewManager.setUser(user, true);
-            fabPost.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void setupCloseFriends(List<User> friends) {
-        feedTabletViewManager.setCloseFriends(friends, this);
     }
 
 }

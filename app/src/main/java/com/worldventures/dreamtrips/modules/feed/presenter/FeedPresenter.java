@@ -30,10 +30,6 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.setupAccount(appSessionHolder.get().get().getUser());
-        
-        if (view.isTabletLandscape())
-            loadFriends();
     }
 
     @Override
@@ -82,19 +78,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         view.setRequestsCount(db.getFriendsRequestsCount());
     }
 
-    public void onUserClick() {
-        openUser(appSessionHolder.get().get().getUser());
-    }
-
-    private void loadFriends() {
-        doRequest(new GetFriendsQuery(createDefaultFilterCircle(), null, 0), view::setupCloseFriends);
-    }
-
     public interface View extends BaseFeedPresenter.View {
         void setRequestsCount(int count);
-
-        void setupAccount(User user);
-
-        void setupCloseFriends(List<User> friends);
     }
 }

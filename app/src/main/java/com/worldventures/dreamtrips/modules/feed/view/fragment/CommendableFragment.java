@@ -40,7 +40,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_comments)
-public class CommentsFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends BaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
+public class CommendableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends BaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
 
     public static final int LOAD_MORE_ITEMS_COUNT = 1;
     @InjectView(R.id.list)

@@ -11,7 +11,9 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
@@ -26,9 +28,11 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CommendableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
@@ -55,7 +59,7 @@ import de.greenrobot.event.EventBus;
 
                 EditCommentPresenter.class,
 
-                CommentsFragment.class,
+                CommendableFragment.class,
                 ComponentPresenter.class,
                 FeedItemDetailsFragment.class,
                 FeedItemDetailsPresenter.class,
@@ -73,7 +77,12 @@ import de.greenrobot.event.EventBus;
                 TextualPostDetailsFragment.class,
                 TextualPostDetailsPresenter.class,
 
-                FeedEntityDetailsCell.class
+                FeedEntityDetailsCell.class,
+
+                FeedListAdditionalInfoFragment.class,
+                FeedListAdditionalInfoPresenter.class,
+                FeedItemAdditionalInfoFragment.class,
+                FeedItemAdditionalInfoPresenter.class,
         },
         complete = false,
         library = true

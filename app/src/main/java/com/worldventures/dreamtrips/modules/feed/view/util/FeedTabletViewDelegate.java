@@ -150,7 +150,10 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     @Optional
     @OnClick(R.id.share_photo)
     void onSharePhotoClick() {
-        //TODO
+        //TODO open share photo. Now it's dummy
+        if (onCreatePostClick != null) {
+            onCreatePostClick.onClick();
+        }
     }
 
 

@@ -115,7 +115,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     public void openPost() {
         showPostContainer();
 
-        fragmentCompass.removePost();
         fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         //

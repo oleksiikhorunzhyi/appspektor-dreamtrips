@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
@@ -33,8 +34,6 @@ import com.worldventures.dreamtrips.modules.video.VideoModule;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 public abstract class BaseActivity extends InjectingActivity {
 
@@ -79,16 +78,27 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Override
     public void onBackPressed() {
-        try {
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() > 1) {
-                fm.popBackStack();
-            } else {
-                finish();
-            }
-        } catch (IllegalStateException e) {
-            Timber.w(e, "Problem on back pressed");
+        if (!checkChildFragments(getSupportFragmentManager())) {
+            super.onBackPressed();
+            topLevelBackStackPopped();
         }
+    }
+
+    private boolean checkChildFragments(FragmentManager fragmentManager) {
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment != null && fragment.isVisible()) {
+                FragmentManager childFm = fragment.getChildFragmentManager();
+                if (childFm.getBackStackEntryCount() > 0) {
+                    childFm.popBackStack();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected void topLevelBackStackPopped() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
     }
 
     @Override

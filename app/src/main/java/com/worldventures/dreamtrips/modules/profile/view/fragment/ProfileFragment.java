@@ -128,7 +128,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     public void openPost() {
         showPostContainer();
 
-        fragmentCompass.removePost();
         fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         //

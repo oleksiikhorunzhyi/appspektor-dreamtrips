@@ -53,10 +53,9 @@ public class RootComponentsProvider {
                 .firstOrDefault(c -> c.getFragmentClass().equals(fragmentClass));
     }
 
-    public ComponentDescription getComponent(FragmentManager fm, int backstackOffset) {
+    public ComponentDescription getComponent(FragmentManager fm) {
         int size = fm.getBackStackEntryCount();
-        int sizeWithOffset = size - backstackOffset;
-        for (int i = sizeWithOffset - 1; i >= 0; i--) {
+        for (int i = size - 1; i >= 0; i--) {
             ComponentDescription component = getComponentByKey(fm.getBackStackEntryAt(i).getName());
             if (component != null) {
                 return component;

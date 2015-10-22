@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsItemFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
@@ -102,7 +102,7 @@ public enum Route {
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
     DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
-    FEED_ENTITY_DETAILS(FeedDetailsItemFragment.class, R.string.empty);
+    FEED_ENTITY_DETAILS(FeedItemDetailsFragment.class, R.string.empty);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

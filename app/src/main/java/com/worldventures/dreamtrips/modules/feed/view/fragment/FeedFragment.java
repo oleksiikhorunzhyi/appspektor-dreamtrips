@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedTabletViewManager;
+import com.worldventures.dreamtrips.modules.feed.view.util.IFeedTabletViewDelegate;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -50,7 +50,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     BadgeImageView friendsBadge;
 
-    FeedTabletViewManager feedTabletViewManager;
+    @Inject
+    IFeedTabletViewDelegate feedTabletViewManager;
 
     private CirclesFilterPopupWindow filterPopupWindow;
 
@@ -58,7 +59,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         restorePostIfNeeded();
-        feedTabletViewManager = new FeedTabletViewManager(rootView);
+        feedTabletViewManager.setRootView(rootView);
         feedTabletViewManager.setOnUserClick(() -> getPresenter().onUserClick());
         feedTabletViewManager.setOnCreatePostClick(this::openPost);
         feedTabletViewManager.setOnFriendsMoreClick(this::openFriends);
@@ -77,20 +78,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     void onPostClicked() {
         openPost();
     }
-
-    @Optional
-    @OnClick(R.id.share_photo)
-    void onSharePhotoClick() {
-        //TODO
-    }
-
-
-    @Optional
-    @OnClick(R.id.user_cover)
-    void onUserClick() {
-        getPresenter().onUserClick();
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

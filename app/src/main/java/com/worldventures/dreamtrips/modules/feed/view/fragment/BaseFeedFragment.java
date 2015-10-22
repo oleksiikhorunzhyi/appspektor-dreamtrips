@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
@@ -136,7 +136,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     @Override
     public void openDetails(FeedItem feedItem) {
         Route detailsRoute = Route.FEED_ENTITY_DETAILS;
-        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(feedItem);
+        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(feedItem);
         if (isTabletLandscape()) {
             bundle.setSlave(true);
         }

@@ -5,17 +5,17 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
-public class FeedEntityDetailsBundle extends CommentsBundle implements Parcelable {
+public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable {
 
     FeedItem feedItem;
     boolean slave;
 
 
-    public FeedEntityDetailsBundle(FeedItem feedItem) {
+    public FeedItemDetailsBundle(FeedItem feedItem) {
         this(feedItem, false);
     }
 
-    public FeedEntityDetailsBundle(FeedItem feedItem, boolean slave) {
+    public FeedItemDetailsBundle(FeedItem feedItem, boolean slave) {
         super(feedItem.getItem());
         this.feedItem = feedItem;
         this.slave = slave;
@@ -52,19 +52,19 @@ public class FeedEntityDetailsBundle extends CommentsBundle implements Parcelabl
         dest.writeByte(slave ? (byte) 1 : (byte) 0);
     }
 
-    protected FeedEntityDetailsBundle(Parcel in) {
+    protected FeedItemDetailsBundle(Parcel in) {
         super(in);
         this.feedItem = in.readParcelable(FeedItem.class.getClassLoader());
         this.slave = in.readByte() != 0;
     }
 
-    public static final Creator<FeedEntityDetailsBundle> CREATOR = new Creator<FeedEntityDetailsBundle>() {
-        public FeedEntityDetailsBundle createFromParcel(Parcel source) {
-            return new FeedEntityDetailsBundle(source);
+    public static final Creator<FeedItemDetailsBundle> CREATOR = new Creator<FeedItemDetailsBundle>() {
+        public FeedItemDetailsBundle createFromParcel(Parcel source) {
+            return new FeedItemDetailsBundle(source);
         }
 
-        public FeedEntityDetailsBundle[] newArray(int size) {
-            return new FeedEntityDetailsBundle[size];
+        public FeedItemDetailsBundle[] newArray(int size) {
+            return new FeedItemDetailsBundle[size];
         }
     };
 }

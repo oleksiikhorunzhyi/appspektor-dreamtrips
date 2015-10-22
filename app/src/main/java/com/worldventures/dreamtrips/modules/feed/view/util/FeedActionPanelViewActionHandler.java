@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -38,7 +38,7 @@ public class FeedActionPanelViewActionHandler {
         });
 
         actionView.setOnCommentIconClickListener(feedItem -> {
-            navigationWrapper.navigate(Route.COMMENTS, new FeedEntityDetailsBundle(feedItem));
+            navigationWrapper.navigate(Route.COMMENTS, new FeedItemDetailsBundle(feedItem));
         });
 
         actionView.setOnShareClickListener(feedItem -> {

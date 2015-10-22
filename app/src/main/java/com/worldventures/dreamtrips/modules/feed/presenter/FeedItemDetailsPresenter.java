@@ -14,12 +14,12 @@ import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
-public class FeedDetailsItemPresenter extends BaseCommentPresenter<FeedDetailsItemPresenter.View> {
+public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetailsPresenter.View> {
 
     private UidItemDelegate uidItemDelegate;
     private FeedItem feedItem;
 
-    public FeedDetailsItemPresenter(FeedItem feedItem) {
+    public FeedItemDetailsPresenter(FeedItem feedItem) {
         super(feedItem.getItem());
         this.feedItem = feedItem;
         uidItemDelegate = new UidItemDelegate(this);
@@ -30,14 +30,14 @@ public class FeedDetailsItemPresenter extends BaseCommentPresenter<FeedDetailsIt
             feedEntity = feedEntityHolder.getItem();
             feedItem.setItem(feedEntity);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
-            view.updateHeader(feedItem);
+            view.updateFeedItem(feedItem);
         });
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.setHeader(feedItem);
+        view.setFeedItem(feedItem);
         loadFullEventInfo();
     }
 
@@ -59,7 +59,7 @@ public class FeedDetailsItemPresenter extends BaseCommentPresenter<FeedDetailsIt
         feedEntity.setLikesCount(currentCount);
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
         feedItem.setItem(feedEntity);
-        view.updateHeader(feedItem);
+        view.updateFeedItem(feedItem);
     }
 
     public void onEvent(LoadFlagEvent event) {
@@ -75,8 +75,8 @@ public class FeedDetailsItemPresenter extends BaseCommentPresenter<FeedDetailsIt
 
 
     public interface View extends BaseCommentPresenter.View {
-        void setHeader(FeedItem feedItem);
+        void setFeedItem(FeedItem feedItem);
 
-        void updateHeader(FeedItem feedItem);
+        void updateFeedItem(FeedItem feedItem);
     }
 }

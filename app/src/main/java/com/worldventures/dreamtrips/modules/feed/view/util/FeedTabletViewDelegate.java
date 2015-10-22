@@ -14,11 +14,9 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.view.cell.CloseFriendCell;
-import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.modules.membership.view.util.WrapContentLinearLayoutManager;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
-import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -28,7 +26,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public class FeedTabletViewManager {
+public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     private static final int CLOSE_FRIENDS_COUNT = 5;
 
     DecimalFormat df = new DecimalFormat("#0.00");
@@ -77,13 +75,19 @@ public class FeedTabletViewManager {
     ViewClickListener onCreatePostClick;
     ViewClickListener onFriendsMoreClick;
 
-    public FeedTabletViewManager(View view) {
+    public FeedTabletViewDelegate() {
+    }
+
+    @Override
+    public void setRootView(View view) {
         ButterKnife.inject(this, view);
         if (details != null) details.setVisibility(View.GONE);
         if (viewProfile != null) viewProfile.setVisibility(View.GONE);
         if (closeFriends != null) closeFriends.setVisibility(View.GONE);
+
     }
 
+    @Override
     public void setUser(User user, boolean withDetails) {
         if (user != null) {
             userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
@@ -101,6 +105,7 @@ public class FeedTabletViewManager {
 
     }
 
+    @Override
     public void setCloseFriends(List<User> friends, Injector injector) {
         if (friends != null && friends.size() > 0) {
             closeFriends.setVisibility(View.VISIBLE);
@@ -142,14 +147,24 @@ public class FeedTabletViewManager {
     }
 
 
+    @Optional
+    @OnClick(R.id.share_photo)
+    void onSharePhotoClick() {
+        //TODO
+    }
+
+
+    @Override
     public void setOnUserClick(ViewClickListener onUserClick) {
         this.onUserClick = onUserClick;
     }
 
+    @Override
     public void setOnCreatePostClick(ViewClickListener onCreatePostClick) {
         this.onCreatePostClick = onCreatePostClick;
     }
 
+    @Override
     public void setOnFriendsMoreClick(ViewClickListener onFriendsMoreClick) {
         this.onFriendsMoreClick = onFriendsMoreClick;
     }

@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -154,7 +154,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     private void openDetails() {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .data(new FeedEntityDetailsBundle(getModelObject()))
+                .data(new FeedItemDetailsBundle(getModelObject()))
                 .move(Route.FEED_ENTITY_DETAILS);
     }
 

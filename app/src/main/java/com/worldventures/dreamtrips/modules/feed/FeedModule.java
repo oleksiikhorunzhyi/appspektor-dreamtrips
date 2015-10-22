@@ -8,9 +8,10 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsItemPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
@@ -26,13 +27,16 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentsFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsItemFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
+import com.worldventures.dreamtrips.modules.feed.view.util.FeedTabletViewDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.IFeedTabletViewDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.MockFeedTabletViewDelegate;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,8 +57,8 @@ import de.greenrobot.event.EventBus;
 
                 CommentsFragment.class,
                 ComponentPresenter.class,
-                FeedDetailsItemFragment.class,
-                FeedDetailsItemPresenter.class,
+                FeedItemDetailsFragment.class,
+                FeedItemDetailsPresenter.class,
                 CommentCell.class,
                 BaseCommentPresenter.class,
                 PostPresenter.class,
@@ -98,6 +102,13 @@ public class FeedModule {
     @Provides
     FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(ActivityRouter activityRouter, @Global EventBus eventBus) {
         return new FeedActionPanelViewActionHandler(activityRouter, eventBus);
+    }
+
+
+    @Provides
+    IFeedTabletViewDelegate provideFeedTabletViewManager(Presenter.TabletAnalytic tabletAnalytic) {
+        if (tabletAnalytic.isTabletLandscape()) return new FeedTabletViewDelegate();
+        return new MockFeedTabletViewDelegate();
     }
 
 }

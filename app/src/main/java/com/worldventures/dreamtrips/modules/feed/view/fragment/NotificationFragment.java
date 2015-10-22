@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -80,7 +81,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        friendsBadge = (BadgeImageView) menu.findItem(R.id.action_friend_requests).getActionView();
+        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
         friendsBadge.setOnClickListener(v ->
                 NavigationBuilder.create()
                         .with(activityRouter)

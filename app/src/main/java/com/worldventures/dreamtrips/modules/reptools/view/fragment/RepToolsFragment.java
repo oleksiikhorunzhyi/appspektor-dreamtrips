@@ -63,7 +63,6 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
         pager.addOnPageChangeListener(this);
 
         tabs.setupWithPagerBadged(pager);
-        TrackingHelper.viewRepToolsTrainingVideos();
     }
 
     @Override
@@ -83,12 +82,6 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
         eventBus.post(new ScreenChangedEvent());
 
         Fragment tab = adapter.getItem(position);
-        if (tab instanceof TrainingVideosFragment) {
-            TrackingHelper.viewRepToolsTrainingVideos();
-        }
-        if (tab instanceof SuccessStoryListFragment) {
-            TrackingHelper.actionRepToolsSuccessStories(TrackingHelper.ATTRIBUTE_LIST);
-        }
         if (tab instanceof InviteFragment) {
             TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_VIEW);
         }

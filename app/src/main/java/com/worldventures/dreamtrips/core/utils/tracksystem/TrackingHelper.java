@@ -397,8 +397,10 @@ public class TrackingHelper {
     public static final String ACTION_TERMS_PRIVACY = "terms-privacy";
     public static final String ACTION_TERMS_SERVICE = "terms_service";
     public static final String ACTION_TERMS_COOKIE = "terms-cookie";
-    public static final String ACTION_REP_TOOLS_SUCCESS_STORIES = "rep_tools:success_stories";
-    public static final String ACTION_REP_TOOLS_TRAINING_VIDEOS = "rep_tools:training_videos";
+    public static final String ACTION_REP_TOOLS_SUCCESS_STORY = "rep_tools:success_story";
+    public static final String ACTION_REP_TOOLS_TRAINING_VIDEO = "rep_tools:training_video";
+    public static final String ACTION_REP_TOOLS_REP_ENROLLMENT = "rep_tools:rep_enrollment";
+    public static final String ACTION_REP_TOOLS_INVITE_SHARE = "rep_tools:invite_share";
 
     public static final String ATTRIBUTE_LOGIN = "login";
     public static final String ATTRIBUTE_LOGIN_ERROR = "login_error";
@@ -448,6 +450,10 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_LOADED = "loaded";
     public static final String ATTRIBUTE_LOADING_ERROR = "loading_error";
     public static final String ATTRIBUTE_ADD_CONTACT = "add_contact";
+    public static final String ATTRIBUTE_SHOW_ALL = "show_all";
+    public static final String ATTRIBUTE_SHOW_FAVORITES = "show_favorites";
+    public static final String ATTRIBUTE_FACEBOOK = "facebook";
+    public static final String ATTRIBUTE_TWITTER = "twitter";
 
     public static void setUserId(String userId) {
         HashMap<String, String> headerData = new HashMap<>(1);
@@ -637,18 +643,43 @@ public class TrackingHelper {
 
     //--------------------------------Rep Tools--------------------------------//
 
-    public static void actionRepToolsSuccessStories(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LIST})
-                                                    String eventType) {
-        sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_SUCCESS_STORIES, eventType);
+    public static void applyFilterRepTools(@MagicConstant(stringValues = {ATTRIBUTE_SHOW_ALL, ATTRIBUTE_SHOW_FAVORITES})
+                                         String filterCategory){
+        sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_SUCCESS_STORY, filterCategory);
     }
 
-    public static void viewRepToolsTrainingVideos() {
-        sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_TRAINING_VIDEOS, ATTRIBUTE_LIST);
+    public static void viewSuccessStory(String storyId) {
+        Map data = new HashMap<>();
+        data.put("story_id", storyId);
+        data.put(ATTRIBUTE_VIEW, "1");
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
+    }
+
+    public static void shareSuccessStory(@MagicConstant(stringValues = {ATTRIBUTE_FACEBOOK, ATTRIBUTE_TWITTER})
+                                         String socialNet, String storyId){
+        Map data = new HashMap<>();
+        data.put(socialNet, storyId);
+        data.put(ATTRIBUTE_SHARE, "1");
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
+    }
+
+    public static void favoriteSuccessStory(String storyId){
+        Map data = new HashMap<>();
+        data.put(ATTRIBUTE_FAVORITE, storyId);
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
+    }
+
+    public static void actionRepToolsTrainingVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
+                                                   String action, String videoId){
+        Map data = new HashMap<>();
+        data.put("video_id", videoId);
+        data.put(action, "1");
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_TRAINING_VIDEO, data);
     }
 
     public static void actionRepToolsInviteShare(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_ADD_CONTACT})
                                                  String eventType) {
-        sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_SUCCESS_STORIES, eventType);
+        sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_INVITE_SHARE, eventType);
     }
 
     //------------------------------ FAQ --------------------------------//

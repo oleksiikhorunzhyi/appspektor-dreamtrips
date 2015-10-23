@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.video.event.MemberVideoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -100,6 +102,10 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     public void onEvent(LanguageClickedEvent event) {
         view.showDialog();
+    }
+
+    public void onEvent(MemberVideoAnalyticEvent event) {
+        TrackingHelper.actionRepToolsTrainingVideo(event.getActionAttribute(), event.getVideoId());
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
@@ -38,6 +39,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @OnClick(R.id.iv_like)
     public void onLike() {
+        TrackingHelper.favoriteSuccessStory(story.getUrl());
         getPresenter().like(story);
     }
 
@@ -72,6 +74,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         }
 
         webView.getSettings().setUseWideViewPort(true);
+        TrackingHelper.viewSuccessStory(story.getUrl());
     }
 
     @Override
@@ -105,8 +108,10 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
                 .items(R.array.share_dialog_items)
                 .itemsCallback((dialog, view, which, text) -> {
                     if (which == 0) {
+                        TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_FACEBOOK, story.getUrl());
                         getPresenter().onFbShare(story);
                     } else {
+                        TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_TWITTER, story.getUrl());
                         getPresenter().onTwitterShare(story);
                     }
                 }).show();

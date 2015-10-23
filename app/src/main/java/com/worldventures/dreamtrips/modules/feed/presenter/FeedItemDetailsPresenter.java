@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -16,22 +17,15 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetailsPresenter.View> {
 
-    private UidItemDelegate uidItemDelegate;
     private FeedItem feedItem;
+    //
+    private UidItemDelegate uidItemDelegate;
+    private WeakHandler handler = new WeakHandler();
 
     public FeedItemDetailsPresenter(FeedItem feedItem) {
         super(feedItem.getItem());
         this.feedItem = feedItem;
         uidItemDelegate = new UidItemDelegate(this);
-    }
-
-    private void loadFullEventInfo() {
-        doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
-            feedEntity = feedEntityHolder.getItem();
-            feedItem.setItem(feedEntity);
-            eventBus.post(new FeedEntityChangedEvent(feedEntity));
-            view.updateFeedItem(feedItem);
-        });
     }
 
     @Override
@@ -41,6 +35,27 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
         loadFullEventInfo();
     }
 
+    @Override
+    public void dropView() {
+        super.dropView();
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    private void loadFullEventInfo() {
+        doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
+            FeedEntity freshItem = feedEntityHolder.getItem();
+            freshItem.setFirstLikerName(feedEntity.getFirstLikerName());
+            feedEntity = freshItem;
+            feedItem.setItem(feedEntity);
+            eventBus.post(new FeedEntityChangedEvent(feedEntity));
+        });
+    }
+
+    public void onEvent(FeedEntityChangedEvent event) {
+        if (event.getFeedEntity().equals(feedItem.getItem())) {
+            view.updateFeedItem(feedItem);
+        }
+    }
 
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {

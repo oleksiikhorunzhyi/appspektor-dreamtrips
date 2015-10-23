@@ -184,9 +184,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     private void onLikersLoaded(List<User> users) {
         if (users != null && !users.isEmpty()) {
-            feedEntity.setFirstUserLikedItem(users.get(0).getFullName());
+            feedEntity.setFirstLikerName(users.get(0).getFullName());
         } else {
-            feedEntity.setFirstUserLikedItem(null);
+            feedEntity.setFirstLikerName(null);
         }
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }

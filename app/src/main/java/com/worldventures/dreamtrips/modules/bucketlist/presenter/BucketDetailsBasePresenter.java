@@ -160,7 +160,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                     .position(photos.indexOf(selectedPhoto))
                     .type(TripImagesListFragment.Type.FIXED_LIST)
                     .fixedList(photos)
-                    .foreign(bucketItem.getUser().getId() != appSessionHolder.get().get().getUser().getId())
+                    .foreign(bucketItem.getOwner().getId() != appSessionHolder.get().get().getUser().getId())
                     .build();
 
             view.openFullscreen(data);

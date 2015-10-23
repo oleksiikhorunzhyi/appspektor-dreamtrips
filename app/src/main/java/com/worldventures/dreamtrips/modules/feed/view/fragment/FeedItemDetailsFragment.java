@@ -5,23 +5,22 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
 
 @Layout(R.layout.fragment_comments_with_details)
 public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetailsPresenter, FeedItemDetailsBundle> implements FeedItemDetailsPresenter.View {
 
-    private static final int FEED_DETAILS_COUNT = 1;
-
-
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-    }
+    private FragmentCompass childCompass;
 
     @Override
     protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -29,33 +28,40 @@ public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetails
     }
 
     @Override
-    public void updateFeedItem(FeedItem feedItem) {
-        adapter.replaceItem(0, feedItem);
-        adapter.notifyDataSetChanged();
-        if (isTabletLandscape()) {
-            fragmentCompass.removePost();
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.additional_info_container);
-
-            NavigationBuilder.create()
-                    .with(fragmentCompass)
-                    .data(new FeedAdditionalInfoBundle(feedItem.getItem().getUser()))
-                    .attach(Route.FEED_ITEM_ADDITIONAL_INFO);
-        }
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        childCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.comments_additional_info_container);
+        childCompass.setSupportFragmentManager(getChildFragmentManager());
+        childCompass.disableBackStack();
+        //
+        adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
+        adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
     }
 
     @Override
     public void setFeedItem(FeedItem feedItem) {
         adapter.addItem(0, feedItem);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(0);
     }
 
-    protected int getHeaderCount() {
-        return super.getHeaderCount() + FEED_DETAILS_COUNT;
+    @Override
+    public void updateFeedItem(FeedItem feedItem) {
+        adapter.updateItem(feedItem);
+        if (isTabletLandscape() && childCompass.empty()) {
+            NavigationBuilder.create()
+                    .with(childCompass)
+                    .data(new FeedAdditionalInfoBundle(feedItem.getItem().getOwner()))
+                    .move(Route.FEED_ITEM_ADDITIONAL_INFO);
+        }
+    }
+
+    @Override
+    protected int getAdditionalItemsCount() {
+        return super.getAdditionalItemsCount() + 1;
     }
 
     @Override
     protected int getLoadMorePosition() {
-        return 1;
+       return super.getLoadMorePosition() + 1;
     }
 }

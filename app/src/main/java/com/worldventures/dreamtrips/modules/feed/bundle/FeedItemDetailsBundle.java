@@ -10,7 +10,6 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
     FeedItem feedItem;
     boolean slave;
 
-
     public FeedItemDetailsBundle(FeedItem feedItem) {
         this(feedItem, false);
     }
@@ -21,7 +20,6 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
         this.slave = slave;
 
     }
-
 
     public FeedItem getFeedItem() {
         return feedItem;

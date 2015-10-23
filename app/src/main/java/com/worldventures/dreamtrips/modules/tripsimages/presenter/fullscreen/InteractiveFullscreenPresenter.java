@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDel
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -98,7 +98,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     public void onCommentsAction() {
         new NavigationWrapperFactory()
                 .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, view)
-                .navigate(Route.COMMENTS, new FeedItemDetailsBundle(FeedItem.create(feedEntity, feedEntity.getUser()), false));
+                .navigate(Route.COMMENTS, new CommentsBundle(feedEntity, false));
 
     }
 
@@ -116,7 +116,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     protected boolean isFlagVisible() {
-        return photo.getUser() != null && getAccount().getId() != photo.getUser().getId();
+        return photo.getOwner() != null && getAccount().getId() != photo.getOwner().getId();
     }
 
     @Override
@@ -126,7 +126,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     protected boolean isEditVisible() {
-        return photo.getUser() != null && getAccount().getId() == photo.getUser().getId();
+        return photo.getOwner() != null && getAccount().getId() == photo.getOwner().getId();
     }
 
     @Override

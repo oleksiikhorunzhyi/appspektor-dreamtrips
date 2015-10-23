@@ -339,7 +339,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void openDetails(BucketItem bucketItem) {
-        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
+        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()));
 
         Route detailsRoute = Route.FEED_ITEM_DETAILS;
         if (isTabletLandscape()) {

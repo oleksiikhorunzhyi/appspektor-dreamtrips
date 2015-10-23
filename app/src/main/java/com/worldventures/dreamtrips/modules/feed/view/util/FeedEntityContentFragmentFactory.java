@@ -36,8 +36,9 @@ public class FeedEntityContentFragmentFactory {
                 //now is not used.
                 break;
             case BUCKET_LIST_ITEM:
-                User user = holder.getItem().getUser();
-                route = bucketRouteCreator.createRoute(user != null ? user.getId() : null);
+                User user = holder.getItem().getOwner();
+                int userId = user != null ? user.getId() : 0;
+                route = bucketRouteCreator.createRoute(userId);
                 BucketBundle bucketBundle = new BucketBundle();
                 BucketItem item = (BucketItem) holder.getItem();
                 bucketBundle.setType(item.getType());

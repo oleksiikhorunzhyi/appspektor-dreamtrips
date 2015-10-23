@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
-public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
+public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
 
     @InjectView(R.id.photo)
     SimpleDraweeView photo;

@@ -18,11 +18,15 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import timber.log.Timber;
 
-public class FeedItemHeaderHelper {
+public class FeedItemCommonDataHelper {
+
+    Context context;
+
     @InjectView(R.id.feed_header_avatar)
     SimpleDraweeView avatar;
     @InjectView(R.id.feed_header_text)
@@ -48,14 +52,19 @@ public class FeedItemHeaderHelper {
     @InjectView(R.id.edit_feed_item)
     ImageView editFeedItem;
 
-    public FeedItemHeaderHelper() {
+    public FeedItemCommonDataHelper(Context context) {
+        this.context = context;
     }
 
-    public void set(FeedItem feedItem, Context context, int accountId, boolean forDetails) {
+    public void attachView(View view) {
+        ButterKnife.inject(this, view);
+    }
+
+    public void set(FeedItem feedItem, int accountId, boolean forDetails) {
         Resources res = context.getResources();
         FeedEntity entity = feedItem.getItem();
         try {
-            User user = (forDetails || !feedItem.getLinks().hasUsers()) ? entity.getUser() : feedItem.getLinks().getUsers().get(0);
+            User user = (forDetails || !feedItem.getLinks().hasUsers()) ? entity.getOwner() : feedItem.getLinks().getUsers().get(0);
             if (user != null) {
                 avatar.setImageURI(user.getAvatar() == null ? null : Uri.parse(user.getAvatar().getThumb()));
             }
@@ -105,7 +114,7 @@ public class FeedItemHeaderHelper {
                 comments.setEnabled(true);
             }
 
-            boolean isCurrentUser = entity.getUser() != null && entity.getUser().getId() == accountId;
+            boolean isCurrentUser = entity.getOwner() != null && entity.getOwner().getId() == accountId;
             boolean isEditableItem = feedItem.getType() == FeedEntityHolder.Type.POST
                     || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM
                     || feedItem.getType() == FeedEntityHolder.Type.PHOTO;

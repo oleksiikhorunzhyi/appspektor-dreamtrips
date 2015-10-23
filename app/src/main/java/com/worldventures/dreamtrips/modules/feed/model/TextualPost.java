@@ -15,4 +15,9 @@ public class TextualPost extends BaseFeedEntity {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String place() {
+        return null;
+    }
 }

@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.TextualPostDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
@@ -77,7 +77,7 @@ import de.greenrobot.event.EventBus;
                 TextualPostDetailsFragment.class,
                 TextualPostDetailsPresenter.class,
 
-                FeedEntityDetailsCell.class,
+                FeedItemDetailsCell.class,
 
                 FeedListAdditionalInfoFragment.class,
                 FeedListAdditionalInfoPresenter.class,

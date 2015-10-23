@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import java.util.List;
 
@@ -112,8 +111,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     private void updateBucketItem(BucketItem updatedItem) {
         BucketItem tempItem = bucketItem;
         bucketItem = updatedItem;
-        if (bucketItem.getUser() == null) {
-            bucketItem.setUser(tempItem.getUser());
+        if (bucketItem.getOwner() == null) {
+            bucketItem.setOwner(tempItem.getOwner());
         }
         bucketItemManager.saveSingleBucketItem(bucketItem);
     }

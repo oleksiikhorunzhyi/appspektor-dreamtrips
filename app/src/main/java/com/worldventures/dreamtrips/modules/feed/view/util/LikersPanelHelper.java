@@ -14,7 +14,6 @@ import timber.log.Timber;
 public class LikersPanelHelper {
 
     public void setup(TextView panel, FeedEntity feedEntity) {
-        String firstLiker = feedEntity.getFirstUserLikedItem();
         int likesCount = feedEntity.getLikesCount();
         if (likesCount == 0) {
             panel.setVisibility(View.INVISIBLE);
@@ -28,8 +27,13 @@ public class LikersPanelHelper {
             appeal = panel.getResources().getString(R.string.you);
         } else {
             stringRes = R.plurals.users_who_liked_with_name;
-            appeal = firstLiker;
+            appeal = feedEntity.getFirstLikerName();
         }
+        //
+        if (appeal == null) {
+            return; // not ready to be shown
+        }
+        //
         Spanned text = null;
         try {
             text = Html.fromHtml(new PluralResources(panel.getResources()).getQuantityString(stringRes, likesCount - 1, appeal, likesCount - 1));

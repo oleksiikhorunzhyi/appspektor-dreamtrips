@@ -20,14 +20,11 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.EditCommentViewHolder;
 
@@ -44,7 +41,7 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
 
     public static final int LOAD_MORE_ITEMS_COUNT = 1;
     @InjectView(R.id.list)
-    protected EmptyRecyclerView commentsList;
+    protected EmptyRecyclerView recyclerView;
     @InjectView(R.id.input)
     protected EditText input;
     @InjectView(R.id.post)
@@ -92,22 +89,20 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        stateDelegate.setRecyclerView(commentsList);
+        stateDelegate.setRecyclerView(recyclerView);
 
         adapter = new BaseArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
-        adapter.registerCell(PostFeedItem.class, FeedEntityDetailsCell.class);
-        adapter.registerCell(BucketFeedItem.class, FeedEntityDetailsCell.class);
-
 
         loadMore = new LoadMore();
         loadMore.setVisible(false);
         adapter.addItem(0, loadMore);
 
         layout = new LinearLayoutManager(getActivity());
-        commentsList.setLayoutManager(layout);
-        commentsList.setAdapter(adapter);
+        recyclerView.setLayoutManager(layout);
+        recyclerView.setAdapter(adapter);
+        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
 
         if (getArgs().isOpenKeyboard()) {
             SoftInputUtil.showSoftInputMethod(input);
@@ -139,7 +134,7 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
 
     @Override
     public void addComments(List<Comment> commentList) {
-        adapter.addItems(getHeaderCount(), commentList);
+        adapter.addItems(getAdditionalItemsCount(), commentList);
     }
 
     @Override
@@ -150,7 +145,7 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
         input.setText(null);
         adapter.addItem(comment);
         adapter.notifyItemInserted(adapter.getItemCount());
-        commentsList.smoothScrollToPosition(layout.getItemCount());
+        recyclerView.smoothScrollToPosition(layout.getItemCount());
         SoftInputUtil.hideSoftInputMethod(input);
     }
 
@@ -232,7 +227,7 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
         return 0;
     }
 
-    protected int getHeaderCount() {
+    protected int getAdditionalItemsCount() {
         return LOAD_MORE_ITEMS_COUNT;
     }
 

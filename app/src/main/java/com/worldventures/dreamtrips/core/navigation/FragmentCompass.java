@@ -83,6 +83,10 @@ public class FragmentCompass {
         remove(Route.POST_CREATE.getClazzName());
     }
 
+    public void remove(Route route) {
+        remove(route.getClazzName());
+    }
+
     public void remove(String name) {
         if (validateState()) {
             FragmentManager fragmentManager = supportFragmentManager;
@@ -190,6 +194,10 @@ public class FragmentCompass {
 
     public BaseFragment getCurrentFragment() {
         return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
+    }
+
+    public boolean empty() {
+        return getCurrentFragment() == null;
     }
 
     protected void clearBackStack() {

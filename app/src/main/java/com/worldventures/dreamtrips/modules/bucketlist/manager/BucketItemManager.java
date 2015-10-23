@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -80,7 +81,7 @@ public class BucketItemManager {
         }
 
         dreamSpiceManager.execute(getBucketListRequest(user.getId()), items -> {
-            Queryable.from(items).forEachR(item -> item.setUser(user));
+            Queryable.from(items).forEachR(item -> item.setOwner(user));
             saveBucketItems(items);
             eventBus.post(new BucketItemsLoadedEvent());
         }, failureListener);
@@ -104,9 +105,12 @@ public class BucketItemManager {
     }
 
     public void saveSingleBucketItem(BucketItem bucketItem) {
-        List<BucketItem> items = new ArrayList<>();
-        items.add(bucketItem);
-        snapper.saveBucketList(items, bucketItem.getType(), bucketItem.getUser().getId());
+        List<BucketItem> items = Collections.singletonList(bucketItem);
+        snapper.saveBucketList(items, bucketItem.getType(), bucketItem.getOwner().getId());
+    }
+
+    public BucketItem getSingleBucketItem(BucketType type, String uid, int owner) {
+        return Queryable.from(snapper.readBucketList(type.getName(), owner)).firstOrDefault(item -> item.getUid().equals(uid));
     }
 
     public void saveBucketItems(List<BucketItem> bucketItems, BucketType type) {
@@ -332,8 +336,8 @@ public class BucketItemManager {
         int newPosition = (oldItem.isDone() && !updatedItem.isDone()) ? 0 : oldPosition;
         tempItems.remove(oldPosition);
         tempItems.add(newPosition, updatedItem);
-        if (updatedItem.getUser() == null) {
-            updatedItem.setUser(oldItem.getUser());
+        if (updatedItem.getOwner() == null) {
+            updatedItem.setOwner(oldItem.getOwner());
         }
         saveBucketItems(tempItems, bucketType);
 

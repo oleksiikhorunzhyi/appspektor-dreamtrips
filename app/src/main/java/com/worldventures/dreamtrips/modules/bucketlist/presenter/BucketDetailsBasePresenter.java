@@ -46,18 +46,20 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Inject
     BucketItemManager bucketItemManager;
-
     @Inject
     protected SnappyRepository db;
 
     protected BucketItem.BucketType type;
     protected String bucketItemId;
+    protected int ownerId;
+
     protected BucketItem bucketItem;
 
     public BucketDetailsBasePresenter(BucketBundle bundle) {
         super();
         type = bundle.getType();
         bucketItemId = bundle.getBucketItemUid();
+        ownerId = bundle.getOwnerId();
     }
 
     @Override
@@ -82,8 +84,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         syncUI(tasks);
     }
 
-    private void restoreBucketItem() {
-        bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
+    protected void restoreBucketItem() {
+        if (ownerId == 0) {
+            bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
+        } else {
+            bucketItem = getBucketItemManager().getSingleBucketItem(type, bucketItemId, ownerId);
+        }
     }
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {

@@ -85,7 +85,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
 
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
         adapter.registerCell(String.class, DtlHeaderCell.class);

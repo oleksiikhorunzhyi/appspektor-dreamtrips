@@ -61,7 +61,7 @@ public class DtlPlacesListFragment
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlPlace.class, DtlPlaceCell.class);
         recyclerView.setAdapter(adapter);
         recyclerView.setEmptyView(emptyView);

@@ -9,20 +9,20 @@ import java.util.ArrayList;
 
 public class SearchUsersQuery extends Query<ArrayList<User>> {
 
-    public static final int PER_PAGE = 20;
-
     private String query;
-    private int offset;
+    private int page;
+    private int perPage;
 
-    public SearchUsersQuery(String query, int offset) {
+    public SearchUsersQuery(String query, int page, int perPage) {
         super((Class<ArrayList<User>>) new ArrayList<User>().getClass());
         this.query = query;
-        this.offset = offset;
+        this.page = page;
+        this.perPage = perPage;
     }
 
     @Override
     public ArrayList<User> loadDataFromNetwork() throws Exception {
         if (TextUtils.isEmpty(query) || query.length() < 3) return new ArrayList<>();
-        return getService().searchUsers(query, offset, PER_PAGE);
+        return getService().searchUsers(query, page, perPage);
     }
 }

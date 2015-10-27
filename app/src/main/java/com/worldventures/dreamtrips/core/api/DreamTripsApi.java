@@ -234,10 +234,13 @@ public interface DreamTripsApi {
     @GET("/api/social/friends")
     ArrayList<User> getFriends(@Query("circle_id") String circle_id,
                                @Query("query") String query,
-                               @Query("offset") int offset);
+                               @Query("page") int page,
+                               @Query("per_page") int perPage);
 
     @GET("/api/social/friends")
-    ArrayList<User> getAllFriends(@Query("query") String query, @Query("offset") int offset);
+    ArrayList<User> getAllFriends(@Query("query") String query,
+                                  @Query("page") int page,
+                                  @Query("per_page") int perPage);
 
     @GET("/api/social/users")
     ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);

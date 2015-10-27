@@ -31,8 +31,6 @@ import javax.inject.Inject;
 
 public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View> extends Presenter<T> {
 
-    private static final int PER_PAGE = 20;
-
     private int previousTotal = 0;
     private boolean loading = true;
 
@@ -96,10 +94,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             previousTotal = totalItemCount;
         }
         if (!loading
-                && lastVisible == totalItemCount - 1
-                && totalItemCount % PER_PAGE == 0) {
+                && lastVisible >= totalItemCount - 1
+                && totalItemCount % getPerPageCount() == 0) {
             view.startLoading();
-            doRequest(getUserListQuery(users.size() / PER_PAGE + 1), this::onUsersAdded);
+            doRequest(getUserListQuery(users.size() / getPerPageCount() + 1), this::onUsersAdded);
             loading = true;
         }
     }
@@ -229,6 +227,11 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                     user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                     userStateChanged(user);
                 });
+    }
+
+
+    protected int getPerPageCount() {
+        return 30;
     }
 
     public interface View extends Presenter.View {

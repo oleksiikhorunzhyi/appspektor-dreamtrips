@@ -33,37 +33,42 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_normal">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_small">
 
                 <TextView
+                    android:id="@+id/circle_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/feed_close_friends"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    tools:text="@string/feed_close_friends"/>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/lv_close_friends"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
 
+                <ImageView
+                    android:id="@+id/circle_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:nestedScrollingEnabled="false"
+                    android:padding="@dimen/spacing_tiny"
+                    android:src="@drawable/ic_success_story_filters_normal"/>
             </LinearLayout>
 
-            <View
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/lv_close_friends"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-
-            <TextView
-                android:id="@+id/tv_see_more"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/grey_lighter"
-                android:gravity="center"
-                android:padding="@dimen/spacing_tiny"
-                android:text="@string/see_more"
-                android:textSize="18sp"/>
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:layout_marginLeft="@dimen/spacing_small"
+                android:layout_marginRight="@dimen/spacing_small"/>
 
         </LinearLayout>
 

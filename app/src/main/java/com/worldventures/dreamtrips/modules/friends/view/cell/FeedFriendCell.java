@@ -16,7 +16,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_close_friend)
-public class CloseFriendCell extends AbstractCell<User> {
+public class FeedFriendCell extends AbstractCell<User> {
 
     @InjectView(R.id.sdv_avatar)
     SimpleDraweeView sdvUserAvatar;
@@ -25,7 +25,7 @@ public class CloseFriendCell extends AbstractCell<User> {
     @InjectView(R.id.tv_mutual)
     TextView tvMutual;
 
-    public CloseFriendCell(View view) {
+    public FeedFriendCell(View view) {
         super(view);
     }
 

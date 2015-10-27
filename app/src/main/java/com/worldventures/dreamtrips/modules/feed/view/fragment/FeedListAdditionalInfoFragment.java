@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.List;
 
@@ -25,16 +26,28 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
         feedTabletViewManager.setOnCreatePostClick(this::openPost);
-        feedTabletViewManager.setOnFriendsMoreClick(this::openFriends);
+        feedTabletViewManager.setOnCirclePicked((c) -> getPresenter().circlePicked(c));
+        feedTabletViewManager.setRequestMoreUsersListener((page, circle) -> getPresenter().loadFriends(page, circle));
     }
 
 
     @Override
-    public void setupCloseFriends(List<User> friends) {
+    public void addCloseFriends(List<User> friends) {
         feedTabletViewManager.setCloseFriends(friends, this);
     }
+
+    @Override
+    public void addFriends(List<User> friends) {
+        feedTabletViewManager.addCloseFriends(friends);
+    }
+
+    @Override
+    public void setCircles(List<Circle> circles) {
+        circles.add(0, Circle.all(getResources().getString(R.string.show_all)));
+        feedTabletViewManager.setCircles(circles, 0);
+    }
+
 
     public void openPost() {
         showPostContainer();
@@ -46,12 +59,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .attach(Route.POST_CREATE);
-    }
-
-    public void openFriends() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .move(Route.FRIENDS);
     }
 
     protected void showPostContainer() {

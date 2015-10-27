@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.friends.api;
 
-import android.widget.Toast;
-
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;

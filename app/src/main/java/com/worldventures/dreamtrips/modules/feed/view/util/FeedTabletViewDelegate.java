@@ -5,17 +5,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.view.cell.CloseFriendCell;
-import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
-import com.worldventures.dreamtrips.modules.membership.view.util.WrapContentLinearLayoutManager;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.view.cell.FeedFriendCell;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
 import java.text.DecimalFormat;
@@ -27,7 +26,6 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
-    private static final int CLOSE_FRIENDS_COUNT = 5;
 
     DecimalFormat df = new DecimalFormat("#0.00");
 
@@ -71,9 +69,48 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     @InjectView(R.id.lv_close_friends)
     RecyclerView lvCloseFriends;
 
-    ViewClickListener onUserClick;
-    ViewClickListener onCreatePostClick;
-    ViewClickListener onFriendsMoreClick;
+    @Optional
+    @InjectView(R.id.circle_filter)
+    ImageView circleFilter;
+    @Optional
+    @InjectView(R.id.circle_title)
+    TextView circleTitle;
+
+    ActionListener onUserClick;
+    ActionListener onCreatePostClick;
+    CirclePickedListener onCirclePicked;
+
+    RequestMoreUsersListener requestMoreUsersListener;
+
+    CirclesFilterPopupWindow filterPopupWindow;
+    List<Circle> circles;
+    Circle activeCircle;
+
+    boolean loading;
+    int previousTotal;
+
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            int totalItemCount = layoutManager.getItemCount();
+            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+            if (totalItemCount > previousTotal) {
+                loading = false;
+                previousTotal = totalItemCount;
+            }
+            if (!loading
+                    && lastVisibleItemPosition >= totalItemCount - 1
+                    && totalItemCount % 20 == 0) {
+                if (requestMoreUsersListener != null) {
+                    requestMoreUsersListener.needMore(adapter.getCount() / 20 + 1, activeCircle);
+                }
+                loading = true;
+            }
+        }
+    };
+    private LinearLayoutManager layoutManager;
+    private BaseArrayListAdapter<User> adapter;
 
     public FeedTabletViewDelegate() {
     }
@@ -102,7 +139,6 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
             details.setVisibility(withDetails ? View.VISIBLE : View.GONE);
             viewProfile.setVisibility(!withDetails ? View.VISIBLE : View.GONE);
         }
-
     }
 
     @Override
@@ -110,15 +146,46 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
         if (friends != null && friends.size() > 0) {
             closeFriends.setVisibility(View.VISIBLE);
 
-            BaseArrayListAdapter<User> adapter = new BaseArrayListAdapter<>(lvCloseFriends.getContext(), injector);
-            adapter.registerCell(User.class, CloseFriendCell.class);
+            adapter = new BaseArrayListAdapter<>(lvCloseFriends.getContext(), injector);
+            adapter.registerCell(User.class, FeedFriendCell.class);
 
-            lvCloseFriends.setLayoutManager(new WrapContentLinearLayoutManager(lvCloseFriends.getContext(), LinearLayoutManager.VERTICAL, false));
-            lvCloseFriends.addItemDecoration(new DividerItemDecoration(lvCloseFriends.getContext(), DividerItemDecoration.VERTICAL_LIST));
+            layoutManager = new LinearLayoutManager(lvCloseFriends.getContext(), LinearLayoutManager.VERTICAL, false);
+            lvCloseFriends.setLayoutManager(layoutManager);
             lvCloseFriends.setAdapter(adapter);
-
-            adapter.addItems(Queryable.from(friends).take(CLOSE_FRIENDS_COUNT).toList());
+            lvCloseFriends.addOnScrollListener(onScrollListener);
+            adapter.addItems(friends);
         }
+    }
+
+    @Override
+    public void addCloseFriends(List<User> friends) {
+        adapter.addItems(friends);
+    }
+
+
+    @Optional
+    @OnClick(R.id.circle_filter)
+    public void onActionFilter() {
+        if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
+            actionFilter();
+        }
+    }
+
+    private void actionFilter() {
+        filterPopupWindow = new CirclesFilterPopupWindow(circleFilter.getContext());
+        if (circles == null) {
+            throw new IllegalStateException("Set circles before filtering");
+        }
+        filterPopupWindow.setCircles(circles);
+        filterPopupWindow.setAnchorView(circleFilter);
+        filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            filterPopupWindow.dismiss();
+            activeCircle = circles.get(position);
+            onCirclePicked.onAction(circles.get(position));
+            circleTitle.setText(circles.get(position).getName());
+        });
+        filterPopupWindow.show();
+        filterPopupWindow.setCheckedCircle(activeCircle);
     }
 
 
@@ -126,7 +193,7 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     @OnClick({R.id.user_cover, R.id.view_profile})
     void onUserClick() {
         if (onUserClick != null) {
-            onUserClick.onClick();
+            onUserClick.onAction();
         }
     }
 
@@ -134,46 +201,47 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     @OnClick(R.id.share_post)
     void onPostClicked() {
         if (onCreatePostClick != null) {
-            onCreatePostClick.onClick();
+            onCreatePostClick.onAction();
         }
     }
-
-    @Optional
-    @OnClick(R.id.tv_see_more)
-    void onFriendsMoreClick() {
-        if (onFriendsMoreClick != null) {
-            onFriendsMoreClick.onClick();
-        }
-    }
-
 
     @Optional
     @OnClick(R.id.share_photo)
     void onSharePhotoClick() {
         //TODO open share photo. Now it's dummy
         if (onCreatePostClick != null) {
-            onCreatePostClick.onClick();
+            onCreatePostClick.onAction();
         }
     }
 
-
     @Override
-    public void setOnUserClick(ViewClickListener onUserClick) {
+    public void setOnUserClick(ActionListener onUserClick) {
         this.onUserClick = onUserClick;
     }
 
     @Override
-    public void setOnCreatePostClick(ViewClickListener onCreatePostClick) {
+    public void setOnCreatePostClick(ActionListener onCreatePostClick) {
         this.onCreatePostClick = onCreatePostClick;
     }
 
     @Override
-    public void setOnFriendsMoreClick(ViewClickListener onFriendsMoreClick) {
-        this.onFriendsMoreClick = onFriendsMoreClick;
+    public void setCircles(List<Circle> circles, int defaultCircleIndex) {
+        if (defaultCircleIndex > circles.size()) {
+            throw new IllegalArgumentException();
+        }
+        this.circleTitle.setText(circles.get(defaultCircleIndex).getName());
+        this.circles = circles;
+        this.activeCircle = circles.get(defaultCircleIndex);
+
     }
 
-    public interface ViewClickListener {
-        void onClick();
+    public void setRequestMoreUsersListener(RequestMoreUsersListener requestMoreUsersListener) {
+        this.requestMoreUsersListener = requestMoreUsersListener;
+    }
+
+    @Override
+    public void setOnCirclePicked(CirclePickedListener onCirclePicked) {
+        this.onCirclePicked = onCirclePicked;
     }
 
 }

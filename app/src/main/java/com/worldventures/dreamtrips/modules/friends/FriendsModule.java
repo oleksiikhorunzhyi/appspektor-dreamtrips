@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresen
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.UsersLikedItemPresenter;
-import com.worldventures.dreamtrips.modules.friends.view.cell.CloseFriendCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.FeedFriendCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
@@ -29,7 +29,7 @@ import dagger.Module;
                 FriendListPresenter.class,
                 FriendCell.class,
                 UserCell.class,
-                CloseFriendCell.class,
+                FeedFriendCell.class,
 
                 UsersLikedItemPresenter.class,
                 UsersLikedItemFragment.class,

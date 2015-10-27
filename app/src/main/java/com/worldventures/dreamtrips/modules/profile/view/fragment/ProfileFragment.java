@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -22,18 +20,11 @@ import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFeedFragment<T, UserBundle>
         implements ProfilePresenter.View {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.profile_toolbar)
     protected Toolbar profileToolbar;
@@ -148,7 +139,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
     @Override
     protected BaseArrayListAdapter getAdapter() {
-        return new IgnoreFirstItemAdapter(feedView.getContext(), injectorProvider);
+        return new IgnoreFirstItemAdapter(feedView.getContext(), this);
     }
 
     @Override

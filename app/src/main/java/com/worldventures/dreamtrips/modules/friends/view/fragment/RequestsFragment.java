@@ -16,8 +16,6 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -38,7 +36,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 
@@ -46,10 +43,6 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_friend)
 public class RequestsFragment extends BaseFragment<RequestsPresenter>
         implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.requests)
     RecyclerView recyclerView;
@@ -95,7 +88,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(getLayoutManager());
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new BaseArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(User.class, RequestCell.class);
         adapter.registerCell(String.class, RequestHeaderCell.class);
 

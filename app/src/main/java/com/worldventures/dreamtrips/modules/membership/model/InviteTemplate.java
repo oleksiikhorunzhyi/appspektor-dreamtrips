@@ -96,6 +96,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem
     }
 
     public InviteTemplate() {
+        super();
     }
 
     @Override

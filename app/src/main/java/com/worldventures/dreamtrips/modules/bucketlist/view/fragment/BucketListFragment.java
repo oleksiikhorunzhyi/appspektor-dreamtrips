@@ -30,8 +30,6 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -54,9 +52,6 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -66,10 +61,6 @@ import butterknife.Optional;
 @MenuResource(R.menu.menu_bucket)
 public class BucketListFragment<T extends BucketListPresenter> extends BaseFragment<T>
         implements BucketListPresenter.View {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     public static final int MIN_SYMBOL_COUNT = 3;
@@ -132,7 +123,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         dragDropManager.setInitiateOnLongPress(true);
         dragDropManager.setInitiateOnMove(false);
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
-        adapter = new BucketItemAdapter(getActivity(), injector);
+        adapter = new BucketItemAdapter(getActivity(), this);
 
         if (isSwipeEnabled())
             adapter.registerCell(BucketItem.class, BucketItemCell.class);

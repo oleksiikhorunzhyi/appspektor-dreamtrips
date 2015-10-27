@@ -72,18 +72,6 @@ public class DateTimeUtils {
         }
     }
 
-    public static String convertDateToJodaString(Date date, String format) {
-        if (date != null) {
-            DateTime dt = new DateTime(date);
-            dt = dt.withZoneRetainFields(DateTimeZone.UTC);
-            DateTimeFormatter fmt = DateTimeFormat.forPattern(format);
-            fmt = fmt.withZone(DateTimeZone.getDefault());
-            return fmt.print(dt);
-        } else {
-            return null;
-        }
-    }
-
     public static String convertDateToString(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
         if (date != null) {

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.video.view;
 
 import android.os.Bundle;
-
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +10,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
@@ -25,19 +22,12 @@ import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPres
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
 public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideosPresenter>
         implements ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
 
     @Optional
     @InjectView(R.id.recyclerViewFeatured)
@@ -70,7 +60,7 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
         super.afterCreateView(rootView);
 
         if (recyclerViewAll != null) {
-            adapterAll = new BaseArrayListAdapter<>(getActivity(), injector);
+            adapterAll = new BaseArrayListAdapter<>(getActivity(), this);
             adapterAll.registerCell(Video.class, Video360Cell.class);
             adapterAll.registerCell(VideoHeader.class, VideoHeaderCell.class);
 
@@ -78,8 +68,8 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
         }
 
         if (recyclerViewRecent != null) {
-            adapterFeatured = new BaseArrayListAdapter<>(getActivity(), injector);
-            adapterRecent = new BaseArrayListAdapter<>(getActivity(), injector);
+            adapterFeatured = new BaseArrayListAdapter<>(getActivity(), this);
+            adapterRecent = new BaseArrayListAdapter<>(getActivity(), this);
 
             adapterFeatured.registerCell(Video.class, Video360Cell.class);
             adapterRecent.registerCell(Video.class, Video360SmallCell.class);

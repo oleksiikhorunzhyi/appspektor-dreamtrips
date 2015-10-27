@@ -68,9 +68,11 @@ import dagger.Provides;
                 ComponentPresenter.class,
                 CopyFileCommand.class,
                 ProgressDialogFragment.class,
+
                 DialogFragmentNavigator.NavigationDialogFragment.class,
                 BaseImageFragment.class,
                 BaseImagePresenter.class,
+                DialogFragmentNavigator.NavigationDialogFragment.class
         },
         complete = false,
         library = true

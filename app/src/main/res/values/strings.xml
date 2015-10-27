@@ -464,6 +464,11 @@
     <string name="search_friends">Search Friends</string>
     <string name="start_searching">Type to start searching</string>
 
+    <plurals name="people_liked">
+        <item quantity="one">%s liked</item>
+        <item quantity="other">%d people liked</item>
+    </plurals>
+
     <string name="dtl_locations_title">Select location</string>
     <string name="dtl_locations_try_search">We could not locate a City close to you.\n Try our city search</string>
     <string name="dtl_locations_search_caption">Search City</string>
@@ -541,5 +546,4 @@
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>
     <string name="dtl_wait_for_location">Wait… Obtaining current location</string>
     <string name="dtl_wait_for_cities">Wait… Obtaining nearest cities</string>
-
 </resources>

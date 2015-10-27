@@ -12,8 +12,6 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -25,9 +23,6 @@ import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWin
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -35,10 +30,6 @@ import butterknife.OnClick;
 @MenuResource(R.menu.menu_activity_feed)
 public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.fab_post)
     FloatingActionButton fabPost;
@@ -118,7 +109,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public BaseArrayListAdapter getAdapter() {
-        return new BaseArrayListAdapter<>(feedView.getContext(), injectorProvider);
+        return new BaseArrayListAdapter<>(feedView.getContext(), this);
     }
 
     public void openPost() {

@@ -29,8 +29,11 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
      */
     protected boolean injectCustomLayout = true;
 
-    public void onEvent(InjectingFragment.Events.ReloadEvent reloadEvent) {
-
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        objectGraph = getInitialObjectGraph();
+        objectGraph.inject(this);
     }
 
     @Override
@@ -44,14 +47,6 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
 
     public void afterCreateView(View rootView) {
 
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.objectGraph = getInitialObjectGraph();
-
-        FragmentHelper.inject(activity, this);
     }
 
     @Override
@@ -70,15 +65,19 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
         return ((InjectingActivity) getActivity()).getObjectGraph();
     }
 
-
     @Override
     public void inject(Object target) {
         this.objectGraph.inject(target);
     }
 
+
     @Override
     public ObjectGraph getObjectGraph() {
         return this.objectGraph;
+    }
+
+    public void onEvent(InjectingFragment.Events.ReloadEvent reloadEvent) {
+
     }
 
 }

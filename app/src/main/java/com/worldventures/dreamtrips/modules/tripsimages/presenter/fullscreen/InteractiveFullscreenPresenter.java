@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -47,6 +47,10 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         });
     }
 
+    private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {
+        doRequest(new GetFeedEntityQuery(photo.getUid()), successListener);
+    }
+
     @Override
     public void onDeleteAction() {
         doRequest(new DeletePhotoCommand(photo.getFsId()), (jsonObject) -> {
@@ -75,41 +79,6 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         doRequest(dreamTripsRequest, obj -> onLikeSuccess(), exc -> onLikeFailure());
     }
 
-    @Override
-    public void onCommentsAction() {
-        if (feedEntity == null) {
-            loadEntity(feedEntityHolder -> {
-                feedEntity = feedEntityHolder.getItem();
-                navigateToComments();
-            });
-        } else {
-            navigateToComments();
-        }
-    }
-
-    private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {
-        doRequest(new GetFeedEntityQuery(photo.getUid()), successListener);
-    }
-
-    private void navigateToComments() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                    .data(new CommentsBundle(feedEntity, false))
-                .move(Route.COMMENTS);
-    }
-
-    @Override
-    public void onLikesAction() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new UsersLikedEntityBundle(photo.getUid()))
-                .move(Route.USERS_LIKED_CONTENT);
-    }
-
-    private void onLikeFailure() {
-        view.informUser(context.getString(R.string.can_not_like_photo));
-    }
-
     private void onLikeSuccess() {
         boolean isLiked = !photo.isLiked();
         photo.setLiked(isLiked);
@@ -122,9 +91,27 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         TrackingHelper.like(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
+    private void onLikeFailure() {
+        view.informUser(context.getString(R.string.can_not_like_photo));
+    }
+
     @Override
     protected boolean isLiked() {
         return photo.isLiked();
+    }
+
+    @Override
+    public void onCommentsAction() {
+        new NavigationWrapperFactory()
+                .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, view)
+                .navigate(Route.COMMENTS, new CommentsBundle(feedEntity, false));
+    }
+
+    @Override
+    public void onLikesAction() {
+        new NavigationWrapperFactory()
+                .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, view)
+                .navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(photo.getUid()));
     }
 
     @Override

@@ -64,7 +64,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     protected BaseArrayListAdapter getAdapter() {
-        return new IgnoreFirstExpandedItemAdapter(feedView.getContext(), injectorProvider);
+        return new IgnoreFirstExpandedItemAdapter(feedView.getContext(), this);
     }
 
     @Override

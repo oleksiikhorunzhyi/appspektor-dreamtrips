@@ -16,8 +16,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Provider;
-
 import icepick.Icepick;
 import icepick.State;
 
@@ -31,7 +29,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     protected WeakHandler mainHandler;
     protected WeakHandler filterHandler;
 
-    public FilterableArrayListAdapter(Context context, Provider<Injector> injector) {
+    public FilterableArrayListAdapter(Context context, Injector injector) {
         super(context, injector);
         cachedItems = new ArrayList<>();
 

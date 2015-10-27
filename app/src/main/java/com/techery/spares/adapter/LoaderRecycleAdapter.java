@@ -7,13 +7,11 @@ import com.techery.spares.module.Injector;
 
 import java.util.List;
 
-import javax.inject.Provider;
-
 public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<BaseItemClass> implements DataListAdapter<List<BaseItemClass>>, ContentLoader.ContentLoadingObserving<List<BaseItemClass>> {
 
     private ContentLoader<List<BaseItemClass>> contentLoader;
 
-    public LoaderRecycleAdapter(Context context, Provider<Injector> injector) {
+    public LoaderRecycleAdapter(Context context, Injector injector) {
         super(context, injector);
     }
 

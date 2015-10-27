@@ -31,8 +31,8 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.objectGraph = getInitialObjectGraph();
-        FragmentHelper.inject(activity, this);
+        objectGraph = getInitialObjectGraph();
+        objectGraph.inject(this);
     }
 
     @Override
@@ -67,6 +67,11 @@ public abstract class InjectingFragment extends Fragment implements Configurable
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         setupMenuIfNeed();
     }
 
@@ -79,7 +84,7 @@ public abstract class InjectingFragment extends Fragment implements Configurable
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (isAdded() && menuResource != null) {
+        if (menuResource != null) {
             menu.clear();
             inflater.inflate(menuResource.value(), menu);
         }

@@ -51,10 +51,6 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_notifications)
 public class NotificationFragment extends BaseFragment<NotificationPresenter> implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-
     @InjectView(R.id.notifications)
     EmptyRecyclerView notifications;
 
@@ -92,7 +88,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter = new NotificationAdapter(getActivity(), injectorProvider);
+        adapter = new NotificationAdapter(getActivity(), this);
         adapter.setHasStableIds(true);
 
         this.adapter.registerCell(PhotoFeedItem.class, NotificationCell.class);
@@ -200,7 +196,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
 
         private static final long LOADER_ID = Long.MIN_VALUE;
 
-        public NotificationAdapter(Context context, Provider<Injector> injector) {
+        public NotificationAdapter(Context context, Injector injector) {
             super(context, injector);
         }
 

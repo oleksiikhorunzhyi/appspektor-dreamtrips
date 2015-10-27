@@ -40,4 +40,8 @@
     <color name="white_90_transparent">#21ffffff</color>
 
     <color name="user_status_text_shadow">#AA000000</color>
+
+    <color name="facebook_color">#3C5A99</color>
+    <color name="share_camera_color">#929292</color>
+    <color name="share_photo_bg_color">#EEEEEE</color>
 </resources>

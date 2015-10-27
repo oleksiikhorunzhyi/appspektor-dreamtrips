@@ -25,6 +25,8 @@ public interface IFeedTabletViewDelegate {
 
     void setOnCirclePicked(CirclePickedListener onCirclePicked);
 
+    void setOnSharePhotoClick(ActionListener onSharePhotoClick);
+
     void setRequestMoreUsersListener(RequestMoreUsersListener requestMoreUsersListener);
 
 

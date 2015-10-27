@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -20,13 +19,17 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.PhotoAttachPanelManager;
+
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import icepick.State;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -54,7 +57,12 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @InjectView(R.id.image)
     ImageView image;
 
+    @State
+    boolean pickerEnabled;
+
     SweetAlertDialog dialog;
+
+    private PhotoAttachPanelManager photoAttachPanelManager;
 
     private boolean cancel = false;
 
@@ -65,6 +73,12 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
             getPresenter().postInputChanged(constraint.toString().trim());
         }
     };
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        photoAttachPanelManager = new PhotoAttachPanelManager(rootView);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -86,6 +100,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void onResume() {
         super.onResume();
         post.addTextChangedListener(textWatcher);
+        pickerEnabled = true;
+        getPresenter().loadGallery();
     }
 
     @Override
@@ -96,7 +112,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     protected PostPresenter createPresenter(Bundle savedInstanceState) {
-        if (getArgs() != null)
+        if (getArgs() != null && getArgs().getTextualPost() != null)
             return new PostEditPresenter(getArgs());
         else
             return new PostPresenter();
@@ -139,23 +155,11 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @OnClick(R.id.image)
     void onImage() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getString(R.string.select_photo))
-                .items(R.array.dialog_add_bucket_photo)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                            break;
-                        case 1:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                            break;
-                        case 2:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_PICK_PICTURE);
-                            break;
-                    }
-                });
-        builder.show();
+        if (photoAttachPanelManager.isPanelVisible()) {
+            photoAttachPanelManager.hidePanel();
+        } else {
+            photoAttachPanelManager.showPanel();
+        }
     }
 
     @Override
@@ -166,6 +170,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void attachPhoto(Uri uri) {
+        photoAttachPanelManager.hidePanel();
+
         attachedPhoto.setImageURI(uri);
         if (uri != null) {
             post.setHint(R.string.photo_hint);
@@ -226,12 +232,18 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void enableImagePicker() {
-        image.setEnabled(true);
+        pickerEnabled = true;
+        updatePickerState();
     }
 
     @Override
     public void disableImagePicker() {
-        image.setEnabled(false);
+        pickerEnabled = false;
+        updatePickerState();
+    }
+
+    private void updatePickerState() {
+        image.setEnabled(pickerEnabled);
     }
 
     @Override
@@ -274,6 +286,12 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @Override
     public void hidePhotoControl() {
         image.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateAttachView(List<PhotoGalleryModel> photos) {
+        photoAttachPanelManager.setup(this, photos);
+        photoAttachPanelManager.showPanel();
     }
 
     @Override

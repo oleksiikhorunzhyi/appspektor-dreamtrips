@@ -53,4 +53,9 @@ public class MockFeedTabletViewDelegate implements IFeedTabletViewDelegate {
     public void setCircles(List<Circle> circles, int defCircleIndex) {
 
     }
+
+    @Override
+    public void setOnSharePhotoClick(ActionListener onSharePhotoClick) {
+
+    }
 }

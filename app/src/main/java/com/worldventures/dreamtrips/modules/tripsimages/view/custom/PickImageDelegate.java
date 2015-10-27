@@ -172,7 +172,7 @@ public class PickImageDelegate implements ImageChooserListener {
 
     @Override
     public void onImageChosen(ChosenImage chosenImage) {
-        chosenImage.setFilePathOriginal("file://" + chosenImage.getFilePathOriginal());
+        chosenImage.setFileThumbnail("file://" + chosenImage.getFilePathOriginal());
         if (imageCallback != null) imageCallback.onImagePicked(chosenImage);
     }
 

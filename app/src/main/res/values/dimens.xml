@@ -85,4 +85,6 @@
 
     <dimen name="popup_filter_item_extra_space">80dp</dimen>
 
+    <dimen name="photo_picker_size">200dp</dimen>
+
 </resources>

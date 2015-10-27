@@ -78,6 +78,8 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
 
     ActionListener onUserClick;
     ActionListener onCreatePostClick;
+    ActionListener onSharePhotoClick;
+
     CirclePickedListener onCirclePicked;
 
     RequestMoreUsersListener requestMoreUsersListener;
@@ -208,9 +210,8 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     @Optional
     @OnClick(R.id.share_photo)
     void onSharePhotoClick() {
-        //TODO open share photo. Now it's dummy
-        if (onCreatePostClick != null) {
-            onCreatePostClick.onAction();
+        if (onSharePhotoClick != null) {
+            onSharePhotoClick.onAction();
         }
     }
 
@@ -232,7 +233,11 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
         this.circleTitle.setText(circles.get(defaultCircleIndex).getName());
         this.circles = circles;
         this.activeCircle = circles.get(defaultCircleIndex);
+    }
 
+    @Override
+    public void setOnSharePhotoClick(ActionListener onSharePhotoClick) {
+        this.onSharePhotoClick = onSharePhotoClick;
     }
 
     public void setRequestMoreUsersListener(RequestMoreUsersListener requestMoreUsersListener) {

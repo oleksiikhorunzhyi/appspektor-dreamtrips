@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -29,6 +31,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         feedTabletViewManager.setOnCreatePostClick(this::openPost);
         feedTabletViewManager.setOnCirclePicked((c) -> getPresenter().circlePicked(c));
         feedTabletViewManager.setRequestMoreUsersListener((page, circle) -> getPresenter().loadFriends(page, circle));
+        feedTabletViewManager.setOnSharePhotoClick(this::openSharePhoto);
     }
 
 
@@ -59,6 +62,20 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         NavigationBuilder.create()
                 .with(fragmentCompass)
                 .attach(Route.POST_CREATE);
+    }
+
+    public void openSharePhoto() {
+        showPostContainer();
+
+        fragmentCompass.removePost();
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+
+        NavigationBuilder.create()
+                .with(fragmentCompass)
+                .data(new PostBundle(null, PostBundle.PHOTO))
+                .attach(Route.POST_CREATE);
+
     }
 
     protected void showPostContainer() {

@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
@@ -19,11 +20,13 @@ import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.TextualPostDetailsPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.AttachPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemCell;
@@ -57,6 +60,9 @@ import de.greenrobot.event.EventBus;
                 PostFeedItemCell.class,
                 UndefinedFeedItemCell.class,
 
+                AttachPhotoCell.class,
+                PhotoGalleryCell.class,
+
                 EditCommentPresenter.class,
 
                 CommendableFragment.class,
@@ -83,6 +89,8 @@ import de.greenrobot.event.EventBus;
                 FeedListAdditionalInfoPresenter.class,
                 FeedItemAdditionalInfoFragment.class,
                 FeedItemAdditionalInfoPresenter.class,
+
+                PhotoGalleryRequest.class,
         },
         complete = false,
         library = true

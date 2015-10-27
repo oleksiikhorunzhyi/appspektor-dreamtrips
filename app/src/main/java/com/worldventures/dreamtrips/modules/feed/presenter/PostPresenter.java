@@ -6,6 +6,9 @@ import android.text.TextUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -13,20 +16,23 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
+import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
+import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.State;
-
 
 public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
 
@@ -34,6 +40,9 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     @Inject
     SnappyRepository snapper;
+    @Inject
+    @ForApplication
+    Injector injector;
 
     @State
     CachedPostEntity cachedPostEntity;
@@ -136,6 +145,12 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     public void postInputChanged(String input) {
         cachedPostEntity.setText(input);
         enablePostButton();
+    }
+
+    public void loadGallery() {
+        PhotoGalleryRequest request = new PhotoGalleryRequest();
+        injector.inject(request);
+        doRequest(request, view::updateAttachView);
     }
 
     ////////////////////////////////////////
@@ -253,6 +268,11 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     /////// Photo picking
     ////////////////////////////////////////
 
+    public void onEvent(AttachPhotoEvent event) {
+        if (event.getRequestType() != -1)
+            pickImage(event.getRequestType());
+    }
+
     public void pickImage(int requestType) {
         eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
@@ -261,13 +281,13 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         if (event.getRequesterID() == REQUESTER_ID) {
             view.disableImagePicker();
             eventBus.removeStickyEvent(event);
-            String fileThumbnail = event.getImages()[0].getFileThumbnail();
+            ChosenImage photo = event.getImages()[0];
+            String fileThumbnail = photo.getFileThumbnail();
             if (ValidationUtils.isUrl(fileThumbnail)) {
                 imageSelected(Uri.parse(fileThumbnail).toString());
             } else {
                 imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
             }
-
         }
     }
 
@@ -311,5 +331,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         void onPostError();
 
         void hidePhotoControl();
+
+        void updateAttachView(List<PhotoGalleryModel> photos);
     }
 }

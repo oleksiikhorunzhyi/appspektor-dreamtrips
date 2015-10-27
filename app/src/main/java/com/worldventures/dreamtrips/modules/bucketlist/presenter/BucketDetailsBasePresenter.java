@@ -303,7 +303,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
             if (event.getRequestType() == PickImageDelegate.REQUEST_MULTI_SELECT) {
                 Queryable.from(event.getImages()).forEachR(choseImage ->
-                        imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+                        imageSelected(Uri.parse(choseImage.getFileThumbnail()), event.getRequestType()));
             } else {
                 Queryable.from(event.getImages()).forEachR(choseImage -> {
                     String fileThumbnail = choseImage.getFileThumbnail();

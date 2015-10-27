@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
@@ -33,6 +34,7 @@ import dagger.Provides;
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
+                PhotoGalleryRequest.class,
         },
         library = true, complete = false
 )

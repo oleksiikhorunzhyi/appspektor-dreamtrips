@@ -20,7 +20,7 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
 
     @Override
     protected Query<ArrayList<User>> getUserListQuery(int page) {
-        return new SearchUsersQuery(query, page);
+        return new SearchUsersQuery(query, page,getPerPageCount());
     }
 
     @Override

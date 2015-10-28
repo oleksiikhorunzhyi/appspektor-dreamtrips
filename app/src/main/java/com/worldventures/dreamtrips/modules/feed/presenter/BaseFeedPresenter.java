@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
@@ -297,7 +298,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(ItemFlaggedEvent event) {
         if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
+            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
+                    event.getFlagReasonId(), event.getNameOfReason()));
     }
 
     public void onEvent(FeedEntityItemClickEvent event) {

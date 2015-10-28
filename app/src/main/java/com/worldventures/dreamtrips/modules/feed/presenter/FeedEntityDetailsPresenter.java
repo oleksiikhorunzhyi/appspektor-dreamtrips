@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
@@ -91,7 +92,8 @@ public class FeedEntityDetailsPresenter extends Presenter<FeedEntityDetailsPrese
 
     public void onEvent(ItemFlaggedEvent event) {
         if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
+            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
+                    event.getFlagReasonId(), event.getNameOfReason()));
     }
 
     private void itemLiked() {

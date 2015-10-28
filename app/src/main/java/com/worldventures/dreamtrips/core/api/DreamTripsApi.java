@@ -339,5 +339,5 @@ public interface DreamTripsApi {
 
     @FormUrlEncoded
     @POST("/api/{uid}/flags")
-    Void flagItem(@Path("uid") String uid, @Field("reason") String nameOfReason);
+    Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
 }

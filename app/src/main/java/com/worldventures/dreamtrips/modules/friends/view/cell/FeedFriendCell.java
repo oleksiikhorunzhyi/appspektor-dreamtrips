@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_item_close_friend)
+@Layout(R.layout.adapter_item_feed_friend)
 public class FeedFriendCell extends AbstractCell<User> {
 
     @InjectView(R.id.sdv_avatar)

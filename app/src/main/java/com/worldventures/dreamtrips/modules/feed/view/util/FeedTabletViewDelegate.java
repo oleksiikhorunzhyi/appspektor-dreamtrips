@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -103,8 +104,8 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int totalItemCount = layoutManager.getItemCount();
-            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+            int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
 
             if (totalItemCount > previousTotal) {
                 loading = false;
@@ -132,6 +133,7 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
         if (viewProfile != null) viewProfile.setVisibility(View.GONE);
         if (closeFriends != null) closeFriends.setVisibility(View.GONE);
         lvCloseFriends.setEmptyView(emptyView);
+        lvCloseFriends.addOnScrollListener(onScrollListener);
     }
 
     @Override
@@ -159,10 +161,21 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
             adapter = new BaseArrayListAdapter<>(lvCloseFriends.getContext(), injector);
             adapter.registerCell(User.class, FeedFriendCell.class);
 
-            layoutManager = new NestedLinearLayoutManager(lvCloseFriends.getContext(), LinearLayoutManager.VERTICAL, false);
-            lvCloseFriends.setLayoutManager(layoutManager);
+            lvCloseFriends.setLayoutManager(new LinearLayoutManager(lvCloseFriends.getContext()));
             lvCloseFriends.setAdapter(adapter);
-            lvCloseFriends.addOnScrollListener(onScrollListener);
+
+            ViewTreeObserver vto = lvCloseFriends.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    lvCloseFriends.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    int height = lvCloseFriends.getMeasuredHeight();
+                    layoutManager = new NestedLinearLayoutManager(lvCloseFriends.getContext(), LinearLayoutManager.VERTICAL, false);
+                    layoutManager.setMaxHeight(height);
+                    lvCloseFriends.setLayoutManager(layoutManager);
+                }
+            });
+
             adapter.addItems(friends);
         }
     }

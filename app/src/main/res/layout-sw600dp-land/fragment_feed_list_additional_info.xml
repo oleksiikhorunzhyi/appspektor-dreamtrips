@@ -105,7 +105,7 @@
                 <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
                     android:id="@+id/lv_close_friends"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/spacing_small"
                     android:layout_marginLeft="@dimen/spacing_small"
                     android:layout_marginRight="@dimen/spacing_small"

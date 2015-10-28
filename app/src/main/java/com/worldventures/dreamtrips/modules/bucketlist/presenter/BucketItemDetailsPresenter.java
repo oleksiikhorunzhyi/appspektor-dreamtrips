@@ -33,7 +33,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         if (view.isTabletLandscape()) {
             fragmentCompass.setContainerId(R.id.container_details_floating);
             fragmentCompass.showContainer();
-            NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);
+            NavigationBuilder.create().with(fragmentCompass).data(bundle).move(Route.BUCKET_EDIT);
         } else {
             bundle.setLock(true);
             NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);

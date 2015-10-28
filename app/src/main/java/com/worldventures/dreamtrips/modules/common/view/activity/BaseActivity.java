@@ -96,15 +96,18 @@ public abstract class BaseActivity extends InjectingActivity {
     }
 
     private boolean checkChildFragments(FragmentManager fragmentManager) {
-        for (Fragment fragment : fragmentManager.getFragments()) {
-            if (fragment != null && fragment.isVisible()) {
-                FragmentManager childFm = fragment.getChildFragmentManager();
-                if (childFm.getBackStackEntryCount() > 0) {
-                    childFm.popBackStack();
-                    return true;
+        if (fragmentManager.getFragments() != null)
+            for (Fragment fragment : fragmentManager.getFragments()) {
+                if (fragment != null && fragment.isVisible()) {
+                    FragmentManager childFm = fragment.getChildFragmentManager();
+                    if (!checkChildFragments(childFm) &&
+                            childFm.getBackStackEntryCount() > 0) {
+                        childFm.popBackStack();
+                        return true;
+                    }
                 }
             }
-        }
+
         return false;
     }
 

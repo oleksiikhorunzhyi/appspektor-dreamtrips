@@ -56,7 +56,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         restorePostIfNeeded();
 
         if (isTabletLandscape()) {
-            fragmentCompass.removePost();
             fragmentCompass.disableBackStack();
             fragmentCompass.setContainerId(R.id.additional_info_container);
 

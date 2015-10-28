@@ -291,7 +291,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @Override
     public void updateAttachView(List<PhotoGalleryModel> photos) {
         photoAttachPanelManager.setup(this, photos);
-        photoAttachPanelManager.showPanel();
+        if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO)
+            photoAttachPanelManager.showPanel();
     }
 
     @Override

@@ -18,7 +18,7 @@ public class DtlLocation implements Parcelable {
     DtlLocationCategory category;
     String shortName;
     String longName;
-    Location geoCoordinate;
+    Location coordinates;
     int merchantCount;
     List<DtlLocation> withinLocations;
 
@@ -37,8 +37,8 @@ public class DtlLocation implements Parcelable {
         return longName;
     }
 
-    public Location getGeoCoordinate() {
-        return geoCoordinate;
+    public Location getCoordinates() {
+        return coordinates;
     }
 
     public List<DtlLocation> getWithinLocations() {
@@ -54,7 +54,7 @@ public class DtlLocation implements Parcelable {
         shortName = in.readString();
         longName = in.readString();
         category = (DtlLocationCategory) in.readSerializable();
-        geoCoordinate = in.readParcelable(Location.class.getClassLoader());
+        coordinates = in.readParcelable(Location.class.getClassLoader());
         merchantCount = in.readInt();
         withinLocations = in.createTypedArrayList(DtlLocation.CREATOR);
     }
@@ -82,7 +82,7 @@ public class DtlLocation implements Parcelable {
         dest.writeString(shortName);
         dest.writeString(longName);
         dest.writeSerializable(category);
-        dest.writeParcelable(geoCoordinate, flags);
+        dest.writeParcelable(coordinates, flags);
         dest.writeInt(merchantCount);
         dest.writeTypedList(withinLocations);
     }

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.List;
@@ -191,19 +192,12 @@ public class DtlPlace implements Parcelable {
 
     public boolean applyFilter(DtlFilterData filterObject, LatLng currentLocation) {
         return checkPrice(filterObject.getMinPrice(), filterObject.getMaxPrice())
-                && checkLocation(filterObject.getMaxDistance(), currentLocation);
+                && LocationHelper.checkLocation(filterObject.getMaxDistance(), currentLocation,
+                new LatLng(coordinates.getLat(), coordinates.getLng()));
     }
 
     private boolean checkPrice(int minPrice, int maxPrice) {
         return budget >= minPrice && budget <= maxPrice;
-    }
-
-    private boolean checkLocation(int maxDistance, LatLng currentLocation) {
-        float[] distance = new float[1];
-        android.location.Location.distanceBetween(coordinates.getLat(), coordinates.getLng(),
-                currentLocation.latitude, currentLocation.longitude, distance);
-        double distanceInMiles = 0.000621371d * distance[0];
-        return distanceInMiles < maxDistance;
     }
 
 }

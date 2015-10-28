@@ -103,6 +103,8 @@ public class DtlPlaceDetailsFragment
         destinationMap = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.place_details_map);
         destinationMap.getMapAsync(googleMap -> {
             googleMap.getUiSettings().setMapToolbarEnabled(false);
+            int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+            googleMap.setPadding(0, 0, 0, padding);
         });
     }
 

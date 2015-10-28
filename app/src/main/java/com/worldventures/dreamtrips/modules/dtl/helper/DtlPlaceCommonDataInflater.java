@@ -32,7 +32,7 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
     protected void onPlaceApply(DtlPlace place) {
         coverStub.setVisibility(place.getImages().isEmpty() ? View.VISIBLE : View.GONE);
         title.setText(place.getDisplayName());
-        rating.setVisibility(View.GONE); // TODO set rating on API change
+        rating.setRating(Float.valueOf(place.getRating()).intValue());
         earnPointsBadge.setVisibility(place.getPartnerStatus() == DtlPlaceType.OFFER ? View.VISIBLE : View.GONE);
     }
 }

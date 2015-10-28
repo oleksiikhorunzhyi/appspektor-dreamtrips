@@ -76,8 +76,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
                     dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList();
 
             for (DtlPlace dtlPlace : filtered) {
-                view.addPin(new LatLng(dtlPlace.getCoordinates().getLat(),
-                        dtlPlace.getCoordinates().getLng()), dtlPlace.getMerchantId());
+                view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),
+                        dtlPlace.getCoordinates().getLng()), dtlPlace.getPartnerStatus());
             }
         }
     }
@@ -104,7 +104,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        void addPin(LatLng latLng, String id);
+        void addPin(String id, LatLng latLng, DtlPlaceType type);
 
         void clearMap();
 

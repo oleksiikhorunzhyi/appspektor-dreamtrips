@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlacesToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
@@ -114,7 +115,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void centerIn(DtlLocation location) {
-        LatLng latLng = new LatLng(location.getGeoCoordinate().getLat(), location.getGeoCoordinate().getLng());
+        LatLng latLng = new LatLng(location.getCoordinates().getLat(), location.getCoordinates().getLng());
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10.0f));
     }
 
@@ -141,8 +142,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void addPin(LatLng latLng, String id) {
-        clusterManager.addItem(new DtlClusterItem(latLng, id));
+    public void addPin(String id, LatLng latLng, DtlPlaceType type) {
+        clusterManager.addItem(new DtlClusterItem(id, latLng, type));
     }
 
     @Override
@@ -157,6 +158,13 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;
         animateToMarker(selectedLocation, offset);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        clusterManager.setOnClusterClickListener(null);
+        clusterManager.setOnClusterItemClickListener(null);
     }
 
     @Override

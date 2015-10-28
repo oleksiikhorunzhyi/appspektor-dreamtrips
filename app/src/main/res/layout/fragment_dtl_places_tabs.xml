@@ -15,7 +15,7 @@
 
         <com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout
             android:id="@+id/tabs"
-            style="@style/DreamFixedTabLayout"
+            style="@style/DreamTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/tab_background_color"

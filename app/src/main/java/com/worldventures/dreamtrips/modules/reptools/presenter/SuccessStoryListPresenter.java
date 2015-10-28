@@ -98,7 +98,6 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
     }
 
     private void handleListItemClick(SuccessStory successStory, int position) {
-        TrackingHelper.actionRepToolsSuccessStories(TrackingHelper.ATTRIBUTE_VIEW);
         lastSelectedPosition = position;
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);

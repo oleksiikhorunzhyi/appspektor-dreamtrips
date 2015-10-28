@@ -82,16 +82,16 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Override
     public void onBackPressed() {
-        if (!backStackDelegate.onBackPressed() &&
-                !checkChildFragments(getSupportFragmentManager())) {
-            FragmentManager fm = getSupportFragmentManager();
+        if (backStackDelegate.handleBackPressed() ||
+                checkChildFragments(getSupportFragmentManager())) return;
 
-            if (fm.getBackStackEntryCount() > 1) {
-                fm.popBackStack();
-                topLevelBackStackPopped();
-            } else {
-                finish();
-            }
+        FragmentManager fm = getSupportFragmentManager();
+
+        if (fm.getBackStackEntryCount() > 1) {
+            fm.popBackStack();
+            onTopLevelBackStackPopped();
+        } else {
+            finish();
         }
     }
 
@@ -111,7 +111,7 @@ public abstract class BaseActivity extends InjectingActivity {
         return false;
     }
 
-    protected void topLevelBackStackPopped() {
+    protected void onTopLevelBackStackPopped() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
     }
 

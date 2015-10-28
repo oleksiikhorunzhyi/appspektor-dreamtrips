@@ -236,8 +236,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     @Override
-    protected void topLevelBackStackPopped() {
-        super.topLevelBackStackPopped();
+    protected void onTopLevelBackStackPopped() {
+        super.onTopLevelBackStackPopped();
         updateTitle();
     }
 

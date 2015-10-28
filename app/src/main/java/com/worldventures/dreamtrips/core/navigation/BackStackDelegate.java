@@ -4,7 +4,7 @@ public class BackStackDelegate {
 
     private BackPressedListener listener;
 
-    public boolean onBackPressed() {
+    public boolean handleBackPressed() {
         return listener != null && listener.onBackPressed();
     }
 

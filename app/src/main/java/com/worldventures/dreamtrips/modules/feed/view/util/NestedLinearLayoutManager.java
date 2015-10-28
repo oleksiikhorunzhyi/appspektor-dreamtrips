@@ -3,12 +3,14 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 public class NestedLinearLayoutManager extends LinearLayoutManager {
 
-    private int maxHeight;
+    private int maxHeight = -1;
 
     public NestedLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
@@ -17,8 +19,11 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
     private int[] mMeasuredDimension = new int[2];
 
     @Override
-    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state,
-                          int widthSpec, int heightSpec) {
+    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
+        if (maxHeight == -1) {
+            super.onMeasure(recycler, state, widthSpec, heightSpec);
+            return;
+        }
         final int widthMode = View.MeasureSpec.getMode(widthSpec);
         final int heightMode = View.MeasureSpec.getMode(heightSpec);
         final int widthSize = View.MeasureSpec.getSize(widthSpec);
@@ -62,6 +67,22 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
         setMeasuredDimension(width, Math.min(height, maxHeight));
     }
 
+
+    @Override
+    public void onItemsChanged(RecyclerView recyclerView) {
+        ViewTreeObserver vto = recyclerView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                recyclerView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                int height = recyclerView.getMeasuredHeight();
+                maxHeight = height;
+                requestLayout();
+            }
+        });
+
+    }
+
     private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec,
                                    int heightSpec, int[] measuredDimension) {
         View view = recycler.getViewForPosition(position);
@@ -79,7 +100,4 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
         }
     }
 
-    public void setMaxHeight(int maxHeight) {
-        this.maxHeight = maxHeight;
-    }
 }

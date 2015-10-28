@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -132,8 +132,10 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
         if (details != null) details.setVisibility(View.GONE);
         if (viewProfile != null) viewProfile.setVisibility(View.GONE);
         if (closeFriends != null) closeFriends.setVisibility(View.GONE);
-        lvCloseFriends.setEmptyView(emptyView);
-        lvCloseFriends.addOnScrollListener(onScrollListener);
+        if (lvCloseFriends != null) {
+            lvCloseFriends.setEmptyView(emptyView);
+            lvCloseFriends.addOnScrollListener(onScrollListener);
+        }
     }
 
     @Override
@@ -157,24 +159,17 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     public void setFriends(List<User> friends, Injector injector) {
         if (friends != null && friends.size() > 0) {
             closeFriends.setVisibility(View.VISIBLE);
+            Context context = lvCloseFriends.getContext();
+            if (layoutManager == null) {
+                layoutManager = new NestedLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            }
+            if (adapter == null) {
+                adapter = new BaseArrayListAdapter<>(context, injector);
+                adapter.registerCell(User.class, FeedFriendCell.class);
+            }
 
-            adapter = new BaseArrayListAdapter<>(lvCloseFriends.getContext(), injector);
-            adapter.registerCell(User.class, FeedFriendCell.class);
-
-            lvCloseFriends.setLayoutManager(new LinearLayoutManager(lvCloseFriends.getContext()));
+            lvCloseFriends.setLayoutManager(layoutManager);
             lvCloseFriends.setAdapter(adapter);
-
-            ViewTreeObserver vto = lvCloseFriends.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    lvCloseFriends.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    int height = lvCloseFriends.getMeasuredHeight();
-                    layoutManager = new NestedLinearLayoutManager(lvCloseFriends.getContext(), LinearLayoutManager.VERTICAL, false);
-                    layoutManager.setMaxHeight(height);
-                    lvCloseFriends.setLayoutManager(layoutManager);
-                }
-            });
 
             adapter.addItems(friends);
         }
@@ -182,7 +177,9 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
 
     @Override
     public void addFriends(List<User> friends) {
-        adapter.addItems(friends);
+        if (adapter != null) {
+            adapter.addItems(friends);
+        }
     }
 
 
@@ -236,6 +233,7 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
         }
     }
 
+    @Optional
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
         if (onSearchUserClick != null)

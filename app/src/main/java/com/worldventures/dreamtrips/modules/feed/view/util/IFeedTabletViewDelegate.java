@@ -13,9 +13,9 @@ public interface IFeedTabletViewDelegate {
 
     void setUser(User user, boolean withDetails);
 
-    void setCloseFriends(List<User> friends, Injector injector);
+    void setFriends(List<User> friends, Injector injector);
 
-    void addCloseFriends(List<User> friends);
+    void addFriends(List<User> friends);
 
     void setCircles(List<Circle> circles, int defCircleIndex);
 
@@ -29,6 +29,7 @@ public interface IFeedTabletViewDelegate {
 
     void setRequestMoreUsersListener(RequestMoreUsersListener requestMoreUsersListener);
 
+    void setOnSearchUserClick(ActionListener onSearchUserClick);
 
     interface ActionListener {
         void onAction();

@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
+import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.List;
@@ -32,17 +32,17 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         feedTabletViewManager.setOnCirclePicked((c) -> getPresenter().circlePicked(c));
         feedTabletViewManager.setRequestMoreUsersListener((page, circle) -> getPresenter().loadFriends(page, circle));
         feedTabletViewManager.setOnSharePhotoClick(this::openSharePhoto);
+        feedTabletViewManager.setOnSearchUserClick(this::openSearch);
     }
-
 
     @Override
     public void addCloseFriends(List<User> friends) {
-        feedTabletViewManager.setCloseFriends(friends, this);
+        feedTabletViewManager.setFriends(friends, this);
     }
 
     @Override
     public void addFriends(List<User> friends) {
-        feedTabletViewManager.addCloseFriends(friends);
+        feedTabletViewManager.addFriends(friends);
     }
 
     @Override
@@ -50,7 +50,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         circles.add(0, Circle.all(getResources().getString(R.string.show_all)));
         feedTabletViewManager.setCircles(circles, 0);
     }
-
 
     public void openPost() {
         showPostContainer();
@@ -81,6 +80,12 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     protected void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
         if (container != null) container.setVisibility(View.VISIBLE);
+    }
+
+    protected void openSearch() {
+        NavigationBuilder.create().with(activityRouter)
+                .data(new FriendGlobalSearchBundle(""))
+                .move(Route.FRIEND_SEARCH);
     }
 
     @Override

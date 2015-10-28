@@ -60,15 +60,58 @@
                     android:nestedScrollingEnabled="false"
                     android:padding="@dimen/spacing_tiny"
                     android:src="@drawable/ic_success_story_filters_normal"/>
+
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/lv_close_friends"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginLeft="@dimen/spacing_small"
-                android:layout_marginRight="@dimen/spacing_small"/>
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/feed_friend_empty_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:alpha="0.54"
+                        android:gravity="center"
+                        android:padding="25dp"
+                        android:text="@string/filter_no_results"
+                        android:textColor="@android:color/black"
+                        android:textSize="18dp"/>
+
+                    <TextView
+                        android:id="@+id/global"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/caption"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:padding="25dp"
+                        android:text="@string/friend_global_search"
+                        android:textColor="#3D76A1"
+                        android:textSize="22dp"/>
+
+                </RelativeLayout>
+
+
+                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+                    android:id="@+id/lv_close_friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:layout_marginRight="@dimen/spacing_small"
+                    tools:listitem="@layout/adapter_item_feed_friend"
+                    android:visibility="gone"/>
+            </FrameLayout>
 
         </LinearLayout>
 

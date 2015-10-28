@@ -20,12 +20,12 @@ public class MockFeedTabletViewDelegate implements IFeedTabletViewDelegate {
     }
 
     @Override
-    public void setCloseFriends(List<User> friends, Injector injector) {
+    public void setFriends(List<User> friends, Injector injector) {
 
     }
 
     @Override
-    public void addCloseFriends(List<User> friends) {
+    public void addFriends(List<User> friends) {
 
     }
 
@@ -46,6 +46,11 @@ public class MockFeedTabletViewDelegate implements IFeedTabletViewDelegate {
 
     @Override
     public void setRequestMoreUsersListener(RequestMoreUsersListener requestMoreUsersListener) {
+
+    }
+
+    @Override
+    public void setOnSearchUserClick(ActionListener onSearchUserClick) {
 
     }
 

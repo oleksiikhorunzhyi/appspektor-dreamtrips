@@ -13,6 +13,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FeedFriendCell;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
@@ -67,7 +68,7 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     ViewGroup closeFriends;
     @Optional
     @InjectView(R.id.lv_close_friends)
-    RecyclerView lvCloseFriends;
+    EmptyRecyclerView lvCloseFriends;
 
     @Optional
     @InjectView(R.id.circle_filter)
@@ -75,10 +76,14 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     @Optional
     @InjectView(R.id.circle_title)
     TextView circleTitle;
+    @Optional
+    @InjectView(R.id.feed_friend_empty_view)
+    View emptyView;
 
     ActionListener onUserClick;
     ActionListener onCreatePostClick;
     ActionListener onSharePhotoClick;
+    ActionListener onSearchUserClick;
 
     CirclePickedListener onCirclePicked;
 
@@ -90,6 +95,10 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
 
     boolean loading;
     int previousTotal;
+
+    private NestedLinearLayoutManager layoutManager;
+    private BaseArrayListAdapter<User> adapter;
+
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -111,8 +120,7 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
             }
         }
     };
-    private LinearLayoutManager layoutManager;
-    private BaseArrayListAdapter<User> adapter;
+
 
     public FeedTabletViewDelegate() {
     }
@@ -123,7 +131,7 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
         if (details != null) details.setVisibility(View.GONE);
         if (viewProfile != null) viewProfile.setVisibility(View.GONE);
         if (closeFriends != null) closeFriends.setVisibility(View.GONE);
-
+        lvCloseFriends.setEmptyView(emptyView);
     }
 
     @Override
@@ -144,14 +152,14 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     }
 
     @Override
-    public void setCloseFriends(List<User> friends, Injector injector) {
+    public void setFriends(List<User> friends, Injector injector) {
         if (friends != null && friends.size() > 0) {
             closeFriends.setVisibility(View.VISIBLE);
 
             adapter = new BaseArrayListAdapter<>(lvCloseFriends.getContext(), injector);
             adapter.registerCell(User.class, FeedFriendCell.class);
 
-            layoutManager = new LinearLayoutManager(lvCloseFriends.getContext(), LinearLayoutManager.VERTICAL, false);
+            layoutManager = new NestedLinearLayoutManager(lvCloseFriends.getContext(), LinearLayoutManager.VERTICAL, false);
             lvCloseFriends.setLayoutManager(layoutManager);
             lvCloseFriends.setAdapter(adapter);
             lvCloseFriends.addOnScrollListener(onScrollListener);
@@ -160,7 +168,7 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     }
 
     @Override
-    public void addCloseFriends(List<User> friends) {
+    public void addFriends(List<User> friends) {
         adapter.addItems(friends);
     }
 
@@ -215,6 +223,12 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
         }
     }
 
+    @OnClick(R.id.global)
+    void onGlobalSearchClicked() {
+        if (onSearchUserClick != null)
+            onSearchUserClick.onAction();
+    }
+
     @Override
     public void setOnUserClick(ActionListener onUserClick) {
         this.onUserClick = onUserClick;
@@ -236,10 +250,16 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     }
 
     @Override
+    public void setOnSearchUserClick(ActionListener onSearchUserClick) {
+        this.onSearchUserClick = onSearchUserClick;
+    }
+
+    @Override
     public void setOnSharePhotoClick(ActionListener onSharePhotoClick) {
         this.onSharePhotoClick = onSharePhotoClick;
     }
 
+    @Override
     public void setRequestMoreUsersListener(RequestMoreUsersListener requestMoreUsersListener) {
         this.requestMoreUsersListener = requestMoreUsersListener;
     }
@@ -248,5 +268,4 @@ public class FeedTabletViewDelegate implements IFeedTabletViewDelegate {
     public void setOnCirclePicked(CirclePickedListener onCirclePicked) {
         this.onCirclePicked = onCirclePicked;
     }
-
 }

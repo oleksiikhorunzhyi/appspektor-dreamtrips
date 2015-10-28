@@ -113,9 +113,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         bundle.setType(event.getType());
         bundle.setBucketItemUid(event.getUid());
 
-        fragmentCompass.removeEdit();
         if (view.isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
             fragmentCompass.setContainerId(R.id.container_details_floating);
             fragmentCompass.showContainer();
             NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);

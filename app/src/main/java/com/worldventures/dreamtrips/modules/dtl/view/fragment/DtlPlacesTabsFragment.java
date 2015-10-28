@@ -71,7 +71,6 @@ public class DtlPlacesTabsFragment
                     NavigationBuilder.create().with(fragmentCompass)
                             .data(getArgs())
                             .move(Route.DTL_MAP);
-                    fragmentCompass.disableBackStack();
                     break;
                 case R.id.action_dtl_filter:
                     ((MainActivity) getActivity()).openRightDrawer();
@@ -106,6 +105,7 @@ public class DtlPlacesTabsFragment
             }
         });
         //
+        fragmentCompass.setSupportFragmentManager(getActivity().getSupportFragmentManager());
         fragmentCompass.setContainerId(R.id.container_filters);
         fragmentCompass.disableBackStack();
         fragmentCompass.replace(Route.DTL_FILTERS);

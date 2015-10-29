@@ -1,19 +1,18 @@
 package com.worldventures.dreamtrips.modules.feed.api;
 
 import com.worldventures.dreamtrips.core.api.request.Command;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 
 public class FlagItemCommand extends Command<Void> {
-    private String uid;
-    private String nameOfReason;
+    private FlagData data;
 
-    public FlagItemCommand(String uid, String nameOfReason) {
+    public FlagItemCommand(FlagData data) {
         super(Void.class);
-        this.uid = uid;
-        this.nameOfReason = nameOfReason;
+        this.data = data;
     }
 
     @Override
     public Void loadDataFromNetwork() throws Exception {
-        return getService().flagItem(uid, nameOfReason);
+        return getService().flagItem(data.uid, data.flagReasonId, data.nameOfReason);
     }
 }

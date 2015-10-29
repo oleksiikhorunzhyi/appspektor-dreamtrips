@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
@@ -45,7 +46,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
-        extends BaseFragmentWithArgs<FullScreenPresenter<T>, FullScreenPhotoBundle> implements FullScreenPresenter.View {
+        extends BaseFragmentWithArgs<FullScreenPresenter<T>, FullScreenPhotoBundle> implements FullScreenPresenter.View, Flaggable {
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;
@@ -263,7 +264,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @OnClick(R.id.flag)
     public void actionFlag() {
-        getPresenter().onFlagAction();
+        getPresenter().onFlagAction(this);
     }
 
     @OnClick({R.id.iv_comment, R.id.tv_comments_count})
@@ -288,11 +289,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setShareVisibility(boolean shareVisible) {
         ivShare.setVisibility(shareVisible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void setFlags(List<Flag> flags) {
-        flag.showFlagsPopup(flags, (reason, desc) -> getPresenter().sendFlagAction(reason, desc));
     }
 
     @Override
@@ -460,5 +456,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setSocial(Boolean isEnabled) {
         civUserPhoto.setEnabled(isEnabled);
+    }
+
+    @Override
+    public void showFlagDialog(List<Flag> flags) {
+        hideProgress();
+        flag.showFlagsPopup(flags, (flagReasonId, reason, desc) -> getPresenter().sendFlagAction(flagReasonId, reason, desc));
     }
 }

@@ -58,8 +58,8 @@ public class FeedActionPanelViewActionHandler {
         });
 
         actionView.setOnFlagClickListener(feedItem -> eventBus.post(new LoadFlagEvent(actionView)));
-        actionView.setOnFlagDialogClickListener((feedItem, reason, desc) ->
-                eventBus.post(new ItemFlaggedEvent(feedItem.getItem(), reason + ". " + desc)));
+        actionView.setOnFlagDialogClickListener((feedItem, flagReasonId, reason, desc) ->
+                eventBus.post(new ItemFlaggedEvent(feedItem.getItem(), flagReasonId, reason + ". " + desc)));
     }
 
     private void share(FeedItem feedItem, Context context, String shareType) {

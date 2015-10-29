@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
@@ -28,7 +29,6 @@ import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 
@@ -156,7 +156,8 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     public void onEvent(ItemFlaggedEvent event) {
         if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
+            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
+                    event.getFlagReasonId(), event.getNameOfReason()));
     }
 
     private void onCommentPosted(Comment comment) {

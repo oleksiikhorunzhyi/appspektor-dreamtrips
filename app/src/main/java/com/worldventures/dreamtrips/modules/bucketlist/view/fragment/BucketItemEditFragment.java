@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -116,7 +118,16 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     }
 
     private void openDatePicker() {
-        fragmentCompass.showDatePickerDialog(this, getPresenter().getDate());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(getPresenter().getDate());
+        DatePickerDialog datePickerDialog =
+                DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH), false);
+        if (getActivity() != null && !getActivity().isFinishing()) {
+            FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
+            datePickerDialog.show(supportFragmentManager, "default");
+        }
     }
 
     @Override

@@ -3,36 +3,35 @@ package com.worldventures.dreamtrips.core.navigation;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.util.Log;
 
-import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-
-import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class FragmentCompass {
 
-    private BaseActivity activity;
-    private OnTransactionListener onTransactionListener;
+    private FragmentActivity activity;
 
     private int containerId;
     private boolean backStackEnabled = true;
     private FragmentManager supportFragmentManager;
 
-    public FragmentCompass(BaseActivity activity, int containerId) {
+    public FragmentCompass(FragmentActivity activity, int containerId) {
         this.activity = activity;
         this.containerId = containerId;
         supportFragmentManager = activity.getSupportFragmentManager();
+    }
+
+    public FragmentCompass(FragmentActivity activity) {
+        this(activity, R.id.container_main);
     }
 
     public void setContainerId(int containerId) {
@@ -89,17 +88,16 @@ public class FragmentCompass {
         if (validateState()) {
             FragmentManager fragmentManager = supportFragmentManager;
             Fragment fragment = fragmentManager.findFragmentByTag(name);
-
+            //
             if (fragment != null) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.remove(fragment);
-
+                //
                 if (BuildConfig.DEBUG) {
                     fragmentTransaction.commit();
                 } else {
                     fragmentTransaction.commitAllowingStateLoss();
                 }
-
             }
         }
     }
@@ -116,7 +114,7 @@ public class FragmentCompass {
         if (validateState()) {
             try {
                 String clazzName = route.getClazzName();
-
+                //
                 BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
                 setArgsToFragment(fragment, bundle);
                 FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
@@ -129,15 +127,9 @@ public class FragmentCompass {
                         fragmentTransaction.add(containerId, fragment, clazzName);
                         break;
                 }
-
-                if (onTransactionListener != null) {
-                    onTransactionListener.onTransactionDone(null, action);
-                }
-
                 if (backStackEnabled) {
                     fragmentTransaction.addToBackStack(route.name());
                 }
-
                 if (BuildConfig.DEBUG) {
                     fragmentTransaction.commit();
                 } else {
@@ -158,25 +150,11 @@ public class FragmentCompass {
         }
     }
 
-    public void showDatePickerDialog(DatePickerDialog.OnDateSetListener onDateSetListener,
-                                     Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        showDatePickerDialog(onDateSetListener, calendar, 0, 0, "default");
+    public void setBackStackEnabled(boolean enabled) {
+        this.backStackEnabled = enabled;
     }
 
-    public void showDatePickerDialog(DatePickerDialog.OnDateSetListener onDateSetListener,
-                                     Calendar calendar, int from, int to, String tag) {
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance
-                (onDateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
-
-        if (from != 0 && to != 0) {
-            datePickerDialog.setYearRange(from, to);
-        }
-
-        show(datePickerDialog, tag);
-    }
-
+    @Deprecated
     public void disableBackStack() {
         backStackEnabled = false;
     }
@@ -217,16 +195,9 @@ public class FragmentCompass {
         } catch (IllegalStateException e) {
             Timber.e(e, "Can't pop fragment"); //for avoid application crash when called at runtime
         }
-        if (onTransactionListener != null) {
-            onTransactionListener.onTransactionDone(null, Action.POP);
-        }
     }
 
     public enum Action {
         ADD, REPLACE, POP
-    }
-
-    public interface OnTransactionListener {
-        void onTransactionDone(Route route, Action action);
     }
 }

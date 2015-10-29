@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 public class RouterImpl implements Router {
 
-    private BaseActivity activity;
+    private FragmentActivity activity;
 
-    public RouterImpl(BaseActivity activity) {
+    public RouterImpl(FragmentActivity activity) {
         this.activity = activity;
     }
 
@@ -40,7 +40,7 @@ public class RouterImpl implements Router {
         FragmentManager fragmentManager = config.getFragmentManager() == null ?
                 activity.getSupportFragmentManager() :
                 config.getFragmentManager();
-
+        //
         FragmentCompass fragmentCompass = new FragmentCompass(activity);
         fragmentCompass.setContainerId(config.getContainerId());
         fragmentCompass.setSupportFragmentManager(fragmentManager);
@@ -53,5 +53,4 @@ public class RouterImpl implements Router {
         args.putParcelable(ComponentPresenter.EXTRA_DATA, config.getData());
         return args;
     }
-
 }

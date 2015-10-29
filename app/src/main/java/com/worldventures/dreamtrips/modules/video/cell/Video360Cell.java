@@ -80,7 +80,7 @@ public class Video360Cell extends AbstractCell<Video> {
         }
         activityRouter.open360Activity(url);
         getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_PLAY, video.getVideoName()));
-        TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_VIEW, video.getUid());
+        TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_VIEW, video.getVideoName());
     }
 
 
@@ -89,7 +89,7 @@ public class Video360Cell extends AbstractCell<Video> {
         Video video = getModelObject();
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
         getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_LOAD_START, video.getVideoName()));
-        TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_DOWNLOAD, video.getUid());
+        TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_DOWNLOAD, video.getVideoName());
     }
 
     @Override

@@ -98,6 +98,7 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     public void onResume() {
         super.onResume();
         notifyPosition();
+        TrackingHelper.viewBucketListScreen();
     }
 
     private void notifyPosition() {

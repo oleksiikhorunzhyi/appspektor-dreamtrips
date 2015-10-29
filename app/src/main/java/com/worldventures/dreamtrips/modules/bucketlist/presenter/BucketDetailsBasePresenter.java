@@ -212,7 +212,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     private void startUpload(UploadTask uploadTask) {
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
                 uploadTask.getType(), bucketItem.getType());
-        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO));
+        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
 
         TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
 

@@ -322,6 +322,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
         }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionMembershipEnrollScreen(actionAnalyticEvent);
+        }
     }
 
 
@@ -356,6 +361,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             super.afterCreateView(rootView);
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
+        }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionRepToolsEnrollment(actionAnalyticEvent);
         }
     }
 

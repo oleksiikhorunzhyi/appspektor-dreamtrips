@@ -138,7 +138,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     }
 
     public void onEvent(MemberVideoAnalyticEvent event) {
-        TrackingHelper.actionMembershipVideo(event.getActionAttribute(), event.getVideoId());
+        TrackingHelper.actionMembershipVideo(event.getActionAttribute(), event.getVideoName());
     }
 
     @Override

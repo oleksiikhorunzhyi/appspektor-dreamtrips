@@ -24,8 +24,7 @@ public class OtaFragment extends AuthorizedStaticInfoFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        TrackingHelper.viewBookTravelScreen();
+    protected void sendAnalyticEvent(String actionAnalyticEvent) {
+        TrackingHelper.actionBookTravelScreen(actionAnalyticEvent);
     }
 }

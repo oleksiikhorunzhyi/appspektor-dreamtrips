@@ -153,6 +153,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
                 return false;
             }
         });
+        search.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_SUCCESS_STORY));
         search.setIconifiedByDefault(true);
     }
 

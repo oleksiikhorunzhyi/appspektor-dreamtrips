@@ -84,7 +84,7 @@ public class VideoCell extends AbstractCell<Video> {
         }
         Intent intent = new Intent(context, PlayerActivity.class).setData(parse);
         getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_PLAY, video.getVideoName()));
-        getEventBus().post(new MemberVideoAnalyticEvent(video.getUid(), TrackingHelper.ATTRIBUTE_VIEW));
+        getEventBus().post(new MemberVideoAnalyticEvent(video.getVideoName(), TrackingHelper.ATTRIBUTE_VIEW));
         context.startActivity(intent);
     }
 
@@ -93,7 +93,7 @@ public class VideoCell extends AbstractCell<Video> {
         Video video = getModelObject();
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
         getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_LOAD_START, video.getVideoName()));
-        getEventBus().post(new MemberVideoAnalyticEvent(video.getUid(), TrackingHelper.ATTRIBUTE_VIEW));
+        getEventBus().post(new MemberVideoAnalyticEvent(video.getVideoName(), TrackingHelper.ATTRIBUTE_DOWNLOAD));
     }
 
     @Override

@@ -71,7 +71,7 @@ public class DialogFragmentNavigator implements Navigator {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = super.onCreateView(inflater, container, savedInstanceState);
             compass.setContainerId(view.getId());
-            compass.setSupportFragmentManager(getChildFragmentManager());
+            compass.setFragmentManager(getChildFragmentManager());
             return view;
         }
 

@@ -344,7 +344,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         Route detailsRoute = Route.FEED_ENTITY_DETAILS;
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
             fragmentCompass.clear();
             NavigationBuilder.create()

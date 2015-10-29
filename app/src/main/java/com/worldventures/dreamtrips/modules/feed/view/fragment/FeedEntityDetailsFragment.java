@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import retrofit.http.HEAD;
 
 @Layout(R.layout.fragment_feed_entity_details)
 public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDetailsPresenter, FeedEntityDetailsBundle> implements FeedEntityDetailsPresenter.View {
@@ -66,7 +65,7 @@ public class FeedEntityDetailsFragment extends BaseFragmentWithArgs<FeedEntityDe
     @Override
     public void setContent(FeedItem feedItem) {
         fragmentCompass.setContainerId(R.id.entity_content_container);
-        fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+        fragmentCompass.setFragmentManager(getChildFragmentManager());
         Pair<Route, Parcelable> routeParcelablePair = fragmentFactory.create(feedItem);
         NavigationBuilder.create().with(fragmentCompass).data(routeParcelablePair.second).move(routeParcelablePair.first);
     }

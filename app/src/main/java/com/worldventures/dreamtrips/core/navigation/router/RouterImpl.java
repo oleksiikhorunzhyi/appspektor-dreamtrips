@@ -43,7 +43,7 @@ public class RouterImpl implements Router {
         //
         FragmentCompass fragmentCompass = new FragmentCompass(activity);
         fragmentCompass.setContainerId(config.getContainerId());
-        fragmentCompass.setSupportFragmentManager(fragmentManager);
+        fragmentCompass.setFragmentManager(fragmentManager);
         fragmentCompass.setBackStackEnabled(config.isBackStackEnabled());
         fragmentCompass.replace(route, getArgs(config));
     }

@@ -22,12 +22,12 @@ public class FragmentCompass {
 
     private int containerId;
     private boolean backStackEnabled = true;
-    private FragmentManager supportFragmentManager;
+    private FragmentManager fragmentManager;
 
     public FragmentCompass(FragmentActivity activity, int containerId) {
         this.activity = activity;
         this.containerId = containerId;
-        supportFragmentManager = activity.getSupportFragmentManager();
+        fragmentManager = activity.getSupportFragmentManager();
     }
 
     public FragmentCompass(FragmentActivity activity) {
@@ -86,7 +86,7 @@ public class FragmentCompass {
 
     public void remove(String name) {
         if (validateState()) {
-            FragmentManager fragmentManager = supportFragmentManager;
+            FragmentManager fragmentManager = this.fragmentManager;
             Fragment fragment = fragmentManager.findFragmentByTag(name);
             //
             if (fragment != null) {
@@ -102,12 +102,12 @@ public class FragmentCompass {
         }
     }
 
-    public void setSupportFragmentManager(FragmentManager supportFragmentManager) {
-        this.supportFragmentManager = supportFragmentManager;
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
     }
 
     public FragmentManager getFragmentManager() {
-        return supportFragmentManager;
+        return fragmentManager;
     }
 
     protected void action(Action action, Route route, Bundle bundle) {
@@ -117,7 +117,7 @@ public class FragmentCompass {
                 //
                 BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
                 setArgsToFragment(fragment, bundle);
-                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
                 switch (action) {
                     case REPLACE:
@@ -178,7 +178,7 @@ public class FragmentCompass {
 
     protected void clearBackStack() {
         try {
-            supportFragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } catch (IllegalStateException e) {
             Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
         }

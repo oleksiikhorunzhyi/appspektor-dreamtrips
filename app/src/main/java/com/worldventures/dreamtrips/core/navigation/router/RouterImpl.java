@@ -28,7 +28,7 @@ public class RouterImpl implements Router {
 
     @Override
     public void moveTo(Route route) {
-        openActivity(route, NavigationConfig.Builder.forActivity().build());
+        openActivity(route, NavigationConfigBuilder.forActivity().build());
     }
 
     private void openActivity(Route route, NavigationConfig config) {
@@ -51,6 +51,9 @@ public class RouterImpl implements Router {
     private Bundle getArgs(NavigationConfig config) {
         Bundle args = new Bundle();
         args.putParcelable(ComponentPresenter.EXTRA_DATA, config.getData());
+        if (config.getToolbarConfig() != null) {
+            args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, config.getToolbarConfig());
+        }
         return args;
     }
 }

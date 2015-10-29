@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
@@ -21,11 +20,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhot
 
 public class ActivityRouter extends ActivityBoundRouter {
 
-    private FeatureManager featureManager;
-
-    public ActivityRouter(Activity activity, FeatureManager featureManager) {
+    public ActivityRouter(Activity activity) {
         super(activity);
-        this.featureManager = featureManager;
     }
 
     public void openMain() {
@@ -74,10 +70,6 @@ public class ActivityRouter extends ActivityBoundRouter {
     public void openComponentActivity(@NonNull Route route, @NonNull Bundle args) {
         args.putSerializable(ComponentPresenter.ROUTE, route);
         startActivityWithArgs(ComponentActivity.class, args);
-    }
-
-    public FeatureManager getFeatureManager() {
-        return featureManager;
     }
 
     public void startService(Class clazz) {

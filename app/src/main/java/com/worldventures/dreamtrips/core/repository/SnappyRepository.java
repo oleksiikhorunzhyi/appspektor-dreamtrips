@@ -53,6 +53,7 @@ public class SnappyRepository {
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
+    public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
 
     private Context context;
     private ExecutorService executorService;
@@ -158,9 +159,9 @@ public class SnappyRepository {
 
     @NonNull
     private String getBucketKey(String type, int userId) {
-     if(userId==0){
-         throw  new IllegalStateException("userId can't be 0");
-     }
+        if (userId == 0) {
+            throw new IllegalStateException("userId can't be 0");
+        }
         String key = (BUCKET_LIST) + ":" + type;
         key += "_" + userId;
         return key.toLowerCase();
@@ -337,12 +338,16 @@ public class SnappyRepository {
     // Notifications counters
     ///////////////////////////////////////////////////////////////////////////
 
-    /** All notifications */
+    /**
+     * All notifications
+     */
     public void saveBadgeNotificationsCount(int notificationsCount) {
         act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
     }
 
-    /** All notifications */
+    /**
+     * All notifications
+     */
     public int getBadgeNotificationsCount() {
         return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
     }
@@ -371,37 +376,44 @@ public class SnappyRepository {
         return readList(CIRCLES, Circle.class);
     }
 
-    public void saveFilterCircle(Circle circle){
+    public void saveFilterCircle(Circle circle) {
         act(db -> db.put(FILTER_CIRCLE, circle));
     }
 
-    public Circle getFilterCircle(){
+    public Circle getFilterCircle() {
         return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
+    }
+
+    public Circle getFeedFriendPickedCircle() {
+        return actWithResult(db -> db.get(FILTER_FEED_FRIEND_FILTER_CIRCLE, Circle.class)).orNull();
+    }
+
+    public void saveFeedFriendPickedCircle(Circle circle) {
+        act(db -> db.put(FILTER_FEED_FRIEND_FILTER_CIRCLE, circle));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     //
     ///////////////////////////////////////////////////////////////////////////
 
-    private interface SnappyAction {
-        void call(DB db) throws SnappydbException;
+    public String getGcmRegToken() {
+        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
     }
 
-
-    private interface SnappyResult<T> {
-        T call(DB db) throws SnappydbException;
+    public void setGcmRegToken(String token) {
+        act(db -> db.put(GCM_REG_TOKEN, token));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // GCM
     ///////////////////////////////////////////////////////////////////////////
 
-    public void setGcmRegToken(String token) {
-        act(db -> db.put(GCM_REG_TOKEN, token));
+    private interface SnappyAction {
+        void call(DB db) throws SnappydbException;
     }
 
-    public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
+    private interface SnappyResult<T> {
+        T call(DB db) throws SnappydbException;
     }
 
 }

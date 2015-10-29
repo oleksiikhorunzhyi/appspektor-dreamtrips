@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
@@ -42,11 +41,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
-    @InjectView(R.id.fab_post)
-    FloatingActionButton fabPost;
-
     BadgeImageView friendsBadge;
-
 
     private CirclesFilterPopupWindow filterPopupWindow;
 
@@ -63,7 +58,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                     .with(fragmentCompass)
                     .data(new FeedAdditionalInfoBundle(getPresenter().getAccount()))
                     .attach(Route.FEED_LIST_ADDITIONAL_INFO);
-            fabPost.setVisibility(View.GONE);
         }
 
     }
@@ -74,12 +68,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         if (baseFragment instanceof PostFragment) {
             showPostContainer();
         }
-    }
-
-    @Optional
-    @OnClick({R.id.fab_post})
-    void onPostClicked() {
-        openPost();
     }
 
     @Override
@@ -137,7 +125,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         return new BaseArrayListAdapter<>(feedView.getContext(), this);
     }
 
-    public void openPost() {
+    private void openPost() {
         showPostContainer();
 
         fragmentCompass.removePost();
@@ -149,10 +137,18 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .attach(Route.POST_CREATE);
     }
 
-    public void openFriends() {
+    private void openSharePhoto() {
+        showPostContainer();
+
+        fragmentCompass.removePost();
+        fragmentCompass.disableBackStack();
+        fragmentCompass.setContainerId(R.id.container_details_floating);
+
         NavigationBuilder.create()
-                .with(activityRouter)
-                .move(Route.FRIENDS);
+                .with(fragmentCompass)
+                .data(new PostBundle(null, PostBundle.PHOTO))
+                .attach(Route.POST_CREATE);
+
     }
 
     @Override
@@ -160,6 +156,18 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         if (friendsBadge != null) {
             friendsBadge.setBadgeValue(count);
         }
+    }
+
+    @Optional
+    @OnClick(R.id.share_post)
+    protected void onPostClicked() {
+        openPost();
+    }
+
+    @Optional
+    @OnClick(R.id.share_photo)
+    protected void onSharePhotoClick() {
+        openSharePhoto();
     }
 
 }

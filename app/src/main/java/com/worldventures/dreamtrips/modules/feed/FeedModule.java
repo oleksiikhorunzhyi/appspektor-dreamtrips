@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
@@ -41,9 +40,6 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedTabletViewDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.util.IFeedTabletViewDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.util.MockFeedTabletViewDelegate;
 
 import dagger.Module;
 import dagger.Provides;
@@ -120,12 +116,4 @@ public class FeedModule {
     FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(ActivityRouter activityRouter, @Global EventBus eventBus) {
         return new FeedActionPanelViewActionHandler(activityRouter, eventBus);
     }
-
-
-    @Provides
-    IFeedTabletViewDelegate provideFeedTabletViewManager(Presenter.TabletAnalytic tabletAnalytic) {
-        if (tabletAnalytic.isTabletLandscape()) return new FeedTabletViewDelegate();
-        return new MockFeedTabletViewDelegate();
-    }
-
 }

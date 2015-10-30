@@ -40,16 +40,15 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     private void processTransaction() {
         dtlTransaction = snapper.getDtlTransaction(place.getId());
 
-        // check if transaction was succeeded, so that to show success popup
-        if (!checkSucceedEvent())
-            // check if transaction is out of date, so that to clean transaction
-            if (!checkTransactionOutOfDate()) {
-                // we should clean transaction, as for now we don't allow user to save his progress
-                // in the enrollment wizard(maybe needed in future)
-                if (dtlTransaction.getUploadTask() != null)
-                    photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-                snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
-            }
+        if (dtlTransaction != null
+                && !checkSucceedEvent()
+                && !checkTransactionOutOfDate()) {
+            // we should clean transaction, as for now we don't allow user to save his progress
+            // in the enrollment wizard(maybe needed in future)
+            if (dtlTransaction.getUploadTask() != null)
+                photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+            snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
+        }
         //
         view.setTransaction(dtlTransaction);
     }

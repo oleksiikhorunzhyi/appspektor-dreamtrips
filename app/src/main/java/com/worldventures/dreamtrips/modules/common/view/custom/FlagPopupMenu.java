@@ -48,7 +48,7 @@ public class FlagPopupMenu extends PopupMenu {
         show();
     }
 
-    private void showFlagConfirmDialog(Flag flag, String desc) {
+    private void showFlagConfirmDialog(Flag flag, String reason) {
         String content = context.getResources().getString(R.string.flag_photo_first) + " "
                 + flag.getName().toLowerCase()
                 + " "
@@ -62,7 +62,7 @@ public class FlagPopupMenu extends PopupMenu {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         if (dialogConfirmationCallback != null) {
-                            dialogConfirmationCallback.onFlagConfirmed(flag.getId(), flag.getName(), desc);
+                            dialogConfirmationCallback.onFlagConfirmed(flag.getId(), reason);
                         }
                     }
                 })
@@ -79,8 +79,8 @@ public class FlagPopupMenu extends PopupMenu {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         EditText et = ButterKnife.findById(dialog, R.id.tv_description);
-                        String desc = et.getText().toString();
-                        showFlagConfirmDialog(flag, desc);
+                        String reason = et.getText().toString();
+                        showFlagConfirmDialog(flag, reason);
                     }
                 }).build();
         dialog.show();
@@ -96,6 +96,6 @@ public class FlagPopupMenu extends PopupMenu {
     }
 
     public interface DialogConfirmationCallback {
-        void onFlagConfirmed(int flagReasonId, String reason, String desc);
+        void onFlagConfirmed(int flagReasonId, String reason);
     }
 }

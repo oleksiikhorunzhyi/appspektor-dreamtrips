@@ -201,9 +201,9 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
     @Override
     public void showFlagDialog(List<Flag> flags) {
         FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), more);
-        popupMenu.show(flags, (flagReasonId, reason, desc) -> {
+        popupMenu.show(flags, (flagReasonId, reason) -> {
             if (onFlagDialogClickListener != null) {
-                onFlagDialogClickListener.onClick(feedItem, flagReasonId, reason, desc);
+                onFlagDialogClickListener.onClick(feedItem, flagReasonId, reason);
             }
         });
     }
@@ -213,6 +213,6 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
     }
 
     public interface OnFlagDialogClickListener {
-        void onClick(FeedItem feedItem, int flagReasonId, String reason, String desc);
+        void onClick(FeedItem feedItem, int flagReasonId, String reason);
     }
 }

@@ -461,6 +461,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void showFlagDialog(List<Flag> flags) {
         hideProgress();
-        flag.showFlagsPopup(flags, (flagReasonId, reason, desc) -> getPresenter().sendFlagAction(flagReasonId, reason, desc));
+        flag.showFlagsPopup(flags, (flagReasonId, reason) -> getPresenter().sendFlagAction(flagReasonId, reason));
     }
 }

@@ -39,8 +39,6 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        void setText(String text);
-
         void setUsername(String name);
 
         void setImageURI(Uri uri);
@@ -50,5 +48,7 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
         void enableSaveButton();
 
         String getText();
+
+        void setText(String text);
     }
 }

@@ -7,26 +7,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.orhanobut.dialogplus.DialogPlus;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
-import com.worldventures.dreamtrips.modules.feed.view.custom.EditCommentViewHolder;
 
 import java.util.List;
 
@@ -46,18 +46,18 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
     protected EditText input;
     @InjectView(R.id.post)
     protected Button post;
-    @InjectView(R.id.input_container)
-    View inputContainer;
-
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
     protected BaseArrayListAdapter adapter;
     protected LinearLayoutManager layout;
 
+    @InjectView(R.id.input_container)
+    View inputContainer;
+
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
     private TextWatcherAdapter inputWatcher = new TextWatcherAdapter() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -164,21 +164,10 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
     }
 
     @Override
-    public void editComment(EditCommentPresenter presenter) {
-        EditCommentViewHolder editCommentViewHolder = new EditCommentViewHolder();
-        inject(presenter);
-        editCommentViewHolder.setPresenter(presenter);
-
-        DialogPlus editDialog = DialogPlus.newDialog(getActivity())
-                .setContentHolder(editCommentViewHolder)
-                .setCancelable(true)
-                .setOnCancelListener(dialog -> SoftInputUtil.hideSoftInputMethod(getActivity()))
-                .setGravity(Gravity.TOP)
-                .create();
-
-        editCommentViewHolder.setDialog(editDialog);
-
-        editDialog.show();
+    public void editComment(Comment comment) {
+        NavigationBuilder.create().forDialog(getChildFragmentManager(), Gravity.CENTER_HORIZONTAL | Gravity.TOP)
+                .data(new SingleCommentBundle(comment))
+                .attach(Route.EDIT_COMMENT);
     }
 
     @Override

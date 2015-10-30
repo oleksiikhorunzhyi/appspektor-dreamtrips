@@ -11,6 +11,7 @@ public class ComponentPresenter extends Presenter<ComponentPresenter.View> {
     public static final String COMPONENT_EXTRA = "component_extras";
     public static final String COMPONENT_TOOLBAR_CONFIG = "component_toolbar";
     public static final String EXTRA_DATA = "EXTRA_DATA";
+    public static final String DIALOG_GRAVITY = "DIALOG_GRAVITY";
 
 
     private Bundle args;

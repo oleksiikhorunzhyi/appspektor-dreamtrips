@@ -96,8 +96,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     }
 
     public void onEvent(EditCommentRequestEvent event) {
-        EditCommentPresenter editCommentPresenter = new EditCommentPresenter(event.getComment());
-        view.editComment(editCommentPresenter);
+        view.editComment(event.getComment());
     }
 
 
@@ -212,7 +211,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         void setLoading(boolean loading);
 
-        void editComment(EditCommentPresenter presenter);
+        void editComment(Comment presenter);
 
         void hideViewMore();
 

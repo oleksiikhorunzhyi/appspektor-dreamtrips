@@ -23,8 +23,8 @@ public class SoftInputUtil {
 
     /** Hide soft keyboard if visible */
     public static void hideSoftInputMethod(Activity activity) {
-        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         try {
+            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             View currentFocus = activity.getWindow().getCurrentFocus();
             if (currentFocus != null) {
                 inputManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);

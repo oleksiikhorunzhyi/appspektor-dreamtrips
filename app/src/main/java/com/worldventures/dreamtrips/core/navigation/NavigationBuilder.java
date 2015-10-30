@@ -12,6 +12,7 @@ public class NavigationBuilder {
     Bundle args;
     ToolbarConfig toolbarConfig;
     Parcelable data;
+    private int dialogGravity;
 
     public static NavigationBuilder create() {
         return new NavigationBuilder();
@@ -28,6 +29,11 @@ public class NavigationBuilder {
     }
 
     public NavigationBuilder forDialog(FragmentManager fm) {
+        return forDialog(fm, 0);
+    }
+
+    public NavigationBuilder forDialog(FragmentManager fm, int gravity) {
+        dialogGravity = gravity;
         navigator = new DialogFragmentNavigator(fm);
         return this;
     }
@@ -62,6 +68,7 @@ public class NavigationBuilder {
         }
         args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, toolbarConfig);
         args.putParcelable(ComponentPresenter.EXTRA_DATA, data);
+        args.putInt(ComponentPresenter.DIALOG_GRAVITY, dialogGravity);
         return args;
     }
 

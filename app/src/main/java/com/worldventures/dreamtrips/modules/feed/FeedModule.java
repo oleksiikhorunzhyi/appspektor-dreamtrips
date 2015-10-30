@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommendableFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
@@ -85,6 +86,9 @@ import de.greenrobot.event.EventBus;
                 FeedListAdditionalInfoPresenter.class,
                 FeedItemAdditionalInfoFragment.class,
                 FeedItemAdditionalInfoPresenter.class,
+
+                EditCommentFragment.class,
+                EditCommentPresenter.class,
 
                 PhotoGalleryRequest.class,
         },

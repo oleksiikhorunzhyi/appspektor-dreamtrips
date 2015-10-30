@@ -16,15 +16,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.util.PhotoAttachPanelManager;
-
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -56,13 +53,13 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     FrameLayout imageContainer;
     @InjectView(R.id.image)
     ImageView image;
+    @InjectView(R.id.photo_picker)
+    PhotoPickerLayout photoPickerLayout;
 
     @State
-    boolean pickerEnabled;
+    boolean pickerDisabled;
 
     SweetAlertDialog dialog;
-
-    private PhotoAttachPanelManager photoAttachPanelManager;
 
     private boolean cancel = false;
 
@@ -77,7 +74,6 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        photoAttachPanelManager = new PhotoAttachPanelManager(rootView);
     }
 
     @Override
@@ -100,8 +96,17 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void onResume() {
         super.onResume();
         post.addTextChangedListener(textWatcher);
-        pickerEnabled = true;
-        getPresenter().loadGallery();
+
+        if (getArgs() == null || getArgs().getType() != PostBundle.PHOTO) {
+            photoPickerLayout.hidePanel();
+        }
+
+        photoPickerLayout.setup(this, false);
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> {
+            getPresenter().attachImages(chosenImages);
+        });
+
+        updatePickerState();
     }
 
     @Override
@@ -155,10 +160,10 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @OnClick(R.id.image)
     void onImage() {
-        if (photoAttachPanelManager.isPanelVisible()) {
-            photoAttachPanelManager.hidePanel();
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
         } else {
-            photoAttachPanelManager.showPanel();
+            photoPickerLayout.showPanel();
         }
     }
 
@@ -170,7 +175,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void attachPhoto(Uri uri) {
-        photoAttachPanelManager.hidePanel();
+        photoPickerLayout.hidePanel();
 
         attachedPhoto.setImageURI(uri);
         if (uri != null) {
@@ -232,18 +237,18 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void enableImagePicker() {
-        pickerEnabled = true;
+        pickerDisabled = false;
         updatePickerState();
     }
 
     @Override
     public void disableImagePicker() {
-        pickerEnabled = false;
+        pickerDisabled = true;
         updatePickerState();
     }
 
     private void updatePickerState() {
-        image.setEnabled(pickerEnabled);
+        image.setEnabled(!pickerDisabled);
     }
 
     @Override
@@ -286,13 +291,6 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @Override
     public void hidePhotoControl() {
         image.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void updateAttachView(List<PhotoGalleryModel> photos) {
-        photoAttachPanelManager.setup(this, photos);
-        if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO)
-            photoAttachPanelManager.showPanel();
     }
 
     @Override

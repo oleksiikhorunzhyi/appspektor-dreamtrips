@@ -85,6 +85,9 @@
 
     <dimen name="popup_filter_item_extra_space">80dp</dimen>
 
-    <dimen name="photo_picker_size">200dp</dimen>
+    <dimen name="photo_picker_size">104dp</dimen>
+    <dimen name="picker_panel_height">228dp</dimen>
+    <dimen name="picker_panel_header_height">44dp</dimen>
+    <dimen name="picker_photo_spacing">1dp</dimen>
 
 </resources>

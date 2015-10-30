@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_tiny">
+<com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/picker_photo_spacing"
+    custom:side_priority="width">
 
     <LinearLayout
-        android:layout_width="@dimen/photo_picker_size"
-        android:layout_height="@dimen/photo_picker_size"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/share_photo_bg_color"
         android:gravity="center"
         android:orientation="vertical">
@@ -14,15 +17,16 @@
         <ImageView
             android:id="@+id/icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:gravity="center"
             android:textColor="@color/grey"
-            android:textSize="17sp" />
+            android:textSize="@dimen/font_normal"/>
     </LinearLayout>
 
-</FrameLayout>
+</com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
+import com.worldventures.dreamtrips.modules.common.presenter.PhotoPickerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
@@ -69,6 +69,7 @@ import de.greenrobot.event.EventBus;
                 CommentCell.class,
                 BaseCommentPresenter.class,
                 PostPresenter.class,
+                PhotoPickerPresenter.class,
                 PostFragment.class,
                 PostEditPresenter.class,
 
@@ -90,7 +91,6 @@ import de.greenrobot.event.EventBus;
                 EditCommentFragment.class,
                 EditCommentPresenter.class,
 
-                PhotoGalleryRequest.class,
         },
         complete = false,
         library = true

@@ -9,17 +9,15 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import timber.log.Timber;
 
 public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryModel>>{
 
-    @Inject
-    Context context;
+    private Context context;
 
-    public PhotoGalleryRequest() {
+    public PhotoGalleryRequest(Context context) {
         super((Class<ArrayList<PhotoGalleryModel>>) new ArrayList<PhotoGalleryModel>().getClass());
+        this.context = context;
     }
 
     @Override

@@ -474,4 +474,6 @@
     <string name="camera">Camera</string>
     <string name="add_from_facebook">Add from Facebook</string>
 
+    <string name="photos_selected">%d selected</string>
+
 </resources>

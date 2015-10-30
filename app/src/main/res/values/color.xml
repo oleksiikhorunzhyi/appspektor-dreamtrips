@@ -44,4 +44,5 @@
     <color name="facebook_color">#3C5A99</color>
     <color name="share_camera_color">#929292</color>
     <color name="share_photo_bg_color">#EEEEEE</color>
+    <color name="picker_panel_blue">#005E92</color>
 </resources>

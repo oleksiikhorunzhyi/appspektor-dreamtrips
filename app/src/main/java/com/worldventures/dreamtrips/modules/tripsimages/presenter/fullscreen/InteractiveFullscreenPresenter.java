@@ -59,9 +59,9 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     }
 
     @Override
-    public void sendFlagAction(int flagReasonId, String title, String description) {
+    public void sendFlagAction(int flagReasonId, String reason) {
         uidItemDelegate.flagItem(new FlagData(photo.getUid(),
-                flagReasonId, title + ". " + description));
+                flagReasonId, reason));
     }
 
     @Override

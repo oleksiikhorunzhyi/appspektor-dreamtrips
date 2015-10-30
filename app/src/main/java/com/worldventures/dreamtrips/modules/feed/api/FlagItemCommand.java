@@ -13,6 +13,6 @@ public class FlagItemCommand extends Command<Void> {
 
     @Override
     public Void loadDataFromNetwork() throws Exception {
-        return getService().flagItem(data.uid, data.flagReasonId, data.nameOfReason);
+        return getService().flagItem(data.uid, data.flagReasonId, data.reason);
     }
 }

@@ -151,7 +151,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
     }
 
-    public void sendFlagAction(int flagReasonId, String title, String desc) {
+    public void sendFlagAction(int flagReasonId, String reason) {
     }
 
     public void onDeleteAction() {

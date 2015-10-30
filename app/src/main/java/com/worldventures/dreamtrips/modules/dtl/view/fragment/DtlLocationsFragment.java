@@ -1,16 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -19,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.Status;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -29,7 +19,6 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -44,22 +33,14 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_locations)
 @MenuResource(R.menu.menu_locations)
 public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
 
-    private static final int REQUEST_CHECK_SETTINGS = 1488;
-    // permission request codes need to be < 256
-    private static final int RC_HANDLE_LOCATION_PERM = 3;
-
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-
-    @Inject
-    ActivityResultDelegate activityResultDelegate;
 
     BaseArrayListAdapter adapter;
 
@@ -90,15 +71,6 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
         adapter.registerCell(String.class, DtlHeaderCell.class);
         recyclerView.setAdapter(adapter);
-
-        checkPermissions();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        activityResult(activityResultDelegate.getRequestCode(),
-                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
     }
 
     @Override
@@ -127,30 +99,6 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         }
     }
 
-    public void checkPermissions() {
-        int rc = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
-            getPresenter().permissionGranted();
-        } else {
-            requestLocationPermission();
-        }
-    }
-
-    private void requestLocationPermission() {
-        final String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
-
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            ActivityCompat.requestPermissions(getActivity(), permissions, RC_HANDLE_LOCATION_PERM);
-        } else {
-            Snackbar.make(recyclerView, R.string.permission_location_rationale,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, view -> ActivityCompat.requestPermissions(getActivity(), permissions,
-                            RC_HANDLE_LOCATION_PERM))
-                    .show();
-        }
-    }
-
     public void onEvent(LocationClickedEvent event) {
         getPresenter().onLocationClicked(event.getLocation());
     }
@@ -168,15 +116,6 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     @Override
     public void citiesLoadingStarted() {
         progressText.setText(R.string.dtl_wait_for_cities);
-    }
-
-    @Override
-    public void resolutionRequired(Status status) {
-        try {
-            status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
-        } catch (IntentSender.SendIntentException th) {
-            Timber.e(th, "Error opening settings activity.");
-        }
     }
 
     @Override
@@ -204,42 +143,4 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
                 .data(bundle)
                 .move(Route.DTL_PLACES_LIST);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode != RC_HANDLE_LOCATION_PERM) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            return;
-        }
-
-        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getPresenter().permissionGranted();
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.app_name)
-                .setMessage(R.string.no_location_permission)
-                .setPositiveButton(R.string.ok, (dialog, id) -> getActivity().finish())
-                .show();
-    }
-
-    public void activityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        // All required changes were successfully made
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        // The user was asked to change settings, but chose not to
-                        getPresenter().locationNotGranted();
-                        break;
-                    default:
-                        break;
-                }
-                break;
-        }
-    }
-
 }

@@ -45,6 +45,11 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
     }
 
     @Override
+    public void setDistanceFilterEnabled(boolean enabled) {
+        rangeBarDistance.setEnabled(enabled);
+    }
+
+    @Override
     protected DtlFiltersPresenter createPresenter(Bundle savedInstanceState) {
         return new DtlFiltersPresenter();
     }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 
 import icepick.State;
@@ -17,6 +18,15 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         if (dtlFilterData == null) {
             dtlFilterData = new DtlFilterData();
         }
+
+        view.setDistanceFilterEnabled(dtlFilterData.isDistanceEnabled());
+    }
+
+    public void onEvent(LocationObtainedEvent event) {
+        if (event.getLocation() == null) dtlFilterData.setDistanceEnabled(false);
+        else dtlFilterData.setDistanceEnabled(true);
+
+        view.setDistanceFilterEnabled(dtlFilterData.isDistanceEnabled());
     }
 
     public void priceChanged(int left, int right) {
@@ -38,6 +48,6 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-
+        void setDistanceFilterEnabled(boolean enabled);
     }
 }

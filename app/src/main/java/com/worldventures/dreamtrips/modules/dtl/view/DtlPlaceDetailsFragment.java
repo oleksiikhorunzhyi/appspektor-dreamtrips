@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlCategoryDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
@@ -47,7 +48,8 @@ public class DtlPlaceDetailsFragment
         implements DtlPlaceDetailsPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
-    DtlPlaceInfoInflater categoryDataInflater;
+    DtlPlaceInfoInflater placeInfoInflater;
+    DtlCategoryDataInflater categoryDataInflater;
     DtlPlaceHelper helper;
 
     @Inject
@@ -85,7 +87,8 @@ public class DtlPlaceDetailsFragment
         super.onAttach(activity);
         helper = new DtlPlaceHelper(activity);
         commonDataInflater = new DtlPlaceManyImagesDataInflater(helper, getChildFragmentManager());
-        categoryDataInflater = new DtlPlaceInfoInflater(helper);
+        placeInfoInflater = new DtlPlaceInfoInflater(helper);
+        categoryDataInflater = new DtlCategoryDataInflater(helper);
     }
 
     @Override
@@ -99,6 +102,7 @@ public class DtlPlaceDetailsFragment
             toolbar.getBackground().setAlpha(0);
         }
         commonDataInflater.setView(rootView);
+        placeInfoInflater.setView(rootView);
         categoryDataInflater.setView(rootView);
         destinationMap = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.place_details_map);
         destinationMap.getMapAsync(googleMap -> {
@@ -111,6 +115,7 @@ public class DtlPlaceDetailsFragment
     @Override
     public void setPlace(DtlPlace place) {
         commonDataInflater.apply(place);
+        placeInfoInflater.apply(place);
         categoryDataInflater.apply(place);
         setType(place.getPartnerStatus());
         setDescription(place.getDescription());

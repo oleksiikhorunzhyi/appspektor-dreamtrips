@@ -22,12 +22,12 @@ public class DtlPlaceHelper {
         this.context = context;
     }
 
-    public String getFirstCategoryName(DtlPlace place) {
-        List<DtlPlaceAttribute> categories = place.getAttributes();
-        if (categories == null) return null;
-        DtlPlaceAttribute category = Queryable.from(categories).firstOrDefault(element ->
+    public String getCategories(DtlPlace place) {
+        List<DtlPlaceAttribute> attributes = place.getAttributes();
+        if (attributes == null) return null;
+        DtlPlaceAttribute category = Queryable.from(attributes).firstOrDefault(element ->
                 element.getName().equals("categories"));
-        return category == null ? null : Queryable.from(category.getAttributes()).firstOrDefault();
+        return category == null ? null : TextUtils.join(", ", category.getAttributes());
     }
 
     public List<ImageTextItem> getContactsData(DtlPlace place) {

@@ -9,26 +9,46 @@
     android:padding="@dimen/spacing_normal"
     tools:showIn="@layout/fragment_dtl_place_details">
 
-    <TextView
-        android:id="@+id/place_title"
-        style="@style/TextAppearance.AppCompat.Subhead"
+    <LinearLayout
+        android:id="@+id/info_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textColor="@color/dtl_cities_text_color"
-        android:textStyle="bold"
-        tools:text="Coffee Sweets"
-        />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/place_title"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dtl_cities_text_color"
+            android:textStyle="bold"
+            tools:text="Coffee Sweets"
+            />
+
+        <TextView
+            android:id="@+id/category_title"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dtl_cities_text_color"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Pizza, Pasts etc."
+            />
+
+    </LinearLayout>
 
     <io.techery.properratingbar.ProperRatingBar
         android:id="@+id/place_details_pricing"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/place_title"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/info_holder"
         app:symbolicTick="$"
         app:symbolicTickNormalColor="@color/grey"
         app:symbolicTickSelectedColor="@color/dtl_tab_text_selected"

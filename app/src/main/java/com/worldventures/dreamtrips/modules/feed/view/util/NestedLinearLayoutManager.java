@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -11,17 +10,17 @@ import android.view.ViewTreeObserver;
 public class NestedLinearLayoutManager extends LinearLayoutManager {
 
     private int maxHeight = -1;
+    private int[] mMeasuredDimension = new int[2];
 
     public NestedLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
     }
 
-    private int[] mMeasuredDimension = new int[2];
-
     @Override
     public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
         if (maxHeight == -1) {
             super.onMeasure(recycler, state, widthSpec, heightSpec);
+
             return;
         }
         final int widthMode = View.MeasureSpec.getMode(widthSpec);
@@ -70,18 +69,20 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
 
     @Override
     public void onItemsChanged(RecyclerView recyclerView) {
-        ViewTreeObserver vto = recyclerView.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                recyclerView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                int height = recyclerView.getMeasuredHeight();
-                maxHeight = height;
-                requestLayout();
-            }
-        });
-
+        if (maxHeight == -1) {
+            final ViewTreeObserver.OnPreDrawListener preDrawListener = new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    maxHeight = recyclerView.getMeasuredHeight();
+                    requestLayout();
+                    return true;
+                }
+            };
+            recyclerView.getViewTreeObserver().addOnPreDrawListener(preDrawListener);
+        }
     }
+
 
     private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec,
                                    int heightSpec, int[] measuredDimension) {

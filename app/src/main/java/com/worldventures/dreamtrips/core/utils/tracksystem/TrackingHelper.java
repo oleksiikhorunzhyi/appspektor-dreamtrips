@@ -386,6 +386,7 @@ public class TrackingHelper {
     public static final String ACTION_FRIENDS_ACTIVITY = "friends_activity";
     public static final String ACTION_NOTIFICATIONS = "notifications";
     public static final String ACTION_BOOK_TRAVEL = "book_travel";
+    public static final String ACTION_TRIP_IMAGES = "trip_images";
     public static final String ACTION_MEMBER_IMAGES = "member_images";
     public static final String ACTION_MY_IMAGES = "my_images";
     public static final String ACTION_YSHB_IMAGES = "yshb_images";
@@ -424,9 +425,9 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
     public static final String ATTRIBUTE_MAP = "map";
     public static final String ATTRIBUTE_BUCKET_LIST = "bucket_list";
+    public static final String ATTRIBUTE_ADD_TO_BUCKET_LIST = "add_to_bucket_list";
     public static final String ATTRIBUTE_BOOK_IT = "book_it";
     public static final String ATTRIBUTE_LOAD_MORE = "load_more";
-    public static final String ATTRIBUTE_BOOKING_INIT = "booking_init";
     public static final String ATTRIBUTE_UPLOAD_PHOTO = "upload_photo";
     public static final String ATTRIBUTE_SHARE = "share";
     public static final String ATTRIBUTE_DOWNLOAD = "download";
@@ -485,7 +486,7 @@ public class TrackingHelper {
         Map<String, Object> data = new HashMap<>(2);
         switch (type) {
             case BUCKET_LIST_ITEM:
-                data.put("bucketlist_item_id", itemId);
+                data.put("bucket_list_id", itemId);
                 break;
             case POST:
                 data.put("post_id", itemId);
@@ -548,11 +549,16 @@ public class TrackingHelper {
 
     //---------------------------Book Travel-------------------------//
 
-    public static void viewBookTravelScreen() {
-        sendSimpleAttributetoAdobeTracker(ACTION_BOOK_TRAVEL, ATTRIBUTE_BOOKING_INIT);
+    public static void actionBookTravelScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
+            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+        sendSimpleAttributetoAdobeTracker(ACTION_BOOK_TRAVEL, eventType);
     }
 
     //------------------------------Trip Images-----------------------------//
+
+    public static void viewTripImagesScreen(){
+        sendSimpleAttributetoAdobeTracker(ACTION_TRIP_IMAGES, ATTRIBUTE_LIST);
+    }
 
     public static void selectTripImagesTab(@MagicConstant(stringValues = {ACTION_MEMBER_IMAGES,
             ACTION_MY_IMAGES, ACTION_YSHB_IMAGES, ACTION_INSPIRE_ME_IMAGES, ACTION_360_VIDEOS}) String tab) {
@@ -563,7 +569,7 @@ public class TrackingHelper {
             ATTRIBUTE_EDIT_IMAGE, ATTRIBUTE_DELETE_IMAGE, ATTRIBUTE_LIKE_IMAGE}) String eventType, String tripImageId) {
         Map data = new HashMap<>();
         data.put("photo_id", tripImageId);
-        data.put(eventType, tripImageId);
+        data.put(eventType, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
     }
 
@@ -575,10 +581,10 @@ public class TrackingHelper {
     }
 
     public static void actionTripVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
-                                       String eventType, String videoId) {
+                                       String eventType, String videoName) {
         Map<String, Object> data = new HashMap<>();
-        data.put("video_id", videoId);
-        data.put(eventType, videoId);
+        data.put("video_id", videoName);
+        data.put(eventType, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_360_VIDEOS, data);
     }
 
@@ -589,11 +595,16 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_LIST);
     }
 
+    public static void actionMembershipEnrollScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
+            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+        sendSimpleAttributetoAdobeTracker(ACTION_MEMBERSHIP_ENROLL, eventType);
+    }
+
     public static void actionMembershipVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
-                                             String eventType, String videoId) {
+                                             String eventType, String videoName) {
         Map<String, Object> data = new HashMap<>();
-        data.put("video_id", videoId);
-        data.put(eventType, videoId);
+        data.put("video_id", videoName);
+        data.put(eventType, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBERSHIP, data);
     }
 
@@ -603,9 +614,9 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(ACTION_BUCKET_LIST, ATTRIBUTE_LIST);
     }
 
-    public static void actionBucket(@MagicConstant(stringValues = {ATTRIBUTE_SEARCH, ATTRIBUTE_ADD,
-            ATTRIBUTE_ADD_FROM_POPULAR, ATTRIBUTE_FILTER}) String eventType, @MagicConstant(stringValues =
-            {ATTRIBUTE_LOCATIONS, ATTRIBUTE_ACTIVITIES, ATTRIBUTE_DINING}) String tab) {
+    public static void actionBucket(@MagicConstant(stringValues = {ATTRIBUTE_ADD, ATTRIBUTE_ADD_FROM_POPULAR,
+            ATTRIBUTE_FILTER}) String eventType, @MagicConstant(stringValues = {ATTRIBUTE_LOCATIONS,
+            ATTRIBUTE_ACTIVITIES, ATTRIBUTE_DINING}) String tab) {
         Map<String, Object> data = new HashMap<>();
         data.put(tab, "1");
         data.put(eventType, "1");
@@ -613,23 +624,26 @@ public class TrackingHelper {
     }
 
     public static void actionBucketItemPhoto(@MagicConstant(stringValues = {ATTRIBUTE_VIEW_PHOTO, ATTRIBUTE_UPLOAD_PHOTO}) String eventType,
-                                             @MagicConstant(stringValues = {ATTRIBUTE_LOCATIONS, ATTRIBUTE_ACTIVITIES, ATTRIBUTE_DINING}) String tab) {
+                                             String bucketItemId) {
         Map<String, Object> data = new HashMap<>();
-        data.put(tab, "1");
+        data.put("bucket_list_id", bucketItemId);
         data.put(eventType, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_BUCKET_LIST, data);
     }
 
-    public static void actionBucketItem(@MagicConstant(stringValues = {ATTRIBUTE_SHARE, ATTRIBUTE_MARK_AS_DONE,
-            ATTRIBUTE_EDIT, ATTRIBUTE_DELETE, ATTRIBUTE_COMPLETE}) String eventType, @MagicConstant(stringValues = {
-            ATTRIBUTE_LOCATIONS, ATTRIBUTE_ACTIVITIES, ATTRIBUTE_DINING}) String tab, String bucketItemId) {
+    public static void actionBucketItem(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_SHARE, ATTRIBUTE_MARK_AS_DONE,
+            ATTRIBUTE_EDIT, ATTRIBUTE_DELETE, ATTRIBUTE_COMPLETE}) String eventType, String bucketItemId) {
         Map<String, Object> data = new HashMap<>();
-        data.put(tab, "1");
-        data.put(eventType, bucketItemId);
+        data.put("bucket_list_id", bucketItemId);
+        data.put(eventType, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_BUCKET_LIST, data);
     }
 
     //-------------------------------My Profile-------------------------//
+
+    public static void viewMyProfileScreen(){
+        sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, ATTRIBUTE_VIEW);
+    }
 
     public static void tapMyProfileButton(@MagicConstant(stringValues = {ATTRIBUTE_SHOW_TRIPS, ATTRIBUTE_SHOW_BUCKETLIST,
             ATTRIBUTE_NEW_POST, ATTRIBUTE_SHOW_FRIENDS}) String buttonType) {
@@ -644,8 +658,13 @@ public class TrackingHelper {
     //--------------------------------Rep Tools--------------------------------//
 
     public static void applyFilterRepTools(@MagicConstant(stringValues = {ATTRIBUTE_SHOW_ALL, ATTRIBUTE_SHOW_FAVORITES})
-                                         String filterCategory){
+                                           String filterCategory){
         sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_SUCCESS_STORY, filterCategory);
+    }
+
+    public static void searchRepTools(@MagicConstant(stringValues = {ACTION_REP_TOOLS_SUCCESS_STORY, ACTION_REP_TOOLS_INVITE_SHARE})
+                                      String tab){
+        sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_SEARCH);
     }
 
     public static void viewSuccessStory(String storyId) {
@@ -656,7 +675,7 @@ public class TrackingHelper {
     }
 
     public static void shareSuccessStory(@MagicConstant(stringValues = {ATTRIBUTE_FACEBOOK, ATTRIBUTE_TWITTER})
-                                         String socialNet, String storyId){
+                                         String socialNet, String storyId) {
         Map data = new HashMap<>();
         data.put(socialNet, storyId);
         data.put(ATTRIBUTE_SHARE, "1");
@@ -666,15 +685,25 @@ public class TrackingHelper {
     public static void favoriteSuccessStory(String storyId){
         Map data = new HashMap<>();
         data.put(ATTRIBUTE_FAVORITE, storyId);
+        data.put(ATTRIBUTE_FAVORITE, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
     }
 
+    public static void viewRepToolsTrainingVideoScreen(){
+        sendSimpleAttributetoAdobeTracker(ACTION_TRAINING_VIDEOS, ATTRIBUTE_LIST);
+    }
+
     public static void actionRepToolsTrainingVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
-                                                   String action, String videoId){
+                                                   String action, String videoName) {
         Map data = new HashMap<>();
-        data.put("video_id", videoId);
+        data.put("video_id", videoName);
         data.put(action, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_TRAINING_VIDEO, data);
+    }
+
+    public static void actionRepToolsEnrollment(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
+            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+        sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_REP_ENROLLMENT, eventType);
     }
 
     public static void actionRepToolsInviteShare(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_ADD_CONTACT})

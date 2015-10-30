@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
 import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
@@ -16,6 +17,12 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
         implements TrainingVideosPresenter.View {
 
     FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TrackingHelper.viewRepToolsTrainingVideoScreen();
+    }
 
     @Override
     protected TrainingVideosPresenter createPresenter(Bundle savedInstanceState) {

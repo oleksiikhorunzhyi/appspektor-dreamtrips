@@ -274,7 +274,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO));
         NavigationBuilder.create()
                 .with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

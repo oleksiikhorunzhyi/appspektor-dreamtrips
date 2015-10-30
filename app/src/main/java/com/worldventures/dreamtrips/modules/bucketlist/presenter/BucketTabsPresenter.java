@@ -83,11 +83,11 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public void onEvent(BucketItemAnalyticEvent event) {
-        TrackingHelper.actionBucketItem(event.getActionAttribute(), getTabAttributeAnalytic(), event.getBucketItemId());
+        TrackingHelper.actionBucketItem(event.getActionAttribute(), event.getBucketItemId());
     }
 
     public void onEvent(BucketItemPhotoAnalyticEvent event) {
-        TrackingHelper.actionBucketItemPhoto(event.getActionAttribute(), getTabAttributeAnalytic());
+        TrackingHelper.actionBucketItemPhoto(event.getActionAttribute(), event.getBucketItemId());
     }
 
     private String getTabAttributeAnalytic() {

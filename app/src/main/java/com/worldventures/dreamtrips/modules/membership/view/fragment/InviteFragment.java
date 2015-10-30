@@ -128,6 +128,7 @@ public class InviteFragment
         tvSearch.setOnQueryTextListener(this);
         tvSearch.clearFocus();
         tvSearch.setIconifiedByDefault(false);
+        tvSearch.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_INVITE_SHARE));
 
         setSelectedCount(0);
         tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {

@@ -3,16 +3,16 @@ package com.worldventures.dreamtrips.modules.video.event;
 
 public class MemberVideoAnalyticEvent {
 
-    String videoId;
+    String videoName;
     String actionAttribute;
 
-    public MemberVideoAnalyticEvent(String videoId, String actionAttribute) {
-        this.videoId = videoId;
+    public MemberVideoAnalyticEvent(String videoName, String actionAttribute) {
+        this.videoName = videoName;
         this.actionAttribute = actionAttribute;
     }
 
-    public String getVideoId() {
-        return videoId;
+    public String getVideoName() {
+        return videoName;
     }
 
     public String getActionAttribute() {

@@ -55,6 +55,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void onResume() {
         super.onResume();
         eventBus.post(new ActionBarTransparentEvent(true));
+        TrackingHelper.viewMyProfileScreen();
     }
 
     @Override

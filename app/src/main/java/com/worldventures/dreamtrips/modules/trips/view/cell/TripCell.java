@@ -119,7 +119,7 @@ public class TripCell extends AbstractCell<TripModel> {
         getModelObject().setInBucketList(true);
         syncUIStateWithModel();
         getEventBus().post(new AddToBucketEvent(tripModel));
-        getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_BUCKET_LIST, tripModel.getTripId()));
+        getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST, tripModel.getTripId()));
     }
 
     @OnClick(R.id.itemLayout)

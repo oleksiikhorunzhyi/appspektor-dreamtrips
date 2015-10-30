@@ -105,7 +105,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     }
 
     public void onEvent(MemberVideoAnalyticEvent event) {
-        TrackingHelper.actionRepToolsTrainingVideo(event.getActionAttribute(), event.getVideoId());
+        TrackingHelper.actionRepToolsTrainingVideo(event.getActionAttribute(), event.getVideoName());
     }
 
     @Override

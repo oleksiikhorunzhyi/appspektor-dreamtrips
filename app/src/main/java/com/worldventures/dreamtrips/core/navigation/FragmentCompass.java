@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -24,14 +23,23 @@ public class FragmentCompass {
     private boolean backStackEnabled = true;
     private FragmentManager fragmentManager;
 
+    /**
+     * Deprecated in favor of {@link com.worldventures.dreamtrips.core.navigation.router.Router Router}
+     * and {@link com.worldventures.dreamtrips.core.navigation.router.NavigationConfig NavigationConfig} scheme.
+     */
+    @Deprecated
     public FragmentCompass(FragmentActivity activity, int containerId) {
         this.activity = activity;
         this.containerId = containerId;
         fragmentManager = activity.getSupportFragmentManager();
     }
 
+    /**
+     * This constructor is to be used with {@link com.worldventures.dreamtrips.core.navigation.router.Router Router}
+     * and {@link com.worldventures.dreamtrips.core.navigation.router.NavigationConfig NavigationConfig} only!
+     */
     public FragmentCompass(FragmentActivity activity) {
-        this(activity, R.id.container_main);
+        this.activity = activity;
     }
 
     public void setContainerId(int containerId) {
@@ -112,7 +120,6 @@ public class FragmentCompass {
 
     protected void action(Action action, Route route, Bundle bundle) {
         if (validateState()) {
-            try {
                 String clazzName = route.getClazzName();
                 //
                 BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
@@ -130,14 +137,7 @@ public class FragmentCompass {
                 if (backStackEnabled) {
                     fragmentTransaction.addToBackStack(route.name());
                 }
-                if (BuildConfig.DEBUG) {
-                    fragmentTransaction.commit();
-                } else {
-                    fragmentTransaction.commitAllowingStateLoss();
-                }
-            } catch (Exception e) {
-                Timber.e("TransitionManager error", e);
-            }
+                fragmentTransaction.commit();
         } else {
             Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
         }
@@ -159,6 +159,14 @@ public class FragmentCompass {
         backStackEnabled = false;
     }
 
+    protected void clearBackStack() {
+        try {
+            fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } catch (IllegalStateException e) {
+            Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
+        }
+    }
+
     private void setArgsToFragment(BaseFragment fragment, Bundle bundle) {
         fragment.setArguments(bundle);
     }
@@ -174,14 +182,6 @@ public class FragmentCompass {
 
     public BaseFragment getCurrentFragment() {
         return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
-    }
-
-    protected void clearBackStack() {
-        try {
-            fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        } catch (IllegalStateException e) {
-            Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
-        }
     }
 
     public void pop() {

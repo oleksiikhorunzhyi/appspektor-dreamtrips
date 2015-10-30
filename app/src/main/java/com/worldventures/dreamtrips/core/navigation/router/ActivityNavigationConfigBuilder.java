@@ -10,8 +10,17 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
         navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.ACTIVITY);
     }
 
+    /**
+     * Default config includes no specific setup when routing to activity
+     */
+    @Override
+    public NavigationConfigBuilder useDefaults() {
+        navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.ACTIVITY);
+        return this;
+    }
+
     public ActivityNavigationConfigBuilder data(Parcelable data) {
-        navigationConfig.data = data;
+        super.data(data);
         return this;
     }
 

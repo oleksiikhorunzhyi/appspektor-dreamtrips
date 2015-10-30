@@ -98,7 +98,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     }
 
     @Override
-    public void openScanQr(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+    public void openVerify(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
         getActivity().finish();
         NavigationBuilder.create()
                 .with(activityRouter)
@@ -118,31 +118,6 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         fabProgress.showProgress(false);
         fabProgress.setIcon(R.drawable.ic_upload_done, R.drawable.ic_upload_done);
         int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);
-        circleView.setColor(color);
-    }
-
-    @Override
-    public void showProgress() {
-        shadow.setVisibility(View.VISIBLE);
-        fabProgress.setVisibility(View.VISIBLE);
-        fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-        fabProgress.setIndeterminate(true);
-        fabProgress.showProgress(true);
-        int color = getResources().getColor(R.color.bucket_blue);
-        circleView.setColor(color);
-    }
-
-    @Override
-    public void hideProgress() {
-        fabProgress.setVisibility(View.GONE);
-        shadow.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void uploadError() {
-        fabProgress.showProgress(false);
-        fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-        int color = getResources().getColor(R.color.bucket_red);
         circleView.setColor(color);
     }
 

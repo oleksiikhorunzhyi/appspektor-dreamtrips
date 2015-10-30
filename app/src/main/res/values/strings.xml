@@ -466,6 +466,6 @@
 
     <plurals name="people_liked">
         <item quantity="one">%s liked</item>
-        <item quantity="other">%d people liked</item>
+        <item quantity="other">%d people liked</item>r
     </plurals>
 </resources>

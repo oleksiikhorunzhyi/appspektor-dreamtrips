@@ -192,8 +192,8 @@ public class DtlPlace implements Parcelable {
 
     public boolean applyFilter(DtlFilterData filterObject, LatLng currentLocation) {
         return checkPrice(filterObject.getMinPrice(), filterObject.getMaxPrice())
-                && LocationHelper.checkLocation(filterObject.getMaxDistance(), currentLocation,
-                new LatLng(coordinates.getLat(), coordinates.getLng()));
+                && (!filterObject.isDistanceEnabled() || LocationHelper.checkLocation(filterObject.getMaxDistance(), currentLocation,
+                new LatLng(coordinates.getLat(), coordinates.getLng())));
     }
 
     private boolean checkPrice(int minPrice, int maxPrice) {

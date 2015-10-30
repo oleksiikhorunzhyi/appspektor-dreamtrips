@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCategoryDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
@@ -47,7 +47,7 @@ public class DtlPlaceDetailsFragment
         implements DtlPlaceDetailsPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
-    DtlPlaceCategoryDataInflater categoryDataInflater;
+    DtlPlaceInfoInflater categoryDataInflater;
     DtlPlaceHelper helper;
 
     @Inject
@@ -85,7 +85,7 @@ public class DtlPlaceDetailsFragment
         super.onAttach(activity);
         helper = new DtlPlaceHelper(activity);
         commonDataInflater = new DtlPlaceManyImagesDataInflater(helper, getChildFragmentManager());
-        categoryDataInflater = new DtlPlaceCategoryDataInflater(helper);
+        categoryDataInflater = new DtlPlaceInfoInflater(helper);
     }
 
     @Override

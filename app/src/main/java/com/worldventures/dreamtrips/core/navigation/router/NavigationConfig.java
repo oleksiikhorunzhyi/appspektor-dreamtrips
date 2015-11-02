@@ -1,22 +1,22 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 
-import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 
 public class NavigationConfig {
 
-    private NavigationType navigationType;
+    NavigationType navigationType;
+    Parcelable data;
+    FragmentManager fragmentManager;
+    ToolbarConfig toolbarConfig;
+    int containerId;
+    Boolean backStackEnabled;
 
-    private Parcelable data;
-
-    private FragmentManager fragmentManager;
-    private int containerId = R.id.container_main;
-    private boolean backStackEnabled;
-
-    private NavigationConfig(NavigationType navigationType) {
-        this.navigationType = navigationType;
+    NavigationConfig(NavigationType type) {
+        navigationType = type;
     }
 
     public NavigationType getNavigationType() {
@@ -27,8 +27,14 @@ public class NavigationConfig {
         return data;
     }
 
+    @Nullable
     public FragmentManager getFragmentManager() {
         return fragmentManager;
+    }
+
+    @Nullable
+    public ToolbarConfig getToolbarConfig() {
+        return toolbarConfig;
     }
 
     public int getContainerId() {
@@ -40,47 +46,6 @@ public class NavigationConfig {
     }
 
     enum NavigationType {
-        ACTIVITY, FRAGMENT
+        ACTIVITY, FRAGMENT, DIALOG
     }
-
-    public static class Builder {
-        NavigationConfig navigationConfig;
-
-        private Builder(NavigationType navigationType) {
-            navigationConfig = new NavigationConfig(navigationType);
-        }
-
-        public static Builder forFragment() {
-            return new Builder(NavigationType.FRAGMENT);
-        }
-
-        public static Builder forActivity() {
-            return new Builder(NavigationType.ACTIVITY);
-        }
-
-        public Builder data(Parcelable data) {
-            navigationConfig.data = data;
-            return this;
-        }
-
-        public Builder containerId(int containerId) {
-            navigationConfig.containerId = containerId;
-            return this;
-        }
-
-        public Builder fragmentManager(FragmentManager fragmentManager) {
-            navigationConfig.fragmentManager = fragmentManager;
-            return this;
-        }
-
-        public Builder backStackEnabled(boolean backStackEnabled) {
-            navigationConfig.backStackEnabled = backStackEnabled;
-            return this;
-        }
-
-        public NavigationConfig build() {
-            return navigationConfig;
-        }
-    }
-
 }

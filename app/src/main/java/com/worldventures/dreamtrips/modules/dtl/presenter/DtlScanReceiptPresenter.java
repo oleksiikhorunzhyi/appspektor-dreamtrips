@@ -59,7 +59,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
     private void checkVerification() {
         if (!TextUtils.isEmpty(amount) &&
-                !TextUtils.isEmpty(dtlTransaction.getReceiptPhoto()))
+                dtlTransaction.getUploadTask() != null)
             view.enableVerification();
         else view.disableVerification();
     }

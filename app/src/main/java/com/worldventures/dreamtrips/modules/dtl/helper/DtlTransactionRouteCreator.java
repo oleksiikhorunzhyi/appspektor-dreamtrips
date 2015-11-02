@@ -16,7 +16,7 @@ public class DtlTransactionRouteCreator implements RouteCreator<DtlTransaction> 
      */
     @Override
     public Route createRoute(DtlTransaction dtlTransaction) {
-        if (TextUtils.isEmpty(dtlTransaction.getReceiptPhoto()) ||
+        if (dtlTransaction.getUploadTask() == null ||
                 dtlTransaction.getAmount() == 0.0d) {
             return Route.DTL_SCAN_RECEIPT;
         } else if (TextUtils.isEmpty(dtlTransaction.getCode()) ||

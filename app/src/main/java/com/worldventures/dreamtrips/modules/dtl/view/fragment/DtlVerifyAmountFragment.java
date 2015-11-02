@@ -64,6 +64,6 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     @Override
     public void attachTransaction(DtlTransaction dtlTransaction) {
         spentAmount.setText(getString(R.string.dtl_spent_amount, dtlTransaction.getAmount()));
-        receipt.setImageURI(Uri.parse(dtlTransaction.getReceiptPhoto()));
+        receipt.setImageURI(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
     }
 }

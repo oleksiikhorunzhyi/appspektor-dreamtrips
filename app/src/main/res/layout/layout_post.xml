@@ -112,7 +112,7 @@
                     android:layout_below="@+id/post"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="@dimen/spacing_normal"
-                    >
+                    android:visibility="gone">
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/attached_photo"

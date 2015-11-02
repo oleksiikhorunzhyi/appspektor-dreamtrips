@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
@@ -29,7 +28,9 @@ public class StaticPageProvider {
     }
 
     public String getEnrollUrl() {
-        return getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
+        String enrollUrlFromServer = getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
+        String additionalParams = "utm_medium=MobileApp&utm_source=MobileApp&utm_campaign=MobileApp";
+        return enrollUrlFromServer + "&" + additionalParams;
     }
 
     public String getEnrollRepUrl() {

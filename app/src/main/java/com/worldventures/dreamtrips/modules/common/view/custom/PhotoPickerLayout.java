@@ -120,7 +120,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         adapter = new BaseArrayListAdapter<>(photoPicker.getContext(), injector);
         adapter.registerCell(PhotoGalleryModel.class, PhotoGalleryCell.class);
         adapter.registerCell(AttachPhotoModel.class, AttachPhotoCell.class);
-        adapter.addItem(new AttachPhotoModel(AttachPhotoModel.CAMERA, R.drawable.ic_camera, R.string.camera, R.color.share_camera_color));
+        adapter.addItem(new AttachPhotoModel(AttachPhotoModel.CAMERA, R.drawable.ic_picker_camera, R.string.camera, R.color.share_camera_color));
         adapter.addItem(new AttachPhotoModel(AttachPhotoModel.FACEBOOK, R.drawable.fb_logo, R.string.add_from_facebook, R.color.facebook_color));
         adapter.addItems(photos);
 

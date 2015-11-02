@@ -6,10 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.facebook.HttpMethod;
-import com.facebook.Request;
 import com.facebook.Response;
-import com.facebook.Session;
 import com.facebook.model.GraphObject;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -36,16 +33,22 @@ import butterknife.InjectView;
 @Layout(R.layout.dialog_facebook_select_photo)
 public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> implements FacebookPhotoPresenter.View {
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
-
     public static final String BUNDLE_ALBUM_ID = "BUNDLE_ALBUM_ID";
+
     @InjectView(R.id.lv_items)
     protected RecyclerView lvItems;
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
-    protected BaseArrayListAdapter adapter;
+
+    BaseArrayListAdapter adapter;
+    GridLayoutManager layoutManager;
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injector;
+
+    int previousTotal;
+    boolean loading;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -56,7 +59,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
 
         toolbar.setTitle(R.string.fab_select_photo);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(v -> getPresenter().onBackAction());
+        toolbar.setNavigationOnClickListener(v -> fragmentCompass.pop());
         toolbar.getBackground().setAlpha(255);
         lvItems.setAdapter(adapter);
         lvItems.addOnItemTouchListener(
@@ -76,26 +79,27 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
                     getPresenter().onPhotoChosen(image);
                 })
         );
-        lvItems.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        layoutManager = new GridLayoutManager(getActivity(), 3);
+
+        lvItems.setLayoutManager(layoutManager);
+        lvItems.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int itemCount = layoutManager.getItemCount();
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                scrolled(itemCount, lastVisibleItemPosition);
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        String albumId = getArguments().getString(BUNDLE_ALBUM_ID);
-        if (albumId == null) {
-            throw new IllegalArgumentException("Album id can't be null");
-        }
         if (adapter.getItemCount() == 0) {
-            new Request(
-                    Session.getActiveSession(),
-                    "/{album-id}/photos".replace("{album-id}", albumId),
-                    null,
-                    HttpMethod.GET,
-                    this::handleResponse
-            ).executeAsync();
+            getPresenter().requestPhotos(false);
         }
     }
+
 
     @Override
     public void onDestroyView() {
@@ -103,13 +107,14 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
         super.onDestroyView();
     }
 
-
     @Override
     protected FacebookPhotoPresenter createPresenter(Bundle savedInstanceState) {
-        return new FacebookPhotoPresenter();
+        String albumId = getArguments().getString(BUNDLE_ALBUM_ID);
+        return new FacebookPhotoPresenter(albumId);
     }
 
-    private void handleResponse(Response response) {
+    @Override
+    public void handleResponse(Response response) {
         List<GraphObject> graphObjects = FacebookUtils.typedListFromResponse(response, GraphObject.class);
         List<FacebookPhoto> photos = new ArrayList<>(graphObjects.size());
         for (GraphObject graphObject : graphObjects) {
@@ -118,6 +123,17 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
         }
         adapter.addItems(photos);
         adapter.notifyDataSetChanged();
+    }
+
+    public void scrolled(int totalItemCount, int lastVisible) {
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
+        }
+        if (!loading && lastVisible == totalItemCount - 1) {
+            getPresenter().requestPhotos(true);
+            loading = true;
+        }
     }
 
     @Override

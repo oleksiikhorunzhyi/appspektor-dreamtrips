@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
@@ -73,6 +74,9 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
         fragmentCompass.setContainerId(R.id.fragment_container);
         fragmentCompass.setSupportFragmentManager(fragmentManager);
         fragmentCompass.disableBackStack();
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     @Override
@@ -95,6 +99,13 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
     @Override
     public void prepareForReuse() {
 
+    }
+
+
+    public void onEventMainThread(FeedEntityCommentedEvent event) {
+        if (event.getFeedEntity().equals(getModelObject().getItem())) {
+            actionView.setState(getModelObject(), isForeignItem(getModelObject()));
+        }
     }
 
     private boolean isForeignItem(FeedItem feedItem) {

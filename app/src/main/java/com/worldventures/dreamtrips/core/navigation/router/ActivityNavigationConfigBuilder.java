@@ -28,4 +28,9 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
         navigationConfig.toolbarConfig = config;
         return this;
     }
+
+    @Override
+    protected void validateConfig() throws IllegalStateException {
+        // so far activity navigation has no specific state to validate
+    }
 }

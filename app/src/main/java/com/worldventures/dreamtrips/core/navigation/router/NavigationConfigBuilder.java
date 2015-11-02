@@ -14,6 +14,10 @@ public abstract class NavigationConfigBuilder {
         return new FragmentNavigationConfigBuilder();
     }
 
+    public static DialogNavigationConfigBuilder forDialog() {
+        return new DialogNavigationConfigBuilder();
+    }
+
     public NavigationConfigBuilder data(Parcelable data) {
         navigationConfig.data = data;
         return this;
@@ -32,23 +36,9 @@ public abstract class NavigationConfigBuilder {
     public abstract NavigationConfigBuilder useDefaults();
 
     public NavigationConfig build() {
-        validateConfigState();
+        validateConfig();
         return navigationConfig;
     }
 
-    protected void validateConfigState() throws IllegalStateException {
-        String reason = "Navigation config corrupted state:\n";
-        boolean corrupted = false;
-        if (navigationConfig.navigationType.equals(NavigationConfig.NavigationType.FRAGMENT)) {
-            if (navigationConfig.containerId == 0) {
-                reason += "containerId = 0\n";
-                corrupted = true;
-            }
-            if (navigationConfig.backStackEnabled == null) {
-                reason += "backStackEnabled is null\n";
-                corrupted = true;
-            }
-        }
-        if (corrupted) throw new IllegalStateException(reason);
-    }
+    protected abstract void validateConfig() throws IllegalStateException;
 }

@@ -94,7 +94,6 @@ public class FragmentCompass {
 
     public void remove(String name) {
         if (validateState()) {
-            FragmentManager fragmentManager = this.fragmentManager;
             Fragment fragment = fragmentManager.findFragmentByTag(name);
             //
             if (fragment != null) {
@@ -119,27 +118,27 @@ public class FragmentCompass {
     }
 
     protected void action(Action action, Route route, Bundle bundle) {
-        if (validateState()) {
-                String clazzName = route.getClazzName();
-                //
-                BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
-                setArgsToFragment(fragment, bundle);
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                switch (action) {
-                    case REPLACE:
-                        fragmentTransaction.replace(containerId, fragment, clazzName);
-                        break;
-                    case ADD:
-                        fragmentTransaction.add(containerId, fragment, clazzName);
-                        break;
-                }
-                if (backStackEnabled) {
-                    fragmentTransaction.addToBackStack(route.name());
-                }
-                fragmentTransaction.commit();
-        } else {
+        if (!validateState()) {
             Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
+        } else {
+            String clazzName = route.getClazzName();
+            //
+            BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
+            setArgsToFragment(fragment, bundle);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            //
+            switch (action) {
+                case REPLACE:
+                    fragmentTransaction.replace(containerId, fragment, clazzName);
+                    break;
+                case ADD:
+                    fragmentTransaction.add(containerId, fragment, clazzName);
+                    break;
+            }
+            if (backStackEnabled) {
+                fragmentTransaction.addToBackStack(route.name());
+            }
+            fragmentTransaction.commit();
         }
     }
 

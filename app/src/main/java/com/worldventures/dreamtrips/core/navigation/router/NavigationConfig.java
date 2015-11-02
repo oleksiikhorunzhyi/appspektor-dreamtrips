@@ -46,6 +46,6 @@ public class NavigationConfig {
     }
 
     enum NavigationType {
-        ACTIVITY, FRAGMENT
+        ACTIVITY, FRAGMENT, DIALOG
     }
 }

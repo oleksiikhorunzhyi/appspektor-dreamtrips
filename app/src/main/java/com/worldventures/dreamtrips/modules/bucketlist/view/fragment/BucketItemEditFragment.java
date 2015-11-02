@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -125,8 +124,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH), false);
         if (getActivity() != null && !getActivity().isFinishing()) {
-            FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
-            datePickerDialog.show(supportFragmentManager, "default");
+            datePickerDialog.show(getFragmentManager(), "default");
         }
     }
 

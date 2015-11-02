@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
@@ -19,10 +20,16 @@ public class RouterImpl implements Router {
 
     @Override
     public void moveTo(Route route, NavigationConfig config) {
-        if (config.getNavigationType() == NavigationConfig.NavigationType.ACTIVITY) {
-            openActivity(route, config);
-        } else {
-            openFragment(route, config);
+        switch (config.getNavigationType()) {
+            case ACTIVITY:
+                openActivity(route, config);
+                break;
+            case FRAGMENT:
+                openFragment(route, config);
+                break;
+            case DIALOG:
+                showDialog(route, config);
+                break;
         }
     }
 
@@ -46,6 +53,15 @@ public class RouterImpl implements Router {
         fragmentCompass.setFragmentManager(fragmentManager);
         fragmentCompass.setBackStackEnabled(config.isBackStackEnabled());
         fragmentCompass.replace(route, getArgs(config));
+    }
+
+    private void showDialog(Route route, NavigationConfig config) {
+        FragmentManager fragmentManager = config.getFragmentManager() == null ?
+                activity.getSupportFragmentManager() :
+                config.getFragmentManager();
+        //
+        DialogFragmentNavigator.NavigationDialogFragment.newInstance(route, getArgs(config))
+                .show(fragmentManager, route.name());
     }
 
     private Bundle getArgs(NavigationConfig config) {

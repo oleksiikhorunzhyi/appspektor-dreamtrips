@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -67,8 +66,7 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH), false);
         datePickerDialog.setYearRange(calendar.get(Calendar.YEAR), calendar.get(Calendar.YEAR) + 5);
-        FragmentManager supportFragmentManager = fragmentCompass.getFragmentManager();
-        datePickerDialog.show(supportFragmentManager, "default");
+        datePickerDialog.show(fragmentCompass.getFragmentManager(), "default");
     }
 
     @Override

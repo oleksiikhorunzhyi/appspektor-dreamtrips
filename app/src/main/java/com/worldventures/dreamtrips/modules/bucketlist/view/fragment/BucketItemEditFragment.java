@@ -124,7 +124,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH), false);
         if (getActivity() != null && !getActivity().isFinishing()) {
-            datePickerDialog.show(getFragmentManager(), "default");
+            datePickerDialog.show(getChildFragmentManager(), "default");
         }
     }
 

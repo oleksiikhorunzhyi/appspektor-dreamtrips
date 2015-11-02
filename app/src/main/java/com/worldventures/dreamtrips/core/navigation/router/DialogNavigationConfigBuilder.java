@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 public class DialogNavigationConfigBuilder extends NavigationConfigBuilder {
 
     DialogNavigationConfigBuilder() {
-        navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.DIALOG);
+        super(NavigationConfig.NavigationType.DIALOG);
     }
 
     /**
@@ -14,7 +14,6 @@ public class DialogNavigationConfigBuilder extends NavigationConfigBuilder {
      */
     @Override
     public NavigationConfigBuilder useDefaults() {
-        navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.DIALOG);
         return this;
     }
 

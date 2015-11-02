@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
 
     FragmentNavigationConfigBuilder() {
-        navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.FRAGMENT);
+        super(NavigationConfig.NavigationType.FRAGMENT);
     }
 
     /**
@@ -17,7 +17,6 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
      */
     @Override
     public NavigationConfigBuilder useDefaults() {
-        navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.FRAGMENT);
         navigationConfig.backStackEnabled = true;
         navigationConfig.containerId = R.id.container_main;
         return this;

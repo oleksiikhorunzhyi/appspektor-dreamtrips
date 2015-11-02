@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
 
     ActivityNavigationConfigBuilder() {
-        navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.ACTIVITY);
+        super(NavigationConfig.NavigationType.ACTIVITY);
     }
 
     /**
@@ -15,7 +15,6 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
      */
     @Override
     public NavigationConfigBuilder useDefaults() {
-        navigationConfig = new NavigationConfig(NavigationConfig.NavigationType.ACTIVITY);
         return this;
     }
 

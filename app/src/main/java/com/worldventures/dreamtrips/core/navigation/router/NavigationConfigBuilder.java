@@ -4,7 +4,7 @@ import android.os.Parcelable;
 
 public abstract class NavigationConfigBuilder {
 
-    protected NavigationConfig navigationConfig;
+    protected final NavigationConfig navigationConfig;
 
     public static ActivityNavigationConfigBuilder forActivity() {
         return new ActivityNavigationConfigBuilder();
@@ -16,6 +16,10 @@ public abstract class NavigationConfigBuilder {
 
     public static DialogNavigationConfigBuilder forDialog() {
         return new DialogNavigationConfigBuilder();
+    }
+
+    protected NavigationConfigBuilder(NavigationConfig.NavigationType type) {
+        navigationConfig = new NavigationConfig(type);
     }
 
     public NavigationConfigBuilder data(Parcelable data) {

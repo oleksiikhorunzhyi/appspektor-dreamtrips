@@ -80,7 +80,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                         .with(activityRouter)
                         .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
                         .attach(Route.FRIENDS));
-        getPresenter().refreshRequestsCount();
+        setRequestsCount(getPresenter().getFriendsRequestsCount());
     }
 
     @Override

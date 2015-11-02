@@ -71,11 +71,11 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.setRequestsCount(db.getFriendsRequestsCount());
+        view.setRequestsCount(getFriendsRequestsCount());
     }
 
-    public void refreshRequestsCount() {
-        view.setRequestsCount(db.getFriendsRequestsCount());
+    public int getFriendsRequestsCount() {
+        return db.getFriendsRequestsCount();
     }
 
     public interface View extends BaseFeedPresenter.View {

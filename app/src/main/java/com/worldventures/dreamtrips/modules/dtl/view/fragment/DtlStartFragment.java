@@ -43,9 +43,16 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
     ActivityResultDelegate activityResultDelegate;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onResume() {
+        super.onResume();
+        activityResult(activityResultDelegate.getRequestCode(),
+                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
+        showDtlFilters();
+    }
+
+    private void showDtlFilters() {
         fragmentCompass.setFragmentManager(getActivity().getSupportFragmentManager());
+
         fragmentCompass.setContainerId(R.id.container_filters);
         fragmentCompass.disableBackStack();
         fragmentCompass.replace(Route.DTL_FILTERS);
@@ -53,13 +60,6 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
         fragmentCompass.disableBackStack();
         fragmentCompass.setFragmentManager(getChildFragmentManager());
         fragmentCompass.setContainerId(R.id.dtl_container);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        activityResult(activityResultDelegate.getRequestCode(),
-                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
     }
 
     @Override

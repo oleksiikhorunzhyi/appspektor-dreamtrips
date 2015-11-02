@@ -57,7 +57,6 @@ public class DtlPlacesTabsFragment
     @Override
     public void onPause() {
         super.onPause();
-        toolbarHelper.onPause();
     }
 
     @Override

@@ -9,16 +9,21 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
 
     FeedItem feedItem;
     boolean slave;
+    boolean showAdditionalInfo;
 
     public FeedItemDetailsBundle(FeedItem feedItem) {
         this(feedItem, false);
     }
 
     public FeedItemDetailsBundle(FeedItem feedItem, boolean slave) {
+        this(feedItem, slave, true);
+    }
+
+    public FeedItemDetailsBundle(FeedItem feedItem, boolean slave, boolean showAdditionalInfo) {
         super(feedItem.getItem());
         this.feedItem = feedItem;
         this.slave = slave;
-
+        this.showAdditionalInfo = showAdditionalInfo;
     }
 
     public FeedItem getFeedItem() {
@@ -37,6 +42,10 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
         this.slave = slave;
     }
 
+    public boolean isShowAdditionalInfo() {
+        return showAdditionalInfo;
+    }
+
 
     @Override
     public int describeContents() {
@@ -48,12 +57,14 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
         super.writeToParcel(dest, flags);
         dest.writeParcelable(this.feedItem, 0);
         dest.writeByte(slave ? (byte) 1 : (byte) 0);
+        dest.writeByte(showAdditionalInfo ? (byte) 1 : (byte) 0);
     }
 
     protected FeedItemDetailsBundle(Parcel in) {
         super(in);
         this.feedItem = in.readParcelable(FeedItem.class.getClassLoader());
         this.slave = in.readByte() != 0;
+        this.showAdditionalInfo = in.readByte() != 0;
     }
 
     public static final Creator<FeedItemDetailsBundle> CREATOR = new Creator<FeedItemDetailsBundle>() {

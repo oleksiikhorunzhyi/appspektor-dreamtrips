@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -17,10 +18,15 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
 
+import butterknife.InjectView;
+
 @Layout(R.layout.fragment_comments_with_details)
 public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetailsPresenter, FeedItemDetailsBundle> implements FeedItemDetailsPresenter.View {
 
     private FragmentCompass childCompass;
+
+    @InjectView(R.id.comments_additional_info_container)
+    ViewGroup additionalContainer;
 
     @Override
     protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -30,10 +36,15 @@ public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetails
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        childCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.comments_additional_info_container);
-        childCompass.setSupportFragmentManager(getChildFragmentManager());
-        childCompass.disableBackStack();
-        //
+        if (getArgs().isShowAdditionalInfo()) {
+            childCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.comments_additional_info_container);
+            childCompass.setSupportFragmentManager(getChildFragmentManager());
+            childCompass.disableBackStack();
+            //
+        } else {
+            additionalContainer.setVisibility(View.GONE);
+        }
+
         adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
     }
@@ -47,7 +58,8 @@ public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetails
     @Override
     public void updateFeedItem(FeedItem feedItem) {
         adapter.updateItem(feedItem);
-        if (isTabletLandscape() && childCompass.empty()) {
+        if (isTabletLandscape() && childCompass != null && childCompass.empty()
+                && getArgs().isShowAdditionalInfo()) {
             NavigationBuilder.create()
                     .with(childCompass)
                     .data(new FeedAdditionalInfoBundle(feedItem.getItem().getOwner()))

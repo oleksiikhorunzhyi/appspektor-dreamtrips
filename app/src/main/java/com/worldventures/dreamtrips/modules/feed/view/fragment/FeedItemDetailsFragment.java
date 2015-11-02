@@ -14,9 +14,11 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import butterknife.InjectView;
 
@@ -47,6 +49,7 @@ public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetails
 
         adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
+        adapter.registerCell(PhotoFeedItem.class, FeedItemDetailsCell.class);
     }
 
     @Override

@@ -12,9 +12,11 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.PhotoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class FeedEntityContentFragmentFactory {
 
@@ -31,9 +33,12 @@ public class FeedEntityContentFragmentFactory {
         Parcelable args = null;
         switch (type) {
             case TRIP:
-            case PHOTO:
             case UNDEFINED:
                 //now is not used.
+                break;
+            case PHOTO:
+                route = Route.DETAILS_PHOTO;
+                args = new PhotoBundle((Photo) holder.getItem());
                 break;
             case BUCKET_LIST_ITEM:
                 User user = holder.getItem().getOwner();

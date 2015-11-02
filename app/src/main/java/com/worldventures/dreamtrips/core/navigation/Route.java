@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditiona
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoDetailsFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
@@ -105,7 +106,10 @@ public enum Route {
     SHARE(ShareFragment.class, R.string.feed_title),
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
+
     DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
+    DETAILS_PHOTO(PhotoDetailsFeedFragment.class, R.string.empty),
+
     FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
     FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty);

@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresen
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.PhotoDetailsFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.TextualPostDetailsPresenter;
@@ -37,6 +38,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditiona
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoDetailsFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
@@ -80,6 +82,9 @@ import de.greenrobot.event.EventBus;
 
                 TextualPostDetailsFragment.class,
                 TextualPostDetailsPresenter.class,
+
+                PhotoDetailsFeedFragment.class,
+                PhotoDetailsFeedPresenter.class,
 
                 FeedItemDetailsCell.class,
 

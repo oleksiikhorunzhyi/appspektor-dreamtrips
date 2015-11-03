@@ -106,7 +106,7 @@ public class DtlPlacesTabsFragment
         });
         //
 
-        fragmentCompass.setSupportFragmentManager(getFragmentManager());
+        fragmentCompass.setFragmentManager(getFragmentManager());
         fragmentCompass.enableBackStack();
         fragmentCompass.setContainerId(R.id.dtl_container);
     }

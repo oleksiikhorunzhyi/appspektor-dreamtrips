@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import android.os.Bundle;
 
+@Deprecated
 public class FragmentNavigator implements Navigator {
 
     private FragmentCompass fragmentCompass;

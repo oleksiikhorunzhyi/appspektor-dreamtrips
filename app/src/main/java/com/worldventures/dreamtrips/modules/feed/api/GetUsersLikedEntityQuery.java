@@ -7,18 +7,12 @@ import java.util.ArrayList;
 
 public class GetUsersLikedEntityQuery extends Query<ArrayList<User>> {
 
-    public static final int PER_PAGE = 20;
-
     String uid;
     int page;
     int perPage;
 
-    public GetUsersLikedEntityQuery(String uid) {
-        this(uid, 1, PER_PAGE);
-    }
-
-    public GetUsersLikedEntityQuery(String uid, int page) {
-        this(uid, page, PER_PAGE);
+    public GetUsersLikedEntityQuery(String uid, int perPage) {
+        this(uid, 1, perPage);
     }
 
     public GetUsersLikedEntityQuery(String uid, int page, int perPage) {
@@ -30,6 +24,6 @@ public class GetUsersLikedEntityQuery extends Query<ArrayList<User>> {
 
     @Override
     public ArrayList<User> loadDataFromNetwork() throws Exception {
-        return getService().getUsersWhoLikedEntity(uid, page, PER_PAGE);
+        return getService().getUsersWhoLikedEntity(uid, page, perPage);
     }
 }

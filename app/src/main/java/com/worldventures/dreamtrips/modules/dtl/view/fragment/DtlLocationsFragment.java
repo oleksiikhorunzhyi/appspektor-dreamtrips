@@ -134,7 +134,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     @Override
     public void openLocation(PlacesBundle bundle) {
         fragmentCompass.setContainerId(R.id.dtl_container);
-        fragmentCompass.setSupportFragmentManager(getFragmentManager());
+        fragmentCompass.setFragmentManager(getFragmentManager());
 
         fragmentCompass.disableBackStack();
 

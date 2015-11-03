@@ -45,13 +45,13 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentCompass.setSupportFragmentManager(getActivity().getSupportFragmentManager());
+        fragmentCompass.setFragmentManager(getActivity().getSupportFragmentManager());
         fragmentCompass.setContainerId(R.id.container_filters);
         fragmentCompass.disableBackStack();
         fragmentCompass.replace(Route.DTL_FILTERS);
         //
         fragmentCompass.disableBackStack();
-        fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+        fragmentCompass.setFragmentManager(getChildFragmentManager());
         fragmentCompass.setContainerId(R.id.dtl_container);
     }
 

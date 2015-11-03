@@ -4,13 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -18,7 +14,6 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
@@ -70,9 +65,9 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                     return super.onOptionsItemSelected(item);
             }
         });
-        infoFragmentCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.container_info);
-        infoFragmentCompass.setSupportFragmentManager(getChildFragmentManager());
-        fragmentCompass.setSupportFragmentManager(getFragmentManager());
+        infoFragmentCompass = new FragmentCompass(getActivity(), R.id.container_info);
+        infoFragmentCompass.setFragmentManager(getChildFragmentManager());
+        fragmentCompass.setFragmentManager(getFragmentManager());
         fragmentCompass.setContainerId(R.id.dtl_container);
     }
 

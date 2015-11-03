@@ -56,7 +56,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
 public class BucketListFragment<T extends BucketListPresenter> extends BaseFragment<T>
@@ -339,25 +338,22 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void openDetails(BucketItem bucketItem) {
-        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
-
-        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
+        FeedEntityDetailsBundle bundle =
+                new FeedEntityDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
+        //
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
             fragmentCompass.removeDetailed();
             NavigationBuilder.create()
                     .with(fragmentCompass)
                     .data(bundle)
-                    .move(detailsRoute);
+                    .move(Route.FEED_ENTITY_DETAILS);
             showDetailsContainer();
         } else {
             hideDetailContainer();
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .data(bundle)
-                    .move(detailsRoute);
+            NavigationBuilder.create().with(activityRouter).move(Route.FEED_ENTITY_DETAILS);
         }
     }
 }

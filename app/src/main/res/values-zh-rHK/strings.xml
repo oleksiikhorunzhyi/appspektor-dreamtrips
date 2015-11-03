@@ -376,22 +376,13 @@
     <string name="configuration_failed">配置加載失敗</string>
     <string name="email_app_choose_dialog_title">選擇應用程序</string>
 
-    <plurals name="users_who_liked">
-        <item quantity="one">%d用戶點了贊</item>
-        <item quantity="other">%d用戶點了贊</item>
-    </plurals>
+    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
+    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
+    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
 
-    <plurals name="users_who_liked_with_name">
-        <item quantity="zero">@string/users_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
-
-    <plurals name="account_who_liked_item">
-        <item quantity="zero">@string/account_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
+    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
+    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
+    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
     <string name="account_who_liked_with_first_zero" formatted="false">%s點了贊</string>
     <string name="users_who_liked_with_first_zero" formatted="false">%s點了贊</string>
@@ -440,15 +431,11 @@
     <string name="all">全部</string>
     <string name="you">您</string>
 
-    <plurals name="likes_count">
-        <item quantity="one">%d個贊</item>
-        <item quantity="other">%d個贊</item>
-    </plurals>
+    <string name="likes_count_one">%d個贊</string>
+    <string name="likes_count_other">%d個贊</string>
 
-    <plurals name="comments_count">
-        <item quantity="one">%d條評論</item>
-        <item quantity="other">%d條評論</item>
-    </plurals>
+    <string name="comments_count_one">%d條評論</string>
+    <string name="comments_count_other">%d條評論</string>
 
     <string name="feed_edit_item">編輯</string>
     <string name="feed_delete_item">刪除</string>

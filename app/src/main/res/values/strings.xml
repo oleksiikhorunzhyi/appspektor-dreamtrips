@@ -378,22 +378,13 @@
     <string name="configuration_failed">Configuration loading failed</string>
     <string name="email_app_choose_dialog_title">Choose Application</string>
 
-    <plurals name="users_who_liked">
-        <item quantity="one">&lt;b>%d User&lt;/b> likes this</item>
-        <item quantity="other">&lt;b>%d Users&lt;/b> like this</item>
-    </plurals>
+    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
+    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
+    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
 
-    <plurals name="users_who_liked_with_name">
-        <item quantity="zero">@string/users_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
-
-    <plurals name="account_who_liked_item">
-        <item quantity="zero">@string/account_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
+    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
+    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
+    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
     <string name="account_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> like this</string>
     <string name="users_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> likes this</string>
@@ -442,15 +433,11 @@
     <string name="all">All</string>
     <string name="you">You</string>
 
-    <plurals name="likes_count">
-        <item quantity="one">%d like</item>
-        <item quantity="other">%d likes</item>
-    </plurals>
+    <string name="likes_count_one">%d like</string>
+    <string name="likes_count_other">%d likes</string>
 
-    <plurals name="comments_count">
-        <item quantity="one">%d comment</item>
-        <item quantity="other">%d comments</item>
-    </plurals>
+    <string name="comments_count_one">%d comment</string>
+    <string name="comments_count_other">%d comments</string>
 
     <string name="feed_edit_item">Edit</string>
     <string name="feed_delete_item">Delete</string>
@@ -467,10 +454,8 @@
     <string name="feed_close_friends">Close Friends</string>
     <string name="start_searching">Type to start searching</string>
 
-    <plurals name="people_liked">
-        <item quantity="one">%s liked</item>
-        <item quantity="other">%d people liked</item>
-    </plurals>
+    <string name="people_liked_one">%s liked</string>
+    <string name="people_liked_other">%s people liked</string>
 
     <string name="terms_and_conditions_title">Terms and Condition</string>
     <string name="terms_and_conditions_subtitle">Please read and accept the terms and condition below to continue</string>

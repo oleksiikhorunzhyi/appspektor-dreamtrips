@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 // This does not break the build when Android Studio is missing the JRebel for Android plugin.
@@ -243,6 +243,8 @@ dependencies {
     compile 'com.github.techery:ProperRatingBar:77350bf31b'
 
     // Util
+    compile 'com.github.hotchemi:permissionsdispatcher:1.2.1@aar'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:1.2.1'
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.android.support:multidex:1.0.1'

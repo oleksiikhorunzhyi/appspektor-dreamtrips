@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacePointsEstimationQ
 
 public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
-    protected int placeId;
+    protected String placeId;
 
-    public DtlPointsEstimationPresenter(int placeId) {
+    public DtlPointsEstimationPresenter(String placeId) {
         this.placeId = placeId;
     }
 

@@ -16,10 +16,10 @@ public class SuggestPlaceCommand extends DtlRequest<Void> {
 
     @Override
     public Void loadDataFromNetwork() {
-        if (postData.id == null) { // looks like we're suggesting new place from RepTools
+        if (postData.placeId == null) { // looks like we're suggesting new place from RepTools
             return getService().suggestPlace(postData);
         } else { // suggest dining from Dtl
-            return getService().suggestDining(postData.id, postData);
+            return getService().suggestDining(postData.placeId, postData);
         }
     }
 }

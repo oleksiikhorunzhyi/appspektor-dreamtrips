@@ -50,8 +50,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @InjectView(R.id.name)
     TextView name;
-    @InjectView(R.id.category)
-    TextView category;
     @InjectView(R.id.address)
     TextView address;
     @InjectView(R.id.place_image)
@@ -86,11 +84,10 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     public void setPlace(DtlPlace place) {
-        name.setText(place.getName());
-        category.setText(helper.getFirstCategoryName(place));
+        name.setText(place.getDisplayName());
         address.setText(String.format("%s\n%s", place.getAddress1(), place.getAddress2()));
-        if (!place.getMediaList().isEmpty()) {
-            placeImage.setImageURI(Uri.parse(place.getMediaList().get(0).getMediaFileName()));
+        if (!place.getImages().isEmpty()) {
+            placeImage.setImageURI(Uri.parse(place.getImages().get(0).getImagePath()));
         }
     }
 

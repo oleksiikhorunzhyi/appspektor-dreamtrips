@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -32,7 +33,7 @@ public class DtlPlacesTabsFragment
         implements DtlPlacesTabsPresenter.View {
 
     @InjectView(R.id.tabs)
-    TabLayout tabStrip;
+    BadgedTabLayout tabStrip;
     @InjectView(R.id.pager)
     CustomViewPager pager;
     BasePagerAdapter<DataFragmentItem> adapter;
@@ -119,7 +120,7 @@ public class DtlPlacesTabsFragment
             }
             adapter.notifyDataSetChanged();
         }
-        tabStrip.setupWithViewPager(pager);
+        tabStrip.setupWithPagerBadged(pager);
     }
 
     @Override

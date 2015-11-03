@@ -62,9 +62,9 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getName()));
+            shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));
             shareBundle.setShareUrl(place.getWebsite());
-            DtlPlaceMedia media = Queryable.from(place.getMediaList()).firstOrDefault();
+            DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
             eventBus.post(new CloseDialogEvent());
             NavigationBuilder.create()

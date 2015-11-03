@@ -5,52 +5,33 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 
-public class DtlPlaceMedia implements ImagePathHolder, Parcelable {
+public class DtlPlaceMedia implements Parcelable, ImagePathHolder {
 
-    private boolean isDefault;
-    private int mediaId;
-    private String mediaFileName;
+    private String imageId;
+    private String url;
+    private String logoUrl;
+    private String name;
+    private String description;
+    private String logo;
 
     public DtlPlaceMedia() {
     }
 
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    public void setIsDefault(boolean isDefault) {
-        this.isDefault = isDefault;
-    }
-
-    public int getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(int mediaId) {
-        this.mediaId = mediaId;
-    }
-
-    public String getMediaFileName() {
-        return mediaFileName;
-    }
-
-    public void setMediaFileName(String mediaFileName) {
-        this.mediaFileName = mediaFileName;
-    }
-
     @Override
     public String getImagePath() {
-        return getMediaFileName();
+        return url;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
-
     protected DtlPlaceMedia(Parcel in) {
-        isDefault = in.readByte() == 1;
-        mediaId = in.readInt();
-        mediaFileName = in.readString();
+        imageId = in.readString();
+        url = in.readString();
+        logoUrl = in.readString();
+        name = in.readString();
+        description = in.readString();
+        logo = in.readString();
     }
 
     public static final Creator<DtlPlaceMedia> CREATOR = new Creator<DtlPlaceMedia>() {
@@ -72,8 +53,11 @@ public class DtlPlaceMedia implements ImagePathHolder, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (isDefault ? 1 : 0));
-        dest.writeInt(mediaId);
-        dest.writeString(mediaFileName);
+        dest.writeString(imageId);
+        dest.writeString(url);
+        dest.writeString(logoUrl);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(logo);
     }
 }

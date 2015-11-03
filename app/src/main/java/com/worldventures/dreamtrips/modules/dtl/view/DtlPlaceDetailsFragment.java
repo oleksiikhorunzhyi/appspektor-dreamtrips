@@ -25,7 +25,8 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCategoryDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlCategoryDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
@@ -47,7 +48,8 @@ public class DtlPlaceDetailsFragment
         implements DtlPlaceDetailsPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
-    DtlPlaceCategoryDataInflater categoryDataInflater;
+    DtlPlaceInfoInflater placeInfoInflater;
+    DtlCategoryDataInflater categoryDataInflater;
     DtlPlaceHelper helper;
 
     @Inject
@@ -85,7 +87,8 @@ public class DtlPlaceDetailsFragment
         super.onAttach(activity);
         helper = new DtlPlaceHelper(activity);
         commonDataInflater = new DtlPlaceManyImagesDataInflater(helper, getChildFragmentManager());
-        categoryDataInflater = new DtlPlaceCategoryDataInflater(helper);
+        placeInfoInflater = new DtlPlaceInfoInflater(helper);
+        categoryDataInflater = new DtlCategoryDataInflater(helper);
     }
 
     @Override
@@ -99,18 +102,22 @@ public class DtlPlaceDetailsFragment
             toolbar.getBackground().setAlpha(0);
         }
         commonDataInflater.setView(rootView);
+        placeInfoInflater.setView(rootView);
         categoryDataInflater.setView(rootView);
         destinationMap = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.place_details_map);
         destinationMap.getMapAsync(googleMap -> {
             googleMap.getUiSettings().setMapToolbarEnabled(false);
+            int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+            googleMap.setPadding(0, 0, 0, padding);
         });
     }
 
     @Override
     public void setPlace(DtlPlace place) {
         commonDataInflater.apply(place);
+        placeInfoInflater.apply(place);
         categoryDataInflater.apply(place);
-        setType(place.getType());
+        setType(place.getPartnerStatus());
         setDescription(place.getDescription());
         setAdditional(place);
         setMap(place);
@@ -139,7 +146,7 @@ public class DtlPlaceDetailsFragment
 
     private void setMap(DtlPlace place) {
         destinationMap.getMapAsync(googleMap -> {
-            LatLng pos = new LatLng(place.getLocation().getLat(), place.getLocation().getLng());
+            LatLng pos = new LatLng(place.getCoordinates().getLat(), place.getCoordinates().getLng());
             googleMap.addMarker(new MarkerOptions()
                             .position(pos)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))

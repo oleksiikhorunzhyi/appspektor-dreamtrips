@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig.Builder;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCategoryDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
@@ -26,13 +26,13 @@ public class DtlPlaceCell extends AbstractCell<DtlPlace> {
     ActivityRouter activityRouter;
     //
     DtlPlaceCommonDataInflater commonDataInflater;
-    DtlPlaceCategoryDataInflater categoryDataInflater;
+    DtlPlaceInfoInflater categoryDataInflater;
 
     public DtlPlaceCell(View view) {
         super(view);
         DtlPlaceHelper helper = new DtlPlaceHelper(view.getContext());
         commonDataInflater = new DtlPlaceSingleImageDataInflater(helper);
-        categoryDataInflater = new DtlPlaceCategoryDataInflater(helper);
+        categoryDataInflater = new DtlPlaceInfoInflater(helper);
         commonDataInflater.setView(view);
         categoryDataInflater.setView(view);
     }

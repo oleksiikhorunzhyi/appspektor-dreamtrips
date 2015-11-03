@@ -5,56 +5,58 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+
+import java.util.Collections;
+import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlLocation implements Parcelable {
 
-    protected int id;
-    protected String name;
-    protected String countryName;
-    protected Location location;
+    String locationId;
+    DtlLocationCategory category;
+    String shortName;
+    String longName;
+    Location coordinates;
+    int merchantCount;
+    List<DtlLocation> withinLocations;
 
     public DtlLocation() {
     }
 
-    public int getId() {
-        return id;
+    public String getLocationId() {
+        return locationId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public DtlLocationCategory getCategory() {
+        return category;
     }
 
-    public String getName() {
-        return name;
+    public String getLongName() {
+        return longName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Location getCoordinates() {
+        return coordinates;
     }
 
-    public String getCountryName() {
-        return countryName;
+    public List<DtlLocation> getWithinLocations() {
+        return withinLocations != null ? withinLocations : Collections.emptyList();
     }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable part
+    ///////////////////////////////////////////////////////////////////////////
 
     protected DtlLocation(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        countryName = in.readString();
-        location = in.readParcelable(Location.class.getClassLoader());
+        locationId = in.readString();
+        shortName = in.readString();
+        longName = in.readString();
+        category = (DtlLocationCategory) in.readSerializable();
+        coordinates = in.readParcelable(Location.class.getClassLoader());
+        merchantCount = in.readInt();
+        withinLocations = in.createTypedArrayList(DtlLocation.CREATOR);
     }
 
     public static final Creator<DtlLocation> CREATOR = new Creator<DtlLocation>() {
@@ -76,9 +78,26 @@ public class DtlLocation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeString(countryName);
-        dest.writeParcelable(location, flags);
+        dest.writeString(locationId);
+        dest.writeString(shortName);
+        dest.writeString(longName);
+        dest.writeSerializable(category);
+        dest.writeParcelable(coordinates, flags);
+        dest.writeInt(merchantCount);
+        dest.writeTypedList(withinLocations);
     }
+
+    public enum DtlLocationCategory {
+        @SerializedName("CITY")
+        CITY,
+        @SerializedName("METRO")
+        METRO,
+        @SerializedName("STATE")
+        STATE,
+        @SerializedName("COUNTRY")
+        COUNTRY
+    }
+
 }
+
+

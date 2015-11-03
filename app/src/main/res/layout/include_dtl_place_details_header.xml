@@ -28,26 +28,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignTop="@+id/place_details_title"
+        android:layout_alignTop="@+id/place_details_rating"
         android:background="@drawable/bucket_item_shadow"
-        />
-
-    <TextView
-        android:id="@+id/place_details_title"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="@dimen/spacing_normal"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_toLeftOf="@+id/place_details_rating"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:paddingTop="@dimen/spacing_normal"
-        android:textColor="@color/white"
-        tools:text="Corner Backery Caffe"
         />
 
     <io.techery.properratingbar.ProperRatingBar
@@ -55,10 +37,11 @@
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/place_details_title"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/spacing_normal"
         android:layout_marginBottom="2dp"
-        android:layout_marginRight="@dimen/spacing_normal"
         app:tickNormalDrawable="@drawable/ic_star_normal"
         app:tickSelectedDrawable="@drawable/ic_star_selected"
         app:totalTicks="5"
@@ -69,10 +52,8 @@
         android:id="@+id/place_details_points_badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/spacing_normal"
         android:src="@drawable/badge_placeholder"/>
 
 </RelativeLayout>

@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import android.location.Location;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -63,8 +61,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         checkPendingMapInfo();
     }
 
-    public void onMarkerClick(int id) {
-        showPlaceInfo(Queryable.from(dtlPlaces).firstOrDefault(item -> item.getId() == id));
+    public void onMarkerClick(String merchantId) {
+        showPlaceInfo(Queryable.from(dtlPlaces).firstOrDefault(item -> item.getMerchantId().equals(merchantId)));
     }
 
     private void showPlaceInfo(DtlPlace place) {
@@ -78,8 +76,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
                     dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList();
 
             for (DtlPlace dtlPlace : filtered) {
-                view.addPin(new LatLng(dtlPlace.getLocation().getLat(),
-                        dtlPlace.getLocation().getLng()), dtlPlace.getId());
+                view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),
+                        dtlPlace.getCoordinates().getLng()), dtlPlace.getPartnerStatus());
             }
         }
     }
@@ -106,7 +104,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     public interface View extends Presenter.View {
-        void addPin(LatLng latLng, int id);
+        void addPin(String id, LatLng latLng, DtlPlaceType type);
 
         void clearMap();
 

@@ -31,7 +31,7 @@ public class DtlPlaceSingleImageDataInflater extends DtlPlaceCommonDataInflater 
     @Override
     protected void onPlaceApply(DtlPlace place) {
         super.onPlaceApply(place);
-        setImage(place.getMediaList());
+        setImage(place.getImages());
     }
 
     private void setImage(List<DtlPlaceMedia> mediaList) {

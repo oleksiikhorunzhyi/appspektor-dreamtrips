@@ -21,7 +21,7 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
     }
 
     public void rate(int stars) {
-        doRequest(new RatePlaceRequest(dtlPlace.getId(), stars));
+        doRequest(new RatePlaceRequest(dtlPlace.getMerchantId(), stars));
     }
 
     public void share() {
@@ -31,7 +31,7 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
+        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
         view.setCongratulations(dtlTransaction.getDtlTransactionResult());
     }
 

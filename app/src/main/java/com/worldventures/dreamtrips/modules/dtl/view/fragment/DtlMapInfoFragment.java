@@ -8,7 +8,7 @@ import android.view.ViewTreeObserver;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCategoryDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
@@ -23,7 +23,7 @@ public class DtlMapInfoFragment
         implements DtlMapInfoPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
-    DtlPlaceCategoryDataInflater categoryDataInflater;
+    DtlPlaceInfoInflater categoryDataInflater;
 
     @Override
     protected DtlMapInfoPresenter createPresenter(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class DtlMapInfoFragment
         super.afterCreateView(rootView);
         DtlPlaceHelper helper = new DtlPlaceHelper(rootView.getContext());
         commonDataInflater = new DtlPlaceSingleImageDataInflater(helper);
-        categoryDataInflater = new DtlPlaceCategoryDataInflater(helper);
+        categoryDataInflater = new DtlPlaceInfoInflater(helper);
         commonDataInflater.setView(rootView);
         categoryDataInflater.setView(rootView);
         observeSize(rootView);

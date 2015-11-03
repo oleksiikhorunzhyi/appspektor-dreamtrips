@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 
 import com.github.pwittchen.networkevents.library.BusWrapper;
@@ -48,7 +49,7 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBI
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 
-public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.View> {
+public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
     private BusWrapper busWrapper;
     private NetworkEvents networkEvents;

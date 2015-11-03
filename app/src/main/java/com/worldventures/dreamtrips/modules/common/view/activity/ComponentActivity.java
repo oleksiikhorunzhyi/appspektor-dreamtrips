@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;

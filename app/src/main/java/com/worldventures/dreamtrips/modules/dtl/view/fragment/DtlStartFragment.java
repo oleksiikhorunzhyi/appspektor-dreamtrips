@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -15,8 +17,9 @@ import com.google.android.gms.common.api.Status;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -51,15 +54,11 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
     }
 
     private void showDtlFilters() {
-        fragmentCompass.setFragmentManager(getActivity().getSupportFragmentManager());
-
-        fragmentCompass.setContainerId(R.id.container_filters);
-        fragmentCompass.disableBackStack();
-        fragmentCompass.replace(Route.DTL_FILTERS);
-        //
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setFragmentManager(getChildFragmentManager());
-        fragmentCompass.setContainerId(R.id.dtl_container);
+        router.moveTo(Route.DTL_FILTERS, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .containerId(R.id.container_filters)
+                .fragmentManager(getFragmentManager())
+                .build());
     }
 
     @Override
@@ -96,7 +95,6 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
         }
     }
 
-
     @Override
     protected DtlStartPresenter createPresenter(Bundle savedInstanceState) {
         return new DtlStartPresenter();
@@ -104,19 +102,12 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
 
     @Override
     public void openDtlLocationsScreen() {
-        NavigationBuilder
-                .create()
-                .with(fragmentCompass)
-                .attach(Route.DTL_LOCATIONS);
+        router.moveTo(Route.DTL_LOCATIONS, provideNavigationConfig(null));
     }
 
     @Override
     public void openDtlPlacesScreen(PlacesBundle bundle) {
-        NavigationBuilder
-                .create()
-                .with(fragmentCompass)
-                .data(bundle)
-                .attach(Route.DTL_PLACES_LIST);
+        router.moveTo(Route.DTL_PLACES_LIST, provideNavigationConfig(bundle));
     }
 
     @Override
@@ -138,6 +129,15 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
                 .show();
     }
 
+    private NavigationConfig provideNavigationConfig(@Nullable Parcelable bundle) {
+        return NavigationConfigBuilder.forFragment()
+                .fragmentManager(getChildFragmentManager())
+                .backStackEnabled(false)
+                .containerId(R.id.dtl_container)
+                .data(bundle)
+                .build();
+    }
+
     public void activityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CHECK_SETTINGS:
@@ -155,5 +155,4 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
                 break;
         }
     }
-
 }

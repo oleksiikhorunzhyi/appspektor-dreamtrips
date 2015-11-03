@@ -35,8 +35,6 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -54,12 +52,9 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
@@ -82,9 +77,6 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     @Optional
     @InjectView(R.id.detail_container)
     protected View detailsContainer;
-    //
-    @Inject
-    protected Router router;
 
     private DraggableArrayListAdapter<BucketItem> adapter;
     private RecyclerView.Adapter wrappedAdapter;
@@ -350,19 +342,18 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
                 new FeedEntityDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
         //
         if (isTabletLandscape()) {
-            router.moveTo(Route.FEED_ENTITY_DETAILS,
-                    NavigationConfigBuilder.forFragment()
-                            .backStackEnabled(false)
-                            .fragmentManager(getChildFragmentManager())
-                            .data(bundle)
-                            .containerId(R.id.detail_container)
-                            .build());
+            fragmentCompass.disableBackStack();
+            fragmentCompass.setFragmentManager(getChildFragmentManager());
+            fragmentCompass.setContainerId(R.id.detail_container);
+            fragmentCompass.clear();
+            NavigationBuilder.create()
+                    .with(fragmentCompass)
+                    .data(bundle)
+                    .move(Route.FEED_ENTITY_DETAILS);
             showDetailsContainer();
         } else {
             hideDetailContainer();
-            router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
-                    .data(bundle)
-                    .build());
+            NavigationBuilder.create().with(activityRouter).move(Route.FEED_ENTITY_DETAILS);
         }
     }
 }

@@ -90,11 +90,7 @@ public class FeedActionPanelViewActionHandler {
 
             case BUCKET_LIST_ITEM:
                 BucketItem bucketItem = (BucketItem) feedItem.getItem();
-                if (shareType.equals(ShareFragment.FB)) {
-                    imageUrl = bucketItem.getUrl();
-                } else {
-                    shareUrl = bucketItem.getUrl();
-                }
+                shareUrl = bucketItem.getUrl();
                 text = String.format(context.getString(R.string.bucketlist_share),
                         bucketItem.getName());
                 eventBus.post(new BucketItemShared());

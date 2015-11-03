@@ -41,6 +41,8 @@ public class User extends BaseEntity implements Parcelable {
     private int tripImagesCount;
     private int bucketListItemsCount;
 
+    private boolean termsAccepted;
+
     private Relationship relationship;
 
     @SerializedName("background_photo_url")
@@ -186,6 +188,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isTermsAccepted() {
+        return termsAccepted;
     }
 
     public String getFullName() {
@@ -354,6 +360,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeString(this.backgroundPhotoUrl);
         dest.writeStringList(this.subscriptions);
         dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.circleIds);
         dest.writeInt(this.mutualFriends);
         dest.writeString(this.circles);
@@ -381,6 +388,7 @@ public class User extends BaseEntity implements Parcelable {
         this.backgroundPhotoUrl = in.readString();
         this.subscriptions = in.createStringArrayList();
         this.socialEnabled = in.readByte() != 0;
+        this.termsAccepted = in.readByte() != 0;
         this.circleIds = (HashSet<String>) in.readSerializable();
         this.mutualFriends = in.readInt();
         this.circles = in.readString();

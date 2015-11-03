@@ -209,10 +209,10 @@ public class DreamSpiceManager extends SpiceManager {
 
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);
+            eventBus.postSticky(new UpdateUserInfoEvent(sessionUser));
             return true;
         }
 
-        eventBus.post(new UpdateUserInfoEvent());
         return false;
     }
 

@@ -48,7 +48,7 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBI
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 
-public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.View> {
+public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
     private BusWrapper busWrapper;
     private NetworkEvents networkEvents;
@@ -190,6 +190,11 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
         view.configurationFailed();
     }
 
+    @Override
+    protected boolean canShowTermsDialog() {
+        return false;
+    }
+
     private void clearTempDirectory() {
         snappyRepository.removeAllUploadTasks();
         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
@@ -221,7 +226,7 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
     }
 
 
-    public interface View extends Presenter.View {
+    public interface View extends ActivityPresenter.View {
         void configurationFailed();
 
         void configurationStarted();

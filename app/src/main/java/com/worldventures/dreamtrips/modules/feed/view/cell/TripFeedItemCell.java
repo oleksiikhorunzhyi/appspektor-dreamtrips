@@ -41,7 +41,7 @@ public class TripFeedItemCell extends FeedItemCell<TripFeedItem> {
     }
 
     @Override
-    protected void itemClicked() {
+    protected void openItemDetails() {
         tripCell.actionItemClick();
     }
 

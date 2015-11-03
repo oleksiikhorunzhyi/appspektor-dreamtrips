@@ -11,14 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.eowise.recyclerview.stickyheaders.OnHeaderClickListener;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -26,13 +24,13 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.adapter.NotificationHeaderAdapter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
@@ -40,9 +38,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.notification.Notifica
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 
@@ -173,11 +168,6 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
-    }
-
-    @Override
-    public void openDetails(FeedItem feedItem) {
-
     }
 
     @Override

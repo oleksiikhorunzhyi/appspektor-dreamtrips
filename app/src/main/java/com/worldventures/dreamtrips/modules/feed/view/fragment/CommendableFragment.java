@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
+import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
@@ -134,7 +135,13 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
 
     @Override
     public void addComments(List<Comment> commentList) {
+        boolean commentsEmpty = layout.getItemCount() <= getAdditionalItemsCount();
         adapter.addItems(getAdditionalItemsCount(), commentList);
+        if (commentsEmpty && getArgs().isOpenKeyboard()) {
+            recyclerView.post(() -> {
+                recyclerView.scrollToPosition(layout.getItemCount() - 1);
+            });
+        }
     }
 
     @Override
@@ -152,15 +159,19 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
     @Override
     public void removeComment(Comment comment) {
         int index = adapter.getItems().indexOf(comment);
-        adapter.remove(index);
-        adapter.notifyItemRemoved(index);
+        if (index != -1) {
+            adapter.remove(index);
+            adapter.notifyItemRemoved(index);
+        }
     }
 
     @Override
     public void updateComment(Comment comment) {
         int index = adapter.getItems().indexOf(comment);
-        adapter.replaceItem(index, comment);
-        adapter.notifyItemChanged(index);
+        if (index != -1) {
+            adapter.replaceItem(index, comment);
+            adapter.notifyItemChanged(index);
+        }
     }
 
     @Override
@@ -181,11 +192,6 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
     public void showViewMore() {
         loadMore.setVisible(true);
         adapter.notifyItemChanged(getLoadMorePosition());
-    }
-
-    @Override
-    public void writeComment() {
-        SoftInputUtil.showSoftInputMethod(input);
     }
 
     @Override
@@ -210,6 +216,10 @@ public class CommendableFragment<T extends BaseCommentPresenter, P extends Comme
     public void setLoading(boolean loading) {
         loadMore.setLoading(loading);
         adapter.notifyItemChanged(getLoadMorePosition());
+    }
+
+    public void onEvent(CommentIconClickedEvent event) {
+        if (isVisibleOnScreen()) SoftInputUtil.showSoftInputMethod(input);
     }
 
     protected int getLoadMorePosition() {

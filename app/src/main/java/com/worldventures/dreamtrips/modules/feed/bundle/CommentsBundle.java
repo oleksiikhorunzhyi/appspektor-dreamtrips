@@ -27,6 +27,10 @@ public class CommentsBundle implements Parcelable {
         return openKeyboard;
     }
 
+    public void setOpenKeyboard(boolean openKeyboard) {
+        this.openKeyboard = openKeyboard;
+    }
+
     @Override
     public int describeContents() {
         return 0;

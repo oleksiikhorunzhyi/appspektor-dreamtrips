@@ -10,18 +10,19 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
@@ -29,8 +30,10 @@ import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemCommonDataHelper;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -38,8 +41,6 @@ import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
-
-    private boolean syncUIStateWithModelWasCalled = false;
 
     FeedItemCommonDataHelper feedItemCommonDataHelper;
     CommentCellHelper commentCellHelper;
@@ -56,8 +57,6 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     ImageView editFeedItem;
 
     @Inject
-    ActivityRouter activityRouter;
-    @Inject
     FragmentCompass fragmentCompass;
     @Inject
     Presenter.TabletAnalytic tabletAnalytic;
@@ -65,6 +64,13 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     SessionHolder<UserSession> sessionHolder;
     @Inject
     FeedActionPanelViewActionHandler feedActionHandler;
+    @Inject
+    ActivityRouter activityRouter;
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
+
+    private boolean syncUIStateWithModelWasCalled = false;
     //
     private NavigationWrapper navigationWrapper;
 
@@ -109,7 +115,7 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
         actionView.setState(getModelObject(), isForeignItem(getModelObject()));
 
         feedActionHandler.init(actionView, navigationWrapper);
-        itemView.setOnClickListener(v -> itemClicked());
+        itemView.setOnClickListener(v -> openItemDetails());
     }
 
     private boolean isForeignItem(FeedItem feedItem) {
@@ -124,17 +130,24 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
         if (!syncUIStateWithModelWasCalled) {
             throw new IllegalStateException("super.syncUIStateWithModel was not called");
         }
-
     }
 
     @Optional
     @OnClick(R.id.comment_preview)
-    void commentsCountClicked() {
-        openComments(getModelObject());
+    void commentsPreviewClicked() {
+        openItemDetails();
     }
 
-    protected void itemClicked() {
-        getEventBus().post(new FeedEntityItemClickEvent(getModelObject()));
+    protected void openItemDetails() {
+        Route detailsRoute = Route.FEED_ITEM_DETAILS;
+        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(getModelObject());
+        if (tabletAnalytic.isTabletLandscape()) {
+            bundle.setSlave(true);
+        }
+        NavigationBuilder.create()
+                .with(activityRouter)
+                .data(bundle)
+                .move(detailsRoute);
     }
 
     protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
@@ -180,14 +193,21 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     @OnClick(R.id.feed_header_avatar)
     void eventOwnerClicked() {
         User user = getModelObject().getLinks().getUsers().get(0);
-        getEventBus().post(new ProfileClickedEvent(user));
+        openUser(user);
     }
 
     @Optional
     @OnClick(R.id.user_photo)
     void commentOwnerClicked() {
         User user = commentCellHelper.getComment().getOwner();
-        getEventBus().post(new ProfileClickedEvent(user));
+        openUser(user);
+    }
+
+    protected void openUser(User user) {
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(routeCreator.createRoute(user.getId()));
     }
 
 }

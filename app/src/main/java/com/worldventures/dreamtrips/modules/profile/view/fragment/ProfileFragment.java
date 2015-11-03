@@ -138,7 +138,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     }
 
     @Override
-    protected BaseArrayListAdapter getAdapter() {
+    protected BaseArrayListAdapter createAdapter() {
         return new IgnoreFirstItemAdapter(feedView.getContext(), this);
     }
 

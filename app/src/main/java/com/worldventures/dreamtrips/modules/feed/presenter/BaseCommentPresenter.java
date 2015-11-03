@@ -39,14 +39,12 @@ import icepick.State;
 
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
-    private int page = 1;
-    private int commentsCount = 0;
-
     @State
     FeedEntity feedEntity;
     @State
     String comment;
-
+    private int page = 1;
+    private int commentsCount = 0;
     private UidItemDelegate uidItemDelegate;
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
@@ -87,12 +85,14 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     }
 
     public void onEvent(DeleteCommentRequestEvent event) {
-        doRequest(new DeleteCommentCommand(event.getComment().getUid()), jsonObject -> {
-            view.removeComment(event.getComment());
-            feedEntity.getComments().remove(event.getComment());
-            feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
-            eventBus.post(new FeedEntityCommentedEvent(feedEntity));
-        });
+        if (view.isVisibleOnScreen()) {
+            doRequest(new DeleteCommentCommand(event.getComment().getUid()), jsonObject -> {
+                view.removeComment(event.getComment());
+                feedEntity.getComments().remove(event.getComment());
+                feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
+                eventBus.post(new FeedEntityCommentedEvent(feedEntity));
+            });
+        }
     }
 
     public void onEvent(EditCommentRequestEvent event) {
@@ -172,7 +172,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             commentsCount += comments.size();
             view.setLoading(false);
             view.addComments(comments);
-
             if (commentsCount >= feedEntity.getCommentsCount()) view.hideViewMore();
             else view.showViewMore();
 
@@ -218,7 +217,5 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         void onPostError();
 
         void showViewMore();
-
-        void writeComment();
     }
 }

@@ -18,17 +18,18 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import butterknife.InjectView;
+import butterknife.Optional;
 
 @Layout(R.layout.fragment_comments_with_details)
 public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetailsPresenter, FeedItemDetailsBundle> implements FeedItemDetailsPresenter.View {
 
-    private FragmentCompass childCompass;
-
+    @Optional
     @InjectView(R.id.comments_additional_info_container)
     ViewGroup additionalContainer;
+
+    private FragmentCompass childCompass;
 
     @Override
     protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -44,7 +45,9 @@ public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetails
             childCompass.disableBackStack();
             //
         } else {
-            additionalContainer.setVisibility(View.GONE);
+            if (additionalContainer != null) {
+                additionalContainer.setVisibility(View.GONE);
+            }
         }
 
         adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
@@ -77,6 +80,6 @@ public class FeedItemDetailsFragment extends CommendableFragment<FeedItemDetails
 
     @Override
     protected int getLoadMorePosition() {
-       return super.getLoadMorePosition() + 1;
+        return super.getLoadMorePosition() + 1;
     }
 }

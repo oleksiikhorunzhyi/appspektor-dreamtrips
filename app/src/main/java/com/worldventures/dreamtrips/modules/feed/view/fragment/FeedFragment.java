@@ -121,7 +121,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     @Override
-    public BaseArrayListAdapter getAdapter() {
+    public BaseArrayListAdapter createAdapter() {
         return new BaseArrayListAdapter<>(feedView.getContext(), this);
     }
 

@@ -95,10 +95,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         if (lvCloseFriends != null) {
             lvCloseFriends.setEmptyView(emptyView);
             lvCloseFriends.addOnScrollListener(onScrollListener);
+            lvCloseFriends.setLayoutManager(layoutManager);
+            lvCloseFriends.setAdapter(adapter);
         }
-
-        lvCloseFriends.setLayoutManager(layoutManager);
-        lvCloseFriends.setAdapter(adapter);
     }
 
 

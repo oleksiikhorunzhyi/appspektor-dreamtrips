@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.PhotoPickerPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
@@ -122,7 +123,7 @@ public class FeedModule {
     }
 
     @Provides
-    FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(ActivityRouter activityRouter, @Global EventBus eventBus) {
+    FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(ActivityRouter activityRouter, @Global EventBus eventBus, Presenter.TabletAnalytic tabletAnalytic) {
         return new FeedActionPanelViewActionHandler(activityRouter, eventBus);
     }
 }

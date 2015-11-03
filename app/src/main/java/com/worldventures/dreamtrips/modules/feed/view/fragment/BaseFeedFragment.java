@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
@@ -48,15 +49,12 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     @Optional
     @InjectView(R.id.arrow)
     protected ImageView ivArrow;
-
-    private WeakHandler weakHandler;
-    private Bundle savedInstanceState;
-
     protected BaseArrayListAdapter adapter;
-
     @Optional
     @InjectView(R.id.detail_container)
     protected View detailsContainer;
+    private WeakHandler weakHandler;
+    private Bundle savedInstanceState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +71,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
         feedView.setEmptyView(emptyView);
 
-        adapter = getAdapter();
+        adapter = createAdapter();
         feedView.setup(savedInstanceState, adapter);
 
         feedView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -106,7 +104,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
         if (container != null) container.setVisibility(View.VISIBLE);
     }
 
-    protected abstract BaseArrayListAdapter getAdapter();
+    protected abstract BaseArrayListAdapter createAdapter();
 
     @Override
     public void onRefresh() {
@@ -127,23 +125,26 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
         });
     }
 
+
+    public void onEvent(CommentIconClickedEvent event) {
+        if (isVisibleOnScreen()) {
+            Route detailsRoute = Route.FEED_ITEM_DETAILS;
+            FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(event.getFeedItem());
+            if (tabletAnalytic.isTabletLandscape()) {
+                bundle.setSlave(true);
+            }
+            bundle.setOpenKeyboard(true);
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .data(bundle)
+                    .move(detailsRoute);
+        }
+    }
+
     @Override
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
-    }
-
-    @Override
-    public void openDetails(FeedItem feedItem) {
-        Route detailsRoute = Route.FEED_ITEM_DETAILS;
-        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(feedItem);
-        if (isTabletLandscape()) {
-            bundle.setSlave(true);
-        }
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(bundle)
-                .move(detailsRoute);
     }
 
     private boolean isPhoneLandscape() {

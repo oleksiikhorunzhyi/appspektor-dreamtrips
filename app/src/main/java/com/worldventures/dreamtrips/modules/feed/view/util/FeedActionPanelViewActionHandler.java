@@ -8,8 +8,9 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -37,9 +38,7 @@ public class FeedActionPanelViewActionHandler {
             navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem().getUid()));
         });
 
-        actionView.setOnCommentIconClickListener(feedItem -> {
-            navigationWrapper.navigate(Route.COMMENTS, new FeedItemDetailsBundle(feedItem));
-        });
+        actionView.setOnCommentIconClickListener(feedItem -> eventBus.post(new CommentIconClickedEvent(feedItem)));
 
         actionView.setOnShareClickListener(feedItem -> {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(actionView.getContext());

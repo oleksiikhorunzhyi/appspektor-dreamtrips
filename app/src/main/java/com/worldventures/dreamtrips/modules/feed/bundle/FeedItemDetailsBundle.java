@@ -7,6 +7,16 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable {
 
+    public static final Creator<FeedItemDetailsBundle> CREATOR = new Creator<FeedItemDetailsBundle>() {
+        public FeedItemDetailsBundle createFromParcel(Parcel source) {
+            return new FeedItemDetailsBundle(source);
+        }
+
+        public FeedItemDetailsBundle[] newArray(int size) {
+            return new FeedItemDetailsBundle[size];
+        }
+    };
+
     FeedItem feedItem;
     boolean slave;
     boolean showAdditionalInfo;
@@ -24,6 +34,13 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
         this.feedItem = feedItem;
         this.slave = slave;
         this.showAdditionalInfo = showAdditionalInfo;
+    }
+
+    protected FeedItemDetailsBundle(Parcel in) {
+        super(in);
+        this.feedItem = in.readParcelable(FeedItem.class.getClassLoader());
+        this.slave = in.readByte() != 0;
+        this.showAdditionalInfo = in.readByte() != 0;
     }
 
     public FeedItem getFeedItem() {
@@ -46,7 +63,6 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
         return showAdditionalInfo;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -59,21 +75,4 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
         dest.writeByte(slave ? (byte) 1 : (byte) 0);
         dest.writeByte(showAdditionalInfo ? (byte) 1 : (byte) 0);
     }
-
-    protected FeedItemDetailsBundle(Parcel in) {
-        super(in);
-        this.feedItem = in.readParcelable(FeedItem.class.getClassLoader());
-        this.slave = in.readByte() != 0;
-        this.showAdditionalInfo = in.readByte() != 0;
-    }
-
-    public static final Creator<FeedItemDetailsBundle> CREATOR = new Creator<FeedItemDetailsBundle>() {
-        public FeedItemDetailsBundle createFromParcel(Parcel source) {
-            return new FeedItemDetailsBundle(source);
-        }
-
-        public FeedItemDetailsBundle[] newArray(int size) {
-            return new FeedItemDetailsBundle[size];
-        }
-    };
 }

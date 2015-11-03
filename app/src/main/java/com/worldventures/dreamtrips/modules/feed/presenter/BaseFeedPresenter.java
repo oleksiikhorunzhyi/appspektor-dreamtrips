@@ -29,12 +29,10 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -55,16 +53,13 @@ import icepick.State;
 
 public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extends Presenter<V> {
 
-    private boolean loading = true;
-    private boolean noMoreFeeds = false;
-
     @State
     protected ArrayList<FeedItem> feedItems;
-
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
-
+    private boolean loading = true;
+    private boolean noMoreFeeds = false;
     private UidItemDelegate uidItemDelegate;
 
     public BaseFeedPresenter() {
@@ -202,10 +197,6 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         refreshFeed();
     }
 
-    public void onEvent(ProfileClickedEvent event) {
-        if (view.isVisibleOnScreen()) openUser(event.getUser());
-    }
-
     protected void openUser(User user) {
         NavigationBuilder.create().with(activityRouter)
                 .data(new UserBundle(user))
@@ -302,19 +293,12 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
                     event.getFlagReasonId(), event.getNameOfReason()));
     }
 
-    public void onEvent(FeedEntityItemClickEvent event) {
-        eventBus.cancelEventDelivery(event);
-        view.openDetails(event.getFeedItem());
-    }
-
     public interface View extends Presenter.View {
         void startLoading();
 
         void finishLoading();
 
         void refreshFeedItems(List<FeedItem> events, boolean needLoader);
-
-        void openDetails(FeedItem feedItem);
 
     }
 

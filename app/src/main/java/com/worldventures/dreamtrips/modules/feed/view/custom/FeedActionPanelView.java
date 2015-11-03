@@ -82,7 +82,7 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         }
     }
 
-    @OnClick({R.id.comments, R.id.comments_count})
+    @OnClick({R.id.comments})
     public void onCommentIconClick() {
         if (onCommentIconClickListener != null) {
             onCommentIconClickListener.onClick(feedItem);

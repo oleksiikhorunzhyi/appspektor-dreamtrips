@@ -9,8 +9,16 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -24,6 +32,11 @@ public class FeedFriendCell extends AbstractCell<User> {
     TextView tvName;
     @InjectView(R.id.tv_mutual)
     TextView tvMutual;
+    @Inject
+    ActivityRouter activityRouter;
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     public FeedFriendCell(View view) {
         super(view);
@@ -70,6 +83,9 @@ public class FeedFriendCell extends AbstractCell<User> {
 
     @OnClick({R.id.sdv_avatar, R.id.tv_name})
     public void onUserClicked() {
-        getEventBus().post(new ProfileClickedEvent(getModelObject()));
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(getModelObject()))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(routeCreator.createRoute(getModelObject().getId()));
     }
 }

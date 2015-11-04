@@ -99,8 +99,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private void loadStaticPagesContent() {
         Locale locale = getLocale();
-        StaticPagesQuery staticPagesQuery = new StaticPagesQuery(locale.getCountry().toUpperCase(locale),
-                locale.getLanguage().toUpperCase(locale));
+        StaticPagesQuery staticPagesQuery = new StaticPagesQuery(locale.getCountry(), locale.getLanguage());
         doRequest(staticPagesQuery, this::onStaticPagesSuccess);
     }
 

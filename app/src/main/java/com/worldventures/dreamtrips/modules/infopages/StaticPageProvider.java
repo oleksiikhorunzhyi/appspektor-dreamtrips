@@ -41,7 +41,8 @@ public class StaticPageProvider {
         UserSession userSession = appSessionHolder.get().get();
         return getConfig().getoTAPageURL()
                 .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
-                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken())
+                .replace(AppConfig.LOCALE, userSession.getUser().getLocale());
     }
 
     public String getTrainingVideosURL() {

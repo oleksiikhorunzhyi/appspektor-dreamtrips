@@ -3,10 +3,16 @@ package com.worldventures.dreamtrips.modules.auth.presenter;
 import android.text.TextUtils;
 
 import com.techery.spares.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
+import com.worldventures.dreamtrips.core.utils.AccountHelper;
 import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
+import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -17,6 +23,8 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
 
     @Inject
     protected TermsConditionsValidator termsConditionsValidator;
+    @Inject
+    StaticPageHolder staticPageHolder;
 
     @Override
     public void onResume() {
@@ -45,19 +53,26 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                     view.alert(error.getMessage());
                 }
             } else {
-                view.showLoginSuccess();
                 User user = loginResponse.getSession().getUser();
                 TrackingHelper.login(user.getEmail());
                 TrackingHelper.setUserId(Integer.toString(user.getId()));
 
-                if (appSessionHolder.get().get().getGlobalConfig() != null) {
-                    termsConditionsValidator.setNewVersionAccepted(true);
-                    activityRouter.openMain();
-                    activityRouter.finish();
-                } else {
-                    activityRouter.openLaunch();
-                    activityRouter.finish();
-                }
+                Locale userLocale = AccountHelper.getAccountLocale(user);
+                if (userLocale == null) userLocale = Locale.getDefault();
+                StaticPagesQuery staticPagesQuery = new StaticPagesQuery(userLocale.getCountry(), userLocale.getLanguage());
+                doRequest(staticPagesQuery, staticPageConfig -> {
+
+                    staticPageHolder.put(staticPageConfig);
+                    view.showLoginSuccess();
+                    if (appSessionHolder.get().get().getGlobalConfig() != null) {
+                        termsConditionsValidator.setNewVersionAccepted(true);
+                        activityRouter.openMain();
+                        activityRouter.finish();
+                    } else {
+                        activityRouter.openLaunch();
+                        activityRouter.finish();
+                    }
+                });
             }
         });
 

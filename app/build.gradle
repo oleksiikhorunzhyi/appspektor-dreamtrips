@@ -243,6 +243,8 @@ dependencies {
     compile 'com.github.techery:ProperRatingBar:77350bf31b'
 
     // Util
+    compile 'com.github.hotchemi:permissionsdispatcher:1.2.1@aar'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:1.2.1'
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.android.support:multidex:1.0.1'

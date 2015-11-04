@@ -2,21 +2,17 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
@@ -32,14 +28,16 @@ import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
+import permissions.dispatcher.DeniedPermission;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+import permissions.dispatcher.ShowsRationale;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
+@RuntimePermissions
 public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, DtlPlace>
         implements DtlScanQrCodePresenter.View, ZBarScannerView.ResultHandler {
-
-    // permission request codes need to be < 256
-    private static final int RC_HANDLE_CAMERA_PERM = 2;
 
     @InjectView(R.id.scanner_view)
     ZBarScannerView scanner;
@@ -71,15 +69,23 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Override
     public void onResume() {
         super.onResume();
-        // Check for the camera permission before accessing the camera.  If the
-        // permission is not granted yet, request permission.
-        int rc = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
-            scanner.startCamera();
-        } else {
-            requestCameraPermission();
-        }
-        scanner.setResultHandler(this); // Register ourselves as a handler for scan results.
+        DtlScanQrCodeFragmentPermissionsDispatcher.startCameraWithCheck(this);
+        scanner.setResultHandler(this);
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    void startCamera() {
+        scanner.startCamera();
+    }
+
+    @ShowsRationale(Manifest.permission.CAMERA)
+    void showRationaleForCamera() {
+        Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @DeniedPermission(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -91,27 +97,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
         }
     }
 
-    /**
-     * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
-     * sending the request.
-     */
-    private void requestCameraPermission() {
-        final String[] permissions = new String[]{Manifest.permission.CAMERA};
-
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(getActivity(), permissions, RC_HANDLE_CAMERA_PERM);
-            return;
-        }
-
-        Snackbar.make(scanner, R.string.permission_camera_rationale,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.ok, view -> ActivityCompat.requestPermissions(getActivity(), permissions,
-                        RC_HANDLE_CAMERA_PERM))
-                .show();
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -120,22 +105,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode != RC_HANDLE_CAMERA_PERM) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            return;
-        }
-
-        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // we have permission, so create the cameraSource
-            scanner.startCamera();
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.app_name)
-                .setMessage(R.string.no_camera_permission)
-                .setPositiveButton(R.string.ok, (dialog, id) -> getActivity().finish())
-                .show();
+        DtlScanQrCodeFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override

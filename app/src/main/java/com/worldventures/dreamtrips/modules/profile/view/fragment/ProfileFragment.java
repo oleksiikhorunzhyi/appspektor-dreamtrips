@@ -43,12 +43,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         calculateScrollArea();
     }
 
-    private void calculateScrollArea(){
+    private void calculateScrollArea() {
         TypedValue tv = new TypedValue();
         int actionBarHeight = 0;
-        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         int profilePhotoHeight = getResources().getDimensionPixelSize(R.dimen.profile_cover_height);
         scrollArea = profilePhotoHeight - actionBarHeight;
@@ -147,4 +146,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         feedView.getAdapter().notifyDataSetChanged();
     }
 
+    @Override
+    protected void openUser(User user) {
+        if (this.getPresenter().getUser().getId() != user.getId()) {
+            super.openUser(user);
+        } else {
+            feedView.smoothScrollToPosition(0);
+        }
+    }
 }

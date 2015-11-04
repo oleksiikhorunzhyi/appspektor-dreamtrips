@@ -197,13 +197,6 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         refreshFeed();
     }
 
-    protected void openUser(User user) {
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(user))
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(user.getId()));
-    }
-
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
             FeedEntity model = event.getModel();

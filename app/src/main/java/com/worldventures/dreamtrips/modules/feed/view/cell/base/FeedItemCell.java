@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
@@ -66,9 +67,6 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     FeedActionPanelViewActionHandler feedActionHandler;
     @Inject
     ActivityRouter activityRouter;
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
 
     private boolean syncUIStateWithModelWasCalled = false;
     //
@@ -193,21 +191,16 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     @OnClick(R.id.feed_header_avatar)
     void eventOwnerClicked() {
         User user = getModelObject().getLinks().getUsers().get(0);
-        openUser(user);
+        getEventBus().post(new ProfileClickedEvent(user));
+
     }
 
     @Optional
     @OnClick(R.id.user_photo)
     void commentOwnerClicked() {
         User user = commentCellHelper.getComment().getOwner();
-        openUser(user);
-    }
+        getEventBus().post(new ProfileClickedEvent(user));
 
-    protected void openUser(User user) {
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(user))
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(user.getId()));
     }
 
 }

@@ -13,19 +13,28 @@ import android.widget.TextView;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -53,8 +62,13 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     @Optional
     @InjectView(R.id.detail_container)
     protected View detailsContainer;
-    private WeakHandler weakHandler;
-    private Bundle savedInstanceState;
+
+    WeakHandler weakHandler;
+    Bundle savedInstanceState;
+
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,6 +153,18 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
                     .data(bundle)
                     .move(detailsRoute);
         }
+    }
+
+    public void onEvent(ProfileClickedEvent event) {
+        User user = event.getUser();
+        openUser(user);
+    }
+
+    protected void openUser(User user) {
+        NavigationBuilder.create().with(activityRouter)
+                .data(new UserBundle(user))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(routeCreator.createRoute(user.getId()));
     }
 
     @Override

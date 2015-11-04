@@ -36,6 +36,15 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
         adapter.registerCell(User.class, UserCell.class);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
+        header.getBackground().setAlpha(255);
+
+    }
+
     @Override
     public void refreshUsers(List<User> users) {
         super.refreshUsers(users);

@@ -5,10 +5,8 @@ import android.text.TextUtils;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.utils.AccountHelper;
-import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
-import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -22,17 +20,9 @@ import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 public class LoginPresenter extends Presenter<LoginPresenter.View> {
 
     @Inject
-    protected TermsConditionsValidator termsConditionsValidator;
-    @Inject
     StaticPageHolder staticPageHolder;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     public void loginAction() {
-
         String username = view.getUsername();
         String userPassword = view.getUserPassword();
 
@@ -65,7 +55,6 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                     staticPageHolder.put(staticPageConfig);
                     view.showLoginSuccess();
                     if (appSessionHolder.get().get().getGlobalConfig() != null) {
-                        termsConditionsValidator.setNewVersionAccepted(true);
                         activityRouter.openMain();
                         activityRouter.finish();
                     } else {

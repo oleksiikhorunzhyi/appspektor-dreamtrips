@@ -45,6 +45,8 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
         termsContent.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
+                if (termsContent == null) return;
+
                 termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" +
                         "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
             }
@@ -72,6 +74,13 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
         public void getHtml(String html) {
             termsText = html;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        termsContent.stopLoading();
+
+        super.onDestroyView();
     }
 
     @NonNull

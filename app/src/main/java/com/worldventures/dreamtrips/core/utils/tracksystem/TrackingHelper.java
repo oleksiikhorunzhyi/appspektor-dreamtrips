@@ -573,6 +573,14 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
     }
 
+    public static void viewTripImage(@MagicConstant(stringValues = {ACTION_YSHB_IMAGES, ACTION_INSPIRE_ME_IMAGES})
+                                            String tab, String imageId){
+        Map data = new HashMap<>();
+        data.put("image_id", imageId);
+        data.put(ATTRIBUTE_VIEW, "1");
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, tab, data);
+    }
+
     public static void uploadTripImagePhoto(@MagicConstant(stringValues = {ACTION_MEMBER_IMAGES, ACTION_MY_IMAGES})
                                             String actionTab){
         Map data = new HashMap<>();

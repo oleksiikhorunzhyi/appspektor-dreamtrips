@@ -58,7 +58,7 @@
 
     <style name="DreamTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/theme_main_darker</item>
-        <item name="tabMode">scrollable</item>
+        <item name="tabMode">fixed</item>
         <item name="tabPaddingStart">0dp</item>
         <item name="tabPaddingEnd">0dp</item>
         <item name="tabGravity">fill</item>

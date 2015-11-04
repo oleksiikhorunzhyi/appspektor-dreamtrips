@@ -5,12 +5,11 @@ import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 
 public class CreatePhotoParentPresenter extends ActivityPresenter<ActivityPresenter.View> {
 
-    public void onCreate(Bundle savedInstanceState,Uri imageUri, String type) {
+    public void onCreate(Bundle savedInstanceState, Uri imageUri, String type) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             Bundle b = new Bundle();

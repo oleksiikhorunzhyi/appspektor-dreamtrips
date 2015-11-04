@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 
 import com.github.pwittchen.networkevents.library.BusWrapper;

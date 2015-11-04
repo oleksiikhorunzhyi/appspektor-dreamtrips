@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
@@ -133,6 +134,12 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
             pickImageDelegate.setImageCallback(this::imagePicked);
             pickImageDelegate.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        presenter.onConfigurationChanged(newConfig);
     }
 
     public void onEvent(ImagePickRequestEvent event) {

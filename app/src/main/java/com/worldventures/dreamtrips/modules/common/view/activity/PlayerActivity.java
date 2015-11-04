@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -19,7 +20,7 @@ import tv.danmaku.ijk.media.widget.media.IjkVideoView;
 
 
 @Layout(R.layout.player_activity_simple)
-public class PlayerActivity extends BaseActivity {
+public class PlayerActivity extends ActivityWithPresenter<ActivityPresenter> {
 
     @InjectView(R.id.myVideo)
     protected IjkVideoView videoView;
@@ -30,6 +31,11 @@ public class PlayerActivity extends BaseActivity {
     private boolean mBackPressed;
 
     Uri uri;
+
+    @Override
+    protected ActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new ActivityPresenter();
+    }
 
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {

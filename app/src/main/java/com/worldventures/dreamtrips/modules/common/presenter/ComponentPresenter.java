@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -22,6 +23,12 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
         if (savedInstanceState == null) {
             fragmentCompass.replace(route, args);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        activity.recreate();
     }
 
     public int getTitle() {

@@ -17,8 +17,8 @@ public class LocaleManager {
         this.defaultSystemLocale = Locale.getDefault();
     }
 
-    public void setLocale(String language) {
-        currentLocale = new Locale(language);
+    public void setLocale(Locale locale) {
+        currentLocale = locale;
         Locale.setDefault(currentLocale);
         Resources resources = context.getResources();
 
@@ -29,7 +29,7 @@ public class LocaleManager {
     }
 
     public void resetLocale() {
-        setLocale(defaultSystemLocale.getLanguage());
+        setLocale(defaultSystemLocale);
     }
 
     public void localeChanged(Locale newLocal){

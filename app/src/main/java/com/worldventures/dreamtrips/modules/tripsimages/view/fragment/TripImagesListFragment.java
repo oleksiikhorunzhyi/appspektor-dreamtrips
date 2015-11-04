@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
@@ -93,8 +94,14 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         this.recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresenter().onItemClick(position))
-        );
+                new RecyclerItemClickListener(getActivity(), (view1, position) ->{
+                    if (getArgs().getType() == Type.YOU_SHOULD_BE_HERE)
+                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, getPresenter().getPhoto(position).getFsId());
+                    if (getArgs().getType() == Type.INSPIRE_ME)
+                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, getPresenter().getPhoto(position).getFsId());
+
+                    this.getPresenter().onItemClick(position);
+                }));
         this.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

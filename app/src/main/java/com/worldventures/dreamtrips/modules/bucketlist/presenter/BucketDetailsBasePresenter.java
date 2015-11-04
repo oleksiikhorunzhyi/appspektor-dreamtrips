@@ -145,6 +145,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void openFullScreen(int position) {
+        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItemId));
         openFullScreen(bucketItem.getPhotos().get(position));
     }
 

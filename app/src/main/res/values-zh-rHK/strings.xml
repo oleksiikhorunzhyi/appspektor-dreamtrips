@@ -462,4 +462,10 @@
     <string name="search_friends">搜索好友</string>
     <string name="start_searching">鍵入開始搜索</string>
 
+    <string name="terms_and_conditions_title">條款和條件</string>
+    <string name="terms_and_conditions_subtitle">請閱讀並接受以下條款和條件以繼續進行</string>
+    <string name="terms_and_conditions_checkbox">點擊此處來接受條款和條件</string>
+    <string name="terms_and_conditions_accept">決定參加</string>
+    <string name="terms_and_conditions_reject">現在不參加</string>
+
 </resources>

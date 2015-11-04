@@ -3,30 +3,28 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
 import javax.inject.Inject;
 
 import icepick.State;
-import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
-    @Inject
-    SnappyRepository db;
     @State
     boolean initialized;
+
+    @Inject
+    LocationDelegate locationDelegate;
+    @Inject
+    SnappyRepository db;
 
     @Override
     public void takeView(View view) {
@@ -34,12 +32,11 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         if (initialized) return;
         initialized = true;
         //
-        DtlLocation location = db.getSelectedDtlLocation();
-        if (location == null) {
+        DtlLocation dtlLocation = db.getSelectedDtlLocation();
+        if (dtlLocation != null)
+            view.openMerchants(new PlacesBundle(dtlLocation));
+        else
             view.openDtlLocationsScreen();
-        } else {
-            view.openDtlPlacesScreen(new PlacesBundle(location));
-        }
     }
 
     public void onEvent(RequestLocationUpdateEvent event) {
@@ -49,27 +46,9 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     private Subscription locationSubscription;
 
     public void permissionGranted() {
-        LocationRequest request = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                .setNumUpdates(1)
-                .setInterval(1000);
-
-        ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(context);
-        locationSubscription = locationProvider.checkLocationSettings(
-                new LocationSettingsRequest.Builder()
-                        .addLocationRequest(request)
-                        .setAlwaysShow(true)
-                        .build()
-        ).doOnNext(locationSettingsResult -> {
-            Status status = locationSettingsResult.getStatus();
-            if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                view.resolutionRequired(status);
-            }
-        }).flatMap(locationSettingsResult -> locationProvider.getUpdatedLocation(request)
-        ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onLocationObtained, this::onLocationError);
-
+        locationSubscription = locationDelegate.requestLocationUpdates(view::resolutionRequired,
+                this::onLocationObtained,
+                this::onLocationError);
     }
 
     private void onLocationError(Throwable e) {
@@ -98,6 +77,6 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
         void openDtlLocationsScreen();
 
-        void openDtlPlacesScreen(PlacesBundle bundle);
+        void openMerchants(PlacesBundle placesBundle);
     }
 }

@@ -24,10 +24,11 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -52,6 +53,8 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     TextView progressText;
     @InjectView(R.id.progress)
     View progress;
+
+    SearchView searchView;
 
     @Override
     protected DtlLocationsPresenter createPresenter(Bundle savedInstanceState) {
@@ -78,12 +81,21 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
-            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            searchView.setQueryHint(getString(R.string.dtl_locations_search_caption));
-            searchView.setOnCloseListener(() -> {
-                getPresenter().flushSearch();
-                return false;
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    getPresenter().searchOpened();
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    getPresenter().searchClosed();
+                    return true;
+                }
             });
+            searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView.setQueryHint(getString(R.string.dtl_locations_search_caption));
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -100,7 +112,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     }
 
     public void onEvent(LocationClickedEvent event) {
-        getPresenter().onLocationClicked(event.getLocation());
+        getPresenter().onLocationSelected(event.getLocation());
     }
 
     @Override
@@ -119,20 +131,22 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     }
 
     @Override
-    public void setItems(DtlLocationsHolder dtlLocationsHolder) {
+    public void setItems(List<DtlLocation> dtlLocations) {
         adapter.clear();
-        if (!dtlLocationsHolder.getNearby().isEmpty()) {
-            adapter.addItem(getString(R.string.dtl_locations_select_nearby_cities));
-            adapter.addItems(dtlLocationsHolder.getNearby());
-        }
-        if (!dtlLocationsHolder.getLocations().isEmpty()) {
-            adapter.addItem(getString(R.string.dtl_locations_select_popular));
-            adapter.addItems(dtlLocationsHolder.getLocations());
-        }
+        adapter.addItems(dtlLocations);
     }
 
     @Override
-    public void openLocation(PlacesBundle bundle) {
+    public void onDestroyView() {
+        if (searchView != null) {
+            searchView.setOnCloseListener(null);
+            searchView.setOnQueryTextListener(null);
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public void showMerchants(PlacesBundle bundle) {
         fragmentCompass.setContainerId(R.id.dtl_container);
         fragmentCompass.setFragmentManager(getFragmentManager());
 
@@ -142,5 +156,10 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
                 .with(fragmentCompass)
                 .data(bundle)
                 .move(Route.DTL_PLACES_LIST);
+    }
+
+    @Override
+    public void showSearch() {
+        searchView.setIconified(false);
     }
 }

@@ -36,22 +36,6 @@
             android:textSize="@dimen/font_normal"
             />
 
-        <Button
-            android:id="@+id/scan_merchant_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_tiny"
-            android:layout_marginStart="@dimen/spacing_tiny"
-            android:drawableLeft="@drawable/ic_success_story_search"
-            android:drawablePadding="@dimen/spacing_large"
-            android:drawableStart="@drawable/ic_success_story_search"
-            android:gravity="start|center_vertical"
-            android:text="@string/dtl_locations_search_caption"
-            android:textAllCaps="false"
-            android:textColor="@color/dtl_cities_text_color"
-            android:textSize="@dimen/font_large"
-            android:theme="@style/WhiteButtonTheme"/>
-
     </LinearLayout>
 
     <LinearLayout

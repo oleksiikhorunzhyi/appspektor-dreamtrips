@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
@@ -17,8 +17,14 @@ import retrofit.http.Query;
 
 public interface DtlApi {
 
-    @GET("/locations")
-    DtlLocationsHolder getDtlLocations(@Query("lat") double lat, @Query("lng") double lng);
+    @GET("/locations/search")
+    ArrayList<DtlLocation> searchDtlLocations(@Query("text") String keyword);
+
+    @GET("/locations/nearby")
+    ArrayList<DtlLocation> getNearbyEmptyDtlLocations(@Query("lat") double lat, @Query("lng") double lng, @Query("nearby") boolean nearby);
+
+    @GET("/locations/nearby")
+    ArrayList<DtlLocation> getNearbyDtlLocations(@Query("lat") double lat, @Query("lng") double lng);
 
     @GET("/locations/{id}/merchants")
     ArrayList<DtlPlace> getDtlPlaces(@Path("id") String locationId);

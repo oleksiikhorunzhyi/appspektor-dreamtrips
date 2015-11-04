@@ -4,10 +4,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -22,6 +22,8 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     @Inject
     SnappyRepository db;
+    @Inject
+    LocationDelegate locationDelegate;
 
     protected DtlPlaceType placeType;
 
@@ -29,6 +31,8 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     @State
     DtlFilterData dtlFilterData;
+
+    private LatLng currentLocation;
 
     public DtlPlacesListPresenter(DtlPlaceType placeType) {
         this.placeType = placeType;
@@ -45,7 +49,9 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
             dtlFilterData = new DtlFilterData();
         }
 
-        performFiltering();
+        locationDelegate.getLastKnownLocation(location ->
+                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude()),
+                this::performFiltering);
     }
 
     public void onEventMainThread(PlacesUpdatedEvent event) {
@@ -62,7 +68,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     private void performFiltering() {
         view.setItems(Queryable.from(dtlPlaces).filter(dtlPlace ->
-                dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList());
+                dtlPlace.applyFilter(dtlFilterData, currentLocation)).toList());
     }
 
     public void onEventMainThread(PlacesUpdateFinished event) {

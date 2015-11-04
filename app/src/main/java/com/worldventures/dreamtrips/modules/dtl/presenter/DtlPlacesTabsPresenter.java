@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacesQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacesQuery;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;

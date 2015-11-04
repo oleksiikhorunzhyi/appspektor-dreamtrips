@@ -4,7 +4,7 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacePointsEstimationQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacePointsEstimationQuery;
 
 public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 

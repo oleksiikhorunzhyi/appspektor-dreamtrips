@@ -9,7 +9,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.techery.spares.annotations.Layout;
@@ -102,8 +101,8 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
     }
 
     @Override
-    public void openDtlPlacesScreen(PlacesBundle bundle) {
-        router.moveTo(Route.DTL_PLACES_LIST, provideNavigationConfig(bundle));
+    public void openMerchants(PlacesBundle placesBundle) {
+        router.moveTo(Route.DTL_PLACES_LIST, provideNavigationConfig(placesBundle));
     }
 
     @Override

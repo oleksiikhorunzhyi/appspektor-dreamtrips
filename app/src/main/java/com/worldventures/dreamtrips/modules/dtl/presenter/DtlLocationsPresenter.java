@@ -1,18 +1,24 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.techery.spares.annotations.State;
+import android.location.Location;
+
+import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.DtlModule;
-import com.worldventures.dreamtrips.modules.dtl.api.GetDtlLocationsQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.location.GetNearbyDtlLocationQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationsHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -24,48 +30,135 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     SnappyRepository db;
 
     @State
-    DtlLocationsHolder dtlLocationsHolder;
+    ArrayList<DtlLocation> dtlLocations;
+    @State
+    Status status = Status.NEARBY;
+
+    DtlLocation selectedLocation;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         view.startLoading();
 
-        if (dtlLocationsHolder != null) {
-            onLocationLoaded(dtlLocationsHolder);
+        if (dtlLocations != null || searchLocations != null) {
+            setItems();
+            view.finishLoading();
             return;
         }
 
+        searchLocations = new ArrayList<>();
+        dtlLocations = new ArrayList<>();
+
+        selectedLocation = db.getSelectedDtlLocation();
+        //
         eventBus.post(new RequestLocationUpdateEvent());
     }
 
     public void onEvent(LocationObtainedEvent event) {
-        if (event.getLocation() == null) loadCities(DtlModule.LAT, DtlModule.LNG);
-        else loadCities(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+        if (event.getLocation() != null) loadNearbyCities(event.getLocation());
+        else view.showSearch();
     }
 
-    private void loadCities(double latitude, double longitude) {
+    private void loadNearbyCities(Location currentLocation) {
         view.citiesLoadingStarted();
-        doRequest(new GetDtlLocationsQuery(latitude, longitude),
-                this::onLocationLoaded,
-                spiceException -> {
-                    this.handleError(spiceException);
-                    view.finishLoading();
-                });
+        doRequest(new GetNearbyDtlLocationQuery(currentLocation.getLatitude(),
+                        currentLocation.getLongitude()),
+                dtlLocations -> onNearbyLocationLoaded(dtlLocations, currentLocation));
     }
 
-    private void onLocationLoaded(DtlLocationsHolder dtlLocationsHolder) {
-        this.dtlLocationsHolder = dtlLocationsHolder;
-        view.setItems(dtlLocationsHolder);
+    private void onNearbyLocationLoaded(ArrayList<DtlLocation> dtlLocations, Location currentLocation) {
+        this.dtlLocations = dtlLocations;
+        view.finishLoading();
+        setItems();
+
+        if (dtlLocations.isEmpty()) view.showSearch();
+        else if (selectedLocation == null) selectNearest(currentLocation);
+    }
+
+    private void selectNearest(Location currentLocation) {
+        DtlLocation dtlLocation = Queryable.from(dtlLocations)
+                .max(new DtlLocation.DtlNearestComparator(currentLocation));
+        onLocationSelected(dtlLocation);
+    }
+
+    public void onLocationSelected(DtlLocation location) {
+        db.saveSelectedDtlLocation(location);
+        db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
+        view.showMerchants(new PlacesBundle(location));
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
         view.finishLoading();
     }
 
+    private void setItems() {
+        view.setItems(status == Status.NEARBY ? dtlLocations : searchLocations);
+    }
+
+    /////////////////////////////////////////////////////////////
+    ////////// Search stuff
+    /////////////////////////////////////////////////////////////
+
+    public static final int SEARCH_SYMBOL_COUNT = 3;
+
+    @State
+    String caption;
+    @State
+    ArrayList<DtlLocation> searchLocations;
+
+    private GetDtlLocationsQuery getDtlLocationsQuery;
+
+    public void searchClosed() {
+        status = Status.NEARBY;
+        setItems();
+    }
+
+    public void searchOpened() {
+        status = Status.SEARCH;
+        setItems();
+    }
+
     public void search(String caption) {
-        if (view != null)
-            Observable.create(new Observable.OnSubscribe<DtlLocationsHolder>() {
+        if (view != null) {
+            this.caption = caption;
+
+            if (caption.length() < SEARCH_SYMBOL_COUNT) flushSearch();
+            else if (caption.length() == SEARCH_SYMBOL_COUNT) apiSearch();
+            else localSearch();
+        }
+    }
+
+    private void flushSearch() {
+        searchLocations.clear();
+        setItems();
+    }
+
+    private void apiSearch() {
+        view.citiesLoadingStarted();
+
+        if (getDtlLocationsQuery != null) dreamSpiceManager.cancel(getDtlLocationsQuery);
+
+        getDtlLocationsQuery = new GetDtlLocationsQuery(caption);
+        doRequest(getDtlLocationsQuery, this::onSearchResultLoaded);
+    }
+
+    private void onSearchResultLoaded(ArrayList<DtlLocation> searchLocations) {
+        this.searchLocations = searchLocations;
+        localSearch();
+    }
+
+    private void localSearch() {
+        if (searchLocations != null && !searchLocations.isEmpty())
+            Observable.create(new Observable.OnSubscribe<ArrayList<DtlLocation>>() {
                 @Override
-                public void call(Subscriber<? super DtlLocationsHolder> subscriber) {
-                    subscriber.onNext(dtlLocationsHolder.filter(caption));
+                public void call(Subscriber<? super ArrayList<DtlLocation>> subscriber) {
+                    ArrayList<DtlLocation> filtered = new ArrayList<>();
+                    filtered.addAll(Queryable.from(searchLocations).filter(dtlLocation ->
+                            dtlLocation.getLongName().toLowerCase().contains(caption)).toList());
+                    subscriber.onNext(filtered);
                     subscriber.onCompleted();
                 }
             }).subscribeOn(Schedulers.io())
@@ -73,19 +166,9 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
                     .subscribe(view::setItems);
     }
 
-    public void flushSearch() {
-        view.setItems(dtlLocationsHolder);
-    }
-
-    public void onLocationClicked(DtlLocation location) {
-        db.saveSelectedDtlLocation(location);
-        db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
-        view.openLocation(new PlacesBundle(location));
-    }
-
     public interface View extends Presenter.View {
 
-        void setItems(DtlLocationsHolder dtlLocationsHolder);
+        void setItems(List<DtlLocation> dtlLocations);
 
         void startLoading();
 
@@ -93,6 +176,12 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
         void citiesLoadingStarted();
 
-        void openLocation(PlacesBundle bundle);
+        void showMerchants(PlacesBundle bundle);
+
+        void showSearch();
+    }
+
+    public enum Status {
+        SEARCH, NEARBY
     }
 }

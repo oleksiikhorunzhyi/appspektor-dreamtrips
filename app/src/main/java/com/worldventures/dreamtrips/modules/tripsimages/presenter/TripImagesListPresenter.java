@@ -236,8 +236,8 @@ public abstract class TripImagesListPresenter
     }
 
     private void updateTask(UploadTask task) {
+        if (view == null) return;
         int index = photos.indexOf(task);
-
         view.replace(index, task);
     }
 

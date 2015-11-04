@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
-import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
@@ -64,8 +63,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     SnappyRepository snappyRepository;
 
-    @Inject
-    TermsConditionsValidator termsConditionsValidator;
     private boolean requestInProgress = false;
 
     @Override
@@ -139,8 +136,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     }
 
     private void done() {
-        if (DreamSpiceManager.isCredentialExist(appSessionHolder)
-                && termsConditionsValidator.newVersionAccepted()) {
+        if (DreamSpiceManager.isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
             if (userSession.getFeatures() == null ||
                     userSession.getFeatures().isEmpty()) {
@@ -152,7 +148,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
         } else {
-            termsConditionsValidator.clearPreviousAcceptedTerms();
             NavigationBuilder.create()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .with(activityRouter).move(Route.LOGIN);

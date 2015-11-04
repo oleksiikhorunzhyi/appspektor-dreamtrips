@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.AccountHelper;
 import com.worldventures.dreamtrips.core.utils.LocaleManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -33,9 +34,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
 
         User user = userSession.get().getUser();
         if (user != null && user.getLocale() != null) {
-            String[] args = user.getLocale().split("-"); // e.g. en-us
-            Locale locale = new Locale(args[0], args[1]);
-            localeManager.setLocale(locale);
+            localeManager.setLocale(AccountHelper.getAccountLocale(user));
         } else {
             localeManager.resetLocale();
         }

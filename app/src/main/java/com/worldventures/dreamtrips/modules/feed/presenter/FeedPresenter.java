@@ -71,15 +71,15 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.setRequestsCount(db.getFriendsRequestsCount());
+        view.setRequestsCount(getFriendsRequestsCount());
+    }
+
+    public int getFriendsRequestsCount() {
+        return db.getFriendsRequestsCount();
     }
 
     public void onEvent(FeedItemAnalyticEvent event) {
         TrackingHelper.sendActionItemFeed(event.getActionAttribute(), event.getEntityId(), event.getType());
-    }
-
-    public void refreshRequestsCount() {
-        view.setRequestsCount(db.getFriendsRequestsCount());
     }
 
     public interface View extends BaseFeedPresenter.View {

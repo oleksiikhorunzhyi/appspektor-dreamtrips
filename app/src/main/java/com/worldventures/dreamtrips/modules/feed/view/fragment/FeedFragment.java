@@ -85,7 +85,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                     .attach(Route.FRIENDS);
             TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
         });
-        getPresenter().refreshRequestsCount();
+        setRequestsCount(getPresenter().getFriendsRequestsCount());
     }
 
     @Override

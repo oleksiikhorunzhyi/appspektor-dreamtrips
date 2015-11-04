@@ -1,24 +1,26 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlacesToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 
@@ -68,10 +70,11 @@ public class DtlPlacesTabsFragment
         toolbarHelper.inflateMenu(R.menu.menu_dtl_list, item -> {
             switch (item.getItemId()) {
                 case R.id.action_map:
-                    fragmentCompass.enableBackStack();
-                    NavigationBuilder.create().with(fragmentCompass)
+                    router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment().useDefaults()
                             .data(getArgs())
-                            .move(Route.DTL_MAP);
+                            .fragmentManager(getFragmentManager())
+                            .containerId(R.id.dtl_container)
+                            .build());
                     break;
                 case R.id.action_dtl_filter:
                     ((MainActivity) getActivity()).openRightDrawer();
@@ -105,11 +108,6 @@ public class DtlPlacesTabsFragment
             public void onPageScrollStateChanged(int state) {
             }
         });
-        //
-
-        fragmentCompass.setFragmentManager(getFragmentManager());
-        fragmentCompass.enableBackStack();
-        fragmentCompass.setContainerId(R.id.dtl_container);
     }
 
     @Override
@@ -131,5 +129,13 @@ public class DtlPlacesTabsFragment
     @Override
     public void initToolbar(DtlLocation location) {
         toolbarHelper.setPlaceForToolbar(location);
+    }
+
+    @Override
+    public void openDetails(DtlPlace place) {
+        router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()
+                .data(new PlaceDetailsBundle(place, false))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .build());
     }
 }

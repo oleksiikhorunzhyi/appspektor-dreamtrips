@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -24,11 +21,7 @@ public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapIn
     }
 
     public void onPlaceClick() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(place)
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(Route.DTL_PLACE_DETAILS);
+        view.showDetails(place);
     }
 
     public void onSizeReady(int height) {
@@ -38,5 +31,6 @@ public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapIn
     public interface View extends DtlPlaceCommonDetailsPresenter.View {
         void hideLayout();
         void showLayout();
+        void showDetails(DtlPlace place);
     }
 }

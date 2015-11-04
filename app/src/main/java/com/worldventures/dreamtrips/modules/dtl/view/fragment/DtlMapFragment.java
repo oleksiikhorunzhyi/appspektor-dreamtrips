@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -135,10 +136,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void showPlaceInfo(DtlPlace dtlPlace) {
-        NavigationBuilder.create()
-                .with(infoFragmentCompass)
+        router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.container_info)
+                .fragmentManager(getChildFragmentManager())
+                .backStackEnabled(false)
                 .data(dtlPlace)
-                .move(Route.DTL_MAP_INFO);
+                .build());
     }
 
     @Override

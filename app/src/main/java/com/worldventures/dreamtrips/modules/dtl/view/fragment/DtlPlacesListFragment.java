@@ -3,9 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
@@ -76,7 +74,7 @@ public class DtlPlacesListFragment
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        recyclerView.setLayoutManager(provideLayoutManager());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlPlace.class, DtlPlaceCell.class);
         recyclerView.setAdapter(adapter);
@@ -85,11 +83,6 @@ public class DtlPlacesListFragment
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
         refreshLayout.setEnabled(false);
-    }
-
-    private RecyclerView.LayoutManager provideLayoutManager() {
-        return isTabletLandscape() ? new GridLayoutManager(getActivity(), 3) :
-                new LinearLayoutManager(getActivity());
     }
 
     @Override

@@ -25,10 +25,11 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlCategoryDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -44,7 +45,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_place_details)
 public class DtlPlaceDetailsFragment
-        extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, DtlPlace>
+        extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, PlaceDetailsBundle>
         implements DtlPlaceDetailsPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
@@ -79,7 +80,7 @@ public class DtlPlaceDetailsFragment
 
     @Override
     protected DtlPlaceDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlaceDetailsPresenter(getArgs());
+        return new DtlPlaceDetailsPresenter(getArgs().getPlace());
     }
 
     @Override

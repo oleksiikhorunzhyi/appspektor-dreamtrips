@@ -7,6 +7,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacesQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.GetDtlPlacesQuery;
+import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
@@ -79,6 +81,13 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         return bundle;
     }
 
+
+    public void onEventMainThread(final PlaceClickedEvent event) {
+        if (!view.isTabletLandscape()) {
+            view.openDetails(event.getPlace());
+        }
+    }
+
     public interface View extends Presenter.View {
 
         void setTypes(List<DtlPlaceType> types);
@@ -86,5 +95,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         void updateSelection();
 
         void initToolbar(DtlLocation location);
+
+        void openDetails(DtlPlace place);
     }
 }

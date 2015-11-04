@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -94,12 +93,7 @@ public class FragmentCompass {
             if (fragment != null) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.remove(fragment);
-                //
-                if (BuildConfig.DEBUG) {
-                    fragmentTransaction.commit();
-                } else {
-                    fragmentTransaction.commitAllowingStateLoss();
-                }
+                fragmentTransaction.commit();
             }
         }
     }

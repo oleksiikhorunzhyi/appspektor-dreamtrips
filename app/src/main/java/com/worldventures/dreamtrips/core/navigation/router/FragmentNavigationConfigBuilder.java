@@ -16,7 +16,7 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
      * {@link R.id#container_main}
      */
     @Override
-    public NavigationConfigBuilder useDefaults() {
+    public FragmentNavigationConfigBuilder useDefaults() {
         navigationConfig.backStackEnabled = true;
         navigationConfig.containerId = R.id.container_main;
         return this;

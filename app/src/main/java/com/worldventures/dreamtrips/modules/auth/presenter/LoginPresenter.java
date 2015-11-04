@@ -6,7 +6,6 @@ import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
@@ -14,23 +13,14 @@ import javax.inject.Inject;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
-public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
+public class LoginPresenter extends Presenter<LoginPresenter.View> {
 
     @Inject
     protected TermsConditionsValidator termsConditionsValidator;
 
-    private boolean isTermsAccepted;
-
     @Override
     public void onResume() {
         super.onResume();
-        isTermsAccepted = termsConditionsValidator.newVersionAccepted();
-
-        if (!isTermsAccepted) {
-            view.showTerms();
-        } else {
-            view.hideTerms();
-        }
     }
 
     public void loginAction() {
@@ -43,10 +33,6 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
 
         if (!usernameValid.isValid() || !passwordValid.isValid()) {
             view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());
-            return;
-        }
-
-        if (!isTermsAccepted && !view.isTermsChecked()) {
             return;
         }
 
@@ -90,11 +76,5 @@ public class LoginPresenter extends ActivityPresenter<LoginPresenter.View> {
         String getUsername();
 
         String getUserPassword();
-
-        void showTerms();
-
-        void hideTerms();
-
-        boolean isTermsChecked();
     }
 }

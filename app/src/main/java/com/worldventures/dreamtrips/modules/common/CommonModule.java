@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresent
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
@@ -22,7 +23,9 @@ import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
+import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
@@ -49,6 +52,7 @@ import dagger.Provides;
                 NavigationDrawerPresenter.class,
                 Presenter.class,
                 SharePresenter.class,
+                TermsConditionsDialogPresenter.class,
 
                 LaunchActivity.class,
                 MainActivity.class,
@@ -63,7 +67,9 @@ import dagger.Provides;
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,
-                ProgressDialogFragment.class
+                ProgressDialogFragment.class,
+                BaseDialogFragmentWithPresenter.class,
+                TermsConditionsDialog.class,
 
         },
         complete = false,

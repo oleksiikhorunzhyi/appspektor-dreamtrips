@@ -4,10 +4,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 
-public class CreatePhotoParentPresenter extends Presenter<Presenter.View> {
+public class CreatePhotoParentPresenter extends ActivityPresenter<ActivityPresenter.View> {
 
     public void onCreate(Bundle savedInstanceState,Uri imageUri, String type) {
         super.onCreate(savedInstanceState);

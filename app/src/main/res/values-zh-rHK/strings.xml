@@ -22,7 +22,6 @@
     <string name="action_map">地圖</string>
     <string name="action_like">點讚</string>
     <string name="title_activity_login">登錄活動</string>
-    <string name="trips">旅行</string>
     <string name="drawer_open">已打開的目錄</string>
     <string name="drawer_close">已關閉的目錄</string>
     <string name="empty"/>

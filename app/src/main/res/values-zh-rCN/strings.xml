@@ -22,7 +22,6 @@
     <string name="action_map">地图</string>
     <string name="action_like">点赞</string>
     <string name="title_activity_login">登录活动</string>
-    <string name="trips">旅行</string>
     <string name="drawer_open">已打开的目录</string>
     <string name="drawer_close">已关闭的目录</string>
     <string name="empty"/>

@@ -53,6 +53,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
 
     @OnClick(R.id.done)
     void onDoneClicked() {
+        getPresenter().done();
         //TODO think about dismissing dialog from fragment
         eventBus.post(new CloseDialogEvent());
     }

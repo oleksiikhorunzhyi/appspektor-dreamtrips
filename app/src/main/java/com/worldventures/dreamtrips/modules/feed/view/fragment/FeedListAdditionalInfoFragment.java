@@ -100,7 +100,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         }
     }
 
-
     @Override
     public void setFriends(@NonNull List<User> friends) {
         closeFriends.setVisibility(View.VISIBLE);
@@ -111,6 +110,11 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     @Override
     public void addFriends(@NonNull List<User> friends) {
         adapter.addItems(friends);
+    }
+
+    @Override
+    public void removeFriend(@NonNull User friend) {
+        adapter.remove(friend);
     }
 
     @Override

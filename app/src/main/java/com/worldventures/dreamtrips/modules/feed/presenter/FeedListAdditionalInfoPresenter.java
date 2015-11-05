@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
+import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.List;
@@ -64,11 +65,17 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
         return 20;
     }
 
+    public void onEvent(UnfriendEvent event) {
+        view.removeFriend(event.getFriend());
+    }
+
     public interface View extends FeedItemAdditionalInfoPresenter.View {
 
         void setFriends(@NonNull List<User> friends);
 
         void addFriends(@NonNull List<User> friends);
+
+        void removeFriend(@NonNull User friend);
 
         void showCirclePicker(@NonNull List<Circle> circles, @NonNull Circle activeCircle);
 

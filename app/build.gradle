@@ -182,8 +182,8 @@ dependencies {
     // Networking
     compile 'com.octo.android.robospice:robospice:1.4.14'
     compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
-    compile 'com.squareup.okhttp:okhttp:2.3.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
     compile 'com.google.code.gson:gson:2.3.1'
     // Media
     compile 'io.techery:ijkmediaplayer:0.4.0@aar'

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -57,6 +58,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
+        feedView.addItemDecoration(new SideMarginsItemDecorator());
         feedView.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);

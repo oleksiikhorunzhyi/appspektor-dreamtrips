@@ -32,7 +32,6 @@
     <string name="logout_dialog_negative_btn">取消</string>
     <string name="member_images">會員圖片</string>
     <string name="my_images">我的圖片</string>
-    <string name="you_should_be_here">您應該在這</string>
     <string name="title_activity_full_screen_photo">顯示全屏圖片</string>
     <string name="skip_login">跳過登錄</string>
     <string name="duration">%d 晚</string>

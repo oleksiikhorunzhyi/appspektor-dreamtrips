@@ -24,19 +24,14 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     @Override
     public void onInjected() {
         super.onInjected();
+        setupUserLocale();
+    }
 
-        Optional<UserSession> userSession = appSessionHolder.get();
-        if (!userSession.isPresent()) {
-            localeSwitcher.resetLocale();
-            return;
-        }
-
-        User user = userSession.get().getUser();
-        if (user != null && user.getLocale() != null) {
-            localeSwitcher.applyLocale(localeHelper.getAccountLocale(user));
-        } else {
-            localeSwitcher.resetLocale();
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Some third-party libraries can change the locale.
+        setupUserLocale();
     }
 
     @Override
@@ -45,7 +40,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
         activity = null;
     }
 
-    public void onConfigurationChanged(Configuration configuration){
+    public void onConfigurationChanged(Configuration configuration) {
         localeSwitcher.onConfigurationLocaleChanged(configuration.locale);
     }
 
@@ -62,5 +57,19 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
 
     public interface View extends Presenter.View {
         void showTermsDialog();
+    }
+
+    protected void setupUserLocale() {
+        Optional<UserSession> userSession = appSessionHolder.get();
+        if (!userSession.isPresent()) {
+            localeSwitcher.resetLocale();
+        } else {
+            User user = userSession.get().getUser();
+            if (user != null && user.getLocale() != null) {
+                localeSwitcher.applyLocale(localeHelper.getAccountLocale(user));
+            } else {
+                localeSwitcher.resetLocale();
+            }
+        }
     }
 }

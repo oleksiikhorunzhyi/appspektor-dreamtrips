@@ -28,7 +28,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
             android:gravity="center"
             android:paddingBottom="@dimen/spacing_large"
             android:paddingTop="@dimen/spacing_large"
@@ -67,8 +66,9 @@
             android:id="@+id/progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dtl_wait_for_location"
-            android:padding="@dimen/spacing_normal"/>
+            android:padding="@dimen/spacing_normal"
+            android:text="@string/dtl_wait_for_location"/>
+
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

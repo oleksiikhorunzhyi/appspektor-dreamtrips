@@ -97,7 +97,8 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         toTime.setText(formatTime(hour, minute));
     }
 
-    @OnClick(R.id.fromDate) void fromDateClicked() {
+    @OnClick(R.id.fromDate)
+    void fromDateClicked() {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this,
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
@@ -105,7 +106,8 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         datePickerDialog.show(getChildFragmentManager(), PICKER_FROM_TAG);
     }
 
-    @OnClick(R.id.fromTime) void fromTimeClicked() {
+    @OnClick(R.id.fromTime)
+    void fromTimeClicked() {
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this,
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
@@ -113,7 +115,8 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         timePickerDialog.show(getChildFragmentManager(), PICKER_FROM_TAG);
     }
 
-    @OnClick(R.id.toDate) void toDateClicked() {
+    @OnClick(R.id.toDate)
+    void toDateClicked() {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this,
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), false);
@@ -121,7 +124,8 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         datePickerDialog.show(getChildFragmentManager(), PICKER_TO_TAG);
     }
 
-    @OnClick(R.id.toTime) void toTimeClicked() {
+    @OnClick(R.id.toTime)
+    void toTimeClicked() {
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this,
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
@@ -149,14 +153,16 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         lastTimePickerTag = null;
     }
 
-    @OnClick(R.id.submit) void submitClicked() {
+    @OnClick(R.id.submit)
+    void submitClicked() {
         if (validateInput() && validateDateTime()) {
             getPresenter().submitClicked();
         }
     }
 
     protected boolean validateInput() {
-        return contactName.validate() && phoneNumber.validate() && additionalInfo.validate();
+        return contactName.validate() && phoneNumber.validate() && additionalInfo.validate()
+                && phoneNumber.isCharactersCountValid();
     }
 
     protected boolean validateDateTime() {

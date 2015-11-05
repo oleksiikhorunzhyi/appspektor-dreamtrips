@@ -2,9 +2,8 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
-import com.worldventures.dreamtrips.core.utils.LocaleUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
@@ -19,7 +18,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     @Inject
     StaticPageHolder staticPageHolder;
     @Inject
-    LocalesHolder localesStorage;
+    LocaleHelper localeHelper;
 
     private final String url;
 
@@ -34,7 +33,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     protected String getLocalizedUrl() {
-        return LocaleUtils.substituteActualLocale(context, url, localesStorage);
+        return url
+                .replaceAll("\\{locale\\}", localeHelper.getDefaultLocaleFormatted())
+                .replaceAll("\\{language\\}", localeHelper.getDefaultLocale().getLanguage())
+                .replaceAll("\\{country\\}", localeHelper.getDefaultLocale().getCountry());
     }
 
     public void onReload() {

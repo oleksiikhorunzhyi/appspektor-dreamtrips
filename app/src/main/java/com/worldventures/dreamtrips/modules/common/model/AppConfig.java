@@ -60,14 +60,14 @@ public class AppConfig {
             private String bookingPageURL;
 
             @SerializedName("OTAPageURL")
-            private String oTAPageURL;
+            private String otaPageURL;
 
             public String getBookingPageURL() {
                 return bookingPageURL;
             }
 
-            public String getoTAPageURL() {
-                return oTAPageURL != null ? oTAPageURL : "";
+            public String getOtaPageURL() {
+                return otaPageURL != null ? otaPageURL : "";
             }
 
             public String getEnrollRepURL(String uid) {

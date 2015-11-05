@@ -5,13 +5,10 @@ import android.content.res.Configuration;
 
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.AccountHelper;
-import com.worldventures.dreamtrips.core.utils.LocaleManager;
-import com.worldventures.dreamtrips.modules.common.model.User;
-
-import java.util.Locale;
-
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
 
@@ -20,7 +17,9 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     @Inject
     protected Activity activity;
     @Inject
-    protected LocaleManager localeManager;
+    protected LocaleSwitcher localeSwitcher;
+    @Inject
+    protected LocaleHelper localeHelper;
 
     @Override
     public void onInjected() {
@@ -28,15 +27,15 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
 
         Optional<UserSession> userSession = appSessionHolder.get();
         if (!userSession.isPresent()) {
-            localeManager.resetLocale();
+            localeSwitcher.resetLocale();
             return;
         }
 
         User user = userSession.get().getUser();
         if (user != null && user.getLocale() != null) {
-            localeManager.setLocale(AccountHelper.getAccountLocale(user));
+            localeSwitcher.applyLocale(localeHelper.getAccountLocale(user));
         } else {
-            localeManager.resetLocale();
+            localeSwitcher.resetLocale();
         }
     }
 
@@ -47,7 +46,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     }
 
     public void onConfigurationChanged(Configuration configuration){
-        localeManager.localeChanged(configuration.locale);
+        localeSwitcher.onConfigurationLocaleChanged(configuration.locale);
     }
 
     public void onEventMainThread(UpdateUserInfoEvent event) {

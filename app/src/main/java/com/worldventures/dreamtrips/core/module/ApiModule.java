@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
-import com.worldventures.dreamtrips.core.utils.LocaleUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -62,14 +62,14 @@ public class ApiModule {
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(Context context, SessionHolder<UserSession> appSessionHolder) {
+    RequestInterceptor provideRequestInterceptor(Context context, SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 UserSession userSession = appSessionHolder.get().get();
                 String authToken = "Token token=" + userSession.getApiToken();
                 request.addHeader("Authorization", authToken);
             }
-            request.addHeader("Accept-Language", LocaleUtils.getAcceptLanguage(context));
+            request.addHeader("Accept-Language", localeHelper.getDefaultLocaleFormatted());
             request.addHeader("Accept", "application/com.dreamtrips.api+json;version="
                     + BuildConfig.API_VERSION);
         };

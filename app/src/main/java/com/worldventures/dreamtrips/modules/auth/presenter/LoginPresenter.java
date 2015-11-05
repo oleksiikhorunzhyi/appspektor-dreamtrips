@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
-import com.worldventures.dreamtrips.core.utils.AccountHelper;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -21,6 +21,8 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
 
     @Inject
     StaticPageHolder staticPageHolder;
+    @Inject
+    LocaleHelper localeHelper;
 
     public void loginAction() {
         String username = view.getUsername();
@@ -47,7 +49,7 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                 TrackingHelper.login(user.getEmail());
                 TrackingHelper.setUserId(Integer.toString(user.getId()));
 
-                Locale userLocale = AccountHelper.getAccountLocale(user);
+                Locale userLocale = localeHelper.getAccountLocale(user);
                 if (userLocale == null) userLocale = Locale.getDefault();
                 StaticPagesQuery staticPagesQuery = new StaticPagesQuery(userLocale.getCountry(), userLocale.getLanguage());
                 doRequest(staticPagesQuery, staticPageConfig -> {

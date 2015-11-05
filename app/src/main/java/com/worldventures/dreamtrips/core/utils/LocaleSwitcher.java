@@ -6,18 +6,22 @@ import android.content.res.Resources;
 
 import java.util.Locale;
 
-public class LocaleManager {
+public class LocaleSwitcher {
 
     private Context context;
     private Locale defaultSystemLocale;
     private Locale currentLocale;
 
-    public LocaleManager(Context context) {
+    public LocaleSwitcher(Context context) {
         this.context = context;
         this.defaultSystemLocale = Locale.getDefault();
     }
 
-    public void setLocale(Locale locale) {
+    public void onConfigurationLocaleChanged(Locale newLocal){
+        defaultSystemLocale = newLocal;
+    }
+
+    public void applyLocale(Locale locale) {
         currentLocale = locale;
         Locale.setDefault(currentLocale);
         Resources resources = context.getResources();
@@ -29,10 +33,6 @@ public class LocaleManager {
     }
 
     public void resetLocale() {
-        setLocale(defaultSystemLocale);
-    }
-
-    public void localeChanged(Locale newLocal){
-        defaultSystemLocale = newLocal;
+        applyLocale(defaultSystemLocale);
     }
 }

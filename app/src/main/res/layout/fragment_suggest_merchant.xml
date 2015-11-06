@@ -293,6 +293,8 @@
             android:layout_gravity="right"
             android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin_big"
             android:text="@string/suggest_merchant_submit_button_caption"
+            android:textColor="@android:color/white"
+            android:theme="@style/DtlButtonTheme"
             />
     </LinearLayout>
 </ScrollView>

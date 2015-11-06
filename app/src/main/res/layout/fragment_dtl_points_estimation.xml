@@ -43,16 +43,15 @@
             android:textColor="#DC000000"
             android:textSize="@dimen/font_large"/>
 
-        <EditText
+        <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
             android:id="@+id/inputPoints"
+            style="@style/SuggestMerchantInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:layout_marginRight="@dimen/spacing_small"
             android:layout_weight="2"
             android:inputType="numberDecimal"
-            android:singleLine="true"
-            android:textColor="#DC000000"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
             tools:text="10.5"
             />
 

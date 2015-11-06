@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
@@ -23,7 +24,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         implements DtlPointsEstimationPresenter.View {
 
     @InjectView(R.id.inputPoints)
-    EditText inputPoints;
+    DTEditText inputPoints;
     @InjectView(R.id.calculateButton)
     Button calculateButton;
     @InjectView(R.id.pointsEstimated)
@@ -70,7 +71,8 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
 
     @OnClick(R.id.calculateButton)
     void calculateClicked() {
-        getPresenter().onCalculateClicked(inputPoints.getText().toString());
+        if (inputPoints.validate())
+            getPresenter().onCalculateClicked(inputPoints.getText().toString());
     }
 
     @OnClick(R.id.button_cancel)

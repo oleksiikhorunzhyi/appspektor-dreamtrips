@@ -15,7 +15,6 @@ import java.util.List;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
-    private String id;
     private String title;
     private Date shotAt;
     private Location location;
@@ -102,7 +101,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     @Override
     public String getFsId() {
-        return id;
+        return uid;
     }
 
     @Override
@@ -167,7 +166,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
         parcel.writeString(uid);
         parcel.writeInt(commentsCount);
         parcel.writeInt(likesCount);
@@ -182,7 +180,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     protected Photo(Parcel in) {
-        id = in.readString();
         uid = in.readString();
         commentsCount = in.readInt();
         likesCount = in.readInt();

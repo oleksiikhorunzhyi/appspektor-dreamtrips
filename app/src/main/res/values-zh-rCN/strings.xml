@@ -334,7 +334,7 @@
     <string name="comment_delete_caption">您确定要删除这条评论吗？</string>
     <string name="comment_delete_confirm">是的，删除！</string>
     <string name="post_visibility_public">公开</string>
-    <string name="post_hint">您要做什麽？</string>
+    <string name="post_hint">我想说…</string>
     <string name="photo_hint">说说这张照片…</string>
     <string name="post">发布</string>
 

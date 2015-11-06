@@ -68,8 +68,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     public interface View extends ActivityPresenter.View {
         void setTitle(int title);
 
-        void updateSelection(ComponentDescription componentDescription);
-
-        void makeActionBarGone(boolean isTransparent);
+        void makeActionBarGone(boolean hide);
     }
 }

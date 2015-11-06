@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import java.util.ArrayList;
@@ -31,7 +30,9 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_navigation_drawer)
-public class NavigationDrawerFragment extends BaseFragment<NavigationDrawerPresenter> implements NavigationDrawerPresenter.View, NavigationDrawerListener {
+public class NavigationDrawerFragment
+        extends BaseFragment<NavigationDrawerPresenter>
+        implements NavigationDrawerPresenter.View, NavigationDrawerListener {
 
     @Inject
     @ForApplication

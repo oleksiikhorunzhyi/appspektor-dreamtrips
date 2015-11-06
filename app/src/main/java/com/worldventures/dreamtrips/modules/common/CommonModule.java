@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmen
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
@@ -70,6 +71,7 @@ import dagger.Provides;
                 ProgressDialogFragment.class,
                 BaseDialogFragmentWithPresenter.class,
                 TermsConditionsDialog.class,
+                LogoutDelegate.class,
 
         },
         complete = false,

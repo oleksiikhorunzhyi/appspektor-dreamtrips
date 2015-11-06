@@ -3,11 +3,13 @@ package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.SuggestPlaceBaseFragment;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuggestRestaurantPresenter;
 
+@MenuResource(R.menu.menu_suggest_merchant)
 public class SuggestRestaurantFragment extends SuggestPlaceBaseFragment<SuggestRestaurantPresenter>
         implements SuggestRestaurantPresenter.View {
 

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.content.Intent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,6 +11,7 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -73,6 +76,19 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         addValidators();
         setDateTime();
         progressDialog = ProgressDialogFragment.create();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_pdf:
+                getPresenter().pdfClicked();
+                break;
+            case R.id.action_presentation:
+                getPresenter().presentationClicked();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected void addValidators() {
@@ -245,5 +261,17 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
 
     protected String formatTime(int hours, int minutes) {
         return DateTimeUtils.convertTimeToString(hours, minutes);
+    }
+
+    @Override
+    public void openPdf(String url) {
+        Intent intent = IntentUtils.browserIntent(url);
+        startActivity(intent);
+    }
+
+    @Override
+    public void openPresentation(String url) {
+        Intent intent = IntentUtils.browserIntent(url);
+        startActivity(intent);
     }
 }

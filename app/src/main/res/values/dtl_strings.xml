@@ -81,4 +81,7 @@
     <string name="dtl_wait_for_earn">Wait… Earning points</string>
 
     <string name="dtl_photo_upload_error">Error while uploading photo, try again later</string>
+
+    <string name="pdf">PDF</string>
+    <string name="presentation">Presentation</string>
 </resources>

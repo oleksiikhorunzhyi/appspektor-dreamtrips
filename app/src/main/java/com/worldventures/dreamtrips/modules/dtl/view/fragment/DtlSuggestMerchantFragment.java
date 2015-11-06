@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
 
 @Layout(R.layout.fragment_suggest_merchant)
+@MenuResource(R.menu.menu_suggest_merchant)
 public class DtlSuggestMerchantFragment extends SuggestPlaceBaseFragment<DtlSuggestMerchantPresenter>
         implements DtlSuggestMerchantPresenter.View {
 

@@ -18,6 +18,10 @@ public abstract class NavigationConfigBuilder {
         return new DialogNavigationConfigBuilder();
     }
 
+    public static RemovingTransactionConfigBuilder forRemoval() {
+        return new RemovingTransactionConfigBuilder();
+    }
+
     protected NavigationConfigBuilder(NavigationConfig.NavigationType type) {
         navigationConfig = new NavigationConfig(type);
     }

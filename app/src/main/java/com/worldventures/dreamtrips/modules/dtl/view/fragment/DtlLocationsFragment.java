@@ -17,8 +17,8 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -147,15 +147,13 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
 
     @Override
     public void showMerchants(PlacesBundle bundle) {
-        fragmentCompass.setContainerId(R.id.dtl_container);
-        fragmentCompass.setFragmentManager(getFragmentManager());
-
-        fragmentCompass.disableBackStack();
-
-        NavigationBuilder.create()
-                .with(fragmentCompass)
+        Route route = tabletAnalytic.isTabletLandscape() ? Route.DTL_PLACES_LANDSCAPE : Route.DTL_PLACES_LIST;
+        router.moveTo(route, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.dtl_container)
+                .fragmentManager(getFragmentManager())
+                .backStackEnabled(false)
                 .data(bundle)
-                .move(Route.DTL_PLACES_LIST);
+                .build());
     }
 
     @Override

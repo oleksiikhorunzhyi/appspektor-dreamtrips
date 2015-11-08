@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
@@ -30,6 +32,8 @@ public class RouterImpl implements Router {
             case DIALOG:
                 showDialog(route, config);
                 break;
+            case REMOVE:
+                remove(route, config);
         }
     }
 
@@ -62,6 +66,22 @@ public class RouterImpl implements Router {
         //
         DialogFragmentNavigator.NavigationDialogFragment.newInstance(route, getArgs(config))
                 .show(fragmentManager, route.name());
+    }
+
+    private void remove(Route route, NavigationConfig config) {
+        if (validateState()) {
+            Fragment fragment = config.getFragmentManager().findFragmentByTag(route.getClazzName());
+            //
+            if (fragment != null) {
+                FragmentTransaction fragmentTransaction = config.getFragmentManager().beginTransaction();
+                fragmentTransaction.remove(fragment);
+                fragmentTransaction.commit();
+            }
+        }
+    }
+
+    private boolean validateState() {
+        return activity != null && !activity.isFinishing();
     }
 
     private Bundle getArgs(NavigationConfig config) {

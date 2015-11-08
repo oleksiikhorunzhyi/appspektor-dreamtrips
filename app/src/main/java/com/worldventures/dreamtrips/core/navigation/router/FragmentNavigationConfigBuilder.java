@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Parcelable;
+import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.R;
@@ -27,7 +28,7 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
         return this;
     }
 
-    public FragmentNavigationConfigBuilder containerId(int containerId) {
+    public FragmentNavigationConfigBuilder containerId(@IdRes int containerId) {
         navigationConfig.containerId = containerId;
         return this;
     }

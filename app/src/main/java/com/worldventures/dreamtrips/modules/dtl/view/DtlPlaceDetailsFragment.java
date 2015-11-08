@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -95,12 +96,13 @@ public class DtlPlaceDetailsFragment
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        if (toolbar != null) {
+        if (!tabletAnalytic.isTabletLandscape()) {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             activity.setSupportActionBar(toolbar);
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             activity.getSupportActionBar().setTitle("");
-            toolbar.getBackground().setAlpha(0);
+        } else {
+            toolbar.setNavigationOnClickListener(v -> popBack(getFragmentManager()));
         }
         commonDataInflater.setView(rootView);
         placeInfoInflater.setView(rootView);
@@ -111,6 +113,12 @@ public class DtlPlaceDetailsFragment
             int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
             googleMap.setPadding(0, 0, 0, padding);
         });
+    }
+
+    public void popBack(FragmentManager fragmentManager) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+        }
     }
 
     @Override

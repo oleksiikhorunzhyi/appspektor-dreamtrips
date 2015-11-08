@@ -2,8 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -18,7 +21,6 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlacesToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -38,10 +40,9 @@ public class DtlPlacesTabsFragment
     BadgedTabLayout tabStrip;
     @InjectView(R.id.pager)
     CustomViewPager pager;
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
     BasePagerAdapter<DataFragmentItem> adapter;
-    //
-    DtlPlacesToolbarHelper toolbarHelper;
-    //
     @State
     int currentPosition;
 
@@ -51,38 +52,8 @@ public class DtlPlacesTabsFragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        toolbarHelper.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        toolbarHelper.onPause();
-    }
-
-    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        toolbarHelper = new DtlPlacesToolbarHelper(getActivity(), fragmentCompass, eventBus);
-        toolbarHelper.attach(rootView);
-        toolbarHelper.inflateMenu(R.menu.menu_dtl_list, item -> {
-            switch (item.getItemId()) {
-                case R.id.action_map:
-                    router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment().useDefaults()
-                            .data(getArgs())
-                            .fragmentManager(getFragmentManager())
-                            .containerId(R.id.dtl_container)
-                            .build());
-                    break;
-                case R.id.action_dtl_filter:
-                    ((MainActivity) getActivity()).openRightDrawer();
-                    break;
-            }
-            return super.onOptionsItemSelected(item);
-        });
-        //
         if (adapter == null) {
             adapter = new BasePagerAdapter<DataFragmentItem>(getChildFragmentManager()) {
                 @Override
@@ -108,6 +79,22 @@ public class DtlPlacesTabsFragment
             public void onPageScrollStateChanged(int state) {
             }
         });
+        toolbar.inflateMenu(R.menu.menu_dtl_list);
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_map:
+                    router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment().useDefaults()
+                            .data(getArgs())
+                            .fragmentManager(getFragmentManager())
+                            .containerId(R.id.dtl_container)
+                            .build());
+                    break;
+                case R.id.action_dtl_filter:
+                    ((MainActivity) getActivity()).openRightDrawer();
+                    break;
+            }
+            return super.onOptionsItemSelected(item);
+        });
     }
 
     @Override
@@ -128,7 +115,21 @@ public class DtlPlacesTabsFragment
 
     @Override
     public void initToolbar(DtlLocation location) {
-        toolbarHelper.setPlaceForToolbar(location);
+        FragmentManager fragmentManager;
+        if (!tabletAnalytic.isTabletLandscape()) {
+            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+            fragmentManager = getFragmentManager();
+        } else {
+            fragmentManager = getParentFragment().getFragmentManager();
+        }
+        toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+        toolbar.findViewById(R.id.spinnerStyledTitle).setOnClickListener(v ->
+                router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                        .backStackEnabled(false)
+                        .containerId(R.id.dtl_container)
+                        .fragmentManager(fragmentManager)
+                        .build()));
+        ((TextView) toolbar.findViewById(R.id.spinnerStyledTitle)).setText(location.getLongName());
     }
 
     @Override

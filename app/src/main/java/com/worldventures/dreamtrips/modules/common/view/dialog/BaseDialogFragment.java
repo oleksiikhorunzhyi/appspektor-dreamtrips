@@ -22,6 +22,10 @@ public class BaseDialogFragment extends InjectingDialogFragment {
         super.show(manager, TAG);
     }
 
+    protected void dismissIfShown(FragmentManager fragmentManager) {
+        dismissIfShown(fragmentManager, TAG);
+    }
+
     /**
      * Method that detaches fragment by tag if already present.
      * @param fragmentManager FragmentManager to operate on during transaction

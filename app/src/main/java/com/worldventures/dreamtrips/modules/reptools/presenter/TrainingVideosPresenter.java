@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.video.event.MemberVideoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -31,7 +33,12 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     public void onResume() {
         videoLocale = db.getLastSelectedVideoLocale();
         videoLanguage = db.getLastSelectedVideoLanguage();
+
         super.onResume();
+    }
+
+    @Override
+    protected void loadOnStart() {
         loadLocales();
     }
 
@@ -53,6 +60,8 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
             setHeaderLocale();
             view.setLocales(locales, videoLocale);
         }
+
+        loadVideos();
     }
 
     private VideoLocale getCurrentLocale(ArrayList<VideoLocale> locales, Locale locale) {
@@ -95,11 +104,16 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
         view.showDialog();
     }
 
+    public void onEvent(MemberVideoAnalyticEvent event) {
+        TrackingHelper.actionRepToolsTrainingVideo(event.getActionAttribute(), event.getVideoName());
+    }
+
     @Override
     protected MemberVideosRequest getMemberVideosRequest() {
         if (videoLocale != null && videoLanguage != null)
             return new MemberVideosRequest(DreamTripsApi.TYPE_REP, videoLanguage.getLocaleName());
-        else return new MemberVideosRequest(DreamTripsApi.TYPE_REP);
+        else
+            return new MemberVideosRequest(DreamTripsApi.TYPE_REP);
     }
 
     public interface View extends PresentationVideosPresenter.View {

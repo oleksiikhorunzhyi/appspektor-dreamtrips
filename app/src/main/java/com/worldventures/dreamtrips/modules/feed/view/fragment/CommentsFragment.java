@@ -101,6 +101,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
         linearLayoutManager = new LinearLayoutManager(rootView.getContext());
         commentsList.setLayoutManager(linearLayoutManager);
         commentsList.setAdapter(adapter);
+        adapter.addItem(loadMore);
 
         if (getArgs().isOpenKeyboard()) {
             SoftInputUtil.showSoftInputMethod(input);
@@ -209,7 +210,7 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void hideViewMore() {
         loadMore.setVisible(false);
-        adapter.notifyItemChanged(1);
+        adapter.notifyItemChanged(getLoadMorePosition());
     }
 
     @OnClick(R.id.post)
@@ -227,10 +228,14 @@ public class CommentsFragment<T extends BaseCommentPresenter> extends BaseFragme
     @Override
     public void setLoading(boolean loading) {
         loadMore.setLoading(loading);
-        adapter.notifyItemChanged(1);
+        adapter.notifyItemChanged(getLoadMorePosition());
     }
 
     protected int getHeaderCount() {
+        return 1;
+    }
+
+    protected int getLoadMorePosition() {
         return 0;
     }
 

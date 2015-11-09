@@ -25,39 +25,9 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     public Photo() {
     }
 
-    protected Photo(Parcel in) {
-        uid = in.readString();
-        commentsCount = in.readInt();
-        likesCount = in.readInt();
-        liked = in.readInt() == 1;
-        title = in.readString();
-        shotAt = (Date) in.readSerializable();
-        location = in.readParcelable(Location.class.getClassLoader());
-        tags = in.createStringArrayList();
-        images = in.readParcelable(Image.class.getClassLoader());
-        taskId = in.readString();
-        user = in.readParcelable(User.class.getClassLoader());
-    }
-
-    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-        @Override
-        public Photo createFromParcel(Parcel in) {
-            return new Photo(in);
-        }
-
-        @Override
-        public Photo[] newArray(int size) {
-            return new Photo[size];
-        }
-    };
-
     @Override
     public String place() {
         return location != null ? location.getName() : null;
-    }
-
-    public String getFsId() {
-        return uid;
     }
 
     public Date getShotAt() {
@@ -127,6 +97,11 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    @Override
+    public String getFsId() {
+        return uid;
     }
 
     @Override
@@ -203,4 +178,30 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         parcel.writeString(taskId);
         parcel.writeParcelable(user, i);
     }
+
+    protected Photo(Parcel in) {
+        uid = in.readString();
+        commentsCount = in.readInt();
+        likesCount = in.readInt();
+        liked = in.readInt() == 1;
+        title = in.readString();
+        shotAt = (Date) in.readSerializable();
+        location = in.readParcelable(Location.class.getClassLoader());
+        tags = in.createStringArrayList();
+        images = in.readParcelable(Image.class.getClassLoader());
+        taskId = in.readString();
+        user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        @Override
+        public Photo createFromParcel(Parcel in) {
+            return new Photo(in);
+        }
+
+        @Override
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
 }

@@ -20,8 +20,10 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripImageBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -42,17 +44,18 @@ public abstract class TripImagesListPresenter
     protected SnappyRepository db;
 
     protected Type type;
-    private boolean isFullscreen;
+    private boolean fullscreenMode;
 
     private int previousTotal = 0;
     private boolean loading = true;
+    private int currentPhotoPosition = 0;
 
     private TripImagesRoboSpiceController roboSpiceAdapterController;
     protected List<IFullScreenObject> photos = new ArrayList<>();
 
     protected int userId;
 
-    public TripImagesListPresenter(Type type, int userId) {
+    protected TripImagesListPresenter(Type type, int userId) {
         super();
         this.type = type;
         this.userId = userId;
@@ -61,21 +64,27 @@ public abstract class TripImagesListPresenter
     @Override
     public void onInjected() {
         super.onInjected();
-        syncPhotos();
     }
 
-    protected void syncPhotos() {
+    protected void syncPhotosAndUpdatePosition() {
         photos.addAll(db.readPhotoEntityList(type, userId));
+
+        if (fullscreenMode) {
+            int prevPhotosCount = photos.size();
+            photos = Queryable.from(photos).filter(element -> !(element instanceof UploadTask)).toList();
+            currentPhotoPosition -= prevPhotosCount - photos.size();
+        }
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         view.clear();
+        syncPhotosAndUpdatePosition();
         view.fillWithItems(photos);
-        view.setSelection();
+        view.setSelection(currentPhotoPosition);
 
-        if (type != Type.FIXED_LIST && !isFullscreen) reload();
+        if (type != Type.FIXED_LIST && !fullscreenMode) reload();
     }
 
     private void resetLazyLoadFields() {
@@ -106,6 +115,10 @@ public abstract class TripImagesListPresenter
         return photos.get(position);
     }
 
+    public void setCurrentPhotoPosition(int currentPhotoPosition) {
+        this.currentPhotoPosition = currentPhotoPosition;
+    }
+
     public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
         if (type != Type.MY_IMAGES) {
             getAdapterController().reload();
@@ -126,6 +139,10 @@ public abstract class TripImagesListPresenter
                     startUpload((UploadTask) obj);
                 }
             } else {
+                if (this instanceof UserImagesPresenter) {
+                    IFullScreenObject screenObject = photos.get(position);
+                    eventBus.post(new TripImageAnalyticEvent(screenObject.getFsId(), TrackingHelper.ATTRIBUTE_VIEW));
+                }
                 view.openFullscreen(getFullscreenArgs(position).build());
             }
         }
@@ -168,10 +185,12 @@ public abstract class TripImagesListPresenter
             UploadTask uploadTask = getCurrentTask(String.valueOf(id));
             if (uploadTask != null) {
                 if (state.equals(TransferState.COMPLETED)) {
-                    uploadTask.setStatus(UploadTask.Status.COMPLETED);
-                    uploadTask.setOriginUrl
-                            (photoUploadingSpiceManager.getResultUrl(uploadTask));
-                    photoUploaded(uploadTask);
+                    if (uploadTask.getStatus() != UploadTask.Status.COMPLETED) {
+                        uploadTask.setStatus(UploadTask.Status.COMPLETED);
+                        uploadTask.setOriginUrl
+                                (photoUploadingSpiceManager.getResultUrl(uploadTask));
+                        photoUploaded(uploadTask);
+                    }
                 } else if (state.equals(TransferState.FAILED)) {
                     photoError(getCurrentTask(String.valueOf(id)));
                 }
@@ -217,8 +236,8 @@ public abstract class TripImagesListPresenter
     }
 
     private void updateTask(UploadTask task) {
+        if (view == null) return;
         int index = photos.indexOf(task);
-
         view.replace(index, task);
     }
 
@@ -267,33 +286,36 @@ public abstract class TripImagesListPresenter
 
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
 
-    public void setFullscreen(boolean isFullscreen) {
-        this.isFullscreen = isFullscreen;
+    public void setFullscreenMode(boolean isFullscreen) {
+        this.fullscreenMode = isFullscreen;
     }
 
-    public static TripImagesListPresenter create(Type type, boolean isFullscreen, ArrayList<IFullScreenObject> photos, int userId) {
-        TripImagesListPresenter presenter = new AccountImagesPresenter(Type.MY_IMAGES, userId);
-        switch (type) {
+    public static TripImagesListPresenter create(TripImageBundle bundle) {
+        TripImagesListPresenter presenter;
+        switch (bundle.getType()) {
             case MEMBER_IMAGES:
-                presenter = new UserImagesPresenter(userId);
+                presenter = new UserImagesPresenter(bundle.getUserId());
                 break;
             case MY_IMAGES:
-                presenter = new AccountImagesPresenter(userId);
+                presenter = new AccountImagesPresenter(bundle.getUserId());
                 break;
             case YOU_SHOULD_BE_HERE:
-                presenter = new YSBHPresenter(userId);
+                presenter = new YSBHPresenter(bundle.getUserId());
                 break;
             case INSPIRE_ME:
-                presenter = new InspireMePresenter(userId);
+                presenter = new InspireMePresenter(bundle.getUserId());
                 break;
             case FIXED_LIST:
-                presenter = new FixedPhotoFsPresenter(photos, userId);
+                presenter = new FixedPhotoFsPresenter(bundle.getPhotos(), bundle.getUserId());
                 break;
             case FOREIGN_IMAGES:
-                presenter = new ForeignImagesPresenter(userId);
+                presenter = new ForeignImagesPresenter(bundle.getUserId());
                 break;
+            default:
+                throw new RuntimeException("Trip image type is not found");
         }
-        presenter.setFullscreen(isFullscreen);
+        presenter.setFullscreenMode(bundle.isFullScreenMode());
+        presenter.setCurrentPhotoPosition(bundle.getCurrentPhotosPosition());
         return presenter;
     }
 
@@ -354,7 +376,6 @@ public abstract class TripImagesListPresenter
             int index = photos.indexOf(temp);
 
             if (index != -1) {
-                Photo photo = (Photo) photos.get(index);
                 photos.set(index, temp);
                 db.savePhotoEntityList(type, userId, photos);
             }
@@ -366,7 +387,7 @@ public abstract class TripImagesListPresenter
 
         void finishLoading();
 
-        void setSelection();
+        void setSelection(int photoPosition);
 
         void fillWithItems(List<IFullScreenObject> items);
 

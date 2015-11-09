@@ -8,6 +8,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -56,8 +57,16 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
         }
 
         this.pager.setAdapter(adapter);
+        this.pager.addOnPageChangeListener(this);
 
         tabs.setupWithPagerBadged(pager);
+        TrackingHelper.selectTripImagesTab(TrackingHelper.ACTION_MEMBER_IMAGES);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TrackingHelper.viewTripImagesScreen();
     }
 
     @Override
@@ -73,17 +82,33 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
     }
 
     @Override
     public void onPageSelected(int position) {
-        getPresenter().trackState(position);
+        String actionTab = "";
+        switch (position) {
+            case 0:
+                actionTab = TrackingHelper.ACTION_MEMBER_IMAGES;
+                break;
+            case 1:
+                actionTab = TrackingHelper.ACTION_MY_IMAGES;
+                break;
+            case 2:
+                actionTab = TrackingHelper.ACTION_360;
+                break;
+            case 3:
+                actionTab = TrackingHelper.ACTION_INSPIRE_ME_IMAGES;
+                break;
+            case 4:
+                actionTab = TrackingHelper.ACTION_YSHB_IMAGES;
+                break;
+        }
+        TrackingHelper.selectTripImagesTab(actionTab);
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
     }
 
 

@@ -35,6 +35,8 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -191,6 +193,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
                 v.setText(null);
                 getPresenter().addToBucketList(s);
                 SoftInputUtil.showSoftInputMethod(quickInputEditText);
+                eventBus.post(new BucketAnalyticEvent(TrackingHelper.ATTRIBUTE_ADD));
             }
             return false;
         });
@@ -236,9 +239,11 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_filter:
+                eventBus.post(new BucketAnalyticEvent(TrackingHelper.ATTRIBUTE_FILTER));
                 actionFilter();
                 break;
             case R.id.action_popular:
+                eventBus.post(new BucketAnalyticEvent(TrackingHelper.ATTRIBUTE_ADD_FROM_POPULAR));
                 getPresenter().popularClicked();
                 break;
         }

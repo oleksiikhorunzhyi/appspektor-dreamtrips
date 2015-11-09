@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
@@ -52,7 +53,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_profile)
-public class ProfileCell extends AbstractCell<User> implements Expandable{
+public class ProfileCell extends AbstractCell<User> implements Expandable {
 
     private DecimalFormat df = new DecimalFormat("#0.00");
 
@@ -170,7 +171,7 @@ public class ProfileCell extends AbstractCell<User> implements Expandable{
             divider3.setVisibility(View.GONE);
         }
 
-        divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL)? View.GONE : View.VISIBLE);
+        divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL) ? View.GONE : View.VISIBLE);
 
         if (!TextUtils.isEmpty(user.getCompany())) {
             companyName.setVisibility(View.VISIBLE);
@@ -192,14 +193,12 @@ public class ProfileCell extends AbstractCell<User> implements Expandable{
         setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
         setFriendButtonText(R.string.profile_friends);
 
+        setTripImagesCount(user.getTripImagesCount());
+        setBucketItemsCount(user.getBucketListItemsCount());
         if (isAccount()) {
-            setTripImagesCount(user.getTripImagesCount());
-            setBucketItemsCount(user.getBucketListItemsCount());
             setRoviaBucks(df.format(user.getRoviaBucks()));
             setDreamTripPoints(df.format(user.getDreamTripsPoints()));
         } else {
-            setTripImagesCount(user.getTripImagesCount());
-            setBucketItemsCount(user.getBucketListItemsCount());
             setSocial(user.isSocialEnabled());
             setIsFriend(false);
             if (user.getRelationship() != null) {
@@ -379,24 +378,25 @@ public class ProfileCell extends AbstractCell<User> implements Expandable{
     @OnClick(R.id.bucket_list)
     protected void onBucketListClicked() {
         getEventBus().post(new OnBucketListClickedEvent(getModelObject().getId()));
+        sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_BUCKETLIST);
     }
 
     @OnClick(R.id.trip_images)
     protected void onTripImageClicked() {
         getEventBus().post(new OnTripImageClickedEvent(getModelObject().getId()));
-
+        sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_TRIPS);
     }
 
     @OnClick(R.id.friends)
     protected void onFriendsClick() {
         getEventBus().post(new OnFriendsClickedEvent());
-
+        sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_FRIENDS);
     }
 
     @OnClick(R.id.post)
     protected void onPostClick() {
         getEventBus().post(new OnCreatePostClickEvent());
-
+        sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_NEW_POST);
     }
 
     @OnClick(R.id.user_photo)
@@ -448,12 +448,18 @@ public class ProfileCell extends AbstractCell<User> implements Expandable{
 
     @Override
     public void setExpanded(boolean expanded) {
-        if (expanded){
+        if (expanded) {
             info.showWithoutAnimation();
             more.setVisibility(View.INVISIBLE);
         } else {
             info.hideWithoutAnimation();
             more.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void sendAnalyticIfNeed(String tapedButtonActionAttribute) {
+        if (isAccount()) {
+            TrackingHelper.tapMyProfileButton(tapedButtonActionAttribute);
         }
     }
 }

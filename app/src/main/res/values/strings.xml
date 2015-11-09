@@ -282,7 +282,7 @@
     <string name="action_add_to_bucket">Add to Bucket list</string>
     <string name="profile_dream_trips">%d Dream Trips</string>
     <string name="profile_add_friend">Add Friend</string>
-    <string name="profile_friend_request" formatted="false">%s sent you a friend request</string>
+    <string name="profile_friend_request" formatted="false">%s sent you friend request</string>
     <string name="profile_accept">Confirm</string>
     <string name="profile_reject">Delete request</string>
     <string name="title_activity_friends">Friends</string>
@@ -406,7 +406,7 @@
     <string name="accept_request">accepted your request</string>
     <string name="reject_request">rejected your request</string>
     <string name="comment">commented on your</string>
-    <string name="send_request">send you a friend request</string>
+    <string name="send_request">send you friend request</string>
 
     <string name="post_delete">Delete post</string>
     <string name="post_edit">Edit post</string>
@@ -466,5 +466,11 @@
         <item quantity="one">%s liked</item>
         <item quantity="other">%d people liked</item>
     </plurals>
+
+    <string name="terms_and_conditions_title">Terms and Condition</string>
+    <string name="terms_and_conditions_subtitle">Please read and accept the terms and condition below to continue</string>
+    <string name="terms_and_conditions_checkbox">Click here to accept terms and conditions</string>
+    <string name="terms_and_conditions_accept">Opt In</string>
+    <string name="terms_and_conditions_reject">Not Now</string>
 
 </resources>

@@ -13,7 +13,10 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -76,6 +79,9 @@ public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
                 .data(data)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .move(Route.FULLSCREEN_PHOTO_LIST);
+
+        getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(),
+                FeedEntityHolder.Type.PHOTO));
     }
 
     private void loadPhoto(Photo photoObj) {
@@ -91,11 +97,13 @@ public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
 
     @Override
     protected void onDelete() {
+        super.onDelete();
         getEventBus().post(new DeletePhotoEvent(getModelObject().getItem()));
     }
 
     @Override
     protected void onEdit() {
+        super.onEdit();
         NavigationBuilder.create()
                 .with(activityRouter)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

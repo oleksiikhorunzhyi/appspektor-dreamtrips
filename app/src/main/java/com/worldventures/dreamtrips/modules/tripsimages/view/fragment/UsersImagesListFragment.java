@@ -6,6 +6,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -31,7 +32,6 @@ public class UsersImagesListFragment<P extends UserImagesPresenter> extends Trip
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         this.multipleActionsDown.setOnFloatingActionsMenuUpdateListener(this);
-
     }
 
     @Override
@@ -63,5 +63,11 @@ public class UsersImagesListFragment<P extends UserImagesPresenter> extends Trip
     private void openPicker(int requestType) {
         getPresenter().pickImage(requestType);
         this.multipleActionsDown.collapse();
+
+        if (this instanceof AccountImagesListFragment){
+            TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
+        } else {
+            TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
+        }
     }
 }

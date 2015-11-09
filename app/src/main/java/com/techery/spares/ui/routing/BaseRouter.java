@@ -54,8 +54,15 @@ public class BaseRouter {
     }
 
     protected void startActivityWithArgs(Class<? extends InjectingActivity> activityClass, Bundle args) {
+        startActivityWithArgs(activityClass, args, 0);
+    }
+
+    protected void startActivityWithArgs(Class<? extends InjectingActivity> activityClass, Bundle args, int flags) {
         Intent intent = new Intent(getContext(), activityClass);
         intent.putExtra(ComponentPresenter.COMPONENT_EXTRA, args);
+        if(flags > 0) {
+            intent.setFlags(flags);
+        }
         getContext().startActivity(intent);
     }
 

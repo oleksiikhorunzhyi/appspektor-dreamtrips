@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 
-public class FacebookPickPhotoPresenter extends Presenter<ActivityPresenter.View> {
+public class FacebookPickPhotoPresenter extends ActivityPresenter<ActivityPresenter.View> {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

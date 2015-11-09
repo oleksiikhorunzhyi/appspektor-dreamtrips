@@ -40,7 +40,8 @@ import dagger.Provides;
                 ActionReceiverModule.class,
                 //
                 ResponseSnifferModule.class,
-                BadgeCountObserverModule.class
+                BadgeCountObserverModule.class,
+                LocaleModule.class
         },
         library = true,
         complete = false,

@@ -39,6 +39,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
         searchView.setIconified(false);
         searchView.setIconifiedByDefault(false);
         searchView.setDelayInMillis(500);
+        searchView.setQueryHint(getString(R.string.search));
         searchItem.expandActionView();
 
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {

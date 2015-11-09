@@ -6,8 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.facebook.HttpMethod;
-import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphObject;
@@ -17,6 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
@@ -33,21 +32,24 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.dialog_facebook_select_album)
-public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> {
+public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> implements FacebookAlbumPresenter.View {
+
+    @InjectView(R.id.lv_items)
+    protected RecyclerView lvItems;
+    @InjectView(R.id.login_button)
+    protected LoginButton loginButton;
+    @InjectView(R.id.toolbar_actionbar)
+    protected Toolbar toolbar;
 
     @Inject
     @ForActivity
     Provider<Injector> injector;
 
-    @InjectView(R.id.lv_items)
-    protected RecyclerView lvItems;
+    int previousTotal;
+    boolean loading;
 
-    @InjectView(R.id.login_button)
-    protected LoginButton loginButton;
-
-    @InjectView(R.id.toolbar_actionbar)
-    protected Toolbar toolbar;
-    private BaseArrayListAdapter adapter;
+    BaseArrayListAdapter<FacebookAlbum> adapter;
+    GridLayoutManager layoutManager;
 
     private Session.StatusCallback callback = (session, state, exception) -> {
         if (session != null && session.isOpened()) {
@@ -64,18 +66,41 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
         adapter.registerCell(FacebookAlbum.class, FacebookAlbumCell.class);
         toolbar.setTitle(getString(R.string.fab_select_album));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(v -> getPresenter().backAction());
+        toolbar.setNavigationOnClickListener(v -> fragmentCompass.pop());
         toolbar.getBackground().setAlpha(255);
         lvItems.setAdapter(adapter);
+
         lvItems.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {
-                    String facebookId = ((FacebookAlbum) adapter.getItem(position)).getId();
-                    getPresenter().onItemClick(facebookId);
+                    String facebookId = (adapter.getItem(position)).getId();
+                    Bundle b = new Bundle();
+                    b.putString(FacebookPhotoFragment.BUNDLE_ALBUM_ID, facebookId);
+                    fragmentCompass.add(Route.PICK_FB_PHOTO, b);
                 })
 
         );
-        lvItems.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        layoutManager = new GridLayoutManager(getActivity(), 2);
 
+        lvItems.setLayoutManager(layoutManager);
+        lvItems.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int itemCount = layoutManager.getItemCount();
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                scrolled(itemCount, lastVisibleItemPosition);
+            }
+        });
+    }
+
+    public void scrolled(int totalItemCount, int lastVisible) {
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
+        }
+        if (!loading && lastVisible == totalItemCount - 1) {
+            getPresenter().requestAlbums(true);
+            loading = true;
+        }
     }
 
     @Override
@@ -90,7 +115,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
             loginButton.performClick();
             tryToOpenSession = true;
         } else {
-            getPresenter().backAction();
+            fragmentCompass.pop();
         }
     }
 
@@ -108,17 +133,12 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
 
     private void loadData() {
         if (adapter.getItemCount() == 0) {
-            new Request(
-                    Session.getActiveSession(),
-                    "/me/albums",
-                    null,
-                    HttpMethod.GET,
-                    this::handleResponse
-            ).executeAsync();
+            getPresenter().requestAlbums(false);
         }
     }
 
-    private void handleResponse(Response response) {
+    @Override
+    public void handleResponse(Response response) {
         if (response != null && response.getError() == null) {
             List<GraphObject> graphObjects = FacebookUtils.typedListFromResponse(response, GraphObject.class);
             List<FacebookAlbum> albums = new ArrayList<>(graphObjects.size());
@@ -130,8 +150,6 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
             }
             adapter.addItems(albums);
             adapter.notifyDataSetChanged();
-        } else {
-            //TODO handle error
         }
     }
 }

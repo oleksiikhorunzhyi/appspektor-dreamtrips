@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -12,6 +11,7 @@ import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -80,6 +80,11 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
         getPresenter().trackState(position);
         SoftInputUtil.hideSoftInputMethod(pager);
         eventBus.post(new ScreenChangedEvent());
+
+        Fragment tab = adapter.getItem(position);
+        if (tab instanceof InviteFragment) {
+            TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_VIEW);
+        }
     }
 
     @Override

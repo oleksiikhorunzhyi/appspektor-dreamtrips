@@ -1,17 +1,21 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
-import android.text.TextUtils;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
-import timber.log.Timber;
+import icepick.Icepick;
+import icepick.State;
 
-public class AdobeTracker implements ITracker {
+public class AdobeTracker extends ITracker{
 
     @Override
     public void onCreate(BaseActivity activity) {
@@ -20,27 +24,20 @@ public class AdobeTracker implements ITracker {
     }
 
     @Override
-    public void onStart(Activity activity) {
-        Timber.v("onStart");
-
-    }
-
-    @Override
-    public void onStop(Activity activity) {
-        Timber.v("onStop");
-    }
-
     public void onResume(Activity activity) {
         Config.collectLifecycleData();
     }
 
+    @Override
     public void onPause(Activity activity) {
         Config.pauseCollectingLifecycleData();
     }
 
     @Override
     public void trackEvent(String category, String action, Map<String, Object> data) {
-        Analytics.trackAction(TextUtils.join(":", new String[]{category, action}), data);
+        if (data == null) data = new HashMap<>();
+        if (headerData != null) data.putAll(headerData);
+        Analytics.trackAction(action, data);
     }
 
 }

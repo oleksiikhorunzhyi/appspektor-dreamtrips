@@ -108,12 +108,15 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
     @Override
     public void setItems(List<Object> videos) {
         if (ViewUtils.isLandscapeOrientation(getActivity())) {
-            adapterFeatured.setItems(Queryable.from(videos)
+            List featuredObjects = Queryable.from(videos)
                     .filter(element -> element instanceof Video && ((Video) element).isFeatured())
-                    .toList());
-            adapterRecent.setItems(Queryable.from(videos)
+                    .toList();
+            if (adapterFeatured != null) adapterFeatured.setItems(featuredObjects);
+
+            List recentObjects = Queryable.from(videos)
                     .filter(element -> element instanceof Video && ((Video) element).isRecent())
-                    .toList());
+                    .toList();
+            if (adapterRecent != null) adapterRecent.setItems(recentObjects);
         } else {
             adapterAll.setItems(videos);
         }

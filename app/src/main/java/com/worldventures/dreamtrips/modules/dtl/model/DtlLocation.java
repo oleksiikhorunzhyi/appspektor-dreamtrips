@@ -41,7 +41,11 @@ public class DtlLocation implements Parcelable {
     }
 
     public Location getCoordinates() {
-        return coordinates == null ? new Location(0.0d, 0.0d) : coordinates;
+        return coordinates;
+    }
+
+    public void setCoordinates(Location coordinates) {
+        this.coordinates = coordinates;
     }
 
     public List<DtlLocation> getWithinLocations() {

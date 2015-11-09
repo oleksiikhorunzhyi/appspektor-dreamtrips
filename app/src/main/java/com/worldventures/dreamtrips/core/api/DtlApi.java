@@ -21,9 +21,6 @@ public interface DtlApi {
     ArrayList<DtlLocation> searchDtlLocations(@Query("text") String keyword);
 
     @GET("/locations/nearby")
-    ArrayList<DtlLocation> getNearbyEmptyDtlLocations(@Query("lat") double lat, @Query("lng") double lng, @Query("nearby") boolean nearby);
-
-    @GET("/locations/nearby")
     ArrayList<DtlLocation> getNearbyDtlLocations(@Query("lat") double lat, @Query("lng") double lng);
 
     @GET("/locations/{id}/merchants")

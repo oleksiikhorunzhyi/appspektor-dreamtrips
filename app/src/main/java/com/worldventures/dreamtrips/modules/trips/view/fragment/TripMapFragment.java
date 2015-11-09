@@ -89,8 +89,8 @@ public class TripMapFragment extends BaseFragment<TripMapPresenter> implements T
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchOpened) searchItem.expandActionView();
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {

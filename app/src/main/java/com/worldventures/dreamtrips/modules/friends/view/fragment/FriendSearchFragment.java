@@ -32,8 +32,8 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (DelaySearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setIconified(false);
@@ -68,7 +68,6 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
                 return false;
             }
         });
-
 
         searchView.setQuery(getPresenter().getQuery(), true);
     }

@@ -8,4 +8,8 @@
     ///////Post sizes
     <dimen name="post_spacing_horizontal">128dp</dimen>
     <dimen name="post_spacing_vertical">16dp</dimen>
+
+    <!-- dimen for dtl suggest merchant screen -->
+    <dimen name="suggest_merchant_layout_padding">196dp</dimen>
+
 </resources>

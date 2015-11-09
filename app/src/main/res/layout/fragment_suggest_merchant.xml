@@ -7,13 +7,15 @@
             android:background="@color/suggest_merchant_background"
             android:clipToPadding="false"
             android:fillViewport="true"
-            android:padding="@dimen/suggest_merchant_layout_padding"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingLeft="@dimen/suggest_merchant_layout_padding"
+        android:paddingRight="@dimen/suggest_merchant_layout_padding"
+        android:paddingTop="@dimen/spacing_normal"
         >
 
         <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText

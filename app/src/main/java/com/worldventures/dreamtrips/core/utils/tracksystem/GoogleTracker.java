@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -9,9 +10,12 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Map;
 
-public class GoogleTracker implements ITracker {
+import icepick.Icepick;
+
+public class GoogleTracker extends ITracker {
 
     private Tracker tracker;
     private WeakReference<Activity> activity;
@@ -19,26 +23,6 @@ public class GoogleTracker implements ITracker {
     @Override
     public void onCreate(BaseActivity activity) {
         this.activity = new WeakReference<>(activity);
-    }
-
-    @Override
-    public void onStart(Activity activity) {
-        //nothing to do here
-    }
-
-    @Override
-    public void onStop(Activity activity) {
-        //nothing to do here
-    }
-
-    @Override
-    public void onResume(Activity activity) {
-        //nothing to do here
-    }
-
-    @Override
-    public void onPause(Activity activity) {
-        //nothing to do here
     }
 
     @Override

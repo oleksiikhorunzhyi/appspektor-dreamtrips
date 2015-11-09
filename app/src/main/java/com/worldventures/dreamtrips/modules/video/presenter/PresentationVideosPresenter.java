@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
+import com.worldventures.dreamtrips.modules.video.event.MemberVideoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
@@ -50,7 +51,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     public void onResume() {
         super.onResume();
         view.startLoading();
-        loadVideos();
+        loadOnStart();
         if (!eventBus.isRegistered(videoCachingDelegate)) {
             eventBus.register(videoCachingDelegate);
         }
@@ -78,7 +79,11 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         loadVideos();
     }
 
-    private void loadVideos() {
+    protected void loadOnStart() {
+        loadVideos();
+    }
+
+    protected void loadVideos() {
         doRequest(getMemberVideosRequest(), categories -> {
             view.finishLoading();
             attachCacheToVideos(categories);
@@ -130,6 +135,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     public void onEvent(TrackVideoStatusEvent event) {
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
                 getAccountUserId(), event.getAction(), event.getName());
+    }
+
+    public void onEvent(MemberVideoAnalyticEvent event) {
+        TrackingHelper.actionMembershipVideo(event.getActionAttribute(), event.getVideoName());
     }
 
     @Override

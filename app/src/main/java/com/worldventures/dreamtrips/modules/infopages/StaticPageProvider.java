@@ -1,19 +1,21 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
 public class StaticPageProvider {
 
+    private StaticPageHolder storage;
     private SessionHolder<UserSession> appSessionHolder;
-    private final StaticPageHolder storage;
+    private LocaleHelper localeHelper;
 
-    public StaticPageProvider(SessionHolder<UserSession> appSessionHolder, StaticPageHolder storage) {
-        this.appSessionHolder = appSessionHolder;
+    public StaticPageProvider(StaticPageHolder storage, SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
         this.storage = storage;
+        this.appSessionHolder = appSessionHolder;
+        this.localeHelper = localeHelper;
     }
 
     private AppConfig.URLS.Config getConfig() {
@@ -29,18 +31,21 @@ public class StaticPageProvider {
     }
 
     public String getEnrollUrl() {
-        return getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
+        String enrollUrlFromServer = getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
+        String additionalParams = "utm_medium=MobileApp&utm_source=MobileApp&utm_campaign=MobileApp";
+        return enrollUrlFromServer + "&" + additionalParams;
     }
 
     public String getEnrollRepUrl() {
         return getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
     }
 
-    public String getoTAPageURL() {
+    public String getOtaPageURL() {
         UserSession userSession = appSessionHolder.get().get();
-        return getConfig().getoTAPageURL()
+        return getConfig().getOtaPageURL()
                 .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
-                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken())
+                .replace(AppConfig.LOCALE, localeHelper.getDefaultLocaleFormatted());
     }
 
     public String getTrainingVideosURL() {

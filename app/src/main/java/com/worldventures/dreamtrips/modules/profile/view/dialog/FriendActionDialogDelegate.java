@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
@@ -35,7 +36,10 @@ public class FriendActionDialogDelegate {
                 },
                 (dialogInterface, i) -> {
                     if (i == 0) {
-                        showConfirmationDialog((dialog, which) -> eventBus.post(new UnfriendEvent(user)));
+                        showConfirmationDialog((dialog, which) -> {
+                            eventBus.post(new UnfriendEvent(user));
+                            TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_UNFRIEND);
+                        });
                     } else if (i == 1) {
                         eventBus.post(new OpenFriendPrefsEvent(user));
                     }

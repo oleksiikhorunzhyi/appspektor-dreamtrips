@@ -23,7 +23,9 @@ public class LoadMoreCell extends AbstractCell<LoadMore> {
 
     @Override
     protected void syncUIStateWithModel() {
-        itemView.setOnClickListener(view -> getEventBus().post(new LoadMoreEvent()));
+        itemView.setOnClickListener(view -> {
+            if (!getModelObject().isLoading()) getEventBus().post(new LoadMoreEvent());
+        });
 
         caption.setText(getModelObject().isLoading() ?
                 R.string.loading : R.string.comment_view_more);

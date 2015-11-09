@@ -13,6 +13,7 @@ public class AppConfig {
     public static final String TRIP_ID = "{tripid}";
     public static final String USER_ID = "{userid}";
     public static final String TOKEN = "{tokenval}";
+    public static final String LOCALE = "{locale}";
     public static final String ENROLL_UID = "{BASE64_ENCODED_USERID}";
 
     @SerializedName("URLS")
@@ -59,14 +60,14 @@ public class AppConfig {
             private String bookingPageURL;
 
             @SerializedName("OTAPageURL")
-            private String oTAPageURL;
+            private String otaPageURL;
 
             public String getBookingPageURL() {
                 return bookingPageURL;
             }
 
-            public String getoTAPageURL() {
-                return oTAPageURL != null ? oTAPageURL : "";
+            public String getOtaPageURL() {
+                return otaPageURL != null ? otaPageURL : "";
             }
 
             public String getEnrollRepURL(String uid) {

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
@@ -17,6 +19,10 @@ public class PopularBucketItem extends BaseEntity implements Filterable {
     private BucketPhoto coverPhoto;
     private transient String type;
     private transient boolean loading = false;
+
+    public PopularBucketItem() {
+        super();
+    }
 
     public String getCoverPhotoUrl(int w, int h) {
         return coverPhoto != null ? coverPhoto.getFSImage().getUrl(w, h) : "";
@@ -83,4 +89,37 @@ public class PopularBucketItem extends BaseEntity implements Filterable {
         return query == null || name.toLowerCase().contains(query)
                 || description.toLowerCase().contains(query);
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.name);
+        dest.writeByte((byte) (this.liked ? 1 : 0));
+        dest.writeInt(this.likesCount);
+        dest.writeString(this.description);
+        dest.writeString(this.shortDescription);
+        dest.writeParcelable(this.coverPhoto, flags);
+    }
+
+    public PopularBucketItem(Parcel in) {
+        super(in);
+        this.name = in.readString();
+        this.liked = in.readByte() != 0;
+        this.likesCount = in.readInt();
+        this.description = in.readString();
+        this.shortDescription = in.readString();
+        this.coverPhoto = in.readParcelable(BucketPhoto.class.getClassLoader());
+    }
+
+    public static final Creator<PopularBucketItem> CREATOR = new Creator<PopularBucketItem>() {
+        @Override
+        public PopularBucketItem createFromParcel(Parcel in) {
+            return new PopularBucketItem(in);
+        }
+
+        @Override
+        public PopularBucketItem[] newArray(int size) {
+            return new PopularBucketItem[size];
+        }
+    };
 }

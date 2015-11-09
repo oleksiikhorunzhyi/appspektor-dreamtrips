@@ -18,7 +18,7 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedIte
 
     @Override
     protected Query<ArrayList<User>> getUserListQuery(int page) {
-        return new GetUsersLikedEntityQuery(entityUid, page);
+        return new GetUsersLikedEntityQuery(entityUid, page, getPerPageCount());
     }
 
     @Override

@@ -127,6 +127,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     }
 
     public FeedItem() {
+        super();
     }
 
     public FeedItem(Parcel in) {

@@ -4,7 +4,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
@@ -24,13 +26,17 @@ import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,12 +98,14 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
             feedEntity.getComments().remove(event.getComment());
             feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
             eventBus.post(new FeedEntityCommentedEvent(feedEntity));
+            sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
         });
     }
 
     public void onEvent(EditCommentRequestEvent event) {
         EditCommentPresenter editCommentPresenter = new EditCommentPresenter(event.getComment());
         view.editComment(editCommentPresenter);
+        sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
     }
 
 
@@ -164,6 +172,29 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
         feedEntity.getComments().add(0, comment);
         feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
+
+        sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
+    }
+
+    private void sendAnalytic(String actionAttribute) {
+        String id = feedEntity.getUid();
+        FeedEntityHolder.Type type = FeedEntityHolder.Type.UNDEFINED;
+        if (feedEntity instanceof BucketItem) {
+            type = FeedEntityHolder.Type.BUCKET_LIST_ITEM;
+        }
+        if (feedEntity instanceof Photo) {
+            type = FeedEntityHolder.Type.PHOTO;
+        }
+        if (feedEntity instanceof TextualPost) {
+            type = FeedEntityHolder.Type.POST;
+        }
+        if (feedEntity instanceof TripModel) {
+            type = FeedEntityHolder.Type.TRIP;
+        }
+
+        if (type != FeedEntityHolder.Type.UNDEFINED) {
+            eventBus.post(new FeedItemAnalyticEvent(actionAttribute, id, type));
+        }
     }
 
     private void onCommentsLoaded(ArrayList<Comment> comments) {

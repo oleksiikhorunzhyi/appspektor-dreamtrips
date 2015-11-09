@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,12 +20,13 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripImageBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
@@ -94,8 +94,14 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         this.recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), (view1, position) -> this.getPresenter().onItemClick(position))
-        );
+                new RecyclerItemClickListener(getActivity(), (view1, position) ->{
+                    if (getArgs().getType() == Type.YOU_SHOULD_BE_HERE)
+                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, getPresenter().getPhoto(position).getFsId());
+                    if (getArgs().getType() == Type.INSPIRE_ME)
+                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, getPresenter().getPhoto(position).getFsId());
+
+                    this.getPresenter().onItemClick(position);
+                }));
         this.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -115,7 +121,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     }
 
     @Override
-    public void setSelection() {
+    public void setSelection(int photoPosition) {
         //nothing to do here
     }
 
@@ -134,7 +140,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     protected T createPresenter(Bundle savedInstanceState) {
         Type type = getArgs().getType();
         int foreignUserId = getArgs().getForeignUserId();
-        return (T) TripImagesListPresenter.create(type, false, null, foreignUserId);
+        return (T) TripImagesListPresenter.create(new TripImageBundle(type, false, foreignUserId, null, 0));
     }
 
     @Override

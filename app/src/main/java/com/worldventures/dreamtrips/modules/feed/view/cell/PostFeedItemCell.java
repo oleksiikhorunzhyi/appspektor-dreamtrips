@@ -39,11 +39,13 @@ public class PostFeedItemCell extends FeedHeaderCell<PostFeedItem> {
 
     @Override
     protected void onDelete() {
+        super.onDelete();
         getEventBus().post(new DeletePostEvent(getModelObject().getItem()));
     }
 
     @Override
     protected void onEdit() {
+        super.onEdit();
         fragmentCompass.removePost();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         fragmentCompass.disableBackStack();

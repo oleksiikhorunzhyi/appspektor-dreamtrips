@@ -17,6 +17,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
@@ -53,6 +54,12 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         restorePostIfNeeded();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        TrackingHelper.viewActivityFeedScreen();
+    }
+
     private void restorePostIfNeeded() {
         fragmentCompass.setContainerId(R.id.container_details_floating);
         BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
@@ -71,12 +78,14 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem item = menu.findItem(R.id.action_friend_requests);
         friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(item);
-        friendsBadge.setOnClickListener(v ->
-                NavigationBuilder.create()
-                        .with(activityRouter)
-                        .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                        .attach(Route.FRIENDS));
-        getPresenter().refreshRequestsCount();
+        friendsBadge.setOnClickListener(v -> {
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+                    .attach(Route.FRIENDS);
+            TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
+        });
+        setRequestsCount(getPresenter().getFriendsRequestsCount());
     }
 
     @Override

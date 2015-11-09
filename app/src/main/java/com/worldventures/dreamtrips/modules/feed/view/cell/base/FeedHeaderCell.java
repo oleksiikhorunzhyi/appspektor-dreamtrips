@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.amazonaws.services.securitytoken.model.FederatedUser;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -14,10 +15,14 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
@@ -143,9 +148,18 @@ public abstract class FeedHeaderCell<T extends FeedItem> extends AbstractCell<T>
         dialog.show();
     }
 
-    protected abstract void onDelete();
+    protected void onDelete(){
+        sendAnalyticEvent(TrackingHelper.ATTRIBUTE_DELETE);
+    }
 
-    protected abstract void onEdit();
+    protected void onEdit(){
+        sendAnalyticEvent(TrackingHelper.ATTRIBUTE_EDIT);
+    }
+
+    private void sendAnalyticEvent(String eventType){
+        FeedItem feedItem = getModelObject();
+        getEventBus().post(new FeedItemAnalyticEvent(eventType, feedItem.getItem().getUid(), feedItem.getType()));
+    }
 
     protected abstract void onMore();
 

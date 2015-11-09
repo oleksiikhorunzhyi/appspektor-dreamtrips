@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
+import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
@@ -192,6 +193,10 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             trip.setInBucketList(!trip.isInBucketList());
             onFailure();
         }
+    }
+
+    public void onEvent(TripItemAnalyticEvent event) {
+        TrackingHelper.actionItemDreamtrips(event.getActionAttribute(), event.getTripId());
     }
 
     private void onSuccess(TripModel trip) {

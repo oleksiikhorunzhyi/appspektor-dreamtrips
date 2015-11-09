@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.util.RouterHelper;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -55,6 +56,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     int REQUESTER_ID = 3745742;
 
+    private RouterHelper routerHelper;
+
     public AccountPresenter() {
         super();
     }
@@ -90,7 +93,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         this.user.setAvatar(currentUser.getAvatar());
         this.user.setAvatarUploadInProgress(false);
         view.notifyUserChanged();
-        eventBus.post(new UpdateUserInfoEvent());
+        eventBus.post(new UpdateUserInfoEvent(user));
     }
 
     private void onCoverUploadSuccess(User obj) {
@@ -105,7 +108,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         if (coverTempFilePath != null) {
             new File(coverTempFilePath).delete();
         }
-        eventBus.post(new UpdateUserInfoEvent());
+        eventBus.post(new UpdateUserInfoEvent(user));
     }
 
     @Override
@@ -134,13 +137,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     private void clearUserDataAndFinish(){
         snappyRepository.clearAll();
         appSessionHolder.destroy();
-        activityRouter.finish();
+        routerHelper.logout();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
+        routerHelper = new RouterHelper(activityRouter);
     }
 
     @Override

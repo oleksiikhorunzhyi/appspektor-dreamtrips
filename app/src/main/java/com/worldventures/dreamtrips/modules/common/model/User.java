@@ -33,6 +33,7 @@ public class User extends BaseEntity implements Parcelable {
     private String firstName;
     private String lastName;
     private String location;
+    private String locale;
     private Date birthDate;
     private Date enrollDate;
 
@@ -40,6 +41,8 @@ public class User extends BaseEntity implements Parcelable {
     private double roviaBucks;
     private int tripImagesCount;
     private int bucketListItemsCount;
+
+    private boolean termsAccepted;
 
     private Relationship relationship;
 
@@ -70,6 +73,7 @@ public class User extends BaseEntity implements Parcelable {
     private transient boolean coverUploadInProgress;
 
     public User() {
+        super();
     }
 
     public User(int id) {
@@ -179,12 +183,24 @@ public class User extends BaseEntity implements Parcelable {
         this.location = location;
     }
 
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     public Avatar getAvatar() {
         return avatar;
     }
 
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isTermsAccepted() {
+        return termsAccepted;
     }
 
     public String getFullName() {
@@ -343,6 +359,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeString(this.lastName);
         dest.writeString(this.company);
         dest.writeString(this.location);
+        dest.writeString(this.locale);
         dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
         dest.writeLong(enrollDate != null ? enrollDate.getTime() : -1);
         dest.writeDouble(this.dreamTripsPoints);
@@ -353,6 +370,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeString(this.backgroundPhotoUrl);
         dest.writeStringList(this.subscriptions);
         dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.circleIds);
         dest.writeInt(this.mutualFriends);
         dest.writeString(this.circles);
@@ -367,6 +385,7 @@ public class User extends BaseEntity implements Parcelable {
         this.lastName = in.readString();
         this.company = in.readString();
         this.location = in.readString();
+        this.locale = in.readString();
         long tmpBirthDate = in.readLong();
         this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
         long tmpEnrollDate = in.readLong();
@@ -380,6 +399,7 @@ public class User extends BaseEntity implements Parcelable {
         this.backgroundPhotoUrl = in.readString();
         this.subscriptions = in.createStringArrayList();
         this.socialEnabled = in.readByte() != 0;
+        this.termsAccepted = in.readByte() != 0;
         this.circleIds = (HashSet<String>) in.readSerializable();
         this.mutualFriends = in.readInt();
         this.circles = in.readString();

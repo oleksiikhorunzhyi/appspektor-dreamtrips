@@ -21,6 +21,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -127,6 +128,7 @@ public class InviteFragment
         tvSearch.setOnQueryTextListener(this);
         tvSearch.clearFocus();
         tvSearch.setIconifiedByDefault(false);
+        tvSearch.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_INVITE_SHARE));
 
         setSelectedCount(0);
         tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
@@ -181,7 +183,7 @@ public class InviteFragment
     @Override
     public void startLoading() {
         weakHandler.post(() -> {
-            if  (refreshLayout != null) refreshLayout.setRefreshing(true);
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
     }
 
@@ -200,6 +202,7 @@ public class InviteFragment
 
     @OnClick(R.id.iv_add_contact)
     public void addContact() {
+        TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_ADD_CONTACT);
         new AddContactDialog(getActivity()).show(getPresenter()::addMember);
     }
 

@@ -34,7 +34,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
 
     @Override
     protected Query<ArrayList<User>> getUserListQuery(int page) {
-        return new GetFriendsQuery(selectedCircle, query, page);
+        return new GetFriendsQuery(selectedCircle, query, page, getPerPageCount());
     }
 
     @Override

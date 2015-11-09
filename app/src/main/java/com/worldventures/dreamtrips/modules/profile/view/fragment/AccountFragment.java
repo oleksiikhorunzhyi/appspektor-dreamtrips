@@ -12,6 +12,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
@@ -54,6 +55,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void onResume() {
         super.onResume();
         eventBus.post(new ActionBarTransparentEvent(true));
+        TrackingHelper.viewMyProfileScreen();
     }
 
     @Override
@@ -130,6 +132,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
+                        TrackingHelper.logout();
                         getPresenter().logout();
                     }
                 }).show();

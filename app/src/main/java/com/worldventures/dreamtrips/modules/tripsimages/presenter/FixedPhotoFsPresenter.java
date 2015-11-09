@@ -15,7 +15,7 @@ public class FixedPhotoFsPresenter extends TripImagesListPresenter {
     }
 
     @Override
-    protected void syncPhotos() {
+    protected void syncPhotosAndUpdatePosition() {
         super.photos.addAll(photos);
     }
 

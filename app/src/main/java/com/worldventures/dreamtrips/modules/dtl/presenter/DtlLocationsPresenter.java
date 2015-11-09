@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -152,16 +151,11 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void localSearch() {
         if (searchLocations != null && !searchLocations.isEmpty())
-            Observable.create(new Observable.OnSubscribe<ArrayList<DtlLocation>>() {
-                @Override
-                public void call(Subscriber<? super ArrayList<DtlLocation>> subscriber) {
-                    ArrayList<DtlLocation> filtered = new ArrayList<>();
-                    filtered.addAll(Queryable.from(searchLocations).filter(dtlLocation ->
-                            dtlLocation.getLongName().toLowerCase().contains(caption)).toList());
-                    subscriber.onNext(filtered);
-                    subscriber.onCompleted();
-                }
-            }).subscribeOn(Schedulers.io())
+            Observable.from(searchLocations)
+                    .filter(dtlLocation ->
+                            dtlLocation.getLongName().toLowerCase().contains(caption))
+                    .toList()
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(view::setItems);
     }

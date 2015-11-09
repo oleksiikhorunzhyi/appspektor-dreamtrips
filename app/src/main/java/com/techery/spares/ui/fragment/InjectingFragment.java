@@ -84,10 +84,17 @@ public abstract class InjectingFragment extends Fragment implements Configurable
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (menuResource != null) {
+        // isAdded use for onCreateOptionsMenu method
+        // when we take smth from resource and fragment isn't attached
+        if (menuResource != null && isAdded()) {
             menu.clear();
             inflater.inflate(menuResource.value(), menu);
+            onMenuInflated(menu);
         }
+    }
+
+    protected void onMenuInflated(Menu menu) {
+
     }
 
     @Override

@@ -15,11 +15,9 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.RouterHelper;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.core.utils.DeleteTokenGcmTask;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
@@ -56,7 +54,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     int REQUESTER_ID = 3745742;
 
-    private RouterHelper routerHelper;
+    private LogoutDelegate logoutDelegate;
 
     public AccountPresenter() {
         super();
@@ -120,31 +118,15 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void logout() {
-        String token = snappyRepository.getGcmRegToken();
-        if (token != null) {
-            doRequest(new UnsubscribeDeviceCommand(token), aVoid -> deleteTokenInGcm());
-        } else {
-            clearUserDataAndFinish();
-        }
-    }
-
-    private void deleteTokenInGcm (){
-        new DeleteTokenGcmTask(context, (task, removeGcmTokenSucceed) -> {
-            clearUserDataAndFinish();
-        }).execute();
-    }
-
-    private void clearUserDataAndFinish(){
-        snappyRepository.clearAll();
-        appSessionHolder.destroy();
-        routerHelper.logout();
+       logoutDelegate.logout();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
-        routerHelper = new RouterHelper(activityRouter);
+        logoutDelegate = new LogoutDelegate(this);
+        view.inject(logoutDelegate);
     }
 
     @Override
@@ -295,6 +277,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         void openCoverPicker();
 
         void updateBadgeCount(int count);
+
+        void inject(Object object);
     }
 
 }

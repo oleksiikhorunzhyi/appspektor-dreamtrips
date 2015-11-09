@@ -344,4 +344,7 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/terms_and_conditions/accept")
     Void acceptTermsConditions(@Field("text") String text);
+
+    @DELETE("/api/sessions")
+    Void logout();
 }

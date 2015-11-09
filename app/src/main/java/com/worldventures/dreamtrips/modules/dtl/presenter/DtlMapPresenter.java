@@ -4,10 +4,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -24,6 +24,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
     @Inject
     SnappyRepository db;
+    @Inject
+    LocationDelegate locationDelegate;
 
     @State
     DtlFilterData dtlFilterData;
@@ -33,6 +35,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
     DtlLocation location;
     List<DtlPlace> dtlPlaces = new ArrayList<>();
+
+    private LatLng currentLocation;
 
     public DtlMapPresenter(PlacesBundle bundle) {
         location = bundle.getLocation();
@@ -45,6 +49,9 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         if (dtlFilterData == null) {
             dtlFilterData = new DtlFilterData();
         }
+
+        locationDelegate.getLastKnownLocation(location ->
+                currentLocation = new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     public void onMapLoaded() {
@@ -73,7 +80,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         if (view != null) {
             view.clearMap();
             List<DtlPlace> filtered = Queryable.from(dtlPlaces).filter(dtlPlace ->
-                    dtlPlace.applyFilter(dtlFilterData, new LatLng(DtlModule.LAT, DtlModule.LNG))).toList();
+                    dtlPlace.applyFilter(dtlFilterData, currentLocation)).toList();
 
             for (DtlPlace dtlPlace : filtered) {
                 view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),

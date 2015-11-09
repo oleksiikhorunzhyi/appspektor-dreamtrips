@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.worldventures.dreamtrips.modules.dtl.api.SuggestPlaceCommand;
+import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;

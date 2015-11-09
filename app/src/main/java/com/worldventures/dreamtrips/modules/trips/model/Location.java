@@ -29,6 +29,11 @@ public class Location implements Serializable, Parcelable {
     public Location() {
     }
 
+    public Location(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
     private Location(Parcel in) {
         this.lat = in.readDouble();
         this.lng = in.readDouble();

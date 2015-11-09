@@ -1,4 +1,6 @@
-package com.worldventures.dreamtrips.modules.dtl.api;
+package com.worldventures.dreamtrips.modules.dtl.api.place;
+
+import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
 
 public class RatePlaceRequest extends DtlRequest<Void> {
 

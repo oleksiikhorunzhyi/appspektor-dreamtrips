@@ -190,14 +190,20 @@ public class DtlPlace implements Parcelable {
     // Filtering part
     ///////////////////////////////////////////////////////////////////////////
 
-    public boolean applyFilter(DtlFilterData filterObject, LatLng currentLocation) {
-        return checkPrice(filterObject.getMinPrice(), filterObject.getMaxPrice())
-                && (!filterObject.isDistanceEnabled() || LocationHelper.checkLocation(filterObject.getMaxDistance(), currentLocation,
-                new LatLng(coordinates.getLat(), coordinates.getLng())));
+    public boolean applyFilter(DtlFilterData filterData, LatLng currentLocation) {
+        return checkPrice(filterData.getMinPrice(), filterData.getMaxPrice())
+                && checkDistance(filterData, currentLocation);
     }
 
     private boolean checkPrice(int minPrice, int maxPrice) {
         return budget >= minPrice && budget <= maxPrice;
+    }
+
+    private boolean checkDistance(DtlFilterData filterData, LatLng currentLocation) {
+        return !filterData.isDistanceEnabled()
+                || currentLocation == null
+                || LocationHelper.checkLocation(filterData.getMaxDistance(), currentLocation,
+                new LatLng(coordinates.getLat(), coordinates.getLng()));
     }
 
 }

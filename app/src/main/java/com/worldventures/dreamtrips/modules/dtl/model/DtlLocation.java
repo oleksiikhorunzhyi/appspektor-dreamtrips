@@ -5,10 +5,13 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -39,6 +42,10 @@ public class DtlLocation implements Parcelable {
 
     public Location getCoordinates() {
         return coordinates;
+    }
+
+    public void setCoordinates(Location coordinates) {
+        this.coordinates = coordinates;
     }
 
     public List<DtlLocation> getWithinLocations() {
@@ -96,6 +103,24 @@ public class DtlLocation implements Parcelable {
         STATE,
         @SerializedName("COUNTRY")
         COUNTRY
+    }
+
+    public static class DtlNearestComparator implements Comparator<DtlLocation> {
+
+        private LatLng currentLocation;
+
+        public DtlNearestComparator(android.location.Location currentLocation) {
+            this.currentLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        }
+
+        @Override
+        public int compare(DtlLocation lhs, DtlLocation rhs) {
+            double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
+                    lhs.getCoordinates().asLatLng());
+            double distanceToRight = LocationHelper.distanceInMiles(currentLocation,
+                    rhs.getCoordinates().asLatLng());
+            return Double.valueOf(distanceToLeft - distanceToRight).intValue();
+        }
     }
 
 }

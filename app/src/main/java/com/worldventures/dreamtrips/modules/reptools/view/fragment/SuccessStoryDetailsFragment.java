@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -40,6 +41,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @OnClick(R.id.iv_like)
     public void onLike() {
+        TrackingHelper.favoriteSuccessStory(story.getUrl());
         getPresenter().like(story);
     }
 
@@ -74,6 +76,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         }
 
         webView.getSettings().setUseWideViewPort(true);
+        TrackingHelper.viewSuccessStory(story.getUrl());
     }
 
     @Override
@@ -105,9 +108,11 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         new ShareDialog(getActivity(), type -> {
             switch (type) {
                 case ShareFragment.FB:
+                    TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_FACEBOOK, story.getUrl());
                     getPresenter().onFbShare(story);
                     break;
                 case ShareFragment.TW:
+                    TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_TWITTER, story.getUrl());
                     getPresenter().onTwitterShare(story);
                     break;
                 default:

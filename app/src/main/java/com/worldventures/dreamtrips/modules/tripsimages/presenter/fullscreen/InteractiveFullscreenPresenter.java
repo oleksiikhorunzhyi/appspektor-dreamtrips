@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFac
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
@@ -16,28 +18,25 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.FlagPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-
-import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 
 public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
-    private List<Flag> flags;
-
     private FeedEntity feedEntity;
+
+    UidItemDelegate uidItemDelegate;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        uidItemDelegate = new UidItemDelegate(this);
         loadEntity(feedEntityHolder -> {
             feedEntity = feedEntityHolder.getItem();
             photo.setLiked(feedEntity.isLiked());
@@ -60,15 +59,9 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     }
 
     @Override
-    public void sendFlagAction(String title, String description) {
-        String desc = "";
-        if (description != null) {
-            desc = description;
-        }
-        doRequest(new FlagPhotoCommand(photo.getFsId(), title + ". " + desc), obj -> {
-            view.informUser(context.getString(R.string.photo_flagged));
-            TrackingHelper.flag(type, String.valueOf(photo.getFsId()), getAccountUserId());
-        });
+    public void sendFlagAction(int flagReasonId, String reason) {
+        uidItemDelegate.flagItem(new FlagData(photo.getUid(),
+                flagReasonId, reason));
     }
 
     @Override
@@ -145,22 +138,9 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     }
 
     @Override
-    public void onFlagAction() {
-        if (flags == null) loadFlags();
-        else view.setFlags(flags);
-    }
-
-    private void loadFlags() {
+    public void onFlagAction(Flaggable flaggable) {
         view.showProgress();
-        doRequest(new GetFlagContentQuery(), this::flagsLoaded, spiceException -> view.hideProgress());
-    }
-
-    private void flagsLoaded(List<Flag> flags) {
-        if (view != null) {
-            view.hideProgress();
-            this.flags = flags;
-            view.setFlags(flags);
-        }
+        uidItemDelegate.loadFlags(flaggable);
     }
 
     public void onEvent(FeedEntityChangedEvent event) {

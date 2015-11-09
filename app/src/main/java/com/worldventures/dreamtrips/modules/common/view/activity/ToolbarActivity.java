@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import butterknife.InjectView;
 
-public abstract class ToolbarActivity<T extends Presenter> extends ActivityWithPresenter<T> {
+public abstract class ToolbarActivity<T extends ActivityPresenter> extends ActivityWithPresenter<T> {
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
 

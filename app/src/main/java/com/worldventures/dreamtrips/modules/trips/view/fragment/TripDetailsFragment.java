@@ -23,12 +23,15 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -98,6 +101,8 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @OnClick(R.id.textViewBookIt)
     public void bookIt() {
+        TripModel tripModel = getArgs().tripModel();
+        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_BOOK_IT, tripModel.getTripId()));
         getPresenter().actionBookIt();
     }
 

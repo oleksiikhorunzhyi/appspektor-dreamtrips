@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
@@ -56,8 +57,8 @@ public class InfoModule {
     public static final String TERMS = Route.TERMS.name();
 
     @Provides
-    StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> session, StaticPageHolder holder) {
-        return new StaticPageProvider(session, holder);
+    StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> session, StaticPageHolder holder, LocaleHelper localeHelper) {
+        return new StaticPageProvider(holder, session, localeHelper);
     }
 
     @Provides(type = Provides.Type.SET)

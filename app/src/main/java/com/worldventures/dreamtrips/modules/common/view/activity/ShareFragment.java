@@ -29,7 +29,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.share_fragment)
 public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBundle>
-        implements FacebookPickPhotoPresenter.View, SharePresenter.View {
+        implements SharePresenter.View {
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({FB, TW})

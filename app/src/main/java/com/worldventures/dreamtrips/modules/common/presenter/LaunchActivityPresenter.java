@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 
 import com.github.pwittchen.networkevents.library.BusWrapper;
@@ -15,14 +16,13 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
-import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
-import com.worldventures.dreamtrips.core.utils.TermsConditionsValidator;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
@@ -48,7 +48,7 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBI
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 
-public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.View> {
+public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
     private BusWrapper busWrapper;
     private NetworkEvents networkEvents;
@@ -63,8 +63,6 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
     @Inject
     SnappyRepository snappyRepository;
 
-    @Inject
-    TermsConditionsValidator termsConditionsValidator;
     private boolean requestInProgress = false;
 
     @Override
@@ -98,8 +96,7 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
 
     private void loadStaticPagesContent() {
         Locale locale = getLocale();
-        StaticPagesQuery staticPagesQuery = new StaticPagesQuery(locale.getCountry().toUpperCase(locale),
-                locale.getLanguage().toUpperCase(locale));
+        StaticPagesQuery staticPagesQuery = new StaticPagesQuery(locale.getCountry(), locale.getLanguage());
         doRequest(staticPagesQuery, this::onStaticPagesSuccess);
     }
 
@@ -139,8 +136,7 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
     }
 
     private void done() {
-        if (DreamSpiceManager.isCredentialExist(appSessionHolder)
-                && termsConditionsValidator.newVersionAccepted()) {
+        if (DreamSpiceManager.isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
             if (userSession.getFeatures() == null ||
                     userSession.getFeatures().isEmpty()) {
@@ -148,9 +144,10 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
                 userSession.setFeatures(legacyFeatures);
                 appSessionHolder.put(userSession);
             }
+
+            TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
         } else {
-            termsConditionsValidator.clearPreviousAcceptedTerms();
             NavigationBuilder.create()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .with(activityRouter).move(Route.LOGIN);
@@ -188,6 +185,11 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
         view.configurationFailed();
     }
 
+    @Override
+    protected boolean canShowTermsDialog() {
+        return false;
+    }
+
     private void clearTempDirectory() {
         snappyRepository.removeAllUploadTasks();
         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
@@ -220,7 +222,7 @@ public class LaunchActivityPresenter extends Presenter<LaunchActivityPresenter.V
     }
 
 
-    public interface View extends Presenter.View {
+    public interface View extends ActivityPresenter.View {
         void configurationFailed();
 
         void configurationStarted();

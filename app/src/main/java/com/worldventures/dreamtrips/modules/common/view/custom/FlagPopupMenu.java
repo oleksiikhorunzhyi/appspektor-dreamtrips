@@ -38,9 +38,9 @@ public class FlagPopupMenu extends PopupMenu {
         setOnMenuItemClickListener(item -> {
             Flag flag = flags.get(item.getOrder());
             if (flag.isRequireDescription()) {
-                showFlagDescription(flag.getName());
+                showFlagDescription(flag);
             } else {
-                showFlagConfirmDialog(flag.getName(), null);
+                showFlagConfirmDialog(flag, "");
             }
 
             return true;
@@ -48,9 +48,9 @@ public class FlagPopupMenu extends PopupMenu {
         show();
     }
 
-    private void showFlagConfirmDialog(String reason, String desc) {
+    private void showFlagConfirmDialog(Flag flag, String reason) {
         String content = context.getResources().getString(R.string.flag_photo_first) + " "
-                + reason.toLowerCase()
+                + flag.getName().toLowerCase()
                 + " "
                 + context.getResources().getString(R.string.flag_photo_second);
         new MaterialDialog.Builder(context)
@@ -62,14 +62,14 @@ public class FlagPopupMenu extends PopupMenu {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         if (dialogConfirmationCallback != null) {
-                            dialogConfirmationCallback.onFlagConfirmed(reason, desc);
+                            dialogConfirmationCallback.onFlagConfirmed(flag.getId(), reason);
                         }
                     }
                 })
                 .show();
     }
 
-    private void showFlagDescription(String reason) {
+    private void showFlagDescription(Flag flag) {
         MaterialDialog dialog = new MaterialDialog.Builder(context)
                 .title(R.string.flag_description_title)
                 .customView(R.layout.dialog_flag_description, true)
@@ -79,8 +79,8 @@ public class FlagPopupMenu extends PopupMenu {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         EditText et = ButterKnife.findById(dialog, R.id.tv_description);
-                        String desc = et.getText().toString();
-                        showFlagConfirmDialog(reason, desc);
+                        String reason = et.getText().toString();
+                        showFlagConfirmDialog(flag, reason);
                     }
                 }).build();
         dialog.show();
@@ -96,6 +96,6 @@ public class FlagPopupMenu extends PopupMenu {
     }
 
     public interface DialogConfirmationCallback {
-        void onFlagConfirmed(String reason, String desc);
+        void onFlagConfirmed(int flagReasonId, String reason);
     }
 }

@@ -2,21 +2,28 @@ package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.joda.time.DateTime;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class Schedule implements Serializable {
 
     private static final String PATTERN_MONTH_AND_DAY = "MMM d";
     private static final String PATTERN_DAY = "d";
 
-    private final static SimpleDateFormat simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.getDefault());
-    private final static SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.getDefault());
+    private final static SimpleDateFormat simpleDateFormatMonthDay;
+    private final static SimpleDateFormat simpleDateFormatDay;
+
+    static {
+        simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.getDefault());
+        simpleDateFormatMonthDay.setTimeZone(TimeZone.getTimeZone("UTC"));
+        simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.getDefault());
+        simpleDateFormatDay.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
 
     @SerializedName("start_on")
     private Date startOn;
@@ -50,9 +57,9 @@ public class Schedule implements Serializable {
 
     @Override
     public String toString() {
-        Calendar calendarStart = Calendar.getInstance();
+        Calendar calendarStart = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendarStart.setTimeInMillis(startOn.getTime());
-        Calendar calendarEnd = Calendar.getInstance();
+        Calendar calendarEnd = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendarEnd.setTimeInMillis(endOn.getTime());
 
         StringBuilder builder = new StringBuilder();

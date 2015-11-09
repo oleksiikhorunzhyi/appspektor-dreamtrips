@@ -134,11 +134,13 @@ public class BucketFeedItemCell extends FeedHeaderCell<BucketFeedItem> {
 
     @Override
     protected void onDelete() {
+        super.onDelete();
         getEventBus().post(new DeleteBucketEvent(getModelObject().getItem()));
     }
 
     @Override
     protected void onEdit() {
+        super.onEdit();
         BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
         bucketItemManager.saveSingleBucketItem(getModelObject().getItem());
 

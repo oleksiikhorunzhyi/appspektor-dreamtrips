@@ -7,7 +7,9 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemDeleteConfirmedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
@@ -15,7 +17,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 import java.util.List;
 
@@ -38,9 +39,11 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             bundle.setLock(true);
             NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
         }
+        eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_EDIT));
     }
 
     public void onDelete() {
+        eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_DELETE));
         view.showDeletionDialog(bucketItem);
     }
 
@@ -67,6 +70,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                         view.setStatus(bucketItem.isDone());
                         view.enableMarkAsDone();
                     });
+
+            eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_MARK_AS_DONE));
         }
     }
 
@@ -97,7 +102,9 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     }
 
     public void onEvent(BucketItemDeleteConfirmedEvent event) {
-        if (bucketItemId.equals(event.getBucketItemId())) deleteBucketItem(bucketItem);
+        if (bucketItemId.equals(event.getBucketItemId())) {
+            deleteBucketItem(bucketItem);
+        }
     }
 
     public void onEvent(FeedEntityChangedEvent event) {
@@ -105,6 +112,10 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             updateBucketItem((BucketItem) event.getFeedEntity());
             syncUI();
         }
+    }
+
+    public void onEvent(BucketItemShared event) {
+        eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_SHARE));
     }
 
     private void updateBucketItem(BucketItem updatedItem) {

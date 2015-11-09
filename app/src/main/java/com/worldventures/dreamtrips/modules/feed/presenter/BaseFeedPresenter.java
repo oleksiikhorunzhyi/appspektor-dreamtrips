@@ -13,7 +13,9 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
@@ -30,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityItemClickEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -137,7 +140,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         }
     }
 
-    private void loadMore() {
+    protected void loadMore() {
         if (feedItems.size() > 0) {
             doRequest(getNextPageFeedRequest(feedItems.get(feedItems.size() - 1).getCreatedAt()),
                     this::addFeedItems, this::loadMoreItemsError);
@@ -295,12 +298,17 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
 
     public void onEvent(ItemFlaggedEvent event) {
         if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(event.getEntity().getUid(), event.getNameOfReason());
+            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
+                    event.getFlagReasonId(), event.getNameOfReason()));
     }
 
     public void onEvent(FeedEntityItemClickEvent event) {
         eventBus.cancelEventDelivery(event);
-        view.openDetails(event.getFeedItem());
+
+        FeedItem feedItem = event.getFeedItem();
+        view.openDetails(feedItem);
+
+        eventBus.post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, feedItem.getItem().getUid(), feedItem.getType()));
     }
 
     public interface View extends Presenter.View {

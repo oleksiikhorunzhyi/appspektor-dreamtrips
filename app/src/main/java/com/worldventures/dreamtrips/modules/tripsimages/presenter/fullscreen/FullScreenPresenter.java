@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -78,7 +79,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onLikeAction() {
     }
 
-    public void onFlagAction() {
+    public void onFlagAction(Flaggable flaggable) {
     }
 
     public void onCommentsAction() {
@@ -150,7 +151,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
     }
 
-    public void sendFlagAction(String title, String desc) {
+    public void sendFlagAction(int flagReasonId, String reason) {
     }
 
     public void onDeleteAction() {
@@ -203,8 +204,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void setLikeCountVisibility(boolean likeCountVisible);
 
         void setUserPhoto(String fsPhoto);
-
-        void setFlags(List<Flag> flags);
 
         void showProgress();
 

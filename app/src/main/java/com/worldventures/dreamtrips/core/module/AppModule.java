@@ -28,7 +28,7 @@ import dagger.Provides;
                 HolderModule.class,
                 PersistenceModule.class,
                 ManagerModule.class,
-                //
+                //g
                 ApiModule.class,
                 AmazonModule.class,
                 //
@@ -43,6 +43,8 @@ import dagger.Provides;
                 BadgeCountObserverModule.class,
                 //
                 NavigationModule.class,
+                //
+                LocaleModule.class
         },
         library = true,
         complete = false,

@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
@@ -88,9 +89,16 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        TrackingHelper.viewBucketListScreen();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         notifyPosition();
+        TrackingHelper.viewBucketListScreen();
     }
 
     private void notifyPosition() {
@@ -129,5 +137,10 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     @Override
     public void resetRecentlyAddedBucketItem(BucketType type) {
         tabStrip.setBadgeCount(type.ordinal(), 0);
+    }
+
+    @Override
+    public int getCurrentTabPosition() {
+        return currentPosition;
     }
 }

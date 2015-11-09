@@ -150,8 +150,8 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     public void showFlagDialog(List<Flag> flags) {
         flag.hideProgress();
         FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flag);
-        popupMenu.show(flags, (reason, desc) -> getEventBus().post(new ItemFlaggedEvent(getModelObject(),
-                reason + ". " + desc)));
+        popupMenu.show(flags, (flagReasonId, reason) -> getEventBus().post(
+                new ItemFlaggedEvent(getModelObject(), flagReasonId, reason)));
     }
 
     @Optional

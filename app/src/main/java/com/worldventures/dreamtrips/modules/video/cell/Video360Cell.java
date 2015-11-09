@@ -72,22 +72,24 @@ public class Video360Cell extends AbstractCell<Video> {
 
     @OnClick(R.id.iv_bg)
     public void onItemClick() {
+        Video video = getModelObject();
         CachedEntity cacheEntity = getModelObject().getCacheEntity();
         String url = getModelObject().getMp4Url();
         if (cacheEntity.isCached(context)) {
             url = CachedEntity.getFilePath(context, getModelObject().getMp4Url());
         }
         activityRouter.open360Activity(url);
-        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_PLAY,
-                getModelObject().getVideoName()));
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_PLAY, video.getVideoName()));
+        TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_VIEW, video.getVideoName());
     }
 
 
     @OnClick(R.id.download_progress)
     public void onDownloadClick() {
+        Video video = getModelObject();
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
-        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_LOAD_START,
-                getModelObject().getVideoName()));
+        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_LOAD_START, video.getVideoName()));
+        TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_DOWNLOAD, video.getVideoName());
     }
 
     @Override

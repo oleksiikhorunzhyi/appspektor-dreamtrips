@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
@@ -13,12 +14,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import icepick.Icepick;
 
-public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseActivity implements Presenter.View {
+public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends BaseActivity implements ActivityPresenter.View {
 
     private PM presenter;
     private PickImageDelegate pickImageDelegate;
@@ -94,6 +96,10 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
         });
     }
 
+    @Override
+    public void showTermsDialog() {
+        TermsConditionsDialog.create().show(getSupportFragmentManager());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +134,12 @@ public abstract class ActivityWithPresenter<PM extends Presenter> extends BaseAc
             pickImageDelegate.setImageCallback(this::imagePicked);
             pickImageDelegate.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        presenter.onConfigurationChanged(newConfig);
     }
 
     public void onEvent(ImagePickRequestEvent event) {

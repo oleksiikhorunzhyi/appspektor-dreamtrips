@@ -65,7 +65,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         openComponent(component, null);
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends ActivityPresenter.View {
         void setTitle(int title);
 
         void updateSelection(ComponentDescription componentDescription);

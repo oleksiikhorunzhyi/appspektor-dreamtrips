@@ -72,6 +72,11 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivityWithArgs(ComponentActivity.class, args);
     }
 
+    public void openComponentActivity(@NonNull Route route, @NonNull Bundle args, int flags) {
+        args.putSerializable(ComponentPresenter.ROUTE, route);
+        startActivityWithArgs(ComponentActivity.class, args, flags);
+    }
+
     public void startService(Class clazz) {
         super.startService(clazz);
     }

@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.BucketItemsLoadedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -113,6 +114,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         if (!isTypeCorrect(bucketItem.getType()) &&
                 !bucketItems.contains(bucketItem)) return;
 
+        eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_VIEW));
         currentItem = bucketItem;
         openDetails(currentItem);
     }
@@ -129,8 +131,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     public void onEvent(MarkBucketItemDoneEvent event) {
         if (isTypeCorrect(event.getBucketItem().getType())) {
+            BucketItem bucketItem = event.getBucketItem();
+            eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_COMPLETE));
             eventBus.cancelEventDelivery(event);
-            markAsDone(event.getBucketItem());
+            markAsDone(bucketItem);
         }
     }
 

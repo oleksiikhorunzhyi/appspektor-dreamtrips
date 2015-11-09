@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
@@ -71,5 +72,4 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
             super.onBackPressed();
         }
     }
-
 }

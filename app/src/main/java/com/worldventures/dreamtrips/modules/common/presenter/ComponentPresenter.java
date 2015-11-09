@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
 
-public class ComponentPresenter extends Presenter<ComponentPresenter.View> {
+public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.View> {
 
     public static final String ROUTE = "route";
 
@@ -24,6 +25,12 @@ public class ComponentPresenter extends Presenter<ComponentPresenter.View> {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        activity.recreate();
+    }
+
     public int getTitle() {
         if (route != null) {
             return route.getTitleRes();
@@ -37,6 +44,11 @@ public class ComponentPresenter extends Presenter<ComponentPresenter.View> {
         this.args = args;
     }
 
-    public interface View extends Presenter.View {
+    @Override
+    protected boolean canShowTermsDialog() {
+        return route != Route.LOGIN && super.canShowTermsDialog();
+    }
+
+    public interface View extends ActivityPresenter.View {
     }
 }

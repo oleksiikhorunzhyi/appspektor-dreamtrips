@@ -23,6 +23,7 @@ import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -107,6 +108,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             }
 
             private void loadErrorText(WebView webView, int errorCode) {
+                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_LOADING_ERROR);
                 String errorText;
                 switch (errorCode) {
                     case ERROR_HOST_LOOKUP:
@@ -144,6 +146,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
                 Timber.d("Page started");
                 isLoading = true;
                 weakHandler.post(() -> {
@@ -154,6 +157,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_LOADED);
                 Timber.d("Page finished");
                 isLoading = false;
                 if (!(isDetached() || isRemoving() || refreshLayout == null)) {
@@ -164,6 +168,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             }
         });
         if (savedState != null) webView.restoreState(savedState);
+    }
+
+    protected void sendAnalyticEvent(String actionAnalyticEvent) {
     }
 
     @Override
@@ -255,6 +262,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.TERMS_OF_SERVICE);
         }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_SERVICE, actionAnalyticEvent);
+        }
+
     }
 
     @Layout(R.layout.fragment_webview)
@@ -270,6 +283,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.FAQ);
         }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionFaq(actionAnalyticEvent);
+        }
     }
 
     @Layout(R.layout.fragment_webview)
@@ -283,6 +301,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.PRIVACY_POLICY);
+        }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_PRIVACY, actionAnalyticEvent);
         }
     }
 
@@ -299,6 +322,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
         }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionMembershipEnrollScreen(actionAnalyticEvent);
+        }
     }
 
 
@@ -314,6 +342,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             super.afterCreateView(rootView);
             ((WebViewFragmentPresenter) getPresenter()).track(Route.COOKIE_POLICY);
         }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_COOKIE, actionAnalyticEvent);
+        }
     }
 
     @Layout(R.layout.fragment_webview)
@@ -328,6 +361,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             super.afterCreateView(rootView);
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
+        }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+            TrackingHelper.actionRepToolsEnrollment(actionAnalyticEvent);
         }
     }
 

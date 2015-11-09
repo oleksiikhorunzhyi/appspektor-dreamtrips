@@ -1,20 +1,34 @@
 package com.worldventures.dreamtrips.modules.facebook.presenter;
 
-import android.os.Bundle;
-
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 
-public class FacebookAlbumPresenter extends Presenter<Presenter.View> {
+import static com.facebook.HttpMethod.GET;
 
-    public void backAction() {
-        fragmentCompass.pop();
+public class FacebookAlbumPresenter extends Presenter<FacebookAlbumPresenter.View> {
+
+    Request requestForPagedResults;
+
+    private Request.Callback callback = response -> {
+        requestForPagedResults = response.getRequestForPagedResults(Response.PagingDirection.NEXT);
+        view.handleResponse(response);
+    };
+
+    public void requestAlbums(boolean fromScroll) {
+        if (!fromScroll) {
+            new Request(Session.getActiveSession(), "/me/albums", null, GET, callback).executeAsync();
+        } else {
+            if (requestForPagedResults != null) {
+                requestForPagedResults.setCallback(callback);
+                requestForPagedResults.executeAsync();
+            }
+        }
     }
 
-    public void onItemClick(String fbAlbumId) {
-        Bundle b = new Bundle();
-        b.putString(FacebookPhotoFragment.BUNDLE_ALBUM_ID, fbAlbumId);
-        fragmentCompass.add(Route.PICK_FB_PHOTO, b);
+    public interface View extends Presenter.View {
+        void handleResponse(Response response);
     }
+
 }

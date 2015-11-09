@@ -9,11 +9,9 @@
 
     <include
         layout="@layout/layout_suggest_merchant"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dtlContentWidth"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/suggest_merchant_layout_padding"
-        android:paddingRight="@dimen/suggest_merchant_layout_padding"
-        android:paddingTop="@dimen/spacing_normal"
+        android:layout_gravity="center"
         />
 
 </ScrollView>

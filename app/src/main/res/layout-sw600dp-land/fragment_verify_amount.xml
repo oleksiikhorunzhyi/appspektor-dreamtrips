@@ -5,6 +5,10 @@
               android:background="@color/dtl_cities_background"
               android:orientation="vertical">
 
-    <include layout="@layout/layout_verify_amount"/>
+    <include
+        layout="@layout/layout_verify_amount"
+        android:layout_width="@dimen/dtlContentWidth"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

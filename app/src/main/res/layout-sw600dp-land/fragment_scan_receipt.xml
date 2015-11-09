@@ -5,12 +5,9 @@
 
     <include
         layout="@layout/layout_scan_receipt"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dtlContentWidth"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dtlScanReceiptPadding"
-        android:paddingRight="@dimen/dtlScanReceiptPadding"
-        android:paddingTop="@dimen/spacing_normal"/>
-
+        android:layout_gravity="center"
+        android:orientation="vertical"/>
 
 </ScrollView>

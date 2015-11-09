@@ -110,6 +110,9 @@
     <dimen name="dtlPlacePriceWidth">38dp</dimen>
     <dimen name="dtlReceiptHeight">326dp</dimen>
     <dimen name="dtlReceiptHeightSmall">300dp</dimen>
+    <dimen name="dtlScanReceiptPadding">16dp</dimen>
+
+    <dimen name="dtlContentWidth">400dp</dimen>
 
     <!-- dimen for dtl points calculation dialog -->
     <dimen name="dtlCalculationCalculateButtonTextSize">18sp</dimen>

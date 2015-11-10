@@ -164,6 +164,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
                 .containerId(R.id.dtl_container)
                 .fragmentManager(getFragmentManager())
                 .backStackEnabled(false)
+                .clearBackStack(true)
                 .data(bundle)
                 .build());
     }

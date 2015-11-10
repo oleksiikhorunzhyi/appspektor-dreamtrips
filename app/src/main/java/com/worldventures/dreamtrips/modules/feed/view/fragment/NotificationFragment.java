@@ -75,8 +75,8 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
         friendsBadge.setOnClickListener(v ->
                 NavigationBuilder.create()

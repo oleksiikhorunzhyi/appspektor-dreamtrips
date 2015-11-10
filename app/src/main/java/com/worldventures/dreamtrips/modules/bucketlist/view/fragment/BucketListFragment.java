@@ -167,8 +167,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         menuItemAdd = menu.findItem(R.id.action_quick);
 
         if (menuItemAdd != null)

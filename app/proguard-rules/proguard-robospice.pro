@@ -15,3 +15,5 @@
 -dontwarn org.w3c.dom.**
 -dontwarn com.google.common.**
 -dontwarn com.octo.android.robospice.persistence.**
+
+-dontwarn com.octo.android.robospice.SpiceService # for Notification#setLatestEventInfo

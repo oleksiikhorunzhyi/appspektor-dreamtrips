@@ -65,8 +65,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         MenuItem item = menu.findItem(R.id.action_friend_requests);
         friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(item);
         friendsBadge.setOnClickListener(v -> {

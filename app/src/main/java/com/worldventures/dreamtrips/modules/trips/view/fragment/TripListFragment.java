@@ -141,8 +141,8 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             if (searchOpened) searchItem.expandActionView();

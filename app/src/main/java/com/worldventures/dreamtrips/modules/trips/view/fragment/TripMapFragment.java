@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -17,7 +20,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
+import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
+import icepick.Icepick;
 import icepick.State;
 
 
@@ -25,7 +30,8 @@ import icepick.State;
 @MenuResource(R.menu.menu_map)
 public class TripMapFragment extends MapFragment<TripMapPresenter> implements TripMapPresenter.View {
 
-    @State LatLng selectedLocation;
+    @State
+    LatLng selectedLocation;
     @State
     boolean searchOpened;
 
@@ -35,8 +41,8 @@ public class TripMapFragment extends MapFragment<TripMapPresenter> implements Tr
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchOpened) searchItem.expandActionView();
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {

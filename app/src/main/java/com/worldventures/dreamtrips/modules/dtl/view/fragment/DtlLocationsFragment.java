@@ -84,7 +84,8 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     private void initToolbar() {
         toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
         toolbar.inflateMenu(R.menu.menu_locations);
-        toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+        if (!tabletAnalytic.isTabletLandscape())
+            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
         configureSearch(toolbar.getMenu());
     }

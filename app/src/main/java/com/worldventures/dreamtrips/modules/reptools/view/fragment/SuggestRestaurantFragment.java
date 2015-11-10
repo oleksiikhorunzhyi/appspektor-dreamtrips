@@ -41,13 +41,6 @@ public class SuggestRestaurantFragment extends SuggestPlaceBaseFragment<SuggestR
     }
 
     @Override
-    public void showSuccess() {
-        if (getView() != null) {
-            Snackbar.make(getView(), R.string.suggest_merchant_success_snack, Snackbar.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
     public void clearInput() {
         restaurantName.setText("");
         city.setText("");

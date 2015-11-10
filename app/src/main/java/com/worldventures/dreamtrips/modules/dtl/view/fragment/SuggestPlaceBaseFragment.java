@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import java.util.Calendar;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_suggest_merchant)
@@ -273,5 +275,14 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     public void openPresentation(String url) {
         Intent intent = IntentUtils.browserIntent(url);
         startActivity(intent);
+    }
+
+    @Override
+    public void merchantSubmitted() {
+        Dialog sweetAlertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText(getString(R.string.dtl_merchant_success))
+                .setContentText(getString(R.string.dtl_merchant_submitted));
+        sweetAlertDialog.setCanceledOnTouchOutside(true);
+        sweetAlertDialog.show();
     }
 }

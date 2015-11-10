@@ -28,8 +28,4 @@ public class DtlSuggestMerchantFragment extends SuggestPlaceBaseFragment<DtlSugg
         city.setVisibility(View.GONE);
     }
 
-    @Override
-    public void dismiss() {
-        getActivity().onBackPressed();
-    }
 }

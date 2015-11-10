@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 
-public class DtlPlacesLandscapePresenter extends Presenter<DtlPlacesLandscapePresenter.View> {
+public class DtlPlacesHostPresenter extends Presenter<DtlPlacesHostPresenter.View> {
 
     public void onEventMainThread(final PlaceClickedEvent event) {
         view.showDetails(event.getPlace());

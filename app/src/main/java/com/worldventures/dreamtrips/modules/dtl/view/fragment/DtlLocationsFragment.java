@@ -147,8 +147,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
 
     @Override
     public void showMerchants(PlacesBundle bundle) {
-        Route route = tabletAnalytic.isTabletLandscape() ? Route.DTL_PLACES_LANDSCAPE : Route.DTL_PLACES_LIST;
-        router.moveTo(route, NavigationConfigBuilder.forFragment()
+        router.moveTo(Route.DTL_PLACES_HOLDER, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_container)
                 .fragmentManager(getFragmentManager())
                 .backStackEnabled(false)

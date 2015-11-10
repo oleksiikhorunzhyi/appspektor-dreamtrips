@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -85,7 +84,7 @@ public class DtlPlacesTabsFragment
                 case R.id.action_map:
                     router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment().useDefaults()
                             .data(getArgs())
-                            .fragmentManager(getFragmentManager())
+                            .fragmentManager(getParentFragment().getFragmentManager())
                             .containerId(R.id.dtl_container)
                             .build());
                     break;
@@ -115,19 +114,15 @@ public class DtlPlacesTabsFragment
 
     @Override
     public void initToolbar(DtlLocation location) {
-        FragmentManager fragmentManager;
         if (!tabletAnalytic.isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-            fragmentManager = getFragmentManager();
-        } else {
-            fragmentManager = getParentFragment().getFragmentManager();
         }
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
         toolbar.findViewById(R.id.spinnerStyledTitle).setOnClickListener(v ->
                 router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
                         .backStackEnabled(false)
                         .containerId(R.id.dtl_container)
-                        .fragmentManager(fragmentManager)
+                        .fragmentManager(getParentFragment().getFragmentManager())
                         .build()));
         ((TextView) toolbar.findViewById(R.id.spinnerStyledTitle)).setText(location.getLongName());
     }

@@ -7,36 +7,46 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesLandscapePresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
 
-@Layout(R.layout.fragment_dtl_places_landscape)
-public class DtlPlacesLandscapeFragment
-        extends BaseFragmentWithArgs<DtlPlacesLandscapePresenter, PlacesBundle>
-        implements DtlPlacesLandscapePresenter.View {
+@Layout(R.layout.fragment_dtl_places_host)
+public class DtlPlacesHostFragment
+        extends BaseFragmentWithArgs<DtlPlacesHostPresenter, PlacesBundle>
+        implements DtlPlacesHostPresenter.View {
 
     @Override
-    protected DtlPlacesLandscapePresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlacesLandscapePresenter();
+    protected DtlPlacesHostPresenter createPresenter(Bundle savedInstanceState) {
+        return new DtlPlacesHostPresenter();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         showMaster();
-        showSlave();
+        tryShowSlave();
     }
 
     private void showMaster() {
-        moveToRoute(Route.DTL_PLACES_LIST, R.id.dtl_landscape_master_container);
+        moveToRoute(Route.DTL_PLACES_LIST, R.id.dtl_master_container);
     }
 
-    private void showSlave() {
-        moveToRoute(Route.DTL_MAP, R.id.dtl_landscape_slave_container);
+    /**
+     * Detect if this is tablet landscape and show slave, if not - remove slave fragment if present
+     */
+    private void tryShowSlave() {
+        if (tabletAnalytic.isTabletLandscape()) {
+            moveToRoute(Route.DTL_MAP, R.id.dtl_landscape_slave_container);
+            this.getView().findViewById(R.id.dtl_landscape_slave_container).setVisibility(View.VISIBLE);
+        } else {
+            removeDetails();
+            this.getView().findViewById(R.id.dtl_landscape_slave_container).setVisibility(View.GONE);
+        }
     }
 
     private void moveToRoute(Route route, @IdRes int containerId) {
@@ -46,6 +56,16 @@ public class DtlPlacesLandscapeFragment
                 .fragmentManager(getChildFragmentManager())
                 .data(getArgs())
                 .build());
+    }
+
+    private void removeDetails() {
+        NavigationConfig navigationConfig = NavigationConfigBuilder.forRemoval()
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.dtl_landscape_slave_container)
+                .build();
+        // do both - underlying code will safely determine what to delete
+        router.moveTo(Route.DTL_PLACE_DETAILS, navigationConfig);
+        router.moveTo(Route.DTL_MAP, navigationConfig);
     }
 
     @Override

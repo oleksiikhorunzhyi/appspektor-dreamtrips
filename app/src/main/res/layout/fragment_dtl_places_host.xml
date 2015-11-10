@@ -9,7 +9,7 @@
     >
 
     <FrameLayout
-        android:id="@+id/dtl_landscape_master_container"
+        android:id="@+id/dtl_master_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"

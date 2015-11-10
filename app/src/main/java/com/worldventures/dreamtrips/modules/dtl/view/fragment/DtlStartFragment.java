@@ -102,9 +102,7 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
 
     @Override
     public void openMerchants(PlacesBundle bundle) {
-        Route route = tabletAnalytic.isTabletLandscape() ? Route.DTL_PLACES_LANDSCAPE
-                : Route.DTL_PLACES_LIST;
-        router.moveTo(route, provideNavigationConfig(bundle));
+        router.moveTo(Route.DTL_PLACES_HOLDER, provideNavigationConfig(bundle));
     }
 
     @Override

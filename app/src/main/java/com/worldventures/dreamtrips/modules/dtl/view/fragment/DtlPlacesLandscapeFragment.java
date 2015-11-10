@@ -52,7 +52,7 @@ public class DtlPlacesLandscapeFragment
     public void showDetails(DtlPlace place) {
         router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_landscape_slave_container)
-                .backStackEnabled(true)
+                .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .data(new PlaceDetailsBundle(place, true))
                 .build());

@@ -231,7 +231,7 @@ public class DtlPlaceDetailsFragment
     }
 
     private boolean onBackPressed() {
-        if (isTabletLandscape()) {
+        if (isTabletLandscape() && getArgs().isSlave()) {
             getPresenter().onBackPressed();
             return true;
         } else return false;

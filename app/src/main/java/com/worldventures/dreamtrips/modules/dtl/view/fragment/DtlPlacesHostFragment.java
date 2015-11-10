@@ -15,10 +15,15 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
 
+import butterknife.InjectView;
+
 @Layout(R.layout.fragment_dtl_places_host)
 public class DtlPlacesHostFragment
         extends BaseFragmentWithArgs<DtlPlacesHostPresenter, PlacesBundle>
         implements DtlPlacesHostPresenter.View {
+
+    @InjectView(R.id.dtl_landscape_slave_container)
+    View landscapeSlave;
 
     @Override
     protected DtlPlacesHostPresenter createPresenter(Bundle savedInstanceState) {
@@ -42,10 +47,10 @@ public class DtlPlacesHostFragment
     private void tryShowSlave() {
         if (tabletAnalytic.isTabletLandscape()) {
             moveToRoute(Route.DTL_MAP, R.id.dtl_landscape_slave_container);
-            this.getView().findViewById(R.id.dtl_landscape_slave_container).setVisibility(View.VISIBLE);
+            landscapeSlave.setVisibility(View.VISIBLE);
         } else {
             removeDetails();
-            this.getView().findViewById(R.id.dtl_landscape_slave_container).setVisibility(View.GONE);
+            landscapeSlave.setVisibility(View.GONE);
         }
     }
 

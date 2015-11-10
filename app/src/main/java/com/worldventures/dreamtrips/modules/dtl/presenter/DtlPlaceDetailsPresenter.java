@@ -9,9 +9,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
@@ -111,8 +113,15 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         }).show();
     }
 
+    public void onBackPressed() {
+        DtlLocation dtlLocation = snapper.getSelectedDtlLocation();
+        view.openMap(new PlacesBundle(dtlLocation));
+    }
+
     public interface View extends DtlPlaceCommonDetailsPresenter.View {
         void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+
+        void openMap(PlacesBundle placesBundle);
 
         void setTransaction(DtlTransaction dtlTransaction);
     }

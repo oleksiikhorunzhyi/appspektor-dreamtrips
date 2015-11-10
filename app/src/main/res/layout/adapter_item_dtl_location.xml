@@ -16,6 +16,7 @@
         android:fontFamily="sans-serif"
         android:padding="@dimen/spacing_normal"
         android:textColor="@android:color/black"
+        android:drawablePadding="@dimen/spacing_small"
         android:textSize="@dimen/font_normal"
         android:textStyle="bold"
         tools:text="Dallas, Texas, USA"

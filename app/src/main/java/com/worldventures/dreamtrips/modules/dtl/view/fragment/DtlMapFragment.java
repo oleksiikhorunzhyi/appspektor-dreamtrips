@@ -163,8 +163,10 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        clusterManager.setOnClusterClickListener(null);
-        clusterManager.setOnClusterItemClickListener(null);
+        if (clusterManager != null) {
+            clusterManager.setOnClusterClickListener(null);
+            clusterManager.setOnClusterItemClickListener(null);
+        }
     }
 
     @Override

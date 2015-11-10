@@ -282,8 +282,8 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     public void merchantSubmitted() {
         Dialog sweetAlertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText(getString(R.string.dtl_merchant_success))
-                .setContentText(getString(R.string.dtl_merchant_submitted))
-                ;
+                .setContentText(getString(R.string.dtl_merchant_submitted));
+        //
         sweetAlertDialog.setOnCancelListener(this::dialogCanceled);
         sweetAlertDialog.setCanceledOnTouchOutside(true);
         sweetAlertDialog.show();

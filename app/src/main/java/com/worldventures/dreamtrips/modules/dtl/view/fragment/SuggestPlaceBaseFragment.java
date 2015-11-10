@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
@@ -281,8 +282,17 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     public void merchantSubmitted() {
         Dialog sweetAlertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText(getString(R.string.dtl_merchant_success))
-                .setContentText(getString(R.string.dtl_merchant_submitted));
+                .setContentText(getString(R.string.dtl_merchant_submitted))
+                ;
+        sweetAlertDialog.setOnCancelListener(this::dialogCanceled);
         sweetAlertDialog.setCanceledOnTouchOutside(true);
         sweetAlertDialog.show();
+    }
+
+    /**
+     * Override this to react when dialog cancelled
+     */
+    protected void dialogCanceled(DialogInterface dialog) {
+        //
     }
 }

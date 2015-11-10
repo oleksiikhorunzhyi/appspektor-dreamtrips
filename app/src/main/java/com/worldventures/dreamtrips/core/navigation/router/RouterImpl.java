@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
+import timber.log.Timber;
+
 public class RouterImpl implements Router {
 
     private FragmentActivity activity;
@@ -52,6 +54,13 @@ public class RouterImpl implements Router {
                 activity.getSupportFragmentManager() :
                 config.getFragmentManager();
         //
+        if (config.getClearBackStack()) {
+            try {
+                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            } catch (IllegalStateException e) {
+                Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
+            }
+        }
         FragmentCompass fragmentCompass = new FragmentCompass(activity);
         fragmentCompass.setContainerId(config.getContainerId());
         fragmentCompass.setFragmentManager(fragmentManager);

@@ -120,7 +120,7 @@ public class DtlPlaceDetailsFragment
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             activity.getSupportActionBar().setTitle("");
         } else {
-            toolbar.setNavigationOnClickListener(v -> getPresenter().onBackPressed());
+            toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         }
         commonDataInflater.setView(rootView);
         placeInfoInflater.setView(rootView);

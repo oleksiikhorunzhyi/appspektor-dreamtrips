@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 
@@ -28,4 +29,9 @@ public class DtlSuggestMerchantFragment extends SuggestPlaceBaseFragment<DtlSugg
         city.setVisibility(View.GONE);
     }
 
+    @Override
+    protected void dialogCanceled(DialogInterface dialog) {
+        super.dialogCanceled(dialog);
+        getActivity().onBackPressed();
+    }
 }

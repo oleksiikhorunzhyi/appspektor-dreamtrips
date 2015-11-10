@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
@@ -52,9 +53,13 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
             dtlFilterData = new DtlFilterData();
         }
 
-        locationDelegate.getLastKnownLocation(location ->
-                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude()),
-                this::performFiltering);
+        locationDelegate.getLastKnownLocation()
+                .compose(new IoToMainComposer<>())
+                .subscribe(location -> currentLocation = new LatLng(location.getLatitude(),
+                                location.getLongitude()),
+                        e -> {
+                        },
+                        this::performFiltering);
     }
 
     public void onEventMainThread(PlacesUpdatedEvent event) {

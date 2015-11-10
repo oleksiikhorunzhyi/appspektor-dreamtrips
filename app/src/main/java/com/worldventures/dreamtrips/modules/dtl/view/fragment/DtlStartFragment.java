@@ -18,8 +18,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 
@@ -39,20 +39,12 @@ import timber.log.Timber;
 @Layout(R.layout.fragment_dtl_start_empty)
 @MenuResource(R.menu.menu_mock)
 @RuntimePermissions
-public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements DtlStartPresenter.View {
+public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implements DtlStartPresenter.View {
 
     private static final int REQUEST_CHECK_SETTINGS = 1488;
 
     @Inject
     ActivityResultDelegate activityResultDelegate;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        activityResult(activityResultDelegate.getRequestCode(),
-                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
-        showDtlFilters();
-    }
 
     private void showDtlFilters() {
         Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
@@ -140,5 +132,13 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        activityResult(activityResultDelegate.getRequestCode(),
+                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
+        showDtlFilters();
     }
 }

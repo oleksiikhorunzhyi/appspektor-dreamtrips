@@ -3,7 +3,12 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
@@ -14,7 +19,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import javax.inject.Inject;
 
 import icepick.State;
-import rx.Subscription;
 
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
@@ -43,16 +47,23 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         view.checkPermissions();
     }
 
-    private Subscription locationSubscription;
-
     public void permissionGranted() {
-        locationSubscription = locationDelegate.requestLocationUpdates(view::resolutionRequired,
-                this::onLocationObtained,
-                this::onLocationError);
+        locationDelegate.checkSettings()
+                .doOnNext(this::onSettingsObtained)
+                .flatMap(locationSettingsResult -> locationDelegate.requestLocationUpdate())
+                .compose(new IoToMainComposer<>())
+                .compose(RxLifecycle.bindFragment(view.lifecycle()))
+                .subscribe(this::onLocationObtained, this::onLocationError);
+    }
+
+    private void onSettingsObtained(LocationSettingsResult locationSettingsResult) {
+        Status status = locationSettingsResult.getStatus();
+        if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED)
+            view.resolutionRequired(status);
     }
 
     private void onLocationError(Throwable e) {
-        eventBus.post(new LocationObtainedEvent());
+        locationNotGranted();
     }
 
     private void onLocationObtained(Location location) {
@@ -63,14 +74,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         eventBus.post(new LocationObtainedEvent());
     }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        if (locationSubscription != null && !locationSubscription.isUnsubscribed())
-            locationSubscription.unsubscribe();
-    }
-
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
         void checkPermissions();
 
         void resolutionRequired(Status status);

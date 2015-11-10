@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +19,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -51,6 +52,8 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     View emptyView;
     @InjectView(R.id.progress_text)
     TextView progressText;
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
     @InjectView(R.id.progress)
     View progress;
 
@@ -64,6 +67,8 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        initToolbar();
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setEmptyView(emptyView);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
@@ -76,9 +81,15 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
         recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    private void initToolbar() {
+        toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
+        toolbar.inflateMenu(R.menu.menu_locations);
+        toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+        toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+        configureSearch(toolbar.getMenu());
+    }
+
+    private void configureSearch(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
@@ -109,6 +120,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
                 }
             });
         }
+
     }
 
     public void onEvent(LocationClickedEvent event) {

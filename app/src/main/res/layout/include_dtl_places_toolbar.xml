@@ -4,16 +4,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar_actionbar"
     style="@style/ToolBarStyle"
-    tools:showIn="@layout/fragment_dtl_places_tabs">
+    tools:showIn="@layout/fragment_dtl_places_tabs"
+    >
 
     <TextView
         android:id="@+id/spinnerStyledTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/toolbar_spinner_styled_title_text_size"
+        style="@style/SpinnerToolbarTitle"
         tools:text="San Francisco"
-        android:drawableRight="@drawable/ic_spinner_arrow_white"
-        android:drawablePadding="@dimen/toolbar_spinner_styled_icon_margin"
         />
 </android.support.v7.widget.Toolbar>

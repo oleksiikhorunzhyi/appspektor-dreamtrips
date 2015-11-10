@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -21,14 +22,18 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlCategoryDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -44,7 +49,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_place_details)
 public class DtlPlaceDetailsFragment
-        extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, DtlPlace>
+        extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, PlaceDetailsBundle>
         implements DtlPlaceDetailsPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
@@ -55,6 +60,9 @@ public class DtlPlaceDetailsFragment
     @Inject
     @Named(RouteCreatorModule.DTL_TRANSACTION)
     RouteCreator<DtlTransaction> routeCreator;
+
+    @Inject
+    BackStackDelegate backStackDelegate;
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -79,7 +87,7 @@ public class DtlPlaceDetailsFragment
 
     @Override
     protected DtlPlaceDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlaceDetailsPresenter(getArgs());
+        return new DtlPlaceDetailsPresenter(getArgs().getPlace());
     }
 
     @Override
@@ -92,14 +100,27 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        backStackDelegate.setListener(this::onBackPressed);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        backStackDelegate.setListener(null);
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        if (toolbar != null) {
+        if (!tabletAnalytic.isTabletLandscape()) {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             activity.setSupportActionBar(toolbar);
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             activity.getSupportActionBar().setTitle("");
-            toolbar.getBackground().setAlpha(0);
+        } else {
+            toolbar.setNavigationOnClickListener(v -> getPresenter().onBackPressed());
         }
         commonDataInflater.setView(rootView);
         placeInfoInflater.setView(rootView);
@@ -110,6 +131,12 @@ public class DtlPlaceDetailsFragment
             int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
             googleMap.setPadding(0, 0, 0, padding);
         });
+    }
+
+    public void popBack(FragmentManager fragmentManager) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+        }
     }
 
     @Override
@@ -139,6 +166,7 @@ public class DtlPlaceDetailsFragment
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
             contactView.setText(contact.text);
             if (Linkify.addLinks(contactView, Linkify.ALL)) SpanUtils.stripUnderlines(contactView);
+            if (contact.intent != null) contactView.setOnClickListener(view -> startActivity(contact.intent));
             additionalContainer.addView(contactView);
         });
 
@@ -173,6 +201,16 @@ public class DtlPlaceDetailsFragment
         earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
     }
 
+    @Override
+    public void openMap(PlacesBundle placesBundle) {
+        router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.dtl_landscape_slave_container)
+                .backStackEnabled(false)
+                .fragmentManager(getFragmentManager())
+                .data(placesBundle)
+                .build());
+    }
+
     @OnClick(R.id.place_details_earn)
     void onCheckInClicked() {
         getPresenter().onCheckInClicked();
@@ -191,5 +229,12 @@ public class DtlPlaceDetailsFragment
     @OnClick(R.id.place_details_share)
     void shareClick() {
         getPresenter().onShareClick();
+    }
+
+    private boolean onBackPressed() {
+        if (isTabletLandscape() && getArgs().isSlave()) {
+            getPresenter().onBackPressed();
+            return true;
+        } else return false;
     }
 }

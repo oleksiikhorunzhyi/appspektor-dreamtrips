@@ -27,6 +27,13 @@ public class IntentUtils {
         return intent;
     }
 
+    public static Intent newDialerIntent(String phone) {
+        if (TextUtils.isEmpty(phone)) return null;
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phone));
+        return intent;
+    }
+
     public static Intent newSmsIntent(Context context, String body, String... phoneNumber) {
         Uri smsUri;
         if (phoneNumber == null) {

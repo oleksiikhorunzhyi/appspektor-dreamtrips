@@ -14,6 +14,7 @@ public class NavigationConfig {
     ToolbarConfig toolbarConfig;
     int containerId;
     Boolean backStackEnabled;
+    Boolean clearBackStack = false;
 
     NavigationConfig(NavigationType type) {
         navigationType = type;
@@ -45,7 +46,11 @@ public class NavigationConfig {
         return backStackEnabled;
     }
 
+    public Boolean getClearBackStack() {
+        return clearBackStack;
+    }
+
     enum NavigationType {
-        ACTIVITY, FRAGMENT, DIALOG
+        ACTIVITY, FRAGMENT, DIALOG, REMOVE
     }
 }

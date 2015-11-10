@@ -1,23 +1,23 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlacesToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -26,18 +26,18 @@ import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 
+import butterknife.InjectView;
 import icepick.State;
 
 @Layout(R.layout.fragment_dtl_places_map)
-@MenuResource(R.menu.menu_dtl_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
+    //
     PlacesBundle bundle;
     @State
     LatLng selectedLocation;
-    //
-    DtlPlacesToolbarHelper toolbarHelper;
-    FragmentCompass infoFragmentCompass;
 
     private ClusterManager<DtlClusterItem> clusterManager;
 
@@ -50,38 +50,23 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        toolbarHelper = new DtlPlacesToolbarHelper(getActivity(), fragmentCompass, eventBus);
-        toolbarHelper.attach(rootView);
-        toolbarHelper.inflateMenu(R.menu.menu_dtl_map, item -> {
+        toolbar.inflateMenu(R.menu.menu_dtl_map);
+        toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:
-                    NavigationBuilder.create().with(fragmentCompass)
+                    router.moveTo(Route.DTL_PLACES_LIST, NavigationConfigBuilder.forFragment()
                             .data(bundle)
-                            .move(Route.DTL_PLACES_LIST);
+                            .fragmentManager(getFragmentManager())
+                            .backStackEnabled(false)
+                            .containerId(R.id.dtl_container)
+                            .build());
                     return true;
                 case R.id.action_dtl_filter:
                     ((MainActivity) getActivity()).openRightDrawer();
                     return true;
-                default:
-                    return super.onOptionsItemSelected(item);
             }
+            return super.onOptionsItemSelected(item);
         });
-        infoFragmentCompass = new FragmentCompass(getActivity(), R.id.container_info);
-        infoFragmentCompass.setFragmentManager(getChildFragmentManager());
-        fragmentCompass.setFragmentManager(getFragmentManager());
-        fragmentCompass.setContainerId(R.id.dtl_container);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        toolbarHelper.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        toolbarHelper.onPause();
     }
 
     @Override
@@ -130,15 +115,20 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     private void hideInfoIfShown() {
-        infoFragmentCompass.remove(Route.DTL_MAP_INFO);
+        router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forRemoval()
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.container_info)
+                .build());
     }
 
     @Override
     public void showPlaceInfo(DtlPlace dtlPlace) {
-        NavigationBuilder.create()
-                .with(infoFragmentCompass)
+        router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.container_info)
+                .fragmentManager(getChildFragmentManager())
+                .backStackEnabled(false)
                 .data(dtlPlace)
-                .move(Route.DTL_MAP_INFO);
+                .build());
     }
 
     @Override
@@ -171,6 +161,20 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void initToolbar(DtlLocation location) {
-        toolbarHelper.setPlaceForToolbar(location);
+        FragmentManager fragmentManager;
+        if (!tabletAnalytic.isTabletLandscape()) {
+            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+            fragmentManager = getFragmentManager();
+            toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+            toolbar.findViewById(R.id.spinnerStyledTitle).setOnClickListener(v ->
+                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                            .backStackEnabled(false)
+                            .containerId(R.id.dtl_container)
+                            .fragmentManager(fragmentManager)
+                            .build()));
+            ((TextView) toolbar.findViewById(R.id.spinnerStyledTitle)).setText(location.getLongName());
+        } else {
+            toolbar.findViewById(R.id.spinnerStyledTitle).setVisibility(View.GONE);
+        }
     }
 }

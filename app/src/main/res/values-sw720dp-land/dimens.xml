@@ -11,4 +11,7 @@
     <dimen name="post_spacing_horizontal">256dp</dimen>
     <dimen name="post_spacing_vertical">128dp</dimen>
 
+    <!-- Dtl module dimens -->
+    <dimen name="dtl_details_header_height">280dp</dimen>
+
 </resources>

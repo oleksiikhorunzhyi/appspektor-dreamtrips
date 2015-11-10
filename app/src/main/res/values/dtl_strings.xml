@@ -83,6 +83,9 @@
 
     <string name="dtl_photo_upload_error">Error while uploading photo, try again later</string>
 
+    <string name="dtl_merchant_success">Success</string>
+    <string name="dtl_merchant_submitted">Congratulations! Merchant has been submitted. You will be informed once they get approved</string>
+
     <string name="pdf">PDF</string>
     <string name="presentation">Presentation</string>
 </resources>

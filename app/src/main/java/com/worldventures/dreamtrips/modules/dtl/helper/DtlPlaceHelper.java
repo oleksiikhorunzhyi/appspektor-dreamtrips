@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.util.ImageTextItem;
@@ -32,14 +34,14 @@ public class DtlPlaceHelper {
 
     public List<ImageTextItem> getContactsData(DtlPlace place) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
-        addContactIfNotEmpty(items, place.getAddress1(), R.drawable.address_icon);
-        addContactIfNotEmpty(items, place.getPhone(), R.drawable.phone_icon);
-        addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon);
+        addContactIfNotEmpty(items, place.getAddress1(), R.drawable.address_icon, null);
+        addContactIfNotEmpty(items, place.getPhone(), R.drawable.phone_icon, IntentUtils.newDialerIntent(place.getPhone()));
+        addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon, null);
         return items;
     }
 
-    private void addContactIfNotEmpty(List<ImageTextItem> items, String contact, @DrawableRes int icon) {
+    private void addContactIfNotEmpty(List<ImageTextItem> items, String contact, @DrawableRes int icon, Intent intent) {
         if (TextUtils.isEmpty(contact)) return;
-        items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null)));
+        items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent));
     }
 }

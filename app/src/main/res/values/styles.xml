@@ -58,7 +58,7 @@
 
     <style name="DreamTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/theme_main_darker</item>
-        <item name="tabMode">scrollable</item>
+        <item name="tabMode">fixed</item>
         <item name="tabPaddingStart">0dp</item>
         <item name="tabPaddingEnd">0dp</item>
         <item name="tabGravity">fill</item>
@@ -120,6 +120,13 @@
         <item name="android:textColor">@color/suggest_merchant_input_text</item>
         <item name="android:gravity">center</item>
         <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="SpinnerToolbarTitle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
+        <item name="android:drawableRight">@drawable/ic_spinner_arrow_white</item>
+        <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
     </style>
 
     <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">

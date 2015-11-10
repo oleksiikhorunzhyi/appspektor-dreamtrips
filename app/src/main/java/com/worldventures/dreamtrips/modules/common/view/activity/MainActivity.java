@@ -81,8 +81,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
-        setupToolbar();
         super.afterCreateView(savedInstanceState);
+        setSupportActionBar(this.toolbar);
         setUpBurger();
         setUpMenu();
         //
@@ -104,10 +104,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         }
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(this.toolbar);
-    }
-
     @Override
     public void setTitle(int title) {
         if (title != 0)
@@ -117,15 +113,14 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     @Override
-    public void makeActionBarGone(boolean gone) {
-        this.toolbarGone = gone;
-        if (gone) {
+    public void makeActionBarGone(boolean hide) {
+        this.toolbarGone = hide;
+        if (hide) {
             toolbar.setVisibility(View.GONE);
         } else {
             toolbar.setVisibility(View.VISIBLE);
             toolbar.getBackground().setAlpha(255);
         }
-
     }
 
     private void setUpBurger() {
@@ -168,20 +163,14 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     public void onNavigationDrawerItemSelected(ComponentDescription component) {
         eventBus.post(new MenuPressedEvent());
-
+        //
         closeLeftDrawer();
         disableRightDrawer();
-        makeActionBarGone(false);
-
+        makeActionBarGone(component.isSkipGeneralToolbar());
+        //
         navigationDrawerFragment.setCurrentComponent(component);
         currentComponent = component;
         getPresentationModel().openComponent(component);
-    }
-
-    @Override
-    public void updateSelection(ComponentDescription component) {
-        currentComponent = component;
-        navigationDrawerFragment.setCurrentComponent(component);
     }
 
     @Override
@@ -256,10 +245,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     protected void updateTitle() {
         currentComponent = this.rootComponentsProvider.getComponent(getSupportFragmentManager());
-
+        //
         if (rootComponentsProvider.getActiveComponents().contains(currentComponent)) {
             navigationDrawerFragment.setCurrentComponent(currentComponent);
             setTitle(currentComponent.getToolbarTitle());
+            makeActionBarGone(currentComponent.isSkipGeneralToolbar());
         }
     }
 

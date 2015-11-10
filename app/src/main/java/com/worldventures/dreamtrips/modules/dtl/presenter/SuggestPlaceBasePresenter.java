@@ -43,5 +43,7 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
         void openPdf(String url);
 
         void openPresentation(String url);
+
+        void merchantSubmitted();
     }
 }

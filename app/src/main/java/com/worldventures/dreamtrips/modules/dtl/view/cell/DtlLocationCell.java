@@ -8,7 +8,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
@@ -34,6 +33,12 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
             sb.append(tempLocation.getLongName());
         });
         city.setText(sb.toString());
+
+        if (getModelObject().getCategory() == DtlLocation.DtlLocationCategory.CITY)
+            city.setCompoundDrawablesWithIntrinsicBounds(R.drawable.city_icon, 0, 0, 0);
+        else
+            city.setCompoundDrawablesWithIntrinsicBounds(R.drawable.metro_area_icon, 0, 0, 0);
+
     }
 
     @OnClick(R.id.dtlLocationCellRoot)

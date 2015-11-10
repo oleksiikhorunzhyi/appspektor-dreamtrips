@@ -101,8 +101,8 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
     }
 
     @Override
-    public void openMerchants(PlacesBundle placesBundle) {
-        router.moveTo(Route.DTL_PLACES_LIST, provideNavigationConfig(placesBundle));
+    public void openMerchants(PlacesBundle bundle) {
+        router.moveTo(Route.DTL_PLACES_HOLDER, provideNavigationConfig(bundle));
     }
 
     @Override

@@ -32,7 +32,7 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
                         view.getAdditionalInfo())),
                 aVoid -> {
                     view.hideProgress();
-                    view.dismiss();
+                    view.merchantSubmitted();
                 },
                 spiceException -> {
                     super.handleError(spiceException);
@@ -44,6 +44,5 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
 
         void syncUiWithPlace(DtlPlace place);
 
-        void dismiss();
     }
 }

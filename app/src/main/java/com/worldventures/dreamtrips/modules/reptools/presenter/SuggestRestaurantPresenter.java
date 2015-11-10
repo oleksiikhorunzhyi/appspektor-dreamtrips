@@ -18,9 +18,9 @@ public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<Sugges
                                 view.getCleanlinessRating(), view.getUniquenessRating()),
                         view.getAdditionalInfo())),
                 aVoid -> {
+                    view.merchantSubmitted();
                     view.hideProgress();
                     view.clearInput();
-                    view.showSuccess();
                 },
                 spiceException -> {
                     super.handleError(spiceException);
@@ -33,8 +33,6 @@ public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<Sugges
         String getRestaurantName();
 
         String getCity();
-
-        void showSuccess();
 
         void clearInput();
     }

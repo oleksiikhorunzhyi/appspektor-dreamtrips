@@ -53,4 +53,10 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
     protected DtlFiltersPresenter createPresenter(Bundle savedInstanceState) {
         return new DtlFiltersPresenter();
     }
+
+    @Override
+    public void resetFilters() {
+        rangeBarDistance.setRangePinsByValue(rangeBarDistance.getTickStart(), rangeBarDistance.getTickEnd());
+        rangeBarPrice.setRangePinsByValue(rangeBarPrice.getTickStart(), rangeBarPrice.getTickEnd());
+    }
 }

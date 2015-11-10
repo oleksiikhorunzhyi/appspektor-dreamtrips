@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -91,7 +92,9 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Override
     public void setPlace(DtlPlace place) {
         name.setText(place.getDisplayName());
-        address.setText(String.format("%s\n%s", place.getAddress1(), place.getAddress2()));
+        if (!TextUtils.isEmpty(place.getAddress1())) {
+            address.setText(String.format("%s\n%s", place.getAddress1(), place.getAddress2()));
+        }
         if (!place.getImages().isEmpty()) {
             placeImage.setImageURI(Uri.parse(place.getImages().get(0).getImagePath()));
         }

@@ -1,2 +1,1 @@
--keepattributes SourceFile,LineNumberTable
--keep class com.apptentive.android.sdk.** { *; }
+-dontwarn com.apptentive.android.**

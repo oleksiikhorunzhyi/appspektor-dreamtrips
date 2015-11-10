@@ -8,6 +8,11 @@
     android:keepScreenOn="true"
     android:orientation="vertical">
 
+    <me.dm7.barcodescanner.zbar.ZBarScannerView
+        android:id="@+id/scanner_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="300dp"
@@ -61,9 +66,5 @@
 
     </LinearLayout>
 
-    <me.dm7.barcodescanner.zbar.ZBarScannerView
-        android:id="@+id/scanner_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
 </RelativeLayout>

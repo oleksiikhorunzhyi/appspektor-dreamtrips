@@ -70,6 +70,7 @@ public class DtlPlacesHostFragment
 
     @Override
     public void showDetails(DtlPlace place) {
+        removeDetails();
         router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(true)

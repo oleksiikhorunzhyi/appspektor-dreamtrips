@@ -27,17 +27,17 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_cover_place_holder"/>
 
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewPagerBucketGallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"/>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_alignParentBottom="true"
                     android:layout_gravity="bottom"
                     android:background="@drawable/bucket_item_shadow"/>
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/viewPagerBucketGallery"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"/>
 
                 <me.relex.circleindicator.CircleIndicator
                     android:id="@+id/circleIndicator"

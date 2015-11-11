@@ -47,18 +47,20 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Inject
     BucketItemManager bucketItemManager;
-
     @Inject
     protected SnappyRepository db;
 
     protected BucketItem.BucketType type;
     protected String bucketItemId;
+    protected int ownerId;
+
     protected BucketItem bucketItem;
 
     public BucketDetailsBasePresenter(BucketBundle bundle) {
         super();
         type = bundle.getType();
         bucketItemId = bundle.getBucketItemUid();
+        ownerId = bundle.getOwnerId();
     }
 
     @Override
@@ -83,8 +85,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         syncUI(tasks);
     }
 
-    private void restoreBucketItem() {
-        bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
+    protected void restoreBucketItem() {
+        if (ownerId == 0) {
+            bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
+        } else {
+            bucketItem = getBucketItemManager().getSingleBucketItem(type, bucketItemId, ownerId);
+        }
     }
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {
@@ -162,7 +168,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                     .position(photos.indexOf(selectedPhoto))
                     .type(TripImagesListFragment.Type.FIXED_LIST)
                     .fixedList(photos)
-                    .foreign(bucketItem.getUser().getId() != appSessionHolder.get().get().getUser().getId())
+                    .foreign(bucketItem.getOwner().getId() != appSessionHolder.get().get().getUser().getId())
                     .build();
 
             view.openFullscreen(data);
@@ -300,7 +306,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
             if (event.getRequestType() == PickImageDelegate.REQUEST_MULTI_SELECT) {
                 Queryable.from(event.getImages()).forEachR(choseImage ->
-                        imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
+                        imageSelected(Uri.parse(choseImage.getFileThumbnail()), event.getRequestType()));
             } else {
                 Queryable.from(event.getImages()).forEachR(choseImage -> {
                     String fileThumbnail = choseImage.getFileThumbnail();

@@ -15,6 +15,7 @@
     <dimen name="size_small">24dp</dimen>
 
     <!-- typical spacing between views -->
+    <dimen name="spacing_huger">78dp</dimen>
     <dimen name="spacing_huge">40dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
@@ -85,5 +86,10 @@
     <dimen name="template_height">260dp</dimen>
 
     <dimen name="popup_filter_item_extra_space">80dp</dimen>
+
+    <dimen name="photo_picker_size">104dp</dimen>
+    <dimen name="picker_panel_height">228dp</dimen>
+    <dimen name="picker_panel_header_height">44dp</dimen>
+    <dimen name="picker_photo_spacing">1dp</dimen>
 
 </resources>

@@ -2,9 +2,6 @@
 <resources>
 
     <dimen name="feed_spacing">200dp</dimen>
-    <dimen name="tablet_details_spacing">200dp</dimen>
-
-
     ///////Post sizes
     <dimen name="post_spacing_horizontal">128dp</dimen>
     <dimen name="post_spacing_vertical">16dp</dimen>

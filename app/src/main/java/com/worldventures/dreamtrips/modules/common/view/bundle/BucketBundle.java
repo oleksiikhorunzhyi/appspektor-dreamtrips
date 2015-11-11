@@ -9,6 +9,8 @@ public class BucketBundle implements Parcelable {
 
     protected BucketItem.BucketType type;
     protected String bucketItemUid;
+    protected int ownerId;
+    //
     protected boolean lock;
     protected boolean slave;
 
@@ -21,14 +23,6 @@ public class BucketBundle implements Parcelable {
         this.type = BucketItem.BucketType.valueOf(type.toUpperCase());
     }
 
-    public void setBucketItemUid(String bucketItemUid) {
-        this.bucketItemUid = bucketItemUid;
-    }
-
-    public void setLock(boolean lock) {
-        this.lock = lock;
-    }
-
     public BucketItem.BucketType getType() {
         return type;
     }
@@ -37,8 +31,24 @@ public class BucketBundle implements Parcelable {
         return bucketItemUid;
     }
 
+    public void setBucketItemUid(String bucketItemUid) {
+        this.bucketItemUid = bucketItemUid;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public boolean isLock() {
         return lock;
+    }
+
+    public void setLock(boolean lock) {
+        this.lock = lock;
     }
 
     public boolean isSlave() {
@@ -59,6 +69,7 @@ public class BucketBundle implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
         dest.writeString(this.bucketItemUid);
+        dest.writeInt(this.ownerId);
         dest.writeByte(lock ? (byte) 1 : (byte) 0);
         dest.writeByte(slave ? (byte) 1 : (byte) 0);
     }
@@ -70,6 +81,7 @@ public class BucketBundle implements Parcelable {
         int tmpType = in.readInt();
         this.type = tmpType == -1 ? null : BucketItem.BucketType.values()[tmpType];
         this.bucketItemUid = in.readString();
+        this.ownerId = in.readInt();
         this.lock = in.readByte() != 0;
         this.slave = in.readByte() != 0;
     }

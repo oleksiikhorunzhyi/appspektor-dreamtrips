@@ -460,6 +460,11 @@
 
     <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
     <string name="search_friends">Search Friends</string>
+
+    <string name="feed_share_post">Share Post</string>
+    <string name="feed_share_photos">Share Photo</string>
+    <string name="feed_view_profile_btn">View Profile</string>
+    <string name="feed_close_friends">Close Friends</string>
     <string name="start_searching">Type to start searching</string>
 
     <plurals name="people_liked">
@@ -472,5 +477,14 @@
     <string name="terms_and_conditions_checkbox">Click here to accept terms and conditions</string>
     <string name="terms_and_conditions_accept">Opt In</string>
     <string name="terms_and_conditions_reject">Not Now</string>
+
+    <string name="camera">Camera</string>
+    <string name="add_from_facebook">Add from Facebook</string>
+
+    <string name="photos_selected">%d selected</string>
+
+    <string name="no_friends">You have no friends in this list yet</string>
+    <string name="feed_add_friends">Add friends</string>
+    <string name="all_friends">All friends</string>
 
 </resources>

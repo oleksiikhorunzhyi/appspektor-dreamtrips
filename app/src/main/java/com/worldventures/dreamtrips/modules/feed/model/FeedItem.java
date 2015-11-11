@@ -180,7 +180,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         String type = getTypeCaption(resources);
         String action = resources.getString(R.string.added);
 
-        User user = getItem().getUser();
+        User user = getItem().getOwner();
         if (user == null) {
             return "";
         }
@@ -195,7 +195,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
         String result;
         User actionOwner = links.getUsers().get(0);
-        boolean isAccountsItem = item == null || item.getUser() == null || accountId == item.getUser().getId();
+        boolean isAccountsItem = item == null || item.getOwner() == null || accountId == item.getOwner().getId();
         boolean ownAction = isAccountsItem && accountId == actionOwner.getId();
         String action = getActionCaption(resources, isAccountsItem, ownAction);
         String type = getTypeCaption(resources);

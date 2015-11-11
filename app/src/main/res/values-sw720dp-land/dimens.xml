@@ -9,6 +9,6 @@
 
     ///////Post sizes
     <dimen name="post_spacing_horizontal">256dp</dimen>
-    <dimen name="post_spacing_vertical">128dp</dimen>
+    <dimen name="post_spacing_vertical">30dp</dimen>
 
 </resources>

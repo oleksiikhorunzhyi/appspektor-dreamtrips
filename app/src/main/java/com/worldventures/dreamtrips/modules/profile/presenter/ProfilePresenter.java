@@ -19,9 +19,6 @@ import javax.inject.Inject;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends BaseFeedPresenter<T> {
 
-    public static final int HEADER_USER_POSITION = 0;
-    public static final int HEADER_COUNT = 1;
-
     protected U user;
     protected List<Circle> circles;
 
@@ -107,11 +104,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         makePost();
     }
 
-    @Override
-    protected void openUser(User user) {
-        if (this.user.getId() != user.getId()) {
-            super.openUser(user);
-        }
+    public User getUser() {
+        return user;
     }
 
     public interface View extends BaseFeedPresenter.View {

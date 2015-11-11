@@ -17,7 +17,7 @@ public class BucketDetailsRouteCreator implements RouteCreator<Integer> {
     public Route createRoute(Integer arg) {
         Optional<UserSession> userSessionOptional = appSessionHolder.get();
         if (userSessionOptional.isPresent()) {
-            if (arg == userSessionOptional.get().getUser().getId()) {
+            if (arg == null || arg.intValue() == userSessionOptional.get().getUser().getId()) {
                 return Route.DETAIL_BUCKET;
             } else {
                 return Route.DETAIL_FOREIGN_BUCKET;

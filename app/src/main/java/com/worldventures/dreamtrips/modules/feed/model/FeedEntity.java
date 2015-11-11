@@ -8,7 +8,11 @@ import java.util.List;
 
 public interface FeedEntity extends Serializable, UidItem {
 
+    User getOwner();
+
     String place();
+
+    void setOwner(User user);
 
     int getCommentsCount();
 
@@ -22,16 +26,12 @@ public interface FeedEntity extends Serializable, UidItem {
 
     int getLikesCount();
 
-    String getFirstUserLikedItem();
-
-    void setFirstUserLikedItem(String  fullName);
-
     boolean isLiked();
 
     void setLiked(boolean isLiked);
 
-    User getUser();
+    String getFirstLikerName();
 
-    void setUser(User user);
+    void setFirstLikerName(String fullName);
 
 }

@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.util.Log;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -23,7 +22,6 @@ import timber.log.Timber;
 public class FragmentCompass {
 
     private BaseActivity activity;
-    private OnTransactionListener onTransactionListener;
 
     private int containerId;
     private boolean backStackEnabled = true;
@@ -85,6 +83,10 @@ public class FragmentCompass {
         remove(Route.POST_CREATE.getClazzName());
     }
 
+    public void remove(Route route) {
+        remove(route.getClazzName());
+    }
+
     public void remove(String name) {
         if (validateState()) {
             FragmentManager fragmentManager = supportFragmentManager;
@@ -128,10 +130,6 @@ public class FragmentCompass {
                     case ADD:
                         fragmentTransaction.add(containerId, fragment, clazzName);
                         break;
-                }
-
-                if (onTransactionListener != null) {
-                    onTransactionListener.onTransactionDone(null, action);
                 }
 
                 if (backStackEnabled) {
@@ -198,10 +196,14 @@ public class FragmentCompass {
         return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
     }
 
+    public boolean empty() {
+        return getCurrentFragment() == null;
+    }
+
     protected void clearBackStack() {
         try {
             supportFragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
         }
     }
@@ -217,16 +219,9 @@ public class FragmentCompass {
         } catch (IllegalStateException e) {
             Timber.e(e, "Can't pop fragment"); //for avoid application crash when called at runtime
         }
-        if (onTransactionListener != null) {
-            onTransactionListener.onTransactionDone(null, Action.POP);
-        }
     }
 
     public enum Action {
         ADD, REPLACE, POP
-    }
-
-    public interface OnTransactionListener {
-        void onTransactionDone(Route route, Action action);
     }
 }

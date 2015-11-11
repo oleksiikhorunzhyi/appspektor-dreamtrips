@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.core.module;
 
+import android.content.Context;
+
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.HockeyInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
+import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
@@ -31,6 +34,11 @@ public class InitializerModule {
         return injector -> {
             //nothing to do here
         };
+    }
+
+    @Provides(type = Provides.Type.SET)
+    AppInitializer provideJodaInitializer(Context context) {
+        return new JodaTimeInitializer(context);
     }
 
     @Provides(type = Provides.Type.SET)

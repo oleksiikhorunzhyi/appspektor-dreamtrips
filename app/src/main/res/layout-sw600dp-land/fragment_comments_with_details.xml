@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <include layout="@layout/adapter_item_add_comment"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/comments_additional_info_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+    </FrameLayout>
+
+</LinearLayout>

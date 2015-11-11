@@ -113,7 +113,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void addItems(int index, List<BaseItemClass> result) {
         if (result != null) {
             this.items.addAll(index, result);
-            this.notifyDataSetChanged();
+            this.notifyItemRangeInserted(index, result.size());
         }
     }
 
@@ -160,10 +160,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     @Override
-    public void addItems(ArrayList<BaseItemClass> baseItemClasses) {
-        if (baseItemClasses != null) {
-            this.items.addAll(baseItemClasses);
-            this.notifyDataSetChanged();
+    public void addItems(ArrayList<BaseItemClass> items) {
+        if (items != null) {
+            this.items.addAll(items);
+            this.notifyItemRangeInserted(items.size(), items.size());
         }
     }
 
@@ -174,11 +174,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     public void updateItem(BaseItemClass changedItem) {
         Queryable.from(items).forEachR(item -> {
+            if (!item.equals(changedItem)) return;
             int position = items.indexOf(item);
-            if (changedItem.equals(item)) {
-                items.set(position, changedItem);
-                notifyItemChanged(position);
-            }
+            items.set(position, changedItem);
+            notifyItemChanged(position);
         });
     }
 

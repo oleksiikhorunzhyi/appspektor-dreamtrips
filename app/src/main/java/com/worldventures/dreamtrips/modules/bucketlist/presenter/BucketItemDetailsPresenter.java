@@ -123,8 +123,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     private void updateBucketItem(BucketItem updatedItem) {
         BucketItem tempItem = bucketItem;
         bucketItem = updatedItem;
-        if (bucketItem.getUser() == null) {
-            bucketItem.setUser(tempItem.getUser());
+        if (bucketItem.getOwner() == null) {
+            bucketItem.setOwner(tempItem.getOwner());
         }
         bucketItemManager.saveSingleBucketItem(bucketItem);
     }

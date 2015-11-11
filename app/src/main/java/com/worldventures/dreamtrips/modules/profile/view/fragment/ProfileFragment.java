@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -43,12 +44,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         calculateScrollArea();
     }
 
-    private void calculateScrollArea(){
+    private void calculateScrollArea() {
         TypedValue tv = new TypedValue();
         int actionBarHeight = 0;
-        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         int profilePhotoHeight = getResources().getDimensionPixelSize(R.dimen.profile_cover_height);
         scrollArea = profilePhotoHeight - actionBarHeight;
@@ -58,6 +58,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
+        feedView.addItemDecoration(new SideMarginsItemDecorator());
         feedView.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);
@@ -138,7 +139,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     }
 
     @Override
-    protected BaseArrayListAdapter getAdapter() {
+    protected BaseArrayListAdapter createAdapter() {
         return new IgnoreFirstItemAdapter(feedView.getContext(), this);
     }
 
@@ -147,4 +148,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         feedView.getAdapter().notifyDataSetChanged();
     }
 
+    @Override
+    protected void openUser(User user) {
+        if (this.getPresenter().getUser().getId() != user.getId()) {
+            super.openUser(user);
+        } else {
+            feedView.smoothScrollToPosition(0);
+        }
+    }
 }

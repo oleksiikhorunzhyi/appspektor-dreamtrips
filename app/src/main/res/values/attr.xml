@@ -13,4 +13,10 @@
     <declare-styleable name="FlagView">
         <attr name="icon"/>
     </declare-styleable>
+    <declare-styleable name="SquareLayout">
+        <attr name="side_priority" format="enum">
+            <enum name="height" value="0"/>
+            <enum name="width" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

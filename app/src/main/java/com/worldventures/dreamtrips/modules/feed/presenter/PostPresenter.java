@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -13,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
+import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
@@ -22,11 +25,11 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.State;
-
 
 public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
 
@@ -253,21 +256,35 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     /////// Photo picking
     ////////////////////////////////////////
 
+    public void onEvent(AttachPhotoEvent event) {
+        if (event.getRequestType() != -1)
+            pickImage(event.getRequestType());
+    }
+
     public void pickImage(int requestType) {
         eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
         if (event.getRequesterID() == REQUESTER_ID) {
-            view.disableImagePicker();
             eventBus.removeStickyEvent(event);
-            String fileThumbnail = event.getImages()[0].getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                imageSelected(Uri.parse(fileThumbnail).toString());
-            } else {
-                imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
-            }
 
+            attachImages(Queryable.from(event.getImages()).toList());
+        }
+    }
+
+    public void attachImages(List<ChosenImage> photos) {
+        if (photos.size() == 0) {
+            return;
+        }
+
+        view.disableImagePicker();
+
+        String fileThumbnail = photos.get(0).getFileThumbnail();
+        if (ValidationUtils.isUrl(fileThumbnail)) {
+            imageSelected(Uri.parse(fileThumbnail).toString());
+        } else {
+            imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
         }
     }
 

@@ -203,7 +203,7 @@ public class DtlPlace implements Parcelable {
         return !filterData.isDistanceEnabled()
                 || currentLocation == null
                 || LocationHelper.checkLocation(filterData.getMaxDistance(), currentLocation,
-                new LatLng(coordinates.getLat(), coordinates.getLng()));
+                new LatLng(coordinates.getLat(), coordinates.getLng()), filterData.getDistance());
     }
 
 }

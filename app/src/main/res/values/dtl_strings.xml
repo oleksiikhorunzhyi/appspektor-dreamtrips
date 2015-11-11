@@ -18,7 +18,7 @@
     <string name="dtl_field_validation_empty_input_error">Cannot be empty!</string>
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
-    <string name="dtl_distance">Distance(miles)</string>
+    <string name="dtl_distance">Distance</string>
 
     <string name="dtl_receipt_hint">Enter amount in USD</string>
     <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
@@ -88,4 +88,7 @@
 
     <string name="pdf">PDF</string>
     <string name="presentation">Presentation</string>
+
+    <string name="miles">kms/&lt;b>miles&lt;/b></string>
+    <string name="kms">&lt;b>kms&lt;/b>/miles</string>
 </resources>

@@ -30,7 +30,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
             dtlFilterData = new DtlFilterData();
         }
 
-        view.setDistanceFilterEnabled(dtlFilterData.isDistanceEnabled());
+        view.attachFilterData(dtlFilterData);
     }
 
     public void onEvent(CheckFiltersEvent event) {
@@ -39,13 +39,13 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
 
     private void findCurrentLocation(DtlLocation selectedLocation) {
         locationDelegate.getLastKnownLocation(location -> locationObtained(location, selectedLocation),
-                () -> view.setDistanceFilterEnabled(dtlFilterData.isDistanceEnabled()));
+                () -> view.attachFilterData(dtlFilterData));
     }
 
     private void locationObtained(Location location, DtlLocation selectedLocation) {
         if (LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
                 new LatLng(location.getLatitude(), location.getLongitude()),
-                selectedLocation.getCoordinates().asLatLng())) {
+                selectedLocation.getCoordinates().asLatLng(), DtlFilterData.Distance.MILES)) {
             dtlFilterData.setDistanceEnabled(true);
         } else {
             dtlFilterData.setDistanceEnabled(false);
@@ -64,15 +64,18 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         eventBus.post(new DtlFilterEvent(dtlFilterData));
     }
 
+    public void distanceToggle() {
+        dtlFilterData.toggleDistance();
+        view.attachFilterData(dtlFilterData);
+    }
+
     public void resetAll() {
         dtlFilterData.reset();
         eventBus.post(new DtlFilterEvent(dtlFilterData));
-        view.resetFilters();
+        view.attachFilterData(dtlFilterData);
     }
 
     public interface View extends Presenter.View {
-        void setDistanceFilterEnabled(boolean enabled);
-
-        void resetFilters();
+        void attachFilterData(DtlFilterData filterData);
     }
 }

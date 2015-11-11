@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
+
+import com.worldventures.dreamtrips.R;
 
 public class DtlFilterData implements Parcelable {
 
@@ -15,6 +18,8 @@ public class DtlFilterData implements Parcelable {
     private int maxDistance;
     private boolean distanceEnabled;
 
+    private Distance distance;
+
     public DtlFilterData() {
         reset();
     }
@@ -24,6 +29,7 @@ public class DtlFilterData implements Parcelable {
         maxPrice = in.readInt();
         maxDistance = in.readInt();
         distanceEnabled = in.readInt() != 0;
+        distance = (Distance) in.readSerializable();
     }
 
     public static final Creator<DtlFilterData> CREATOR = new Creator<DtlFilterData>() {
@@ -42,6 +48,7 @@ public class DtlFilterData implements Parcelable {
         minPrice = MIN_PRICE;
         maxPrice = MAX_PRICE;
         maxDistance = MAX_DISTANCE;
+        distance = Distance.MILES;
     }
 
     public int getMinPrice() {
@@ -73,6 +80,10 @@ public class DtlFilterData implements Parcelable {
         this.distanceEnabled = distanceEnabled;
     }
 
+    public Distance getDistance() {
+        return distance;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,5 +95,33 @@ public class DtlFilterData implements Parcelable {
         dest.writeInt(maxPrice);
         dest.writeInt(maxDistance);
         dest.writeInt(distanceEnabled ? 1 : 0);
+        dest.writeSerializable(distance);
+    }
+
+    public void toggleDistance() {
+        if (distance == Distance.KMS) distance = Distance.MILES;
+        else distance = Distance.KMS;
+    }
+
+
+    public enum Distance {
+        MILES(R.string.miles, true), KMS(R.string.kms, false);
+
+        @StringRes
+        int textResId;
+        boolean selected;
+
+        Distance(@StringRes int textResId, boolean selected) {
+            this.textResId = textResId;
+            this.selected = selected;
+        }
+
+        public int getTextResId() {
+            return textResId;
+        }
+
+        public boolean isSelected() {
+            return selected;
+        }
     }
 }

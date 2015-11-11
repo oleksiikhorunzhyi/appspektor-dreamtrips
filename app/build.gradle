@@ -33,7 +33,7 @@ android {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
 
         multiDexEnabled true

@@ -81,12 +81,8 @@
     <string name="dtl_merchant_submitted">Congratulations! Merchant has been submitted. You will be informed once they get approved</string>
     <string name="pdf">PDF</string>
     <string name="presentation">Presentation</string>
-<<<<<<< Updated upstream
-
-=======
     <string name="dtl_open_now">Open now</string>
     <string name="dtl_closed">Closed</string>
->>>>>>> Stashed changes
     <string name="miles">kms/&lt;b>miles&lt;/b></string>
     <string name="kms">&lt;b>kms&lt;/b>/miles</string>
 </resources>

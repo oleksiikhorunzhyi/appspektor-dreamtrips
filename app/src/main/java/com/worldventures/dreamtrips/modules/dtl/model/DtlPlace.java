@@ -234,5 +234,4 @@ public class DtlPlace implements Parcelable {
 
         return placeAmenities == null || !Collections.disjoint(selectedAmenities, placeAmenities);
     }
-
 }

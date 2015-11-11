@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
@@ -38,6 +39,9 @@ public class DtlPlacesHostFragment
     }
 
     private void showMaster() {
+        Fragment placesTabsFragment = getChildFragmentManager().findFragmentById(R.id.dtl_master_container);
+        if (placesTabsFragment != null && placesTabsFragment.getClass().getName()
+                .equals(Route.DTL_PLACES_LIST.getClazzName())) return;
         router.moveTo(Route.DTL_PLACES_LIST, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_master_container)
                 .backStackEnabled(false)

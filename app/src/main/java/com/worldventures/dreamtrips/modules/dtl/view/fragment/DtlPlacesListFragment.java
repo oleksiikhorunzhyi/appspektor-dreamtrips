@@ -13,12 +13,15 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.List;
 

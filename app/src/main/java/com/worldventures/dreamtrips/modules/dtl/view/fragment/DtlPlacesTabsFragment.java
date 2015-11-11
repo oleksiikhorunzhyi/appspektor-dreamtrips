@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,6 +22,8 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapt
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -45,6 +48,8 @@ public class DtlPlacesTabsFragment
     BasePagerAdapter<DataFragmentItem> adapter;
     @State
     int currentPosition;
+    @State
+    String lastQuery;
 
     @Override
     protected DtlPlacesTabsPresenter createPresenter(Bundle savedInstanceState) {
@@ -80,6 +85,12 @@ public class DtlPlacesTabsFragment
             }
         });
         toolbar.inflateMenu(R.menu.menu_dtl_list);
+        MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
+        new DtlPlaceSearchViewDelegate(getContext()).init(searchItem, lastQuery, query -> {
+            lastQuery = query;
+            eventBus.post(new DtlSearchPlaceRequestEvent(query));
+        });
+
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_map:
@@ -119,13 +130,16 @@ public class DtlPlacesTabsFragment
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
         }
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
-        toolbar.findViewById(R.id.spinnerStyledTitle).setOnClickListener(v ->
-                router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-                        .backStackEnabled(false)
-                        .containerId(R.id.dtl_container)
-                        .fragmentManager(getParentFragment().getFragmentManager())
-                        .build()));
-        ((TextView) toolbar.findViewById(R.id.spinnerStyledTitle)).setText(location.getLongName());
+        View title = toolbar.findViewById(R.id.spinnerStyledTitle);
+        if (title != null) {
+            title.setOnClickListener(v ->
+                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                            .backStackEnabled(false)
+                            .containerId(R.id.dtl_container)
+                            .fragmentManager(getParentFragment().getFragmentManager())
+                            .build()));
+            ((TextView) title).setText(location.getLongName());
+        }
     }
 
     @Override

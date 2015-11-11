@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,7 +19,9 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -40,6 +43,9 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @State
     LatLng selectedLocation;
 
+    @State
+    String lastQuery;
+
     private ClusterManager<DtlClusterItem> clusterManager;
 
     @Override
@@ -52,6 +58,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
+        MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
+        new DtlPlaceSearchViewDelegate(getContext()).init(searchItem, lastQuery, query -> {
+            lastQuery = query;
+            eventBus.post(new DtlSearchPlaceRequestEvent(query));
+        });
+
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:

@@ -23,6 +23,7 @@ import icepick.State;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
@@ -57,7 +58,9 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         locationDelegate.getLastKnownLocation()
                 .compose(new IoToMainComposer<>())
                 .subscribe(location ->
-                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude()));
+                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude()), throwable -> {
+                    Timber.e(this.getClass().getSimpleName(), throwable);
+                });
     }
 
     public void onMapLoaded() {

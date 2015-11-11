@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -38,7 +38,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
     private LatLng currentLocation;
 
-    public DtlMapPresenter(PlacesBundle bundle) {
+    public DtlMapPresenter(PlacesMapBundle bundle) {
         location = bundle.getLocation();
     }
 

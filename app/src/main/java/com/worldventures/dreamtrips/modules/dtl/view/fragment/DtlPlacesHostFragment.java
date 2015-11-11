@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
@@ -12,6 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
 
@@ -38,7 +38,12 @@ public class DtlPlacesHostFragment
     }
 
     private void showMaster() {
-        moveToRoute(Route.DTL_PLACES_LIST, R.id.dtl_master_container);
+        router.moveTo(Route.DTL_PLACES_LIST, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.dtl_master_container)
+                .backStackEnabled(false)
+                .fragmentManager(getChildFragmentManager())
+                .data(getArgs())
+                .build());
     }
 
     /**
@@ -46,21 +51,17 @@ public class DtlPlacesHostFragment
      */
     private void tryShowSlave() {
         if (tabletAnalytic.isTabletLandscape()) {
-            moveToRoute(Route.DTL_MAP, R.id.dtl_landscape_slave_container);
+            router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment()
+                    .containerId(R.id.dtl_landscape_slave_container)
+                    .backStackEnabled(false)
+                    .fragmentManager(getChildFragmentManager())
+                    .data(new PlacesMapBundle(getArgs().getLocation(), true))
+                    .build());
             landscapeSlave.setVisibility(View.VISIBLE);
         } else {
             removeDetails();
             landscapeSlave.setVisibility(View.GONE);
         }
-    }
-
-    private void moveToRoute(Route route, @IdRes int containerId) {
-        router.moveTo(route, NavigationConfigBuilder.forFragment()
-                .containerId(containerId)
-                .backStackEnabled(false)
-                .fragmentManager(getChildFragmentManager())
-                .data(getArgs())
-                .build());
     }
 
     private void removeDetails() {

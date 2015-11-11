@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.view;
+package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlCategoryDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
@@ -207,7 +208,7 @@ public class DtlPlaceDetailsFragment
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(false)
                 .fragmentManager(getFragmentManager())
-                .data(placesBundle)
+                .data(new PlacesMapBundle(placesBundle.getLocation(), true))
                 .build());
     }
 

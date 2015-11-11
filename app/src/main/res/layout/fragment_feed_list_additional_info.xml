@@ -31,48 +31,42 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/circle_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_small"
+                android:layout_gravity="center_horizontal"
+                android:textSize="18sp"
+                tools:text="@string/feed_close_friends"
+                android:drawableRight="@drawable/ic_arrow_filter"
+                android:drawablePadding="@dimen/spacing_tiny"/>
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing_small">
-
-                <TextView
-                    android:id="@+id/circle_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    tools:text="@string/feed_close_friends"/>
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-
-                <ImageView
-                    android:id="@+id/circle_filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:nestedScrollingEnabled="false"
-                    android:padding="@dimen/spacing_tiny"
-                    android:src="@drawable/ic_success_story_filters_normal"/>
-
-            </LinearLayout>
+                android:layout_height="1dp"
+                android:background="@color/grey_lighter"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/feed_friend_empty_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
+                    android:paddingTop="@dimen/spacing_huge"
+                    android:paddingBottom="@dimen/spacing_huge"
+                    android:paddingLeft="@dimen/spacing_huger"
+                    android:paddingRight="@dimen/spacing_huger"
                     android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_friends_placeholder"
+                        android:layout_gravity="center_horizontal"/>
 
                     <TextView
                         android:id="@+id/caption"
@@ -81,8 +75,8 @@
                         android:layout_alignParentTop="true"
                         android:alpha="0.54"
                         android:gravity="center"
-                        android:padding="25dp"
-                        android:text="@string/filter_no_results"
+                        android:layout_marginTop="34dp"
+                        android:text="@string/no_friends"
                         android:textColor="@android:color/black"
                         android:textSize="18dp"/>
 
@@ -94,12 +88,12 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center"
-                        android:padding="25dp"
-                        android:text="@string/friend_global_search"
+                        android:layout_marginTop="34dp"
+                        android:text="@string/feed_add_friends"
                         android:textColor="#3D76A1"
                         android:textSize="22dp"/>
 
-                </RelativeLayout>
+                </LinearLayout>
 
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView

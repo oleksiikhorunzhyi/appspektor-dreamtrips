@@ -15,6 +15,7 @@
     <dimen name="size_small">24dp</dimen>
 
     <!-- typical spacing between views -->
+    <dimen name="spacing_huger">78dp</dimen>
     <dimen name="spacing_huge">40dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>

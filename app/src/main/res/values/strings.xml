@@ -476,4 +476,8 @@
 
     <string name="photos_selected">%d selected</string>
 
+    <string name="no_friends">You have no friends in this list yet</string>
+    <string name="feed_add_friends">Add friends</string>
+    <string name="all_friends">All friends</string>
+
 </resources>

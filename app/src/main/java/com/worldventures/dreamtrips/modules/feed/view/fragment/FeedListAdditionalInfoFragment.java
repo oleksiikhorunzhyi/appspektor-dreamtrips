@@ -49,8 +49,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     ViewGroup closeFriends;
     @InjectView(R.id.lv_close_friends)
     EmptyRecyclerView lvCloseFriends;
-    @InjectView(R.id.circle_filter)
-    ImageView circleFilter;
     @InjectView(R.id.circle_title)
     TextView circleTitle;
     @InjectView(R.id.feed_friend_empty_view)
@@ -120,9 +118,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     @Override
     public void showCirclePicker(@NonNull List<Circle> circles, Circle activeCircle) {
         if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
-            filterPopupWindow = new CirclesFilterPopupWindow(circleFilter.getContext());
+            filterPopupWindow = new CirclesFilterPopupWindow(circleTitle.getContext());
             filterPopupWindow.setCircles(circles);
-            filterPopupWindow.setAnchorView(circleFilter);
+            filterPopupWindow.setAnchorView(circleTitle);
             filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
                 filterPopupWindow.dismiss();
                 getPresenter().circlePicked(circles.get(position));
@@ -190,7 +188,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         openSearch();
     }
 
-    @OnClick(R.id.circle_filter)
+    @OnClick(R.id.circle_title)
     protected void onCircleFilterClicked() {
         getPresenter().onCircleFilterClicked();
     }

@@ -16,7 +16,8 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -35,7 +36,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     //
-    PlacesBundle bundle;
+    PlacesMapBundle bundle;
     @State
     LatLng selectedLocation;
 
@@ -127,7 +128,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(dtlPlace)
+                .data(new PlaceDetailsBundle(dtlPlace, bundle.isSlave()))
                 .build());
     }
 
@@ -162,7 +163,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void initToolbar(DtlLocation location) {
         FragmentManager fragmentManager;
-        if (!tabletAnalytic.isTabletLandscape()) {
+        if (!tabletAnalytic.isTabletLandscape() || !bundle.isSlave()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             fragmentManager = getFragmentManager();
             toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());

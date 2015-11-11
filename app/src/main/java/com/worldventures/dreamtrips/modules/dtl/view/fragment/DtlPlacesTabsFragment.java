@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -84,7 +84,7 @@ public class DtlPlacesTabsFragment
             switch (item.getItemId()) {
                 case R.id.action_map:
                     router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment().useDefaults()
-                            .data(getArgs())
+                            .data(new PlacesMapBundle(getArgs().getLocation(), false))
                             .fragmentManager(getParentFragment().getFragmentManager())
                             .containerId(R.id.dtl_container)
                             .build());

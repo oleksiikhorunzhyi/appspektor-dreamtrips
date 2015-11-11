@@ -24,7 +24,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_map_info)
 public class DtlMapInfoFragment
-        extends BaseFragmentWithArgs<DtlMapInfoPresenter, DtlPlace>
+        extends BaseFragmentWithArgs<DtlMapInfoPresenter, PlaceDetailsBundle>
         implements DtlMapInfoPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
@@ -32,7 +32,7 @@ public class DtlMapInfoFragment
 
     @Override
     protected DtlMapInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlMapInfoPresenter(getArgs());
+        return new DtlMapInfoPresenter(getArgs().getPlace());
     }
 
     @Override
@@ -87,7 +87,7 @@ public class DtlMapInfoFragment
 
     @Override
     public void showDetails(DtlPlace place) {
-        if (tabletAnalytic.isTabletLandscape()) {
+        if (tabletAnalytic.isTabletLandscape() && getArgs().isSlave()) {
             eventBus.post(new PlaceClickedEvent(place));
         } else {
             router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()

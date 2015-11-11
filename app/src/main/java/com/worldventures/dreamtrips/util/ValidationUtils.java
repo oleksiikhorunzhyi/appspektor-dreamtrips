@@ -6,8 +6,6 @@ import android.util.Patterns;
 import com.techery.spares.utils.ValidationUtils.VResult;
 import com.worldventures.dreamtrips.R;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,12 +48,7 @@ public class ValidationUtils {
     }
 
 
-    public static boolean isUrl(String urlS) {
-        try {
-            URL url = new URL(urlS);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+    public static boolean isUrl(String path) {
+        return Patterns.WEB_URL.matcher(path).matches();
     }
 }

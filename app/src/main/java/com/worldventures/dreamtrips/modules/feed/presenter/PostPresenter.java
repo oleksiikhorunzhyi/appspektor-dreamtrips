@@ -17,13 +17,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
-import com.worldventures.dreamtrips.util.ValidationUtils;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
@@ -281,11 +279,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         view.disableImagePicker();
 
         String fileThumbnail = photos.get(0).getFileThumbnail();
-        if (ValidationUtils.isUrl(fileThumbnail)) {
-            imageSelected(Uri.parse(fileThumbnail).toString());
-        } else {
-            imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
-        }
+        imageSelected(Uri.parse(fileThumbnail).toString());
     }
 
     private void imageSelected(String filePath) {

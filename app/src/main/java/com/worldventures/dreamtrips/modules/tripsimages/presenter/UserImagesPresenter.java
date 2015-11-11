@@ -9,9 +9,7 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.util.ValidationUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
@@ -52,11 +50,7 @@ public class UserImagesPresenter extends TripImagesListPresenter {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
             String fileThumbnail = event.getImages()[0].getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
-            } else {
-                imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
-            }
+            imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
         }
     }
 

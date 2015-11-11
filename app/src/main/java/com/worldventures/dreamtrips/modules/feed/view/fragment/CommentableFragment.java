@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -103,7 +104,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         layout = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(adapter);
-        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         if (getArgs().isOpenKeyboard()) {
             SoftInputUtil.showSoftInputMethod(input);

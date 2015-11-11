@@ -129,7 +129,7 @@
 
         <activity
             android:name="com.apptentive.android.sdk.ViewActivity"
-            android:theme="@style/Apptentive.Theme.Transparent"/>
+            android:theme="@style/ApptentiveTheme.Transparent"/>
         <activity
             android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
             android:windowSoftInputMode="adjustPan"/>

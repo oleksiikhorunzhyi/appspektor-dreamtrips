@@ -19,6 +19,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
 
@@ -64,7 +67,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
             dtlPlaces.addAll(db.getDtlPlaces(type));
         }
 
-        showPins();
+        performFiltering();
         checkPendingMapInfo();
     }
 
@@ -76,16 +79,22 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         view.showPlaceInfo(place);
     }
 
-    private void showPins() {
+    private void performFiltering() {
+        Observable.from(dtlPlaces)
+                .filter(dtlPlace ->
+                        dtlPlace.applyFilter(dtlFilterData, currentLocation))
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::showPins);
+    }
+
+    private void showPins(List<DtlPlace> filtered) {
         if (view != null) {
             view.clearMap();
-            List<DtlPlace> filtered = Queryable.from(dtlPlaces).filter(dtlPlace ->
-                    dtlPlace.applyFilter(dtlFilterData, currentLocation)).toList();
-
-            for (DtlPlace dtlPlace : filtered) {
-                view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),
-                        dtlPlace.getCoordinates().getLng()), dtlPlace.getPartnerStatus());
-            }
+            Queryable.from(filtered).forEachR(dtlPlace ->
+                    view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),
+                            dtlPlace.getCoordinates().getLng()), dtlPlace.getPartnerStatus()));
         }
     }
 
@@ -107,7 +116,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     public void onEventMainThread(DtlFilterEvent event) {
         dtlFilterData = event.getDtlFilterData();
         if (mapReady)
-            showPins();
+            performFiltering();
     }
 
     public interface View extends Presenter.View {

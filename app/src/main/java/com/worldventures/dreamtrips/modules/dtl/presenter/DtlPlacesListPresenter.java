@@ -17,6 +17,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> {
 
@@ -67,8 +70,13 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     }
 
     private void performFiltering() {
-        view.setItems(Queryable.from(dtlPlaces).filter(dtlPlace ->
-                dtlPlace.applyFilter(dtlFilterData, currentLocation)).toList());
+        Observable.from(dtlPlaces)
+                .filter(dtlPlace ->
+                        dtlPlace.applyFilter(dtlFilterData, currentLocation))
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(view::setItems);
     }
 
     public void onEventMainThread(PlacesUpdateFinished event) {

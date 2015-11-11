@@ -167,7 +167,9 @@ public class DtlPlaceDetailsFragment
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
             contactView.setText(contact.text);
             if (Linkify.addLinks(contactView, Linkify.ALL)) SpanUtils.stripUnderlines(contactView);
-            if (contact.intent != null) contactView.setOnClickListener(view -> startActivity(contact.intent));
+            if (contact.intent != null && contact.intent
+                    .resolveActivityInfo(getActivity().getPackageManager(), 0) != null)
+                contactView.setOnClickListener(view -> startActivity(contact.intent));
             additionalContainer.addView(contactView);
         });
 

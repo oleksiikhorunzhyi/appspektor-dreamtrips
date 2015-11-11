@@ -3,13 +3,18 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,22 +24,32 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
 
     @Inject
     LocationDelegate locationDelegate;
-
+    @Inject
+    SnappyRepository db;
     @State
     DtlFilterData dtlFilterData;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        if (dtlFilterData == null) {
+        if (dtlFilterData == null)
             dtlFilterData = new DtlFilterData();
-        }
 
-        view.attachFilterData(dtlFilterData);
+        attachAmenities();
     }
 
     public void onEvent(CheckFiltersEvent event) {
         findCurrentLocation(event.getDtlLocation());
+    }
+
+    public void onEvent(PlacesUpdateFinished event) {
+        attachAmenities();
+    }
+
+    private void attachAmenities() {
+        List<DtlAttribute> amenities = db.getAmenities();
+        dtlFilterData.setAmenities(amenities);
+        view.attachFilterData(dtlFilterData);
     }
 
     private void findCurrentLocation(DtlLocation selectedLocation) {

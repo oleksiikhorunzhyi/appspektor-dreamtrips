@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.DtlPlaceDetailsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;

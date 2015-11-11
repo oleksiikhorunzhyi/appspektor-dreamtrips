@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.view;
+package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;

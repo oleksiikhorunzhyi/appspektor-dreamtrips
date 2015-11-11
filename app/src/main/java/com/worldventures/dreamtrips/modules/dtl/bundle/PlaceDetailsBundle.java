@@ -4,9 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
 
 /**
- * Bundle to be supplied when navigating to {@link com.worldventures.dreamtrips.modules.dtl.view.DtlPlaceDetailsFragment}
+ * Bundle to be supplied when navigating to {@link DtlPlaceDetailsFragment}
  */
 public class PlaceDetailsBundle implements Parcelable {
 

@@ -5,6 +5,7 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
@@ -53,8 +54,11 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     private void findCurrentLocation(DtlLocation selectedLocation) {
-        locationDelegate.getLastKnownLocation(location -> locationObtained(location, selectedLocation),
-                () -> view.attachFilterData(dtlFilterData));
+        locationDelegate.getLastKnownLocation()
+                .compose(new IoToMainComposer<>())
+                .subscribe(location -> locationObtained(location, selectedLocation), e -> {
+                        },
+                        () -> view.attachFilterData(dtlFilterData));
     }
 
     private void locationObtained(Location location, DtlLocation selectedLocation) {

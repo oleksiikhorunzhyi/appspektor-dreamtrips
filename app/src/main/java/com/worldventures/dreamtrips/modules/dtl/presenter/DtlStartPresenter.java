@@ -4,6 +4,8 @@ import android.location.Location;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
@@ -14,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import javax.inject.Inject;
 
 import icepick.State;
-import rx.Subscription;
+import timber.log.Timber;
 
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
@@ -43,16 +45,20 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         view.checkPermissions();
     }
 
-    private Subscription locationSubscription;
-
     public void permissionGranted() {
-        locationSubscription = locationDelegate.requestLocationUpdates(view::resolutionRequired,
-                this::onLocationObtained,
-                this::onLocationError);
+        view.bind(locationDelegate.requestLocationUpdate()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::onLocationObtained, this::onLocationError);
+    }
+
+    private void onStatusError(Status status) {
+        view.resolutionRequired(status);
     }
 
     private void onLocationError(Throwable e) {
-        eventBus.post(new LocationObtainedEvent());
+        if (e instanceof LocationDelegate.LocationException)
+            onStatusError(((LocationDelegate.LocationException) e).getStatus());
+        else Timber.e(e, "Something went wrong while location update");
     }
 
     private void onLocationObtained(Location location) {
@@ -63,14 +69,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         eventBus.post(new LocationObtainedEvent());
     }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        if (locationSubscription != null && !locationSubscription.isUnsubscribed())
-            locationSubscription.unsubscribe();
-    }
-
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
         void checkPermissions();
 
         void resolutionRequired(Status status);

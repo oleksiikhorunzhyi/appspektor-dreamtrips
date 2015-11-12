@@ -6,14 +6,11 @@ import android.location.Location;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import rx.Observable;
 
 public class LocationDelegate {
 
@@ -23,38 +20,45 @@ public class LocationDelegate {
         reactiveLocationProvider = new ReactiveLocationProvider(context);
     }
 
-    public Subscription getLastKnownLocation(Action1<Location> onLastKnownLocationObtained) {
-        return getLastKnownLocation(onLastKnownLocationObtained, () -> {
-        });
+    public Observable<Location> getLastKnownLocation() {
+        return reactiveLocationProvider.getLastKnownLocation()
+                .switchIfEmpty(requestLocationUpdate());
     }
 
-
-    public Subscription getLastKnownLocation(Action1<Location> onLastKnownLocationObtained, Action0 onComplete) {
-        return reactiveLocationProvider.getLastKnownLocation().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(onLastKnownLocationObtained, throwable -> {
-                }, onComplete);
+    public Observable<Location> requestLocationUpdate() {
+        return checkSettings().flatMap(this::settingsResultObtained);
     }
 
-    public Subscription requestLocationUpdates(Action1<Status> onResolutionRequired,
-                                               Action1<Location> onLocationObtained,
-                                               Action1<Throwable> onLocationError) {
-        LocationRequest request = LocationRequest.create()
+    private Observable<LocationSettingsResult> checkSettings() {
+        return reactiveLocationProvider.checkLocationSettings(new LocationSettingsRequest.Builder()
+                .addLocationRequest(provideLocationRequest())
+                .setAlwaysShow(true)
+                .build());
+    }
+
+    private Observable<Location> settingsResultObtained(LocationSettingsResult locationSettingsResult) {
+        Status status = locationSettingsResult.getStatus();
+        if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED)
+            return Observable.error(new LocationException(status));
+        return reactiveLocationProvider.getUpdatedLocation(provideLocationRequest());
+    }
+
+    private LocationRequest provideLocationRequest() {
+        return LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
                 .setNumUpdates(1)
                 .setInterval(1000);
+    }
 
-        return reactiveLocationProvider.checkLocationSettings(
-                new LocationSettingsRequest.Builder()
-                        .addLocationRequest(request)
-                        .setAlwaysShow(true)
-                        .build()
-        ).doOnNext(locationSettingsResult -> {
-            Status status = locationSettingsResult.getStatus();
-            if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED)
-                onResolutionRequired.call(status);
-        }).flatMap(locationSettingsResult -> reactiveLocationProvider.getUpdatedLocation(request)
-        ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onLocationObtained, onLocationError);
+    public static class LocationException extends Exception {
+        Status status;
+
+        public LocationException(Status status) {
+            this.status = status;
+        }
+
+        public Status getStatus() {
+            return status;
+        }
     }
 }

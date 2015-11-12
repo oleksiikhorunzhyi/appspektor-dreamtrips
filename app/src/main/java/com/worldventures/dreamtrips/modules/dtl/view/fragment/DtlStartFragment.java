@@ -122,6 +122,7 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
+                        getPresenter().permissionGranted();
                         break;
                     case Activity.RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to

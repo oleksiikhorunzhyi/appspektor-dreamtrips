@@ -5,6 +5,7 @@ import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -15,9 +16,13 @@ public abstract class RxBaseFragment<PM extends Presenter> extends BaseFragment<
 
     private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
 
-    @Override
-    public final Observable<FragmentEvent> lifecycle() {
+    private Observable<FragmentEvent> lifecycle() {
         return lifecycleSubject.asObservable();
+    }
+
+    @Override
+    public <T> Observable<T> bind(Observable<T> observable) {
+        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
     }
 
     @Override

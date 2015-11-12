@@ -3,9 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -19,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import javax.inject.Inject;
 
 import icepick.State;
+import timber.log.Timber;
 
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
@@ -48,22 +46,19 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     }
 
     public void permissionGranted() {
-        locationDelegate.checkSettings()
-                .doOnNext(this::onSettingsObtained)
-                .flatMap(locationSettingsResult -> locationDelegate.requestLocationUpdate())
-                .compose(new IoToMainComposer<>())
-                .compose(RxLifecycle.bindFragment(view.lifecycle()))
+        view.bind(locationDelegate.requestLocationUpdate()
+                .compose(new IoToMainComposer<>()))
                 .subscribe(this::onLocationObtained, this::onLocationError);
     }
 
-    private void onSettingsObtained(LocationSettingsResult locationSettingsResult) {
-        Status status = locationSettingsResult.getStatus();
-        if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED)
-            view.resolutionRequired(status);
+    private void onStatusError(Status status) {
+        view.resolutionRequired(status);
     }
 
     private void onLocationError(Throwable e) {
-        locationNotGranted();
+        if (e instanceof LocationDelegate.LocationException)
+            onStatusError(((LocationDelegate.LocationException) e).getStatus());
+        else Timber.e(e, "Something went wrong while location update");
     }
 
     private void onLocationObtained(Location location) {

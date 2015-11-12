@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -19,15 +20,21 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragm
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
+
+import icepick.State;
 
 public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.View> {
 
     @Inject
     SnappyRepository db;
+    @State
+    boolean initialized;
 
     private DtlLocation location;
     private List<DtlPlaceType> dtlPlaceTypes;
@@ -45,26 +52,41 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         super.takeView(view);
         view.initToolbar(location);
         setTabs();
-        loadPlaces();
+
+        if (!initialized)
+            loadPlaces();
 
         eventBus.post(new CheckFiltersEvent(location));
     }
 
     private void loadPlaces() {
         doRequest(new GetDtlPlacesQuery(location.getLocationId()),
-                dtlPlaces -> {
-                    Map<DtlPlaceType, Collection<DtlPlace>> byType =
-                            Queryable.from(dtlPlaces).groupToMap(DtlPlace::getPartnerStatus);
-                    for (DtlPlaceType type : byType.keySet()) {
-                        updatePlacesByType(type, byType.get(type));
-                    }
-                    eventBus.post(new PlacesUpdateFinished());
-                },
+                this::placeLoaded,
                 spiceException -> {
                     super.handleError(spiceException);
                     eventBus.post(new PlacesUpdateFinished());
                 }
         );
+    }
+
+    private void placeLoaded(List<DtlPlace> dtlPlaces) {
+        Map<DtlPlaceType, Collection<DtlPlace>> byTypeMap =
+                Queryable.from(dtlPlaces).groupToMap(DtlPlace::getPartnerStatus);
+
+        Queryable.from(byTypeMap.keySet())
+                .forEachR(type -> updatePlacesByType(type, byTypeMap.get(type)));
+
+        saveAmenities(dtlPlaces);
+
+        eventBus.post(new PlacesUpdateFinished());
+    }
+
+    private void saveAmenities(List<DtlPlace> dtlPlaces) {
+        Set<DtlAttribute> amenitiesSet = new HashSet<>();
+        Queryable.from(dtlPlaces).forEachR(dtlPlace ->
+                amenitiesSet.addAll(dtlPlace.getAttributesAsMap().get(DtlPlace.AMENITIES)));
+
+        db.saveAmenities(amenitiesSet);
     }
 
     private void updatePlacesByType(DtlPlaceType type, Collection<DtlPlace> dtlPlaces) {

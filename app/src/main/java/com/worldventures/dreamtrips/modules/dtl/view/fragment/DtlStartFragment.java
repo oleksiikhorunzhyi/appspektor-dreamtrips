@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
 import com.techery.spares.annotations.Layout;
@@ -54,6 +55,10 @@ public class DtlStartFragment extends BaseFragment<DtlStartPresenter> implements
     }
 
     private void showDtlFilters() {
+        Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
+        if (filtersFragment != null && filtersFragment.getClass().getName()
+                .equals(Route.DTL_FILTERS.getClazzName())) return;
+
         router.moveTo(Route.DTL_FILTERS, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .containerId(R.id.container_filters)

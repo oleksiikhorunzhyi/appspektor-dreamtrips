@@ -11,6 +11,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -62,6 +64,7 @@ public class SnappyRepository {
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
+    public static final String DTL_AMENITIES = "DTL_AMENITIES";
 
     private Context context;
     private ExecutorService executorService;
@@ -143,7 +146,7 @@ public class SnappyRepository {
     // Public
     ///////////////////////////////////////////////////////////////////////////
 
-    public <T> void putList(String key, List<T> list) {
+    public <T> void putList(String key, Collection<T> list) {
         act(db -> db.put(key, list.toArray()));
     }
 
@@ -360,12 +363,16 @@ public class SnappyRepository {
     // Notifications counters
     ///////////////////////////////////////////////////////////////////////////
 
-    /** All notifications */
+    /**
+     * All notifications
+     */
     public void saveBadgeNotificationsCount(int notificationsCount) {
         act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
     }
 
-    /** All notifications */
+    /**
+     * All notifications
+     */
     public int getBadgeNotificationsCount() {
         return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
     }
@@ -394,7 +401,7 @@ public class SnappyRepository {
         return readList(CIRCLES, Circle.class);
     }
 
-    public void saveFilterCircle(Circle circle){
+    public void saveFilterCircle(Circle circle) {
         act(db -> db.put(FILTER_CIRCLE, circle));
     }
 
@@ -442,6 +449,15 @@ public class SnappyRepository {
     public void saveDtlPlaces(DtlPlaceType type, List<DtlPlace> places) {
         clearAllForKey(DTL_PLACES_PREFIX + type);
         putList(DTL_PLACES_PREFIX + type, places);
+    }
+
+    public void saveAmenities(Collection<DtlAttribute> amenities) {
+        clearAllForKey(DTL_AMENITIES);
+        putList(DTL_AMENITIES, amenities);
+    }
+
+    public List<DtlAttribute> getAmenities() {
+        return readList(DTL_AMENITIES, DtlAttribute.class);
     }
 
     public List<DtlPlace> getDtlPlaces(DtlPlaceType type) {

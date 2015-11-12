@@ -3,13 +3,18 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,33 +24,43 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
 
     @Inject
     LocationDelegate locationDelegate;
-
+    @Inject
+    SnappyRepository db;
     @State
     DtlFilterData dtlFilterData;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        if (dtlFilterData == null) {
+        if (dtlFilterData == null)
             dtlFilterData = new DtlFilterData();
-        }
 
-        view.setDistanceFilterEnabled(dtlFilterData.isDistanceEnabled());
+        attachAmenities();
     }
 
     public void onEvent(CheckFiltersEvent event) {
         findCurrentLocation(event.getDtlLocation());
     }
 
+    public void onEvent(PlacesUpdateFinished event) {
+        attachAmenities();
+    }
+
+    private void attachAmenities() {
+        List<DtlAttribute> amenities = db.getAmenities();
+        dtlFilterData.setAmenities(amenities);
+        view.attachFilterData(dtlFilterData);
+    }
+
     private void findCurrentLocation(DtlLocation selectedLocation) {
         locationDelegate.getLastKnownLocation(location -> locationObtained(location, selectedLocation),
-                () -> view.setDistanceFilterEnabled(dtlFilterData.isDistanceEnabled()));
+                () -> view.attachFilterData(dtlFilterData));
     }
 
     private void locationObtained(Location location, DtlLocation selectedLocation) {
         if (LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
                 new LatLng(location.getLatitude(), location.getLongitude()),
-                selectedLocation.getCoordinates().asLatLng())) {
+                selectedLocation.getCoordinates().asLatLng(), DtlFilterData.Distance.MILES)) {
             dtlFilterData.setDistanceEnabled(true);
         } else {
             dtlFilterData.setDistanceEnabled(false);
@@ -64,15 +79,18 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         eventBus.post(new DtlFilterEvent(dtlFilterData));
     }
 
+    public void distanceToggle() {
+        dtlFilterData.toggleDistance();
+        view.attachFilterData(dtlFilterData);
+    }
+
     public void resetAll() {
         dtlFilterData.reset();
         eventBus.post(new DtlFilterEvent(dtlFilterData));
-        view.resetFilters();
+        view.attachFilterData(dtlFilterData);
     }
 
     public interface View extends Presenter.View {
-        void setDistanceFilterEnabled(boolean enabled);
-
-        void resetFilters();
+        void attachFilterData(DtlFilterData filterData);
     }
 }

@@ -57,9 +57,6 @@ android {
     }
     productFlavors {
         dev {
-            // the same as stage but with minSdk=21
-            // to speed up multiDex dramatically
-            minSdkVersion 21
             applicationId "com.worldventures.dreamtrips.dev"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",

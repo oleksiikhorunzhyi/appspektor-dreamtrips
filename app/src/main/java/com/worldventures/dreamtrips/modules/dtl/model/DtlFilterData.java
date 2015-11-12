@@ -7,6 +7,7 @@ import android.support.annotation.StringRes;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DtlFilterData implements Parcelable {
@@ -30,6 +31,7 @@ public class DtlFilterData implements Parcelable {
     }
 
     public void reset() {
+        if (amenities == null) amenities = new ArrayList<>();
         Queryable.from(amenities).forEachR(amenity -> amenity.setChecked(true));
         minPrice = MIN_PRICE;
         maxPrice = MAX_PRICE;

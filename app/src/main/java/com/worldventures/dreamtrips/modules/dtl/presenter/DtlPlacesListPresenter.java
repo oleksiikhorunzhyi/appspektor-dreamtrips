@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -86,6 +87,12 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     public void onEventMainThread(PlacesUpdateFinished event) {
         view.hideProgress();
+    }
+
+
+    public void onEventMainThread(DtlSearchPlaceRequestEvent event){
+        String searchQuery = event.getSearchQuery(); //For feature handle
+        performFiltering();
     }
 
     public interface View extends Presenter.View {

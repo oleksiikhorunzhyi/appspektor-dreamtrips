@@ -13,6 +13,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.DayOfWeek;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.OperationDay;
@@ -33,9 +34,8 @@ public class DtlPlaceHelper {
     public String getCategories(DtlPlace place) {
         List<DtlPlaceAttribute> attributes = place.getAttributes();
         if (attributes == null) return null;
-        DtlPlaceAttribute category = Queryable.from(attributes).firstOrDefault(element ->
-                element.getName().equals("categories"));
-        return category == null ? null : TextUtils.join(", ", category.getAttributes());
+        List<DtlAttribute> categories = place.getAttributesAsMap().get(DtlPlace.CATEGORIES);
+        return categories == null ? null : TextUtils.join(", ", categories);
     }
 
     public List<ImageTextItem> getContactsData(DtlPlace place) {

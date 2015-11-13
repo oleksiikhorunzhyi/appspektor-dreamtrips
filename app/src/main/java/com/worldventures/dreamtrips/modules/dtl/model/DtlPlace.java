@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
+import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class DtlPlace implements Parcelable {
 
     public static final String AMENITIES = "amenities";
+    public static final String CATEGORIES = "categories";
 
     String merchantId;
     String merchantType;
@@ -213,6 +215,14 @@ public class DtlPlace implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
     // Filtering part
     ///////////////////////////////////////////////////////////////////////////
+
+    public boolean containsQuery(String query) {
+        List<DtlAttribute> categories = getAttributesAsMap().get(CATEGORIES);
+
+        return displayName.toLowerCase().contains(query.toLowerCase()) || (categories != null &&
+                Queryable.from(categories).firstOrDefault(element ->
+                        element.getAttributeName().toLowerCase().contains(query.toLowerCase())) != null);
+    }
 
     public boolean applyFilter(DtlFilterData filterData, LatLng currentLocation) {
         return checkPrice(filterData.getMinPrice(), filterData.getMaxPrice())

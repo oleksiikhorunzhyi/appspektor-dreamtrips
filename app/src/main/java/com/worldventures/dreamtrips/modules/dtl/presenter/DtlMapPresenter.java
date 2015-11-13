@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
@@ -86,13 +87,19 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     private void performFiltering() {
+        performFiltering("");
+    }
+
+    private void performFiltering(String query) {
         Observable.from(dtlPlaces)
                 .filter(dtlPlace ->
                         dtlPlace.applyFilter(dtlFilterData, currentLocation))
+                .filter(dtlPlace -> dtlPlace.containsQuery(query))
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showPins);
+
     }
 
     private void showPins(List<DtlPlace> filtered) {
@@ -123,6 +130,10 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         dtlFilterData = event.getDtlFilterData();
         if (mapReady)
             performFiltering();
+    }
+
+    public void onEventMainThread(DtlSearchPlaceRequestEvent event){
+        performFiltering(event.getSearchQuery());
     }
 
     public interface View extends Presenter.View {

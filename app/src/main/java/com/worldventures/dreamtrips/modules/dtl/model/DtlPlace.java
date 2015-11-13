@@ -42,6 +42,7 @@ public class DtlPlace implements Parcelable {
     @SerializedName("attribute_sets")
     List<DtlPlaceAttribute> attributes;
     List<DtlPlaceMedia> images;
+    List<OperationDay> operationDays;
 
     private transient Map<String, List<DtlAttribute>> attributeMap;
 
@@ -131,6 +132,10 @@ public class DtlPlace implements Parcelable {
 
     public List<DtlPlaceMedia> getImages() {
         return images;
+    }
+
+    public List<OperationDay> getOperationDays() {
+        return operationDays;
     }
 
     ///////////////////////////////////////////////////////////////////////////

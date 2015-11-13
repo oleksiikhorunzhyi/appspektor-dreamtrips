@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -76,9 +75,14 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     }
 
     private void performFiltering() {
+        performFiltering("");
+    }
+
+    private void performFiltering(String query) {
         Observable.from(dtlPlaces)
                 .filter(dtlPlace ->
                         dtlPlace.applyFilter(dtlFilterData, currentLocation))
+                .filter(dtlPlace -> dtlPlace.containsQuery(query))
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -89,10 +93,8 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         view.hideProgress();
     }
 
-
     public void onEventMainThread(DtlSearchPlaceRequestEvent event){
-        String searchQuery = event.getSearchQuery(); //For feature handle
-        performFiltering();
+        performFiltering(event.getSearchQuery());
     }
 
     public interface View extends Presenter.View {

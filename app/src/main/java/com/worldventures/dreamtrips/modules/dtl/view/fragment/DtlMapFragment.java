@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
@@ -68,7 +69,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             switch (item.getItemId()) {
                 case R.id.action_list:
                     router.moveTo(Route.DTL_PLACES_HOLDER, NavigationConfigBuilder.forFragment()
-                            .data(bundle)
+                            .data(new PlacesBundle(bundle.getLocation()))
                             .fragmentManager(getFragmentManager())
                             .backStackEnabled(false)
                             .containerId(R.id.dtl_container)
@@ -151,7 +152,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void clearMap() {
-        googleMap.clear();
+        clusterManager.clearItems();
+    }
+
+    @Override
+    public void renderPins() {
+        clusterManager.cluster();
     }
 
     @Override

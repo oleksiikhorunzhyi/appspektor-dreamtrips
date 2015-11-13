@@ -14,6 +14,8 @@ public class DtlPlaceInfoInflater extends DtlPlaceDataInflater {
     //
     @InjectView(R.id.place_title)
     TextView title;
+    @InjectView(R.id.operational_time)
+    TextView operationalTime;
     @InjectView(R.id.place_details_pricing)
     ProperRatingBar pricing;
 
@@ -25,5 +27,6 @@ public class DtlPlaceInfoInflater extends DtlPlaceDataInflater {
     protected void onPlaceApply(DtlPlace place) {
         title.setText(place.getDisplayName());
         pricing.setRating(place.getBudget());
+        operationalTime.setText(helper.getOperationalTime(place));
     }
 }

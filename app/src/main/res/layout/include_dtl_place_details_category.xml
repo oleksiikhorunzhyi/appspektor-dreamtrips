@@ -22,7 +22,7 @@
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/dtl_cities_text_color"
+            android:textColor="@color/black"
             android:textStyle="bold"
             tools:text="Coffee Sweets"
             />
@@ -34,10 +34,20 @@
             android:layout_height="wrap_content"
             android:textColor="@color/dtl_cities_text_color"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"
             android:visibility="gone"
             tools:text="Pizza, Pasts etc."
             />
+
+        <TextView
+            android:id="@+id/operational_time"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dtl_cities_text_color"
+            android:textSize="@dimen/font_small"
+            tools:text="9:00 AM - 9:30 PM, Open now"
+            />
+
 
     </LinearLayout>
 

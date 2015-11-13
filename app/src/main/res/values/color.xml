@@ -59,4 +59,7 @@
     <color name="dtl_button_background_enabled">#81c435</color>
     <color name="dtl_text_color_disabled">#42000000</color>
 
+    <color name="open">#6ebffc</color>
+    <color name="closed">#fe5353</color>
+
 </resources>

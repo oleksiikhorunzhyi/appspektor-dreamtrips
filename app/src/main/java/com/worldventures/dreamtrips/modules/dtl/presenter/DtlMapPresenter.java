@@ -108,6 +108,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
             Queryable.from(filtered).forEachR(dtlPlace ->
                     view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),
                             dtlPlace.getCoordinates().getLng()), dtlPlace.getPartnerStatus()));
+            view.renderPins();
         }
     }
 
@@ -148,5 +149,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         void initToolbar(DtlLocation location);
 
         void centerIn(DtlLocation location);
+
+        void renderPins();
     }
 }

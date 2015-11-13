@@ -156,6 +156,11 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
+    public void renderPins() {
+        clusterManager.cluster();
+    }
+
+    @Override
     public void prepareInfoWindow(int height) {
         int ownHeight = getView().getHeight();
         int centerY = ownHeight / 2;

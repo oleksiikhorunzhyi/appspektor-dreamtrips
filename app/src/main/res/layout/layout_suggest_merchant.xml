@@ -45,92 +45,95 @@
         app:met_maxCharacters="10"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin_big"
-        android:text="@string/suggest_merchant_best_time_contact_caption"
-        />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin"
-        >
+        android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin_big">
 
         <TextView
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/suggest_merchant_best_time_contact_caption"
+            android:layout_gravity="left|center_vertical"
+            />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/betweenSwitcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/suggest_merchant_best_time_contact_switcher"
+            android:layout_gravity="right|center_vertical"
+            android:checked="true"/>
+
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/fromDateContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/fromDateLabel"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/suggest_merchant_best_time_contact_from_caption"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/fromDate"
+            style="@style/SuggestMerchantFakeSpinner"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:orientation="horizontal"
-            >
+            android:layout_weight="1"
+            tools:text="Fri, Nov 25 2015"
+            />
 
-            <TextView
-                android:id="@+id/fromDate"
-                style="@style/SuggestMerchantFakeSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                tools:text="Fri, Nov 25 2015"
-                />
+        <TextView
+            android:id="@+id/fromTime"
+            style="@style/SuggestMerchantFakeSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="4:30 PM"
+            />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/fromTime"
-                style="@style/SuggestMerchantFakeSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                tools:text="4:30 PM"
-                />
-        </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/toDateContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/suggest_merchant_default_vertical_margin"
+        android:orientation="horizontal"
         >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/suggest_merchant_best_time_contact_to_caption"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/toDate"
+            style="@style/SuggestMerchantFakeSpinner"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:orientation="horizontal"
-            >
+            android:layout_weight="1"
+            tools:text="Tue, Dec 7 2015"
+            />
 
-            <TextView
-                android:id="@+id/toDate"
-                style="@style/SuggestMerchantFakeSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                tools:text="Tue, Dec 7 2015"
-                />
-
-            <TextView
-                android:id="@+id/toTime"
-                style="@style/SuggestMerchantFakeSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                tools:text="7:30 PM"
-                />
-        </LinearLayout>
-    </FrameLayout>
+        <TextView
+            android:id="@+id/toTime"
+            style="@style/SuggestMerchantFakeSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="7:30 PM"
+            />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

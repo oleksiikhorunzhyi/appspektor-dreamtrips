@@ -232,7 +232,7 @@ public class DtlPlace implements Parcelable {
 
         List<DtlAttribute> placeAmenities = getAttributesAsMap().get(AMENITIES);
 
-        return !Collections.disjoint(selectedAmenities, placeAmenities);
+        return placeAmenities == null || !Collections.disjoint(selectedAmenities, placeAmenities);
     }
 
 }

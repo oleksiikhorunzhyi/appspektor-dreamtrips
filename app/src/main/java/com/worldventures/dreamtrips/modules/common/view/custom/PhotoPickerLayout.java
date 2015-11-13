@@ -26,9 +26,9 @@ import butterknife.OnClick;
 
 public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPickerPresenter.View {
 
-    @InjectView(R.id.cancel)
+    @InjectView(R.id.button_cancel)
     TextView cancel;
-    @InjectView(R.id.done)
+    @InjectView(R.id.button_done)
     TextView done;
     @InjectView(R.id.selected_count)
     TextView selectedCount;
@@ -101,6 +101,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         presenter.takeView(this);
         presenter.onStart();
         presenter.loadGallery();
+
+        hidePanel();
     }
 
     @Override
@@ -136,7 +138,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         return multiPickEnabled;
     }
 
-    @OnClick(R.id.done)
+    @OnClick(R.id.button_done)
     void onDone() {
         if (onDoneClickListener != null) {
             onDoneClickListener.onDone(presenter.getSelectedPhotos());

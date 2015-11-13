@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.events.MyImagesSelectionEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.View> {
@@ -47,7 +48,7 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
         }
     }
 
-    public void onEventMainThread(ImagePickedEvent event) {
+    public void onEventMainThread(MyImagesSelectionEvent event) {
         view.setSelection(1);
     }
 

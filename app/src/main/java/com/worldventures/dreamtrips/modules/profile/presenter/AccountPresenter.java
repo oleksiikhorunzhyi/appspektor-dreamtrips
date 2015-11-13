@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -17,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
+import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -33,6 +35,7 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -208,6 +211,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     /////// Photo picking
     ////////////////////////////////////////
 
+    public void onEvent(AttachPhotoEvent event) {
+        if (event.getRequestType() != -1)
+            pickImage(event.getRequestType());
+    }
+
     public void setCallbackType(int callbackType) {
         this.callbackType = callbackType;
     }
@@ -224,6 +232,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
+    public void attachImage(List<ChosenImage> chosenImages) {
+        if (chosenImages.size() == 0) {
+            return;
+        }
+
+        imageSelected(chosenImages.get(0));
+    }
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
@@ -239,26 +254,29 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                     onCoverChosen(chosenImage);
                     break;
             }
+
+            view.hidePhotoPicker();
         }
     }
 
     public void onAvatarChosen(ChosenImage image) {
         if (image != null) {
-            String fileThumbnail = image.getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                cacheFacebookImage(fileThumbnail, this::uploadAvatar);
+            String filePath = image.getFilePathOriginal();
+            if (ValidationUtils.isUrl(filePath)) {
+                cacheFacebookImage(filePath, this::uploadAvatar);
             } else {
-                uploadAvatar(fileThumbnail);
+                uploadAvatar(filePath);
             }
         }
     }
 
     public void onCoverChosen(ChosenImage image) {
         if (image != null) {
-            if (ValidationUtils.isUrl(image.getFileThumbnail())) {
-                cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));
+            String filePath = image.getFilePathOriginal();
+            if (ValidationUtils.isUrl(filePath)) {
+                cacheFacebookImage(filePath, path -> Crop.prepare(path).startFrom((Fragment) view));
             } else {
-                Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
+                Crop.prepare(filePath).startFrom((Fragment) view);
             }
         }
     }
@@ -279,6 +297,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         void updateBadgeCount(int count);
 
         void inject(Object object);
+
+        void hidePhotoPicker();
     }
 
 }

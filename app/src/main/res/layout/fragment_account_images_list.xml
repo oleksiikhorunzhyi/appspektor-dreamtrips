@@ -6,74 +6,53 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
+    <com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
+        android:id="@+id/photo_picker"
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:visibility="visible">
+        android:gravity="bottom"
+        sothree:umanoOverlay="true"
+        sothree:umanoPanelHeight="@dimen/picker_panel_height"
+        sothree:umanoParallaxOffset="100dp"
+        sothree:umanoShadowHeight="4dp">
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-            android:id="@+id/lv_items"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/spacing_tiniest"/>
+            android:gravity="center">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:visibility="visible">
 
-    <View
-        android:id="@+id/v_bg_holder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_semi_transparent"
-        android:clickable="true"
-        android:visibility="gone"/>
+                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+                    android:id="@+id/lv_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/spacing_tiniest"/>
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/multiple_actions_down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
-        fab:fab_addButtonColorNormal="@color/theme_main_darker"
-        fab:fab_colorNormal="@color/theme_main"
-        fab:fab_colorPressed="@color/theme_main_darker"
-        fab:fab_labelStyle="@style/menu_labels_style">
+            </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_facebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_addButtonColorNormal="@color/theme_main_darker"
-            fab:fab_colorNormal="@color/theme_main"
-            fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_facebook"
-            fab:fab_title="@string/choose_fb"/>
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="16dp"
+                fab:fab_addButtonColorNormal="@color/theme_main_darker"
+                fab:fab_colorNormal="@color/theme_main"
+                fab:fab_colorPressed="@color/theme_main_darker"
+                fab:fab_icon="@drawable/ic_menu_add_item"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_addButtonColorNormal="@color/theme_main_darker"
-            fab:fab_colorNormal="@color/theme_main"
-            fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_gallery"
-            fab:fab_title="@string/choose_gallery"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_addButtonColorNormal="@color/theme_main_darker"
-            fab:fab_colorNormal="@color/theme_main"
-            fab:fab_colorPressed="@color/theme_main_darker"
-            fab:fab_icon="@drawable/ic_fab_photo"
-            fab:fab_title="@string/choose_camera"/>
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        </RelativeLayout>
+    </com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout>
 
 </RelativeLayout>

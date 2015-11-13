@@ -75,9 +75,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         photoPickerLayout.setup(this, false);
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> {
-            getPresenter().attachImages(chosenImages);
-        });
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages));
     }
 
     @Override
@@ -101,8 +99,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         super.onResume();
         post.addTextChangedListener(textWatcher);
 
-        if (getArgs() == null || getArgs().getType() != PostBundle.PHOTO) {
-            photoPickerLayout.hidePanel();
+        if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
+            photoPickerLayout.showPanel();
         }
 
         updatePickerState();

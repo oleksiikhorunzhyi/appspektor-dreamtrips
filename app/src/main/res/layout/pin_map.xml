@@ -14,9 +14,8 @@
         android:id="@+id/badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="3dp"
-        android:textSize="@dimen/font_small"
+        android:layout_gravity="end|top"
+        android:textSize="@dimen/font_normal"
         tools:text="2"/>
 
 

@@ -8,7 +8,6 @@
     <string name="dtl_locations_select_popular">Discover popular</string>
     <string name="dtl_place_tab_offers">Offers</string>
     <string name="dtl_place_tab_dining">Dining</string>
-
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
     <string name="dtl_points_estimation_explanation">Points calculation explanation goes here</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
@@ -19,7 +18,6 @@
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance</string>
-
     <string name="dtl_receipt_hint">Enter amount in USD</string>
     <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
     <string name="dtl_receipt_scan">Scan Receipt</string>
@@ -27,7 +25,8 @@
     <string name="dtl_receipt_verify">Verify Amount</string>
     <string name="dtl_receipt_verify_hint">This amount will be verified by the merchant. Any discrepancy in the amount entered will result in delay in earning DreamTrips points.</string>
     <string name="dtl_action_next">Next</string>
-
+    <string name="dtl_amenities">Amenities</string>
+    <string name="dtl_perks_description">Perks description</string>
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
     <string name="permission_location_rationale">Access to the location is needed for detection</string>
@@ -41,7 +40,6 @@
     <string name="dtl_you_earned">You have earned</string>
     <string name="dtl_total">Total DreamTrip Points:</string>
     <string name="rate_hint">Please, rate this experience</string>
-
     <string name="dtl_success_title">Congratulations</string>
     <string name="dtl_amount_invalid">Amount is invalid</string>
     <string name="dtl_verify_amount">Verify Amount</string>
@@ -51,7 +49,6 @@
     <string name="dtl_earn">Earn</string>
     <string name="dtl_spent_amount">$ %s</string>
     <string name="dtl_dt_points">%d DreamTrip Points</string>
-
     <string name="suggest_merchant_title">Suggest Merchant</string>
     <string name="suggest_merchant_restaurant_name_hint">Restaurant Name</string>
     <string name="suggest_merchant_restaurant_city_hint">City</string>
@@ -72,7 +69,6 @@
     <string name="suggest_merchant_additional_info_length_error">Input too long!</string>
     <string name="suggest_merchant_to_date_overlap_error">Cannot be earlier than \'To\' date!</string>
     <string name="suggest_merchant_to_date_past_error">Cannot be in the past!</string>
-
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>
     <string name="dtl_wait_for_location">Wait… Obtaining current location</string>
@@ -80,15 +76,17 @@
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
     <string name="dtl_wait_for_earn">Wait… Earning points</string>
     <string name="dtl_estimator_explanation">Points are calculated based on minimum money spend at merchant and day of the week</string>
-
     <string name="dtl_photo_upload_error">Error while uploading photo, try again later</string>
-
     <string name="dtl_merchant_success">Success</string>
     <string name="dtl_merchant_submitted">Congratulations! Merchant has been submitted. You will be informed once they get approved</string>
-
     <string name="pdf">PDF</string>
     <string name="presentation">Presentation</string>
+<<<<<<< Updated upstream
 
+=======
+    <string name="dtl_open_now">Open now</string>
+    <string name="dtl_closed">Closed</string>
+>>>>>>> Stashed changes
     <string name="miles">kms/&lt;b>miles&lt;/b></string>
     <string name="kms">&lt;b>kms&lt;/b>/miles</string>
 </resources>

@@ -57,9 +57,9 @@ public class DtlFilterData implements Parcelable {
     }
 
     public List<DtlAttribute> getSelectedAmenities() {
-        return amenities != null
+        return amenities != null && !amenities.isEmpty()
                 ? Queryable.from(amenities).filter(DtlAttribute::isChecked).toList()
-                : amenities;
+                : null;
     }
 
     public void setAmenities(List<DtlAttribute> amenities) {

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DtlAttribute implements Parcelable{
+public class DtlAttribute implements Parcelable {
 
     private String attributeName;
     private Boolean checked;
@@ -50,7 +50,8 @@ public class DtlAttribute implements Parcelable{
     public int hashCode() {
         return attributeName != null ? attributeName.hashCode() : 0;
     }
-///////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 

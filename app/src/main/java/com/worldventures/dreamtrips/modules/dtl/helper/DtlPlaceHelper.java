@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.helper;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.Spannable;
@@ -52,37 +51,43 @@ public class DtlPlaceHelper {
         items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent));
     }
 
-    public String getOperationalTime(DtlPlace dtlPlace) {
-        Calendar today = Calendar.getInstance();
-
-        DayOfWeek current = DayOfWeek.from(today.get(Calendar.DAY_OF_WEEK));
-
-        OperationDay operationDay = Queryable.from(dtlPlace.getOperationDays())
-                .firstOrDefault(element -> element.getDayOfWeek() == current);
-
+    public Spannable getOperationalTime(DtlPlace dtlPlace) {
+        StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 
-        StringBuilder stringBuilder = new StringBuilder();
+        if (dtlPlace.getOperationDays() != null) {
+            DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-        if (operationDay != null && operationDay.getOperationHours() != null) {
-            openNow = operationDay.openNow();
+            OperationDay operationDay = Queryable.from(dtlPlace.getOperationDays())
+                    .firstOrDefault(element -> element.getDayOfWeek() == current);
 
-            Queryable.from(operationDay.getOperationHours()).forEachR(operationHour -> {
-                stringBuilder.append(String.format("%s - %s",
-                        operationHour.getStartTime(),
-                        operationHour.getEndTime()));
-                stringBuilder.append(",");
-            });
+            if (operationDay != null && operationDay.getOperationHours() != null) {
+                openNow = operationDay.openNow();
+
+                Queryable.from(operationDay.getOperationHours()).forEachR(operationHour -> {
+                    stringBuilder.append(String.format("%s - %s",
+                            operationHour.getStartTime(),
+                            operationHour.getEndTime()));
+                    stringBuilder.append(",");
+                });
+            }
         }
 
-        final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(83, 181, 254));
-        Spannable openNowCaption = new SpannableString(openNow ?
-                context.getString(R.string.dtl_open_now) :
-                context.getString(R.string.dtl_closed));
-        openNowCaption.setSpan(fcs, 0, openNowCaption.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int length = stringBuilder.length();
+        stringBuilder.append(provideOpenClosedStatus(openNow));
 
-        stringBuilder.append(openNowCaption);
+        final ForegroundColorSpan fcs = new ForegroundColorSpan(context.getResources()
+                .getColor(openNow ? R.color.open : R.color.closed));
+        Spannable spannable = new SpannableString(stringBuilder);
+        spannable.setSpan(fcs, length, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        return stringBuilder.toString();
+        return spannable;
     }
+
+    private String provideOpenClosedStatus(boolean openNow) {
+        return openNow ?
+                context.getString(R.string.dtl_open_now) :
+                context.getString(R.string.dtl_closed);
+    }
+
 }

@@ -3,8 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.widget.SwitchCompat;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -25,6 +28,7 @@ import com.worldventures.dreamtrips.modules.dtl.validator.InputLengthValidator;
 import java.util.Calendar;
 
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.techery.properratingbar.ProperRatingBar;
@@ -70,6 +74,12 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     protected ProperRatingBar uniquenessRatingBar;
     @InjectView(R.id.additionalInfo)
     protected DTEditText additionalInfo;
+    @InjectView(R.id.betweenSwitcher)
+    protected SwitchCompat betweenSwitcher;
+    @InjectView(R.id.fromDateLabel)
+    protected TextView fromDateLabel;
+    @InjectView(R.id.toDateContainer)
+    protected ViewGroup toDateContainer;
 
     protected ProgressDialogFragment progressDialog;
 
@@ -114,6 +124,17 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         fromTime.setText(formatTime(hour, minute));
         toDate.setText(formatDate(year, month + 1, day));
         toTime.setText(formatTime(hour, minute));
+    }
+
+    @OnCheckedChanged(R.id.betweenSwitcher)
+    void betweenSwitcherToggled(CompoundButton buttonView, boolean isChecked){
+        if (isChecked){
+            toDateContainer.setVisibility(View.VISIBLE);
+            fromDateLabel.setVisibility(View.VISIBLE);
+        } else {
+            toDateContainer.setVisibility(View.GONE);
+            fromDateLabel.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.fromDate)
@@ -205,6 +226,11 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     @Override
     public String getPhone() {
         return phoneNumber.getText().toString().trim();
+    }
+
+    @Override
+    public boolean intervalDate() {
+        return betweenSwitcher.isChecked();
     }
 
     @Override

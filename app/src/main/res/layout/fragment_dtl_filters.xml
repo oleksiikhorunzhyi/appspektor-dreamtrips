@@ -62,7 +62,9 @@
         android:id="@+id/distance_view_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/price_view_group">
+        android:layout_below="@+id/price_view_group"
+        android:layout_marginBottom="15dp"
+        >
 
 
         <LinearLayout

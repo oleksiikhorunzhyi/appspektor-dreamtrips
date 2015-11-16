@@ -17,8 +17,10 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlHeaderAttribute;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlAttributeCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -46,7 +48,8 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
         this.recyclerViewFilters.setLayoutManager(layoutManager);
 
         this.filtersAdapter = new BaseArrayListAdapter<>(getActivity(), this);
-        this.filtersAdapter.registerCell(DtlAttribute.class, DtlAttributeCell.class);
+        this.filtersAdapter.registerCell(DtlHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
+        this.filtersAdapter.registerCell(DtlAttribute.class, DtlFilterAttributeCell.class);
 
         recyclerViewFilters.setAdapter(filtersAdapter);
 
@@ -83,7 +86,17 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
         rangeBarDistance.setEnabled(filterData.isDistanceEnabled());
         switchCompat.setChecked(filterData.getDistance().isSelected());
         switchHint.setText(Html.fromHtml(getString(filterData.getDistance().getTextResId())));
+        //
+        filtersAdapter.clearAndUpdateItems(filterData.getAmenities());
+        setupAttributesHeader();
+    }
 
-        filtersAdapter.setItems(filterData.getAmenities());
+    @Override
+    public void dataSetChanged() {
+        filtersAdapter.notifyDataSetChanged();
+    }
+
+    private void setupAttributesHeader() {
+        filtersAdapter.addItem(0, new DtlHeaderAttribute(getString(R.string.dtl_amenities)));
     }
 }

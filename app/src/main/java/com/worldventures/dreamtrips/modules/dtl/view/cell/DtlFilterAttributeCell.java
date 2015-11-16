@@ -12,24 +12,21 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_item_region)
-public class DtlAttributeCell extends AbstractCell<DtlAttribute> {
+@Layout(R.layout.adapter_item_filter_checkbox)
+public class DtlFilterAttributeCell extends AbstractCell<DtlAttribute> {
 
-    @InjectView(R.id.textViewRegionName)
+    @InjectView(R.id.textViewAttributeCaption)
     protected TextView textViewName;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
 
-    public DtlAttributeCell(View view) {
+    public DtlFilterAttributeCell(View view) {
         super(view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
         textViewName.setText(getModelObject().getAttributeName());
-        textViewName.setTextColor(getModelObject().isChecked() ?
-                itemView.getResources().getColor(R.color.black) :
-                itemView.getResources().getColor(R.color.grey));
         checkBox.setChecked(getModelObject().isChecked());
     }
 
@@ -38,7 +35,7 @@ public class DtlAttributeCell extends AbstractCell<DtlAttribute> {
         getModelObject().setChecked(checkBox.isChecked());
     }
 
-    @OnClick(R.id.textViewRegionName)
+    @OnClick(R.id.textViewAttributeCaption)
     void textViewRegionClick() {
         checkBox.setChecked(!checkBox.isChecked());
         getModelObject().setChecked(checkBox.isChecked());

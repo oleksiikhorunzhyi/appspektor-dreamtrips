@@ -62,6 +62,14 @@ public class DtlFilterData implements Parcelable {
                 : null;
     }
 
+    public void toggleAmenitiesSelection(boolean selected) {
+        if (amenities != null) {
+            for (DtlAttribute attribute : amenities) {
+                attribute.setChecked(selected);
+            }
+        }
+    }
+
     public void setAmenities(List<DtlAttribute> amenities) {
         this.amenities = amenities;
     }

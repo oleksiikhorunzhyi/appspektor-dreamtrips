@@ -7,7 +7,6 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
-import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -38,6 +37,7 @@ public class DtlPlace implements Parcelable {
     String phone;
     String email;
     String description;
+    String perksDescription;
     String website;
     int budget;
     float rating;
@@ -140,6 +140,18 @@ public class DtlPlace implements Parcelable {
         return operationDays;
     }
 
+    public DtlPlaceType getPartnerStatus() {
+        return partnerStatus;
+    }
+
+    public String getPerksDescription() {
+        return perksDescription;
+    }
+
+    public void setPerksDescription(String perksDescription) {
+        this.perksDescription = perksDescription;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
@@ -159,29 +171,13 @@ public class DtlPlace implements Parcelable {
         phone = in.readString();
         email = in.readString();
         description = in.readString();
+        perksDescription = in.readString();
         website = in.readString();
         budget = in.readInt();
         rating = in.readFloat();
         attributes = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
         images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
         partnerStatus = (DtlPlaceType) in.readSerializable();
-    }
-
-    public static final Creator<DtlPlace> CREATOR = new Creator<DtlPlace>() {
-        @Override
-        public DtlPlace createFromParcel(Parcel in) {
-            return new DtlPlace(in);
-        }
-
-        @Override
-        public DtlPlace[] newArray(int size) {
-            return new DtlPlace[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     @Override
@@ -200,6 +196,7 @@ public class DtlPlace implements Parcelable {
         dest.writeString(phone);
         dest.writeString(email);
         dest.writeString(description);
+        dest.writeString(perksDescription);
         dest.writeString(website);
         dest.writeInt(budget);
         dest.writeFloat(rating);
@@ -208,8 +205,21 @@ public class DtlPlace implements Parcelable {
         dest.writeSerializable(partnerStatus);
     }
 
-    public DtlPlaceType getPartnerStatus() {
-        return partnerStatus;
+    public static final Creator<DtlPlace> CREATOR = new Creator<DtlPlace>() {
+        @Override
+        public DtlPlace createFromParcel(Parcel in) {
+            return new DtlPlace(in);
+        }
+
+        @Override
+        public DtlPlace[] newArray(int size) {
+            return new DtlPlace[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     ///////////////////////////////////////////////////////////////////////////

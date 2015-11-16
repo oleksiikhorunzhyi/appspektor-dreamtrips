@@ -63,6 +63,10 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
         return showAdditionalInfo;
     }
 
+    public void setShowAdditionalInfo(boolean showAdditionalInfo) {
+        this.showAdditionalInfo = showAdditionalInfo;
+    }
+
     @Override
     public int describeContents() {
         return 0;

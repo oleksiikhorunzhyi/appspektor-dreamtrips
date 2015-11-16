@@ -16,7 +16,11 @@ import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
+import timber.log.Timber;
+
 public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetailsPresenter.View> {
+
+    private static final String TAG = FeedItemDetailsPresenter.class.getSimpleName();
 
     private FeedItem feedItem;
     //
@@ -51,7 +55,7 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
             feedEntity = freshItem;
             feedItem.setItem(feedEntity);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
-        });
+        }, spiceException -> Timber.e(spiceException, TAG));
     }
 
     public void onEvent(FeedEntityChangedEvent event) {

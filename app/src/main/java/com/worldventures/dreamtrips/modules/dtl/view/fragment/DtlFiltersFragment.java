@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlAttributeCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -46,7 +46,7 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
         this.recyclerViewFilters.setLayoutManager(layoutManager);
 
         this.filtersAdapter = new BaseArrayListAdapter<>(getActivity(), this);
-        this.filtersAdapter.registerCell(DtlAttribute.class, DtlAttributeCell.class);
+        this.filtersAdapter.registerCell(DtlAttribute.class, DtlFilterAttributeCell.class);
 
         recyclerViewFilters.setAdapter(filtersAdapter);
 

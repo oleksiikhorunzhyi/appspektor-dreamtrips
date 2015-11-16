@@ -13,14 +13,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class DtlAttributeCell extends AbstractCell<DtlAttribute> {
+public class DtlFilterAttributeCell extends AbstractCell<DtlAttribute> {
 
     @InjectView(R.id.textViewAttributeCaption)
     protected TextView textViewName;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
 
-    public DtlAttributeCell(View view) {
+    public DtlFilterAttributeCell(View view) {
         super(view);
     }
 

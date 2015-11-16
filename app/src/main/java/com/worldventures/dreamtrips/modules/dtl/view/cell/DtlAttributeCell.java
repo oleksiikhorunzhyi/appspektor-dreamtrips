@@ -12,10 +12,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_item_region)
+@Layout(R.layout.adapter_item_filter_checkbox)
 public class DtlAttributeCell extends AbstractCell<DtlAttribute> {
 
-    @InjectView(R.id.textViewRegionName)
+    @InjectView(R.id.textViewAttributeCaption)
     protected TextView textViewName;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
@@ -38,7 +38,7 @@ public class DtlAttributeCell extends AbstractCell<DtlAttribute> {
         getModelObject().setChecked(checkBox.isChecked());
     }
 
-    @OnClick(R.id.textViewRegionName)
+    @OnClick(R.id.textViewAttributeCaption)
     void textViewRegionClick() {
         checkBox.setChecked(!checkBox.isChecked());
         getModelObject().setChecked(checkBox.isChecked());

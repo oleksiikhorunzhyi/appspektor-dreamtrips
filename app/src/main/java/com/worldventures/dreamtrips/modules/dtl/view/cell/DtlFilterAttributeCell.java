@@ -27,9 +27,6 @@ public class DtlFilterAttributeCell extends AbstractCell<DtlAttribute> {
     @Override
     protected void syncUIStateWithModel() {
         textViewName.setText(getModelObject().getAttributeName());
-        textViewName.setTextColor(getModelObject().isChecked() ?
-                itemView.getResources().getColor(R.color.black) :
-                itemView.getResources().getColor(R.color.grey));
         checkBox.setChecked(getModelObject().isChecked());
     }
 

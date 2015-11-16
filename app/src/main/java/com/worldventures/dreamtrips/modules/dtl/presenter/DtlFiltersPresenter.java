@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
@@ -37,6 +38,10 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
             dtlFilterData = new DtlFilterData();
 
         attachAmenities();
+    }
+
+    public void onEvent(FilterAttributesSelectAllEvent event) {
+        toggleAmenitiesSelection(event.isChecked());
     }
 
     public void onEvent(CheckFiltersEvent event) {
@@ -94,7 +99,15 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         view.attachFilterData(dtlFilterData);
     }
 
+    private void toggleAmenitiesSelection(boolean selected) {
+        dtlFilterData.toggleAmenitiesSelection(selected);
+        view.dataSetChanged();
+    }
+
     public interface View extends Presenter.View {
+
         void attachFilterData(DtlFilterData filterData);
+
+        void dataSetChanged();
     }
 }

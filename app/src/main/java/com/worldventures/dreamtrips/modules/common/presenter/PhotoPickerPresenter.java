@@ -20,11 +20,14 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
         if (!view.isMultiPickEnabled()) {
             PhotoGalleryModel photoGalleryModel = Queryable.from(photos).filter(element ->
                     element.isChecked() && !element.equals(event.model)).firstOrDefault();
-            if (photoGalleryModel != null)
+            if (photoGalleryModel != null) {
                 photoGalleryModel.setChecked(false);
+                view.updateItem(photoGalleryModel);
+            }
         }
 
         view.updatePickedItemsCount(Queryable.from(photos).count(PhotoGalleryModel::isChecked));
+        view.updateItem(event.model);
     }
 
     public void loadGallery() {
@@ -62,6 +65,8 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
     public interface View extends Presenter.View {
 
         void updatePickedItemsCount(int pickedCount);
+
+        void updateItem(PhotoGalleryModel item);
 
         void initPhotos(List<PhotoGalleryModel> photos);
 

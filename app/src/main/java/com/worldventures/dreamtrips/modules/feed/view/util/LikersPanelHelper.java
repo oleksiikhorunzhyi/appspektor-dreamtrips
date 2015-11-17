@@ -5,11 +5,9 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
 
-import com.seppius.i18n.plurals.PluralResources;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-
-import timber.log.Timber;
 
 public class LikersPanelHelper {
 
@@ -23,10 +21,12 @@ public class LikersPanelHelper {
         String appeal;
         int stringRes;
         if (feedEntity.isLiked()) {
-            stringRes = R.plurals.account_who_liked_item;
+            stringRes = QuantityHelper.chooseResource(likesCount - 1, R.string.account_who_liked_item_zero,
+                    R.string.account_who_liked_item_one, R.string.account_who_liked_item_other);
             appeal = panel.getResources().getString(R.string.you);
         } else {
-            stringRes = R.plurals.users_who_liked_with_name;
+            stringRes = QuantityHelper.chooseResource(likesCount - 1, R.string.users_who_liked_with_name_zero,
+                    R.string.users_who_liked_with_name_one, R.string.users_who_liked_with_name_other);
             appeal = feedEntity.getFirstLikerName();
         }
         //
@@ -34,12 +34,7 @@ public class LikersPanelHelper {
             return; // not ready to be shown
         }
         //
-        Spanned text = null;
-        try {
-            text = Html.fromHtml(new PluralResources(panel.getResources()).getQuantityString(stringRes, likesCount - 1, appeal, likesCount - 1));
-        } catch (NoSuchMethodException e) {
-            Timber.e(e, "Problem with plural for likers panel");
-        }
+        Spanned text = Html.fromHtml(String.format(panel.getResources().getString(stringRes), appeal, likesCount - 1));
         panel.setText(text);
         panel.setVisibility(View.VISIBLE);
     }

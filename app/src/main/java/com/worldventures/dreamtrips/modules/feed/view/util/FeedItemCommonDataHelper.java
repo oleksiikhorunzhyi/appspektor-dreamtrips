@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -86,7 +87,8 @@ public class FeedItemCommonDataHelper {
             if (likesCount > 0) {
                 if (tvLikesCount != null) {
                     tvLikesCount.setVisibility(View.VISIBLE);
-                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.likes_count, likesCount, likesCount));
+                    Spanned text = Html.fromHtml(String.format(res.getString(
+                            QuantityHelper.chooseResource(likesCount, R.string.likes_count_one, R.string.likes_count_other)), likesCount));
                     tvLikesCount.setText(text);
                 }
 
@@ -98,7 +100,8 @@ public class FeedItemCommonDataHelper {
             if (tvCommentsCount != null) {
                 if (commentsCount > 0) {
                     tvCommentsCount.setVisibility(View.VISIBLE);
-                    Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.comments_count, commentsCount, commentsCount));
+                    Spanned text = Html.fromHtml(String.format(res.getString(
+                            QuantityHelper.chooseResource(commentsCount, R.string.comments_count_one, R.string.comments_count_other)), commentsCount));
                     tvCommentsCount.setText(text);
                 } else tvCommentsCount.setVisibility(View.GONE);
             }

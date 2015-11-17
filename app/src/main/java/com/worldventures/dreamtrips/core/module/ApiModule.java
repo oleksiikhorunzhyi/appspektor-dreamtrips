@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
-import com.worldventures.dreamtrips.modules.dtl.model.adapter.DtlLocationAdapterFactory;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
@@ -64,7 +63,7 @@ public class ApiModule {
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(Context context, SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
+    RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 UserSession userSession = appSessionHolder.get().get();
@@ -88,8 +87,6 @@ public class ApiModule {
                 .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapterFactory(new LowercaseEnumTypeAdapterFactory("unknown"))
-                //TODO could be not needed after API integration
-                .registerTypeAdapterFactory(new DtlLocationAdapterFactory())
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
                 .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
@@ -105,8 +102,8 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    DtlApi provideDtlApi(GsonConverter gsonConverter) {
-        return createRestAdapter(BuildConfig.DtlApi, gsonConverter).create(DtlApi.class);
+    DtlApi provideDtlApi(RestAdapter adapter) {
+        return adapter.create(DtlApi.class);
     }
 
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {
@@ -151,6 +148,4 @@ public class ApiModule {
         okHttpClient.setCookieHandler(cookieManager);
         return okHttpClient;
     }
-
-
 }

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
@@ -53,7 +53,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     private void attachAmenities() {
-        List<DtlAttribute> amenities = db.getAmenities();
+        List<DtlPlacesFilterAttribute> amenities = db.getAmenities();
         dtlFilterData.setAmenities(amenities);
         view.attachFilterData(dtlFilterData);
     }

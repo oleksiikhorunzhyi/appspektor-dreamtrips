@@ -3,19 +3,19 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DtlAttribute implements Parcelable {
+public class DtlPlacesFilterAttribute implements Parcelable {
 
     private String attributeName;
     private Boolean checked;
 
-    public DtlAttribute() {
+    public DtlPlacesFilterAttribute() {
     }
 
-    public DtlAttribute(String attributeName) {
+    public DtlPlacesFilterAttribute(String attributeName) {
         this.attributeName = attributeName;
     }
 
-    protected DtlAttribute(Parcel in) {
+    protected DtlPlacesFilterAttribute(Parcel in) {
         attributeName = in.readString();
     }
 
@@ -41,7 +41,7 @@ public class DtlAttribute implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DtlAttribute that = (DtlAttribute) o;
+        DtlPlacesFilterAttribute that = (DtlPlacesFilterAttribute) o;
 
         return !(attributeName != null ? !attributeName.equals(that.attributeName) : that.attributeName != null);
     }
@@ -55,15 +55,15 @@ public class DtlAttribute implements Parcelable {
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    public static final Creator<DtlAttribute> CREATOR = new Creator<DtlAttribute>() {
+    public static final Creator<DtlPlacesFilterAttribute> CREATOR = new Creator<DtlPlacesFilterAttribute>() {
         @Override
-        public DtlAttribute createFromParcel(Parcel in) {
-            return new DtlAttribute(in);
+        public DtlPlacesFilterAttribute createFromParcel(Parcel in) {
+            return new DtlPlacesFilterAttribute(in);
         }
 
         @Override
-        public DtlAttribute[] newArray(int size) {
-            return new DtlAttribute[size];
+        public DtlPlacesFilterAttribute[] newArray(int size) {
+            return new DtlPlacesFilterAttribute[size];
         }
     };
 

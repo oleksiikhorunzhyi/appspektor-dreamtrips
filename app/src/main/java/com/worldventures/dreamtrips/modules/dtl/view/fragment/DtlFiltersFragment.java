@@ -15,9 +15,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlHeaderAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterHeaderAttribute;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -39,7 +39,7 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
     @InjectView(R.id.switchHint)
     protected TextView switchHint;
 
-    protected BaseArrayListAdapter<DtlAttribute> filtersAdapter;
+    protected BaseArrayListAdapter<DtlPlacesFilterAttribute> filtersAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -48,8 +48,8 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
         this.recyclerViewFilters.setLayoutManager(layoutManager);
 
         this.filtersAdapter = new BaseArrayListAdapter<>(getActivity(), this);
-        this.filtersAdapter.registerCell(DtlHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
-        this.filtersAdapter.registerCell(DtlAttribute.class, DtlFilterAttributeCell.class);
+        this.filtersAdapter.registerCell(DtlPlacesFilterHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
+        this.filtersAdapter.registerCell(DtlPlacesFilterAttribute.class, DtlFilterAttributeCell.class);
 
         recyclerViewFilters.setAdapter(filtersAdapter);
 
@@ -97,6 +97,6 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
     }
 
     private void setupAttributesHeader() {
-        filtersAdapter.addItem(0, new DtlHeaderAttribute(getString(R.string.dtl_amenities)));
+        filtersAdapter.addItem(0, new DtlPlacesFilterHeaderAttribute(getString(R.string.dtl_amenities)));
     }
 }

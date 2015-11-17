@@ -42,11 +42,11 @@ public class DtlPlace implements Parcelable {
     int budget;
     float rating;
     @SerializedName("attribute_sets")
-    List<DtlPlaceAttribute> attributes;
+    List<DtlPlaceAttributeSet> attributeSets;
     List<DtlPlaceMedia> images;
     List<OperationDay> operationDays;
 
-    private transient Map<String, List<DtlAttribute>> attributeMap;
+    private transient Map<String, List<DtlPlacesFilterAttribute>> attributeMap;
 
     public DtlPlace() {
     }
@@ -119,16 +119,16 @@ public class DtlPlace implements Parcelable {
         return rating;
     }
 
-    public List<DtlPlaceAttribute> getAttributes() {
-        return attributes;
+    public List<DtlPlaceAttributeSet> getAttributesSet() {
+        return attributeSets;
     }
 
-    public Map<String, List<DtlAttribute>> getAttributesAsMap() {
+    public Map<String, List<DtlPlacesFilterAttribute>> getAttributesAsMap() {
         if (attributeMap != null) return attributeMap;
         attributeMap = new HashMap<>();
-        if (attributes != null)
-            Queryable.from(attributes).forEachR(attribute ->
-                    attributeMap.put(attribute.getName(), attribute.getAttributes()));
+        if (attributeSets != null)
+            Queryable.from(attributeSets).forEachR(attribute ->
+                    attributeMap.put(attribute.getName(), attribute.getFilterAttributes()));
         return attributeMap;
     }
 
@@ -146,10 +146,6 @@ public class DtlPlace implements Parcelable {
 
     public String getPerksDescription() {
         return perksDescription;
-    }
-
-    public void setPerksDescription(String perksDescription) {
-        this.perksDescription = perksDescription;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -175,7 +171,7 @@ public class DtlPlace implements Parcelable {
         website = in.readString();
         budget = in.readInt();
         rating = in.readFloat();
-        attributes = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
+        attributeSets = in.createTypedArrayList(DtlPlaceAttributeSet.CREATOR);
         images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
         partnerStatus = (DtlPlaceType) in.readSerializable();
     }
@@ -200,7 +196,7 @@ public class DtlPlace implements Parcelable {
         dest.writeString(website);
         dest.writeInt(budget);
         dest.writeFloat(rating);
-        dest.writeTypedList(attributes);
+        dest.writeTypedList(attributeSets);
         dest.writeTypedList(images);
         dest.writeSerializable(partnerStatus);
     }
@@ -227,7 +223,7 @@ public class DtlPlace implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     public boolean containsQuery(String query) {
-        List<DtlAttribute> categories = getAttributesAsMap().get(CATEGORIES);
+        List<DtlPlacesFilterAttribute> categories = getAttributesAsMap().get(CATEGORIES);
 
         return displayName.toLowerCase().contains(query.toLowerCase()) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
@@ -252,10 +248,10 @@ public class DtlPlace implements Parcelable {
     }
 
     private boolean checkAmenities(DtlFilterData filterData) {
-        List<DtlAttribute> selectedAmenities = filterData.getSelectedAmenities();
+        List<DtlPlacesFilterAttribute> selectedAmenities = filterData.getSelectedAmenities();
         if (selectedAmenities == null) return true;
 
-        List<DtlAttribute> placeAmenities = getAttributesAsMap().get(AMENITIES);
+        List<DtlPlacesFilterAttribute> placeAmenities = getAttributesAsMap().get(AMENITIES);
 
         return placeAmenities == null || !Collections.disjoint(selectedAmenities, placeAmenities);
     }

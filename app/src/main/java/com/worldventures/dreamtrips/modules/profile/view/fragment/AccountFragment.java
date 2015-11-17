@@ -15,10 +15,12 @@ import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
+import butterknife.InjectView;
 import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_profile)
@@ -28,6 +30,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     public static final int AVATAR_CALLBACK = 1;
     public static final int COVER_CALLBACK = 2;
+
+    @InjectView(R.id.photo_picker)
+    PhotoPickerLayout photoPickerLayout;
 
     @Override
     protected AccountPresenter createPresenter(Bundle savedInstanceState) {
@@ -41,6 +46,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
         profileToolbar.inflateMenu(R.menu.profile_fragment);
+
+        photoPickerLayout.setup(this, false);
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
 
         profileToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -73,7 +81,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void openAvatarPicker() {
         if (isVisibleOnScreen()) {
             getPresenter().setCallbackType(AVATAR_CALLBACK);
-            showChooseSelectPhotoTypeDialog();
+            photoPickerLayout.showPanel();
         }
     }
 
@@ -81,7 +89,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void openCoverPicker() {
         if (isVisibleOnScreen()) {
             getPresenter().setCallbackType(COVER_CALLBACK);
-            showChooseSelectPhotoTypeDialog();
+            photoPickerLayout.showPanel();
         }
     }
 
@@ -97,20 +105,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 badgeView.setVisibility(View.INVISIBLE);
             }
         }
-    }
-
-    private void showChooseSelectPhotoTypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle(R.string.select_photo)
-                .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
-                    if (which == 0) {
-                        getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                    } else if (which == 1) {
-                        getPresenter().pickImage(PickImageDelegate.REQUEST_PICK_PICTURE);
-                    } else {
-                        getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                    }
-                });
-        builder.show();
     }
 
     @Override
@@ -149,5 +143,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
             profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         }
+    }
+
+    @Override
+    public void hidePhotoPicker() {
+        photoPickerLayout.hidePanel();
     }
 }

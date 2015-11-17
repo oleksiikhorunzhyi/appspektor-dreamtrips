@@ -362,27 +362,4 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     public void dismissProgressDialog() {
         progressDialog.dismiss();
     }
-
-    @Override
-    public void showAddPhotoDialog() {
-        int items = R.array.dialog_add_bucket_photo_multiselect;
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getActivity().getString(R.string.select_photo))
-                .items(items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                            break;
-                        case 1:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                            break;
-                        case 2:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_MULTI_SELECT);
-                            break;
-                    }
-                });
-
-        builder.show();
-    }
 }

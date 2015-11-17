@@ -1,49 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
-    >
+             android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
+    <com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
+        android:id="@+id/photo_picker"
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:gravity="bottom"
+        sothree:umanoOverlay="true"
+        sothree:umanoPanelHeight="@dimen/picker_panel_height"
+        sothree:umanoParallaxOffset="100dp"
+        sothree:umanoShadowHeight="4dp">
 
-        <com.worldventures.dreamtrips.modules.feed.view.custom.FeedView
-            android:id="@+id/feed"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/grey_lighter"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/profile_toolbar"
-        style="@style/ToolBarStyle">
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+                <com.worldventures.dreamtrips.modules.feed.view.custom.FeedView
+                    android:id="@+id/feed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grey_lighter"/>
+            </android.support.v4.widget.SwipeRefreshLayout>
 
-            <TextView
-                android:id="@+id/profile_toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@android:color/white"
-                android:textSize="22sp"/>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/profile_toolbar"
+                style="@style/ToolBarStyle">
 
-            <TextView
-                android:id="@+id/profile_user_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:drawablePadding="@dimen/spacing_small"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/profile_toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp"/>
+
+                    <TextView
+                        android:id="@+id/profile_user_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+        </FrameLayout>
+    </com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout>
 </FrameLayout>

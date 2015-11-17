@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -82,7 +82,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void saveAmenities(List<DtlPlace> dtlPlaces) {
-        Set<DtlAttribute> amenitiesSet = new HashSet<>();
+        Set<DtlPlacesFilterAttribute> amenitiesSet = new HashSet<>();
         Queryable.from(dtlPlaces).forEachR(dtlPlace ->
                 amenitiesSet.addAll(dtlPlace.getAttributesAsMap().get(DtlPlace.AMENITIES)));
 

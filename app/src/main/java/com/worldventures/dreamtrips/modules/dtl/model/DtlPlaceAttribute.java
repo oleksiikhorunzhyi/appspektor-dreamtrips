@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 
 import java.util.List;
@@ -20,8 +19,8 @@ public class DtlPlaceAttribute implements Parcelable {
         return name;
     }
 
-    public List<DtlAttribute> getAttributes() {
-        return Queryable.from(attributes).map(DtlAttribute::new).toList();
+    public List<DtlPlacesFilterAttribute> getAttributes() {
+        return Queryable.from(attributes).map(DtlPlacesFilterAttribute::new).toList();
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -46,7 +46,7 @@ public class DtlPlace implements Parcelable {
     List<DtlPlaceMedia> images;
     List<OperationDay> operationDays;
 
-    private transient Map<String, List<DtlAttribute>> attributeMap;
+    private transient Map<String, List<DtlPlacesFilterAttribute>> attributeMap;
 
     public DtlPlace() {
     }
@@ -123,7 +123,7 @@ public class DtlPlace implements Parcelable {
         return attributes;
     }
 
-    public Map<String, List<DtlAttribute>> getAttributesAsMap() {
+    public Map<String, List<DtlPlacesFilterAttribute>> getAttributesAsMap() {
         if (attributeMap != null) return attributeMap;
         attributeMap = new HashMap<>();
         if (attributes != null)
@@ -227,7 +227,7 @@ public class DtlPlace implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     public boolean containsQuery(String query) {
-        List<DtlAttribute> categories = getAttributesAsMap().get(CATEGORIES);
+        List<DtlPlacesFilterAttribute> categories = getAttributesAsMap().get(CATEGORIES);
 
         return displayName.toLowerCase().contains(query.toLowerCase()) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
@@ -252,10 +252,10 @@ public class DtlPlace implements Parcelable {
     }
 
     private boolean checkAmenities(DtlFilterData filterData) {
-        List<DtlAttribute> selectedAmenities = filterData.getSelectedAmenities();
+        List<DtlPlacesFilterAttribute> selectedAmenities = filterData.getSelectedAmenities();
         if (selectedAmenities == null) return true;
 
-        List<DtlAttribute> placeAmenities = getAttributesAsMap().get(AMENITIES);
+        List<DtlPlacesFilterAttribute> placeAmenities = getAttributesAsMap().get(AMENITIES);
 
         return placeAmenities == null || !Collections.disjoint(selectedAmenities, placeAmenities);
     }

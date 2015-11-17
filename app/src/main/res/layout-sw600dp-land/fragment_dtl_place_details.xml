@@ -179,19 +179,37 @@
                     android:layout_weight="1"
                     >
 
-                    <TextView
-                        android:id="@+id/place_details_description"
-                        style="@style/TextAppearance.AppCompat.Body1"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:padding="@dimen/spacing_normal"
-                        android:textColor="#535353"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo."
-                        />
-                </ScrollView>
+                        android:orientation="vertical"
+                        >
 
+                        <TextView
+                            android:id="@+id/place_details_description"
+                            style="@style/TextAppearance.AppCompat.Body1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="#535353"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo."
+                            />
+
+                        <TextView
+                            android:id="@+id/place_details_perks_description"
+                            style="@style/TextAppearance.AppCompat.Body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_normal"
+                            android:textColor="#535353"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="It is a Family owned breakfast and lunch restaurant with more than generous plate servings."
+                            />
+                    </LinearLayout>
+                </ScrollView>
 
                 <LinearLayout
                     android:id="@+id/place_details_share"

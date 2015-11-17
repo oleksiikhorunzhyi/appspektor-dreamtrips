@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -79,6 +78,8 @@ public class DtlPlaceDetailsFragment
     Button merchant;
     @InjectView(R.id.place_details_description)
     TextView description;
+    @InjectView(R.id.place_details_perks_description)
+    TextView perksDescription;
     @InjectView(R.id.place_details_additional)
     ViewGroup additionalContainer;
     @InjectView(R.id.place_details_share)
@@ -134,19 +135,13 @@ public class DtlPlaceDetailsFragment
         });
     }
 
-    public void popBack(FragmentManager fragmentManager) {
-        if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStack();
-        }
-    }
-
     @Override
     public void setPlace(DtlPlace place) {
         commonDataInflater.apply(place);
         placeInfoInflater.apply(place);
         categoryDataInflater.apply(place);
         setType(place.getPartnerStatus());
-        setDescription(place.getDescription());
+        setDescriptions(place.getDescription(), place.getPerksDescription());
         setAdditional(place);
         setMap(place);
     }
@@ -156,9 +151,11 @@ public class DtlPlaceDetailsFragment
         merchantWrapper.setVisibility((type == DtlPlaceType.DINING) ? View.VISIBLE : View.GONE);
     }
 
-    private void setDescription(String description) {
+    private void setDescriptions(String description, String perksDescription) {
         this.description.setText(description);
         this.description.setVisibility(TextUtils.isEmpty(description) ? View.GONE : View.VISIBLE);
+        this.perksDescription.setText(perksDescription);
+        this.perksDescription.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
     }
 
     private void setAdditional(DtlPlace place) {

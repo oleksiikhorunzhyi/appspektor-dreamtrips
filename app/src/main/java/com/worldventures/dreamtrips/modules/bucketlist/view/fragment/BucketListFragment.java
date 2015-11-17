@@ -220,7 +220,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     }
 
     public void onEvent(BucketItemClickedEvent event) {
-        getPresenter().itemClicked(event.getBucketItem());
+        if (isVisibleOnScreen())
+            getPresenter().itemClicked(event.getBucketItem());
     }
 
     @Optional

@@ -64,11 +64,10 @@ public class PhotoGalleryCell extends AbstractCell<PhotoGalleryModel> {
             if (uri.equals(draweeView.getTag())) {
                 return;
             }
-            builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
         }
 
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setResizeOptions(new ResizeOptions(200, 200))
+                .setResizeOptions(new ResizeOptions(100, 100))
                 .build();
         builder.setOldController(draweeView.getController());
         builder.setImageRequest(request);

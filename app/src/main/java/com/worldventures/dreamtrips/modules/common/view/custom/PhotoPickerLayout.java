@@ -113,8 +113,11 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
             selectedCount.setText(String.format(getResources().getString(R.string.photos_selected),
                     pickedCount));
         }
+    }
 
-        adapter.notifyDataSetChanged();
+    @Override
+    public void updateItem(PhotoGalleryModel item) {
+        adapter.updateItem(item);
     }
 
     @Override

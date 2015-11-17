@@ -83,8 +83,11 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
     private void saveAmenities(List<DtlPlace> dtlPlaces) {
         Set<DtlPlacesFilterAttribute> amenitiesSet = new HashSet<>();
-        Queryable.from(dtlPlaces).forEachR(dtlPlace ->
-                amenitiesSet.addAll(dtlPlace.getAttributesAsMap().get(DtlPlace.AMENITIES)));
+        Queryable.from(dtlPlaces).forEachR(dtlPlace -> {
+                    if (dtlPlace.getAttributesAsMap().get(DtlPlace.AMENITIES) != null)
+                        amenitiesSet.addAll(dtlPlace.getAttributesAsMap().get(DtlPlace.AMENITIES));
+                }
+        );
 
         db.saveAmenities(amenitiesSet);
     }

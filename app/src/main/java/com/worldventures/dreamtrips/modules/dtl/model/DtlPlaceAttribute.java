@@ -3,14 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.innahema.collections.query.queriables.Queryable;
-
-import java.util.List;
-
 public class DtlPlaceAttribute implements Parcelable {
 
     private String name;
-    private List<String> attributes;
 
     public DtlPlaceAttribute() {
     }
@@ -19,17 +14,22 @@ public class DtlPlaceAttribute implements Parcelable {
         return name;
     }
 
-    public List<DtlPlacesFilterAttribute> getAttributes() {
-        return Queryable.from(attributes).map(DtlPlacesFilterAttribute::new).toList();
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable
+    ///////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable part
-    ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+    }
 
     protected DtlPlaceAttribute(Parcel in) {
         name = in.readString();
-        attributes = in.createStringArrayList();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<DtlPlaceAttribute> CREATOR = new Creator<DtlPlaceAttribute>() {
@@ -44,14 +44,13 @@ public class DtlPlaceAttribute implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////////////////////////////
+
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeStringList(attributes);
+    public String toString() {
+        return name;
     }
 }

@@ -44,7 +44,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetAccountFeedQuery(date, filterCircle.getId());
+        return new GetAccountFeedQuery(filterCircle.getId());
     }
 
     @Override

@@ -13,6 +13,10 @@ public class GetUserTimelineQuery extends Query<ArrayList<ParentFeedItem>> {
     private int userId;
     private Date before;
 
+    public GetUserTimelineQuery(int id) {
+        this(id, null);
+    }
+
     public GetUserTimelineQuery(int userId, Date before) {
         super((Class<ArrayList<ParentFeedItem>>) new ArrayList<ParentFeedItem>().getClass());
         this.userId = userId;
@@ -22,6 +26,7 @@ public class GetUserTimelineQuery extends Query<ArrayList<ParentFeedItem>> {
 
     @Override
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
-        return getService().getUserTimeline(userId, LIMIT, DateTimeUtils.convertDateToUTCString(before));
+        String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
+        return getService().getUserTimeline(userId, LIMIT, before);
     }
 }

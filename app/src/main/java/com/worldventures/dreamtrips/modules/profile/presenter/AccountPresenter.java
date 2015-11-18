@@ -196,7 +196,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId(), date);
+        return new GetUserTimelineQuery(user.getId());
     }
 
     @Override

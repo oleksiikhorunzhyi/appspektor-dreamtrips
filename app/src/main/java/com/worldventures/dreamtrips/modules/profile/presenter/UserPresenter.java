@@ -75,7 +75,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId(), date);
+        return new GetUserTimelineQuery(user.getId());
     }
 
     @Override

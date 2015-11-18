@@ -15,6 +15,10 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
     private Date before;
     private String circleId;
 
+    public GetAccountFeedQuery(String id) {
+        this(null, id);
+    }
+
     public GetAccountFeedQuery(Date before, @Nullable String circleId) {
         super((Class<ArrayList<ParentFeedItem>>) new ArrayList<ParentFeedItem>().getClass());
         this.before = before;
@@ -23,6 +27,7 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
     @Override
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
-        return getService().getAccountFeed(LIMIT, DateTimeUtils.convertDateToUTCString(before), circleId);
+        String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
+        return getService().getAccountFeed(LIMIT, before, circleId);
     }
 }

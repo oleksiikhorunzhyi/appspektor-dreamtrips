@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 
 import javax.inject.Inject;
@@ -52,8 +53,10 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     private void onReceiptUploaded() {
         view.showProgress(R.string.dtl_wait_for_earn);
         //
+        dtlTransaction.setLocation(DtlTransactionLocation.fromDtlPlace(dtlPlace));
         dtlTransaction.setReceiptPhoto(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
+        //
         doRequest(new EarnPointsRequest(dtlPlace.getMerchantId(), dtlTransaction), this::processTransactionResult);
     }
 

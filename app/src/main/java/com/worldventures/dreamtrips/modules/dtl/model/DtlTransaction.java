@@ -13,8 +13,11 @@ public class DtlTransaction {
     double amount;
     String receiptPhoto;
     String code;
-    DtlTransactionResult dtlTransactionResult;
+    DtlTransactionLocation location;
 
+    //
+
+    DtlTransactionResult dtlTransactionResult;
     UploadTask uploadTask;
 
     public DtlTransaction() {
@@ -25,6 +28,10 @@ public class DtlTransaction {
         this.amount = amount;
         this.receiptPhoto = receiptPhoto;
         this.code = code;
+    }
+
+    public void setLocation(DtlTransactionLocation location) {
+        this.location = location;
     }
 
     public void setTimestamp(long timestamp) {

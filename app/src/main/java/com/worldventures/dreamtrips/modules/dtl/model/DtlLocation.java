@@ -94,17 +94,6 @@ public class DtlLocation implements Parcelable {
         dest.writeTypedList(withinLocations);
     }
 
-    public enum DtlLocationCategory {
-        @SerializedName("CITY")
-        CITY,
-        @SerializedName("METRO")
-        METRO,
-        @SerializedName("STATE")
-        STATE,
-        @SerializedName("COUNTRY")
-        COUNTRY
-    }
-
     public static class DtlNearestComparator implements Comparator<DtlLocation> {
 
         private LatLng currentLocation;

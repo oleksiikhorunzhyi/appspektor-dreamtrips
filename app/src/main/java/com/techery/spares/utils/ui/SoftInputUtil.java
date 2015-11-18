@@ -2,6 +2,7 @@ package com.techery.spares.utils.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -9,7 +10,9 @@ public class SoftInputUtil {
     private SoftInputUtil() { }
 
     /** Show soft keyboard explicitly */
-    public static void showSoftInputMethod(View view) {
+    public static void showSoftInputMethod(@Nullable View view) {
+        if (view == null) return;
+        //
         InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.showSoftInput(view, 0);
         view.requestFocus();
@@ -38,7 +41,9 @@ public class SoftInputUtil {
     }
 
     /** Hide soft keyboard if visible */
-    public static void hideSoftInputMethod(View view) {
+    public static void hideSoftInputMethod(@Nullable View view) {
+        if (view == null) return;
+        //
         InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         view.clearFocus();

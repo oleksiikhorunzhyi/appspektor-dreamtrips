@@ -68,7 +68,7 @@ public class DtlPlaceHelper {
                     stringBuilder.append(String.format("%s - %s",
                             operationHour.getStartTime(),
                             operationHour.getEndTime()));
-                    stringBuilder.append(",");
+                    stringBuilder.append(", ");
                 });
             }
         }

@@ -28,7 +28,8 @@ public interface DtlApi {
 
     @GET("/api/dtl/merchants/{id}/points")
     EstimationPointsHolder getDtlPlacePointsEstimation(@Path("id") String placeId,
-                                                       @Query("price") double price);
+                                                       @Query("billTotal") double price,
+                                                       @Query("checkinTimestamp") String checkinTime);
 
     @POST("/api/dtl/merchants/{id}/points")
     DtlTransactionResult earnPoints(@Path("id") String placeId,

@@ -2,14 +2,18 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+
+import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlTransaction {
 
     public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000l;
 
-    long checkin;
+    String checkin;
+    long checkinTimestamp;
     double amount;
     String receiptPhoto;
     String code;
@@ -24,7 +28,8 @@ public class DtlTransaction {
     }
 
     public DtlTransaction(long checkin, double amount, String receiptPhoto, String code) {
-        this.checkin = checkin;
+        this.checkinTimestamp = checkin;
+        this.checkin = DateTimeUtils.convertDateToUTCString(new Date(checkin));
         this.amount = amount;
         this.receiptPhoto = receiptPhoto;
         this.code = code;
@@ -35,7 +40,8 @@ public class DtlTransaction {
     }
 
     public void setTimestamp(long timestamp) {
-        this.checkin = timestamp;
+        this.checkinTimestamp = timestamp;
+        this.checkin = DateTimeUtils.convertDateToUTCString(new Date(timestamp));
     }
 
     public void setAmount(double amount) {
@@ -63,11 +69,11 @@ public class DtlTransaction {
     }
 
     public long getTimestamp() {
-        return checkin;
+        return checkinTimestamp;
     }
 
     public boolean outOfDate(long currentTimeInMillis) {
-        return currentTimeInMillis - checkin > DURATION_OF_LIFE;
+        return currentTimeInMillis - currentTimeInMillis > DURATION_OF_LIFE;
     }
 
     public double getAmount() {

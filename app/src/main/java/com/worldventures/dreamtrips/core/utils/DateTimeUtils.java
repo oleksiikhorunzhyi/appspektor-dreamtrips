@@ -141,7 +141,7 @@ public class DateTimeUtils {
     }
 
     public static Date timeFromString(String time) {
-        return dateFromString(time, TIME_FORMAT);
+        return dateFromString(time, "HH:mm");
     }
 
     public static Date dateFromString(String date, String dateFormat) {

@@ -56,7 +56,10 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void onEvent(LocationObtainedEvent event) {
         if (event.getLocation() != null) loadNearbyCities(event.getLocation());
-        else view.showSearch();
+        else {
+            view.finishLoading();
+            view.showSearch();
+        }
     }
 
     private void loadNearbyCities(Location currentLocation) {

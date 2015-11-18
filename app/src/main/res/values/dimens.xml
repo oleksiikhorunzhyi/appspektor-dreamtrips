@@ -92,4 +92,10 @@
     <dimen name="picker_panel_header_height">44dp</dimen>
     <dimen name="picker_photo_spacing">1dp</dimen>
 
+    ///////Additional info fragment empty view spacing
+    <dimen name="additional_info_spacing_vertical">40dp</dimen>
+    <dimen name="additional_info_spacing_horizontal">78dp</dimen>
+    <dimen name="additional_info_items_margin">34dp</dimen>
+    <dimen name="additional_info_description_size">18sp</dimen>
+
 </resources>

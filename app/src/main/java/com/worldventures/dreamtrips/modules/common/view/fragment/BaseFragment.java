@@ -197,4 +197,10 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         SoftInputUtil.hideSoftInputMethod(view);
     }
 
+    /**
+     * Will hide (if possible) soft input based on current fragment's view
+     */
+    public void tryHideSoftInput() {
+        if (getView() != null) SoftInputUtil.hideSoftInputMethod(getView());
+    }
 }

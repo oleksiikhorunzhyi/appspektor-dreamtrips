@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="dtl_locations_title">Select location</string>
-    <string name="dtl_locations_try_search">We could not locate a City close to you.\n Try our city search</string>
+    <string name="dtl_locations_try_search">We could not locate a City close to you.\nTry our city search</string>
     <string name="dtl_locations_search_caption">Search City</string>
     <string name="dtl_locations_or_caption">OR</string>
     <string name="dtl_locations_select_nearby_cities">Select from nearby</string>

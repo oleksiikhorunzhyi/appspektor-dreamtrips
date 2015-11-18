@@ -126,6 +126,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     }
 
     public void onEvent(LocationClickedEvent event) {
+        hideSoftInput(getView());
         getPresenter().onLocationSelected(event.getLocation());
     }
 

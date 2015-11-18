@@ -56,10 +56,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/spacing_huge"
-                    android:paddingBottom="@dimen/spacing_huge"
-                    android:paddingLeft="@dimen/spacing_huger"
-                    android:paddingRight="@dimen/spacing_huger"
+                    android:paddingTop="@dimen/additional_info_spacing_vertical"
+                    android:paddingBottom="@dimen/additional_info_spacing_vertical"
+                    android:paddingLeft="@dimen/additional_info_spacing_horizontal"
+                    android:paddingRight="@dimen/additional_info_spacing_horizontal"
                     android:visibility="gone">
 
                     <ImageView
@@ -75,10 +75,10 @@
                         android:layout_alignParentTop="true"
                         android:alpha="0.54"
                         android:gravity="center"
-                        android:layout_marginTop="34dp"
+                        android:layout_marginTop="@dimen/additional_info_items_margin"
                         android:text="@string/no_friends"
                         android:textColor="@android:color/black"
-                        android:textSize="18dp"/>
+                        android:textSize="@dimen/additional_info_description_size"/>
 
                     <TextView
                         android:id="@+id/global"
@@ -88,10 +88,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center"
-                        android:layout_marginTop="34dp"
+                        android:layout_marginTop="@dimen/additional_info_items_margin"
                         android:text="@string/feed_add_friends"
                         android:textColor="#3D76A1"
-                        android:textSize="22dp"/>
+                        android:textSize="20sp"/>
 
                 </LinearLayout>
 

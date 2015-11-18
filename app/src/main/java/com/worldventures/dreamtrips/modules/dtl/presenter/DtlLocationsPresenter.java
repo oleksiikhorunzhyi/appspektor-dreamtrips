@@ -122,10 +122,15 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void search(String caption) {
         if (view != null) {
+            int oldLenght = this.caption != null ? this.caption.length() : 0;
+
             this.caption = caption;
 
+            boolean apiSearch = oldLenght < caption.length() &&
+                    caption.length() == SEARCH_SYMBOL_COUNT;
+
             if (caption.length() < SEARCH_SYMBOL_COUNT) flushSearch();
-            else if (caption.length() == SEARCH_SYMBOL_COUNT) apiSearch();
+            else if (apiSearch) apiSearch();
             else localSearch();
         }
     }

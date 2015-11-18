@@ -9,30 +9,49 @@
               android:paddingTop="@dimen/spacing_small"
               android:weightSum="1">
 
-    <TextView
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_normal"
         android:layout_marginTop="@dimen/spacing_small"
-        android:gravity="center"
-        android:text="@string/dtl_header"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_normal"
-        android:textStyle="bold"
-        />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dtl_header"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            />
+
+        <ImageView
+            android:id="@+id/infoToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@drawable/info_icon"/>
+
+
+    </FrameLayout>
 
     <TextView
+        android:id="@+id/info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dtl_cities_background"
         android:gravity="center"
-        android:padding="@dimen/spacing_small"
-        android:text="@string/dtl_estimator_explanation"
-        android:layout_weight="0.98"
-        android:singleLine="false"
         android:lines="2"
-        android:textSize="12sp"
-        android:textColor="@color/black"/>
+        android:padding="@dimen/spacing_small"
+        android:singleLine="false"
+        android:visibility="gone"
+        android:text="@string/dtl_estimator_explanation"
+        android:textColor="@color/black"
+        android:textSize="12sp"/>
 
     <TextView
         android:layout_width="match_parent"

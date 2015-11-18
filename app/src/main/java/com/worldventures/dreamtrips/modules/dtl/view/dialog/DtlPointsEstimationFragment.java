@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -31,6 +30,8 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     TextView pointsEstimated;
     @InjectView(R.id.progressBar)
     ProgressBar progressBar;
+    @InjectView(R.id.info)
+    TextView info;
 
     @Override
     protected DtlPointsEstimationPresenter createPresenter(Bundle savedInstanceState) {
@@ -67,6 +68,11 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     @Override
     public void showEstimatedPoints(int value) {
         pointsEstimated.setText(getString(R.string.dtl_dt_points, value));
+    }
+
+    @OnClick(R.id.infoToggle)
+    void infoToggle() {
+        info.setVisibility(info.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R.id.calculateButton)

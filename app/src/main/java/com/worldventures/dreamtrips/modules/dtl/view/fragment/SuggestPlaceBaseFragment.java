@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -300,7 +302,7 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
 
     @Override
     public void openPresentation(String url) {
-        Intent intent = IntentUtils.browserIntent(url);
+        Intent intent = new Intent(getActivity(), PlayerActivity.class).setData(Uri.parse(url));
         startActivity(intent);
     }
 

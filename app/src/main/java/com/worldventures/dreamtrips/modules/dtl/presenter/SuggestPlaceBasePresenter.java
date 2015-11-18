@@ -8,15 +8,15 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
     public abstract void submitClicked();
 
     public void presentationClicked() {
-       // view.openPresentation("");
+        view.openPresentation("https://www.youtube.com/watch?v=4zLfCnGVeL4");
     }
 
     public void pdfClicked() {
-     //   view.openPdf("");
+        view.openPdf("http://www.scrumguides.org/docs/scrumguide/v1/scrum-guide-us.pdf");
     }
 
-    protected ContactTime obtainContactTime(){
-        if (view.intervalDate()){
+    protected ContactTime obtainContactTime() {
+        if (view.intervalDate()) {
             return new ContactTime(view.getFromTimestamp(), view.getToTimestamp());
         } else {
             return new ContactTime(view.getFromTimestamp(), view.getFromTimestamp());

@@ -174,6 +174,7 @@ public class DtlPlace implements Parcelable {
         attributeSets = in.createTypedArrayList(DtlPlaceAttributeSet.CREATOR);
         images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
         partnerStatus = (DtlPlaceType) in.readSerializable();
+        operationDays = in.createTypedArrayList(OperationDay.CREATOR);
     }
 
     @Override
@@ -199,6 +200,7 @@ public class DtlPlace implements Parcelable {
         dest.writeTypedList(attributeSets);
         dest.writeTypedList(images);
         dest.writeSerializable(partnerStatus);
+        dest.writeTypedList(operationDays);
     }
 
     public static final Creator<DtlPlace> CREATOR = new Creator<DtlPlace>() {

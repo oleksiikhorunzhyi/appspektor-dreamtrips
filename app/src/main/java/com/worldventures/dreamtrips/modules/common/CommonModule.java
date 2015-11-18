@@ -101,7 +101,7 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
-        activeComponents.add(DtlModule.DTL);
+        featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(VideoModule.MEMBERSHIP);

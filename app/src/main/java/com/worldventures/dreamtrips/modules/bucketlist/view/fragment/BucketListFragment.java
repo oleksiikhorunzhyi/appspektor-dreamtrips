@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +56,7 @@ import com.worldventures.dreamtrips.util.PopupMenuUtils;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 
 @Layout(R.layout.fragment_bucket_list)
@@ -152,7 +152,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     public void onDestroyView() {
         stateDelegate.onDestroyView();
         if (dragDropManager != null) {
-            dragDropManager.release();
+            try {
+                dragDropManager.release();
+            } catch (Exception e) {
+                //internal NPE in RecyclerViewDragDropManager.java:746
+                Timber.e(e, this.getClass().getSimpleName());
+            }
             dragDropManager = null;
         }
         if (recyclerView != null) {
@@ -310,7 +315,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void onPause() {
-        dragDropManager.cancelDrag();
+        try {
+            dragDropManager.cancelDrag();
+        } catch (Exception e) {
+            //internal NPE in RecyclerViewDragDropManager.java:746
+            Timber.e(e, this.getClass().getSimpleName());
+        }
         super.onPause();
     }
 

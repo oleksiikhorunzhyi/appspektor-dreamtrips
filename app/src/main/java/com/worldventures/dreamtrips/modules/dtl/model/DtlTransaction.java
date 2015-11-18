@@ -16,7 +16,7 @@ public class DtlTransaction {
     long checkinTimestamp;
     double amount;
     String receiptPhoto;
-    String code;
+    String token;
     DtlTransactionLocation location;
 
     //
@@ -32,7 +32,7 @@ public class DtlTransaction {
         this.checkin = DateTimeUtils.convertDateToUTCString(new Date(checkin));
         this.amount = amount;
         this.receiptPhoto = receiptPhoto;
-        this.code = code;
+        this.token = code;
     }
 
     public void setLocation(DtlTransactionLocation location) {
@@ -53,7 +53,7 @@ public class DtlTransaction {
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.token = code;
     }
 
     public void setDtlTransactionResult(DtlTransactionResult dtlTransactionResult) {
@@ -73,7 +73,7 @@ public class DtlTransaction {
     }
 
     public boolean outOfDate(long currentTimeInMillis) {
-        return currentTimeInMillis - currentTimeInMillis > DURATION_OF_LIFE;
+        return currentTimeInMillis - checkinTimestamp > DURATION_OF_LIFE;
     }
 
     public double getAmount() {
@@ -85,7 +85,7 @@ public class DtlTransaction {
     }
 
     public String getCode() {
-        return code;
+        return token;
     }
 
     public DtlTransactionResult getDtlTransactionResult() {

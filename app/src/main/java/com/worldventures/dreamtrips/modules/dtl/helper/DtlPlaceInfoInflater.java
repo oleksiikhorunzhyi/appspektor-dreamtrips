@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
+import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -27,6 +29,10 @@ public class DtlPlaceInfoInflater extends DtlPlaceDataInflater {
     protected void onPlaceApply(DtlPlace place) {
         title.setText(place.getDisplayName());
         pricing.setRating(place.getBudget());
-        operationalTime.setText(helper.getOperationalTime(place));
+
+        if (place.getPartnerStatus() == DtlPlaceType.OFFER) {
+            operationalTime.setVisibility(View.VISIBLE);
+            operationalTime.setText(helper.getOperationalTime(place));
+        } else operationalTime.setVisibility(View.GONE);
     }
 }

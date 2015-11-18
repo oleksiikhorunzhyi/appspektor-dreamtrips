@@ -12,8 +12,8 @@ public class DtlTransactionLocation {
         dtlTransactionLocation.city = dtlPlace.getCity();
         dtlTransactionLocation.state = dtlPlace.getState();
         dtlTransactionLocation.country = dtlPlace.getCountry();
-        dtlTransactionLocation.latitude = dtlPlace.coordinates.getLat();
-        dtlTransactionLocation.longitude = dtlPlace.coordinates.getLng();
+        dtlTransactionLocation.latitude = 0.0d;
+        dtlTransactionLocation.longitude = 0.0d;
         return dtlTransactionLocation;
     }
 }

@@ -61,6 +61,7 @@ public class LogoutDelegate {
         }
         snappyRepository.clearAll();
         appSessionHolder.destroy();
+        activityRouter.finish(); // for sure if activity start finishing
         moveToLogin();
     }
 

@@ -126,7 +126,7 @@ public class InviteFragment
             if (hasFocus) {
                 buttonContinue.setVisibility(View.GONE);
             } else {
-                getPresenter().searchHidden();
+                getPresenter().showContinueBtnIfNeed();
             }
 
             getPresenter().searchToggle(hasFocus);
@@ -152,9 +152,15 @@ public class InviteFragment
     }
 
     @Override
-    public void onDestroyView() {
+    public void onPause() {
+        super.onPause();
         lvUsers.setAdapter(null);
-        tvSearch.setOnQueryTextListener(this);
+        tvSearch.setOnQueryTextListener(null);
+        tvSearch.setOnQueryTextFocusChangeListener(null);
+    }
+
+    @Override
+    public void onDestroyView() {
         stateDelegate.onDestroyView();
         super.onDestroyView();
     }

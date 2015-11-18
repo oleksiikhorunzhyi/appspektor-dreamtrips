@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
@@ -117,10 +116,8 @@ public class DtlPlaceDetailsFragment
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (!tabletAnalytic.isTabletLandscape()) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            activity.setSupportActionBar(toolbar);
-            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            activity.getSupportActionBar().setTitle("");
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         } else {
             toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         }

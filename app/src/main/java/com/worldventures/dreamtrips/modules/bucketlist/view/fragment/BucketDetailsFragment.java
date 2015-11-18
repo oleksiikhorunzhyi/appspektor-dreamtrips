@@ -23,8 +23,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
@@ -146,8 +144,12 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         if (isVisibleOnScreen()) {
             event.getAnchor().setEnabled(false);
             FeedItemMenuBuilder.create(getActivity(), event.getAnchor(), R.menu.menu_feed_entity_edit)
-                    .onDelete(() -> getPresenter().onDelete())
-                    .onEdit(() -> getPresenter().onEdit())
+                    .onDelete(() -> {
+                        if (isVisibleOnScreen()) getPresenter().onDelete();
+                    })
+                    .onEdit(() -> {
+                        if (isVisibleOnScreen()) getPresenter().onEdit();
+                    })
                     .dismissListener(menu -> event.getAnchor().setEnabled(true))
                     .show();
         }

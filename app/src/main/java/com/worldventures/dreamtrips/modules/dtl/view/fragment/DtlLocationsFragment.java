@@ -58,6 +58,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     View progress;
 
     SearchView searchView;
+    MenuItem searchItem;
 
     @Override
     protected DtlLocationsPresenter createPresenter(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     }
 
     private void configureSearch(Menu menu) {
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
                 @Override
@@ -131,6 +132,7 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
     @Override
     public void startLoading() {
         progress.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
     }
 
     @Override
@@ -171,6 +173,9 @@ public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> im
 
     @Override
     public void showSearch() {
-        searchView.setIconified(false);
+        if (searchItem != null) {
+            MenuItemCompat.expandActionView(searchItem);
+            searchView.setIconified(false);
+        }
     }
 }

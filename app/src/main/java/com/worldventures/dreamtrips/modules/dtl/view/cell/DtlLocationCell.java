@@ -10,6 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationCategory;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -34,7 +35,7 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
         });
         city.setText(sb.toString());
 
-        if (getModelObject().getCategory() == DtlLocation.DtlLocationCategory.CITY)
+        if (getModelObject().getCategory() == DtlLocationCategory.CITY)
             city.setCompoundDrawablesWithIntrinsicBounds(R.drawable.city_icon, 0, 0, 0);
         else
             city.setCompoundDrawablesWithIntrinsicBounds(R.drawable.metro_area_icon, 0, 0, 0);

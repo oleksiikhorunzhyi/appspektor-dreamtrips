@@ -136,6 +136,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     private void apiSearch() {
+        view.startLoading();
         view.citiesLoadingStarted();
 
         if (getDtlLocationsQuery != null) dreamSpiceManager.cancel(getDtlLocationsQuery);
@@ -146,6 +147,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void onSearchResultLoaded(ArrayList<DtlLocation> searchLocations) {
         this.searchLocations = searchLocations;
+        view.finishLoading();
         localSearch();
     }
 

@@ -153,9 +153,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.75"
+                android:minHeight="140dp"
                 android:divider="@drawable/list_divider_with_padding"
                 android:orientation="vertical"
-                android:showDividers="middle"/>
+                android:showDividers="middle"
+                android:gravity="top"
+                />
 
             <FrameLayout
                 android:layout_width="0dp"

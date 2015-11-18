@@ -79,6 +79,8 @@ public class DtlPlaceDetailsFragment
     TextView description;
     @InjectView(R.id.place_details_perks_description)
     TextView perksDescription;
+    @InjectView(R.id.perks_description_header)
+    TextView perksDescriptionHeader;
     @InjectView(R.id.place_details_additional)
     ViewGroup additionalContainer;
     @InjectView(R.id.place_details_share)
@@ -153,6 +155,7 @@ public class DtlPlaceDetailsFragment
         this.description.setVisibility(TextUtils.isEmpty(description) ? View.GONE : View.VISIBLE);
         this.perksDescription.setText(perksDescription);
         this.perksDescription.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
+        this.perksDescriptionHeader.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
     }
 
     private void setAdditional(DtlPlace place) {

@@ -52,7 +52,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     }
 
     protected boolean canShowTermsDialog() {
-        return true;
+        return !activity.isFinishing();
     }
 
     public interface View extends Presenter.View {

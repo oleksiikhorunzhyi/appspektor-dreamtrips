@@ -41,6 +41,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
 import timber.log.Timber;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
@@ -51,8 +52,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     @ForApplication
     Injector injector;
     WeakHandler queryHandler = new WeakHandler();
-    private List<Member> members = new ArrayList<>();
-    private List<Member> selectedMembers = new ArrayList<>();
+
+    @State
+    ArrayList<Member> members = new ArrayList<>();
+    @State
+    ArrayList<Member> selectedMembers = new ArrayList<>();
 
     @Override
     public void handleError(SpiceException error) {
@@ -65,16 +69,24 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         Type from = Type.from(view.getSelectedType());
         PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
-        doRequest(request, members -> {
-            view.finishLoading();
-            InvitePresenter.this.members = members;
-            sortContacts();
-            resetSelected();
-            setMembers();
-            getInvitations();
-            openTemplateInView();
-            TrackingHelper.inviteShareContacts(getAccountUserId());
-        });
+        if (members == null || members.isEmpty()) {
+            doRequest(request, members -> {
+                InvitePresenter.this.members = members;
+                handleResponse();
+            });
+        } else {
+            handleResponse();
+        }
+    }
+
+    private void handleResponse() {
+        view.finishLoading();
+        sortContacts();
+        setMembers();
+        getInvitations();
+        openTemplateInView();
+        showContinueBtnIfNeed();
+        TrackingHelper.inviteShareContacts(getAccountUserId());
     }
 
     private void getInvitations() {
@@ -193,7 +205,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         setMembers();
     }
 
-    public void searchHidden() {
+    public void showContinueBtnIfNeed() {
         if (selectedMembers != null && selectedMembers.size() > 0 && view != null) {
             view.showContinue();
         }
@@ -201,7 +213,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
         boolean isVisible = isVisible();
-        selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
+        selectedMembers.clear();
+        selectedMembers.addAll(Queryable.from(members).filter(Member::isChecked).toList());
 
         eventBus.removeStickyEvent(MemberStickyEvent.class);
         eventBus.postSticky(new MemberStickyEvent(selectedMembers));

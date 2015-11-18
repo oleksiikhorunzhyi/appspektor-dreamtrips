@@ -61,8 +61,12 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
 
             accept.setEnabled(isChecked);
         });
-        accept.setOnClickListener(v -> presenter.acceptTerms(termsText));
+        accept.setOnClickListener(v -> {
+            v.setEnabled(false);
+            presenter.acceptTerms(termsText);
+        });
         reject.setOnClickListener(v -> {
+            v.setEnabled(false);
             TrackingHelper.logout();
             presenter.logout();
         });

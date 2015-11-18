@@ -41,13 +41,13 @@ public class DTEditText extends MaterialEditText {
         setClickable(clickable);
     }
 
-    @Override
-    public boolean isCharactersCountValid() {
+    public boolean validateCharactersCount() {
         boolean isValid = super.isCharactersCountValid();
         if (!isValid && requestFocusOnValidationFail) {
             this.requestFocus();
         }
         return isValid;
+
     }
 
     @Override

@@ -43,6 +43,7 @@
         android:imeOptions="actionDone"
         android:inputType="phone"
         app:met_maxCharacters="10"
+        app:met_minCharacters="10"
         />
 
     <FrameLayout

@@ -8,11 +8,11 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
     public abstract void submitClicked();
 
     public void presentationClicked() {
-        view.openPresentation("https://www.youtube.com/watch?v=FA_8TY9Z5Zg");
+       // view.openPresentation("");
     }
 
     public void pdfClicked() {
-        view.openPdf("https://www.google.com.ua/url?sa=t&rct=j&q=&esrc=s&source=web&cd=3&cad=rja&uact=8&ved=0CCgQFjACahUKEwiUsISjp_zIAhXp7nIKHTH0ACc&url=http%3A%2F%2Fwww.scrumguides.org%2Fdocs%2Fscrumguide%2Fv1%2Fscrum-guide-us.pdf&usg=AFQjCNHpo0uVXuTmZCtwkQwh_hjUsHin5A&sig2=F3hGZ0AlQo4VX-_rNWkVIg");
+     //   view.openPdf("");
     }
 
     protected ContactTime obtainContactTime(){

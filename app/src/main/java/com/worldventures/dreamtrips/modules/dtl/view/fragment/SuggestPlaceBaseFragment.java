@@ -202,7 +202,7 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
 
     protected boolean validateInput() {
         return contactName.validate() && phoneNumber.validate() && additionalInfo.validate()
-                && phoneNumber.isCharactersCountValid();
+                && phoneNumber.validateCharactersCount();
     }
 
     protected boolean validateDateTime() {

@@ -51,7 +51,6 @@
             android:drawableLeft="@drawable/dt_points_icon"
             android:drawablePadding="@dimen/spacing_tiniest"
             android:drawableStart="@drawable/dt_points_icon"
-            android:text="@string/dtl_total_amount"
             android:textColor="@color/black"
             tools:text="12 DreamTrip Points"/>
     </LinearLayout>

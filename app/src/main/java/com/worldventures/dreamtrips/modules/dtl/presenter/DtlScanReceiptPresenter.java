@@ -44,9 +44,9 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         super.takeView(view);
         dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
 
-        if (!TextUtils.isEmpty(dtlTransaction.getReceiptPhoto())) {
+        if (dtlTransaction.getUploadTask() != null) {
             view.hideScanButton();
-            view.attachReceipt(Uri.parse(dtlTransaction.getReceiptPhoto()));
+            view.attachReceipt(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
         }
 
         checkVerification();

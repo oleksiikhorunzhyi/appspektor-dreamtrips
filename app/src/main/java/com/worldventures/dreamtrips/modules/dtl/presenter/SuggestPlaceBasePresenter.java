@@ -8,7 +8,7 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
     public abstract void submitClicked();
 
     public void presentationClicked() {
-        view.openPresentation("https://www.youtube.com/watch?v=4zLfCnGVeL4");
+        view.openPresentation("http://assets.wvholdings.com/1/VIDEOS/wvondemand/2015/App_Video_Teaser_FINAL_10152015/App_Video_Teaser_FINAL_10152015.mp4.mp4");
     }
 
     public void pdfClicked() {

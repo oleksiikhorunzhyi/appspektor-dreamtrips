@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -50,6 +51,8 @@ import butterknife.OnClick;
 public class DtlPlaceDetailsFragment
         extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, PlaceDetailsBundle>
         implements DtlPlaceDetailsPresenter.View {
+
+    private final static float PLACE_MAP_ZOOM = 15f;
 
     DtlPlaceCommonDataInflater commonDataInflater;
     DtlPlaceInfoInflater placeInfoInflater;
@@ -126,12 +129,6 @@ public class DtlPlaceDetailsFragment
         commonDataInflater.setView(rootView);
         placeInfoInflater.setView(rootView);
         categoryDataInflater.setView(rootView);
-        destinationMap = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.place_details_map);
-        destinationMap.getMapAsync(googleMap -> {
-            googleMap.getUiSettings().setMapToolbarEnabled(false);
-            int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
-            googleMap.setPadding(0, 0, 0, padding);
-        });
     }
 
     @Override
@@ -173,13 +170,25 @@ public class DtlPlaceDetailsFragment
     }
 
     private void setMap(DtlPlace place) {
+        GoogleMapOptions mapOptions = new GoogleMapOptions();
+        mapOptions.liteMode(true);
+        //
+        destinationMap = SupportMapFragment.newInstance(mapOptions);
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.place_details_map, destinationMap)
+                .commit();
+        //
         destinationMap.getMapAsync(googleMap -> {
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+            int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+            googleMap.setPadding(0, 0, 0, padding);
             LatLng pos = new LatLng(place.getCoordinates().getLat(), place.getCoordinates().getLng());
             googleMap.addMarker(new MarkerOptions()
                             .position(pos)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))
             );
-            googleMap.animateCamera(CameraUpdateFactory.newLatLng(pos));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, PLACE_MAP_ZOOM));
         });
     }
 

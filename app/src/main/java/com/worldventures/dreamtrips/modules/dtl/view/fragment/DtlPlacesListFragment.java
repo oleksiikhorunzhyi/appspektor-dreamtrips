@@ -13,6 +13,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -32,7 +33,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_places_list)
 public class DtlPlacesListFragment
-        extends BaseFragment<DtlPlacesListPresenter>
+        extends RxBaseFragment<DtlPlacesListPresenter>
         implements DtlPlacesListPresenter.View {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";

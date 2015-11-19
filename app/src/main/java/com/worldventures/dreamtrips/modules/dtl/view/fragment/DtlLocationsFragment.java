@@ -19,6 +19,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -38,7 +39,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_locations)
 @MenuResource(R.menu.menu_locations)
-public class DtlLocationsFragment extends BaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
+public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
 
     @Inject
     @ForActivity

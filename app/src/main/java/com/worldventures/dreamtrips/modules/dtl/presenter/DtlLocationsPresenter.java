@@ -5,6 +5,8 @@ import android.location.Location;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetNearbyDtlLocationQuery;
@@ -20,8 +22,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View> {
 
@@ -161,16 +161,16 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void localSearch() {
         if (searchLocations != null && !searchLocations.isEmpty())
-            Observable.from(searchLocations)
-                    .filter(dtlLocation ->
-                            dtlLocation.getLongName().toLowerCase().contains(caption))
-                    .toList()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(view::setItems);
+            view.bind(Observable.from(searchLocations)
+                            .filter(dtlLocation ->
+                                    dtlLocation.getLongName().toLowerCase().contains(caption))
+                            .toList()
+                            .compose(new IoToMainComposer<>())
+            ).subscribe(view::setItems);
+
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void setItems(List<DtlLocation> dtlLocations);
 

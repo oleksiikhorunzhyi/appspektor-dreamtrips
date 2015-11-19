@@ -37,7 +37,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        properRatingBar.setListener(stars -> getPresenter().rate(stars));
+        properRatingBar.setListener(ratingBar -> getPresenter().rate(ratingBar.getRating()));
     }
 
     @Override

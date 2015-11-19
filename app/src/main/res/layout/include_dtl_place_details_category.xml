@@ -59,10 +59,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/info_holder"
-        app:symbolicTick="$"
-        app:symbolicTickNormalColor="@color/grey"
-        app:symbolicTickSelectedColor="@color/dtl_tab_text_selected"
-        app:totalTicks="4"
-        app:usable="false"
+        app:prb_symbolicTick="$"
+        app:prb_symbolicTickNormalColor="@color/grey"
+        app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
+        app:prb_totalTicks="4"
         />
 </RelativeLayout>

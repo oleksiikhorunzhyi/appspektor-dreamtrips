@@ -109,12 +109,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rate_hint"
         android:layout_centerHorizontal="true"
-        app:selectedTicks="0"
-        app:tickMargin="8dp"
-        app:tickNormalDrawable="@drawable/ic_star_normal"
-        app:tickSelectedDrawable="@drawable/ic_star_selected"
-        app:totalTicks="5"
-        app:usable="true"
+        app:prb_defaultRating="0"
+        app:prb_tickSpacing="8dp"
+        app:prb_tickNormalDrawable="@drawable/ic_star_normal"
+        app:prb_tickSelectedDrawable="@drawable/ic_star_selected"
+        app:prb_totalTicks="5"
+        app:prb_clickable="true"
         />
 
 

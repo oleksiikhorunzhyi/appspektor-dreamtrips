@@ -24,6 +24,8 @@ import icepick.Icepick;
 public abstract class MapFragment<T extends Presenter> extends BaseFragment<T> {
     private static final String KEY_MAP = "map";
 
+    protected Integer cameraAnimationDuration = 1000;
+
     protected ToucheableMapView mapView;
     @InjectView(R.id.container_info)
     protected FrameLayout infoContainer;
@@ -120,7 +122,7 @@ public abstract class MapFragment<T extends Presenter> extends BaseFragment<T> {
         Point screenLocation = projection.toScreenLocation(latLng);
         screenLocation.y -= offset;
         LatLng offsetTarget = projection.fromScreenLocation(screenLocation);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), new GoogleMap.CancelableCallback() {
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), cameraAnimationDuration, new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
                 onMarkerFocused();

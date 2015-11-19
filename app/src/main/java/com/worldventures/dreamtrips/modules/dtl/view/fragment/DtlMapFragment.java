@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +47,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     String lastQuery;
 
     private ClusterManager<DtlClusterItem> clusterManager;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cameraAnimationDuration = 400;
+    }
 
     @Override
     protected DtlMapPresenter createPresenter(Bundle savedInstanceState) {
@@ -105,7 +110,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
         clusterManager.setOnClusterClickListener(cluster -> {
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
-                    googleMap.getCameraPosition().zoom + 1.0f));
+                    googleMap.getCameraPosition().zoom + 1.0f), cameraAnimationDuration, null);
             return true;
         });
 
@@ -180,16 +185,14 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void initToolbar(DtlLocation location) {
-        FragmentManager fragmentManager;
         if (!tabletAnalytic.isTabletLandscape() || !bundle.isSlave()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-            fragmentManager = getFragmentManager();
             toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
             toolbar.findViewById(R.id.spinnerStyledTitle).setOnClickListener(v ->
                     router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
                             .backStackEnabled(false)
                             .containerId(R.id.dtl_container)
-                            .fragmentManager(fragmentManager)
+                            .fragmentManager(getFragmentManager())
                             .build()));
             ((TextView) toolbar.findViewById(R.id.spinnerStyledTitle)).setText(location.getLongName());
         } else {

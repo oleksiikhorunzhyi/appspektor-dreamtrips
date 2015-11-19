@@ -20,7 +20,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
     SnappyRepository db;
 
     public FeedListAdditionalInfoPresenter(FeedAdditionalInfoBundle args) {
-        super();
+        super(args);
     }
 
     @Override

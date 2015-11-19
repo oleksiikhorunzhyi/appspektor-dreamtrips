@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -49,23 +50,22 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
 
     @Override
     protected P createPresenter(Bundle savedInstanceState) {
-        return (P) new FeedItemAdditionalInfoPresenter();
+        return (P) new FeedItemAdditionalInfoPresenter(getArgs());
     }
 
     @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        setUser(getArgs().getUser());
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getPresenter().loadUser();
     }
 
-    protected void setUser(User user) {
-        if (user != null) {
-            userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-            userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
-            userName.setText(user.getFullName());
-            companyName.setText(user.getCompany());
-            viewProfile.setVisibility(View.VISIBLE);
-        }
+    @Override
+    public void setUser(User user) {
+        userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+        userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
+        userName.setText(user.getFullName());
+        companyName.setText(user.getCompany());
+        viewProfile.setVisibility(View.VISIBLE);
     }
 
     @Optional

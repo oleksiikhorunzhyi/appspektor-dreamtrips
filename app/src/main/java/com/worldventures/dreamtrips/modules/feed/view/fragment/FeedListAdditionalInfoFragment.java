@@ -194,7 +194,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     }
 
     @Override
-    protected void setUser(User user) {
+    public void setUser(User user) {
         super.setUser(user);
         details.setVisibility(View.VISIBLE);
         viewProfile.setVisibility(View.GONE);

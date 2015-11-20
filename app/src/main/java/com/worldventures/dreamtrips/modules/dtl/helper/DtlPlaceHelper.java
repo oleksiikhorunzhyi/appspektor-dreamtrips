@@ -20,8 +20,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.OperationHours;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 
+import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
-import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -29,6 +29,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class DtlPlaceHelper {
 
@@ -72,12 +73,13 @@ public class DtlPlaceHelper {
 
             if (operationDay != null && operationDay.getOperationHours() != null) {
                 for (OperationHours hours : operationDay.getOperationHours()) {
+                    TimeZone timeZone = TimeZone.getDefault();
                     LocalTime localTimeStart = LocalTime.parse(hours.getStartTime());
                     LocalTime localTimeEnd = LocalTime.parse(hours.getEndTime());
                     //
-                    LocalDateTime dateTimeStart = LocalDateTime.now().withTime(localTimeStart.getHourOfDay(),
+                    DateTime dateTimeStart = DateTime.now().withTime(localTimeStart.getHourOfDay(),
                             localTimeStart.getMinuteOfHour(), 0, 0);
-                    LocalDateTime dateTimeEnd = LocalDateTime.now().withTime(localTimeEnd.getHourOfDay(),
+                    DateTime dateTimeEnd = DateTime.now().withTime(localTimeEnd.getHourOfDay(),
                             localTimeEnd.getMinuteOfHour(), 0, 0);
 
                     if (dateTimeEnd.isBefore(dateTimeStart)) {
@@ -85,7 +87,7 @@ public class DtlPlaceHelper {
                     }
 
                     if (!openNow) {
-                        LocalDateTime currentDate = LocalDateTime.now();
+                        DateTime currentDate = DateTime.now();
                         openNow = currentDate.isAfter(dateTimeStart)
                                 && currentDate.isBefore(dateTimeEnd);
                     }

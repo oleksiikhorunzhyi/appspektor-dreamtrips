@@ -9,7 +9,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.utils.events.ActionBarHideEvent;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 
 import javax.inject.Inject;
@@ -32,10 +31,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         } else {
             activityRouter.startService(RegistrationIntentService.class);
         }
-    }
-
-    public void onEvent(ActionBarHideEvent event) {
-        view.makeActionBarGone(event.isHidden());
     }
 
     public void openComponent(ComponentDescription component, @Nullable Bundle args) {

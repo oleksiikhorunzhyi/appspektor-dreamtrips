@@ -3,10 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class OperationDay implements Parcelable {
@@ -23,28 +19,6 @@ public class OperationDay implements Parcelable {
 
     public List<OperationHours> getOperationHours() {
         return operationHours;
-    }
-
-    public boolean openNow() {
-        Calendar calendar = Calendar.getInstance();
-
-        Date today = calendar.getTime();
-
-        boolean isOpened = false;
-
-        if (operationHours != null) {
-            for (OperationHours operationHour : operationHours) {
-                Date timeOpened = DateTimeUtils.mergeDateTime(today, DateTimeUtils.timeFromString(operationHour.getStartTime()));
-                Date timeClosed = DateTimeUtils.mergeDateTime(today, DateTimeUtils.timeFromString(operationHour.getEndTime()));
-
-                if (today.after(timeOpened) && today.before(timeClosed)) {
-                    isOpened = true;
-                    break;
-                }
-            }
-        }
-
-        return isOpened;
     }
 
     @Override

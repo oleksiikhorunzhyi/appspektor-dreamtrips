@@ -13,11 +13,18 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.DayOfWeek;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttributeSet;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.OperationHours;
 import com.worldventures.dreamtrips.util.ImageTextItem;
+
+import org.joda.time.DurationFieldType;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +33,8 @@ import java.util.List;
 public class DtlPlaceHelper {
 
     private Context context;
+
+    public static final DateTimeFormatter OPERATION_TIME_FORMATTER = DateTimeFormat.forPattern("hh:mm a");
 
     public DtlPlaceHelper(Context context) {
         this.context = context;
@@ -62,14 +71,30 @@ public class DtlPlaceHelper {
                     .firstOrDefault(element -> element.getDayOfWeek() == current);
 
             if (operationDay != null && operationDay.getOperationHours() != null) {
-                openNow = operationDay.openNow();
+                for (OperationHours hours : operationDay.getOperationHours()) {
+                    LocalTime localTimeStart = LocalTime.parse(hours.getStartTime());
+                    LocalTime localTimeEnd = LocalTime.parse(hours.getEndTime());
+                    //
+                    LocalDateTime dateTimeStart = LocalDateTime.now().withTime(localTimeStart.getHourOfDay(),
+                            localTimeStart.getMinuteOfHour(), 0, 0);
+                    LocalDateTime dateTimeEnd = LocalDateTime.now().withTime(localTimeEnd.getHourOfDay(),
+                            localTimeEnd.getMinuteOfHour(), 0, 0);
 
-                Queryable.from(operationDay.getOperationHours()).forEachR(operationHour -> {
+                    if (dateTimeEnd.isBefore(dateTimeStart)) {
+                        dateTimeEnd = dateTimeEnd.withFieldAdded(DurationFieldType.days(), 1);
+                    }
+
+                    if (!openNow) {
+                        LocalDateTime currentDate = LocalDateTime.now();
+                        openNow = currentDate.isAfter(dateTimeStart)
+                                && currentDate.isBefore(dateTimeEnd);
+                    }
+
                     stringBuilder.append(String.format("%s - %s",
-                            operationHour.getStartTime(),
-                            operationHour.getEndTime()));
-                    stringBuilder.append(", ");
-                });
+                            localTimeStart.toString(OPERATION_TIME_FORMATTER),
+                            localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
+                }
+                stringBuilder.append(", ");
             }
         }
 

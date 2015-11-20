@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -46,11 +45,11 @@ public class SuggestRestaurantFragment extends SuggestPlaceBaseFragment<SuggestR
         city.setText("");
         contactName.setText("");
         phoneNumber.setText("");
-        toDate.setError(null);
-        foodRatingBar.setRating(3);
-        serviceRatingBar.setRating(3);
-        cleanlinessRatingBar.setRating(3);
-        uniquenessRatingBar.setRating(3);
+        setDateTime();
+        foodRatingBar.setRating(0);
+        serviceRatingBar.setRating(0);
+        cleanlinessRatingBar.setRating(0);
+        uniquenessRatingBar.setRating(0);
         additionalInfo.setText("");
         restaurantName.requestFocus();
     }

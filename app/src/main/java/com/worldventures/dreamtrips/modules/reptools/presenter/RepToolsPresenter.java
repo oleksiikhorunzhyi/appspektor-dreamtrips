@@ -11,6 +11,10 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
         return featureManager.available(Feature.REP_TOOLS);
     }
 
+    public boolean showSuggestMerchant() {
+        return featureManager.available(Feature.REP_SUGGEST_MERCHANT);
+    }
+
     public void onEvent(SearchFocusChangedEvent event) {
         view.toggleTabStripVisibility(!event.hasFocus());
     }

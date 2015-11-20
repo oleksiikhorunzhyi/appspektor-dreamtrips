@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
 public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresenter.View> extends Presenter<T> {
 
     public static final String PROMO_VIDEO = "http://assets.wvholdings.com/1/ASSETS/DTL-1500400_MerchantToMerchant_Phase2_11102015.mp4";
+    public static final String PDF = "http://assets.wvholdings.com/1/ASSETS/DT_1500159_06_DTL_Merchant_Flyer_Oct_Update_LR.pdf";
 
     public abstract void submitClicked();
 
@@ -14,7 +15,7 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
     }
 
     public void pdfClicked() {
-        view.openPdf("http://www.scrumguides.org/docs/scrumguide/v1/scrum-guide-us.pdf");
+        view.openPdf(PDF);
     }
 
     protected ContactTime obtainContactTime() {

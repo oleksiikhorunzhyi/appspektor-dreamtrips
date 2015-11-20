@@ -5,10 +5,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
 
 public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresenter.View> extends Presenter<T> {
 
+    public static final String PROMO_VIDEO = "http://assets.wvholdings.com/1/ASSETS/DTL-1500400_MerchantToMerchant_Phase2_11102015.mp4";
+
     public abstract void submitClicked();
 
     public void presentationClicked() {
-        view.openPresentation("http://assets.wvholdings.com/1/VIDEOS/wvondemand/2015/App_Video_Teaser_FINAL_10152015/App_Video_Teaser_FINAL_10152015.mp4.mp4");
+        view.openPresentation(PROMO_VIDEO);
     }
 
     public void pdfClicked() {

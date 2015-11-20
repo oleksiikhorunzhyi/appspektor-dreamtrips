@@ -23,7 +23,10 @@ public class ComponentDescription implements Parcelable {
         this(key, toolbarTitle, navMenuTitle, iconRes, false, false, fragmentClass);
     }
 
-    public ComponentDescription(String key, int toolbarTitle, int navMenuTitle, int icon,
+    public ComponentDescription(String key,
+                                @StringRes int toolbarTitle,
+                                @StringRes int navMenuTitle,
+                                @DrawableRes int icon,
                                 boolean ignored, boolean skipGeneralToolbar, Class<? extends Fragment> fragmentClass) {
         this.key = key;
         this.toolbarTitle = toolbarTitle;

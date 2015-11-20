@@ -200,7 +200,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-analytics:8.1.0'
     compile 'com.google.android.gms:play-services-gcm:8.1.0'
     compile 'com.google.android.gms:play-services-location:8.1.0'
-    compile 'me.dm7.barcodescanner:zbar:1.8.3'
+    compile 'me.dm7.barcodescanner:zxing:1.8.3'
     compile 'com.instabug.library:instabugsupport:1.7'
     compile 'net.hockeyapp.android:HockeySDK:3.6.2'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'

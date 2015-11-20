@@ -59,7 +59,7 @@
 
     </LinearLayout>
 
-    <me.dm7.barcodescanner.zbar.ZBarScannerView
+    <me.dm7.barcodescanner.zxing.ZXingScannerView
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

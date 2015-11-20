@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.zxing.Result;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -27,8 +28,7 @@ import javax.inject.Named;
 
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import me.dm7.barcodescanner.zbar.Result;
-import me.dm7.barcodescanner.zbar.ZBarScannerView;
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import permissions.dispatcher.DeniedPermission;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -38,10 +38,10 @@ import timber.log.Timber;
 @Layout(R.layout.fragment_scan_qr)
 @RuntimePermissions
 public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, DtlPlace>
-        implements DtlScanQrCodePresenter.View, ZBarScannerView.ResultHandler {
+        implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
     @InjectView(R.id.scanner_view)
-    ZBarScannerView scanner;
+    ZXingScannerView scanner;
 
     @Inject
     @Named(RouteCreatorModule.DTL_TRANSACTION)
@@ -113,7 +113,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     public void handleResult(final Result rawResult) {
-        String contents = rawResult.getContents();
+        String contents = rawResult.getText();
         getPresenter().codeScanned(contents);
         Timber.d(contents);
     }

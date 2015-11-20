@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,7 +125,7 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         int minute = calendar.get(Calendar.MINUTE);
 
         fromDate.setText(formatDate(year, month, day));
-        fromTime.setText(formatTime(hour, minute));
+        fromTime.setText(formatTime(hour, minute + 5));
         toDate.setText(formatDate(year, month + 1, day));
         toTime.setText(formatTime(hour, minute));
     }
@@ -142,8 +144,11 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     @OnClick(R.id.fromDate)
     void fromDateClicked() {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateTimeUtils.mergeDateTime(fromDate.getText().toString(), fromTime.getText().toString()));
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this,
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH), false);
         datePickerDialog.setYearRange(calendar.get(Calendar.YEAR), calendar.get(Calendar.YEAR) + 1);
         datePickerDialog.show(getChildFragmentManager(), PICKER_FROM_TAG);
     }
@@ -151,6 +156,7 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     @OnClick(R.id.fromTime)
     void fromTimeClicked() {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateTimeUtils.mergeDateTime(fromDate.getText().toString(), fromTime.getText().toString()));
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this,
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
         lastTimePickerTag = PICKER_FROM_TAG;
@@ -160,8 +166,9 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     @OnClick(R.id.toDate)
     void toDateClicked() {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateTimeUtils.mergeDateTime(toDate.getText().toString(), toTime.getText().toString()));
         DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this,
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), false);
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
         datePickerDialog.setYearRange(calendar.get(Calendar.YEAR), calendar.get(Calendar.YEAR) + 1);
         datePickerDialog.show(getChildFragmentManager(), PICKER_TO_TAG);
     }
@@ -169,6 +176,7 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     @OnClick(R.id.toTime)
     void toTimeClicked() {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateTimeUtils.mergeDateTime(toDate.getText().toString(), toTime.getText().toString()));
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this,
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
         lastTimePickerTag = PICKER_TO_TAG;
@@ -197,24 +205,51 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
 
     @OnClick(R.id.submit)
     void submitClicked() {
-        if (validateInput() && validateDateTime()) {
+        if (validateInput()) {
             getPresenter().submitClicked();
         }
     }
 
     protected boolean validateInput() {
-        return contactName.validate() && phoneNumber.validate() && additionalInfo.validate()
-                && phoneNumber.validateCharactersCount();
+        return contactName.validate() && phoneNumber.validate() && phoneNumber.validateCharactersCount()
+                && validateDateTime() && validateRating() && additionalInfo.validate();
     }
 
     protected boolean validateDateTime() {
         long from = getFromTimestamp(), to = getToTimestamp();
-        if (from > to) {
-            showToDateError(getString(R.string.suggest_merchant_to_date_overlap_error));
+        if (from < System.currentTimeMillis()) {
+            String errorMessage;
+            if (betweenSwitcher.isChecked()) {
+                errorMessage = getString(R.string.suggest_merchant_to_date_past_error);
+            } else {
+                errorMessage = String.format(getString(R.string.suggest_merchant_contact_time_past_error_format),
+                        getString(R.string.suggest_merchant_best_time_contact_caption));
+            }
+            showContactTimeFieldError(errorMessage);
             return false;
         }
-        if (to < System.currentTimeMillis()) {
-            showToDateError(getString(R.string.suggest_merchant_to_date_past_error));
+        if (betweenSwitcher.isChecked() && from > to) {
+            showContactTimeFieldError(getString(R.string.suggest_merchant_to_date_overlap_error));
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean validateRating() {
+        if (foodRatingBar.getRating() == 0) {
+            showRatingBarValidationError(R.string.suggest_merchant_food_caption);
+            return false;
+        }
+        if (serviceRatingBar.getRating() == 0) {
+            showRatingBarValidationError(R.string.suggest_merchant_service_caption);
+            return false;
+        }
+        if (cleanlinessRatingBar.getRating() == 0) {
+            showRatingBarValidationError(R.string.suggest_merchant_cleanliness_caption);
+            return false;
+        }
+        if (uniquenessRatingBar.getRating() == 0) {
+            showRatingBarValidationError(R.string.suggest_merchant_uniqueness_caption);
             return false;
         }
         return true;
@@ -271,9 +306,19 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     }
 
     @Override
-    public void showToDateError(String message) {
-        // TODO : error text is not shown now due to date&time views styling. Must be re-done later
-        toDate.setError(message);
+    public void showContactTimeFieldError(String message) {
+        if (getView() != null) {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void showRatingBarValidationError(@StringRes int ratingBarNameRes) {
+        if (getView() != null) {
+            Snackbar.make(getView(),
+                    String.format(getString(R.string.suggest_merchant_rating_error_format),
+                            getString(ratingBarNameRes)),
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -312,7 +357,7 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
                 .setTitleText(getString(R.string.dtl_merchant_success))
                 .setContentText(getString(R.string.dtl_merchant_submitted));
         //
-        sweetAlertDialog.setOnCancelListener(this::dialogCanceled);
+        sweetAlertDialog.setOnDismissListener(this::dialogCanceled);
         sweetAlertDialog.setCanceledOnTouchOutside(true);
         sweetAlertDialog.show();
     }

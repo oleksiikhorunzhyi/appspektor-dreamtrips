@@ -47,7 +47,7 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
 
         String getAdditionalInfo();
 
-        void showToDateError(String message);
+        void showContactTimeFieldError(String message);
 
         void showProgress();
 

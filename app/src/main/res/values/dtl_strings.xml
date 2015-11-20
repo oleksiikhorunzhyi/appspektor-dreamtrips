@@ -54,7 +54,7 @@
     <string name="suggest_merchant_restaurant_city_hint">City</string>
     <string name="suggest_merchant_success_snack">Successfully posted!</string>
     <string name="suggest_merchant_contact_name_hint">Contact Name</string>
-    <string name="suggest_merchant_phone_number_hint">Phone Number</string>
+    <string name="suggest_merchant_phone_number_hint">Phone</string>
     <string name="suggest_merchant_best_time_contact_caption">Best time for contact</string>
     <string name="suggest_merchant_best_time_contact_switcher">Between</string>
     <string name="suggest_merchant_best_time_contact_from_caption">From:</string>
@@ -68,8 +68,10 @@
     <string name="suggest_merchant_additional_info_symbols_entered_format">%1$d / %2$s</string>
     <string name="suggest_merchant_submit_button_caption">Submit</string>
     <string name="suggest_merchant_additional_info_length_error">Input too long!</string>
-    <string name="suggest_merchant_to_date_overlap_error">Cannot be earlier than \'To\' date!</string>
-    <string name="suggest_merchant_to_date_past_error">Cannot be in the past!</string>
+    <string name="suggest_merchant_to_date_overlap_error">\'To\' field cannot be earlier than \'From\'!</string>
+    <string name="suggest_merchant_to_date_past_error">\'From\' field cannot be in the past!</string>
+    <string name="suggest_merchant_contact_time_past_error_format">\'%s\' field cannot be in the past!</string>
+    <string name="suggest_merchant_rating_error_format">\'%s\' rating must be set!</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>
     <string name="dtl_wait_for_location">Wait… Obtaining current location</string>

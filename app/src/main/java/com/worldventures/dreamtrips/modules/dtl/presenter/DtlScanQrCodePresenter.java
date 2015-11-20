@@ -127,7 +127,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
     @Override
     public void handleError(SpiceException error) {
-        super.handleError(error);
+        view.informUser(R.string.wrong_qr);
         view.hideProgress();
     }
 

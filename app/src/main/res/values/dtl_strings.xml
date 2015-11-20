@@ -88,4 +88,5 @@
     <string name="dtl_closed">Closed</string>
     <string name="miles">kms/&lt;b>miles&lt;/b></string>
     <string name="kms">&lt;b>kms&lt;/b>/miles</string>
+    <string name="wrong_qr">Wrong qr code</string>
 </resources>

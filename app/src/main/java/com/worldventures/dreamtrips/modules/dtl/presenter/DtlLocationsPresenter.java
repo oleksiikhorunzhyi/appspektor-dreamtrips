@@ -80,7 +80,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void selectNearest(Location currentLocation) {
         DtlLocation dtlLocation = Queryable.from(dtlLocations)
-                .max(new DtlLocation.DtlNearestComparator(currentLocation));
+                .min(new DtlLocation.DtlNearestComparator(currentLocation));
         onLocationSelected(dtlLocation);
     }
 

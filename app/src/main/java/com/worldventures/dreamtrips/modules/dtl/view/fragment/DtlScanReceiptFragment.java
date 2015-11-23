@@ -12,8 +12,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -100,10 +100,9 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @Override
     public void openVerify(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
         getActivity().finish();
-        NavigationBuilder.create()
-                .with(activityRouter)
+        router.moveTo(routeCreator.createRoute(dtlTransaction), NavigationConfigBuilder.forActivity()
                 .data(dtlPlace)
-                .move(routeCreator.createRoute(dtlTransaction));
+                .build());
     }
 
     @Override

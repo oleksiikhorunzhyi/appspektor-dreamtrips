@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'io.fabric'
 
 repositories {
     jcenter()
@@ -51,21 +52,23 @@ android {
         buildConfigField 'String', 'COGNITO_ROLE_AUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolAuth_DefaultRole"'
         buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
         buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
+        buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
 
     }
     productFlavors {
         dev {
-            // the same as stage but with minSdk=21
-            // to speed up multiDex dramatically
-            minSdkVersion 21
             applicationId "com.worldventures.dreamtrips.dev"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.dev"]
+                                    appId         : "com.worldventures.dreamtrips.dev",
+                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+
+            ext.enableCrashlytics = false
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
             resValue "string", "facebook_app_id", "761062457321921"
         }
         stage {
@@ -73,7 +76,8 @@ android {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.stage"]
+                                    appId         : "com.worldventures.dreamtrips.stage",
+                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -89,7 +93,8 @@ android {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.perf"]
+                                    appId         : "com.worldventures.dreamtrips.perf",
+                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz/"'
 
@@ -103,7 +108,8 @@ android {
             applicationId "com.worldventures.dreamtrips"
 
             manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa",
-                                    appId         : "com.worldventures.dreamtrips"]
+                                    appId         : "com.worldventures.dreamtrips",
+                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
 
@@ -199,6 +205,9 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:3.6.2'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
     compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
+        transitive = true;
+    }
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
     compile 'com.apptentive:apptentive-android:2.0.1@aar'

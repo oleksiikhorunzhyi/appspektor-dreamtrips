@@ -240,6 +240,11 @@ public class DtlPlaceDetailsFragment
         getPresenter().onShareClick();
     }
 
+    @Override
+    public void setSuggestMerchantButtonAvailable(boolean available) {
+        merchantWrapper.setVisibility(available ? View.VISIBLE : View.GONE);
+    }
+
     private boolean onBackPressed() {
         if (isTabletLandscape() && getArgs().isSlave()) {
             getPresenter().onBackPressed();

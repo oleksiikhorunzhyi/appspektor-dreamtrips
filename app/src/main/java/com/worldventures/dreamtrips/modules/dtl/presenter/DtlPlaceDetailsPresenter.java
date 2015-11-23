@@ -7,6 +7,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -16,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 
 import java.util.Calendar;
@@ -28,6 +31,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
     @Inject
     SnappyRepository snapper;
+    @Inject
+    FeatureManager featureManager;
 
     public DtlPlaceDetailsPresenter(DtlPlace place) {
         super(place);
@@ -37,6 +42,14 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     public void onResume() {
         super.onResume();
         processTransaction();
+    }
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        if (place.getPartnerStatus() == DtlPlaceType.DINING)
+            featureManager.with(Feature.REP_SUGGEST_MERCHANT, () -> view.setSuggestMerchantButtonAvailable(true),
+                    () -> view.setSuggestMerchantButtonAvailable(false));
     }
 
     private void processTransaction() {
@@ -124,5 +137,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         void openMap(PlacesBundle placesBundle);
 
         void setTransaction(DtlTransaction dtlTransaction);
+
+        void setSuggestMerchantButtonAvailable(boolean available);
     }
 }

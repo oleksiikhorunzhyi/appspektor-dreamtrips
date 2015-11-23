@@ -22,20 +22,24 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlCategoryDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
@@ -193,16 +197,31 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
+    public void showEstimationDialog(PointsEstimationDialogBundle data) {
+        router.moveTo(Route.DTL_POINTS_ESTIMATION, NavigationConfigBuilder.forDialog()
+                .data(data)
+                .fragmentManager(getChildFragmentManager())
+                .build());
+    }
+
+    @Override
+    public void openSuggestMerchant(SuggestPlaceBundle data) {
+        router.moveTo(Route.DTL_SUGGEST_MERCHANT, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
+    }
+
+    @Override
     public void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
         Route route = routeCreator.createRoute(dtlTransaction);
-
-        NavigationBuilder navigationBuilder = NavigationBuilder.create();
-        if (route == Route.DTL_TRANSACTION_SUCCEED)
-            navigationBuilder.forDialog(getChildFragmentManager());
-        else
-            navigationBuilder.with(activityRouter);
-
-        navigationBuilder.data(dtlPlace).move(route);
+        //
+        NavigationConfigBuilder navigationConfigBuilder =
+                route == Route.DTL_TRANSACTION_SUCCEED ?
+                        NavigationConfigBuilder.forDialog().fragmentManager(getChildFragmentManager()) :
+                        NavigationConfigBuilder.forActivity();
+        //
+        navigationConfigBuilder.data(dtlPlace);
+        router.moveTo(route, navigationConfigBuilder.build());
     }
 
     @Override
@@ -220,6 +239,22 @@ public class DtlPlaceDetailsFragment
                 .build());
     }
 
+    @Override
+    public void share(DtlPlace place) {
+        new ShareDialog(activityRouter.getContext(), type -> {
+            ShareBundle shareBundle = new ShareBundle();
+            shareBundle.setShareType(type);
+            shareBundle.setText(getString(R.string.dtl_details_share_title, place.getDisplayName()));
+            shareBundle.setShareUrl(place.getWebsite());
+            DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
+            if (media != null) shareBundle.setImageUrl(media.getImagePath());
+            //
+            router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                    .data(shareBundle)
+                    .build());
+        }).show();
+    }
+
     @OnClick(R.id.place_details_earn)
     void onCheckInClicked() {
         getPresenter().onCheckInClicked();
@@ -227,7 +262,7 @@ public class DtlPlaceDetailsFragment
 
     @OnClick(R.id.place_details_estimate_points)
     void onEstimatorClick() {
-        getPresenter().onEstimationClick(getChildFragmentManager());
+        getPresenter().onEstimationClick();
     }
 
     @OnClick(R.id.place_details_suggest_merchant)

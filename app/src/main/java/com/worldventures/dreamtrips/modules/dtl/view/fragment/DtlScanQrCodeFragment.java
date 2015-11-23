@@ -134,12 +134,14 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     public void showProgress(@StringRes int titleText) {
-        if (pDialog == null) {
+        if (pDialog == null || !pDialog.isShowing()) {
             pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
             pDialog.setTitleText(getString(titleText));
             pDialog.setCancelable(false);
             pDialog.show();
-        } else pDialog.setTitleText(getString(titleText));
+        } else
+            pDialog.setTitleText(getString(titleText));
+
     }
 }

@@ -52,9 +52,9 @@ public class DtlPlaceHelper {
         ArrayList<ImageTextItem> items = new ArrayList<>();
         addContactIfNotEmpty(items,
                 String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(), place.getState(), place.getZip()),
-                R.drawable.address_icon, null);
+                R.drawable.address_icon, IntentUtils.newMapIntent(place.getCoordinates().getLat(), place.getCoordinates().getLng()));
         addContactIfNotEmpty(items, place.getPhone(), R.drawable.phone_icon, IntentUtils.newDialerIntent(place.getPhone()));
-        addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon, null);
+        addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon, IntentUtils.browserIntent(place.getWebsite()));
         return items;
     }
 

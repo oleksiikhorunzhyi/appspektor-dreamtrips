@@ -5,15 +5,15 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlTransactionResult {
-    double earnedPoints;
-    double total;
+    double creditedAmount;
+    double currentBalance;
 
     public double getEarnedPoints() {
-        return earnedPoints;
+        return creditedAmount;
     }
 
     public double getTotal() {
-        return total;
+        return currentBalance;
     }
 
 }

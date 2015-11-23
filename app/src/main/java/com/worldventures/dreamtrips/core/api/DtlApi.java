@@ -17,30 +17,30 @@ import retrofit.http.Query;
 
 public interface DtlApi {
 
-    @GET("/api/dtl/locations/search")
+    @GET("/api/dtl/v2/locations/search")
     ArrayList<DtlLocation> searchDtlLocations(@Query("text") String keyword);
 
-    @GET("/api/dtl/locations")
+    @GET("/api/dtl/v2/locations")
     ArrayList<DtlLocation> getNearbyDtlLocations(@Query("lat") double lat, @Query("lng") double lng);
 
-    @GET("/api/dtl/locations/{id}/merchants")
+    @GET("/api/dtl/v2/locations/{id}/merchants")
     ArrayList<DtlPlace> getDtlPlaces(@Path("id") String locationId);
 
-    @GET("/api/dtl/merchants/{id}/points")
+    @GET("/api/dtl/v2/merchants/{id}/points")
     EstimationPointsHolder getDtlPlacePointsEstimation(@Path("id") String placeId,
                                                        @Query("billTotal") double price,
                                                        @Query("checkinTimestamp") String checkinTime);
 
-    @POST("/api/dtl/merchants/{id}/points")
+    @POST("/api/dtl/v2/merchants/{id}/points")
     DtlTransactionResult earnPoints(@Path("id") String placeId,
                                     @Body DtlTransaction request);
 
-    @POST("/api/dtl/merchants/{id}/suggestion")
+    @POST("/api/dtl/v2/merchants/{id}/suggestion")
     Void suggestDining(@Path("id") String placeId, @Body SuggestPlacePostData request);
 
-    @POST("/api/dtl/merchants/{id}/rating")
+    @POST("/api/dtl/v2/merchants/{id}/rating")
     Void rate(@Path("id") String placeId, @Query("stars") int stars);
 
-    @POST("/api/dtl/merchants/")
+    @POST("/api/dtl/v2/merchants/")
     Void suggestPlace(@Body SuggestPlacePostData request);
 }

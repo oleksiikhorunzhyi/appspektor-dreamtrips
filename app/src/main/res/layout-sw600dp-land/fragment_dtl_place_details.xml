@@ -84,7 +84,7 @@
                         android:background="#96c2c2c2"
                         android:gravity="center"
                         android:padding="@dimen/spacing_small"
-                        android:text="Directions"
+                        android:text="@string/directions"
                         android:textAllCaps="true"
                         android:textColor="#005e92"
                         android:textSize="14sp"

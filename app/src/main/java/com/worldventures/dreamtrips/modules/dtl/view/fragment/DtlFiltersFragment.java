@@ -86,8 +86,7 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
         rangeBarDistance.setEnabled(filterData.isDistanceEnabled());
         switchCompat.setChecked(filterData.getDistance().isSelected());
         switchHint.setText(Html.fromHtml(getString(filterData.getDistance().getTextResId())));
-        //TODO  restore filter showing
-        // setupAttributesHeader();
+        setupAttributesHeader(filterData);
     }
 
     @Override
@@ -96,7 +95,9 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
     }
 
     private void setupAttributesHeader(DtlFilterData filterData) {
-        filtersAdapter.addItem(0, new DtlPlacesFilterHeaderAttribute(getString(R.string.dtl_amenities)));
+        if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())
+            filtersAdapter.addItem(0, new DtlPlacesFilterHeaderAttribute(getString(R.string.dtl_amenities)));
+
         filtersAdapter.clearAndUpdateItems(filterData.getAmenities());
     }
 }

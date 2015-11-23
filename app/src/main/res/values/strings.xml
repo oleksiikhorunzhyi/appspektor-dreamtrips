@@ -479,5 +479,7 @@
     <string name="feed_add_friends">Add friends</string>
     <string name="all_friends">All friends</string>
     <string name="trip_view_and_book"><![CDATA[View & Book it]]></string>
+    <string name="accept_all">Accept all</string>
+    <string name="request_count_desc">You have %d incoming Friend requests</string>
 
 </resources>

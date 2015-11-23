@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
@@ -93,7 +94,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
 
         adapter = new BaseArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(User.class, RequestCell.class);
-        adapter.registerCell(String.class, RequestHeaderCell.class);
+        adapter.registerCell(RequestHeaderModel.class, RequestHeaderCell.class);
 
         recyclerView.setAdapter(adapter);
 

@@ -54,6 +54,8 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
+import static com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand.RequestBody;
+
 public interface DreamTripsApi {
 
     String TYPE_MEMBER = "DTAPP";
@@ -257,6 +259,9 @@ public interface DreamTripsApi {
     JSONObject actOnRequest(@Query("user_id") int userId,
                             @Field("action") String action,
                             @Field("circle_id") String circleId);
+
+    @PATCH("/api/social/friends/request_responses")
+    ArrayList<JSONObject> actOnBatchRequests(@Body RequestBody userIds);
 
     @DELETE("/api/social/friends/request_responses")
     JSONObject deleteRequest(@Query("user_id") int userId);

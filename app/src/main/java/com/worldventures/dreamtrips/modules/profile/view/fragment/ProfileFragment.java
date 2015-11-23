@@ -146,4 +146,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         feedView.getAdapter().notifyDataSetChanged();
     }
 
+    @Override
+    public void onDestroyView() {
+        setToolbarAlpha(100);
+        super.onDestroyView();
+    }
 }

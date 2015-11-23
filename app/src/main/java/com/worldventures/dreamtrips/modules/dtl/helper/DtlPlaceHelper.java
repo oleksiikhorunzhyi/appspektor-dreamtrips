@@ -50,7 +50,9 @@ public class DtlPlaceHelper {
 
     public List<ImageTextItem> getContactsData(DtlPlace place) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
-        addContactIfNotEmpty(items, place.getAddress1(), R.drawable.address_icon, null);
+        addContactIfNotEmpty(items,
+                String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(), place.getState(), place.getZip()),
+                R.drawable.address_icon, null);
         addContactIfNotEmpty(items, place.getPhone(), R.drawable.phone_icon, IntentUtils.newDialerIntent(place.getPhone()));
         addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon, null);
         return items;

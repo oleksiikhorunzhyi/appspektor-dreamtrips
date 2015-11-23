@@ -78,7 +78,7 @@
     <string name="dtl_wait_for_cities">Wait… Obtaining nearest cities</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
     <string name="dtl_wait_for_earn">Wait… Earning points</string>
-    <string name="dtl_estimator_explanation">Points are calculated based on minimum money spend at merchant and day of the week</string>
+    <string name="dtl_estimator_explanation">Points are calculated based on minimum amount spent at merchant and day of the week</string>
     <string name="dtl_photo_upload_error">Error while uploading photo, try again later</string>
     <string name="dtl_merchant_success">Success</string>
     <string name="dtl_merchant_submitted">Congratulations! Merchant has been submitted. You will be informed once they get approved</string>

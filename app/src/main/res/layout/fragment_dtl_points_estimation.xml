@@ -86,7 +86,7 @@
             android:layout_marginRight="@dimen/spacing_small"
             android:layout_weight="2"
             android:inputType="numberDecimal"
-            tools:text="10.5"
+            android:text="@string/dtl_points_estimation_default_result"
             />
 
         <FrameLayout

@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
+import com.worldventures.dreamtrips.modules.friends.view.util.MutualStringUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -41,9 +42,14 @@ public class RequestCell extends AbstractCell<User> {
     TextView companyName;
     @InjectView(R.id.buttonContainer)
     ViewGroup container;
+    @InjectView(R.id.info)
+    TextView tvMutual;
+
+    private MutualStringUtil mutualStringUtil;
 
     public RequestCell(View view) {
         super(view);
+        mutualStringUtil = new MutualStringUtil(view.getContext());
     }
 
     @Override
@@ -66,22 +72,26 @@ public class RequestCell extends AbstractCell<User> {
                 cancel.setVisibility(View.GONE);
                 reject.setVisibility(View.VISIBLE);
                 accept.setVisibility(View.VISIBLE);
+                String mutual = mutualStringUtil.createMutualString(getModelObject().getMutualFriends());
+                tvMutual.setVisibility(TextUtils.isEmpty(mutual) ? View.GONE : View.VISIBLE);
+                tvMutual.setText(mutual);
                 break;
             case OUTGOING_REQUEST:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.VISIBLE);
+                tvMutual.setVisibility(View.GONE);
                 break;
             case REJECT:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.VISIBLE);
                 cancel.setVisibility(View.GONE);
+                tvMutual.setVisibility(View.GONE);
                 break;
         }
     }
-
 
     @OnClick(R.id.avatar)
     void onUserClicked() {

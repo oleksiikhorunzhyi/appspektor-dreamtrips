@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
+import com.worldventures.dreamtrips.modules.friends.view.util.MutualStringUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -25,9 +26,14 @@ public class UserSearchCell extends AbstractCell<User> {
     TextView companyName;
     @InjectView(R.id.name)
     TextView name;
+    @InjectView(R.id.info)
+    TextView tvMutual;
+
+    private MutualStringUtil mutualStringUtil;
 
     public UserSearchCell(View view) {
         super(view);
+        mutualStringUtil = new MutualStringUtil(view.getContext());
     }
 
     @Override
@@ -39,6 +45,9 @@ public class UserSearchCell extends AbstractCell<User> {
         } else {
             companyName.setVisibility(View.GONE);
         }
+        String mutual = mutualStringUtil.createMutualString(getModelObject().getMutualFriends());
+        tvMutual.setVisibility(TextUtils.isEmpty(mutual) ? View.GONE : View.VISIBLE);
+        tvMutual.setText(mutual);
         avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
     }
 

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.friends.view.util.MutualStringUtil;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
@@ -38,8 +39,11 @@ public class FeedFriendCell extends AbstractCell<User> {
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
+    private MutualStringUtil mutualStringUtil;
+
     public FeedFriendCell(View view) {
         super(view);
+        mutualStringUtil = new MutualStringUtil(view.getContext());
     }
 
     @Override
@@ -50,30 +54,9 @@ public class FeedFriendCell extends AbstractCell<User> {
 
         tvName.setText(user.getFullName());
 
-        String circleAndMutualString = createCircleAndMutualString(user);
-        if (TextUtils.isEmpty(circleAndMutualString)) {
-            tvMutual.setVisibility(View.GONE);
-        } else {
-            tvMutual.setVisibility(View.VISIBLE);
-            tvMutual.setText(circleAndMutualString);
-        }
-    }
-
-    private String createCircleAndMutualString(User user) {
-        StringBuilder sb = new StringBuilder();
-        if (!TextUtils.isEmpty(user.getCircles())) {
-            sb.append(user.getCircles());
-
-            if (user.getMutualFriends() > 0) {
-                sb.append(", ");
-            }
-        }
-
-        if (user.getMutualFriends() > 0) {
-            sb.append(itemView.getContext().getString(R.string.social_postfix_mutual_friends, user.getMutualFriends()));
-        }
-
-        return sb.toString();
+        String mutual = mutualStringUtil.createCircleAndMutualString(user);
+        tvMutual.setVisibility(TextUtils.isEmpty(mutual) ? View.GONE : View.VISIBLE);
+        tvMutual.setText(mutual);
     }
 
     @Override

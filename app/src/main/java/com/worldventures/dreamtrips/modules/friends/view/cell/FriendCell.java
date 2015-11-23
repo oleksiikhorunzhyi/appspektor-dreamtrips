@@ -14,6 +14,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
+import com.worldventures.dreamtrips.modules.friends.view.util.MutualStringUtil;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import butterknife.InjectView;
@@ -35,8 +36,11 @@ public class FriendCell extends AbstractCell<User> {
 
     FriendActionDialogDelegate dialog;
 
+    private MutualStringUtil mutualStringUtil;
+
     public FriendCell(View view) {
         super(view);
+        mutualStringUtil = new MutualStringUtil(view.getContext());
     }
 
     @Override
@@ -54,8 +58,8 @@ public class FriendCell extends AbstractCell<User> {
         tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
         tvGroup.setText(circleName);
 
-        String mutual = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
-        tvMutual.setVisibility(getModelObject().getMutualFriends() == 0? View.GONE : View.VISIBLE);
+        String mutual = mutualStringUtil.createMutualString(getModelObject().getMutualFriends());
+        tvMutual.setVisibility(TextUtils.isEmpty(mutual) ? View.GONE : View.VISIBLE);
         tvMutual.setText(mutual);
     }
 

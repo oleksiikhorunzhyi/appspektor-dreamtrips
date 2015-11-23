@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -18,12 +17,11 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import butterknife.InjectView;
 import io.techery.scalablecropp.library.Crop;
 
-@Layout(R.layout.fragment_profile)
+@Layout(R.layout.fragment_account)
 @MenuResource(R.menu.menu_empty)
 public class AccountFragment extends ProfileFragment<AccountPresenter>
         implements AccountPresenter.View {

@@ -17,6 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:text="@string/dtl_total_amount"
             android:textColor="@color/black"/>
 
@@ -25,10 +26,36 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:layout_gravity="center"
             android:text="@string/dtl_total_amount"
             android:textColor="@color/black"
-            tools:text="$ 129342342343242343423"/>
+            tools:text="$ 1293423423432423"/>
+
+        <ImageView
+            android:id="@+id/infoToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@drawable/info_icon"/>
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lines="2"
+        android:padding="@dimen/spacing_small"
+        android:singleLine="false"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:visibility="gone"
+        android:text="@string/dtl_estimator_explanation"
+        android:textColor="@color/black"
+        android:textSize="12sp"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"

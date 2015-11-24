@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -27,6 +28,8 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     TextView spentAmount;
     @InjectView(R.id.receipt)
     SimpleDraweeView receipt;
+    @InjectView(R.id.info)
+    TextView info;
 
     @Override
     protected DtlVerifyAmountPresenter createPresenter(Bundle savedInstanceState) {
@@ -43,6 +46,11 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
         router.moveTo(Route.DTL_SCAN_QR, NavigationConfigBuilder.forActivity()
                 .data(getArgs())
                 .build());
+    }
+
+    @OnClick(R.id.infoToggle)
+    void infoToggle() {
+        info.setVisibility(info.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
     }
 
     @Override

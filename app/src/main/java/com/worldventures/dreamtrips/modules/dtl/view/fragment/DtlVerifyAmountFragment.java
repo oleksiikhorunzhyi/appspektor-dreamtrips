@@ -43,6 +43,7 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
 
     @OnClick(R.id.scan_merchant_code)
     void onScanQr() {
+        getActivity().finish();
         router.moveTo(Route.DTL_SCAN_QR, NavigationConfigBuilder.forActivity()
                 .data(getArgs())
                 .build());

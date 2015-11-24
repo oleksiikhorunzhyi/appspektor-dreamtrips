@@ -15,7 +15,10 @@ import com.google.zxing.Result;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
@@ -56,6 +59,9 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     DtlPlaceHelper helper;
 
+    @Inject
+    BackStackDelegate backStackDelegate;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -72,6 +78,15 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
         super.onResume();
         DtlScanQrCodeFragmentPermissionsDispatcher.startCameraWithCheck(this);
         scanner.setResultHandler(this);
+        backStackDelegate.setListener(this::onBackPressed);
+    }
+
+    private boolean onBackPressed() {
+        getActivity().finish();
+        router.moveTo(Route.DTL_VERIFY, NavigationConfigBuilder.forActivity()
+                .data(getArgs())
+                .build());
+        return true;
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -104,6 +119,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     public void onPause() {
         super.onPause();
         scanner.stopCamera();
+        backStackDelegate.setListener(null);
     }
 
     @Override

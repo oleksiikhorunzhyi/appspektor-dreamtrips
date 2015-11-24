@@ -32,7 +32,7 @@
     <string name="permission_location_rationale">Access to the location is needed for detection</string>
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
     <string name="no_location_permission">This application cannot run because it does not have the location permission. The application will now exit.</string>
-    <string name="dtl_checkin_location_error">You should have location service enabled to check in</string>
+    <string name="dtl_checkin_location_error">Location services should be enabled to check in</string>
     <string name="dtl_barcode_title">Scan QR Code</string>
     <string name="dtl_barcode_merchant">Scan Merchant Code</string>
     <string name="dtl_enter_amount">Enter Amount</string>

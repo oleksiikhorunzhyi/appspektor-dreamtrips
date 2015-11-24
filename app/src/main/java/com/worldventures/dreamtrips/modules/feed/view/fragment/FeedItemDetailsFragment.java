@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -42,8 +41,8 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         if (getArgs().isShowAdditionalInfo()) {
-            childCompass = new FragmentCompass((BaseActivity) getActivity(), R.id.comments_additional_info_container);
-            childCompass.setSupportFragmentManager(getChildFragmentManager());
+            childCompass = new FragmentCompass(getActivity(), R.id.comments_additional_info_container);
+            childCompass.setFragmentManager(getChildFragmentManager());
             childCompass.disableBackStack();
             //
         } else {

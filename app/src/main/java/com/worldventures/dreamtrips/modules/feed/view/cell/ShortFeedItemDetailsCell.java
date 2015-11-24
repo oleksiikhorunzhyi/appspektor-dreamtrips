@@ -47,7 +47,7 @@ public class ShortFeedItemDetailsCell extends AbstractCell<FeedItem> {
     @Override
     public void afterInject() {
         fragmentCompass.setContainerId(R.id.fragment_container);
-        fragmentCompass.setSupportFragmentManager(fragmentManager);
+        fragmentCompass.setFragmentManager(fragmentManager);
         fragmentCompass.disableBackStack();
     }
 

@@ -144,11 +144,11 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
     private void initCompassManager() {
         if (fragmentCompass.getCurrentFragment() instanceof BucketTabsFragment
                 && getModelObject().getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
-            fragmentCompass.setSupportFragmentManager(Queryable.from(fragmentCompass.getCurrentFragment().getChildFragmentManager().getFragments()).filter(element -> {
-                return ((BucketItem.BucketType) element.getArguments().getSerializable("BUNDLE_TYPE")).getName().equals(((BucketItem)getModelObject().getItem()).getType());
+            fragmentCompass.setFragmentManager(Queryable.from(fragmentCompass.getCurrentFragment().getChildFragmentManager().getFragments()).filter(element -> {
+                return ((BucketItem.BucketType) element.getArguments().getSerializable("BUNDLE_TYPE")).getName().equals(((BucketItem) getModelObject().getItem()).getType());
             }).first().getChildFragmentManager());
         } else {
-            fragmentCompass.setSupportFragmentManager(fragmentManager);
+            fragmentCompass.setFragmentManager(fragmentManager);
         }
     }
 

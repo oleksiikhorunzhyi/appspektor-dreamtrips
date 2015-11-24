@@ -58,7 +58,6 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import timber.log.Timber;
 
-
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
 public class BucketListFragment<T extends BucketListPresenter> extends BaseFragment<T>
@@ -360,7 +359,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         Route detailsRoute = Route.FEED_ITEM_DETAILS;
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
             fragmentCompass.clear();
             NavigationBuilder.create()

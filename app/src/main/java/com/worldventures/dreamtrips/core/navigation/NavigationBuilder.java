@@ -6,6 +6,10 @@ import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
+/**
+ * Use {@link com.worldventures.dreamtrips.core.navigation.router.Router} interface
+ */
+@Deprecated
 public class NavigationBuilder {
 
     Navigator navigator;

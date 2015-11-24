@@ -15,6 +15,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -33,6 +34,8 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     protected ActivityRouter activityRouter;
     @Inject
     protected FragmentCompass fragmentCompass;
+    @Inject
+    protected Router router;
     @Inject
     protected Presenter.TabletAnalytic tabletAnalytic;
 

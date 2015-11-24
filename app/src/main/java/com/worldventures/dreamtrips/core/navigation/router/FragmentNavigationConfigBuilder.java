@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Parcelable;
+import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.R;
@@ -12,13 +13,14 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
     }
 
     /**
-     * Default config includes enabled backstack and container ID set to
+     * Default config includes enabled backstack, clearBackStack = 'false' and container ID set to
      * {@link R.id#container_main}
      */
     @Override
-    public NavigationConfigBuilder useDefaults() {
+    public FragmentNavigationConfigBuilder useDefaults() {
         navigationConfig.backStackEnabled = true;
         navigationConfig.containerId = R.id.container_main;
+        navigationConfig.clearBackStack = false;
         return this;
     }
 
@@ -27,7 +29,7 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
         return this;
     }
 
-    public FragmentNavigationConfigBuilder containerId(int containerId) {
+    public FragmentNavigationConfigBuilder containerId(@IdRes int containerId) {
         navigationConfig.containerId = containerId;
         return this;
     }
@@ -42,6 +44,15 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
         return this;
     }
 
+    /**
+     * Will clear stack of given FragmentManager before new transaction.<br />
+     * Default is <b><u> false</u></b>
+     */
+    public FragmentNavigationConfigBuilder clearBackStack(boolean clearBackStack) {
+        navigationConfig.clearBackStack = clearBackStack;
+        return this;
+    }
+
     @Override
     protected void validateConfig() throws IllegalStateException {
         StringBuilder reasonBuilder = new StringBuilder("Navigation config corrupted state:\n");
@@ -52,6 +63,10 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
         }
         if (navigationConfig.backStackEnabled == null) {
             reasonBuilder.append("backStackEnabled is null\n");
+            corrupted = true;
+        }
+        if (navigationConfig.clearBackStack == null) {
+            reasonBuilder.append("clearBackStack is null\n");
             corrupted = true;
         }
         if (corrupted) throw new IllegalStateException(reasonBuilder.toString());

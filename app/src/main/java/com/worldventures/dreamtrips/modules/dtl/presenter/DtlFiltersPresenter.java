@@ -6,6 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
@@ -22,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import timber.log.Timber;
 
 public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
 
@@ -63,11 +65,11 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     private void findCurrentLocation(DtlLocation selectedLocation) {
-        locationDelegate.getLastKnownLocation()
-                .compose(new IoToMainComposer<>())
-                .subscribe(location -> locationObtained(location, selectedLocation), e -> {
-                        },
-                        () -> view.attachFilterData(dtlFilterData));
+        view.bind(locationDelegate.getLastKnownLocation()
+                        .compose(new IoToMainComposer<>())
+        ).subscribe(location -> locationObtained(location, selectedLocation),
+                e -> Timber.e(e, "Smth went wrong"),
+                () -> view.attachFilterData(dtlFilterData));
     }
 
     private void locationObtained(Location location, DtlLocation selectedLocation) {
@@ -108,7 +110,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         view.dataSetChanged();
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void attachFilterData(DtlFilterData filterData);
 

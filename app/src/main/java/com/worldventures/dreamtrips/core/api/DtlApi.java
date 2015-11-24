@@ -10,6 +10,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
 import java.util.ArrayList;
 
 import retrofit.http.Body;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -38,8 +40,9 @@ public interface DtlApi {
     @POST("/api/dtl/v2/merchants/{id}/suggestion")
     Void suggestDining(@Path("id") String placeId, @Body SuggestPlacePostData request);
 
+    @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/rating")
-    Void rate(@Path("id") String placeId, @Query("stars") int stars);
+    Void rate(@Path("id") String placeId, @Field("stars") int stars);
 
     @POST("/api/dtl/v2/merchants/")
     Void suggestPlace(@Body SuggestPlacePostData request);

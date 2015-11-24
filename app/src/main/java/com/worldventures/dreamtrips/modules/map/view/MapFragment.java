@@ -14,6 +14,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
@@ -21,7 +22,7 @@ import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import butterknife.InjectView;
 import icepick.Icepick;
 
-public abstract class MapFragment<T extends Presenter> extends BaseFragment<T> {
+public abstract class MapFragment<T extends Presenter> extends RxBaseFragment<T> {
     private static final String KEY_MAP = "map";
 
     protected Integer cameraAnimationDuration = 1000;

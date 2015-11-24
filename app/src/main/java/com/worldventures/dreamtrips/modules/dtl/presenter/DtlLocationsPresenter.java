@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 import rx.Observable;
+import timber.log.Timber;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View> {
 
@@ -166,7 +167,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
                                     dtlLocation.getLongName().toLowerCase().contains(caption))
                             .toList()
                             .compose(new IoToMainComposer<>())
-            ).subscribe(view::setItems);
+            ).subscribe(view::setItems, e -> Timber.e(e, "Smth went wrong while search"));
 
     }
 

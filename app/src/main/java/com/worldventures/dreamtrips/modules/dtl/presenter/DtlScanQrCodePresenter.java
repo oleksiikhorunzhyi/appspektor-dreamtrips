@@ -119,13 +119,13 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     }
 
     private void receiptUploadError() {
-        view.informUser(R.string.dtl_photo_upload_error);
+        view.alert(context.getString(R.string.dtl_photo_upload_error));
         view.hideProgress();
     }
 
     @Override
     public void handleError(SpiceException error) {
-        view.informUser(R.string.wrong_qr);
+        view.alert(context.getString(R.string.wrong_qr));
         view.hideProgress();
     }
 

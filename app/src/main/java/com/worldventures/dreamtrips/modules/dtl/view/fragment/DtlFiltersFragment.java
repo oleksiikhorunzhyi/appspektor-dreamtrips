@@ -12,6 +12,7 @@ import com.appyvet.rangebar.RangeBar;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -26,7 +27,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_filters)
-public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implements DtlFiltersPresenter.View {
+public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> implements DtlFiltersPresenter.View {
 
     @InjectView(R.id.range_bar_distance)
     protected RangeBar rangeBarDistance;

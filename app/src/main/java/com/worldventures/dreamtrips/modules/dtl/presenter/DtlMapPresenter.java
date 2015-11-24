@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
@@ -22,8 +25,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
@@ -55,13 +56,6 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         if (dtlFilterData == null) {
             dtlFilterData = new DtlFilterData();
         }
-
-        locationDelegate.getLastKnownLocation()
-                .compose(new IoToMainComposer<>())
-                .subscribe(location ->
-                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude()), throwable -> {
-                    Timber.e(this.getClass().getSimpleName(), throwable);
-                });
     }
 
     public void onMapLoaded() {
@@ -91,15 +85,22 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     }
 
     private void performFiltering(String query) {
-        Observable.from(dtlPlaces)
-                .filter(dtlPlace ->
-                        dtlPlace.applyFilter(dtlFilterData, currentLocation))
-                .filter(dtlPlace -> dtlPlace.containsQuery(query))
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showPins);
+        view.bind(locationDelegate
+                        .getLastKnownLocation()
+                        .doOnNext(location -> currentLocation = new LatLng(location.getLatitude(),
+                                        location.getLongitude()))
+                        .onErrorResumeNext(Observable.<Location>empty())
+                        .flatMap(location -> Observable.from(Queryable.from(dtlPlaces)
+                                        .filter(dtlPlace ->
+                                                dtlPlace.applyFilter(dtlFilterData, currentLocation))
+                                        .filter(dtlPlace -> dtlPlace.containsQuery(query)))
+                                        .toList())
+                        .compose(new IoToMainComposer<>())
+        ).subscribe(this::showPins, this::onError);
+    }
 
+    private void onError(Throwable e) {
+        Timber.e(e, "Something went wrong while filtering");
     }
 
     private void showPins(List<DtlPlace> filtered) {
@@ -133,11 +134,11 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
             performFiltering();
     }
 
-    public void onEventMainThread(DtlSearchPlaceRequestEvent event){
+    public void onEventMainThread(DtlSearchPlaceRequestEvent event) {
         performFiltering(event.getSearchQuery());
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
         void addPin(String id, LatLng latLng, DtlPlaceType type);
 
         void clearMap();

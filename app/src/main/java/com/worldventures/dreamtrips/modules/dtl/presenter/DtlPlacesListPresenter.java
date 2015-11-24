@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 import rx.Observable;
+import timber.log.Timber;
 
 public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> {
 
@@ -56,13 +57,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
             dtlFilterData = new DtlFilterData();
         }
 
-        locationDelegate.getLastKnownLocation()
-                .compose(new IoToMainComposer<>())
-                .subscribe(location -> currentLocation = new LatLng(location.getLatitude(),
-                                location.getLongitude()),
-                        e -> {
-                        },
-                        this::performFiltering);
+        performFiltering();
     }
 
     public void onEventMainThread(PlacesUpdatedEvent event) {
@@ -84,7 +79,11 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     private void performFiltering(String query) {
         view.bind(locationDelegate
                         .getLastKnownLocation()
-                        .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
+                        .doOnNext(location ->
+                            currentLocation = new LatLng(location.getLatitude(),
+                                    location.getLongitude())
+                        )
+                        .onErrorReturn(throwable -> dtlLocation.asAndroidLocation())
                         .flatMap(location -> Observable.from(Queryable.from(dtlPlaces)
                                         .filter(dtlPlace ->
                                                 dtlPlace.applyFilter(dtlFilterData, currentLocation))
@@ -92,9 +91,12 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
                                         .sort(new DtlPlace.DtlPlaceDistanceComparator(location)))
                                         .toList()
                         ).compose(new IoToMainComposer<>())
-        ).subscribe(view::setItems);
+        ).subscribe(view::setItems, this::onError);
     }
 
+    private void onError(Throwable e) {
+        Timber.e(e, "Something went wrong while filtering");
+    }
 
     public void onEventMainThread(PlacesUpdateFinished event) {
         view.hideProgress();

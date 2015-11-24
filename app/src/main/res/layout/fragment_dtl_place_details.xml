@@ -40,9 +40,9 @@
         <LinearLayout
             android:id="@+id/place_details_earn_wrapper"
             style="@style/Widget.AppCompat.ButtonBar"
-            android:background="#eeeeee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#eeeeee"
             android:orientation="vertical"
             android:padding="@dimen/spacing_normal"
             >
@@ -86,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:gravity="center"
-                android:visibility="gone"
-                android:text="@string/checked_in"/>
+                android:text="@string/checked_in"
+                android:visibility="gone"/>
         </LinearLayout>
 
 
@@ -114,11 +114,57 @@
         </FrameLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/perks_description_header"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/spacing_normal"
             >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/perks_icon"
+                android:drawablePadding="@dimen/spacing_small"
+                android:drawableStart="@drawable/perks_icon"
+                android:text="@string/dtl_perks_description"
+                android:textColor="#535353"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/place_details_perks_description"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:textColor="#535353"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="It is a Family owned breakfast and lunch restaurant with more than generous plate servings."
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/description_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_normal"
+            android:background="@color/dtl_cities_background"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing_tiny"
+                android:text="@string/dtl_description"
+                android:textColor="#535353"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                />
 
             <TextView
                 android:id="@+id/place_details_description"
@@ -131,28 +177,6 @@
                 tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
                 />
 
-            <TextView
-                android:id="@+id/perks_description_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:textColor="#535353"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="@string/dtl_perks_description"
-                />
-
-            <TextView
-                android:id="@+id/place_details_perks_description"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:layout_height="wrap_content"
-                android:textColor="#535353"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:text="It is a Family owned breakfast and lunch restaurant with more than generous plate servings."
-                />
         </LinearLayout>
 
         <LinearLayout
@@ -169,11 +193,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.75"
-                android:minHeight="140dp"
                 android:divider="@drawable/list_divider_with_padding"
+                android:gravity="top"
+                android:minHeight="140dp"
                 android:orientation="vertical"
                 android:showDividers="middle"
-                android:gravity="top"
                 />
 
             <FrameLayout

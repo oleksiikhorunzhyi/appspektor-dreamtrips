@@ -83,7 +83,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
                             currentLocation = new LatLng(location.getLatitude(),
                                     location.getLongitude())
                         )
-                        .onErrorReturn(throwable -> dtlLocation.asAndroidLocation())
+                        .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
                         .flatMap(location -> Observable.from(Queryable.from(dtlPlaces)
                                         .filter(dtlPlace ->
                                                 dtlPlace.applyFilter(dtlFilterData, currentLocation))

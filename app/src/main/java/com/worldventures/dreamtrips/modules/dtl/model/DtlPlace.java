@@ -236,7 +236,7 @@ public class DtlPlace implements Parcelable {
         return !filterData.isDistanceEnabled()
                 || currentLocation == null
                 || LocationHelper.checkLocation(filterData.getMaxDistance(), currentLocation,
-                new LatLng(coordinates.getLat(), coordinates.getLng()), filterData.getDistance());
+                new LatLng(coordinates.getLat(), coordinates.getLng()), filterData.getDistanceType());
     }
 
     private boolean checkAmenities(DtlFilterData filterData) {

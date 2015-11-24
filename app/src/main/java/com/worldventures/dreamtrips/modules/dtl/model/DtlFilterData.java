@@ -22,7 +22,7 @@ public class DtlFilterData implements Parcelable {
     private int maxDistance;
     private boolean distanceEnabled;
 
-    private Distance distance;
+    private DistanceType distanceType;
 
     private List<DtlPlacesFilterAttribute> amenities;
 
@@ -36,7 +36,7 @@ public class DtlFilterData implements Parcelable {
         minPrice = MIN_PRICE;
         maxPrice = MAX_PRICE;
         maxDistance = MAX_DISTANCE;
-        distance = Distance.MILES;
+        distanceType = DistanceType.MILES;
     }
 
     public int getMinPrice() {
@@ -78,7 +78,7 @@ public class DtlFilterData implements Parcelable {
         return maxDistance;
     }
 
-    public void setDistance(int maxDistance) {
+    public void setDistanceType(int maxDistance) {
         this.maxDistance = maxDistance;
     }
 
@@ -90,24 +90,24 @@ public class DtlFilterData implements Parcelable {
         this.distanceEnabled = distanceEnabled;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public DistanceType getDistanceType() {
+        return distanceType;
     }
 
 
     public void toggleDistance() {
-        if (distance == Distance.KMS) distance = Distance.MILES;
-        else distance = Distance.KMS;
+        if (distanceType == DistanceType.KMS) distanceType = DistanceType.MILES;
+        else distanceType = DistanceType.KMS;
     }
 
-    public enum Distance {
+    public enum DistanceType {
         MILES(R.string.miles, true), KMS(R.string.kms, false);
 
         @StringRes
         int textResId;
         boolean selected;
 
-        Distance(@StringRes int textResId, boolean selected) {
+        DistanceType(@StringRes int textResId, boolean selected) {
             this.textResId = textResId;
             this.selected = selected;
         }
@@ -130,7 +130,7 @@ public class DtlFilterData implements Parcelable {
         maxPrice = in.readInt();
         maxDistance = in.readInt();
         distanceEnabled = in.readByte() != 0;
-        distance = (Distance) in.readSerializable();
+        distanceType = (DistanceType) in.readSerializable();
         amenities = in.createTypedArrayList(DtlPlacesFilterAttribute.CREATOR);
     }
 
@@ -157,7 +157,7 @@ public class DtlFilterData implements Parcelable {
         dest.writeInt(maxPrice);
         dest.writeInt(maxDistance);
         dest.writeByte((byte) (distanceEnabled ? 1 : 0));
-        dest.writeSerializable(distance);
+        dest.writeSerializable(distanceType);
         dest.writeTypedList(amenities);
     }
 

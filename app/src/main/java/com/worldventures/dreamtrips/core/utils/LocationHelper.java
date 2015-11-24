@@ -5,8 +5,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 
 public class LocationHelper {
 
-    public static boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLocation, DtlFilterData.Distance distance) {
-        return (distance == DtlFilterData.Distance.KMS ?
+    public static boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLocation, DtlFilterData.DistanceType distanceType) {
+        return (distanceType == DtlFilterData.DistanceType.KMS ?
                 distanceInKms(currentLocation, targetLocation)
                 : distanceInMiles(currentLocation, targetLocation)) < maxDistance;
     }

@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterHeaderAttribute;
@@ -85,8 +84,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
         rangeBarDistance.setRangePinsByValue(10.0f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
         rangeBarDistance.setEnabled(filterData.isDistanceEnabled());
-        switchCompat.setChecked(filterData.getDistance().isSelected());
-        switchHint.setText(Html.fromHtml(getString(filterData.getDistance().getTextResId())));
+        switchCompat.setChecked(filterData.getDistanceType().isSelected());
+        switchHint.setText(Html.fromHtml(getString(filterData.getDistanceType().getTextResId())));
         if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())
             setupAttributesHeader(filterData);
     }

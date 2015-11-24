@@ -26,7 +26,8 @@
     <string name="dtl_receipt_verify_hint">This amount will be verified by the merchant. Any discrepancy in the amount entered will result in delay in earning DreamTrips points.</string>
     <string name="dtl_action_next">Next</string>
     <string name="dtl_amenities">Amenities</string>
-    <string name="dtl_perks_description">Perks description</string>
+    <string name="dtl_perks_description">Perks</string>
+    <string name="dtl_description">Description</string>
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
     <string name="permission_location_rationale">Access to the location is needed for detection</string>

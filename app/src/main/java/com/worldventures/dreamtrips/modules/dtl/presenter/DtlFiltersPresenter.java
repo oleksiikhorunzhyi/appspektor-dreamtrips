@@ -75,7 +75,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     private void locationObtained(Location location, DtlLocation selectedLocation) {
         if (LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
                 new LatLng(location.getLatitude(), location.getLongitude()),
-                selectedLocation.getCoordinates().asLatLng(), DtlFilterData.Distance.MILES)) {
+                selectedLocation.getCoordinates().asLatLng(), DtlFilterData.DistanceType.MILES)) {
             dtlFilterData.setDistanceEnabled(true);
         } else {
             dtlFilterData.setDistanceEnabled(false);
@@ -87,7 +87,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     public void distanceChanged(int right) {
-        dtlFilterData.setDistance(right);
+        dtlFilterData.setDistanceType(right);
     }
 
     public void apply() {

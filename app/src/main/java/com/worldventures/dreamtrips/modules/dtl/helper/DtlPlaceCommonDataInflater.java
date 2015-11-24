@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -20,6 +22,8 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
     ProperRatingBar rating;
     @InjectView(R.id.place_details_points_badge)
     ImageView earnPointsBadge;
+    @InjectView(R.id.perks)
+    TextView perks;
 
     public DtlPlaceCommonDataInflater(DtlPlaceHelper helper) {
         this.helper = helper;
@@ -34,6 +38,7 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
         } else {
             rating.setVisibility(View.GONE);
         }
+        perks.setVisibility(TextUtils.isEmpty(place.getPerksDescription()) ? View.GONE : View.VISIBLE);
         earnPointsBadge.setVisibility(place.getPartnerStatus() == DtlPlaceType.OFFER ? View.VISIBLE : View.GONE);
     }
 }

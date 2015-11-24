@@ -7,8 +7,8 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
@@ -41,19 +41,17 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     @OnClick(R.id.scan_merchant_code)
     void onScanQr() {
         getActivity().finish();
-        NavigationBuilder.create()
-                .with(activityRouter)
+        router.moveTo(Route.DTL_SCAN_QR, NavigationConfigBuilder.forActivity()
                 .data(getArgs())
-                .move(Route.DTL_SCAN_QR);
+                .build());
     }
 
     @Override
     public void openScanReceipt() {
         getActivity().finish();
-        NavigationBuilder.create()
-                .with(activityRouter)
+        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
                 .data(getArgs())
-                .move(Route.DTL_SCAN_RECEIPT);
+                .build());
     }
 
     @Override

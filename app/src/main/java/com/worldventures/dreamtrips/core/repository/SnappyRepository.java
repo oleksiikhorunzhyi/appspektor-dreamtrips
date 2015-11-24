@@ -11,9 +11,9 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -451,13 +451,13 @@ public class SnappyRepository {
         putList(DTL_PLACES_PREFIX + type, places);
     }
 
-    public void saveAmenities(Collection<DtlPlacesFilterAttribute> amenities) {
+    public void saveAmenities(Collection<DtlPlaceAttribute> amenities) {
         clearAllForKey(DTL_AMENITIES);
         putList(DTL_AMENITIES, amenities);
     }
 
-    public List<DtlPlacesFilterAttribute> getAmenities() {
-        return readList(DTL_AMENITIES, DtlPlacesFilterAttribute.class);
+    public List<DtlPlaceAttribute> getAmenities() {
+        return readList(DTL_AMENITIES, DtlPlaceAttribute.class);
     }
 
     public List<DtlPlace> getDtlPlaces(DtlPlaceType type) {

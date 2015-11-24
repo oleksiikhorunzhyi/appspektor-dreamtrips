@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterHeaderAttribute;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
@@ -86,7 +86,8 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
         rangeBarDistance.setEnabled(filterData.isDistanceEnabled());
         switchCompat.setChecked(filterData.getDistance().isSelected());
         switchHint.setText(Html.fromHtml(getString(filterData.getDistance().getTextResId())));
-        setupAttributesHeader(filterData);
+        if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())
+            setupAttributesHeader(filterData);
     }
 
     @Override
@@ -95,9 +96,7 @@ public class DtlFiltersFragment extends BaseFragment<DtlFiltersPresenter> implem
     }
 
     private void setupAttributesHeader(DtlFilterData filterData) {
-        if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())
-            filtersAdapter.addItem(0, new DtlPlacesFilterHeaderAttribute(getString(R.string.dtl_amenities)));
-
         filtersAdapter.clearAndUpdateItems(filterData.getAmenities());
+        filtersAdapter.addItem(0, new DtlPlacesFilterHeaderAttribute(getString(R.string.dtl_amenities)));
     }
 }

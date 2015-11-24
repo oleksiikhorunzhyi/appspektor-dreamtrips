@@ -10,13 +10,13 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dtlReceiptHeight">
-
-
+        android:layout_height="@dimen/dtlReceiptHeight"
+        >
+        
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/receipt"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/dtlReceiptHeight"
             fresco:actualImageScaleType="fitCenter"
             />
 

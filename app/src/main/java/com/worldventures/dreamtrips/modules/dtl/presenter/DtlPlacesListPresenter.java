@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -11,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
@@ -20,8 +22,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> {
 
@@ -38,6 +38,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     DtlFilterData dtlFilterData;
 
     private LatLng currentLocation;
+    private DtlLocation dtlLocation;
 
     public DtlPlacesListPresenter(DtlPlaceType placeType) {
         this.placeType = placeType;
@@ -47,6 +48,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     public void takeView(View view) {
         super.takeView(view);
         dtlPlaces = db.getDtlPlaces(placeType);
+        dtlLocation = db.getSelectedDtlLocation();
 
         if (dtlPlaces.isEmpty()) view.showProgress();
 
@@ -80,14 +82,19 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     }
 
     private void performFiltering(String query) {
-        view.bind(Observable.from(dtlPlaces)
-                        .filter(dtlPlace ->
-                                dtlPlace.applyFilter(dtlFilterData, currentLocation))
-                        .filter(dtlPlace -> dtlPlace.containsQuery(query))
-                        .toList()
-                        .compose(new IoToMainComposer<>())
+        view.bind(locationDelegate
+                        .getLastKnownLocation()
+                        .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
+                        .flatMap(location -> Observable.from(Queryable.from(dtlPlaces)
+                                        .filter(dtlPlace ->
+                                                dtlPlace.applyFilter(dtlFilterData, currentLocation))
+                                        .filter(dtlPlace -> dtlPlace.containsQuery(query))
+                                        .sort(new DtlPlace.DtlPlaceDistanceComparator(location)))
+                                        .toList()
+                        ).compose(new IoToMainComposer<>())
         ).subscribe(view::setItems);
     }
+
 
     public void onEventMainThread(PlacesUpdateFinished event) {
         view.hideProgress();

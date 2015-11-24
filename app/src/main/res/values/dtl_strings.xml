@@ -90,7 +90,7 @@
     <string name="dtl_closed">Closed</string>
     <string name="miles">kms/&lt;b>miles&lt;/b></string>
     <string name="kms">&lt;b>kms&lt;/b>/miles</string>
-    <string name="wrong_qr">Wrong qr code</string>
+    <string name="wrong_qr">Invalid Merchant code or Incorrect Location. If problem persists contact Member Services.</string>
     <string name="directions">Directions</string>
     <string name="checked_in">You have successfully checked in</string>
     <string name="point_estimator">Point estimator</string>

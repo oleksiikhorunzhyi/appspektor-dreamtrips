@@ -3,18 +3,19 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 
 import java.util.List;
 
@@ -53,7 +54,10 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     private void attachAmenities() {
-        List<DtlPlacesFilterAttribute> amenities = db.getAmenities();
+        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities()).map(element ->
+                        new DtlPlacesFilterAttribute(element.getName())
+        ).toList();
+
         dtlFilterData.setAmenities(amenities);
         view.attachFilterData(dtlFilterData);
     }

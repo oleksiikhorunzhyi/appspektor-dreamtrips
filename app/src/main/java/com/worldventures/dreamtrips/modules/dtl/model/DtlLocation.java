@@ -52,6 +52,13 @@ public class DtlLocation implements Parcelable {
         return withinLocations != null ? withinLocations : Collections.emptyList();
     }
 
+    public android.location.Location asAndroidLocation() {
+        android.location.Location location = new android.location.Location("");
+        location.setLatitude(coordinates.getLat());
+        location.setLongitude(coordinates.getLng());
+        return location;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////

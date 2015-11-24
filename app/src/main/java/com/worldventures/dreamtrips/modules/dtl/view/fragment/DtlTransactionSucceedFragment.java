@@ -67,7 +67,6 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
             shareBundle.setShareUrl(place.getWebsite());
             DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
-            eventBus.post(new CloseDialogEvent());
             router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
                     .data(shareBundle)
                     .build());

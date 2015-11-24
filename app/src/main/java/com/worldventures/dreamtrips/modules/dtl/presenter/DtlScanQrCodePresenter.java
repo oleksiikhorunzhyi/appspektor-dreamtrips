@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 
 import javax.inject.Inject;
@@ -45,7 +44,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
     public void codeScanned(String content) {
         dtlTransaction.setCode(content);
-a        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
         //
         checkReceiptUploading();
     }

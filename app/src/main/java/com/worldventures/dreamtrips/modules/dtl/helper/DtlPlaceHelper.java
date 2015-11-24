@@ -14,8 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttributeSet;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.OperationHours;
 import com.worldventures.dreamtrips.util.ImageTextItem;
@@ -42,9 +41,7 @@ public class DtlPlaceHelper {
     }
 
     public String getCategories(DtlPlace place) {
-        List<DtlPlaceAttributeSet> attributes = place.getAttributesSet();
-        if (attributes == null) return null;
-        List<DtlPlacesFilterAttribute> categories = place.getAttributesAsMap().get(DtlPlace.CATEGORIES);
+        List<DtlPlaceAttribute> categories = place.getCategories();
         return categories == null ? null : TextUtils.join(", ", categories);
     }
 

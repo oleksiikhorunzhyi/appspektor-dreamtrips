@@ -6,21 +6,16 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlPlace implements Parcelable {
-
-    public static final String AMENITIES = "amenities";
-    public static final String CATEGORIES = "categories";
 
     String merchantId;
     String merchantType;
@@ -41,12 +36,10 @@ public class DtlPlace implements Parcelable {
     String website;
     int budget;
     float rating;
-    @SerializedName("attribute_sets")
-    List<DtlPlaceAttributeSet> attributeSets;
+    List<DtlPlaceAttribute> categories;
+    List<DtlPlaceAttribute> amenities;
     List<DtlPlaceMedia> images;
     List<OperationDay> operationDays;
-
-    private transient Map<String, List<DtlPlacesFilterAttribute>> attributeMap;
 
     public DtlPlace() {
     }
@@ -119,17 +112,12 @@ public class DtlPlace implements Parcelable {
         return rating;
     }
 
-    public List<DtlPlaceAttributeSet> getAttributesSet() {
-        return attributeSets;
+    public List<DtlPlaceAttribute> getCategories() {
+        return categories;
     }
 
-    public Map<String, List<DtlPlacesFilterAttribute>> getAttributesAsMap() {
-        if (attributeMap != null) return attributeMap;
-        attributeMap = new HashMap<>();
-        if (attributeSets != null)
-            Queryable.from(attributeSets).forEachR(attribute ->
-                    attributeMap.put(attribute.getName(), attribute.getFilterAttributes()));
-        return attributeMap;
+    public List<DtlPlaceAttribute> getAmenities() {
+        return amenities;
     }
 
     public List<DtlPlaceMedia> getImages() {
@@ -171,7 +159,8 @@ public class DtlPlace implements Parcelable {
         website = in.readString();
         budget = in.readInt();
         rating = in.readFloat();
-        attributeSets = in.createTypedArrayList(DtlPlaceAttributeSet.CREATOR);
+        categories = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
+        amenities = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
         images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
         partnerStatus = (DtlPlaceType) in.readSerializable();
         operationDays = in.createTypedArrayList(OperationDay.CREATOR);
@@ -197,7 +186,8 @@ public class DtlPlace implements Parcelable {
         dest.writeString(website);
         dest.writeInt(budget);
         dest.writeFloat(rating);
-        dest.writeTypedList(attributeSets);
+        dest.writeTypedList(categories);
+        dest.writeTypedList(amenities);
         dest.writeTypedList(images);
         dest.writeSerializable(partnerStatus);
         dest.writeTypedList(operationDays);
@@ -225,18 +215,17 @@ public class DtlPlace implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     public boolean containsQuery(String query) {
-        List<DtlPlacesFilterAttribute> categories = getAttributesAsMap().get(CATEGORIES);
+        List<DtlPlaceAttribute> categories = getCategories();
 
         return displayName.toLowerCase().contains(query.toLowerCase()) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
-                        element.getAttributeName().toLowerCase().contains(query.toLowerCase())) != null);
+                        element.getName().toLowerCase().contains(query.toLowerCase())) != null);
     }
 
     public boolean applyFilter(DtlFilterData filterData, LatLng currentLocation) {
         return checkPrice(filterData.getMinPrice(), filterData.getMaxPrice())
-                && checkDistance(filterData, currentLocation);
-               //TODO restore later
-               // && checkAmenities(filterData)
+                && checkDistance(filterData, currentLocation)
+                && checkAmenities(filterData);
     }
 
     private boolean checkPrice(int minPrice, int maxPrice) {
@@ -252,11 +241,30 @@ public class DtlPlace implements Parcelable {
 
     private boolean checkAmenities(DtlFilterData filterData) {
         List<DtlPlacesFilterAttribute> selectedAmenities = filterData.getSelectedAmenities();
-        if (selectedAmenities == null) return true;
+        return selectedAmenities == null || getAmenities() == null ||
+                !Collections.disjoint(selectedAmenities, Queryable.from(getAmenities()).map(element ->
+                                new DtlPlacesFilterAttribute(element.getName())
+                ).toList());
 
-        List<DtlPlacesFilterAttribute> placeAmenities = getAttributesAsMap().get(AMENITIES);
-
-        return placeAmenities == null || !Collections.disjoint(selectedAmenities, placeAmenities);
     }
+
+    public static class DtlPlaceDistanceComparator implements Comparator<DtlPlace> {
+
+        private LatLng currentLocation;
+
+        public DtlPlaceDistanceComparator(android.location.Location currentLocation) {
+            this.currentLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        }
+
+        @Override
+        public int compare(DtlPlace lhs, DtlPlace rhs) {
+            double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
+                    lhs.getCoordinates().asLatLng());
+            double distanceToRight = LocationHelper.distanceInMiles(currentLocation,
+                    rhs.getCoordinates().asLatLng());
+            return Double.valueOf(distanceToLeft - distanceToRight).intValue();
+        }
+    }
+
 
 }

@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/spacing_normal"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         >
 
         <ImageView
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/badge_placeholder"
-            android:layout_marginRight="@dimen/spacing_normal"/>
+            android:layout_marginBottom="@dimen/spacing_small"/>
 
         <TextView
             android:id="@+id/perks"

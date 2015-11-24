@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -66,11 +67,14 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     @Override
     public void updateFeedItem(FeedItem feedItem) {
         adapter.updateItem(feedItem);
-        if (isTabletLandscape() && childCompass != null && childCompass.empty()
-                && getArgs().isShowAdditionalInfo()) {
+    }
+
+    @Override
+    public void showAdditionalInfo(User user) {
+        if (childCompass != null && childCompass.empty() && getArgs().isShowAdditionalInfo()) {
             NavigationBuilder.create()
                     .with(childCompass)
-                    .data(new FeedAdditionalInfoBundle(feedItem.getItem().getOwner()))
+                    .data(new FeedAdditionalInfoBundle(user))
                     .move(Route.FEED_ITEM_ADDITIONAL_INFO);
         }
     }

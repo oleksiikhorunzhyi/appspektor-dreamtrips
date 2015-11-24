@@ -4,6 +4,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
@@ -55,6 +56,9 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
             feedEntity = freshItem;
             feedItem.setItem(feedEntity);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
+            //
+            if (view.isTabletLandscape())
+                view.showAdditionalInfo(feedEntity.getOwner());
         }, spiceException -> Timber.e(spiceException, TAG));
     }
 
@@ -100,5 +104,7 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
         void setFeedItem(FeedItem feedItem);
 
         void updateFeedItem(FeedItem feedItem);
+
+        void showAdditionalInfo(User user);
     }
 }

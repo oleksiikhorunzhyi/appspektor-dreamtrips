@@ -21,7 +21,7 @@
     <string name="dtl_receipt_hint">Enter amount in USD</string>
     <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
     <string name="dtl_receipt_scan">Capture Receipt</string>
-    <string name="dtl_receipt_rescan">Rescan</string>
+    <string name="dtl_receipt_rescan">Recapture</string>
     <string name="dtl_receipt_verify">Verify Amount</string>
     <string name="dtl_receipt_verify_hint">This amount will be verified by the merchant. Any discrepancy in the amount entered will result in delay in earning DreamTrips points.</string>
     <string name="dtl_action_next">Next</string>
@@ -32,6 +32,7 @@
     <string name="permission_location_rationale">Access to the location is needed for detection</string>
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
     <string name="no_location_permission">This application cannot run because it does not have the location permission. The application will now exit.</string>
+    <string name="dtl_checkin_location_error">You should have location service enabled to check in</string>
     <string name="dtl_barcode_title">Scan QR Code</string>
     <string name="dtl_barcode_merchant">Scan Merchant Code</string>
     <string name="dtl_enter_amount">Enter Amount</string>
@@ -64,6 +65,7 @@
     <string name="suggest_merchant_service_caption">Service</string>
     <string name="suggest_merchant_cleanliness_caption">Cleanliness</string>
     <string name="suggest_merchant_uniqueness_caption">Uniqueness</string>
+    <string name="suggest_merchant">Suggest merchant</string>
     <string name="suggest_merchant_additional_info_caption">Additional information</string>
     <string name="suggest_merchant_additional_info_symbols_entered_format">%1$d / %2$s</string>
     <string name="suggest_merchant_submit_button_caption">Submit</string>
@@ -79,7 +81,7 @@
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
     <string name="dtl_wait_for_earn">Wait… Earning points</string>
     <string name="dtl_estimator_explanation">Points are calculated based on minimum amount spent at merchant and day of the week</string>
-    <string name="dtl_photo_upload_error">Error while uploading photo, try again later</string>
+    <string name="dtl_photo_upload_error">Upload error. If problem persists please contact Member Services</string>
     <string name="dtl_merchant_success">Success</string>
     <string name="dtl_merchant_submitted">Congratulations! Merchant has been submitted. You will be informed once they get approved</string>
     <string name="pdf">PDF</string>
@@ -90,4 +92,6 @@
     <string name="kms">&lt;b>kms&lt;/b>/miles</string>
     <string name="wrong_qr">Wrong qr code</string>
     <string name="directions">Directions</string>
+    <string name="checked_in">You have successfully checked in</string>
+    <string name="point_estimator">Point estimator</string>
 </resources>

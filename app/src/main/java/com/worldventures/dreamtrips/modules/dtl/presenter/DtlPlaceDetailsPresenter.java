@@ -1,20 +1,30 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.location.Location;
+
+import com.google.android.gms.common.api.Status;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 
 import java.util.Calendar;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<DtlPlaceDetailsPresenter.View> {
 
@@ -24,6 +34,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     SnappyRepository snapper;
     @Inject
     FeatureManager featureManager;
+    @Inject
+    LocationDelegate locationDelegate;
 
     public DtlPlaceDetailsPresenter(DtlPlace place) {
         super(place);
@@ -80,12 +92,35 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         if (dtlTransaction != null) {
             view.openTransaction(place, dtlTransaction);
         } else {
-            dtlTransaction = new DtlTransaction();
-            dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
-
-            snapper.saveDtlTransaction(place.getMerchantId(), dtlTransaction);
-            view.setTransaction(dtlTransaction);
+            view.bind(locationDelegate
+                            .requestLocationUpdate()
+                            .compose(new IoToMainComposer<>())
+            ).subscribe(this::onLocationObtained, this::onLocationError);
         }
+    }
+
+    public void locationNotGranted() {
+        view.informUser(R.string.dtl_checkin_location_error);
+    }
+
+    private void onStatusError(Status status) {
+        view.resolutionRequired(status);
+    }
+
+    private void onLocationError(Throwable e) {
+        if (e instanceof LocationDelegate.LocationException)
+            onStatusError(((LocationDelegate.LocationException) e).getStatus());
+        else Timber.e(e, "Something went wrong while location update");
+    }
+
+    private void onLocationObtained(Location location) {
+        dtlTransaction = new DtlTransaction();
+        dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
+        dtlTransaction.setLocation(DtlTransactionLocation.fromDtlPlace(place,
+                location.getLatitude(), location.getLongitude()));
+
+        snapper.saveDtlTransaction(place.getMerchantId(), dtlTransaction);
+        view.setTransaction(dtlTransaction);
     }
 
     public void onEstimationClick() {
@@ -105,7 +140,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         view.openMap(new PlacesBundle(dtlLocation));
     }
 
-    public interface View extends DtlPlaceCommonDetailsPresenter.View {
+    public interface View extends DtlPlaceCommonDetailsPresenter.View, RxView {
 
         void showEstimationDialog(PointsEstimationDialogBundle data);
 
@@ -120,5 +155,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         void setSuggestMerchantButtonAvailable(boolean available);
 
         void share(DtlPlace place);
+
+        void resolutionRequired(Status status);
     }
 }

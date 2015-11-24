@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -25,9 +28,10 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
@@ -50,12 +54,14 @@ import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_place_details)
 public class DtlPlaceDetailsFragment
-        extends BaseFragmentWithArgs<DtlPlaceDetailsPresenter, PlaceDetailsBundle>
+        extends RxBaseFragmentWithArgs<DtlPlaceDetailsPresenter, PlaceDetailsBundle>
         implements DtlPlaceDetailsPresenter.View {
 
+    private static final int REQUEST_CHECK_SETTINGS = 1489;
     private final static float PLACE_MAP_ZOOM = 15f;
 
     DtlPlaceCommonDataInflater commonDataInflater;
@@ -66,6 +72,8 @@ public class DtlPlaceDetailsFragment
     @Inject
     @Named(RouteCreatorModule.DTL_TRANSACTION)
     RouteCreator<DtlTransaction> routeCreator;
+    @Inject
+    ActivityResultDelegate activityResultDelegate;
 
     @Inject
     BackStackDelegate backStackDelegate;
@@ -74,6 +82,8 @@ public class DtlPlaceDetailsFragment
     Toolbar toolbar;
     @InjectView(R.id.place_details_earn_wrapper)
     ViewGroup earnWrapper;
+    @InjectView(R.id.checked_in)
+    TextView checkedIn;
     @InjectView(R.id.place_details_earn)
     Button earn;
     @InjectView(R.id.place_details_estimate_points)
@@ -113,6 +123,8 @@ public class DtlPlaceDetailsFragment
     public void onResume() {
         super.onResume();
         backStackDelegate.setListener(this::onBackPressed);
+        activityResult(activityResultDelegate.getRequestCode(),
+                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
     }
 
     @Override
@@ -227,6 +239,7 @@ public class DtlPlaceDetailsFragment
     @Override
     public void setTransaction(DtlTransaction dtlTransaction) {
         earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
+        checkedIn.setVisibility(dtlTransaction != null ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -286,4 +299,33 @@ public class DtlPlaceDetailsFragment
             return true;
         } else return false;
     }
+
+    @Override
+    public void resolutionRequired(Status status) {
+        try {
+            status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
+        } catch (IntentSender.SendIntentException th) {
+            Timber.e(th, "Error opening settings activity.");
+        }
+    }
+
+    public void activityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        getPresenter().onCheckInClicked();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        getPresenter().locationNotGranted();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
+    }
+
 }

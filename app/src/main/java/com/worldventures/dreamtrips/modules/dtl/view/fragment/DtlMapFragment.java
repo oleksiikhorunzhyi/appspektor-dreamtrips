@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -109,8 +110,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         });
 
         clusterManager.setOnClusterClickListener(cluster -> {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
+            if (googleMap.getCameraPosition().zoom >= 17.0f) {
+                selectedLocation = cluster.getPosition();
+                getPresenter().onMarkerClick(Queryable.from(cluster.getItems()).first().getId());
+            } else googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
                     googleMap.getCameraPosition().zoom + 1.0f), cameraAnimationDuration, null);
+
             return true;
         });
 

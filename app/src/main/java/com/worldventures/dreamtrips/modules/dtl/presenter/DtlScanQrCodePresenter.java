@@ -45,7 +45,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
     public void codeScanned(String content) {
         dtlTransaction.setCode(content);
-        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+a        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
         //
         checkReceiptUploading();
     }
@@ -53,7 +53,6 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     private void onReceiptUploaded() {
         view.showProgress(R.string.dtl_wait_for_earn);
         //
-        dtlTransaction.setLocation(DtlTransactionLocation.fromDtlPlace(dtlPlace));
         dtlTransaction.setReceiptPhoto(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
         //

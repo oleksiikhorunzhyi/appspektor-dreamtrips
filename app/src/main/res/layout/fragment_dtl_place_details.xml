@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,39 +40,56 @@
         <LinearLayout
             android:id="@+id/place_details_earn_wrapper"
             style="@style/Widget.AppCompat.ButtonBar"
+            android:background="#eeeeee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#eeeeee"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="@dimen/spacing_normal"
             >
 
-            <Button
-                android:id="@+id/place_details_earn"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Check-in &amp; earn"
-                android:textColor="@color/white"
-                android:theme="@style/DtlButtonTheme"
-                />
+                android:orientation="horizontal"
+                >
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                <Button
+                    android:id="@+id/place_details_earn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/dtl_check_in"
+                    android:textColor="@color/white"
+                    android:theme="@style/DtlButtonTheme"
+                    />
 
-            <Button
-                android:id="@+id/place_details_estimate_points"
-                android:layout_width="wrap_content"
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/place_details_estimate_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/point_estimator"
+                    android:textColor="@color/black"
+                    android:theme="@style/WhiteButtonTheme"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/checked_in"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Point estimator"
-                android:textColor="@color/black"
-                android:theme="@style/WhiteButtonTheme"
-                />
-
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center"
+                android:visibility="gone"
+                android:text="@string/checked_in"/>
         </LinearLayout>
+
 
         <FrameLayout
             android:id="@+id/place_details_merchant_wrapper"
@@ -90,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Suggest Merchant"
+                android:text="@string/suggest_merchant"
                 android:textColor="@color/black"
                 android:theme="@style/WhiteButtonTheme"
                 />

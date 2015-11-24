@@ -14,8 +14,9 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -55,6 +56,8 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
     SessionHolder<UserSession> sessionHolder;
     @Inject
     FeedActionPanelViewActionHandler feedActionHandler;
+    @Inject
+    Router router;
     //
     FeedItemCommonDataHelper feedItemCommonDataHelper;
     LikersPanelHelper likersPanelHelper;
@@ -75,8 +78,6 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
 
     @Override
     public void afterInject() {
-        fragmentCompass.disableBackStack();
-        //
         if (!getEventBus().isRegistered(this)) {
             getEventBus().register(this);
         }
@@ -84,11 +85,14 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
 
     @Override
     protected void syncUIStateWithModel() {
-        updateContainerIdIfNeeded();
-        initCompassManager();
-        fragmentCompass.setContainerId(viewGroup.getId());
         Pair<Route, Parcelable> routeParcelablePair = fragmentFactory.create(getModelObject());
-        NavigationBuilder.create().with(fragmentCompass).data(routeParcelablePair.second).move(routeParcelablePair.first);
+        router.moveTo(routeParcelablePair.first,
+                NavigationConfigBuilder.forFragment()
+                        .backStackEnabled(false)
+                        .fragmentManager(getFragmentManager())
+                        .data(routeParcelablePair.second)
+                        .containerId(R.id.fragment_container)
+                        .build());
         //
         feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get().get().getUser().getId(), true);
         feedItemCommonDataHelper.setOnEditClickListener(v -> getEventBus().post(new FeedEntityEditClickEvent(getModelObject(), v)));
@@ -125,31 +129,15 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
         );
     }
 
-    private void updateContainerIdIfNeeded() {
-        int containerId = R.id.fragment_container;
-        if (getModelObject().getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
-            BucketItem item = (BucketItem) getModelObject().getItem();
-            if (item.getType().equals(BucketItem.BucketType.LOCATION.getName())) {
-                containerId = R.id.bucket_locations;
-            } else if (item.getType().equals(BucketItem.BucketType.ACTIVITY.getName())) {
-                containerId = R.id.bucket_activities;
-            } else if (item.getType().equals(BucketItem.BucketType.DINING.getName())) {
-                containerId = R.id.bucket_dining;
-            }
-        }
-
-        viewGroup.setId(containerId);
-    }
-
-    private void initCompassManager() {
+    private FragmentManager getFragmentManager() {
         if (fragmentCompass.getCurrentFragment() instanceof BucketTabsFragment
                 && getModelObject().getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
-            fragmentCompass.setFragmentManager(Queryable.from(fragmentCompass.getCurrentFragment().getChildFragmentManager().getFragments()).filter(element -> {
+            return Queryable.from(fragmentCompass.getCurrentFragment().getChildFragmentManager().getFragments()).filter(element -> {
                 return ((BucketItem.BucketType) element.getArguments().getSerializable("BUNDLE_TYPE")).getName().equals(((BucketItem) getModelObject().getItem()).getType());
-            }).first().getChildFragmentManager());
-        } else {
-            fragmentCompass.setFragmentManager(fragmentManager);
+            }).first().getChildFragmentManager().getFragments().get(0).getChildFragmentManager();
         }
+
+        return fragmentManager;
     }
 
 }

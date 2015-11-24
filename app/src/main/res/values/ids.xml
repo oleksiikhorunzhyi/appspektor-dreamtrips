@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    // for FeedItemDetailsCell details container
-    <item type="id" name="bucket_locations"/>
-    <item type="id" name="bucket_activities"/>
-    <item type="id" name="bucket_dining"/>
-
-</resources>

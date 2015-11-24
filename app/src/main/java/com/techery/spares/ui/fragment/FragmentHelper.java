@@ -1,6 +1,7 @@
 package com.techery.spares.ui.fragment;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,10 @@ import android.view.ViewGroup;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 
+import java.lang.reflect.Field;
+
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class FragmentHelper {
 
@@ -37,5 +41,15 @@ public class FragmentHelper {
         }
 
         ((Injector) activity).inject(injectingFragment);
+    }
+
+    public static void resetChildFragmentManagerField(Fragment fragment) {
+        try {
+            Field fragmentManagerField = Fragment.class.getDeclaredField("mChildFragmentManager");
+            fragmentManagerField.setAccessible(true);
+            fragmentManagerField.set(fragment, null);
+        } catch (Exception ex) {
+            Timber.e(ex.toString());
+        }
     }
 }

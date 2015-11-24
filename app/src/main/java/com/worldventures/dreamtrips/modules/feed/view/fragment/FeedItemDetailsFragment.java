@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -56,6 +57,13 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
         adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(PhotoFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(TripFeedItem.class, ShortFeedItemDetailsCell.class);
+    }
+
+    @Override
+    public void onDestroyView() {
+        FragmentHelper.resetChildFragmentManagerField(this);
+        //
+        super.onDestroyView();
     }
 
     @Override

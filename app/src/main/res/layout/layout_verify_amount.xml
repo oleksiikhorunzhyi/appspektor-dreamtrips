@@ -27,7 +27,7 @@
             android:layout_weight="2"
             android:text="@string/dtl_total_amount"
             android:textColor="@color/black"
-            tools:text="$ 129"/>
+            tools:text="$ 129342342343242343423"/>
     </LinearLayout>
 
     <LinearLayout

@@ -43,6 +43,7 @@
     <string name="rate_hint">Please, rate this experience</string>
     <string name="dtl_success_title">Congratulations</string>
     <string name="dtl_amount_invalid">Amount is invalid</string>
+    <string name="dtl_invalid">Invalid input</string>
     <string name="dtl_verify_amount">Verify Amount</string>
     <string name="dtl_total_amount">Total amount:</string>
     <string name="dtl_verify_earn_hint">You will earn </string>

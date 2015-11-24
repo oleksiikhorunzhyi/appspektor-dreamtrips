@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
+import com.worldventures.dreamtrips.modules.dtl.validator.DigitsValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.InputLengthValidator;
 
@@ -111,6 +112,7 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     protected void addValidators() {
         contactName.addValidator(new EmptyValidator(getString(R.string.dtl_field_validation_empty_input_error)));
         phoneNumber.addValidator(new EmptyValidator(getString(R.string.dtl_field_validation_empty_input_error)));
+        phoneNumber.addValidator(new DigitsValidator(getString(R.string.dtl_invalid)));
         additionalInfo.addValidator(new InputLengthValidator(120,
                 getString(R.string.suggest_merchant_additional_info_length_error)));
     }

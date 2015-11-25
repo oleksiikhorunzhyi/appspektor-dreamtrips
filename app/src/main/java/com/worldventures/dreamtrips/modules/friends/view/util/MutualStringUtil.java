@@ -14,11 +14,11 @@ public class MutualStringUtil {
         this.context = context;
     }
 
-    public String createMutualString(int mutualsCount) {
+    public String createMutualString(User user) {
         String mutualString = null;
-        if (mutualsCount > 0) {
+        if (user.getMutualFriends() > 0) {
             mutualString = context.getString(R.string.social_postfix_mutual_friends,
-                    mutualsCount);
+                    user.getMutualFriends());
         }
 
         return mutualString;

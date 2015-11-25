@@ -14,6 +14,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
@@ -23,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.NestedLinearLayoutMan
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FeedFriendCell;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
 import java.util.List;
@@ -136,6 +138,14 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         circleTitle.setText(currentCircle.getName());
     }
 
+    @Override
+    public void openUser(UserBundle bundle) {
+        NavigationBuilder.create().with(activityRouter)
+                .data(bundle)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .move(routeCreator.createRoute(bundle.getUser().getId()));
+    }
+
     private void openPost() {
         showPostContainer();
 
@@ -167,6 +177,8 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .data(new FriendGlobalSearchBundle(""))
                 .move(Route.FRIEND_SEARCH);
     }
+
+
 
     protected void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);

@@ -43,7 +43,8 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="15sp"
-            tools:text="Close friends"/>
+            tools:text="Close friends"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_mutual"

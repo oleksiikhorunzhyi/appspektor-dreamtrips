@@ -9,11 +9,10 @@ import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -23,46 +22,47 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.State;
 import rx.Observable;
 import timber.log.Timber;
 
-public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
+public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements DtlFilterDelegate.FilterListener {
 
     @Inject
     SnappyRepository db;
     @Inject
     LocationDelegate locationDelegate;
-
-    @State
-    DtlFilterData dtlFilterData;
+    @Inject
+    DtlFilterDelegate dtlFilterDelegate;
 
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
-    DtlLocation location;
+    private DtlLocation dtlLocation;
+
     List<DtlPlace> dtlPlaces = new ArrayList<>();
 
-    private LatLng currentLocation;
-
     public DtlMapPresenter(PlacesMapBundle bundle) {
-        location = bundle.getLocation();
+        dtlLocation = bundle.getLocation();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.initToolbar(location);
-        if (dtlFilterData == null) {
-            dtlFilterData = new DtlFilterData();
-        }
+        view.initToolbar(dtlLocation);
+        dtlFilterDelegate.addListener(this);
+    }
+
+    @Override
+    public void dropView() {
+        dtlFilterDelegate.removeListener(this);
+        super.dropView();
     }
 
     public void onMapLoaded() {
         mapReady = true;
         dtlPlaces.clear();
 
-        view.centerIn(location);
+        view.centerIn(dtlLocation);
 
         for (DtlPlaceType type : DtlPlaceType.values()) {
             dtlPlaces.addAll(db.getDtlPlaces(type));
@@ -87,16 +87,24 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
     private void performFiltering(String query) {
         view.bind(locationDelegate
                         .getLastKnownLocation()
-                        .doOnNext(location -> currentLocation = new LatLng(location.getLatitude(),
-                                        location.getLongitude()))
-                        .onErrorResumeNext(Observable.<Location>empty())
-                        .flatMap(location -> Observable.from(Queryable.from(dtlPlaces)
-                                        .filter(dtlPlace ->
-                                                dtlPlace.applyFilter(dtlFilterData, currentLocation))
-                                        .filter(dtlPlace -> dtlPlace.containsQuery(query)))
-                                        .toList())
+                        .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
+                        .flatMap(location -> filter(location, query))
                         .compose(new IoToMainComposer<>())
         ).subscribe(this::showPins, this::onError);
+    }
+
+    private Observable<List<DtlPlace>> filter(Location location, String query) {
+        LatLng currentLocation = new LatLng(location.getLatitude(),
+                location.getLongitude());
+
+        List<DtlPlace> places = Queryable.from(dtlPlaces)
+                .filter(dtlPlace ->
+                        dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
+                                currentLocation))
+                .filter(dtlPlace -> dtlPlace.containsQuery(query))
+                .toList();
+
+        return Observable.from(places).toList();
     }
 
     private void onError(Throwable e) {
@@ -120,18 +128,18 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> {
         }
     }
 
+    @Override
+    public void onFilter() {
+        if (mapReady)
+            performFiltering();
+    }
+
     public void onEvent(DtlMapInfoReadyEvent event) {
         if (!mapReady) pendingMapInfoEvent = event;
         else {
             pendingMapInfoEvent = null;
             view.prepareInfoWindow(event.height);
         }
-    }
-
-    public void onEventMainThread(DtlFilterEvent event) {
-        dtlFilterData = event.getDtlFilterData();
-        if (mapReady)
-            performFiltering();
     }
 
     public void onEventMainThread(DtlSearchPlaceRequestEvent event) {

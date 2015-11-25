@@ -1,17 +1,18 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -20,25 +21,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.State;
 import rx.Observable;
 import timber.log.Timber;
 
-public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> {
+public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> implements DtlFilterDelegate.FilterListener {
 
     @Inject
     SnappyRepository db;
     @Inject
     LocationDelegate locationDelegate;
+    @Inject
+    DtlFilterDelegate dtlFilterDelegate;
 
     protected DtlPlaceType placeType;
 
     private List<DtlPlace> dtlPlaces;
 
-    @State
-    DtlFilterData dtlFilterData;
-
-    private LatLng currentLocation;
     private DtlLocation dtlLocation;
 
     public DtlPlacesListPresenter(DtlPlaceType placeType) {
@@ -53,11 +51,15 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
         if (dtlPlaces.isEmpty()) view.showProgress();
 
-        if (dtlFilterData == null) {
-            dtlFilterData = new DtlFilterData();
-        }
+        dtlFilterDelegate.addListener(this);
 
         performFiltering();
+    }
+
+    @Override
+    public void dropView() {
+        dtlFilterDelegate.removeListener(this);
+        super.dropView();
     }
 
     public void onEventMainThread(PlacesUpdatedEvent event) {
@@ -67,8 +69,8 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         performFiltering();
     }
 
-    public void onEventMainThread(DtlFilterEvent event) {
-        dtlFilterData = event.getDtlFilterData();
+    @Override
+    public void onFilter() {
         performFiltering();
     }
 
@@ -79,24 +81,26 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     private void performFiltering(String query) {
         view.bind(locationDelegate
                         .getLastKnownLocation()
-                        .doOnNext(location ->
-                            currentLocation = new LatLng(location.getLatitude(),
-                                    location.getLongitude())
-                        )
                         .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
-                        .flatMap(location -> Observable.from(Queryable.from(dtlPlaces)
-                                        .filter(dtlPlace ->
-                                                dtlPlace.applyFilter(dtlFilterData, currentLocation))
-                                        .filter(dtlPlace -> dtlPlace.containsQuery(query))
-                                        .sort(new DtlPlace.DtlPlaceDistanceComparator(location)))
-                                        .toList()
-                        ).compose(new IoToMainComposer<>())
+                        .flatMap(location -> filter(location, query))
+                        .compose(new IoToMainComposer<>())
         ).subscribe(view::setItems, this::onError);
     }
 
-    private void onError(Throwable e) {
-        Timber.e(e, "Something went wrong while filtering");
+    private Observable<List<DtlPlace>> filter(Location location, String query) {
+        LatLng currentLocation = new LatLng(location.getLatitude(),
+                location.getLongitude());
+
+        List<DtlPlace> places = Queryable.from(dtlPlaces)
+                .filter(dtlPlace ->
+                        dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
+                                currentLocation))
+                .filter(dtlPlace -> dtlPlace.containsQuery(query))
+                .sort(new DtlPlace.DtlPlaceDistanceComparator(currentLocation)).toList();
+
+        return Observable.from(places).toList();
     }
+
 
     public void onEventMainThread(PlacesUpdateFinished event) {
         view.hideProgress();
@@ -104,6 +108,10 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     public void onEventMainThread(DtlSearchPlaceRequestEvent event) {
         performFiltering(event.getSearchQuery());
+    }
+
+    private void onError(Throwable e) {
+        Timber.e(e, "Something went wrong while filtering");
     }
 
     public interface View extends RxView {

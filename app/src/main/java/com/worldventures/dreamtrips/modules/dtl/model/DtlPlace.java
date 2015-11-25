@@ -252,8 +252,8 @@ public class DtlPlace implements Parcelable {
 
         private LatLng currentLocation;
 
-        public DtlPlaceDistanceComparator(android.location.Location currentLocation) {
-            this.currentLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        public DtlPlaceDistanceComparator(LatLng currentLocation) {
+            this.currentLocation = currentLocation;
         }
 
         @Override

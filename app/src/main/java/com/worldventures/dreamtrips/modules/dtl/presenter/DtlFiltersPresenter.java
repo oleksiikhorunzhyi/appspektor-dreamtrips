@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.CheckFiltersEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlFilterEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -31,6 +31,9 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     LocationDelegate locationDelegate;
     @Inject
     SnappyRepository db;
+    @Inject
+    DtlFilterDelegate dtlFilterDelegate;
+
     @State
     DtlFilterData dtlFilterData;
 
@@ -40,6 +43,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         if (dtlFilterData == null)
             dtlFilterData = new DtlFilterData();
 
+        dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         attachAmenities();
     }
 
@@ -91,7 +95,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     public void apply() {
-        eventBus.post(new DtlFilterEvent(dtlFilterData));
+        dtlFilterDelegate.performFiltering();
     }
 
     public void distanceToggle() {
@@ -101,7 +105,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
 
     public void resetAll() {
         dtlFilterData.reset();
-        eventBus.post(new DtlFilterEvent(dtlFilterData));
+        dtlFilterDelegate.performFiltering();
         view.attachFilterData(dtlFilterData);
     }
 

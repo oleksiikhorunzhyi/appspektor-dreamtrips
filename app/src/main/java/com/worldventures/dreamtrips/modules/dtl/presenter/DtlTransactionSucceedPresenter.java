@@ -36,7 +36,8 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
 
     public void done() {
         if (stars != 0)
-            doRequest(new RatePlaceRequest(dtlPlace.getMerchantId(), stars));
+            doRequest(new RatePlaceRequest(dtlPlace.getMerchantId(),
+                    stars, dtlTransaction.getDtlTransactionResult().getTransactionId()));
     }
 
     @Override

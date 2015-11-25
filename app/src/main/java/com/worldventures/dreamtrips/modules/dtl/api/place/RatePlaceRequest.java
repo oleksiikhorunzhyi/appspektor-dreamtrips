@@ -4,17 +4,19 @@ import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
 
 public class RatePlaceRequest extends DtlRequest<Void> {
 
-    private String id;
+    private String merchantId;
+    private String transactionId;
     private int stars;
 
-    public RatePlaceRequest(String id, int stars) {
+    public RatePlaceRequest(String merchantId, int stars, String transactionId) {
         super(Void.class);
-        this.id = id;
+        this.merchantId = merchantId;
+        this.transactionId = transactionId;
         this.stars = stars;
     }
 
     @Override
     public Void loadDataFromNetwork() throws Exception {
-        return getService().rate(id, stars);
+        return getService().rate(merchantId, stars, transactionId);
     }
 }

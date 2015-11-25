@@ -5,8 +5,14 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlTransactionResult {
+
+    String transactionId;
     double creditedAmount;
     double currentBalance;
+
+    public String getTransactionId() {
+        return transactionId;
+    }
 
     public double getEarnedPoints() {
         return creditedAmount;

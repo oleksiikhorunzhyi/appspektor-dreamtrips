@@ -42,7 +42,7 @@ public interface DtlApi {
 
     @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/rating")
-    Void rate(@Path("id") String placeId, @Field("stars") int stars);
+    Void rate(@Path("id") String placeId, @Field("stars") int stars, @Field("transactionId") String transactionId);
 
     @POST("/api/dtl/v2/merchants/")
     Void suggestPlace(@Body SuggestPlacePostData request);

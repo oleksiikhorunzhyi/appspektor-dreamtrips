@@ -109,8 +109,6 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     private void openByType(FeedEntity item, Type type) {
         switch (type) {
             case TRIP:
-                openTrip((TripModel) item);
-                break;
             case PHOTO:
             case BUCKET_LIST_ITEM:
             case POST:
@@ -134,14 +132,6 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 .data(new UserBundle(user))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .move(profileRouteCreator.createRoute(user.getId()));
-    }
-
-    private void openTrip(TripModel tripModel) {
-        NavigationBuilder.create()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .with(activityRouter)
-                .data(new TripDetailsBundle(tripModel))
-                .attach(Route.DETAILED_TRIP);
     }
 
     private void openDetails() {

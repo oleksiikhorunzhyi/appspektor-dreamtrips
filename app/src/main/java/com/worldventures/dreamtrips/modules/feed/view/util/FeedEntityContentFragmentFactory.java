@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.modules.feed.bundle.PhotoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class FeedEntityContentFragmentFactory {
@@ -32,12 +34,15 @@ public class FeedEntityContentFragmentFactory {
         Route route = null;
         Parcelable args = null;
         switch (type) {
-            case TRIP:
             case UNDEFINED:
                 //now is not used.
                 break;
+            case TRIP:
+                route=Route.DETAILS_TRIP_WITH_SOCIAL;
+                args = new TripDetailsBundle((TripModel) holder.getItem());
+                break;
             case PHOTO:
-                route = Route.DETAILS_PHOTO;
+                route = Route.FEED_DETAILS_PHOTO;
                 args = new PhotoBundle((Photo) holder.getItem());
                 break;
             case BUCKET_LIST_ITEM:

@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -27,10 +26,8 @@ import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
-import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedDetailsNavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
@@ -150,9 +147,8 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
             if (tabletAnalytic.isTabletLandscape()) {
                 bundle.setSlave(true);
             }
-            bundle.setShowAdditionalInfo(isValidFeedObject(event.getFeedItem()));
             bundle.setOpenKeyboard(true);
-            createActionPanelNavigationWrapper(isValidFeedObject(event.getFeedItem())).navigate(detailsRoute, bundle);
+            NavigationBuilder.create().with(activityRouter).data(bundle).move(detailsRoute);
         }
     }
 
@@ -176,15 +172,5 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
     private boolean isPhoneLandscape() {
         return !ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
-    }
-
-    private NavigationWrapper createActionPanelNavigationWrapper(boolean validFeedObject) {
-        return new FeedDetailsNavigationWrapperFactory().create(
-                activityRouter, fragmentCompass, tabletAnalytic, validFeedObject
-        );
-    }
-
-    private boolean isValidFeedObject(FeedItem feedItem) {
-        return !(feedItem instanceof TripFeedItem);
     }
 }

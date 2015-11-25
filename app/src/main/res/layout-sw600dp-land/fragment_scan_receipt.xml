@@ -7,7 +7,7 @@
         layout="@layout/layout_scan_receipt"
         android:layout_width="@dimen/dtlContentWidth"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
         android:orientation="vertical"/>
 
 </ScrollView>

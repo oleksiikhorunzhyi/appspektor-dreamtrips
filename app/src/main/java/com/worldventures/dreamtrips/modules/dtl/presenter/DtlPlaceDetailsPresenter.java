@@ -92,6 +92,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         if (dtlTransaction != null) {
             view.openTransaction(place, dtlTransaction);
         } else {
+            view.disableCheckinButton();
             view.bind(locationDelegate
                             .requestLocationUpdate()
                             .compose(new IoToMainComposer<>())
@@ -100,20 +101,25 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     }
 
     public void locationNotGranted() {
+        view.enableCheckinButton();
         view.informUser(R.string.dtl_checkin_location_error);
+    }
+
+    private void onLocationError(Throwable e) {
+        if (e instanceof LocationDelegate.LocationException)
+            onStatusError(((LocationDelegate.LocationException) e).getStatus());
+        else {
+            locationNotGranted();
+            Timber.e(e, "Something went wrong while location update");
+        }
     }
 
     private void onStatusError(Status status) {
         view.resolutionRequired(status);
     }
 
-    private void onLocationError(Throwable e) {
-        if (e instanceof LocationDelegate.LocationException)
-            onStatusError(((LocationDelegate.LocationException) e).getStatus());
-        else Timber.e(e, "Something went wrong while location update");
-    }
-
     private void onLocationObtained(Location location) {
+        view.enableCheckinButton();
         dtlTransaction = new DtlTransaction();
         dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
         dtlTransaction.setLocation(DtlTransactionLocation.fromDtlPlace(place,
@@ -157,5 +163,9 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         void share(DtlPlace place);
 
         void resolutionRequired(Status status);
+
+        void enableCheckinButton();
+
+        void disableCheckinButton();
     }
 }

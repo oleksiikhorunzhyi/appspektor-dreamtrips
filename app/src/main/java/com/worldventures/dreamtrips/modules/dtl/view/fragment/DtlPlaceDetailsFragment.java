@@ -295,6 +295,16 @@ public class DtlPlaceDetailsFragment
         merchantWrapper.setVisibility(available ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void enableCheckinButton() {
+        earn.setEnabled(true);
+    }
+
+    @Override
+    public void disableCheckinButton() {
+        earn.setEnabled(false);
+    }
+
     private boolean onBackPressed() {
         if (isTabletLandscape() && getArgs().isSlave()) {
             getPresenter().onBackPressed();

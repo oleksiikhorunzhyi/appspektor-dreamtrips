@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -53,17 +52,7 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
     protected void onBeforeClusterRendered(Cluster<DtlClusterItem> cluster, MarkerOptions markerOptions) {
         itemBadgeView.setVisibility(View.VISIBLE);
         itemBadgeView.setText(String.valueOf(cluster.getItems().size()));
-        int offersCount = Queryable.from(cluster.getItems()).count(element ->
-                element.getDtlPlaceType() == DtlPlaceType.DINING);
-        int dinningCount = Queryable.from(cluster.getItems()).count(element ->
-                element.getDtlPlaceType() == DtlPlaceType.OFFER);
-
-        if (offersCount > dinningCount) {
-            pin.setImageResource(R.drawable.offers_pin_icon);
-        } else {
-            pin.setImageResource(R.drawable.dinings_pin_icon);
-        }
-
+        pin.setImageResource(R.drawable.cluster_pin_icon);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(makeIcon()));
     }
 

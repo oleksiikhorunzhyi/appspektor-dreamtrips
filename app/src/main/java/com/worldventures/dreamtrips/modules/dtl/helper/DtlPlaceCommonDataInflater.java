@@ -1,13 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.Offer;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -38,7 +37,7 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
         } else {
             rating.setVisibility(View.GONE);
         }
-        perks.setVisibility(TextUtils.isEmpty(place.getPerksDescription()) ? View.GONE : View.VISIBLE);
-        earnPointsBadge.setVisibility(place.getPartnerStatus() == DtlPlaceType.OFFER ? View.VISIBLE : View.GONE);
+        perks.setVisibility(place.hasOffer(Offer.PERKS)? View.VISIBLE : View.GONE);
+        earnPointsBadge.setVisibility(place.hasOffer(Offer.POINT_REWARD) ? View.VISIBLE : View.GONE);
     }
 }

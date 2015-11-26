@@ -19,7 +19,8 @@ public class DtlPlace implements Parcelable {
 
     String merchantId;
     String merchantType;
-    DtlPlaceType partnerStatus;
+    PartnerStatus partnerStatus;
+    List<String> offers;
     String legalName;
     String displayName;
     String address1;
@@ -128,8 +129,16 @@ public class DtlPlace implements Parcelable {
         return operationDays;
     }
 
-    public DtlPlaceType getPartnerStatus() {
-        return partnerStatus;
+    public DtlPlaceType getPlaceType() {
+        return hasNoOffers() ? DtlPlaceType.DINING : DtlPlaceType.OFFER;
+    }
+
+    public boolean hasOffer(@Offer.OfferName String offer) {
+        return offers != null && offers.contains(offer);
+    }
+
+    public boolean hasNoOffers() {
+        return offers == null || offers.isEmpty();
     }
 
     public String getPerksDescription() {
@@ -162,8 +171,9 @@ public class DtlPlace implements Parcelable {
         categories = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
         amenities = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
         images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
-        partnerStatus = (DtlPlaceType) in.readSerializable();
+        partnerStatus = (PartnerStatus) in.readSerializable();
         operationDays = in.createTypedArrayList(OperationDay.CREATOR);
+        offers = in.createStringArrayList();
     }
 
     @Override
@@ -191,6 +201,7 @@ public class DtlPlace implements Parcelable {
         dest.writeTypedList(images);
         dest.writeSerializable(partnerStatus);
         dest.writeTypedList(operationDays);
+        dest.writeStringList(offers);
     }
 
     public static final Creator<DtlPlace> CREATOR = new Creator<DtlPlace>() {

@@ -62,7 +62,6 @@ public class TripDetailsViewDelegate {
     @InjectView(R.id.pointsCountLayout)
     protected FrameLayout pointsCountLayout;
 
-
     public TripDetailsViewDelegate(View rootView) {
         ButterKnife.inject(this, rootView);
     }
@@ -110,8 +109,10 @@ public class TripDetailsViewDelegate {
 
         if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
             textViewPoints.setText(String.valueOf(reward));
+            pointsCountLayout.setVisibility(View.VISIBLE);
         } else {
             textViewPoints.setVisibility(View.GONE);
+            pointsCountLayout.setVisibility(View.GONE);
         }
 
         textViewFeatured.setVisibility(tripModel.isFeatured() ? View.VISIBLE : View.GONE);

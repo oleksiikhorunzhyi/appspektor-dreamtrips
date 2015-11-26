@@ -49,9 +49,9 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/spacing_small"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         >
 
         <ImageView
@@ -59,18 +59,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/badge_placeholder"
-            android:layout_marginBottom="@dimen/spacing_small"/>
+            />
 
         <TextView
             android:id="@+id/perks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/perks_margin"
             android:drawableLeft="@drawable/perks_icon"
-            android:drawablePadding="@dimen/spacing_small"
+            android:drawablePadding="@dimen/spacing_tiny"
             android:drawableStart="@drawable/perks_icon"
             android:gravity="center"
             android:text="@string/dtl_perks_description"
-            android:layout_gravity="bottom"
             android:textColor="@color/white"/>
     </LinearLayout>
 

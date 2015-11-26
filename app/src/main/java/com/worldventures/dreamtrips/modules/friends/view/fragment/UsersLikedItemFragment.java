@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.seppius.i18n.plurals.PluralResources;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.friends.presenter.UsersLikedItemPresenter;
@@ -36,18 +37,25 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
         adapter.registerCell(User.class, UserCell.class);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
+        header.getBackground().setAlpha(255);
+
+    }
+
     @Override
     public void refreshUsers(List<User> users) {
         super.refreshUsers(users);
         if (isTabletLandscape()) {
-            Object titleArg = users.size() == 1 ? users.get(0).getFullName() : users.size();
-            try {
-                String title = new PluralResources(getResources()).getQuantityString(R.plurals.people_liked, users.size(), titleArg);
-                header.setText(title);
-                header.setVisibility(View.VISIBLE);
-            } catch (NoSuchMethodException e) {
-                Timber.w(e, "Can't set plural");
-            }
+            String titleArg = users.size() == 1 ? users.get(0).getFullName() : String.valueOf(users.size());
+
+            String title = String.format(getResources().getString(
+                    QuantityHelper.chooseResource(users.size(), R.string.people_liked_one, R.string.people_liked_other)), titleArg);
+            header.setText(title);
+            header.setVisibility(View.VISIBLE);
         }
     }
 

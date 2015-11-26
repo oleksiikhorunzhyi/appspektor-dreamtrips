@@ -65,6 +65,9 @@
         <meta-data
             android:name="apptentive_api_key"
             android:value="${surveyApiToken}"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="${fabricApiKey}" />
         <!-- This will prevent VERBOSE and DEBUG level logging. -->
         <meta-data
             android:name="apptentive_log_level"

@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
+import com.worldventures.dreamtrips.modules.friends.view.util.MutualStringUtil;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import javax.inject.Inject;
@@ -43,8 +44,11 @@ public class UserCell extends AbstractCell<User> {
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
+    private MutualStringUtil mutualStringUtil;
+
     public UserCell(View view) {
         super(view);
+        mutualStringUtil = new MutualStringUtil(view.getContext());
     }
 
     @Override
@@ -62,8 +66,8 @@ public class UserCell extends AbstractCell<User> {
         tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
         tvGroup.setText(circleName);
 
-        String mutualText = itemView.getContext().getString(R.string.social_postfix_mutual_friends, getModelObject().getMutualFriends());
-        tvMutual.setVisibility(getModelObject().getMutualFriends() == 0 ? View.GONE : View.VISIBLE);
+        String mutualText = mutualStringUtil.createMutualString(getModelObject().getMutualFriends());
+        tvMutual.setVisibility(TextUtils.isEmpty(mutualText) ? View.GONE : View.VISIBLE);
         tvMutual.setText(mutualText);
 
         if (!appSessionHolder.get().get().getUser().equals(user)

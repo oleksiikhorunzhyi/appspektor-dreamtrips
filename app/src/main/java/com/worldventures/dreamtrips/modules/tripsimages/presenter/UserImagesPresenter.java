@@ -3,16 +3,19 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 
+import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.events.MyImagesSelectionEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.util.ValidationUtils;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
@@ -43,21 +46,34 @@ public class UserImagesPresenter extends TripImagesListPresenter {
         };
     }
 
+    public void onEvent(AttachPhotoEvent event) {
+        if (event.getRequestType() != -1)
+            pickImage(event.getRequestType());
+    }
+
     public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
+        if (view.isVisibleOnScreen())
+            eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
         if (event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
-            String fileThumbnail = event.getImages()[0].getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
-            } else {
-                imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
-            }
+
+            attachImages(Queryable.from(event.getImages()).toList(), event.getRequestType());
         }
+    }
+
+    public void attachImages(List<ChosenImage> photos, int type) {
+        if (photos.size() == 0) {
+            return;
+        }
+
+        eventBus.post(new MyImagesSelectionEvent());
+
+        String fileThumbnail = photos.get(0).getFileThumbnail();
+        imageSelected(Uri.parse(fileThumbnail), type);
     }
 
     public void imageSelected(Uri uri, int requestType) {

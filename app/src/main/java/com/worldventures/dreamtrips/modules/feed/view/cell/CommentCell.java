@@ -34,7 +34,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -74,13 +73,13 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
 
     public CommentCell(View view) {
         super(view);
-        commentCellHelper = new CommentCellHelper();
-        ButterKnife.inject(commentCellHelper, view);
+        commentCellHelper = new CommentCellHelper(view.getContext());
+        commentCellHelper.attachView(view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        commentCellHelper.set(itemView.getContext(), getModelObject());
+        commentCellHelper.set(getModelObject());
         User owner = getModelObject().getOwner();
 
         if (edit != null)

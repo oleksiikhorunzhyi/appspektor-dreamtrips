@@ -150,7 +150,8 @@ public class PickImageDelegate implements ImageChooserListener {
             if (imageCallback != null)
                 imageCallback.onImagePicked(Queryable.from(uris).map(element -> {
                     ChosenImage chosenImage = new ChosenImage();
-                    chosenImage.setFilePathOriginal("file://" + element.toString());
+                    chosenImage.setFilePathOriginal(element.toString());
+                    chosenImage.setFileThumbnail("file://" + element.toString());
                     return chosenImage;
                 }).toArray());
         }
@@ -172,7 +173,7 @@ public class PickImageDelegate implements ImageChooserListener {
 
     @Override
     public void onImageChosen(ChosenImage chosenImage) {
-        chosenImage.setFilePathOriginal("file://" + chosenImage.getFilePathOriginal());
+        chosenImage.setFileThumbnail("file://" + chosenImage.getFilePathOriginal());
         if (imageCallback != null) imageCallback.onImagePicked(chosenImage);
     }
 

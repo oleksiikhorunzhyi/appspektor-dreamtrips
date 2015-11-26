@@ -6,8 +6,9 @@ import android.os.Parcelable;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class CommentsBundle implements Parcelable {
-    FeedEntity feedEntity;
-    boolean openKeyboard;
+
+    protected FeedEntity feedEntity;
+    protected boolean openKeyboard;
 
     public CommentsBundle(FeedEntity feedEntity) {
         this(feedEntity, false);
@@ -24,6 +25,10 @@ public class CommentsBundle implements Parcelable {
 
     public boolean isOpenKeyboard() {
         return openKeyboard;
+    }
+
+    public void setOpenKeyboard(boolean openKeyboard) {
+        this.openKeyboard = openKeyboard;
     }
 
     @Override
@@ -43,12 +48,15 @@ public class CommentsBundle implements Parcelable {
     }
 
     public static final Creator<CommentsBundle> CREATOR = new Creator<CommentsBundle>() {
-        public CommentsBundle createFromParcel(Parcel source) {
-            return new CommentsBundle(source);
+        @Override
+        public CommentsBundle createFromParcel(Parcel in) {
+            return new CommentsBundle(in);
         }
 
+        @Override
         public CommentsBundle[] newArray(int size) {
             return new CommentsBundle[size];
         }
     };
+
 }

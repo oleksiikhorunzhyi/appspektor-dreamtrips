@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
-public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
+public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
 
     @InjectView(R.id.photo)
     SimpleDraweeView photo;
@@ -61,27 +61,25 @@ public class PhotoFeedItemCell extends FeedHeaderCell<PhotoFeedItem> {
                 title.setVisibility(View.GONE);
             }
         }
-    }
 
-    @Override
-    protected void itemClicked() {
-        ArrayList<IFullScreenObject> items = new ArrayList<>();
-        items.add(getModelObject().getItem());
+        photo.setOnClickListener(v -> {
+            ArrayList<IFullScreenObject> items = new ArrayList<>();
+            items.add(getModelObject().getItem());
+            FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                    .position(0)
+                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .fixedList(items)
+                    .build();
 
-        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
-                .position(0)
-                .type(TripImagesListFragment.Type.FIXED_LIST)
-                .fixedList(items)
-                .build();
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .data(data)
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                    .move(Route.FULLSCREEN_PHOTO_LIST);
 
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(data)
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(Route.FULLSCREEN_PHOTO_LIST);
-
-        getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(),
-                FeedEntityHolder.Type.PHOTO));
+            getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(),
+                    FeedEntityHolder.Type.PHOTO));
+        });
     }
 
     private void loadPhoto(Photo photoObj) {

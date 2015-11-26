@@ -16,9 +16,11 @@ import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
+import com.worldventures.dreamtrips.modules.feed.event.EditCommentCloseRequest;
 
 public class DialogFragmentNavigator implements Navigator {
 
+    private static final String DIALOG_GRAVITY = "DIALOG_GRAVITY";
     private final FragmentManager fragmentManager;
 
     public DialogFragmentNavigator(FragmentManager fragmentManager) {
@@ -32,7 +34,9 @@ public class DialogFragmentNavigator implements Navigator {
 
     @Override
     public void move(Route route, Bundle bundle) {
-        NavigationDialogFragment.newInstance(route, bundle).show(fragmentManager, route.name());
+        NavigationDialogFragment
+                .newInstance(route, bundle, bundle.getInt(ComponentPresenter.DIALOG_GRAVITY))
+                .show(fragmentManager, route.getClazzName());
     }
 
     @Layout(R.layout.dialog_container)
@@ -43,11 +47,12 @@ public class DialogFragmentNavigator implements Navigator {
         private Route route;
         private Bundle bundle;
 
-        public static NavigationDialogFragment newInstance(Route route, Bundle bundle) {
+        public static NavigationDialogFragment newInstance(Route route, Bundle bundle, int gravity) {
             NavigationDialogFragment fragment = new NavigationDialogFragment();
             Bundle args = new Bundle();
             args.putSerializable(Route.class.getName(), route);
             args.putBundle(Bundle.class.getName(), bundle);
+            args.putInt(DIALOG_GRAVITY, gravity);
             fragment.setArguments(args);
             return fragment;
         }
@@ -69,11 +74,14 @@ public class DialogFragmentNavigator implements Navigator {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            getDialog().getWindow().setGravity(getArguments().getInt(DIALOG_GRAVITY, 0));
+
             View view = super.onCreateView(inflater, container, savedInstanceState);
             compass.setContainerId(view.getId());
             compass.setFragmentManager(getChildFragmentManager());
             return view;
         }
+
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -102,6 +110,12 @@ public class DialogFragmentNavigator implements Navigator {
         public void onEvent(CloseDialogEvent event) {
             if (isVisible())
                 dismiss();
+        }
+
+        public void onEvent(EditCommentCloseRequest event) {
+            if (route.getClazzName().equals(event.getFragmentClazz())) {
+                dismissAllowingStateLoss();
+            }
         }
     }
 }

@@ -380,22 +380,13 @@
     <string name="configuration_failed">Configuration loading failed</string>
     <string name="email_app_choose_dialog_title">Choose Application</string>
 
-    <plurals name="users_who_liked">
-        <item quantity="one">&lt;b>%d User&lt;/b> likes this</item>
-        <item quantity="other">&lt;b>%d Users&lt;/b> like this</item>
-    </plurals>
+    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
+    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
+    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
 
-    <plurals name="users_who_liked_with_name">
-        <item quantity="zero">@string/users_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
-
-    <plurals name="account_who_liked_item">
-        <item quantity="zero">@string/account_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
+    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
+    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
+    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
     <string name="account_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> like this</string>
     <string name="users_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> likes this</string>
@@ -444,15 +435,11 @@
     <string name="all">All</string>
     <string name="you">You</string>
 
-    <plurals name="likes_count">
-        <item quantity="one">%d like</item>
-        <item quantity="other">%d likes</item>
-    </plurals>
+    <string name="likes_count_one">%d like</string>
+    <string name="likes_count_other">%d likes</string>
 
-    <plurals name="comments_count">
-        <item quantity="one">%d comment</item>
-        <item quantity="other">%d comments</item>
-    </plurals>
+    <string name="comments_count_one">%d comment</string>
+    <string name="comments_count_other">%d comments</string>
 
     <string name="feed_edit_item">Edit</string>
     <string name="feed_delete_item">Delete</string>
@@ -462,6 +449,11 @@
 
     <string name="no_feed">You will see your Friend\'s activity here.\n Click the link below to find your friends</string>
     <string name="search_friends">Search Friends</string>
+
+    <string name="feed_share_post">Share Post</string>
+    <string name="feed_share_photos">Share Photo</string>
+    <string name="feed_view_profile_btn">View Profile</string>
+    <string name="feed_close_friends">Close Friends</string>
     <string name="start_searching">Type to start searching</string>
 
     <plurals name="people_liked">
@@ -469,10 +461,22 @@
         <item quantity="other">%d people liked</item>r
     </plurals>
 
+    <string name="people_liked_one">%s liked</string>
+    <string name="people_liked_other">%s people liked</string>
+
     <string name="terms_and_conditions_title">Terms and Condition</string>
     <string name="terms_and_conditions_subtitle">Please read and accept the terms and condition below to continue</string>
     <string name="terms_and_conditions_checkbox">Click here to accept terms and conditions</string>
     <string name="terms_and_conditions_accept">Opt In</string>
     <string name="terms_and_conditions_reject">Not Now</string>
+
+    <string name="camera">Camera</string>
+    <string name="add_from_facebook">Add from Facebook</string>
+
+    <string name="photos_selected">%d selected</string>
+
+    <string name="no_friends">You have no friends in this list yet</string>
+    <string name="feed_add_friends">Add friends</string>
+    <string name="all_friends">All friends</string>
 
 </resources>

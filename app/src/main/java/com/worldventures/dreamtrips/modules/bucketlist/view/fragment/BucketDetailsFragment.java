@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -39,7 +38,6 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.util.List;
@@ -146,8 +144,12 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         if (isVisibleOnScreen()) {
             event.getAnchor().setEnabled(false);
             FeedItemMenuBuilder.create(getActivity(), event.getAnchor(), R.menu.menu_feed_entity_edit)
-                    .onDelete(() -> getPresenter().onDelete())
-                    .onEdit(() -> getPresenter().onEdit())
+                    .onDelete(() -> {
+                        if (isVisibleOnScreen()) getPresenter().onDelete();
+                    })
+                    .onEdit(() -> {
+                        if (isVisibleOnScreen()) getPresenter().onEdit();
+                    })
                     .dismissListener(menu -> event.getAnchor().setEnabled(true))
                     .show();
         }
@@ -355,28 +357,5 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @Override
     public void dismissProgressDialog() {
         progressDialog.dismiss();
-    }
-
-    @Override
-    public void showAddPhotoDialog() {
-        int items = R.array.dialog_add_bucket_photo_multiselect;
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getActivity().getString(R.string.select_photo))
-                .items(items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                            break;
-                        case 1:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                            break;
-                        case 2:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_MULTI_SELECT);
-                            break;
-                    }
-                });
-
-        builder.show();
     }
 }

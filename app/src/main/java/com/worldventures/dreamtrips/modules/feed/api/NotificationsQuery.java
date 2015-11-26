@@ -21,11 +21,11 @@ public class NotificationsQuery extends Query<ArrayList<ParentFeedItem>> {
 
     public NotificationsQuery() {
         super((Class<ArrayList<ParentFeedItem>>) new ArrayList<Notification>().getClass());
-        this.before = Calendar.getInstance().getTime();
     }
 
     @Override
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
-        return getService().getNotifications(LIMIT, DateTimeUtils.convertDateToUTCString(before));
+        String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
+        return getService().getNotifications(LIMIT, before);
     }
 }

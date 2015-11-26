@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.cell;
 
+import android.graphics.PointF;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -10,7 +10,6 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
 import javax.inject.Inject;
 
@@ -41,6 +40,7 @@ public class PhotoUploadCell extends AbstractCell<UploadTask> {
 
     @Override
     protected void syncUIStateWithModel() {
+        imageView.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
         imageView.setImageURI(Uri.parse(getModelObject().getFilePath()));
         ring.setProgressColor(itemView.getResources().getColor(R.color.white));
 

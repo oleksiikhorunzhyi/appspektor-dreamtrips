@@ -6,6 +6,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -27,6 +28,7 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -47,18 +49,20 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Inject
     BucketItemManager bucketItemManager;
-
     @Inject
     protected SnappyRepository db;
 
     protected BucketItem.BucketType type;
     protected String bucketItemId;
+    protected int ownerId;
+
     protected BucketItem bucketItem;
 
     public BucketDetailsBasePresenter(BucketBundle bundle) {
         super();
         type = bundle.getType();
         bucketItemId = bundle.getBucketItemUid();
+        ownerId = bundle.getOwnerId();
     }
 
     @Override
@@ -83,8 +87,12 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         syncUI(tasks);
     }
 
-    private void restoreBucketItem() {
-        bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
+    protected void restoreBucketItem() {
+        if (ownerId == 0) {
+            bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
+        } else {
+            bucketItem = getBucketItemManager().getSingleBucketItem(type, bucketItemId, ownerId);
+        }
     }
 
     public void onEventMainThread(BucketItemUpdatedEvent event) {
@@ -121,13 +129,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ///////// Photo processing
     //////////////////////////////
 
-    public void onEvent(BucketAddPhotoClickEvent event) {
-        if (view.isVisibleOnScreen()) {
-            eventBus.cancelEventDelivery(event);
-            view.showAddPhotoDialog();
-        }
-    }
-
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         photoUploadingSpiceManager.cancelUploading(event.getModelObject());
 
@@ -162,7 +163,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                     .position(photos.indexOf(selectedPhoto))
                     .type(TripImagesListFragment.Type.FIXED_LIST)
                     .fixedList(photos)
-                    .foreign(bucketItem.getUser().getId() != appSessionHolder.get().get().getUser().getId())
+                    .foreign(bucketItem.getOwner().getId() != appSessionHolder.get().get().getUser().getId())
                     .build();
 
             view.openFullscreen(data);
@@ -197,7 +198,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     /////// Photo upload
     ////////////////////////////////////////
 
-    private void copyFileIfNeeded(UploadTask task) {
+    protected void copyFileIfNeeded(UploadTask task) {
         doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> upload(task, filePath));
     }
 
@@ -287,57 +288,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         return bucketItemManager;
     }
 
-    ////////////////////////////////////////
-    /////// Photo picking
-    ////////////////////////////////////////
-    public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId.hashCode()));
-    }
-
-    public void imagePicked(ImagePickedEvent event) {
-        if (event.getRequesterID() == bucketItemId.hashCode()) {
-            eventBus.removeStickyEvent(event);
-
-            if (event.getRequestType() == PickImageDelegate.REQUEST_MULTI_SELECT) {
-                Queryable.from(event.getImages()).forEachR(choseImage ->
-                        imageSelected(Uri.parse(choseImage.getFilePathOriginal()), event.getRequestType()));
-            } else {
-                Queryable.from(event.getImages()).forEachR(choseImage -> {
-                    String fileThumbnail = choseImage.getFileThumbnail();
-                    if (ValidationUtils.isUrl(fileThumbnail)) {
-                        imageSelected(Uri.parse(fileThumbnail), event.getRequestType());
-                    } else {
-                        imageSelected(Uri.fromFile(new File(fileThumbnail)), event.getRequestType());
-                    }
-                });
-            }
-        }
-    }
-
-    private void imageSelected(Uri uri, int requestType) {
-        String type = "";
-        switch (requestType) {
-            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
-                type = "camera";
-                break;
-            case PickImageDelegate.REQUEST_MULTI_SELECT:
-            case PickImageDelegate.REQUEST_PICK_PICTURE:
-                type = "album";
-                break;
-            case PickImageDelegate.REQUEST_FACEBOOK:
-                type = "facebook";
-                break;
-        }
-
-        UploadTask task = new UploadTask();
-        task.setStatus(UploadTask.Status.IN_PROGRESS);
-        task.setFilePath(uri.toString());
-        task.setType(type);
-        task.setLinkedItemId(String.valueOf(bucketItemId));
-
-        copyFileIfNeeded(task);
-    }
-
     @Override
     public void dropView() {
         super.dropView();
@@ -360,8 +310,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         void setStatus(boolean isCompleted);
 
         void done();
-
-        void showAddPhotoDialog();
 
         void openFullscreen(FullScreenImagesBundle data);
 

@@ -177,6 +177,10 @@ public class FragmentCompass {
         return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
     }
 
+    public boolean empty() {
+        return getCurrentFragment() == null;
+    }
+
     public void pop() {
         try {
             FragmentManager fm = activity.getSupportFragmentManager();

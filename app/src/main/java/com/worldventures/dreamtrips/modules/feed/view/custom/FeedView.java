@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -74,7 +75,6 @@ public class FeedView extends EmptyRecyclerView {
         setAdapter(this.adapter);
 
         stateDelegate.setRecyclerView(this);
-
 
         addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

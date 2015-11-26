@@ -60,6 +60,7 @@ public class SnappyRepository {
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
+    public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
 
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
@@ -409,29 +410,36 @@ public class SnappyRepository {
         return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
     }
 
+    public Circle getFeedFriendPickedCircle() {
+        return actWithResult(db -> db.get(FILTER_FEED_FRIEND_FILTER_CIRCLE, Circle.class)).orNull();
+    }
+
+    public void saveFeedFriendPickedCircle(Circle circle) {
+        act(db -> db.put(FILTER_FEED_FRIEND_FILTER_CIRCLE, circle));
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     //
     ///////////////////////////////////////////////////////////////////////////
 
-    private interface SnappyAction {
-        void call(DB db) throws SnappydbException;
+    public String getGcmRegToken() {
+        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
     }
 
-
-    private interface SnappyResult<T> {
-        T call(DB db) throws SnappydbException;
+    public void setGcmRegToken(String token) {
+        act(db -> db.put(GCM_REG_TOKEN, token));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // GCM
     ///////////////////////////////////////////////////////////////////////////
 
-    public void setGcmRegToken(String token) {
-        act(db -> db.put(GCM_REG_TOKEN, token));
+    private interface SnappyAction {
+        void call(DB db) throws SnappydbException;
     }
 
-    public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
+    private interface SnappyResult<T> {
+        T call(DB db) throws SnappydbException;
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -28,11 +28,6 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -117,8 +112,6 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 openTrip((TripModel) item);
                 break;
             case PHOTO:
-                openPhoto();
-                break;
             case BUCKET_LIST_ITEM:
             case POST:
                 openDetails();
@@ -154,25 +147,8 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     private void openDetails() {
         NavigationBuilder.create()
                 .with(activityRouter)
-                .data(new FeedEntityDetailsBundle(getModelObject()))
-                .move(Route.FEED_ENTITY_DETAILS);
-    }
-
-    private void openPhoto() {
-        ArrayList<IFullScreenObject> items = new ArrayList<>();
-        items.add((IFullScreenObject) getModelObject().getItem());
-
-        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
-                .position(0)
-                .type(TripImagesListFragment.Type.FIXED_LIST)
-                .fixedList(items)
-                .build();
-
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(data)
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(new FeedItemDetailsBundle(getModelObject()))
+                .move(Route.FEED_ITEM_DETAILS);
     }
 
     @Override

@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -17,18 +16,19 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import icepick.State;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -58,6 +58,11 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     FrameLayout imageContainer;
     @InjectView(R.id.image)
     ImageView image;
+    @InjectView(R.id.photo_picker)
+    PhotoPickerLayout photoPickerLayout;
+
+    @State
+    boolean pickerDisabled;
 
     SweetAlertDialog dialog;
 
@@ -68,6 +73,13 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
             getPresenter().postInputChanged(constraint.toString().trim());
         }
     };
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        photoPickerLayout.setup(this, false);
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages));
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -90,6 +102,10 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         super.onResume();
         post.addTextChangedListener(textWatcher);
         backStackDelegate.setListener(this::onBackPressed);
+        if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
+            photoPickerLayout.showPanel();
+        }
+        updatePickerState();
     }
 
     @Override
@@ -101,7 +117,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     protected PostPresenter createPresenter(Bundle savedInstanceState) {
-        if (getArgs() != null)
+        if (getArgs() != null && getArgs().getTextualPost() != null)
             return new PostEditPresenter(getArgs());
         else
             return new PostPresenter();
@@ -144,23 +160,11 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @OnClick(R.id.image)
     void onImage() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getString(R.string.select_photo))
-                .items(R.array.dialog_add_bucket_photo)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                            break;
-                        case 1:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                            break;
-                        case 2:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_PICK_PICTURE);
-                            break;
-                    }
-                });
-        builder.show();
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
+        } else {
+            photoPickerLayout.showPanel();
+        }
     }
 
     @Override
@@ -171,6 +175,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void attachPhoto(Uri uri) {
+        photoPickerLayout.hidePanel();
+
         attachedPhoto.setImageURI(uri);
         if (uri != null) {
             post.setHint(R.string.photo_hint);
@@ -231,12 +237,18 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void enableImagePicker() {
-        image.setEnabled(true);
+        pickerDisabled = false;
+        updatePickerState();
     }
 
     @Override
     public void disableImagePicker() {
-        image.setEnabled(false);
+        pickerDisabled = true;
+        updatePickerState();
+    }
+
+    private void updatePickerState() {
+        image.setEnabled(!pickerDisabled);
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;

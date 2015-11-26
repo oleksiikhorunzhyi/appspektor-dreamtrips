@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -11,6 +12,7 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class CommentCellHelper {
@@ -24,10 +26,20 @@ public class CommentCellHelper {
     @InjectView(R.id.text)
     TextView text;
 
+    private Context context;
     private Comment comment;
 
-    public void set(@NonNull Context context, @NonNull Comment comment) {
+    public CommentCellHelper(Context context) {
+        this.context = context;
+    }
+
+    public void attachView(View view) {
+        ButterKnife.inject(this, view);
+    }
+
+    public void set(@NonNull Comment comment) {
         this.comment = comment;
+        //
         User owner = comment.getOwner();
         userPhoto.setImageURI(Uri.parse(owner.getAvatar().getThumb()));
         userName.setText(owner.getUsernameWithCompany(context));

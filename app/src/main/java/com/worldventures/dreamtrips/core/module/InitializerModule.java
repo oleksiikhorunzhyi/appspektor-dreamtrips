@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.module;
 
+import android.content.Context;
+
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
@@ -36,13 +38,13 @@ public class InitializerModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideSoftInputInitializer() {
-        return new SoftInputInitializer();
+    AppInitializer provideJodaInitializer(Context context) {
+        return new JodaTimeInitializer(context);
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideJodaTimeInitializer() {
-        return new JodaTimeInitializer();
+    AppInitializer provideSoftInputInitializer() {
+        return new SoftInputInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

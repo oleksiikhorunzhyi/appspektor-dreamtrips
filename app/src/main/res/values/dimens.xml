@@ -16,6 +16,7 @@
     <dimen name="size_small">24dp</dimen>
 
     <!-- typical spacing between views -->
+    <dimen name="spacing_huger">78dp</dimen>
     <dimen name="spacing_huge">40dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
@@ -87,7 +88,18 @@
 
     <dimen name="popup_filter_item_extra_space">80dp</dimen>
 
-    <!-- dimen for dtl place list -->
+    <dimen name="photo_picker_size">104dp</dimen>
+    <dimen name="picker_panel_height">228dp</dimen>
+    <dimen name="picker_panel_header_height">44dp</dimen>
+    <dimen name="picker_photo_spacing">1dp</dimen>
+
+    <!-- Additional info fragment empty view spacing -->
+    <dimen name="additional_info_spacing_vertical">40dp</dimen>
+    <dimen name="additional_info_spacing_horizontal">78dp</dimen>
+    <dimen name="additional_info_items_margin">34dp</dimen>
+    <dimen name="additional_info_description_size">18sp</dimen>
+
+   <!-- dimen for dtl place list -->
     <dimen name="dtlPlaceListEmptyViewTextSize">22sp</dimen>
     <dimen name="dtlPlaceListEmptyViewMargin">15dp</dimen>
 

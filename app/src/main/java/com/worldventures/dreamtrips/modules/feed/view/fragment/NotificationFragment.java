@@ -18,7 +18,6 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -41,9 +40,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.notification.Notifica
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 
@@ -180,11 +176,6 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
-    }
-
-    @Override
-    public void openDetails(FeedItem feedItem) {
-
     }
 
     @Override

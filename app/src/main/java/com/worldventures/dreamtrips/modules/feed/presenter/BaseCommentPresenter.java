@@ -46,15 +46,13 @@ import java.util.List;
 import icepick.State;
 
 
-public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
-    private int page = 1;
-    private int commentsCount = 0;
-
+public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
     @State
     FeedEntity feedEntity;
     @State
     String comment;
-
+    private int page = 1;
+    private int commentsCount = 0;
     private UidItemDelegate uidItemDelegate;
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
@@ -63,7 +61,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     @Override
-    public void takeView(View view) {
+    public void takeView(T view) {
         super.takeView(view);
         loadComments();
         loadLikes();
@@ -95,6 +93,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public void onEvent(DeleteCommentRequestEvent event) {
+        if (!view.isVisibleOnScreen()) return;
         doRequest(new DeleteCommentCommand(event.getComment().getUid()), jsonObject -> {
             view.removeComment(event.getComment());
             feedEntity.getComments().remove(event.getComment());
@@ -105,8 +104,7 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
     }
 
     public void onEvent(EditCommentRequestEvent event) {
-        EditCommentPresenter editCommentPresenter = new EditCommentPresenter(event.getComment());
-        view.editComment(editCommentPresenter);
+        view.editComment(event.getComment());
         sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
     }
 
@@ -204,8 +202,8 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
             commentsCount += comments.size();
             view.setLoading(false);
             view.addComments(comments);
-
-            if (commentsCount == feedEntity.getCommentsCount()) view.hideViewMore();
+            if (commentsCount >= feedEntity.getCommentsCount()) view.hideViewMore();
+            else view.showViewMore();
 
         } else {
             view.hideViewMore();
@@ -214,22 +212,21 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
     private void onLikersLoaded(List<User> users) {
         if (users != null && !users.isEmpty()) {
-            feedEntity.setFirstUserLikedItem(users.get(0).getFullName());
+            feedEntity.setFirstLikerName(users.get(0).getFullName());
         } else {
-            feedEntity.setFirstUserLikedItem(null);
+            feedEntity.setFirstLikerName(null);
         }
-        view.setEntity(feedEntity);
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 
     @Override
     public void handleError(SpiceException error) {
+
         super.handleError(error);
         view.setLoading(false);
     }
 
     public interface View extends Presenter.View {
-        void setEntity(FeedEntity entity);
 
         void addComments(List<Comment> commentList);
 
@@ -243,10 +240,12 @@ public class BaseCommentPresenter extends Presenter<BaseCommentPresenter.View> {
 
         void setLoading(boolean loading);
 
-        void editComment(EditCommentPresenter presenter);
+        void editComment(Comment comment);
 
         void hideViewMore();
 
         void onPostError();
+
+        void showViewMore();
     }
 }

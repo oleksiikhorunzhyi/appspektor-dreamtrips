@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosV
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -66,6 +67,8 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     protected Spinner spinnerCategory;
     @InjectView(R.id.lv_items)
     protected BucketPhotosView bucketPhotosView;
+    @InjectView(R.id.photo_picker)
+    protected PhotoPickerLayout photoPickerLayout;
 
     private boolean categorySelected = false;
 
@@ -147,6 +150,9 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
+
+        photoPickerLayout.setup(this, true);
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages, PickImageDelegate.REQUEST_MULTI_SELECT));
     }
 
     @Override
@@ -265,6 +271,16 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     }
 
     @Override
+    public void hidePhotoPicker() {
+        photoPickerLayout.hidePanel();
+    }
+
+    @Override
+    public void showPhotoPicker() {
+        photoPickerLayout.showPanel();
+    }
+
+    @Override
     public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter).data(data).move(Route.FULLSCREEN_PHOTO_LIST);
     }
@@ -308,32 +324,6 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     public UploadTask getBucketPhotoUploadTask(String taskId) {
         return bucketPhotosView.getBucketPhotoUploadTask(taskId);
     }
-
-    @Override
-    public void showAddPhotoDialog() {
-        int items = R.array.dialog_add_bucket_photo_multiselect;
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getActivity().getString(R.string.select_photo))
-                .items(items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                            break;
-                        case 1:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                            break;
-                        case 2:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_MULTI_SELECT);
-                            break;
-                        default:
-                            break;
-                    }
-                });
-
-        builder.show();
-    }
-
 
     @Override
     public boolean getStatus() {

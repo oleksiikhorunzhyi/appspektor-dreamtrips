@@ -73,8 +73,7 @@ public class RouterImpl implements Router {
                 activity.getSupportFragmentManager() :
                 config.getFragmentManager();
         //
-        DialogFragmentNavigator.NavigationDialogFragment.newInstance(route, getArgs(config))
-                .show(fragmentManager, route.name());
+        new DialogFragmentNavigator(fragmentManager).move(route, getArgs(config));
     }
 
     private void remove(Route route, NavigationConfig config) {

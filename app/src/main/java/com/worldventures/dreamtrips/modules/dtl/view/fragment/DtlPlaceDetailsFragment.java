@@ -44,8 +44,8 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.Offer;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.util.SpanUtils;
 
@@ -154,15 +154,15 @@ public class DtlPlaceDetailsFragment
         commonDataInflater.apply(place);
         placeInfoInflater.apply(place);
         categoryDataInflater.apply(place);
-        setType(place.getPartnerStatus());
+        setType(place);
         setDescriptions(place.getDescription(), place.getPerksDescription());
         setAdditional(place);
         setMap(place);
     }
 
-    private void setType(DtlPlaceType type) {
-        earnWrapper.setVisibility((type == DtlPlaceType.OFFER) ? View.VISIBLE : View.GONE);
-        merchantWrapper.setVisibility((type == DtlPlaceType.DINING) ? View.VISIBLE : View.GONE);
+    private void setType(DtlPlace dtlPlace) {
+        earnWrapper.setVisibility(dtlPlace.hasOffer(Offer.POINT_REWARD) ? View.VISIBLE : View.GONE);
+        merchantWrapper.setVisibility(dtlPlace.hasNoOffers() ? View.VISIBLE : View.GONE);
     }
 
     private void setDescriptions(String description, String perksDescription) {

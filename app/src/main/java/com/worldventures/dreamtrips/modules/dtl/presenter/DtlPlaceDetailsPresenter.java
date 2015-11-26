@@ -50,7 +50,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        if (place.getPartnerStatus() == DtlPlaceType.DINING)
+        if (place.hasNoOffers())
             featureManager.with(Feature.REP_SUGGEST_MERCHANT, () -> view.setSuggestMerchantButtonAvailable(true),
                     () -> view.setSuggestMerchantButtonAvailable(false));
     }

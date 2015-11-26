@@ -84,12 +84,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
             view.hideScanButton();
             eventBus.removeStickyEvent(event);
             String fileThumbnail = event.getImages()[0].getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                imageSelected(Uri.parse(fileThumbnail).toString());
-            } else {
-                imageSelected(Uri.fromFile(new File(fileThumbnail)).toString());
-            }
-
+            imageSelected(Uri.parse(fileThumbnail).toString());
         }
     }
 

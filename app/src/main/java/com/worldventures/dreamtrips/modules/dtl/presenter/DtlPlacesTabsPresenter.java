@@ -71,7 +71,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
     private void placeLoaded(List<DtlPlace> dtlPlaces) {
         Map<DtlPlaceType, Collection<DtlPlace>> byTypeMap =
-                Queryable.from(dtlPlaces).groupToMap(DtlPlace::getPartnerStatus);
+                Queryable.from(dtlPlaces).groupToMap(DtlPlace::getPlaceType);
 
         Queryable.from(byTypeMap.keySet())
                 .forEachR(type -> updatePlacesByType(type, byTypeMap.get(type)));

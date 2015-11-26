@@ -116,7 +116,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
             view.clearMap();
             Queryable.from(filtered).forEachR(dtlPlace ->
                     view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),
-                            dtlPlace.getCoordinates().getLng()), dtlPlace.getPartnerStatus()));
+                            dtlPlace.getCoordinates().getLng()), dtlPlace.getPlaceType()));
             view.renderPins();
         }
     }

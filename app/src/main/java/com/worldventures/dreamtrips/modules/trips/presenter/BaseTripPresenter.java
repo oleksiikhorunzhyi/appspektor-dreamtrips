@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.app.Activity;
-import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -25,18 +24,16 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     BucketItemManager bucketItemManager;
 
     protected TripModel trip;
+    protected SweetDialogHelper sweetDialogHelper;
 
-    SweetDialogHelper sweetDialogHelper;
+    public BaseTripPresenter(TripModel trip) {
+        this.trip = trip;
+    }
 
     public TripModel getTrip() {
         return trip;
     }
 
-    public void setTrip(TripModel trip) {
-        this.trip = trip;
-    }
-
-    @Override
     public void onInjected() {
         super.onInjected();
         sweetDialogHelper = new SweetDialogHelper();
@@ -51,34 +48,13 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
 
     protected void initData() {
-        view.setName(trip.getName());
-        view.setDates(trip.getAvailabilityDates().toString());
-        view.setDesription(trip.getDescription());
-        view.setLocation(trip.getGeoLocation().getName());
-        view.setPrice(trip.getPrice().toString());
-        view.setDuration(trip.getDuration());
-
-        if (trip.isSoldOut())
-            view.setSoldOut();
-
-        String reward = trip.getRewardsLimit(appSessionHolder.get().get().getUser());
-
-        if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
-            view.setRedemption(String.valueOf(reward));
-        } else {
-            view.setPointsInvisible();
-        }
-
-        if (trip.isFeatured()) {
-            view.setFeatured();
-        }
-        // like and inBucket takes place when menu is loaded
+        view.setup(trip);
     }
 
     public void addTripToBucket() {
         bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
             trip.setInBucketList(true);
-            view.setInBucket(true);
+            view.setup(trip);
             onSuccessTripAction();
             sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
         }, this);
@@ -103,7 +79,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
     private void toggleTripLike() {
         trip.setLiked(!trip.isLiked());
-        view.setLike(trip.isLiked());
+        view.setup(trip);
     }
 
     private void onSuccessTripAction() {
@@ -111,29 +87,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     }
 
     public interface View extends Presenter.View {
-        void setName(String text);
-
-        void setLocation(String text);
-
-        void setPrice(String text);
-
-        void setDates(String text);
-
-        void setDesription(String text);
-
-        void setDuration(int count);
-
-        void setRedemption(String count);
-
-        void setLike(boolean like);
-
-        void setInBucket(boolean inBucket);
-
-        void setPointsInvisible();
-
-        void setFeatured();
-
-        void setSoldOut();
+        void setup(TripModel tripModel);
     }
 
 }

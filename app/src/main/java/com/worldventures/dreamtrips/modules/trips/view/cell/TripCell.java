@@ -17,14 +17,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
 import javax.inject.Inject;
 
@@ -59,7 +60,8 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
+    @Inject
+    protected Presenter.TabletAnalytic tabletAnalytic;
     @Inject
     ActivityRouter activityRouter;
 
@@ -124,11 +126,14 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @OnClick(R.id.itemLayout)
     public void actionItemClick() {
-        NavigationBuilder.create()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .with(activityRouter)
-                .data(new TripDetailsBundle(getModelObject()))
-                .attach(Route.DETAILED_TRIP);
+        Route detailsRoute = Route.FEED_ITEM_DETAILS;
+        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(getModelObject(),
+                appSessionHolder.get().get().getUser()));
+        if (tabletAnalytic.isTabletLandscape()) {
+            bundle.setSlave(true);
+        }
+        NavigationBuilder.create().with(activityRouter).data(bundle).move(detailsRoute);
+
 
         getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getTripId()));
     }

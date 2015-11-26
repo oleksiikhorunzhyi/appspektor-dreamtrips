@@ -197,7 +197,8 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         User actionOwner = links.getUsers().get(0);
         boolean isAccountsItem = item == null || item.getOwner() == null || accountId == item.getOwner().getId();
         boolean ownAction = isAccountsItem && accountId == actionOwner.getId();
-        String action = getActionCaption(resources, isAccountsItem, ownAction);
+        boolean isTrip = item instanceof TripModel;
+        String action = getActionCaption(resources, isAccountsItem, ownAction, isTrip);
         String type = getTypeCaption(resources);
         String companyName = TextUtils.isEmpty(actionOwner.getCompany()) ? "" : " - " + actionOwner.getCompany();
 
@@ -216,7 +217,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         return result;
     }
 
-    private String getActionCaption(Resources resources, boolean isAccountsItem, boolean ownAction) {
+    private String getActionCaption(Resources resources, boolean isAccountsItem, boolean ownAction, boolean isTrip) {
         switch (action) {
             case BOOK:
                 return resources.getString(R.string.booked);
@@ -227,7 +228,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
             case SHARE:
                 return resources.getString(R.string.shared);
             case LIKE:
-                return isAccountsItem && !ownAction ? resources.getString(R.string.liked) : resources.getString(R.string.liked_foreign);
+                return isAccountsItem && !ownAction && !isTrip ? resources.getString(R.string.liked) : resources.getString(R.string.liked_foreign);
             case ACCEPT_REQUEST:
                 return resources.getString(R.string.accept_request);
             case REJECT_REQUEST:

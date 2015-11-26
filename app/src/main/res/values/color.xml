@@ -17,6 +17,7 @@
 
     <color name="tripPlaceColor">#025E93</color>
     <color name="tripButtonColor">#70af29</color>
+    <color name="tripButtonColorPressed">#55841f</color>
     <color name="tripButtonDisabled">#A5A5A5</color>
 
     <color name="bucket_button_selected">#005E92</color>

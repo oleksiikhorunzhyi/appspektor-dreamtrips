@@ -44,6 +44,7 @@ import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
@@ -108,7 +109,8 @@ public enum Route {
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
 
     DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
-    DETAILS_PHOTO(PhotoDetailsFeedFragment.class, R.string.empty),
+    FEED_DETAILS_PHOTO(PhotoDetailsFeedFragment.class, R.string.empty),
+    DETAILS_TRIP_WITH_SOCIAL(TripWithSocialDetailsFragment.class, R.string.empty),
 
     FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),

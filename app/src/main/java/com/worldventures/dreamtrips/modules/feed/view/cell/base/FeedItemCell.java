@@ -182,17 +182,6 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
 
     protected abstract void onMore();
 
-    protected void openComments(FeedItem baseFeedModel) {
-        openComments(baseFeedModel, false);
-    }
-
-    protected void openComments(FeedItem baseFeedModel, boolean openKeyboard) {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new FeedItemDetailsBundle(baseFeedModel, openKeyboard))
-                .move(Route.COMMENTS);
-    }
-
     @Optional
     @OnClick(R.id.feed_header_avatar)
     void eventOwnerClicked() {

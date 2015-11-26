@@ -83,4 +83,10 @@
         <item name="android:shadowRadius">2</item>
     </style>
 
+    <style name="Theme.DreamTripsTheme.TripButton" parent="Base.Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/tripButtonColor</item>
+        <item name="colorControlHighlight">@color/tripButtonColorPressed</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
 </resources>

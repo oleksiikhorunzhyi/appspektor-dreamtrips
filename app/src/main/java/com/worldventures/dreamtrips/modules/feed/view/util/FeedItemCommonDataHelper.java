@@ -70,6 +70,7 @@ public class FeedItemCommonDataHelper {
                 avatar.setImageURI(user.getAvatar() == null ? null : Uri.parse(user.getAvatar().getThumb()));
             }
             text.setText(Html.fromHtml(forDetails ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
+            text.setVisibility(TextUtils.isEmpty(text.getText()) ? View.GONE : View.VISIBLE);
 
             if (TextUtils.isEmpty(entity.place())) {
                 location.setVisibility(View.GONE);

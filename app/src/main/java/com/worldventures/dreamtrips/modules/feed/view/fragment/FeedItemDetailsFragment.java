@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.ShortFeedItemDetailsCell;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -56,7 +55,7 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
         adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(PhotoFeedItem.class, FeedItemDetailsCell.class);
-        adapter.registerCell(TripFeedItem.class, ShortFeedItemDetailsCell.class);
+        adapter.registerCell(TripFeedItem.class, FeedItemDetailsCell.class);
     }
 
     @Override

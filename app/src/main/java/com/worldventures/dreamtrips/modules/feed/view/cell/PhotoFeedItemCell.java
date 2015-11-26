@@ -10,9 +10,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
@@ -74,11 +74,10 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
                     .fixedList(items)
                     .build();
 
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .data(data)
+            router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .move(Route.FULLSCREEN_PHOTO_LIST);
+                    .data(data)
+                    .build());
 
             getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(),
                     FeedEntityHolder.Type.PHOTO));
@@ -105,11 +104,10 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
     @Override
     protected void onEdit() {
         super.onEdit();
-        NavigationBuilder.create()
-                .with(activityRouter)
+        router.moveTo(Route.PHOTO_EDIT, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(new EditPhotoBundle(getModelObject().getItem()))
-                .attach(Route.PHOTO_EDIT);
+                .build());
     }
 
     @Override

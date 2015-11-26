@@ -4,11 +4,8 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
@@ -252,14 +249,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         bundle.setType(event.getType());
         bundle.setBucketItemUid(event.getUid());
 
-        if (view.isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.container_details_floating);
-            fragmentCompass.showContainer();
-            NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);
-        } else {
-            bundle.setLock(true);
-            NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
-        }
+        view.showEdit(bundle);
     }
 
     private void itemDeleted(FeedEntity feedEntity) {
@@ -290,6 +280,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         void finishLoading();
 
         void refreshFeedItems(List<FeedItem> events, boolean needLoader);
+
+        void showEdit(BucketBundle bucketBundle);
 
     }
 

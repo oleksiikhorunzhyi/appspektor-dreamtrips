@@ -7,10 +7,12 @@ import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
@@ -55,7 +57,9 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         } else {
             Bundle bundle = new Bundle();
             bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, story);
-            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.SUCCESS_STORES_DETAILS);
+            router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forActivity()
+                    .data(bundle)
+                    .build());
         }
     }
 
@@ -119,5 +123,15 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         } else {
             informUser(getString(R.string.ss_has_been_removed_from_favorites));
         }
+    }
+
+    @Override
+    public void openShare(String url, @ShareFragment.ShareType String type) {
+        ShareBundle data = new ShareBundle();
+        data.setShareUrl(url);
+        data.setShareType(type);
+        router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
     }
 }

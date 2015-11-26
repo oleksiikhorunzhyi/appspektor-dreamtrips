@@ -15,8 +15,8 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripPressedEvent;
@@ -136,7 +136,9 @@ public class TripCell extends AbstractCell<TripModel> {
         if (tabletAnalytic.isTabletLandscape()) {
             bundle.setSlave(true);
         }
-        NavigationBuilder.create().with(activityRouter).data(bundle).move(detailsRoute);
+        router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
+                .data(bundle)
+                .build());
 
 
         getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getTripId()));

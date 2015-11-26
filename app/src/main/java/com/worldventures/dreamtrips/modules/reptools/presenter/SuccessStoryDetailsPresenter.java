@@ -43,13 +43,15 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
     }
 
     public void onShare(@ShareFragment.ShareType String type, SuccessStory successStory) {
-        activityRouter.openShare(null, successStory.getSharingUrl(), null, type);
+        view.openShare(successStory.getSharingUrl(), type);
     }
 
     public interface View extends WebViewFragmentPresenter.View {
         void showShareDialog();
 
         void likeRequestSuccess();
+
+        void openShare(String url, @ShareFragment.ShareType String type);
     }
 
 }

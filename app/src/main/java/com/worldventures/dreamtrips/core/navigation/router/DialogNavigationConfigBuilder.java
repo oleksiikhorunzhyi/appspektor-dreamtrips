@@ -27,6 +27,11 @@ public class DialogNavigationConfigBuilder extends NavigationConfigBuilder {
         return this;
     }
 
+    public DialogNavigationConfigBuilder gravity(int gravity) {
+        navigationConfig.gravity = gravity;
+        return this;
+    }
+
     @Override
     protected void validateConfig() throws IllegalStateException {
         // so far dialog navigation has no specific state to validate

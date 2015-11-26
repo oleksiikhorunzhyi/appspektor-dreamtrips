@@ -11,9 +11,10 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -65,6 +66,9 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     @Inject
     SnappyRepository snappyRepository;
+
+    @Inject
+    Router router;
 
     private boolean requestInProgress = false;
 
@@ -154,9 +158,9 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
         } else {
-            NavigationBuilder.create()
+            router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .with(activityRouter).move(Route.LOGIN);
+                    .build());
         }
         activityRouter.finish();
     }

@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import android.text.Spanned;
+
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -14,6 +17,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
+import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -57,11 +63,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
     public void onUserClicked() {
         User user = photo.getUser();
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(user))
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(user.getId()));
-
+        view.openUser(new UserBundle(user));
     }
 
     public final void setupActualViewState() {
@@ -76,6 +78,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
     public void onShare(@ShareFragment.ShareType String type) {
         activityRouter.openShare(photo.getFSImage().getUrl(), null, photo.getFSShareText(), type);
+        view.openShare(photo.getFSImage().getUrl(), photo.getFsShareText(), type);
         if (photo instanceof Inspiration) {
             TrackingHelper.insprShare(photo.getFSId(), type);
         }
@@ -83,6 +86,55 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
     public interface View extends Presenter.View {
 
+        void setTitleSpanned(Spanned titleSpanned);
+
+        void showCheckbox(boolean status);
+
+        void setDate(String date);
+
+        void setLocation(String location);
+
+        void setCommentCount(int count);
+
+        void setLikeCount(int count);
+
+        void setDescription(String desc);
+
+        void setLiked(boolean isLiked);
+
+        void loadImage(Image image);
+
+        void setFlagVisibility(boolean isVisible);
+
+        void setDeleteVisibility(boolean isVisible);
+
+        void setLikeVisibility(boolean isVisible);
+
+        void setLikeCountVisibility(boolean likeCountVisible);
+
+        void setUserPhoto(String fsPhoto);
+
+        void showProgress();
+
+        void hideProgress();
+
+        void setSocial(Boolean isEnabled);
+
+        void showCoverProgress();
+
+        void hideCoverProgress();
+
+        void setCommentVisibility(boolean commentVisible);
+
+        void setEditVisibility(boolean visible);
+
+        void openEdit(EditPhotoBundle editPhotoBundle);
+
+        void setShareVisibility(boolean shareVisible);
+
+        void openUser(UserBundle bundle);
+
+        void openShare(String imageUrl, String text, @ShareFragment.ShareType String type);
         <T extends IFullScreenObject> void setContent(T photo);
     }
 }

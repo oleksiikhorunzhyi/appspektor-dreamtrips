@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
@@ -32,14 +29,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         bundle.setType(type);
         bundle.setBucketItemUid(bucketItemId);
 
-        if (view.isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.container_details_floating);
-            fragmentCompass.showContainer();
-            NavigationBuilder.create().with(fragmentCompass).data(bundle).move(Route.BUCKET_EDIT);
-        } else {
-            bundle.setLock(true);
-            NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
-        }
+        view.showEdit(bundle);
         eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_EDIT));
     }
 
@@ -145,5 +135,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void showProgressDialog();
 
         void dismissProgressDialog();
+
+        void showEdit(BucketBundle bucketBundle);
     }
 }

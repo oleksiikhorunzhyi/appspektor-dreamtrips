@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import android.support.v4.app.FragmentManager;
+
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
@@ -33,6 +36,11 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
         super(photo, type);
     }
+
+    @Inject
+    Router router;
+    @Inject
+    FragmentManager fm;
 
     @Override
     public void takeView(View view) {
@@ -96,7 +104,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     @Override
     public void onCommentsAction() {
         new NavigationWrapperFactory()
-                .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, view)
+                .componentOrDialogNavigationWrapper(router, fm, view)
                 .navigate(Route.COMMENTS, new CommentsBundle(photo, false, true));
 
     }

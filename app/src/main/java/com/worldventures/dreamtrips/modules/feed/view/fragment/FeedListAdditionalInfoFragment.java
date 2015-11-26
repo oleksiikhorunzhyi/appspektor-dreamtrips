@@ -15,9 +15,9 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDec
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
@@ -151,44 +151,43 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
 
     @Override
     public void openUser(UserBundle bundle) {
-        NavigationBuilder.create().with(activityRouter)
-                .data(bundle)
+        router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(bundle.getUser().getId()));
+                .data(bundle)
+                .build());
     }
 
     private void openPost() {
         showPostContainer();
 
-        fragmentCompass.removePost();
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-
-        NavigationBuilder.create()
-                .with(fragmentCompass)
-                .attach(Route.POST_CREATE);
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .build());
     }
 
     private void openSharePhoto() {
         showPostContainer();
 
-        fragmentCompass.removePost();
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-
-        NavigationBuilder.create()
-                .with(fragmentCompass)
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+                .containerId(R.id.container_details_floating)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .build());
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
                 .data(new PostBundle(null, PostBundle.PHOTO))
-                .attach(Route.POST_CREATE);
+                .build());
 
     }
 
     protected void openSearch() {
-        NavigationBuilder.create().with(activityRouter)
+        router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
                 .data(new FriendGlobalSearchBundle(""))
-                .move(Route.FRIEND_SEARCH);
+                .build());
     }
-
 
     protected void showPostContainer() {
         View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);

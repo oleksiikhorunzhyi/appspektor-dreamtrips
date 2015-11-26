@@ -13,8 +13,11 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 
 import javax.inject.Inject;
@@ -116,6 +119,13 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
     @Override
     public void hidePhotoUpload() {
         photoContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void openPreviewTemplate(UrlBundle bundle) {
+        router.moveTo(Route.PREVIEW_TEMPLATE, NavigationConfigBuilder.forActivity()
+                .data(bundle)
+                .build());
     }
 
     @Override

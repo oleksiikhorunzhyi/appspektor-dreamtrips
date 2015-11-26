@@ -15,6 +15,7 @@ public class NavigationConfig {
     int containerId;
     Boolean backStackEnabled;
     Boolean clearBackStack = false;
+    int gravity = 0x0000;
 
     NavigationConfig(NavigationType type) {
         navigationType = type;
@@ -48,6 +49,10 @@ public class NavigationConfig {
 
     public Boolean getClearBackStack() {
         return clearBackStack;
+    }
+
+    public int getGravity() {
+        return gravity;
     }
 
     enum NavigationType {

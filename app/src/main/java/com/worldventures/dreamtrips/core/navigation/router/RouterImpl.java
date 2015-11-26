@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
@@ -97,6 +98,9 @@ public class RouterImpl implements Router {
         args.putParcelable(ComponentPresenter.EXTRA_DATA, config.getData());
         if (config.getToolbarConfig() != null) {
             args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, config.getToolbarConfig());
+        }
+        if (config.getGravity() != Gravity.NO_GRAVITY) {
+            args.putInt(ComponentPresenter.DIALOG_GRAVITY, config.getGravity());
         }
         return args;
     }

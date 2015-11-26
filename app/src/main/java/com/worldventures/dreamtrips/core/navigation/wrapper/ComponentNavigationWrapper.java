@@ -2,24 +2,20 @@ package com.worldventures.dreamtrips.core.navigation.wrapper;
 
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 
 public class ComponentNavigationWrapper extends NavigationWrapper {
 
-    private final ActivityRouter activityRouter;
-
-    public ComponentNavigationWrapper(ActivityRouter activityRouter) {
-        super(NavigationBuilder.create());
-        this.activityRouter = activityRouter;
+    public ComponentNavigationWrapper(Router router) {
+        super(router);
     }
 
     @Override
     public void navigate(Route route, Parcelable bundle) {
-        navigationBuilder
-                .with(activityRouter)
+        router.moveTo(route, NavigationConfigBuilder.forActivity()
                 .data(bundle)
-                .move(route);
+                .build());
     }
 }

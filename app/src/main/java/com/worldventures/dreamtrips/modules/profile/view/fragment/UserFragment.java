@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -78,5 +79,19 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     protected void initialToolbar() {
         profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+    }
+
+    @Override
+    public void openBucketList(Parcelable data) {
+        router.moveTo(Route.FOREIGN_BUCKET_LIST, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
+    }
+
+    @Override
+    public void openTripImages(Parcelable data) {
+        router.moveTo(Route.FOREIGN_TRIP_IMAGES, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
     }
 }

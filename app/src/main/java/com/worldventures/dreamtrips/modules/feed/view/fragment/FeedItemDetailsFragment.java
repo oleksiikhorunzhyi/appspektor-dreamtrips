@@ -7,9 +7,8 @@ import android.view.ViewGroup;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
@@ -38,7 +37,6 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     @InjectView(R.id.feedDetailsRightSpace)
     View feedDetailsRightSpace;
 
-    private FragmentCompass childCompass;
     private int loadMoreOffset;
 
     @Override
@@ -49,12 +47,7 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        if (getArgs().isShowAdditionalInfo()) {
-            childCompass = new FragmentCompass(getActivity(), R.id.comments_additional_info_container);
-            childCompass.setFragmentManager(getChildFragmentManager());
-            childCompass.disableBackStack();
-            //
-        } else {
+        if (!getArgs().isShowAdditionalInfo()) {
             if (additionalContainer != null) {
                 additionalContainer.setVisibility(View.GONE);
             }
@@ -92,12 +85,19 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
 
     @Override
     public void showAdditionalInfo(User user) {
-        if (childCompass != null && childCompass.empty() && getArgs().isShowAdditionalInfo()) {
-            NavigationBuilder.create()
-                    .with(childCompass)
+        if (isShowAdditionalInfo()) {
+            router.moveTo(Route.FEED_ITEM_ADDITIONAL_INFO, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(false)
+                    .fragmentManager(getChildFragmentManager())
+                    .containerId(R.id.comments_additional_info_container)
                     .data(new FeedAdditionalInfoBundle(user))
-                    .move(Route.FEED_ITEM_ADDITIONAL_INFO);
+                    .build());
         }
+    }
+
+    private boolean isShowAdditionalInfo() {
+        return getActivity().getSupportFragmentManager().findFragmentById(R.id.comments_additional_info_container) == null
+                && getArgs().isShowAdditionalInfo();
     }
 
     @Override

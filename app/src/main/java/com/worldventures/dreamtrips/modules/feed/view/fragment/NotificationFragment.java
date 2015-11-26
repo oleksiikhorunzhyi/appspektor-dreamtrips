@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,9 +19,10 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -75,10 +75,9 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
         super.onMenuInflated(menu);
         friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
         friendsBadge.setOnClickListener(v ->
-                NavigationBuilder.create()
-                        .with(activityRouter)
+                router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity()
                         .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                        .attach(Route.FRIENDS));
+                        .build()));
         getPresenter().refreshRequestsCount();
     }
 
@@ -176,6 +175,13 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
         adapter.clearAndUpdateItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
+    }
+
+    @Override
+    public void showEdit(BucketBundle bucketBundle) {
+        /*
+        TODO refactor NotificationPresenter parent
+         */
     }
 
     @Override

@@ -46,15 +46,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(Player360Activity.class, bundle);
     }
 
-    public void openShare(String imageUrl, String shareLink, String text, @ShareFragment.ShareType String type) {
-        ShareBundle data = new ShareBundle();
-        data.setImageUrl(imageUrl);
-        data.setShareUrl(shareLink);
-        data.setText(text == null ? "" : text);
-        data.setShareType(type);
-        NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
-    }
-
     public void openDefaultShareIntent(Intent intent) {
         startActivityIntent(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
     }

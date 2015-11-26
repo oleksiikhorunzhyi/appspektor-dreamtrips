@@ -15,8 +15,11 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewDelegate;
@@ -99,6 +102,13 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     @Override
     public void setImage(String image) {
         imageViewTripImage.setImageURI(Uri.parse(image));
+    }
+
+    @Override
+    public void openDetails(FeedItemDetailsBundle bundle) {
+        router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+                .data(bundle)
+                .build());
     }
 
     @Override

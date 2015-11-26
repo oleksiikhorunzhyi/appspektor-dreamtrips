@@ -89,7 +89,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_drawer);
 
-        BaseFragment currentFragment = fragmentCompass.getCurrentFragment();
+        BaseFragment currentFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.container_main);
         if (currentComponent == null && currentFragment != null) {
             currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
         }

@@ -42,7 +42,7 @@ import butterknife.OnClick;
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
-    @InjectView(R.id.recyclerViewRegions)
+    @InjectView(R.id.recyclerViewFilters)
     protected EmptyRecyclerView recyclerView;
     protected BaseArrayListAdapter<Object> arrayListAdapter;
 

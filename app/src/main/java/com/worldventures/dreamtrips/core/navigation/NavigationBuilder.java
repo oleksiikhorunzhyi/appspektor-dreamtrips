@@ -54,11 +54,20 @@ public class NavigationBuilder {
     }
 
     public void move(Route route) {
+        checkNavigatorState();
         navigator.move(route, getArgs());
     }
 
     public void attach(Route route) {
+        checkNavigatorState();
         navigator.attach(route, getArgs());
+    }
+
+    private void checkNavigatorState() {
+        if (navigator == null) {
+            throw new IllegalStateException("navigator can't be null at this point! Maybe you've" +
+                    "forgot to set FragmentCompass, ActivityRouter or FragmentManager(for dialogs) before.");
+        }
     }
 
     public NavigationBuilder data(Parcelable data) {
@@ -75,6 +84,4 @@ public class NavigationBuilder {
         args.putInt(ComponentPresenter.DIALOG_GRAVITY, dialogGravity);
         return args;
     }
-
-
 }

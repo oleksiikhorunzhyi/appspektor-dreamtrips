@@ -6,6 +6,8 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
+import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
@@ -29,6 +31,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
@@ -71,8 +74,10 @@ import dagger.Provides;
                 ComponentPresenter.class,
                 CopyFileCommand.class,
                 ProgressDialogFragment.class,
-                //
+
                 DialogFragmentNavigator.NavigationDialogFragment.class,
+                BaseImageFragment.class,
+                BaseImagePresenter.class,
                 BaseDialogFragmentWithPresenter.class,
 
                 LogoutDelegate.class,
@@ -96,6 +101,7 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
+        featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(VideoModule.MEMBERSHIP);

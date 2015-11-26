@@ -43,7 +43,6 @@ public class TextualPostDetailsFragment extends BaseFragmentWithArgs<TextualPost
 
     @Override
     public void moveToEdit(TextualPost textualPost) {
-        fragmentCompass.removePost();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         fragmentCompass.disableBackStack();
         fragmentCompass.showContainer();

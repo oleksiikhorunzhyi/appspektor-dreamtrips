@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
@@ -59,7 +59,7 @@ public class TripWithSocialDetailsFragment extends BaseFragmentWithArgs<TripDeta
         tripDetailsViewDelegate.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
     }
 
-    public void onEvent(TripImageClickedEvent event) {
+    public void onEvent(ImageClickedEvent event) {
         getPresenter().onItemClick(tripDetailsViewDelegate.getCurrentActivePhotoPosition());
     }
 

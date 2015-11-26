@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
@@ -26,6 +27,11 @@ public class Location implements Serializable, Parcelable {
     protected double lng;
 
     public Location() {
+    }
+
+    public Location(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
     }
 
     private Location(Parcel in) {
@@ -56,6 +62,10 @@ public class Location implements Serializable, Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LatLng asLatLng() {
+        return new LatLng(lat, lng);
     }
 
     @Override

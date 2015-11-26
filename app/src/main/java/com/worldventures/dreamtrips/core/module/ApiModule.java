@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -63,7 +64,7 @@ public class ApiModule {
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(Context context, SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
+    RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 UserSession userSession = appSessionHolder.get().get();
@@ -98,6 +99,12 @@ public class ApiModule {
     @Singleton
     ConfigApi provideS3Api(GsonConverter gsonConverter) {
         return createRestAdapter(BuildConfig.S3Api, gsonConverter).create(ConfigApi.class);
+    }
+
+    @Provides
+    @Singleton
+    DtlApi provideDtlApi(RestAdapter adapter) {
+        return adapter.create(DtlApi.class);
     }
 
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {

@@ -10,6 +10,8 @@ public class SoftInputUtil {
 
     /** Show soft keyboard explicitly */
     public static void showSoftInputMethod(View view) {
+        if (view == null) return;
+        //
         InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.showSoftInput(view, 0);
         view.requestFocus();
@@ -39,6 +41,8 @@ public class SoftInputUtil {
 
     /** Hide soft keyboard if visible */
     public static void hideSoftInputMethod(View view) {
+        if (view == null) return;
+        //
         InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         view.clearFocus();

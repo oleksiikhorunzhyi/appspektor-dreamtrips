@@ -15,7 +15,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -156,11 +155,10 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     @Override
     public void finish() {
         SoftInputUtil.hideSoftInputMethod(etTitle);
-
-        eventBus.post(new BackPressedMessageEvent());
+        getActivity().onBackPressed();
     }
 
-    public void setEnabledSaveButton(boolean enabled){
+    public void setEnabledSaveButton(boolean enabled) {
         btnSave.setEnabled(enabled);
     }
 

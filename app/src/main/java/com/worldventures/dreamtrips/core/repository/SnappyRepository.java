@@ -11,6 +11,11 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -21,6 +26,7 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -52,8 +58,14 @@ public class SnappyRepository {
     public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+    public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
     public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
+
+    public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
+    public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
+    public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
+    public static final String DTL_AMENITIES = "DTL_AMENITIES";
 
     private Context context;
     private ExecutorService executorService;
@@ -135,13 +147,27 @@ public class SnappyRepository {
     // Public
     ///////////////////////////////////////////////////////////////////////////
 
-    public <T> void putList(String key, List<T> list) {
+    public <T> void putList(String key, Collection<T> list) {
         act(db -> db.put(key, list.toArray()));
     }
 
     public <T> List<T> readList(String key, Class<T> clazz) {
         return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
                 .or(new ArrayList<>());
+    }
+
+    /**
+     * Method is intended to delete all records for given key.
+     *
+     * @param key key to be deleted.
+     */
+    public void clearAllForKey(String key) {
+        act(db -> {
+            String[] placesKeys = db.findKeys(key);
+            for (String placeKey : placesKeys) {
+                db.del(placeKey);
+            }
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -414,6 +440,61 @@ public class SnappyRepository {
 
     private interface SnappyResult<T> {
         T call(DB db) throws SnappydbException;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DTL
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveSelectedDtlLocation(DtlLocation location) {
+        act(db -> db.put(DTL_SELECTED_LOCATION, location));
+    }
+
+    public DtlLocation getSelectedDtlLocation() {
+        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
+    }
+
+    public void saveDtlPlaces(DtlPlaceType type, List<DtlPlace> places) {
+        clearAllForKey(DTL_PLACES_PREFIX + type);
+        putList(DTL_PLACES_PREFIX + type, places);
+    }
+
+    public void saveAmenities(Collection<DtlPlaceAttribute> amenities) {
+        clearAllForKey(DTL_AMENITIES);
+        putList(DTL_AMENITIES, amenities);
+    }
+
+    public List<DtlPlaceAttribute> getAmenities() {
+        return readList(DTL_AMENITIES, DtlPlaceAttribute.class);
+    }
+
+    public List<DtlPlace> getDtlPlaces(DtlPlaceType type) {
+        return readList(DTL_PLACES_PREFIX + type, DtlPlace.class);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DTL Transaction
+    ///////////////////////////////////////////////////////////////////////////
+
+    public DtlTransaction getDtlTransaction(String id) {
+        return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();
+    }
+
+    public void cleanDtlTransaction(String id, DtlTransaction dtlTransaction) {
+        dtlTransaction.setUploadTask(null);
+        dtlTransaction.setAmount(0.0d);
+        dtlTransaction.setReceiptPhoto(null);
+        dtlTransaction.setCode(null);
+        dtlTransaction.setDtlTransactionResult(null);
+        saveDtlTransaction(id, dtlTransaction);
+    }
+
+    public void saveDtlTransaction(String id, DtlTransaction dtlTransaction) {
+        act(db -> db.put(DTL_TRANSACTION_PREFIX + id, dtlTransaction));
+    }
+
+    public void deleteDtlTransaction(String id) {
+        act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
     }
 
 }

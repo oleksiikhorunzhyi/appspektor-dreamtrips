@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -107,7 +107,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
         tripDetailsViewDelegate.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
     }
 
-    public void onEvent(TripImageClickedEvent event) {
+    public void onEvent(ImageClickedEvent event) {
         getPresenter().onItemClick(tripDetailsViewDelegate.getCurrentActivePhotoPosition());
     }
 

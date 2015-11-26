@@ -9,7 +9,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 
 import javax.inject.Inject;
@@ -32,10 +31,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         } else {
             activityRouter.startService(RegistrationIntentService.class);
         }
-    }
-
-    public void onEvent(ActionBarTransparentEvent event) {
-        view.makeActionBarGone(event.isTransparent());
     }
 
     public void openComponent(ComponentDescription component, @Nullable Bundle args) {
@@ -68,8 +63,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
     public interface View extends ActivityPresenter.View {
         void setTitle(int title);
 
-        void updateSelection(ComponentDescription componentDescription);
-
-        void makeActionBarGone(boolean isTransparent);
+        void makeActionBarGone(boolean hide);
     }
 }

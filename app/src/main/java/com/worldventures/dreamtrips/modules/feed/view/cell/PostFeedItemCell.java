@@ -45,7 +45,6 @@ public class PostFeedItemCell extends FeedItemCell<PostFeedItem> {
 
     @Override
     protected void onEdit() {
-        super.onEdit();
         fragmentCompass.removePost();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         fragmentCompass.disableBackStack();

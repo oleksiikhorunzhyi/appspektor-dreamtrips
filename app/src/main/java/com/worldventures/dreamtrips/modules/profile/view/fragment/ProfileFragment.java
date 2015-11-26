@@ -129,7 +129,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     public void openPost() {
         showPostContainer();
 
-        fragmentCompass.removePost();
         fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         //
@@ -148,12 +147,17 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         feedView.getAdapter().notifyDataSetChanged();
     }
 
-    @Override
     protected void openUser(User user) {
         if (this.getPresenter().getUser().getId() != user.getId()) {
             super.openUser(user);
         } else {
             feedView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        setToolbarAlpha(100);
+        super.onDestroyView();
     }
 }

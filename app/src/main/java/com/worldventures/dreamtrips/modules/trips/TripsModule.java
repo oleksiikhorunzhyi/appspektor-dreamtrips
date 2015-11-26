@@ -70,7 +70,8 @@ public class TripsModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMapTripsComponent() {
-        return new ComponentDescription(MAP_TRIPS, R.string.trips, R.string.trips, R.drawable.ic_dreamtrips, true, TripMapFragment.class);
+        return new ComponentDescription(MAP_TRIPS, R.string.trips, R.string.trips, R.drawable.ic_dreamtrips, true,
+                true, TripMapFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)

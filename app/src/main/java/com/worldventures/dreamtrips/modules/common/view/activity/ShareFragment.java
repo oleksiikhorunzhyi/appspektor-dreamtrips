@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.StringDef;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -21,11 +22,18 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.share_fragment)
 public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBundle>
         implements SharePresenter.View {
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({FB, TW})
+    public @interface ShareType {}
 
     public static final String FB = "fb";
     public static final String TW = "tw";

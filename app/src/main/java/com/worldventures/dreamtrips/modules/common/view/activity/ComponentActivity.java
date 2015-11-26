@@ -8,7 +8,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
 import butterknife.InjectView;
@@ -52,7 +51,6 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
 
     boolean handleComponentChange() {
         if (detailsFloatingContainer.getVisibility() == View.VISIBLE) {
-            fragmentCompass.removeEdit();
             detailsFloatingContainer.setVisibility(View.GONE);
             return true;
         }
@@ -68,14 +66,10 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
         return new ComponentPresenter(extras);
     }
 
-    public void onEvent(BackPressedMessageEvent type) {
-        if (isVisibleOnScreen() && !handleComponentChange()) {
-            super.onBackPressed();
-        }
-    }
-
     @Override
     public void onBackPressed() {
-        eventBus.post(new BackPressedMessageEvent());
+        if (!handleComponentChange()) {
+            super.onBackPressed();
+        }
     }
 }

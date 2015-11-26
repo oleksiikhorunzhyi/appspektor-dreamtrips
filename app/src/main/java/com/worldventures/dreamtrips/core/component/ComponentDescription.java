@@ -13,27 +13,45 @@ public class ComponentDescription implements Parcelable {
     private final int icon;
     private final boolean ignored;
     private final Class<? extends Fragment> fragmentClass;
+    private final boolean skipGeneralToolbar;
 
     public ComponentDescription(String key,
                                 @StringRes int toolbarTitle,
                                 @StringRes int navMenuTitle,
                                 @DrawableRes int iconRes,
                                 Class<? extends Fragment> fragmentClass) {
-        this(key, toolbarTitle, navMenuTitle, iconRes, false, fragmentClass);
+        this(key, toolbarTitle, navMenuTitle, iconRes, false, false, fragmentClass);
     }
 
-    public ComponentDescription(String key, int toolbarTitle, int navMenuTitle, int icon,
-                                boolean ignored, Class<? extends Fragment> fragmentClass) {
+    public ComponentDescription(String key,
+                                @StringRes int toolbarTitle,
+                                @StringRes int navMenuTitle,
+                                @DrawableRes int icon,
+                                boolean ignored, boolean skipGeneralToolbar, Class<? extends Fragment> fragmentClass) {
         this.key = key;
         this.toolbarTitle = toolbarTitle;
         this.navMenuTitle = navMenuTitle;
         this.icon = icon;
         this.ignored = ignored;
+        this.skipGeneralToolbar = skipGeneralToolbar;
         this.fragmentClass = fragmentClass;
+    }
+
+    public ComponentDescription(String key,
+                                @StringRes int toolbarTitle,
+                                @StringRes int navMenuTitle,
+                                @DrawableRes int iconRes,
+                                boolean skipGeneralToolbar,
+                                Class<? extends Fragment> fragmentClass) {
+        this(key, toolbarTitle, navMenuTitle, iconRes, false, skipGeneralToolbar, fragmentClass);
     }
 
     public boolean isIgnored() {
         return ignored;
+    }
+
+    public boolean isSkipGeneralToolbar() {
+        return skipGeneralToolbar;
     }
 
     public String getKey() {
@@ -85,6 +103,7 @@ public class ComponentDescription implements Parcelable {
         dest.writeInt(this.toolbarTitle);
         dest.writeInt(this.icon);
         dest.writeByte(ignored ? (byte) 1 : (byte) 0);
+        dest.writeByte(skipGeneralToolbar ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.fragmentClass);
     }
 
@@ -94,6 +113,7 @@ public class ComponentDescription implements Parcelable {
         this.toolbarTitle = in.readInt();
         this.icon = in.readInt();
         this.ignored = in.readByte() != 0;
+        this.skipGeneralToolbar = in.readByte() != 0;
         this.fragmentClass = (Class<? extends Fragment>) in.readSerializable();
     }
 

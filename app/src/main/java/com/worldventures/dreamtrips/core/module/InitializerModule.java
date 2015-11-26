@@ -24,7 +24,8 @@ import dagger.Provides;
                 FabricInitializer.class,
                 FrescoInitializer.class,
                 SoftInputInitializer.class,
-                BadgeCountObserverInitializer.class
+                BadgeCountObserverInitializer.class,
+                JodaTimeInitializer.class
         },
         library = true, complete = false)
 public class InitializerModule {

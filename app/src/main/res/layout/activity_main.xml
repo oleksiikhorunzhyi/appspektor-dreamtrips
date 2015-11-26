@@ -58,13 +58,11 @@
         app:layout="@layout/fragment_navigation_drawer"
         tools:layout="@layout/fragment_navigation_drawer"/>
 
-    <fragment
-        android:id="@+id/fragment_filters"
-        android:name="com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment"
+    <FrameLayout
+        android:id="@+id/container_filters"
         android:layout_width="@dimen/navigation_drawer_width_filter"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:layout="@layout/fragment_navigation_drawer"
-        tools:layout="@layout/layout_filters"/>
+        />
 
 </android.support.v4.widget.DrawerLayout>

@@ -11,6 +11,7 @@
     <dimen name="create_photo_left_hint_width">72dp</dimen>
 
     <!-- typical sizes for icons views -->
+    <dimen name="size_huge">72dp</dimen>
     <dimen name="size_large">64dp</dimen>
     <dimen name="size_small">24dp</dimen>
 
@@ -92,10 +93,49 @@
     <dimen name="picker_panel_header_height">44dp</dimen>
     <dimen name="picker_photo_spacing">1dp</dimen>
 
-    ///////Additional info fragment empty view spacing
+    <!-- Additional info fragment empty view spacing -->
     <dimen name="additional_info_spacing_vertical">40dp</dimen>
     <dimen name="additional_info_spacing_horizontal">78dp</dimen>
     <dimen name="additional_info_items_margin">34dp</dimen>
     <dimen name="additional_info_description_size">18sp</dimen>
+
+   <!-- dimen for dtl place list -->
+    <dimen name="dtlPlaceListEmptyViewTextSize">22sp</dimen>
+    <dimen name="dtlPlaceListEmptyViewMargin">15dp</dimen>
+
+    <dimen name="toolbar_spinner_styled_title_text_size">20sp</dimen>
+    <dimen name="toolbar_spinner_styled_icon_margin">10dp</dimen>
+
+    <!-- dimen for dtl place items -->
+    <dimen name="dtlPlaceItemMargin">8dp</dimen>
+    <dimen name="dtlPlaceItemRoundRadius">5dp</dimen>
+    <dimen name="dtlPlaceImageHeight">172dp</dimen>
+    <dimen name="dtlPlaceBadgeSize">65dp</dimen>
+    <dimen name="dtlPlaceBadgeMargin">16dp</dimen>
+    <dimen name="dtlPlaceNameTextSize">20sp</dimen>
+    <dimen name="dtlPlaceNameMarginLeft">16dp</dimen>
+    <dimen name="dtlPlaceNameMarginBottom">12dp</dimen>
+    <dimen name="dtlPlaceRatingWidth">80dp</dimen>
+    <dimen name="dtlPlaceRatingMargin">16dp</dimen>
+    <dimen name="dtlPlaceInfoLayoutPadding">16dp</dimen>
+    <dimen name="dtlPlaceCategoryNameTextSize">18sp</dimen>
+    <dimen name="dtlPlacePriceWidth">38dp</dimen>
+    <dimen name="dtlReceiptHeight">326dp</dimen>
+    <dimen name="dtlReceiptHeightSmall">300dp</dimen>
+    <dimen name="dtlScanReceiptPadding">16dp</dimen>
+
+    <dimen name="dtlContentWidth">400dp</dimen>
+
+    <!-- dimen for dtl points calculation dialog -->
+    <dimen name="dtlCalculationCalculateButtonTextSize">18sp</dimen>
+    <dimen name="dtlCalculationInputTextSize">18sp</dimen>
+    <dimen name="dtlCalculationResultTextSize">24sp</dimen>
+
+    <!-- dimen for dtl suggest merchant screen -->
+    <dimen name="suggest_merchant_layout_padding">16dp</dimen>
+    <dimen name="suggest_merchant_input_text_size">16sp</dimen>
+    <dimen name="suggest_merchant_default_vertical_margin">8dp</dimen>
+    <dimen name="suggest_merchant_default_vertical_margin_big">16dp</dimen>
+    <dimen name="suggest_merchant_pickers_left_margin">50dp</dimen>
 
 </resources>

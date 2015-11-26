@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.GetMyPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.DetailedImagePresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.ForeignImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPresenter;
@@ -52,7 +52,7 @@ import dagger.Provides;
                 FullScreenPhotoFragment.class,
                 CreatePhotoParentPresenter.class,
                 CreatePhotoPresenter.class,
-                DetailedImagePresenter.class,
+                TripImagePresenter.class,
 
                 InteractiveFullscreenPresenter.class,
                 FullScreenPresenter.class,

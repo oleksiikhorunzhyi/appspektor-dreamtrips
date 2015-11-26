@@ -5,4 +5,11 @@
     <style name="commonListItemStyle">
         <item name="android:translationZ">2dp</item>
     </style>
+    <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
+        <item name="android:colorButtonNormal">@color/selector_verify_button_color</item>
+    </style>
+    <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
+        <item name="android:colorButtonNormal">@color/white</item>
+    </style>
+
 </resources>

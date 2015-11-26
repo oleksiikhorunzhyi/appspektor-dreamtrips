@@ -5,19 +5,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_success_stories_details)
 public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsPresenter>
@@ -103,18 +105,20 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @Override
     public void showShareDialog() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.action_share)
-                .items(R.array.share_dialog_items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    if (which == 0) {
-                        TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_FACEBOOK, story.getUrl());
-                        getPresenter().onFbShare(story);
-                    } else {
-                        TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_TWITTER, story.getUrl());
-                        getPresenter().onTwitterShare(story);
-                    }
-                }).show();
+        new ShareDialog(getActivity(), type -> {
+            switch (type) {
+                case ShareFragment.FB:
+                    TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_FACEBOOK, story.getUrl());
+                    getPresenter().onFbShare(story);
+                    break;
+                case ShareFragment.TW:
+                    TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_TWITTER, story.getUrl());
+                    getPresenter().onTwitterShare(story);
+                    break;
+                default:
+                    Timber.w("Sharing of this type is not implemented");
+            }
+        }).show();
     }
 
     @Override

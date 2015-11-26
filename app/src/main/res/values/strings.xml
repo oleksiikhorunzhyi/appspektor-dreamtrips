@@ -7,6 +7,7 @@
     <string name="membership">Membership</string>
     <string name="trip_images">Trip Images</string>
     <string name="bucket_list">Bucket List</string>
+    <string name="dtl">Discover</string>
     <string name="my_profile">My Profile</string>
     <string name="terms">Terms</string>
     <string name="terms_of_service">Terms of Service</string>
@@ -176,6 +177,7 @@
     <string name="my_pictures">My pictures</string>
     <string name="today">Today</string>
     <string name="rep_enrollment">Rep Enrollment</string>
+    <string name="rep_suggest_restaurant">Suggest Restaurant</string>
     <string name="no_connection">No Internet Connection</string>
     <string name="popular_add">ADD</string>
     <string name="popular_done">DONE</string>
@@ -453,6 +455,11 @@
     <string name="feed_view_profile_btn">View Profile</string>
     <string name="feed_close_friends">Close Friends</string>
     <string name="start_searching">Type to start searching</string>
+
+    <plurals name="people_liked">
+        <item quantity="one">%s liked</item>
+        <item quantity="other">%d people liked</item>r
+    </plurals>
 
     <string name="people_liked_one">%s liked</string>
     <string name="people_liked_other">%s people liked</string>

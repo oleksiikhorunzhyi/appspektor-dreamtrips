@@ -74,17 +74,8 @@ public class FragmentCompass {
         action(Action.REPLACE, route, bundle);
     }
 
-    public void clear() {
-        removeDetailed();
-        removeEdit();
-    }
-
     public void removeDetailed() {
         remove(Route.DETAIL_BUCKET.getClazzName());
-    }
-
-    public void removeEdit() {
-        remove(Route.BUCKET_EDIT.getClazzName());
     }
 
     public void removePost() {
@@ -154,6 +145,11 @@ public class FragmentCompass {
     @Deprecated
     public void disableBackStack() {
         backStackEnabled = false;
+    }
+
+    @Deprecated
+    public void enableBackStack() {
+        backStackEnabled = true;
     }
 
     protected void clearBackStack() {

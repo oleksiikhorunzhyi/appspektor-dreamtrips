@@ -42,6 +42,26 @@
 
     <color name="user_status_text_shadow">#AA000000</color>
 
+g    <color name="dtl_tab_text_normal">#B1B2B1</color>
+    <color name="dtl_tab_text_selected">#005e92</color>
+    <color name="dtl_tab_indicator">#53b5fe</color>
+    <color name="dtl_tab_background_normal">@android:color/white</color>
+    <color name="dtl_tab_background_selected">#EDEDED</color>
+
+    <color name="dtl_cities_background">#eeeeee</color>
+    <color name="dtl_cities_text_color">#929292</color>
+    <color name="dtl_badge_color">#8896a6b6</color>
+
+    <color name="suggest_merchant_background">#EAEAEA</color>
+    <color name="suggest_merchant_hint_text">#7e000000</color>
+    <color name="suggest_merchant_input_text">#db000000</color>
+
+    <color name="dtl_button_background_disabled">#424f4f4f</color>
+    <color name="dtl_button_background_enabled">#81c435</color>
+    <color name="dtl_text_color_disabled">#42000000</color>
+
+    <color name="open">#6ebffc</color>
+    <color name="closed">#fe5353</color>
     <color name="facebook_color">#3C5A99</color>
     <color name="share_camera_color">#929292</color>
     <color name="share_photo_bg_color">#EEEEEE</color>

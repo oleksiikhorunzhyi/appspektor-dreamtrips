@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -19,9 +20,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
@@ -283,31 +285,25 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setImages(List<BucketPhoto> photos) {
-        BaseStatePagerAdapter adapter =
-                new BaseStatePagerAdapter(getChildFragmentManager()) {
-                    @Override
-                    public void setArgs(int position, Fragment fragment) {
-                        Bundle args = new Bundle();
-                        BucketPhoto bucketPhoto = photos.get(position);
-                        args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, bucketPhoto);
-                        fragment.setArguments(args);
-                    }
-                };
-
-
+        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+            @Override
+            public void setArgs(int position, Fragment fragment) {
+                BucketPhoto photo = photos.get(position);
+                ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+            }
+        };
         viewPagerBucketGallery.setAdapter(adapter);
         viewPagerBucketGallery.setCurrentItem(0);
-
-        for (Object photo : photos) {
-            adapter.add(new FragmentItem(TripImagePagerFragment.class, ""));
-        }
+        Queryable.from(photos).forEachR(photo ->
+                        adapter.add(new FragmentItem(TripImagePagerFragment.class, ""))
+        );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);
     }
 
 
-    public void onEvent(TripImageClickedEvent event) {
-        if (ViewUtils.isFullVisibleOnScreen(this))
+    public void onEvent(ImageClickedEvent event) {
+        if (ViewUtils.isPartVisibleOnScreen(this))
             getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
     }
 

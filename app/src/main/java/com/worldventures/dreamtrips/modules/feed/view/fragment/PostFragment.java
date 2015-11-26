@@ -13,8 +13,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -32,6 +34,9 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.layout_post)
 public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle> implements PostPresenter.View {
+
+    @Inject
+    BackStackDelegate backStackDelegate;
 
     @InjectView(R.id.avatar)
     SimpleDraweeView avatar;
@@ -60,8 +65,6 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     boolean pickerDisabled;
 
     SweetAlertDialog dialog;
-
-    private boolean cancel = false;
 
     private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
         @Override
@@ -98,11 +101,10 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void onResume() {
         super.onResume();
         post.addTextChangedListener(textWatcher);
-
+        backStackDelegate.setListener(this::onBackPressed);
         if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
             photoPickerLayout.showPanel();
         }
-
         updatePickerState();
     }
 
@@ -110,6 +112,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void onPause() {
         super.onPause();
         post.removeTextChangedListener(textWatcher);
+        backStackDelegate.setListener(null);
     }
 
     @Override
@@ -273,16 +276,11 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
         fragmentCompass.removePost();
-        cancel = true;
-
-        eventBus.post(new BackPressedMessageEvent());
     }
 
-    public void onEvent(BackPressedMessageEvent event) {
-        if (isVisibleOnScreen() && !cancel) {
-            getPresenter().cancelClicked();
-            eventBus.cancelEventDelivery(event);
-        }
+    private boolean onBackPressed() {
+        getPresenter().cancelClicked();
+        return true;
     }
 
     @Override

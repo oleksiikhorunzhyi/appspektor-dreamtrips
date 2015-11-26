@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
+import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -142,5 +143,8 @@ public class ApiModule {
         return okHttpClient;
     }
 
-
+    @Provides
+    DTErrorHandler providesErrorHandler(Context context) {
+        return new DTErrorHandler(context);
+    }
 }

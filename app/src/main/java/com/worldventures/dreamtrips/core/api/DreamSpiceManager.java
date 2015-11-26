@@ -15,6 +15,7 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -60,6 +61,8 @@ public class DreamSpiceManager extends SpiceManager {
     protected EventBus eventBus;
     @Inject
     AuthorizedDataUpdater authorizedDataUpdater;
+    @Inject
+    DTErrorHandler dtErrorHandler;
 
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
@@ -81,7 +84,7 @@ public class DreamSpiceManager extends SpiceManager {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
-                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                        failureListener.handleError(exception);
                     }
                 });
             }
@@ -103,7 +106,7 @@ public class DreamSpiceManager extends SpiceManager {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
-                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                        failureListener.handleError(exception);
                     }
                 });
             }
@@ -123,7 +126,7 @@ public class DreamSpiceManager extends SpiceManager {
 
             loginUser(userPassword, username, onLoginSuccess);
         } else {
-            failureListener.handleError(new SpiceException(getErrorMessage(error)));
+            failureListener.handleError(new SpiceException(getErrorMessage(error), dtErrorHandler.handleSpiceError(error)));
         }
     }
 
@@ -156,7 +159,7 @@ public class DreamSpiceManager extends SpiceManager {
             authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
         }, spiceError -> {
-            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
+            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError), dtErrorHandler.handleSpiceError(spiceError)));
         });
     }
 

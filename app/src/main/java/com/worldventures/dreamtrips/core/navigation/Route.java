@@ -130,6 +130,7 @@ public enum Route {
 
     FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
+    FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty),
 
     DTL_START(DtlStartFragment.class),
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),

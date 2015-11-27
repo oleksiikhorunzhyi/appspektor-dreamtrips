@@ -1,8 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    android:id="@+id/header"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey_lighter"
-    android:padding="@dimen/spacing_small"/>
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_lighter"
+        android:padding="@dimen/spacing_small"
+        tools:text="Incoming"/>
+
+    <LinearLayout
+        android:id="@+id/advanced_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/requestCountDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            tools:text="You have 125 incoming Friend requests"
+            android:padding="@dimen/spacing_small"/>
+
+        <Button
+            android:id="@+id/accept_all_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/accept_all"
+            android:textColor="@android:color/white"
+            />
+    </LinearLayout>
+</LinearLayout>

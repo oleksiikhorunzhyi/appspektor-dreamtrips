@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.helper;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -37,7 +38,12 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
         } else {
             rating.setVisibility(View.GONE);
         }
-        perks.setVisibility(place.hasOffer(Offer.PERKS)? View.VISIBLE : View.GONE);
+
+        int perkMargin = place.hasOffer(Offer.POINT_REWARD) ?
+                rootView.getResources().getDimensionPixelSize(R.dimen.perks_margin) : 0;
+        ((LinearLayout.LayoutParams) perks.getLayoutParams()).setMargins(perkMargin, 0, 0, 0);
+        //
+        perks.setVisibility(place.hasOffer(Offer.PERKS) ? View.VISIBLE : View.GONE);
         earnPointsBadge.setVisibility(place.hasOffer(Offer.POINT_REWARD) ? View.VISIBLE : View.GONE);
     }
 }

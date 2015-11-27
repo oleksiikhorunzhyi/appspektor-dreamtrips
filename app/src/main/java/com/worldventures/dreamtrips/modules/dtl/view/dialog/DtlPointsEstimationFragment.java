@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBun
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 
+import java.util.Map;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -54,19 +56,13 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     }
 
     @Override
-    public void stopProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
-        calculateButton.setVisibility(View.VISIBLE);
-        calculateButton.setEnabled(true);
-    }
-
-    @Override
     public void showError(@StringRes int errorRes) {
         inputPoints.setError(getString(errorRes));
     }
 
     @Override
     public void showEstimatedPoints(int value) {
+        stopProgress();
         pointsEstimated.setText(getString(R.string.dtl_dt_points, value));
     }
 
@@ -85,4 +81,20 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     void onCancel() {
         eventBus.post(new CloseDialogEvent());
     }
+
+    @Override
+    public boolean onApiError(Map<String, String[]> fieldsFailed) {
+        stopProgress();
+        if (fieldsFailed.containsKey(DtlPointsEstimationPresenter.BILL_TOTAL)) {
+            inputPoints.setError(fieldsFailed.get(DtlPointsEstimationPresenter.BILL_TOTAL)[0]);
+        }
+        return false;
+    }
+
+    private void stopProgress() {
+        progressBar.setVisibility(View.INVISIBLE);
+        calculateButton.setVisibility(View.VISIBLE);
+        calculateButton.setEnabled(true);
+    }
+
 }

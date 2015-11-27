@@ -25,12 +25,14 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.DigitsValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.InputLengthValidator;
 
 import java.util.Calendar;
+import java.util.Map;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -362,6 +364,26 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         sweetAlertDialog.setOnDismissListener(this::dialogCanceled);
         sweetAlertDialog.setCanceledOnTouchOutside(true);
         sweetAlertDialog.show();
+    }
+
+    @Override
+    public boolean onApiError(Map<String, String[]> fieldsFailed) {
+        if (fieldsFailed.containsKey(SuggestPlacePostData.NAME)) {
+            restaurantName.setError(fieldsFailed.get(SuggestPlacePostData.NAME)[0]);
+        }
+        if (fieldsFailed.containsKey(SuggestPlacePostData.CONTACT)) {
+            contactName.setError(fieldsFailed.get(SuggestPlacePostData.CONTACT)[0]);
+        }
+        if (fieldsFailed.containsKey(SuggestPlacePostData.CITY)) {
+            city.setError(fieldsFailed.get(SuggestPlacePostData.CITY)[0]);
+        }
+        if (fieldsFailed.containsKey(SuggestPlacePostData.PHONE)) {
+            phoneNumber.setError(fieldsFailed.get(SuggestPlacePostData.PHONE)[0]);
+        }
+        if (fieldsFailed.containsKey(SuggestPlacePostData.DESCRIPTION)) {
+            additionalInfo.setError(fieldsFailed.get(SuggestPlacePostData.DESCRIPTION)[0]);
+        }
+        return false;
     }
 
     /**

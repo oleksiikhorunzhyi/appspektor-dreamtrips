@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.zxing.Result;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -25,6 +25,8 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,9 +61,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     DtlPlaceHelper helper;
 
-    @Inject
-    BackStackDelegate backStackDelegate;
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -78,15 +77,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
         super.onResume();
         DtlScanQrCodeFragmentPermissionsDispatcher.startCameraWithCheck(this);
         scanner.setResultHandler(this);
-        backStackDelegate.setListener(this::onBackPressed);
-    }
-
-    private boolean onBackPressed() {
-        getActivity().finish();
-        router.moveTo(Route.DTL_VERIFY, NavigationConfigBuilder.forActivity()
-                .data(getArgs())
-                .build());
-        return true;
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -119,7 +109,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     public void onPause() {
         super.onPause();
         scanner.stopCamera();
-        backStackDelegate.setListener(null);
     }
 
     @Override
@@ -145,7 +134,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Override
     public void hideProgress() {
         if (pDialog != null) pDialog.dismissWithAnimation();
-        scanner.startCamera();
     }
 
     @Override
@@ -157,7 +145,59 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
             pDialog.setCancelable(false);
             pDialog.show();
         } else
-            pDialog.setTitleText(getString(titleText));
+            pDialog.setTitle(getString(titleText));
+    }
 
+    @Override
+    public void photoUploadError() {
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.alert))
+                .setContentText(getString(R.string.dtl_photo_upload_error))
+                .setConfirmText(getString(R.string.ok))
+                .setConfirmClickListener(sweetAlertDialog -> moveTo(Route.DTL_SCAN_RECEIPT));
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+    }
+
+    @Override
+    public boolean onApiError(Map<String, String[]> fieldsFailed) {
+        hideProgress();
+        //
+        String key = Queryable.from(fieldsFailed.keySet()).firstOrDefault();
+        //
+        if (key != null) {
+            SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText(getString(R.string.alert))
+                    .setContentText(fieldsFailed.get(key)[0])
+                    .setConfirmText(getString(R.string.ok))
+                    .setConfirmClickListener(sweetAlertDialog -> {
+                        switch (key) {
+                            case DtlTransaction.AMOUNT:
+                            case DtlTransaction.RECEIPT:
+                                moveTo(Route.DTL_SCAN_RECEIPT);
+                                break;
+                            case DtlTransaction.TOKEN:
+                            case DtlTransaction.LOCATION:
+                                scanner.startCamera();
+                                sweetAlertDialog.dismissWithAnimation();
+                                break;
+                            default:
+                                getActivity().finish();
+                                break;
+                        }
+                    });
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void moveTo(Route route) {
+        getActivity().finish();
+        router.moveTo(route, NavigationConfigBuilder.forActivity()
+                .data(getArgs())
+                .build());
     }
 }

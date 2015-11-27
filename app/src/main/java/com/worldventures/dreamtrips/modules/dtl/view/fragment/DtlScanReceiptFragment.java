@@ -15,12 +15,16 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.AmountValidator;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,6 +60,8 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @Named(RouteCreatorModule.DTL_TRANSACTION)
     RouteCreator<DtlTransaction> routeCreator;
 
+    protected ProgressDialogFragment progressDialog;
+
     private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -68,6 +74,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         super.afterCreateView(rootView);
         amountInput.addValidator(new AmountValidator(getString(R.string.dtl_amount_invalid)));
         scanReceiptNode.setText(Html.fromHtml(getString(R.string.dtl_receipt_note)));
+        progressDialog = ProgressDialogFragment.create();
     }
 
     @Override
@@ -129,4 +136,19 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     public void disableVerification() {
         verify.setEnabled(false);
     }
+
+    @Override
+    public boolean onApiError(Map<String, String[]> fieldsFailed) {
+        progressDialog.dismiss();
+        if (fieldsFailed.containsKey(DtlPointsEstimationPresenter.BILL_TOTAL)) {
+            amountInput.setError(fieldsFailed.get(DtlPointsEstimationPresenter.BILL_TOTAL)[0]);
+        }
+        return false;
+    }
+
+    @Override
+    public void showProgress() {
+        progressDialog.show(getFragmentManager());
+    }
+
 }

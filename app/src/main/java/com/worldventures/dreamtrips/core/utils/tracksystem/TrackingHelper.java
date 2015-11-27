@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
@@ -204,9 +205,9 @@ public class TrackingHelper {
         trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_INSPR, ACTION_INSPR_DETAILS, String.valueOf(id));
     }
 
-    public static void insprShare(String id, String type) {
+    public static void insprShare(String id, @ShareFragment.ShareType String type) {
         Map<String, Object> data = new HashMap<>();
-        data.put(TYPE, type);
+        data.put(TYPE, resolveSharingType(type));
         data.put(ID, id);
         trackMemberAction(ACTION_INSPR_SHARE, null, data);
     }
@@ -455,6 +456,9 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_SHOW_FAVORITES = "show_favorites";
     public static final String ATTRIBUTE_FACEBOOK = "facebook";
     public static final String ATTRIBUTE_TWITTER = "twitter";
+    public static final String ATTRIBUTE_SHARING_UNRESOLVED = "unknown";
+
+    // ---------------- Tracking helper methods
 
     public static void setUserId(String userId) {
         HashMap<String, String> headerData = new HashMap<>(1);
@@ -469,6 +473,13 @@ public class TrackingHelper {
     }
 
 //  ---------------------Global Category---------------------//
+    public static String resolveSharingType(@ShareFragment.ShareType String type) {
+        switch (type) {
+            case ShareFragment.FB: return ATTRIBUTE_FACEBOOK;
+            case ShareFragment.TW: return ATTRIBUTE_TWITTER;
+            default: return ATTRIBUTE_SHARING_UNRESOLVED;
+        }
+    }
 
     public static void loginError() {
         sendSimpleAttributetoAdobeTracker(ACTION_LOGIN, ATTRIBUTE_LOGIN_ERROR);
@@ -682,10 +693,9 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
     }
 
-    public static void shareSuccessStory(@MagicConstant(stringValues = {ATTRIBUTE_FACEBOOK, ATTRIBUTE_TWITTER})
-                                         String socialNet, String storyId) {
+    public static void shareSuccessStory(@ShareFragment.ShareType String socialNet, String storyId) {
         Map data = new HashMap<>();
-        data.put(socialNet, storyId);
+        data.put(resolveSharingType(socialNet), storyId);
         data.put(ATTRIBUTE_SHARE, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
     }

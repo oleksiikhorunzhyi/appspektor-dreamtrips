@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -148,7 +147,7 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
                 Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
                 if (session != null && session.isOpened()) {
                     getActivity().runOnUiThread(() -> new Handler().postDelayed(() ->
-                            getPresenter().openShareActivity(picture, link, text), 150));
+                            activityRouter.openShare(picture, link, text, ShareFragment.FB), 150));
                 }
             });
             loginButton.performClick();

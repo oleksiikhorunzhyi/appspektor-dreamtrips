@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -69,6 +70,10 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         performFiltering();
     }
 
+    public void onEventMainThread(TogglePlaceSelectionEvent event) {
+        if (dtlPlaces.contains(event.getDtlPlace())) view.toggleSelection(event.getDtlPlace());
+    }
+
     @Override
     public void onFilter() {
         performFiltering();
@@ -121,5 +126,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         void showProgress();
 
         void hideProgress();
+
+        void toggleSelection(DtlPlace dtlPlace);
     }
 }

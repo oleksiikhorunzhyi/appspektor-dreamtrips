@@ -145,6 +145,22 @@ public class DtlPlace implements Parcelable {
         return perksDescription;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DtlPlace dtlPlace = (DtlPlace) o;
+
+        return !(merchantId != null ? !merchantId.equals(dtlPlace.merchantId) : dtlPlace.merchantId != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return merchantId != null ? merchantId.hashCode() : 0;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////

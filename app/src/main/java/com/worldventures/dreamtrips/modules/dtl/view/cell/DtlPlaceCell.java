@@ -5,6 +5,9 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.selectable.SelectableCell;
+import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
+import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
@@ -15,10 +18,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_place)
-public class DtlPlaceCell extends AbstractCell<DtlPlace> {
+public class DtlPlaceCell extends AbstractCell<DtlPlace> implements SelectableCell {
 
     DtlPlaceCommonDataInflater commonDataInflater;
     DtlPlaceInfoInflater categoryDataInflater;
+
+    private SelectableDelegate selectableDelegate;
 
     public DtlPlaceCell(View view) {
         super(view);
@@ -33,15 +38,26 @@ public class DtlPlaceCell extends AbstractCell<DtlPlace> {
     protected void syncUIStateWithModel() {
         commonDataInflater.apply(getModelObject());
         categoryDataInflater.apply(getModelObject());
+
+
+        itemView.setSelected(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
     @OnClick(R.id.place_details_root)
     void placeClicked() {
+        if (!selectableDelegate.isSelected(getAdapterPosition()))
+            selectableDelegate.toggleSelection(getAdapterPosition());
+        //
         getEventBus().post(new PlaceClickedEvent(getModelObject()));
     }
 
     @Override
     public void prepareForReuse() {
         //
+    }
+
+    @Override
+    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+        this.selectableDelegate = selectableDelegate;
     }
 }

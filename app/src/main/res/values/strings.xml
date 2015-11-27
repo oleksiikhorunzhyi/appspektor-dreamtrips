@@ -482,4 +482,7 @@
     <string name="accept_all">Accept all</string>
     <string name="request_count_desc">You have %d incoming Friend requests</string>
 
+    <string name="user_mutual_friends">Mutual friends</string>
+    <string name="no_mutual_friends">You don\'t have any mutual friends</string>
+
 </resources>

@@ -37,6 +37,14 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_company"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <TextView
                 android:id="@+id/tv_mutual"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

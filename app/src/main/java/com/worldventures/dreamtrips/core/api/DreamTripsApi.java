@@ -352,4 +352,7 @@ public interface DreamTripsApi {
 
     @DELETE("/api/sessions")
     Void logout();
+
+    @GET("/api/social/friends/{userId}/mutual/")
+    ArrayList<User> getMutualFriends(@Path("userId") int userId);
 }

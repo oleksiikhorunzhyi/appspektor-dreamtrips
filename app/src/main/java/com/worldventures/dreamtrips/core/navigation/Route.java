@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetail
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendSearchFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
+import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
@@ -129,7 +130,6 @@ public enum Route {
 
     FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
-    FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty),
 
     DTL_START(DtlStartFragment.class),
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
@@ -144,7 +144,9 @@ public enum Route {
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_PLACE_DETAILS(DtlPlaceDetailsFragment.class),
     DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
-    DTL_SUGGEST_MERCHANT(DtlSuggestMerchantFragment.class, R.string.suggest_merchant_title);
+    DTL_SUGGEST_MERCHANT(DtlSuggestMerchantFragment.class, R.string.suggest_merchant_title),
+
+    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

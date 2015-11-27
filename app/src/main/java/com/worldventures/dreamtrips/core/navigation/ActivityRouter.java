@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
@@ -46,21 +45,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(Palyer360Activity.class, bundle);
     }
 
-    public void openShareFacebook(String imageUrl, String shareLink, String text) {
-        ShareBundle data = new ShareBundle();
-        data.setImageUrl(imageUrl);
-        data.setShareUrl(shareLink);
-        data.setText(text);
-        data.setShareType(ShareFragment.FB);
-        NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
-    }
-
-    public void openShareTwitter(String imageUrl, String shareLink, String text) {
+    public void openShare(String imageUrl, String shareLink, String text, @ShareFragment.ShareType String type) {
         ShareBundle data = new ShareBundle();
         data.setImageUrl(imageUrl);
         data.setShareUrl(shareLink);
         data.setText(text == null ? "" : text);
-        data.setShareType(ShareFragment.TW);
+        data.setShareType(type);
         NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
     }
 

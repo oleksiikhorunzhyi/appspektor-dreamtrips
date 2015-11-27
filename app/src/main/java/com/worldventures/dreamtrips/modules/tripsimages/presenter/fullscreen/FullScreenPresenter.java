@@ -11,17 +11,15 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -157,17 +155,10 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onDeleteAction() {
     }
 
-    public void onFbShare() {
-        activityRouter.openShareFacebook(photo.getFSImage().getUrl(), null, photo.getFsShareText());
+    public void onShare(@ShareFragment.ShareType String type) {
+        activityRouter.openShare(photo.getFSImage().getUrl(), null, photo.getFsShareText(), type);
         if (photo instanceof Inspiration) {
-            TrackingHelper.insprShare(photo.getFsId(), "facebook");
-        }
-    }
-
-    public void onTwitterShare() {
-        activityRouter.openShareTwitter(photo.getFSImage().getUrl(), null, photo.getFsShareText());
-        if (photo instanceof Inspiration) {
-            TrackingHelper.insprShare(photo.getFsId(), "twitter");
+            TrackingHelper.insprShare(photo.getFsId(), type);
         }
     }
 

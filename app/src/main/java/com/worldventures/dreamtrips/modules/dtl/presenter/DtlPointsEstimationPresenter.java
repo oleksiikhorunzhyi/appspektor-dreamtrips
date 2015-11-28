@@ -14,11 +14,8 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
 
     protected String placeId;
 
-    private ApiErrorPresenter apiErrorPresenter;
-
     public DtlPointsEstimationPresenter(String placeId) {
         this.placeId = placeId;
-        apiErrorPresenter = new ApiErrorPresenter();
     }
 
     @Override
@@ -34,7 +31,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
         doRequest(new GetDtlPlacePointsEstimationQuery(placeId,
                 Double.valueOf(userInput)), aDouble -> {
             view.showEstimatedPoints(aDouble.intValue());
-        }, apiErrorPresenter::handleError);
+        });
     }
 
     protected boolean validateInput(String pointsInput) {

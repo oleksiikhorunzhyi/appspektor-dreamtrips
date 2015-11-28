@@ -11,19 +11,13 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
     public static final String PROMO_VIDEO = "http://assets.wvholdings.com/1/ASSETS/DTL-1500400_MerchantToMerchant_Phase2_11102015.mp4";
     public static final String PDF = "http://assets.wvholdings.com/1/ASSETS/DT_1500159_06_DTL_Merchant_Flyer_Oct_Update_LR.pdf";
 
-    private ApiErrorPresenter apiErrorPresenter;
-
-    public SuggestPlaceBasePresenter() {
-        apiErrorPresenter = new ApiErrorPresenter();
-    }
-
-    public abstract void submitClicked();
-
     @Override
     public void takeView(T view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
     }
+
+    public abstract void submitClicked();
 
     public void presentationClicked() {
         view.openPresentation(PROMO_VIDEO);
@@ -39,11 +33,6 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
         } else {
             return new ContactTime(view.getFromTimestamp(), view.getFromTimestamp());
         }
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        apiErrorPresenter.handleError(error);
     }
 
     public interface View extends ApiErrorView {

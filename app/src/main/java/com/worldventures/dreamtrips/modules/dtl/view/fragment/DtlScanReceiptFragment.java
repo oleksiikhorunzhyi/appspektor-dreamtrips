@@ -11,6 +11,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -23,8 +24,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.AmountValidator;
-
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -138,10 +137,10 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     }
 
     @Override
-    public boolean onApiError(Map<String, String[]> fieldsFailed) {
+    public boolean onApiError(ErrorResponse errorResponse) {
         progressDialog.dismiss();
-        if (fieldsFailed.containsKey(DtlPointsEstimationPresenter.BILL_TOTAL)) {
-            amountInput.setError(fieldsFailed.get(DtlPointsEstimationPresenter.BILL_TOTAL)[0]);
+        if (errorResponse.containsField(DtlPointsEstimationPresenter.BILL_TOTAL)) {
+            amountInput.setError(errorResponse.getMessageForField(DtlPointsEstimationPresenter.BILL_TOTAL));
         }
         return false;
     }

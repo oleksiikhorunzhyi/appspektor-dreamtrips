@@ -29,11 +29,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Inject
     SnappyRepository snapper;
 
-    private ApiErrorPresenter apiErrorPresenter;
-
     public DtlScanQrCodePresenter(DtlPlace dtlPlace) {
         this.dtlPlace = dtlPlace;
-        apiErrorPresenter = new ApiErrorPresenter();
     }
 
     @Override
@@ -62,7 +59,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
         doRequest(new EarnPointsRequest(dtlPlace.getMerchantId(), dtlTransaction),
-                this::processTransactionResult, apiErrorPresenter::handleError);
+                this::processTransactionResult);
     }
 
     private void processTransactionResult(DtlTransactionResult result) {

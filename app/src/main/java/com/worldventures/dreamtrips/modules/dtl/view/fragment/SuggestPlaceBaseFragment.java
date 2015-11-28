@@ -14,10 +14,14 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.innahema.collections.query.functions.Converter;
+import com.innahema.collections.query.queriables.Queryable;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
@@ -367,21 +371,21 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     }
 
     @Override
-    public boolean onApiError(Map<String, String[]> fieldsFailed) {
-        if (fieldsFailed.containsKey(SuggestPlacePostData.NAME)) {
-            restaurantName.setError(fieldsFailed.get(SuggestPlacePostData.NAME)[0]);
+    public boolean onApiError(ErrorResponse errorResponse) {
+        if (errorResponse.containsField(SuggestPlacePostData.NAME)) {
+            restaurantName.setError(errorResponse.getMessageForField(SuggestPlacePostData.NAME));
         }
-        if (fieldsFailed.containsKey(SuggestPlacePostData.CONTACT)) {
-            contactName.setError(fieldsFailed.get(SuggestPlacePostData.CONTACT)[0]);
+        if (errorResponse.containsField(SuggestPlacePostData.CONTACT)) {
+            contactName.setError(errorResponse.getMessageForField(SuggestPlacePostData.CONTACT));
         }
-        if (fieldsFailed.containsKey(SuggestPlacePostData.CITY)) {
-            city.setError(fieldsFailed.get(SuggestPlacePostData.CITY)[0]);
+        if (errorResponse.containsField(SuggestPlacePostData.CITY)) {
+            city.setError(errorResponse.getMessageForField(SuggestPlacePostData.CITY));
         }
-        if (fieldsFailed.containsKey(SuggestPlacePostData.PHONE)) {
-            phoneNumber.setError(fieldsFailed.get(SuggestPlacePostData.PHONE)[0]);
+        if (errorResponse.containsField(SuggestPlacePostData.PHONE)) {
+            phoneNumber.setError(errorResponse.getMessageForField(SuggestPlacePostData.PHONE));
         }
-        if (fieldsFailed.containsKey(SuggestPlacePostData.DESCRIPTION)) {
-            additionalInfo.setError(fieldsFailed.get(SuggestPlacePostData.DESCRIPTION)[0]);
+        if (errorResponse.containsField(SuggestPlacePostData.DESCRIPTION)) {
+            additionalInfo.setError(errorResponse.getMessageForField(SuggestPlacePostData.DESCRIPTION));
         }
         return false;
     }

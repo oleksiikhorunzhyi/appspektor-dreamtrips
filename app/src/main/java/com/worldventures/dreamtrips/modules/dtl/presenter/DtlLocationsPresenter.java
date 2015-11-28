@@ -38,11 +38,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     DtlLocation selectedLocation;
     //
-    ApiErrorPresenter apiErrorPresenter;
-
-    public DtlLocationsPresenter() {
-        apiErrorPresenter = new ApiErrorPresenter();
-    }
 
     @Override
     public void takeView(View view) {
@@ -155,12 +150,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
         getDtlLocationsQuery = new GetDtlLocationsQuery(caption);
         doRequest(getDtlLocationsQuery, this::onSearchResultLoaded);
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        apiErrorPresenter.handleError(error);
     }
 
     private void onSearchResultLoaded(ArrayList<DtlLocation> searchLocations) {

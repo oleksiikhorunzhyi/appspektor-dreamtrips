@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacePointsEstimationQuery;
@@ -34,11 +33,9 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     SnappyRepository snapper;
 
     private DtlTransaction dtlTransaction;
-    private ApiErrorPresenter apiErrorPresenter;
 
     public DtlScanReceiptPresenter(DtlPlace place) {
         this.dtlPlace = place;
-        apiErrorPresenter = new ApiErrorPresenter();
     }
 
     @Override
@@ -72,7 +69,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         //
         dtlTransaction.setAmount(Double.parseDouble(amount));
         doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getMerchantId(), dtlTransaction.getAmount()),
-                this::attachDtPoints, apiErrorPresenter::handleError);
+                this::attachDtPoints);
     }
 
     private void attachDtPoints(Double points) {

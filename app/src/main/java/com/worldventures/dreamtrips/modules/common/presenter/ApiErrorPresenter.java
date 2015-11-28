@@ -9,8 +9,6 @@ import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
-import java.util.Collections;
-
 import timber.log.Timber;
 
 public class ApiErrorPresenter {
@@ -25,8 +23,12 @@ public class ApiErrorPresenter {
         apiErrorView = null;
     }
 
+    public boolean hasView() {
+        return apiErrorView == null;
+    }
+
     public void handleError(SpiceException spiceException) {
-        if (apiErrorView == null) return;
+        if (!hasView()) return;
 
         if (spiceException.getCause() instanceof DtApiException) {
             ErrorResponse errorResponse = ((DtApiException) spiceException.getCause()).getErrorResponse();
@@ -38,7 +40,7 @@ public class ApiErrorPresenter {
             //
             logError(errorResponse);
             //
-            if (!apiErrorView.onApiError(errorResponse.getErrors()))
+            if (!apiErrorView.onApiError(errorResponse))
                 apiErrorView.informUser(errorResponse.getFirstMessage());
         } else {
             apiErrorView.informUser(R.string.smth_went_wrong);
@@ -48,11 +50,11 @@ public class ApiErrorPresenter {
     private void logError(ErrorResponse errorResponse) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Fields failed: ");
-        Queryable.from(errorResponse.getErrors().entrySet()).forEachR(entry -> {
+        Queryable.from(errorResponse.getErrors()).forEachR(entry -> {
             stringBuilder.append("\n");
-            stringBuilder.append(entry.getKey());
+            stringBuilder.append(entry.field);
             stringBuilder.append(" : ");
-            stringBuilder.append(TextUtils.join(",", entry.getValue()));
+            stringBuilder.append(TextUtils.join(",", entry.errors));
         });
         Timber.e(stringBuilder.toString());
     }

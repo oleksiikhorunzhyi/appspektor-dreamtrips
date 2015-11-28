@@ -7,8 +7,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
@@ -83,10 +86,10 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     }
 
     @Override
-    public boolean onApiError(Map<String, String[]> fieldsFailed) {
+    public boolean onApiError(ErrorResponse errorResponse) {
         stopProgress();
-        if (fieldsFailed.containsKey(DtlPointsEstimationPresenter.BILL_TOTAL)) {
-            inputPoints.setError(fieldsFailed.get(DtlPointsEstimationPresenter.BILL_TOTAL)[0]);
+        if (errorResponse.containsField(DtlPointsEstimationPresenter.BILL_TOTAL)) {
+            inputPoints.setError(errorResponse.getMessageForField(DtlPointsEstimationPresenter.BILL_TOTAL));
         }
         return false;
     }

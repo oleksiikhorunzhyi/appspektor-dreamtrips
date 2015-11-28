@@ -15,6 +15,8 @@ import com.google.zxing.Result;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -25,8 +27,6 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
-
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -160,18 +160,18 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     }
 
     @Override
-    public boolean onApiError(Map<String, String[]> fieldsFailed) {
+    public boolean onApiError(ErrorResponse errorResponse) {
         hideProgress();
         //
-        String key = Queryable.from(fieldsFailed.keySet()).firstOrDefault();
+        FieldError fieldError = Queryable.from(errorResponse.getErrors()).firstOrDefault();
         //
-        if (key != null) {
+        if (fieldError != null) {
             SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                     .setTitleText(getString(R.string.alert))
-                    .setContentText(fieldsFailed.get(key)[0])
+                    .setContentText(fieldError.getFirstMessage())
                     .setConfirmText(getString(R.string.ok))
                     .setConfirmClickListener(sweetAlertDialog -> {
-                        switch (key) {
+                        switch (fieldError.field) {
                             case DtlTransaction.AMOUNT:
                             case DtlTransaction.RECEIPT:
                                 moveTo(Route.DTL_SCAN_RECEIPT);

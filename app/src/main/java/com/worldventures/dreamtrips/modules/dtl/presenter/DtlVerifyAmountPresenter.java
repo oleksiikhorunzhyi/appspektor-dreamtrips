@@ -36,6 +36,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
         view.openScanReceipt();
     }
 
+
     public interface View extends Presenter.View {
         void attachTransaction(DtlTransaction dtlTransaction);
 

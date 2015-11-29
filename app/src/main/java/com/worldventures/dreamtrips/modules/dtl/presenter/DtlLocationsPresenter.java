@@ -3,11 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
@@ -18,7 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List;g
 
 import javax.inject.Inject;
 
@@ -90,8 +89,12 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     public void onLocationSelected(DtlLocation location) {
-        db.saveSelectedDtlLocation(location);
-        db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
+        trackLocationSelection(location);
+        DtlLocation currentLocation = db.getSelectedDtlLocation();
+        if (currentLocation == null || !currentLocation.getLocationId().equals(location.getLocationId())) {
+            db.saveSelectedDtlLocation(location);
+            db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
+        }
         view.showMerchants(new PlacesBundle(location));
     }
 
@@ -99,9 +102,20 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         view.setItems(status == Status.NEARBY ? dtlLocations : searchLocations);
     }
 
-    /////////////////////////////////////////////////////////////
-    ////////// Search stuff
-    /////////////////////////////////////////////////////////////
+    /**
+     * Analytic-related
+     */
+    private void trackLocationSelection(DtlLocation location) {
+        if (db.getSelectedDtlLocation() != null)
+            TrackingHelper.dtlChangeLocation(location.getLocationId());
+        String locationSelectType = status.equals(Status.NEARBY) ?
+                TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_NEARBY : TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_SEARCH;
+        TrackingHelper.dtlSelectLocation(locationSelectType, location.getLocationId());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Search stuff
+    ///////////////////////////////////////////////////////////////////////////
 
     public static final int SEARCH_SYMBOL_COUNT = 3;
 

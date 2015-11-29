@@ -19,9 +19,11 @@ public class DtlTransactionRouteCreator implements RouteCreator<DtlTransaction> 
         if (dtlTransaction.getUploadTask() == null ||
                 dtlTransaction.getAmount() == 0.0d) {
             return Route.DTL_SCAN_RECEIPT;
+        } else if (!dtlTransaction.isVerified()) {
+            return Route.DTL_VERIFY;
         } else if (TextUtils.isEmpty(dtlTransaction.getCode()) ||
                 dtlTransaction.getDtlTransactionResult() == null) {
-            return Route.DTL_VERIFY;
+            return Route.DTL_SCAN_QR;
         } else {
             return Route.DTL_TRANSACTION_SUCCEED;
         }

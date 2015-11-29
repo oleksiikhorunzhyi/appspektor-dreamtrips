@@ -23,10 +23,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -50,7 +48,6 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresent
 import com.worldventures.dreamtrips.util.SpanUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -69,9 +66,6 @@ public class DtlPlaceDetailsFragment
     DtlCategoryDataInflater categoryDataInflater;
     DtlPlaceHelper helper;
 
-    @Inject
-    @Named(RouteCreatorModule.DTL_TRANSACTION)
-    RouteCreator<DtlTransaction> routeCreator;
     @Inject
     ActivityResultDelegate activityResultDelegate;
 
@@ -227,15 +221,12 @@ public class DtlPlaceDetailsFragment
 
     @Override
     public void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
-        Route route = routeCreator.createRoute(dtlTransaction);
-        //
-        NavigationConfigBuilder navigationConfigBuilder =
-                route == Route.DTL_TRANSACTION_SUCCEED ?
-                        NavigationConfigBuilder.forDialog().fragmentManager(getChildFragmentManager()) :
-                        NavigationConfigBuilder.forActivity();
-        //
-        navigationConfigBuilder.data(dtlPlace);
-        router.moveTo(route, navigationConfigBuilder.build());
+        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(dtlPlace).build());
+    }
+
+    @Override
+    public void showSucceed(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+        router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog().data(dtlPlace).build());
     }
 
     @Override

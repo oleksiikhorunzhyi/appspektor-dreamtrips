@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -18,11 +19,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
@@ -31,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -61,6 +61,8 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     DtlPlaceHelper helper;
 
+    private DtlEnrollWizard dtlEnrollWizard;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -70,6 +72,13 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Override
     protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
         return new DtlScanQrCodePresenter(getArgs());
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+        dtlEnrollWizard.setToolbar(ButterKnife.findById(getActivity(), R.id.toolbar_actionbar));
     }
 
     @Override
@@ -126,7 +135,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Override
     public void openTransactionSuccess(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
         getActivity().finish();
-        eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
     }
 
     private SweetAlertDialog pDialog;
@@ -154,7 +162,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
                 .setTitleText(getString(R.string.alert))
                 .setContentText(getString(R.string.dtl_photo_upload_error))
                 .setConfirmText(getString(R.string.ok))
-                .setConfirmClickListener(sweetAlertDialog -> moveTo(Route.DTL_SCAN_RECEIPT));
+                .setConfirmClickListener(sweetAlertDialog -> getPresenter().photoUploadFailed());
         alertDialog.setCancelable(false);
         alertDialog.show();
     }
@@ -174,7 +182,8 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
                         switch (fieldError.field) {
                             case DtlTransaction.AMOUNT:
                             case DtlTransaction.RECEIPT:
-                                moveTo(Route.DTL_SCAN_RECEIPT);
+                                getPresenter().photoUploadFailed();
+                                dtlEnrollWizard.clearAndProceed(getFragmentManager());
                                 break;
                             case DtlTransaction.TOKEN:
                             case DtlTransaction.LOCATION:
@@ -192,12 +201,5 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
         }
 
         return false;
-    }
-
-    private void moveTo(Route route) {
-        getActivity().finish();
-        router.moveTo(route, NavigationConfigBuilder.forActivity()
-                .data(getArgs())
-                .build());
     }
 }

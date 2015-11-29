@@ -14,11 +14,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.dtl.validator.AmountValidator;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import mbanje.kurt.fabbutton.CircleImageView;
@@ -60,6 +61,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     RouteCreator<DtlTransaction> routeCreator;
 
     protected ProgressDialogFragment progressDialog;
+    private DtlEnrollWizard dtlEnrollWizard;
 
     private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
         @Override
@@ -71,6 +73,9 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+        dtlEnrollWizard.setToolbar(ButterKnife.findById(getActivity(), R.id.toolbar_actionbar));
+        //
         amountInput.addValidator(new AmountValidator(getString(R.string.dtl_amount_invalid)));
         scanReceiptNode.setText(Html.fromHtml(getString(R.string.dtl_receipt_note)));
         progressDialog = ProgressDialogFragment.create();
@@ -101,14 +106,6 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @OnClick(R.id.scan_receipt)
     void onImage() {
         getPresenter().scanReceipt();
-    }
-
-    @Override
-    public void openVerify(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
-        getActivity().finish();
-        router.moveTo(routeCreator.createRoute(dtlTransaction), NavigationConfigBuilder.forActivity()
-                .data(dtlPlace)
-                .build());
     }
 
     @Override
@@ -148,6 +145,11 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @Override
     public void showProgress() {
         progressDialog.show(getFragmentManager());
+    }
+
+    public void openVerify(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+        dtlEnrollWizard.setDtlTransaction(dtlTransaction);
+        dtlEnrollWizard.proceed(getFragmentManager());
     }
 
 }

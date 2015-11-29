@@ -8,13 +8,18 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -31,9 +36,22 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     @InjectView(R.id.info)
     TextView info;
 
+    @Inject
+    @Named(RouteCreatorModule.DTL_TRANSACTION)
+    RouteCreator<DtlTransaction> routeCreator;
+
+    private DtlEnrollWizard dtlEnrollWizard;
+
     @Override
     protected DtlVerifyAmountPresenter createPresenter(Bundle savedInstanceState) {
         return new DtlVerifyAmountPresenter(getArgs());
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+        dtlEnrollWizard.setToolbar(ButterKnife.findById(getActivity(), R.id.toolbar_actionbar));
     }
 
     @OnClick(R.id.rescan)
@@ -43,10 +61,19 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
 
     @OnClick(R.id.scan_merchant_code)
     void onScanQr() {
-        getActivity().finish();
-        router.moveTo(Route.DTL_SCAN_QR, NavigationConfigBuilder.forActivity()
-                .data(getArgs())
-                .build());
+        getPresenter().scanQr();
+    }
+
+    @Override
+    public void openScanQr(DtlTransaction dtlTransaction) {
+        dtlEnrollWizard.setDtlTransaction(dtlTransaction);
+        dtlEnrollWizard.proceed(getFragmentManager());
+    }
+
+    @Override
+    public void openScanReceipt(DtlTransaction dtlTransaction) {
+        dtlEnrollWizard.setDtlTransaction(dtlTransaction);
+        dtlEnrollWizard.clearAndProceed(getFragmentManager());
     }
 
     @OnClick(R.id.infoToggle)
@@ -55,16 +82,8 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     }
 
     @Override
-    public void openScanReceipt() {
-        getActivity().finish();
-        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
-                .data(getArgs())
-                .build());
-    }
-
-    @Override
     public void attachDtPoints(int count) {
-        dtPoints.setText(getString(R.string.dtl_dt_points, count));
+        dtPoints.setText(String.format("+%d", count));
     }
 
     @Override

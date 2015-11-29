@@ -60,6 +60,8 @@ g    <color name="dtl_tab_text_normal">#B1B2B1</color>
     <color name="dtl_button_background_enabled">#81c435</color>
     <color name="dtl_text_color_disabled">#42000000</color>
 
+    <color name="perks_text_color">#222222</color>
+
     <color name="open">#6ebffc</color>
     <color name="closed">#fe5353</color>
     <color name="facebook_color">#3C5A99</color>

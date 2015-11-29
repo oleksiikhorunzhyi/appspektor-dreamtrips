@@ -24,6 +24,7 @@ public class DtlTransaction {
     String receiptPhoto;
     String token;
     DtlTransactionLocation location;
+    boolean verified;
 
     //
 
@@ -104,5 +105,13 @@ public class DtlTransaction {
 
     public double getPoints() {
         return points;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public boolean isVerified() {
+        return verified;
     }
 }

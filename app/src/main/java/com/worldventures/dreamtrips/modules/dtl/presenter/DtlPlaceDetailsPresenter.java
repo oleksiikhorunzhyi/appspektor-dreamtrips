@@ -75,7 +75,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         DtlTransactionSucceedEvent event = eventBus.getStickyEvent(DtlTransactionSucceedEvent.class);
         if (event != null) {
             eventBus.removeStickyEvent(event);
-            view.openTransaction(place, dtlTransaction);
+            view.showSucceed(place, dtlTransaction);
             return true;
         } else return false;
     }
@@ -153,6 +153,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         void openSuggestMerchant(SuggestPlaceBundle data);
 
         void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+
+        void showSucceed(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
 
         void openMap(PlacesBundle placesBundle);
 

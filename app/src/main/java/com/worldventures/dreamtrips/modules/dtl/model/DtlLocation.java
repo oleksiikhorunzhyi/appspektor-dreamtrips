@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -118,6 +117,13 @@ public class DtlLocation implements Parcelable {
             return Double.valueOf(distanceToLeft - distanceToRight).intValue();
         }
     }
+
+    public static Comparator<DtlLocation> CATEGORY_COMPARATOR = new Comparator<DtlLocation>() {
+        @Override
+        public int compare(DtlLocation lhs, DtlLocation rhs) {
+            return lhs.category.ordinal() - rhs.category.ordinal();
+        }
+    };
 
 }
 

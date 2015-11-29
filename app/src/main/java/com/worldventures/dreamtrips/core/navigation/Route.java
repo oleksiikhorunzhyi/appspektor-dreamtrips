@@ -14,21 +14,20 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesHostFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlSuggestMerchantFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlWizardHolderFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
@@ -60,10 +59,10 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragm
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDetailsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -145,7 +144,6 @@ public enum Route {
     DTL_PLACE_DETAILS(DtlPlaceDetailsFragment.class),
     DTL_SUGGEST_MERCHANT(DtlSuggestMerchantFragment.class, R.string.suggest_merchant_title),
 
-    DTL_WIZARD(DtlWizardHolderFragment.class),
     DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),

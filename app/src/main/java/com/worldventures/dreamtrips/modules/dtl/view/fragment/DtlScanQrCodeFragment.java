@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -78,12 +79,12 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
-        dtlEnrollWizard.setToolbar(ButterKnife.findById(getActivity(), R.id.toolbar_actionbar));
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_barcode_title);
         DtlScanQrCodeFragmentPermissionsDispatcher.startCameraWithCheck(this);
         scanner.setResultHandler(this);
     }
@@ -133,7 +134,12 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     }
 
     @Override
-    public void openTransactionSuccess(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+    public void openScanReceipt(DtlTransaction dtlTransaction) {
+        dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
+    }
+
+    @Override
+    public void finish() {
         getActivity().finish();
     }
 
@@ -183,7 +189,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
                             case DtlTransaction.AMOUNT:
                             case DtlTransaction.RECEIPT:
                                 getPresenter().photoUploadFailed();
-                                dtlEnrollWizard.clearAndProceed(getFragmentManager());
                                 break;
                             case DtlTransaction.TOKEN:
                             case DtlTransaction.LOCATION:

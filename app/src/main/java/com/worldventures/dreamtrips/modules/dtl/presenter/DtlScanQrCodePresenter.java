@@ -9,7 +9,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
@@ -55,6 +54,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
     public void photoUploadFailed() {
         snapper.cleanDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        view.openScanReceipt(dtlTransaction);
     }
 
     private void onReceiptUploaded() {
@@ -74,7 +74,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
         //
         eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
-        view.openTransactionSuccess(dtlPlace, dtlTransaction);
+        view.finish();
     }
 
 
@@ -141,7 +141,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     }
 
     public interface View extends ApiErrorView {
-        void openTransactionSuccess(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+        void finish();
 
         void showProgress(@StringRes int titleRes);
 
@@ -150,5 +150,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         void photoUploadError();
 
         void setPlace(DtlPlace dtlPlace);
+
+        void openScanReceipt(DtlTransaction dtlTransaction);
     }
 }

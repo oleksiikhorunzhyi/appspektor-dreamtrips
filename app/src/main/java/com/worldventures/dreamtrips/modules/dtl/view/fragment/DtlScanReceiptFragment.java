@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
@@ -74,7 +75,6 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
-        dtlEnrollWizard.setToolbar(ButterKnife.findById(getActivity(), R.id.toolbar_actionbar));
         //
         amountInput.addValidator(new AmountValidator(getString(R.string.dtl_amount_invalid)));
         scanReceiptNode.setText(Html.fromHtml(getString(R.string.dtl_receipt_note)));
@@ -84,6 +84,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @Override
     public void onResume() {
         super.onResume();
+        ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_enter_amount);
         amountInput.addTextChangedListener(textWatcherAdapter);
     }
 
@@ -148,8 +149,8 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     }
 
     public void openVerify(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
-        dtlEnrollWizard.setDtlTransaction(dtlTransaction);
-        dtlEnrollWizard.proceed(getFragmentManager());
+        progressDialog.dismiss();
+        dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
     }
 
 }

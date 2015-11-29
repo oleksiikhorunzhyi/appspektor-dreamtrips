@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
@@ -51,7 +52,12 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
-        dtlEnrollWizard.setToolbar(ButterKnife.findById(getActivity(), R.id.toolbar_actionbar));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_verify_amount);
     }
 
     @OnClick(R.id.rescan)
@@ -66,14 +72,12 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
 
     @Override
     public void openScanQr(DtlTransaction dtlTransaction) {
-        dtlEnrollWizard.setDtlTransaction(dtlTransaction);
-        dtlEnrollWizard.proceed(getFragmentManager());
+        dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
     }
 
     @Override
     public void openScanReceipt(DtlTransaction dtlTransaction) {
-        dtlEnrollWizard.setDtlTransaction(dtlTransaction);
-        dtlEnrollWizard.clearAndProceed(getFragmentManager());
+        dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
     }
 
     @OnClick(R.id.infoToggle)

@@ -244,7 +244,7 @@ public class DtlPlace implements Parcelable {
     }
 
     private boolean checkDistance(DtlFilterData filterData, LatLng currentLocation) {
-        return !filterData.isDistanceEnabled()
+        return filterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
                 || currentLocation == null
                 || LocationHelper.checkLocation(filterData.getMaxDistance(), currentLocation,
                 new LatLng(coordinates.getLat(), coordinates.getLng()), filterData.getDistanceType());
@@ -259,6 +259,18 @@ public class DtlPlace implements Parcelable {
 
     }
 
+    private transient double distanceInMiles;
+
+    public void calculateDistance(LatLng currentLocation) {
+        distanceInMiles = LocationHelper.distanceInMiles(currentLocation,
+                getCoordinates().asLatLng());
+    }
+
+    @Override
+    public String toString() {
+        return displayName + " " + distanceInMiles;
+    }
+
     public static class DtlPlaceDistanceComparator implements Comparator<DtlPlace> {
 
         private LatLng currentLocation;
@@ -269,11 +281,12 @@ public class DtlPlace implements Parcelable {
 
         @Override
         public int compare(DtlPlace lhs, DtlPlace rhs) {
-            double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
+           /* double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
                     lhs.getCoordinates().asLatLng());
             double distanceToRight = LocationHelper.distanceInMiles(currentLocation,
                     rhs.getCoordinates().asLatLng());
-            return Double.valueOf(distanceToLeft - distanceToRight).intValue();
+            */
+            return Double.valueOf(lhs.distanceInMiles - rhs.distanceInMiles).intValue();
         }
     }
 

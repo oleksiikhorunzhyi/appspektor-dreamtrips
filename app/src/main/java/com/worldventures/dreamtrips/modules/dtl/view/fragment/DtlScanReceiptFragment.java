@@ -72,6 +72,13 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     };
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setNavigationOnClickListener(v ->
+                getActivity().onBackPressed());
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);

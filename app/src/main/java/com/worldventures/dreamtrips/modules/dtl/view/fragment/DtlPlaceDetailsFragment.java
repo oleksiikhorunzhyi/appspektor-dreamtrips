@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
@@ -160,7 +161,7 @@ public class DtlPlaceDetailsFragment
     }
 
     private void setDescriptions(String description, String perksDescription) {
-        this.description.setText(description);
+        this.description.setText(Html.fromHtml(description));
         this.perksDescription.setText(perksDescription);
         //
         this.descriptionHeader.setVisibility(TextUtils.isEmpty(description) ? View.GONE : View.VISIBLE);

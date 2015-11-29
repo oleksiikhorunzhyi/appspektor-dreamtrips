@@ -20,7 +20,6 @@ public class DtlFilterData implements Parcelable {
     private int maxPrice;
 
     private int maxDistance;
-    private boolean distanceEnabled;
 
     private DistanceType distanceType;
 
@@ -82,18 +81,9 @@ public class DtlFilterData implements Parcelable {
         this.maxDistance = maxDistance;
     }
 
-    public boolean isDistanceEnabled() {
-        return distanceEnabled;
-    }
-
-    public void setDistanceEnabled(boolean distanceEnabled) {
-        this.distanceEnabled = distanceEnabled;
-    }
-
     public DistanceType getDistanceType() {
         return distanceType;
     }
-
 
     public void toggleDistance() {
         if (distanceType == DistanceType.KMS) distanceType = DistanceType.MILES;
@@ -129,7 +119,6 @@ public class DtlFilterData implements Parcelable {
         minPrice = in.readInt();
         maxPrice = in.readInt();
         maxDistance = in.readInt();
-        distanceEnabled = in.readByte() != 0;
         distanceType = (DistanceType) in.readSerializable();
         amenities = in.createTypedArrayList(DtlPlacesFilterAttribute.CREATOR);
     }
@@ -156,7 +145,6 @@ public class DtlFilterData implements Parcelable {
         dest.writeInt(minPrice);
         dest.writeInt(maxPrice);
         dest.writeInt(maxDistance);
-        dest.writeByte((byte) (distanceEnabled ? 1 : 0));
         dest.writeSerializable(distanceType);
         dest.writeTypedList(amenities);
     }

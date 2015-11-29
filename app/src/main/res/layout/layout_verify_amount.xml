@@ -5,6 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
+              android:background="@color/white"
               android:padding="@dimen/spacing_normal">
 
 
@@ -89,7 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dtlReceiptHeight"
         android:layout_marginTop="@dimen/spacing_medium"
-        fresco:actualImageScaleType="fitCenter"
+        fresco:actualImageScaleType="centerInside"
         />
 
     <LinearLayout

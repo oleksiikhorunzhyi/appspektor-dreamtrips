@@ -7,12 +7,14 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
@@ -94,8 +96,12 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     private Observable<List<DtlPlace>> filter(Location location, String query) {
-        LatLng currentLocation = new LatLng(location.getLatitude(),
-                location.getLongitude());
+        LatLng currentLocation = LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
+                new LatLng(location.getLatitude(), location.getLongitude()),
+                dtlLocation.getCoordinates().asLatLng(),
+                DtlFilterData.DistanceType.MILES)
+                ? new LatLng(location.getLatitude(), location.getLongitude())
+                : dtlLocation.getCoordinates().asLatLng();
 
         List<DtlPlace> places = Queryable.from(dtlPlaces)
                 .filter(dtlPlace ->

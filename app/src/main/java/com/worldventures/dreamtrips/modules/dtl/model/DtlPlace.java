@@ -260,7 +260,7 @@ public class DtlPlace implements Parcelable {
     }
 
     private boolean checkDistance(DtlFilterData filterData, LatLng currentLocation) {
-        return !filterData.isDistanceEnabled()
+        return filterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
                 || currentLocation == null
                 || LocationHelper.checkLocation(filterData.getMaxDistance(), currentLocation,
                 new LatLng(coordinates.getLat(), coordinates.getLng()), filterData.getDistanceType());
@@ -275,23 +275,23 @@ public class DtlPlace implements Parcelable {
 
     }
 
-    public static class DtlPlaceDistanceComparator implements Comparator<DtlPlace> {
+    private transient double distanceInMiles;
 
-        private LatLng currentLocation;
-
-        public DtlPlaceDistanceComparator(LatLng currentLocation) {
-            this.currentLocation = currentLocation;
-        }
-
-        @Override
-        public int compare(DtlPlace lhs, DtlPlace rhs) {
-            double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
-                    lhs.getCoordinates().asLatLng());
-            double distanceToRight = LocationHelper.distanceInMiles(currentLocation,
-                    rhs.getCoordinates().asLatLng());
-            return Double.valueOf(distanceToLeft - distanceToRight).intValue();
-        }
+    public void calculateDistance(LatLng currentLocation) {
+        distanceInMiles = LocationHelper.distanceInMiles(currentLocation,
+                getCoordinates().asLatLng());
     }
 
+    @Override
+    public String toString() {
+        return displayName + " " + distanceInMiles;
+    }
+
+    public static Comparator<DtlPlace> DISTANCE_COMPARATOR = new Comparator<DtlPlace>() {
+        @Override
+        public int compare(DtlPlace lhs, DtlPlace rhs) {
+            return Double.valueOf(lhs.distanceInMiles - rhs.distanceInMiles).intValue();
+        }
+    };
 
 }

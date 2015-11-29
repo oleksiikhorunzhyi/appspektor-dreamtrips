@@ -42,7 +42,7 @@
             style="@style/Widget.AppCompat.ButtonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#eeeeee"
+            android:background="@color/dtl_cities_background"
             android:orientation="vertical"
             android:padding="@dimen/spacing_normal"
             >
@@ -117,8 +117,8 @@
             android:id="@+id/perks_description_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:background="@color/white"
+            android:orientation="vertical"
             android:padding="@dimen/spacing_normal"
             >
 
@@ -129,7 +129,7 @@
                 android:drawablePadding="@dimen/spacing_small"
                 android:drawableStart="@drawable/perks_icon"
                 android:text="@string/dtl_perks_description"
-                android:textColor="#535353"
+                android:textColor="@color/dtl_cities_text_color"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 />
@@ -140,7 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:textColor="#535353"
+                android:textColor="@color/perks_text_color"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 tools:text="It is a Family owned breakfast and lunch restaurant with more than generous plate servings."
@@ -152,9 +152,9 @@
             android:id="@+id/description_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/dtl_cities_background"
             android:orientation="vertical"
             android:padding="@dimen/spacing_normal"
-            android:background="@color/dtl_cities_background"
             >
 
             <TextView
@@ -162,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/spacing_tiny"
                 android:text="@string/dtl_description"
-                android:textColor="#535353"
+                android:textColor="@color/dtl_cities_text_color"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 />
@@ -172,7 +172,7 @@
                 style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#535353"
+                android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
@@ -183,7 +183,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#eeeeee"
             android:divider="@drawable/list_divider_vertical"
             android:orientation="horizontal"
             android:showDividers="middle"
@@ -194,6 +193,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.75"
+                android:background="@color/dtl_cities_background"
                 android:divider="@drawable/list_divider_with_padding"
                 android:gravity="top"
                 android:minHeight="140dp"
@@ -217,7 +217,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="#96c2c2c2"
+                    android:background="@color/white_semi_transparent"
                     android:gravity="center"
                     android:padding="@dimen/spacing_small"
                     android:text="Directions"
@@ -236,34 +236,41 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/place_details_share"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/spacing_normal"
-            android:minWidth="160dp"
-            android:orientation="horizontal"
-            android:padding="0dp"
-            android:paddingBottom="@dimen/spacing_small"
-            android:paddingTop="@dimen/spacing_small"
-            android:theme="@style/WhiteButtonTheme"
-            >
+            android:background="@color/dtl_cities_background">
 
-            <View
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/share_icon"/>
-
-            <TextView
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
+            <LinearLayout
+                android:id="@+id/place_details_share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:clickable="false"
-                android:text="@string/action_share"
-                />
-        </LinearLayout>
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/spacing_normal"
+                android:minWidth="160dp"
+                android:orientation="horizontal"
+                android:padding="0dp"
+                android:paddingBottom="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_small"
+                android:theme="@style/WhiteButtonTheme"
+                >
+
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/share_icon"/>
+
+                <TextView
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:text="@string/action_share"
+                    />
+            </LinearLayout>
+
+        </FrameLayout>
 
 
     </LinearLayout>

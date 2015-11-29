@@ -128,13 +128,13 @@ public class TrackingHelper {
         }
     }
 
-    public static void onSaveInstanceState(Bundle outState){
+    public static void onSaveInstanceState(Bundle outState) {
         for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
             entry.getValue().onSaveInstanceState(outState);
         }
     }
 
-    public static void onRestoreInstanceState(Bundle savedInstanceState){
+    public static void onRestoreInstanceState(Bundle savedInstanceState) {
         for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
             entry.getValue().onRestoreInstanceState(savedInstanceState);
         }
@@ -630,7 +630,7 @@ public class TrackingHelper {
 
     // ---------------- Trip Images
 
-    public static void viewTripImagesScreen(){
+    public static void viewTripImagesScreen() {
         sendSimpleAttributetoAdobeTracker(ACTION_TRIP_IMAGES, ATTRIBUTE_LIST);
     }
 
@@ -648,7 +648,7 @@ public class TrackingHelper {
     }
 
     public static void viewTripImage(@MagicConstant(stringValues = {ACTION_YSHB_IMAGES, ACTION_INSPIRE_ME_IMAGES})
-                                            String tab, String imageId){
+                                     String tab, String imageId) {
         Map data = new HashMap<>();
         data.put("image_id", imageId);
         data.put(ATTRIBUTE_VIEW, "1");
@@ -656,7 +656,7 @@ public class TrackingHelper {
     }
 
     public static void uploadTripImagePhoto(@MagicConstant(stringValues = {ACTION_MEMBER_IMAGES, ACTION_MY_IMAGES})
-                                            String actionTab){
+                                            String actionTab) {
         Map data = new HashMap<>();
         data.put(actionTab, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
@@ -723,7 +723,7 @@ public class TrackingHelper {
 
     // ---------------- My Profile
 
-    public static void viewMyProfileScreen(){
+    public static void viewMyProfileScreen() {
         sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, ATTRIBUTE_VIEW);
     }
 
@@ -740,12 +740,12 @@ public class TrackingHelper {
     // ---------------- Rep Tools
 
     public static void applyFilterRepTools(@MagicConstant(stringValues = {ATTRIBUTE_SHOW_ALL, ATTRIBUTE_SHOW_FAVORITES})
-                                           String filterCategory){
+                                           String filterCategory) {
         sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_SUCCESS_STORY, filterCategory);
     }
 
     public static void searchRepTools(@MagicConstant(stringValues = {ACTION_REP_TOOLS_SUCCESS_STORY, ACTION_REP_TOOLS_INVITE_SHARE})
-                                      String tab){
+                                      String tab) {
         sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_SEARCH);
     }
 
@@ -763,14 +763,14 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
     }
 
-    public static void favoriteSuccessStory(String storyId){
+    public static void favoriteSuccessStory(String storyId) {
         Map data = new HashMap<>();
         data.put(ATTRIBUTE_FAVORITE, storyId);
         data.put(ATTRIBUTE_FAVORITE, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
     }
 
-    public static void viewRepToolsTrainingVideoScreen(){
+    public static void viewRepToolsTrainingVideoScreen() {
         sendSimpleAttributetoAdobeTracker(ACTION_TRAINING_VIDEOS, ATTRIBUTE_LIST);
     }
 
@@ -795,7 +795,7 @@ public class TrackingHelper {
     // ---------------- FAQ
 
     public static void actionFaq(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-                                                ATTRIBUTE_LOADING_ERROR}) String eventType) {
+            ATTRIBUTE_LOADING_ERROR}) String eventType) {
         sendSimpleAttributetoAdobeTracker(ACTION_FAQ, eventType);
     }
 
@@ -839,16 +839,11 @@ public class TrackingHelper {
                 .append(filterData.getMinPrice()).append(":")
                 .append(filterData.getMaxPrice()).append(":");
 
-        if (filterData.isDistanceEnabled()) {
-            stringBuilder.append(filterData.getMaxDistance())
-                    .append(":").append(filterData.getDistanceType().getTypeNameForAnalytics())
-                    .append(":");
-        } else {
-            stringBuilder.append("::");
-        }
-
-        stringBuilder.append(Queryable.from(filterData.getSelectedAmenities())
-                .joinStrings(":", DtlPlacesFilterAttribute::getAttributeName));
+        stringBuilder.append(filterData.getMaxDistance())
+                .append(":").append(filterData.getDistanceType().getTypeNameForAnalytics())
+                .append(":")
+                .append(Queryable.from(filterData.getSelectedAmenities())
+                        .joinStrings(":", DtlPlacesFilterAttribute::getAttributeName));
 
         data.put(DTL_ATTRIBUTE_FILTER, stringBuilder.toString());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);

@@ -43,7 +43,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
     @Override
     public void setCongratulations(DtlTransactionResult result) {
         total.setText(String.valueOf((int) result.getTotal()));
-        earned.setText(String.valueOf((int) result.getEarnedPoints()));
+        earned.setText(String.format("+%d", Double.valueOf(result.getEarnedPoints()).intValue()));
     }
 
     @OnClick(R.id.share)

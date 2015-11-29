@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
@@ -38,6 +39,13 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     @InjectView(R.id.info)
     TextView info;
 
+    private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            calculateButton.setEnabled(s.length() > 0);
+        }
+    };
+
     @Override
     protected DtlPointsEstimationPresenter createPresenter(Bundle savedInstanceState) {
         return new DtlPointsEstimationPresenter(getArgs().getPlaceId());
@@ -47,6 +55,13 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         pointsEstimated.setText(R.string.dtl_points_estimation_default_result);
+        inputPoints.addTextChangedListener(textWatcherAdapter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        inputPoints.removeTextChangedListener(textWatcherAdapter);
+        super.onDestroyView();
     }
 
     @Override

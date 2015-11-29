@@ -84,7 +84,8 @@ public class DreamSpiceManager extends SpiceManager {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
-                        failureListener.handleError(exception);
+                        //destroy session, token is invalid
+                        appSessionHolder.destroy();
                     }
                 });
             }
@@ -106,7 +107,8 @@ public class DreamSpiceManager extends SpiceManager {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
-                        failureListener.handleError(exception);
+                        //destroy session, token is invalid
+                        appSessionHolder.destroy();
                     }
                 });
             }

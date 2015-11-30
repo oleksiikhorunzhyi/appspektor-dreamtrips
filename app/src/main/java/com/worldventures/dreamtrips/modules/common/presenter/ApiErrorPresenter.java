@@ -24,7 +24,7 @@ public class ApiErrorPresenter {
     }
 
     public boolean hasView() {
-        return apiErrorView == null;
+        return apiErrorView != null;
     }
 
     public void handleError(SpiceException spiceException) {

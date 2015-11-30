@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -105,6 +106,11 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         hidePanel();
     }
 
+    public void setup(Injector injector, boolean multiPickEnabled, int pickLimit) {
+        this.setup(injector, multiPickEnabled);
+        presenter.setLimit(pickLimit);
+    }
+
     @Override
     public void updatePickedItemsCount(int pickedCount) {
         if (pickedCount == 0) {
@@ -178,7 +184,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
 
     @Override
     public void informUser(String string) {
-
+        Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

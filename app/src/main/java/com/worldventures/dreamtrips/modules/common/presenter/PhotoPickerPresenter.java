@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
@@ -16,6 +17,8 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
     @State
     ArrayList<PhotoGalleryModel> photos;
 
+    private int pickLimit;
+
     public void onEvent(PhotoPickedEvent event) {
         if (!view.isMultiPickEnabled()) {
             PhotoGalleryModel photoGalleryModel = Queryable.from(photos).filter(element ->
@@ -23,6 +26,13 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
             if (photoGalleryModel != null) {
                 photoGalleryModel.setChecked(false);
                 view.updateItem(photoGalleryModel);
+            }
+        } else {
+            if (isLimitReached(Queryable.from(photos).count(PhotoGalleryModel::isChecked))) {
+                event.model.setChecked(false);
+                view.informUser(String.format(context.getResources()
+                        .getString(R.string.photo_limitation_message), pickLimit));
+                return;
             }
         }
 
@@ -60,6 +70,14 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
         Queryable.from(photos).filter(PhotoGalleryModel::isChecked).forEachR(model -> model.setChecked(false));
 
         view.updatePickedItemsCount(0);
+    }
+
+    public void setLimit(int pickLimit) {
+        this.pickLimit = pickLimit;
+    }
+
+    private boolean isLimitReached(int pickedCount) {
+        return pickLimit != 0 && pickedCount > pickLimit;
     }
 
     public interface View extends Presenter.View {

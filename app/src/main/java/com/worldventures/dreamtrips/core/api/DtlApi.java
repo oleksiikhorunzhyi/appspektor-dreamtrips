@@ -25,10 +25,10 @@ public interface DtlApi {
     @GET("/api/dtl/v2/locations/{id}/merchants")
     ArrayList<DtlPlace> getDtlPlaces(@Path("id") String locationId);
 
-    @GET("/api/dtl/v2/merchants/{id}/points")
+    @POST("/api/dtl/v2/merchants/{id}/estimations")
     EstimationPointsHolder getDtlPlacePointsEstimation(@Path("id") String placeId,
-                                                       @Query("billTotal") double price,
-                                                       @Query("checkinTimestamp") String checkinTime);
+                                                       @Field("bill_total") double price,
+                                                       @Field("checkin_time") String checkinTime);
 
     @POST("/api/dtl/v2/merchants/{id}/points")
     DtlTransactionResult earnPoints(@Path("id") String placeId,

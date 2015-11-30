@@ -19,31 +19,31 @@ import retrofit.http.Query;
 
 public interface DtlApi {
 
-    @GET("/api/dtl/v1/locations/search")
+    @GET("/api/dtl/locations/search")
     ArrayList<DtlLocation> searchDtlLocations(@Query("text") String keyword);
 
-    @GET("/api/dtl/v1/locations")
+    @GET("/api/dtl/locations")
     ArrayList<DtlLocation> getNearbyDtlLocations(@Query("lat") double lat, @Query("lng") double lng);
 
-    @GET("/api/dtl/v1/locations/{id}/merchants")
+    @GET("/api/dtl/locations/{id}/merchants")
     ArrayList<DtlPlace> getDtlPlaces(@Path("id") String locationId);
 
-    @GET("/api/dtl/v1/merchants/{id}/points")
+    @GET("/api/dtl/merchants/{id}/points")
     EstimationPointsHolder getDtlPlacePointsEstimation(@Path("id") String placeId,
                                                        @Query("billTotal") double price,
                                                        @Query("checkinTimestamp") String checkinTime);
 
-    @POST("/api/dtl/v1/merchants/{id}/points")
+    @POST("/api/dtl/merchants/{id}/points")
     DtlTransactionResult earnPoints(@Path("id") String placeId,
                                     @Body DtlTransaction request);
 
-    @POST("/api/dtl/v1/merchants/{id}/suggestion")
+    @POST("/api/dtl/merchants/{id}/suggestion")
     Void suggestDining(@Path("id") String placeId, @Body SuggestPlacePostData request);
 
     @FormUrlEncoded
-    @POST("/api/dtl/v1/merchants/{id}/rating")
+    @POST("/api/dtl/merchants/{id}/rating")
     Void rate(@Path("id") String placeId, @Field("stars") int stars, @Field("transactionId") String transactionId);
 
-    @POST("/api/dtl/v1/merchants/")
+    @POST("/api/dtl/merchants/")
     Void suggestPlace(@Body SuggestPlacePostData request);
 }

@@ -485,6 +485,7 @@ public class SnappyRepository {
         dtlTransaction.setAmount(0.0d);
         dtlTransaction.setReceiptPhoto(null);
         dtlTransaction.setCode(null);
+        dtlTransaction.setVerified(false);
         dtlTransaction.setDtlTransactionResult(null);
         saveDtlTransaction(id, dtlTransaction);
     }

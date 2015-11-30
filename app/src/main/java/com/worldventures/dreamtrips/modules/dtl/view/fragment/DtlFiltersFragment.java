@@ -85,7 +85,6 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
     public void attachFilterData(DtlFilterData filterData) {
         rangeBarDistance.setRangePinsByValue(10.0f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
-        rangeBarDistance.setEnabled(filterData.isDistanceEnabled());
         switchCompat.setChecked(filterData.getDistanceType().isSelected());
         switchHint.setText(Html.fromHtml(getString(filterData.getDistanceType().getTextResId())));
         if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())

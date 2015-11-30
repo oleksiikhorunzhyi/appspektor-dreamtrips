@@ -29,17 +29,17 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
     protected void syncUIStateWithModel() {
         StringBuilder sb = new StringBuilder();
         sb.append(getModelObject().getLongName());
-        Queryable.from(getModelObject().getWithinLocations()).forEachR(tempLocation -> {
-            sb.append(", ");
-            sb.append(tempLocation.getLongName());
-        });
+        Queryable.from(getModelObject().getWithinLocations())
+                .filter(temp -> temp.getCategory() != DtlLocationCategory.METRO)
+                .sort(DtlLocation.CATEGORY_COMPARATOR)
+                .forEachR(tempLocation -> {
+                    sb.append(", ");
+                    sb.append(tempLocation.getLongName());
+                });
+
         city.setText(sb.toString());
-
-        if (getModelObject().getCategory() == DtlLocationCategory.CITY)
-            city.setCompoundDrawablesWithIntrinsicBounds(R.drawable.city_icon, 0, 0, 0);
-        else
-            city.setCompoundDrawablesWithIntrinsicBounds(R.drawable.metro_area_icon, 0, 0, 0);
-
+        city.setCompoundDrawablesWithIntrinsicBounds(getModelObject().getCategory() == DtlLocationCategory.CITY ?
+                R.drawable.city_icon : R.drawable.metro_area_icon, 0, 0, 0);
     }
 
     @OnClick(R.id.dtlLocationCellRoot)

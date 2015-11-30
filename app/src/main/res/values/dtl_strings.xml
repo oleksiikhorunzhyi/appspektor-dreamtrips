@@ -89,7 +89,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">Presentation</string>
     <string name="dtl_open_now">Open now</string>
-    <string name="dtl_closed">Closed</string>
+    <string name="dtl_closed">Closed now</string>
     <string name="miles">kms/&lt;b>miles&lt;/b></string>
     <string name="kms">&lt;b>kms&lt;/b>/miles</string>
     <string name="wrong_qr">Invalid Merchant code or Incorrect Location. If problem persists contact Member Services.</string>

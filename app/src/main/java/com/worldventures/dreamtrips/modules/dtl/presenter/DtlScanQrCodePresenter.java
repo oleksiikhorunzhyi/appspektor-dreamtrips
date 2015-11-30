@@ -10,10 +10,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
@@ -54,6 +54,11 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         checkReceiptUploading();
     }
 
+    public void photoUploadFailed() {
+        snapper.cleanDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        view.openScanReceipt(dtlTransaction);
+    }
+
     private void onReceiptUploaded() {
         view.showProgress(R.string.dtl_wait_for_earn);
         //
@@ -71,7 +76,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         dtlTransaction.setDtlTransactionResult(result);
         snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
         //
-        view.openTransactionSuccess(dtlPlace, dtlTransaction);
+        eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
+        view.finish();
     }
 
 
@@ -138,7 +144,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     }
 
     public interface View extends ApiErrorView {
-        void openTransactionSuccess(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+        void finish();
 
         void showProgress(@StringRes int titleRes);
 
@@ -147,5 +153,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         void photoUploadError();
 
         void setPlace(DtlPlace dtlPlace);
+
+        void openScanReceipt(DtlTransaction dtlTransaction);
     }
 }

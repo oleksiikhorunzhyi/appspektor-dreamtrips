@@ -33,7 +33,15 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
 
         snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
 
-        view.openScanReceipt();
+        view.openScanReceipt(dtlTransaction);
+    }
+
+    public void scanQr() {
+        dtlTransaction.setVerified(true);
+
+        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+
+        view.openScanQr(dtlTransaction);
     }
 
 
@@ -42,6 +50,8 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
 
         void attachDtPoints(int count);
 
-        void openScanReceipt();
+        void openScanReceipt(DtlTransaction dtlTransaction);
+
+        void openScanQr(DtlTransaction dtlTransaction);
     }
 }

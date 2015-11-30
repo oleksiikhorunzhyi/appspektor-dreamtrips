@@ -30,7 +30,7 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
         StringBuilder sb = new StringBuilder();
         sb.append(getModelObject().getLongName());
         Queryable.from(getModelObject().getWithinLocations())
-                .filter(temp -> temp.getCategory() == DtlLocationCategory.METRO)
+                .filter(temp -> temp.getCategory() != DtlLocationCategory.METRO)
                 .sort(DtlLocation.CATEGORY_COMPARATOR)
                 .forEachR(tempLocation -> {
                     sb.append(", ");

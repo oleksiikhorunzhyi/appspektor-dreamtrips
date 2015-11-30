@@ -42,7 +42,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
+        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
 
         if (dtlTransaction.getUploadTask() != null) {
             view.hideScanButton();
@@ -68,7 +68,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         view.showProgress();
         //
         dtlTransaction.setAmount(Double.parseDouble(amount));
-        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getMerchantId(), dtlTransaction.getAmount()),
+        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getId(), dtlTransaction.getAmount()),
                 this::attachDtPoints);
     }
 
@@ -76,7 +76,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         dtlTransaction.setAmount(Double.parseDouble(amount));
         dtlTransaction.setPoints(points);
         //
-        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
         view.openVerify(dtlPlace, dtlTransaction);
     }
 
@@ -115,7 +115,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
         dtlTransaction.setUploadTask(uploadTask);
 
-        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
 
         checkVerification();
     }

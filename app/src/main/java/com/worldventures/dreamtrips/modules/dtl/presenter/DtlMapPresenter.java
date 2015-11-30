@@ -75,7 +75,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     public void onMarkerClick(String merchantId) {
-        showPlaceInfo(Queryable.from(dtlPlaces).firstOrDefault(item -> item.getMerchantId().equals(merchantId)));
+        showPlaceInfo(Queryable.from(dtlPlaces).firstOrDefault(item -> item.getId().equals(merchantId)));
     }
 
     private void showPlaceInfo(DtlPlace place) {
@@ -121,7 +121,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
         if (view != null) {
             view.clearMap();
             Queryable.from(filtered).forEachR(dtlPlace ->
-                    view.addPin(dtlPlace.getMerchantId(), new LatLng(dtlPlace.getCoordinates().getLat(),
+                    view.addPin(dtlPlace.getId(), new LatLng(dtlPlace.getCoordinates().getLat(),
                             dtlPlace.getCoordinates().getLng()), dtlPlace.getPlaceType()));
             view.renderPins();
         }

@@ -23,7 +23,7 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
     @Override
     public void submitClicked() {
         view.showProgress();
-        doRequest(new SuggestPlaceCommand(new SuggestPlacePostData(place.getMerchantId(),
+        doRequest(new SuggestPlaceCommand(new SuggestPlacePostData(place.getId(),
                         place.getDisplayName(), place.getCity(),
                         view.getContactName(), view.getPhone(),
                         obtainContactTime(),

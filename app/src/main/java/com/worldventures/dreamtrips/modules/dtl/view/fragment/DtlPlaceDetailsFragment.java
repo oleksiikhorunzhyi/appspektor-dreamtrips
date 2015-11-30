@@ -41,10 +41,10 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflate
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.Offer;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.util.SpanUtils;
 
@@ -150,21 +150,25 @@ public class DtlPlaceDetailsFragment
         placeInfoInflater.apply(place);
         categoryDataInflater.apply(place);
         setType(place);
-        setDescriptions(place.getDescription(), place.getPerksDescription());
+        setDescriptions(place);
         setAdditional(place);
         setMap(place);
     }
 
     private void setType(DtlPlace dtlPlace) {
-        earnWrapper.setVisibility(dtlPlace.hasOffer(Offer.POINT_REWARD) ? View.VISIBLE : View.GONE);
+        earnWrapper.setVisibility(dtlPlace.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
         merchantWrapper.setVisibility(dtlPlace.hasNoOffers() ? View.VISIBLE : View.GONE);
     }
 
-    private void setDescriptions(String description, String perksDescription) {
-        this.description.setText(Html.fromHtml(description));
+    private void setDescriptions(DtlPlace place) {
+        this.description.setText(Html.fromHtml(place.getDescription()));
+        //
+        String perksDescription = "";
+        if (place.hasOffer(DtlOffer.TYPE_PERK))
+            perksDescription = place.getPerkDescription();
         this.perksDescription.setText(perksDescription);
         //
-        this.descriptionHeader.setVisibility(TextUtils.isEmpty(description) ? View.GONE : View.VISIBLE);
+        this.descriptionHeader.setVisibility(TextUtils.isEmpty(place.getDescription()) ? View.GONE : View.VISIBLE);
         this.perksDescriptionHeader.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
     }
 

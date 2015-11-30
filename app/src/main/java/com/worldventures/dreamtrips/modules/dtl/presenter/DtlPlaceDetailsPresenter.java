@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 
@@ -56,7 +55,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     }
 
     private void processTransaction() {
-        dtlTransaction = snapper.getDtlTransaction(place.getMerchantId());
+        dtlTransaction = snapper.getDtlTransaction(place.getId());
 
         if (dtlTransaction != null
                 && !checkSucceedEvent()
@@ -65,7 +64,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
             // in the enrollment wizard(maybe needed in future)
             if (dtlTransaction.getUploadTask() != null)
                 photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-            snapper.cleanDtlTransaction(place.getMerchantId(), dtlTransaction);
+            snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
         }
         //
         view.setTransaction(dtlTransaction);
@@ -82,7 +81,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
     private boolean checkTransactionOutOfDate() {
         if (dtlTransaction != null && dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
-            snapper.deleteDtlTransaction(place.getMerchantId());
+            snapper.deleteDtlTransaction(place.getId());
             dtlTransaction = null;
             return true;
         } else return false;
@@ -125,12 +124,12 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         dtlTransaction.setLocation(DtlTransactionLocation.fromDtlPlace(place,
                 location.getLatitude(), location.getLongitude()));
 
-        snapper.saveDtlTransaction(place.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(place.getId(), dtlTransaction);
         view.setTransaction(dtlTransaction);
     }
 
     public void onEstimationClick() {
-        view.showEstimationDialog(new PointsEstimationDialogBundle(place.getMerchantId()));
+        view.showEstimationDialog(new PointsEstimationDialogBundle(place.getId()));
     }
 
     public void onMerchantClick() {

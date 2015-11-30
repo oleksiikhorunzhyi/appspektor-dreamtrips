@@ -38,7 +38,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         super.takeView(view);
         apiErrorPresenter.setView(view);
         //
-        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
+        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getId());
         view.setPlace(dtlPlace);
 
         if (!TextUtils.isEmpty(dtlTransaction.getCode()))
@@ -47,13 +47,13 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
     public void codeScanned(String content) {
         dtlTransaction.setCode(content);
-        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
         //
         checkReceiptUploading();
     }
 
     public void photoUploadFailed() {
-        snapper.cleanDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.cleanDtlTransaction(dtlPlace.getId(), dtlTransaction);
         view.openScanReceipt(dtlTransaction);
     }
 
@@ -63,7 +63,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         dtlTransaction.setReceiptPhoto(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
-        doRequest(new EarnPointsRequest(dtlPlace.getMerchantId(), dtlTransaction),
+        doRequest(new EarnPointsRequest(dtlPlace.getId(), dtlTransaction),
                 this::processTransactionResult);
     }
 
@@ -71,7 +71,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         view.hideProgress();
         //
         dtlTransaction.setDtlTransactionResult(result);
-        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
         //
         eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
         view.finish();

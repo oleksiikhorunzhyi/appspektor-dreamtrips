@@ -73,8 +73,8 @@ public class DtlPlaceHelper {
             if (operationDay != null && operationDay.getOperationHours() != null) {
                 for (OperationHours hours : operationDay.getOperationHours()) {
                     TimeZone timeZone = TimeZone.getDefault();
-                    LocalTime localTimeStart = LocalTime.parse(hours.getStartTime());
-                    LocalTime localTimeEnd = LocalTime.parse(hours.getEndTime());
+                    LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
+                    LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
                     //
                     DateTime dateTimeStart = DateTime.now().withTime(localTimeStart.getHourOfDay(),
                             localTimeStart.getMinuteOfHour(), 0, 0);

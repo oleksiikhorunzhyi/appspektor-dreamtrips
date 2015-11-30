@@ -4,23 +4,23 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class OperationHours implements Parcelable {
-    String startTime;
-    String endTime;
+    String from;
+    String to;
 
     public OperationHours() {
     }
 
     protected OperationHours(Parcel in) {
-        startTime = in.readString();
-        endTime = in.readString();
+        from = in.readString();
+        to = in.readString();
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getFrom() {
+        return from;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getTo() {
+        return to;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ public class OperationHours implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(startTime);
-        dest.writeString(endTime);
+        dest.writeString(from);
+        dest.writeString(to);
     }
 }

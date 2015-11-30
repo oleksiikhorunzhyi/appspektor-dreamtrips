@@ -19,11 +19,8 @@ import retrofit.http.Query;
 
 public interface DtlApi {
 
-    @GET("/api/dtl/v2/locations/search")
-    ArrayList<DtlLocation> searchDtlLocations(@Query("text") String keyword);
-
     @GET("/api/dtl/v2/locations")
-    ArrayList<DtlLocation> getNearbyDtlLocations(@Query("lat") double lat, @Query("lng") double lng);
+    ArrayList<DtlLocation> getNearbyDtlLocations(@Query("ll") String latLng, @Query("query") String query);
 
     @GET("/api/dtl/v2/locations/{id}/merchants")
     ArrayList<DtlPlace> getDtlPlaces(@Path("id") String locationId);

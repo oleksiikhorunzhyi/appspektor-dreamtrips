@@ -7,15 +7,21 @@ import java.util.ArrayList;
 
 public class GetDtlLocationsQuery extends DtlRequest<ArrayList<DtlLocation>> {
 
-    private String keyword;
+    private String query;
+    private String latLng;
 
-    public GetDtlLocationsQuery(String keyword) {
+    public GetDtlLocationsQuery(double latitude, double longitude) {
         super((Class<ArrayList<DtlLocation>>) new ArrayList<DtlLocation>().getClass());
-        this.keyword = keyword;
+        this.latLng = new StringBuilder().append(latitude).append(",").append(longitude).toString();
+    }
+
+    public GetDtlLocationsQuery(String query) {
+        super((Class<ArrayList<DtlLocation>>) new ArrayList<DtlLocation>().getClass());
+        this.query = query;
     }
 
     @Override
-    public ArrayList<DtlLocation> loadDataFromNetwork() {
-        return getService().searchDtlLocations(keyword);
+    public ArrayList<DtlLocation> loadDataFromNetwork() throws Exception {
+        return getService().getNearbyDtlLocations(latLng, query);
     }
 }

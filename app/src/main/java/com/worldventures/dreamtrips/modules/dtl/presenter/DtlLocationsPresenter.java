@@ -3,15 +3,12 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
-import com.worldventures.dreamtrips.modules.dtl.api.location.GetNearbyDtlLocationQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
@@ -69,7 +66,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void loadNearbyCities(Location currentLocation) {
         view.citiesLoadingStarted();
-        doRequest(new GetNearbyDtlLocationQuery(currentLocation.getLatitude(),
+        doRequest(new GetDtlLocationsQuery(currentLocation.getLatitude(),
                         currentLocation.getLongitude()),
                 dtlLocations -> onNearbyLocationLoaded(dtlLocations, currentLocation));
     }
@@ -124,11 +121,11 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void search(String caption) {
         if (view != null) {
-            int oldLenght = this.caption != null ? this.caption.length() : 0;
+            int oldLength = this.caption != null ? this.caption.length() : 0;
 
             this.caption = caption;
 
-            boolean apiSearch = oldLenght < caption.length() &&
+            boolean apiSearch = oldLength < caption.length() &&
                     caption.length() == SEARCH_SYMBOL_COUNT;
 
             if (caption.length() < SEARCH_SYMBOL_COUNT) flushSearch();

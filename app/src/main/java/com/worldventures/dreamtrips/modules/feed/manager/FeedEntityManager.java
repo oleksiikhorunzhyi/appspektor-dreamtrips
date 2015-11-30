@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.api.DreamSpiceManager.FailureListener;
 import static com.worldventures.dreamtrips.core.api.DreamSpiceManager.SuccessListener;
@@ -37,7 +38,7 @@ public class FeedEntityManager {
             actualizeLikes(feedEntity, true);
             eventBus.post(new EntityLikedEvent(feedEntity));
         }, spiceException -> {
-            //todo
+            Timber.e(spiceException, this.getClass().getSimpleName());
         });
     }
 
@@ -47,7 +48,7 @@ public class FeedEntityManager {
             actualizeLikes(feedEntity, false);
             eventBus.post(new EntityLikedEvent(feedEntity));
         }, spiceException -> {
-            //todo
+            Timber.e(spiceException, this.getClass().getSimpleName());
         });
     }
 

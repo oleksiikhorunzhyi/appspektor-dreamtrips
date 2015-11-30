@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.RateContainer;
 import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
@@ -17,6 +18,7 @@ public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<Sugges
                                 view.getCleanlinessRating(), view.getUniquenessRating()),
                         view.getAdditionalInfo())),
                 aVoid -> {
+                    TrackingHelper.dtlSuggestMerchant(null);
                     view.merchantSubmitted();
                     view.hideProgress();
                     view.clearInput();

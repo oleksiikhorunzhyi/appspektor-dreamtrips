@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
@@ -18,6 +19,7 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
     public void takeView(View view) {
         super.takeView(view);
         view.syncUiWithPlace(place);
+        TrackingHelper.dtlSuggestMerchantView();
     }
 
     @Override
@@ -31,6 +33,7 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
                                 view.getCleanlinessRating(), view.getUniquenessRating()),
                         view.getAdditionalInfo())),
                 aVoid -> {
+                    TrackingHelper.dtlSuggestMerchant(place);
                     view.hideProgress();
                     view.merchantSubmitted();
                 },

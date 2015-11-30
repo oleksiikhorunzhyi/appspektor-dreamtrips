@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.content.Intent;
 import android.location.Location;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.R;
@@ -9,6 +11,8 @@ import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
@@ -17,7 +21,6 @@ import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 
@@ -128,6 +131,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         snapper.saveDtlTransaction(place.getMerchantId(), dtlTransaction);
         view.setTransaction(dtlTransaction);
+        TrackingHelper.dtlCheckin(place.getMerchantId());
     }
 
     public void onEstimationClick() {
@@ -147,6 +151,44 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         //
         DtlLocation dtlLocation = snapper.getSelectedDtlLocation();
         view.openMap(new PlacesBundle(dtlLocation));
+    }
+
+    /** Analytic-related */
+    public void trackScreen() {
+        String placeTypeAction = place.hasNoOffers() ?
+                TrackingHelper.DTL_ACTION_DINING_VIEW : TrackingHelper.DTL_ACTION_OFFER_VIEW;
+        TrackingHelper.dtlPlaceView(placeTypeAction, place.getMerchantId());
+    }
+
+    /** Analytic-related */
+    public void trackSharing(@ShareFragment.ShareType String type) {
+        TrackingHelper.dtlShare(type);
+    }
+
+    /** Analytic-related */
+    public void trackPointEstimator() {
+        TrackingHelper.dtlPointsEstimationView();
+    }
+
+    /** Analytic-related */
+    public void trackEarnFlowView() {
+        TrackingHelper.dtlEarnView();
+    }
+
+    public void routeToPlaceRequested(@Nullable final Intent intent) {
+        view.bind(locationDelegate.getLastKnownLocation().compose(new IoToMainComposer<>()))
+                .subscribe(location -> {
+                    TrackingHelper.dtlMapDestination(location.getLatitude(), location.getLongitude(),
+                            place.getCoordinates().getLat(), place.getCoordinates().getLng());
+                    TrackingHelper.dtlDirectionsView();
+                    view.showMerchantMap(intent);
+                }, e -> {
+                    TrackingHelper.dtlMapDestination(null, null,
+                            place.getCoordinates().getLat(), place.getCoordinates().getLng());
+                    TrackingHelper.dtlDirectionsView();
+                    view.showMerchantMap(intent);
+                    Timber.e(e, "Something went wrong while location update for analytics. Possibly GPS is off");
+                });
     }
 
     public interface View extends DtlPlaceCommonDetailsPresenter.View, RxView {
@@ -170,5 +212,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         void enableCheckinButton();
 
         void disableCheckinButton();
+
+        void showMerchantMap(@Nullable Intent intent);
     }
 }

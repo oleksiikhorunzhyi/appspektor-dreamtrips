@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +47,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.Offer;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
-import com.worldventures.dreamtrips.util.SpanUtils;
+import com.worldventures.dreamtrips.util.ImageTextItem;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_place_details)
@@ -147,6 +148,8 @@ public class DtlPlaceDetailsFragment
         commonDataInflater.setView(rootView);
         placeInfoInflater.setView(rootView);
         categoryDataInflater.setView(rootView);
+
+        getPresenter().trackScreen();
     }
 
     @Override
@@ -178,13 +181,19 @@ public class DtlPlaceDetailsFragment
             TextView contactView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.list_item_dtl_place_contact, additionalContainer, false);
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
             contactView.setText(contact.text);
-            if (Linkify.addLinks(contactView, Linkify.ALL)) SpanUtils.stripUnderlines(contactView);
             if (contact.intent != null && contact.intent
                     .resolveActivityInfo(getActivity().getPackageManager(), 0) != null)
-                contactView.setOnClickListener(view -> startActivity(contact.intent));
+                contactView.setOnClickListener(view -> {
+                    // this bifurcation below and view->presenter->view ping-pong with
+                    // locationDelegate is for analytics solely
+                    if (contact.type.equals(ImageTextItem.Type.ADDRESS)) {
+                        getPresenter().routeToPlaceRequested(contact.intent);
+                    } else {
+                        startActivity(contact.intent);
+                    }
+                });
             additionalContainer.addView(contactView);
         });
-
     }
 
     private void setMap(DtlPlace place) {
@@ -212,6 +221,7 @@ public class DtlPlaceDetailsFragment
 
     @Override
     public void showEstimationDialog(PointsEstimationDialogBundle data) {
+        getPresenter().trackPointEstimator();
         router.moveTo(Route.DTL_POINTS_ESTIMATION, NavigationConfigBuilder.forDialog()
                 .data(data)
                 .fragmentManager(getChildFragmentManager())
@@ -236,6 +246,9 @@ public class DtlPlaceDetailsFragment
         //
         navigationConfigBuilder.data(dtlPlace);
         router.moveTo(route, navigationConfigBuilder.build());
+        if (!route.equals(Route.DTL_TRANSACTION_SUCCEED)) {
+            getPresenter().trackEarnFlowView();
+        }
     }
 
     @Override
@@ -264,10 +277,18 @@ public class DtlPlaceDetailsFragment
             DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
             //
+            getPresenter().trackSharing(type);
+            //
             router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
                     .data(shareBundle)
                     .build());
         }).show();
+    }
+
+    @OnTouch(R.id.dtl_place_details_map_click_interceptor)
+    boolean onMapTouched() {
+        getPresenter().routeToPlaceRequested(null);
+        return false;
     }
 
     @OnClick(R.id.place_details_earn)
@@ -310,6 +331,11 @@ public class DtlPlaceDetailsFragment
             getPresenter().onBackPressed();
             return true;
         } else return false;
+    }
+
+    @Override
+    public void showMerchantMap(@Nullable Intent intent) {
+        if (intent != null) startActivity(intent);
     }
 
     @Override

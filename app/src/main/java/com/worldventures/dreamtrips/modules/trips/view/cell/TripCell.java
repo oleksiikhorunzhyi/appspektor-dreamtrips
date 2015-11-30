@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
-import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
+import com.worldventures.dreamtrips.core.utils.events.LikeTripPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
@@ -109,9 +109,8 @@ public class TripCell extends AbstractCell<TripModel> {
     @OnClick(R.id.imageViewLike)
     void onLike() {
         TripModel tripModel = getModelObject();
-        getModelObject().setLiked(!getModelObject().isLiked());
         syncUIStateWithModel();
-        getEventBus().post(new LikeTripEvent(getModelObject()));
+        getEventBus().post(new LikeTripPressedEvent(getModelObject()));
         getEventBus().post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_LIKE, tripModel.getTripId()));
     }
 

@@ -9,20 +9,15 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -31,14 +26,13 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 
@@ -63,6 +57,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     private boolean loading = true;
     private boolean noMoreFeeds = false;
     private UidItemDelegate uidItemDelegate;
+    @Inject
+    protected FeedEntityManager entityManager;
 
     public BaseFeedPresenter() {
         uidItemDelegate = new UidItemDelegate(this);
@@ -72,6 +68,12 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void restoreInstanceState(Bundle savedState) {
         super.restoreInstanceState(savedState);
         if (savedState == null) feedItems = new ArrayList<>();
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        entityManager.setDreamSpiceManager(dreamSpiceManager);
     }
 
     @Override
@@ -202,27 +204,23 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
             FeedEntity model = event.getModel();
-            boolean isLiked = model.isLiked();
-            DreamTripsRequest command = isLiked ?
-                    new UnlikeEntityCommand(model.getUid()) :
-                    new LikeEntityCommand(model.getUid());
-            doRequest(command, element -> itemLiked(model.getUid(), !isLiked));
+            if (model.isLiked()) {
+                entityManager.unlike(model);
+            } else {
+                entityManager.like(model);
+            }
         }
     }
 
     public void onEvent(EntityLikedEvent event) {
-        itemLiked(event.getId(), event.isLiked());
+        itemLiked(event.getFeedEntity());
     }
 
-    private void itemLiked(String uid, boolean isLiked) {
-        Queryable.from(feedItems).forEachR(event -> {
-            FeedEntity item = event.getItem();
-
-            if (item.getUid().equals(uid) && item.isLiked() != isLiked) {
-                item.setLiked(isLiked);
-                int currentCount = item.getLikesCount();
-                currentCount = item.isLiked() ? currentCount + 1 : currentCount - 1;
-                item.setLikesCount(currentCount);
+    private void itemLiked(FeedEntity feedEntity) {
+        Queryable.from(feedItems).forEachR(feedItem -> {
+            FeedEntity item = feedItem.getItem();
+            if (item.getUid().equals(feedEntity.getUid())) {
+                item.syncLikeState(feedEntity);
             }
         });
 

@@ -250,8 +250,8 @@ public abstract class TripImagesListPresenter
 
     public void onEvent(EntityLikedEvent event) {
         for (Object o : photos) {
-            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getId())) {
-                ((Photo) o).setLiked(event.isLiked());
+            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getFeedEntity().getUid())) {
+                ((Photo) o).syncLikeState(event.getFeedEntity());
             }
         }
     }

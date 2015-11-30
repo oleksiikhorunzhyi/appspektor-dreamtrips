@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
@@ -11,19 +10,19 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
-import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
+import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+
+import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
@@ -31,6 +30,8 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     private FeedEntity feedEntity;
+    @Inject
+    FeedEntityManager entityManager;
 
     UidItemDelegate uidItemDelegate;
 
@@ -45,6 +46,12 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
             photo.setLikesCount(feedEntity.getLikesCount());
             setupActualViewState();
         });
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        entityManager.setDreamSpiceManager(dreamSpiceManager);
     }
 
     private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {
@@ -67,26 +74,18 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     public void onLikeAction() {
-        DreamTripsRequest dreamTripsRequest = !photo.isLiked() ?
-                new LikeEntityCommand(photo.getUid()) :
-                new UnlikeEntityCommand(photo.getUid());
-        doRequest(dreamTripsRequest, obj -> onLikeSuccess(), exc -> onLikeFailure());
+        if (!photo.isLiked()) {
+            entityManager.like(photo);
+        } else {
+            entityManager.unlike(photo);
+        }
     }
 
-    private void onLikeSuccess() {
-        boolean isLiked = !photo.isLiked();
-        photo.setLiked(isLiked);
-        int likesCount = photo.getLikesCount();
-        int actualLikeCount = isLiked ? likesCount + 1 : likesCount - 1;
-        photo.setLikesCount(actualLikeCount);
-        view.setLiked(isLiked);
-        view.setLikeCount(actualLikeCount);
-        eventBus.post(new EntityLikedEvent(photo.getFsId(), isLiked));
+    public void onEvent(EntityLikedEvent event){
+        photo.syncLikeState(event.getFeedEntity());
+        view.setLiked(event.getFeedEntity().isLiked());
+        view.setLikeCount(event.getFeedEntity().getLikesCount());
         TrackingHelper.like(type, String.valueOf(photo.getFsId()), getAccountUserId());
-    }
-
-    private void onLikeFailure() {
-        view.informUser(context.getString(R.string.can_not_like_photo));
     }
 
     @Override

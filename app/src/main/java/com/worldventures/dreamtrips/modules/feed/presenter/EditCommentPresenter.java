@@ -4,13 +4,13 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.api.EditCommentCommand;
-import com.worldventures.dreamtrips.modules.feed.event.CommentChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
 
     private Comment comment;
+    FeedEntityManager entityManager;
 
     public EditCommentPresenter(Comment comment) {
         this.comment = comment;
@@ -25,16 +25,27 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
         view.setUsername(owner.getFullName());
     }
 
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        entityManager.setDreamSpiceManager(dreamSpiceManager);
+    }
+
     public void onSave() {
         if (comment != null && view != null) {
             comment.setMessage(view.getText());
-            doRequest(new EditCommentCommand(comment), result -> {
-                eventBus.post(new CommentChangedEvent(result));
+            entityManager.updateComment(comment);
+        }
+    }
+
+    public void onEvent(FeedEntityManager.CommentEvent event) {
+        if (event.getType() == FeedEntityManager.CommentEvent.Type.EDITED) {
+            if (event.getSpiceException() == null) {
                 view.close();
-            }, error -> {
-                super.handleError(error);
+            } else {
+                handleError(event.getSpiceException());
                 view.enableSaveButton();
-            });
+            }
         }
     }
 

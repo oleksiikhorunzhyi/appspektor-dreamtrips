@@ -1,21 +1,22 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
-import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -27,6 +28,9 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
     //
     private UidItemDelegate uidItemDelegate;
     private WeakHandler handler = new WeakHandler();
+
+    @Inject
+    FeedEntityManager entityManager;
 
     public FeedItemDetailsPresenter(FeedItem feedItem) {
         super(feedItem.getItem());
@@ -41,6 +45,12 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
         loadFullEventInfo();
         //
         eventBus.post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, feedItem.getItem().getUid(), feedItem.getType()));
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        entityManager.setDreamSpiceManager(dreamSpiceManager);
     }
 
     @Override
@@ -71,21 +81,18 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
     public void onEvent(LikesPressedEvent event) {
         if (view.isVisibleOnScreen()) {
             FeedEntity model = event.getModel();
-            DreamTripsRequest command = model.isLiked() ?
-                    new UnlikeEntityCommand(model.getUid()) :
-                    new LikeEntityCommand(model.getUid());
-            doRequest(command, element -> itemLiked());
+            if (!model.isLiked()) {
+                entityManager.like(model);
+            } else {
+                entityManager.unlike(model);
+            }
         }
     }
 
-    private void itemLiked() {
-        feedEntity.setLiked(!feedEntity.isLiked());
-        int currentCount = feedEntity.getLikesCount();
-        currentCount = feedEntity.isLiked() ? currentCount + 1 : currentCount - 1;
-        feedEntity.setLikesCount(currentCount);
+    public void onEvent(EntityLikedEvent event){
+        feedEntity.syncLikeState(event.getFeedEntity());
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
-        feedItem.setItem(feedEntity);
-        view.updateFeedItem(feedItem);
+
     }
 
     public void onEvent(LoadFlagEvent event) {

@@ -121,6 +121,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                     object -> {
                         eventBus.post(new ReloadFriendListEvent());
                         onSuccess(event.getPosition());
+                        updateRequestsCount();
                     },
                     this::onError);
         });
@@ -144,7 +145,10 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         view.startLoading();
         doRequest(new ActOnRequestCommand(event.getUser().getId(),
                         ActOnRequestCommand.Action.REJECT.name()),
-                object -> onSuccess(event.getPosition()),
+                object -> {
+                    onSuccess(event.getPosition());
+                    updateRequestsCount();
+                },
                 this::onError);
     }
 
@@ -162,6 +166,15 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         if (view != null) {
             view.finishLoading();
             handleError(exception);
+        }
+    }
+
+    private void updateRequestsCount() {
+        if (view.getAdapter().getItem(0) instanceof RequestHeaderModel) {
+            RequestHeaderModel model = ((RequestHeaderModel) view.getAdapter().getItem(0));
+            model.setCount(Queryable.from(view.getAdapter().getItems())
+                    .count(item -> item instanceof User && ((User) item).getRelationship() == INCOMING_REQUEST));
+            view.getAdapter().notifyItemChanged(0);
         }
     }
 

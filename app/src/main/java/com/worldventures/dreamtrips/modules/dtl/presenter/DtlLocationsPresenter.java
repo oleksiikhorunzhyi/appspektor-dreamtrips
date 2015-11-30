@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 
 import java.util.ArrayList;
-import java.util.List;g
+import java.util.List;
 
 import javax.inject.Inject;
 

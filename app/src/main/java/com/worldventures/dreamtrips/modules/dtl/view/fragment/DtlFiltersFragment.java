@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
+import java.util.Collections;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -96,6 +98,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
     }
 
     private void setupAttributesHeader(DtlFilterData filterData) {
+        Collections.sort(filterData.getAmenities());
         filtersAdapter.clearAndUpdateItems(filterData.getAmenities());
         filtersAdapter.addItem(0, new DtlPlacesFilterHeaderAttribute(getString(R.string.dtl_amenities)));
     }

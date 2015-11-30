@@ -7,13 +7,18 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
+
+import java.util.Map;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -54,19 +59,13 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     }
 
     @Override
-    public void stopProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
-        calculateButton.setVisibility(View.VISIBLE);
-        calculateButton.setEnabled(true);
-    }
-
-    @Override
     public void showError(@StringRes int errorRes) {
         inputPoints.setError(getString(errorRes));
     }
 
     @Override
     public void showEstimatedPoints(int value) {
+        stopProgress();
         pointsEstimated.setText(getString(R.string.dtl_dt_points, value));
     }
 
@@ -85,4 +84,20 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     void onCancel() {
         eventBus.post(new CloseDialogEvent());
     }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        stopProgress();
+        if (errorResponse.containsField(DtlPointsEstimationPresenter.BILL_TOTAL)) {
+            inputPoints.setError(errorResponse.getMessageForField(DtlPointsEstimationPresenter.BILL_TOTAL));
+        }
+        return false;
+    }
+
+    private void stopProgress() {
+        progressBar.setVisibility(View.INVISIBLE);
+        calculateButton.setVisibility(View.VISIBLE);
+        calculateButton.setEnabled(true);
+    }
+
 }

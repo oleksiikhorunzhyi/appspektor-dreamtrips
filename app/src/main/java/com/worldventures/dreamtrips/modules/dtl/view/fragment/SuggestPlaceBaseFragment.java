@@ -14,10 +14,14 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.innahema.collections.query.functions.Converter;
+import com.innahema.collections.query.queriables.Queryable;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
@@ -25,12 +29,14 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.DigitsValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.InputLengthValidator;
 
 import java.util.Calendar;
+import java.util.Map;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -362,6 +368,26 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         sweetAlertDialog.setOnDismissListener(this::dialogCanceled);
         sweetAlertDialog.setCanceledOnTouchOutside(true);
         sweetAlertDialog.show();
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        if (errorResponse.containsField(SuggestPlacePostData.NAME)) {
+            restaurantName.setError(errorResponse.getMessageForField(SuggestPlacePostData.NAME));
+        }
+        if (errorResponse.containsField(SuggestPlacePostData.CONTACT)) {
+            contactName.setError(errorResponse.getMessageForField(SuggestPlacePostData.CONTACT));
+        }
+        if (errorResponse.containsField(SuggestPlacePostData.CITY)) {
+            city.setError(errorResponse.getMessageForField(SuggestPlacePostData.CITY));
+        }
+        if (errorResponse.containsField(SuggestPlacePostData.PHONE)) {
+            phoneNumber.setError(errorResponse.getMessageForField(SuggestPlacePostData.PHONE));
+        }
+        if (errorResponse.containsField(SuggestPlacePostData.DESCRIPTION)) {
+            additionalInfo.setError(errorResponse.getMessageForField(SuggestPlacePostData.DESCRIPTION));
+        }
+        return false;
     }
 
     /**

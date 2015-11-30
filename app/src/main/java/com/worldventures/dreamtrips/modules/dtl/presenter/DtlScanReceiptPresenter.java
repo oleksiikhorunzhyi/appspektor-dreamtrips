@@ -10,12 +10,11 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacePointsEstimationQuery;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.util.ValidationUtils;
-
-import java.io.File;
 
 import javax.inject.Inject;
 
@@ -42,6 +41,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
         dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
 
         if (dtlTransaction.getUploadTask() != null) {
@@ -65,8 +65,17 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     }
 
     public void verify() {
+        view.showProgress();
+        //
         dtlTransaction.setAmount(Double.parseDouble(amount));
+        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getMerchantId(), dtlTransaction.getAmount()),
+                this::attachDtPoints);
+    }
 
+    private void attachDtPoints(Double points) {
+        dtlTransaction.setAmount(Double.parseDouble(amount));
+        dtlTransaction.setPoints(points);
+        //
         snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
         view.openVerify(dtlPlace, dtlTransaction);
     }
@@ -111,7 +120,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         checkVerification();
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends ApiErrorView {
         void openVerify(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
 
         void hideScanButton();
@@ -121,5 +130,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         void enableVerification();
 
         void disableVerification();
+
+        void showProgress();
     }
 }

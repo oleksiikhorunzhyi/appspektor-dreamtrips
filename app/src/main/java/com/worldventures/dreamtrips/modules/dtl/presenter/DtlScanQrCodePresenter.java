@@ -6,11 +6,12 @@ import android.text.TextUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
@@ -35,6 +36,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
+        //
         dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
         view.setPlace(dtlPlace);
 
@@ -55,7 +58,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         dtlTransaction.setReceiptPhoto(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
-        doRequest(new EarnPointsRequest(dtlPlace.getMerchantId(), dtlTransaction), this::processTransactionResult);
+        doRequest(new EarnPointsRequest(dtlPlace.getMerchantId(), dtlTransaction),
+                this::processTransactionResult);
     }
 
     private void processTransactionResult(DtlTransactionResult result) {
@@ -119,13 +123,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     }
 
     private void receiptUploadError() {
+        view.photoUploadError();
         view.alert(context.getString(R.string.dtl_photo_upload_error));
-        view.hideProgress();
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        view.alert(context.getString(R.string.wrong_qr));
         view.hideProgress();
     }
 
@@ -135,12 +134,14 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         if (transferObserver != null) transferObserver.setTransferListener(null);
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends ApiErrorView {
         void openTransactionSuccess(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
 
         void showProgress(@StringRes int titleRes);
 
         void hideProgress();
+
+        void photoUploadError();
 
         void setPlace(DtlPlace dtlPlace);
     }

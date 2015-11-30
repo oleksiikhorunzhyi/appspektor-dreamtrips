@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacePointsEstimationQuery;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 
@@ -20,6 +19,14 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
         this.dtlPlace = place;
     }
 
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
+        view.attachTransaction(dtlTransaction);
+        view.attachDtPoints(Double.valueOf(dtlTransaction.getPoints()).intValue());
+    }
+
     public void rescan() {
         photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
         dtlTransaction.setUploadTask(null);
@@ -27,16 +34,6 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
         snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
 
         view.openScanReceipt();
-    }
-
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
-        view.attachTransaction(dtlTransaction);
-
-        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getMerchantId(), dtlTransaction.getAmount()),
-                points -> view.attachDtPoints(points.intValue()));
     }
 
     public interface View extends Presenter.View {

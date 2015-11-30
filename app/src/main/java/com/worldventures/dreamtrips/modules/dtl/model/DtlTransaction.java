@@ -12,9 +12,15 @@ public class DtlTransaction {
 
     public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000l;
 
+    public static final String TOKEN = "token";
+    public static final String AMOUNT = "amount";
+    public static final String LOCATION = "location";
+    public static final String RECEIPT = "receiptPhoto";
+
     String checkin;
     long checkinTimestamp;
     double amount;
+    double points;
     String receiptPhoto;
     String token;
     DtlTransactionLocation location;
@@ -90,5 +96,13 @@ public class DtlTransaction {
 
     public DtlTransactionResult getDtlTransactionResult() {
         return dtlTransactionResult;
+    }
+
+    public void setPoints(double points) {
+        this.points = points;
+    }
+
+    public double getPoints() {
+        return points;
     }
 }

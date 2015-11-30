@@ -2,6 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 
 public class SuggestPlacePostData {
 
+    public static final String NAME = "name";
+    public static final String CITY = "city";
+    public static final String CONTACT = "contact_name";
+    public static final String DESCRIPTION = "description";
+    public static final String PHONE = "phone";
+
     public String placeId;
     public String name;
     public String city;

@@ -7,7 +7,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetNearbyDtlLocationQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
@@ -35,15 +37,15 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     Status status = Status.NEARBY;
 
     DtlLocation selectedLocation;
+    //
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.startLoading();
-
+        apiErrorPresenter.setView(view);
+        //
         if (dtlLocations != null || searchLocations != null) {
             setItems();
-            view.finishLoading();
             return;
         }
 
@@ -53,6 +55,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         selectedLocation = db.getSelectedDtlLocation();
         //
         eventBus.post(new RequestLocationUpdateEvent());
+
+        view.startLoading();
     }
 
     public void onEvent(LocationObtainedEvent event) {
@@ -89,12 +93,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         db.saveSelectedDtlLocation(location);
         db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
         view.showMerchants(new PlacesBundle(location));
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.finishLoading();
     }
 
     private void setItems() {
@@ -168,10 +166,9 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
                             .toList()
                             .compose(new IoToMainComposer<>())
             ).subscribe(view::setItems, e -> Timber.e(e, "Smth went wrong while search"));
-
     }
 
-    public interface View extends RxView {
+    public interface View extends RxView, ApiErrorView {
 
         void setItems(List<DtlLocation> dtlLocations);
 

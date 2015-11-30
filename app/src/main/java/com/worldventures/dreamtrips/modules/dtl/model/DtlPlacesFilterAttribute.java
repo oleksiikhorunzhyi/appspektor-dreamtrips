@@ -2,8 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
-public class DtlPlacesFilterAttribute implements Parcelable {
+public class DtlPlacesFilterAttribute implements Parcelable, Comparable<DtlPlacesFilterAttribute> {
 
     private String attributeName;
     private Boolean checked;
@@ -49,6 +50,11 @@ public class DtlPlacesFilterAttribute implements Parcelable {
     @Override
     public int hashCode() {
         return attributeName != null ? attributeName.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(@NonNull DtlPlacesFilterAttribute another) {
+        return attributeName.compareToIgnoreCase(another.attributeName);
     }
 
     ///////////////////////////////////////////////////////////////////////////

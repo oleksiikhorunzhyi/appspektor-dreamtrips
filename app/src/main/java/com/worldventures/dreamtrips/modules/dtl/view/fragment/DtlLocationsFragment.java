@@ -17,12 +17,12 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
@@ -151,6 +151,11 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     public void setItems(List<DtlLocation> dtlLocations) {
         adapter.clear();
         adapter.addItems(dtlLocations);
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
     }
 
     @Override

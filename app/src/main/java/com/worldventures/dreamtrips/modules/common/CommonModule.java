@@ -79,8 +79,6 @@ import dagger.Provides;
                 BaseImageFragment.class,
                 BaseImagePresenter.class,
                 BaseDialogFragmentWithPresenter.class,
-
-                LogoutDelegate.class,
         },
         complete = false,
         library = true

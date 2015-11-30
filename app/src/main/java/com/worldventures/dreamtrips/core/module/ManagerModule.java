@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
@@ -35,6 +36,8 @@ import dagger.Provides;
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
+
+                LogoutDelegate.class,
         },
         library = true, complete = false
 )
@@ -78,5 +81,11 @@ public class ManagerModule {
     @Provides
     DtlFilterDelegate dtlFilterDelegate() {
         return new DtlFilterDelegate();
+    }
+
+    @Singleton
+    @Provides
+    LogoutDelegate logoutDelegate(@ForApplication Injector injector) {
+        return new LogoutDelegate(injector);
     }
 }

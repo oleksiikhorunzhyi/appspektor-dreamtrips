@@ -41,6 +41,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         switch (type) {
             case FIXED_LIST:
             case MEMBER_IMAGES:
+            case FOREIGN_IMAGES:
             case MY_IMAGES:
                 if (photo instanceof BucketPhoto) return new BucketFullscreenPresenter(foreign);
                 else if (photo instanceof TripImage) return new SimpleFullscreenPresenter();
@@ -48,7 +49,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
             case YOU_SHOULD_BE_HERE:
             case INSPIRE_ME:
                 return new InspirationFullscreenPresenter();
-            case FOREIGN_IMAGES:
             case VIDEO_360:
             default:
                 return new SimpleFullscreenPresenter();

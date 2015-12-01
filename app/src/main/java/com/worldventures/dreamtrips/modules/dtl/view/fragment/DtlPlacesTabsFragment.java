@@ -107,6 +107,7 @@ public class DtlPlacesTabsFragment
             }
             return super.onOptionsItemSelected(item);
         });
+
     }
 
     @Override
@@ -118,6 +119,8 @@ public class DtlPlacesTabsFragment
             adapter.notifyDataSetChanged();
         }
         tabStrip.setupWithPagerBadged(pager);
+        //
+        tabStrip.getTabAt(1).select();
     }
 
     @Override

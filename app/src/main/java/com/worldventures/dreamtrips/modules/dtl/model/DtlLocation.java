@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.Collections;
@@ -124,6 +125,25 @@ public class DtlLocation implements Parcelable {
     public static Comparator<DtlLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) ->
             lhs.getLongName().compareToIgnoreCase(rhs.getLongName());
 
+    public static class DtlLocationRangeComparator implements Comparator<DtlLocation> {
+
+        private String subString;
+
+        public DtlLocationRangeComparator(String subString) {
+            this.subString = subString;
+        }
+
+        @Override
+        public int compare(DtlLocation lhs, DtlLocation rhs) {
+            int rangeSortResult = TextUtils.substringLocation(lhs.getLongName(), subString) -
+                    TextUtils.substringLocation(rhs.getLongName(), subString);
+            if (rangeSortResult != 0) {
+                return rangeSortResult;
+            } else {
+                return ALPHABETICAL_COMPARATOR.compare(lhs, rhs);
+            }
+        }
+    }
 }
 
 

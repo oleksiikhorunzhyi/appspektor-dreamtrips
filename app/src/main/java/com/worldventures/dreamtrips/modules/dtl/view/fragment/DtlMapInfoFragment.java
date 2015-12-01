@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflate
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 
 import butterknife.OnClick;
@@ -65,7 +65,7 @@ public class DtlMapInfoFragment
     }
 
     @Override
-    public void setPlace(DtlPlace place) {
+    public void setPlace(DTlMerchant place) {
         commonDataInflater.apply(place);
         categoryDataInflater.apply(place);
     }
@@ -86,7 +86,7 @@ public class DtlMapInfoFragment
     }
 
     @Override
-    public void showDetails(DtlPlace place) {
+    public void showDetails(DTlMerchant place) {
         if (tabletAnalytic.isTabletLandscape() && getArgs().isSlave()) {
             eventBus.post(new PlaceClickedEvent(place));
         } else {

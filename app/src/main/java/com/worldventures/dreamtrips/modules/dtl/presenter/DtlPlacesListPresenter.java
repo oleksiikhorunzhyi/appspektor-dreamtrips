@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
 import java.util.Collections;
@@ -40,7 +40,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     protected DtlPlaceType placeType;
 
-    private List<DtlPlace> dtlPlaces;
+    private List<DTlMerchant> DTlMerchants;
 
     private DtlLocation dtlLocation;
 
@@ -51,10 +51,10 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlPlaces = db.getDtlPlaces(placeType);
+        DTlMerchants = db.getDtlPlaces(placeType);
         dtlLocation = db.getSelectedDtlLocation();
 
-        if (dtlPlaces.isEmpty()) view.showProgress();
+        if (DTlMerchants.isEmpty()) view.showProgress();
 
         dtlFilterDelegate.addListener(this);
 
@@ -70,12 +70,12 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     public void onEventMainThread(PlacesUpdatedEvent event) {
         if (!event.getType().equals(placeType)) return;
         //
-        dtlPlaces = db.getDtlPlaces(placeType);
+        DTlMerchants = db.getDtlPlaces(placeType);
         performFiltering();
     }
 
     public void onEventMainThread(TogglePlaceSelectionEvent event) {
-        if (dtlPlaces.contains(event.getDtlPlace())) view.toggleSelection(event.getDtlPlace());
+        if (DTlMerchants.contains(event.getDTlMerchant())) view.toggleSelection(event.getDTlMerchant());
     }
 
     @Override
@@ -96,7 +96,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         ).subscribe(view::setItems, this::onError);
     }
 
-    private Observable<List<DtlPlace>> filter(Location location, String query) {
+    private Observable<List<DTlMerchant>> filter(Location location, String query) {
         LatLng currentLocation = LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
                 new LatLng(location.getLatitude(), location.getLongitude()),
                 dtlLocation.getCoordinates().asLatLng(),
@@ -104,17 +104,17 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
                 ? new LatLng(location.getLatitude(), location.getLongitude())
                 : dtlLocation.getCoordinates().asLatLng();
 
-        List<DtlPlace> places = Queryable.from(dtlPlaces)
+        List<DTlMerchant> places = Queryable.from(DTlMerchants)
                 .filter(dtlPlace ->
                         dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
                                 currentLocation))
                 .filter(dtlPlace -> dtlPlace.containsQuery(query)).toList();
 
-        for (DtlPlace dtlPlace : places) {
-            dtlPlace.calculateDistance(currentLocation);
+        for (DTlMerchant DTlMerchant : places) {
+            DTlMerchant.calculateDistance(currentLocation);
         }
 
-        Collections.sort(places, DtlPlace.DISTANCE_COMPARATOR);
+        Collections.sort(places, DTlMerchant.DISTANCE_COMPARATOR);
 
         if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, places.size());
 
@@ -136,12 +136,12 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
 
     public interface View extends RxView {
 
-        void setItems(List<DtlPlace> places);
+        void setItems(List<DTlMerchant> places);
 
         void showProgress();
 
         void hideProgress();
 
-        void toggleSelection(DtlPlace dtlPlace);
+        void toggleSelection(DTlMerchant DTlMerchant);
     }
 }

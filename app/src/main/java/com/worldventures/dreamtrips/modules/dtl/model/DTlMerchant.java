@@ -14,14 +14,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class DtlPlace implements Parcelable {
+public class DTlMerchant implements Parcelable {
 
-    String merchantId;
-    String merchantType;
+    String id;
+    String type;
     PartnerStatus partnerStatus;
-    List<String> offers;
-    String legalName;
     String displayName;
     String address1;
     String address2;
@@ -33,28 +32,25 @@ public class DtlPlace implements Parcelable {
     String phone;
     String email;
     String description;
-    String perksDescription;
     String website;
     int budget;
     float rating;
+    String timeZone;
+    List<DtlOffer> offers;
     List<DtlPlaceAttribute> categories;
     List<DtlPlaceAttribute> amenities;
     List<DtlPlaceMedia> images;
     List<OperationDay> operationDays;
 
-    public DtlPlace() {
+    public DTlMerchant() {
     }
 
-    public String getMerchantId() {
-        return merchantId;
+    public String getId() {
+        return id;
     }
 
-    public String getMerchantType() {
-        return merchantType;
-    }
-
-    public String getLegalName() {
-        return legalName;
+    public String getType() {
+        return type;
     }
 
     public String getDisplayName() {
@@ -113,6 +109,10 @@ public class DtlPlace implements Parcelable {
         return rating;
     }
 
+    public List<DtlOffer> getOffers() {
+        return offers;
+    }
+
     public List<DtlPlaceAttribute> getCategories() {
         return categories;
     }
@@ -133,16 +133,17 @@ public class DtlPlace implements Parcelable {
         return hasNoOffers() ? DtlPlaceType.DINING : DtlPlaceType.OFFER;
     }
 
-    public boolean hasOffer(@Offer.OfferName String offer) {
-        return offers != null && offers.contains(offer);
+    public boolean hasOffer(DtlOffer dtlOffer) {
+        return offers != null && offers.contains(dtlOffer);
+    }
+
+    public String getPerkDescription() {
+        return Queryable.from(offers)
+                .first(element -> element.equals(DtlOffer.TYPE_PERK)).getOffer().getDescription();
     }
 
     public boolean hasNoOffers() {
         return offers == null || offers.isEmpty();
-    }
-
-    public String getPerksDescription() {
-        return perksDescription;
     }
 
     @Override
@@ -150,25 +151,25 @@ public class DtlPlace implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DtlPlace dtlPlace = (DtlPlace) o;
+        DTlMerchant DTlMerchant = (DTlMerchant) o;
 
-        return !(merchantId != null ? !merchantId.equals(dtlPlace.merchantId) : dtlPlace.merchantId != null);
+        return !(id != null ? !id.equals(DTlMerchant.id) : DTlMerchant.id != null);
 
     }
 
     @Override
     public int hashCode() {
-        return merchantId != null ? merchantId.hashCode() : 0;
+        return id != null ? id.hashCode() : 0;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    protected DtlPlace(Parcel in) {
-        merchantId = in.readString();
-        merchantType = in.readString();
-        legalName = in.readString();
+    protected DTlMerchant(Parcel in) {
+        id = in.readString();
+        type = in.readString();
+        partnerStatus = (PartnerStatus) in.readSerializable();
         displayName = in.readString();
         address1 = in.readString();
         address2 = in.readString();
@@ -180,23 +181,21 @@ public class DtlPlace implements Parcelable {
         phone = in.readString();
         email = in.readString();
         description = in.readString();
-        perksDescription = in.readString();
         website = in.readString();
         budget = in.readInt();
         rating = in.readFloat();
+        offers = in.createTypedArrayList(DtlOffer.CREATOR);
         categories = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
         amenities = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
         images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
-        partnerStatus = (PartnerStatus) in.readSerializable();
         operationDays = in.createTypedArrayList(OperationDay.CREATOR);
-        offers = in.createStringArrayList();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(merchantId);
-        dest.writeString(merchantType);
-        dest.writeString(legalName);
+        dest.writeString(id);
+        dest.writeString(type);
+        dest.writeSerializable(partnerStatus);
         dest.writeString(displayName);
         dest.writeString(address1);
         dest.writeString(address2);
@@ -208,27 +207,25 @@ public class DtlPlace implements Parcelable {
         dest.writeString(phone);
         dest.writeString(email);
         dest.writeString(description);
-        dest.writeString(perksDescription);
         dest.writeString(website);
         dest.writeInt(budget);
         dest.writeFloat(rating);
+        dest.writeTypedList(offers);
         dest.writeTypedList(categories);
         dest.writeTypedList(amenities);
         dest.writeTypedList(images);
-        dest.writeSerializable(partnerStatus);
         dest.writeTypedList(operationDays);
-        dest.writeStringList(offers);
     }
 
-    public static final Creator<DtlPlace> CREATOR = new Creator<DtlPlace>() {
+    public static final Creator<DTlMerchant> CREATOR = new Creator<DTlMerchant>() {
         @Override
-        public DtlPlace createFromParcel(Parcel in) {
-            return new DtlPlace(in);
+        public DTlMerchant createFromParcel(Parcel in) {
+            return new DTlMerchant(in);
         }
 
         @Override
-        public DtlPlace[] newArray(int size) {
-            return new DtlPlace[size];
+        public DTlMerchant[] newArray(int size) {
+            return new DTlMerchant[size];
         }
     };
 
@@ -272,7 +269,6 @@ public class DtlPlace implements Parcelable {
                 !Collections.disjoint(selectedAmenities, Queryable.from(getAmenities()).map(element ->
                                 new DtlPlacesFilterAttribute(element.getName())
                 ).toList());
-
     }
 
     private transient double distanceInMiles;
@@ -287,11 +283,10 @@ public class DtlPlace implements Parcelable {
         return displayName + " " + distanceInMiles;
     }
 
-    public static Comparator<DtlPlace> DISTANCE_COMPARATOR = new Comparator<DtlPlace>() {
+    public static Comparator<DTlMerchant> DISTANCE_COMPARATOR = new Comparator<DTlMerchant>() {
         @Override
-        public int compare(DtlPlace lhs, DtlPlace rhs) {
+        public int compare(DTlMerchant lhs, DTlMerchant rhs) {
             return Double.valueOf(lhs.distanceInMiles - rhs.distanceInMiles).intValue();
         }
     };
-
 }

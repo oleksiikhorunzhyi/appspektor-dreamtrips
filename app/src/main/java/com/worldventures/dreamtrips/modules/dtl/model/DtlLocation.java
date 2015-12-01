@@ -16,23 +16,23 @@ import java.util.List;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlLocation implements Parcelable {
 
-    String locationId;
-    DtlLocationCategory category;
+    String id;
+    DtlLocationType type;
     String shortName;
     String longName;
     Location coordinates;
     int merchantCount;
-    List<DtlLocation> withinLocations;
+    List<DtlLocation> locatedIn;
 
     public DtlLocation() {
     }
 
-    public String getLocationId() {
-        return locationId;
+    public String getId() {
+        return id;
     }
 
-    public DtlLocationCategory getCategory() {
-        return category;
+    public DtlLocationType getType() {
+        return type;
     }
 
     public String getLongName() {
@@ -47,8 +47,8 @@ public class DtlLocation implements Parcelable {
         this.coordinates = coordinates;
     }
 
-    public List<DtlLocation> getWithinLocations() {
-        return withinLocations != null ? withinLocations : Collections.emptyList();
+    public List<DtlLocation> getLocatedIn() {
+        return locatedIn != null ? locatedIn : Collections.emptyList();
     }
 
     public android.location.Location asAndroidLocation() {
@@ -63,13 +63,13 @@ public class DtlLocation implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected DtlLocation(Parcel in) {
-        locationId = in.readString();
+        id = in.readString();
         shortName = in.readString();
         longName = in.readString();
-        category = (DtlLocationCategory) in.readSerializable();
+        type = (DtlLocationType) in.readSerializable();
         coordinates = in.readParcelable(Location.class.getClassLoader());
         merchantCount = in.readInt();
-        withinLocations = in.createTypedArrayList(DtlLocation.CREATOR);
+        locatedIn = in.createTypedArrayList(DtlLocation.CREATOR);
     }
 
     public static final Creator<DtlLocation> CREATOR = new Creator<DtlLocation>() {
@@ -91,13 +91,13 @@ public class DtlLocation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(locationId);
+        dest.writeString(id);
         dest.writeString(shortName);
         dest.writeString(longName);
-        dest.writeSerializable(category);
+        dest.writeSerializable(type);
         dest.writeParcelable(coordinates, flags);
         dest.writeInt(merchantCount);
-        dest.writeTypedList(withinLocations);
+        dest.writeTypedList(locatedIn);
     }
 
     public static class DtlNearestComparator implements Comparator<DtlLocation> {
@@ -118,12 +118,11 @@ public class DtlLocation implements Parcelable {
         }
     }
 
-    public static Comparator<DtlLocation> CATEGORY_COMPARATOR = new Comparator<DtlLocation>() {
-        @Override
-        public int compare(DtlLocation lhs, DtlLocation rhs) {
-            return lhs.category.ordinal() - rhs.category.ordinal();
-        }
-    };
+    public static Comparator<DtlLocation> CATEGORY_COMPARATOR = (lhs, rhs) ->
+            lhs.type.ordinal() - rhs.type.ordinal();
+
+    public static Comparator<DtlLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) ->
+            lhs.getLongName().compareToIgnoreCase(rhs.getLongName());
 
 }
 

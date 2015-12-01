@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 
@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
-    private final DtlPlace dtlPlace;
+    private final DTlMerchant DTlMerchant;
     private TransferObserver transferObserver;
 
     DtlTransaction dtlTransaction;
@@ -30,8 +30,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Inject
     SnappyRepository snapper;
 
-    public DtlScanQrCodePresenter(DtlPlace dtlPlace) {
-        this.dtlPlace = dtlPlace;
+    public DtlScanQrCodePresenter(DTlMerchant DTlMerchant) {
+        this.DTlMerchant = DTlMerchant;
     }
 
     @Override
@@ -39,8 +39,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         super.takeView(view);
         apiErrorPresenter.setView(view);
         //
-        dtlTransaction = snapper.getDtlTransaction(dtlPlace.getMerchantId());
-        view.setPlace(dtlPlace);
+        dtlTransaction = snapper.getDtlTransaction(DTlMerchant.getId());
+        view.setPlace(DTlMerchant);
 
         if (!TextUtils.isEmpty(dtlTransaction.getCode()))
             checkReceiptUploading();
@@ -49,23 +49,23 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     public void codeScanned(String content) {
         TrackingHelper.dtlScanMerchant(content);
         dtlTransaction.setCode(content);
-        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
         //
         checkReceiptUploading();
     }
 
     public void photoUploadFailed() {
-        snapper.cleanDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.cleanDtlTransaction(DTlMerchant.getId(), dtlTransaction);
         view.openScanReceipt(dtlTransaction);
     }
 
     private void onReceiptUploaded() {
         view.showProgress(R.string.dtl_wait_for_earn);
         //
-        dtlTransaction.setReceiptPhoto(photoUploadingSpiceManager.
+        dtlTransaction.setReceiptPhotoUrl(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
-        doRequest(new EarnPointsRequest(dtlPlace.getMerchantId(), dtlTransaction),
+        doRequest(new EarnPointsRequest(DTlMerchant.getId(), dtlTransaction),
                 this::processTransactionResult);
     }
 
@@ -74,7 +74,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         view.hideProgress();
         //
         dtlTransaction.setDtlTransactionResult(result);
-        snapper.saveDtlTransaction(dtlPlace.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
         //
         eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
         view.finish();
@@ -152,7 +152,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
         void photoUploadError();
 
-        void setPlace(DtlPlace dtlPlace);
+        void setPlace(DTlMerchant DTlMerchant);
 
         void openScanReceipt(DtlTransaction dtlTransaction);
     }

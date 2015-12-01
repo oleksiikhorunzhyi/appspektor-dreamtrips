@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 
@@ -41,7 +41,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Inject
     LocationDelegate locationDelegate;
 
-    public DtlPlaceDetailsPresenter(DtlPlace place) {
+    public DtlPlaceDetailsPresenter(DTlMerchant place) {
         super(place);
     }
 
@@ -60,7 +60,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     }
 
     private void processTransaction() {
-        dtlTransaction = snapper.getDtlTransaction(place.getMerchantId());
+        dtlTransaction = snapper.getDtlTransaction(place.getId());
 
         if (dtlTransaction != null
                 && !checkSucceedEvent()
@@ -69,7 +69,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
             // in the enrollment wizard(maybe needed in future)
             if (dtlTransaction.getUploadTask() != null)
                 photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-            snapper.cleanDtlTransaction(place.getMerchantId(), dtlTransaction);
+            snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
         }
         //
         view.setTransaction(dtlTransaction);
@@ -86,7 +86,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
     private boolean checkTransactionOutOfDate() {
         if (dtlTransaction != null && dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
-            snapper.deleteDtlTransaction(place.getMerchantId());
+            snapper.deleteDtlTransaction(place.getId());
             dtlTransaction = null;
             return true;
         } else return false;
@@ -129,13 +129,13 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         dtlTransaction.setLocation(DtlTransactionLocation.fromDtlPlace(place,
                 location.getLatitude(), location.getLongitude()));
 
-        snapper.saveDtlTransaction(place.getMerchantId(), dtlTransaction);
+        snapper.saveDtlTransaction(place.getId(), dtlTransaction);
         view.setTransaction(dtlTransaction);
-        TrackingHelper.dtlCheckin(place.getMerchantId());
+        TrackingHelper.dtlCheckin(place.getId());
     }
 
     public void onEstimationClick() {
-        view.showEstimationDialog(new PointsEstimationDialogBundle(place.getMerchantId()));
+        view.showEstimationDialog(new PointsEstimationDialogBundle(place.getId()));
     }
 
     public void onMerchantClick() {
@@ -157,7 +157,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     public void trackScreen() {
         String placeTypeAction = place.hasNoOffers() ?
                 TrackingHelper.DTL_ACTION_DINING_VIEW : TrackingHelper.DTL_ACTION_OFFER_VIEW;
-        TrackingHelper.dtlPlaceView(placeTypeAction, place.getMerchantId());
+        TrackingHelper.dtlPlaceView(placeTypeAction, place.getId());
     }
 
     /** Analytic-related */
@@ -197,9 +197,9 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void openSuggestMerchant(SuggestPlaceBundle data);
 
-        void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+        void openTransaction(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction);
 
-        void showSucceed(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+        void showSucceed(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction);
 
         void openMap(PlacesBundle placesBundle);
 
@@ -207,7 +207,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void setSuggestMerchantButtonAvailable(boolean available);
 
-        void share(DtlPlace place);
+        void share(DTlMerchant place);
 
         void resolutionRequired(Status status);
 

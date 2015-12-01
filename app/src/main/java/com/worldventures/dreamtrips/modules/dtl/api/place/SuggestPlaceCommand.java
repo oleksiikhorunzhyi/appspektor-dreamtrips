@@ -1,26 +1,19 @@
 package com.worldventures.dreamtrips.modules.dtl.api.place;
 
-import com.esotericsoftware.kryo.DefaultSerializer;
-import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
-import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
 
-@DefaultSerializer(CompatibleFieldSerializer.class)
 public class SuggestPlaceCommand extends DtlRequest<Void> {
 
-    private final SuggestPlacePostData postData;
+    private final DtlLead leadData;
 
-    public SuggestPlaceCommand(SuggestPlacePostData postData) {
+    public SuggestPlaceCommand(DtlLead leadData) {
         super(Void.class);
-        this.postData = postData;
+        this.leadData = leadData;
     }
 
     @Override
     public Void loadDataFromNetwork() {
-        if (postData.placeId == null) { // looks like we're suggesting new place from RepTools
-            return getService().suggestPlace(postData);
-        } else { // suggest dining from Dtl
-            return getService().suggestDining(postData.placeId, postData);
-        }
+        return getService().suggestPlace(leadData);
     }
 }

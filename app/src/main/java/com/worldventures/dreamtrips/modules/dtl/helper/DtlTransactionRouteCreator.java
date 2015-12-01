@@ -17,7 +17,7 @@ public class DtlTransactionRouteCreator implements RouteCreator<DtlTransaction> 
     @Override
     public Route createRoute(DtlTransaction dtlTransaction) {
         if (dtlTransaction.getUploadTask() == null ||
-                dtlTransaction.getAmount() == 0.0d) {
+                dtlTransaction.getBillTotal() == 0.0d) {
             return Route.DTL_SCAN_RECEIPT;
         } else if (!dtlTransaction.isVerified()) {
             return Route.DTL_VERIFY;

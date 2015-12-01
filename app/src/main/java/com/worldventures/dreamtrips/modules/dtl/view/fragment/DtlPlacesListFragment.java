@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
@@ -48,7 +48,7 @@ public class DtlPlacesListFragment
     @InjectView(R.id.emptyView)
     protected View emptyView;
     //
-    BaseArrayListAdapter<DtlPlace> adapter;
+    BaseArrayListAdapter<DTlMerchant> adapter;
     RecyclerView.Adapter wrappedAdapter;
     //
     RecyclerViewStateDelegate stateDelegate;
@@ -82,7 +82,7 @@ public class DtlPlacesListFragment
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
-        adapter.registerCell(DtlPlace.class, DtlPlaceCell.class);
+        adapter.registerCell(DTlMerchant.class, DtlPlaceCell.class);
 
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
@@ -97,7 +97,7 @@ public class DtlPlacesListFragment
     }
 
     @Override
-    public void setItems(List<DtlPlace> places) {
+    public void setItems(List<DTlMerchant> places) {
         adapter.setItems(places);
         stateDelegate.restoreStateIfNeeded();
     }
@@ -117,8 +117,8 @@ public class DtlPlacesListFragment
     }
 
     @Override
-    public void toggleSelection(DtlPlace dtlPlace) {
-        int index = adapter.getItems().indexOf(dtlPlace);
+    public void toggleSelection(DTlMerchant DTlMerchant) {
+        int index = adapter.getItems().indexOf(DTlMerchant);
         if (index != -1)
             selectionManager.toggleSelection(index);
     }

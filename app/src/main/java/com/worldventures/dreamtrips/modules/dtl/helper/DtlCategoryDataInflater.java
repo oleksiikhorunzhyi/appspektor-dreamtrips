@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 
 import butterknife.InjectView;
 
@@ -20,7 +20,7 @@ public class DtlCategoryDataInflater extends DtlPlaceDataInflater {
     }
 
     @Override
-    protected void onPlaceApply(DtlPlace place) {
+    protected void onPlaceApply(DTlMerchant place) {
         String categories = helper.getCategories(place);
         if (!TextUtils.isEmpty(categories)) {
             category.setVisibility(View.VISIBLE);

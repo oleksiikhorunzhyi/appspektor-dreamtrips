@@ -12,17 +12,17 @@ public class DtlTransaction {
 
     public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000l;
 
-    public static final String TOKEN = "token";
-    public static final String AMOUNT = "amount";
+    public static final String MERCHANT_TOKEN = "merchant_token";
+    public static final String BILL_TOTAL = "bill_total";
     public static final String LOCATION = "location";
-    public static final String RECEIPT = "receiptPhoto";
+    public static final String RECEIPT_PHOTO_URL = "receipt_photo_url";
 
-    String checkin;
+    String checkinTime;
     long checkinTimestamp;
-    double amount;
+    double billTotal;
     double points;
-    String receiptPhoto;
-    String token;
+    String receiptPhotoUrl;
+    String merchantToken;
     DtlTransactionLocation location;
     boolean verified;
 
@@ -34,12 +34,12 @@ public class DtlTransaction {
     public DtlTransaction() {
     }
 
-    public DtlTransaction(long checkin, double amount, String receiptPhoto, String code) {
-        this.checkinTimestamp = checkin;
-        this.checkin = DateTimeUtils.convertDateToUTCString(new Date(checkin));
-        this.amount = amount;
-        this.receiptPhoto = receiptPhoto;
-        this.token = code;
+    public DtlTransaction(long checkinTime, double billTotal, String receiptPhotoUrl, String code) {
+        this.checkinTimestamp = checkinTime;
+        this.checkinTime = DateTimeUtils.convertDateToUTCString(new Date(checkinTime));
+        this.billTotal = billTotal;
+        this.receiptPhotoUrl = receiptPhotoUrl;
+        this.merchantToken = code;
     }
 
     public void setLocation(DtlTransactionLocation location) {
@@ -48,19 +48,19 @@ public class DtlTransaction {
 
     public void setTimestamp(long timestamp) {
         this.checkinTimestamp = timestamp;
-        this.checkin = DateTimeUtils.convertDateToUTCString(new Date(timestamp));
+        this.checkinTime = DateTimeUtils.convertDateToUTCString(new Date(timestamp));
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setBillTotal(double billTotal) {
+        this.billTotal = billTotal;
     }
 
-    public void setReceiptPhoto(String receiptPhoto) {
-        this.receiptPhoto = receiptPhoto;
+    public void setReceiptPhotoUrl(String receiptPhotoUrl) {
+        this.receiptPhotoUrl = receiptPhotoUrl;
     }
 
     public void setCode(String code) {
-        this.token = code;
+        this.merchantToken = code;
     }
 
     public void setDtlTransactionResult(DtlTransactionResult dtlTransactionResult) {
@@ -83,16 +83,16 @@ public class DtlTransaction {
         return currentTimeInMillis - checkinTimestamp > DURATION_OF_LIFE;
     }
 
-    public double getAmount() {
-        return amount;
+    public double getBillTotal() {
+        return billTotal;
     }
 
-    public String getReceiptPhoto() {
-        return receiptPhoto;
+    public String getReceiptPhotoUrl() {
+        return receiptPhotoUrl;
     }
 
     public String getCode() {
-        return token;
+        return merchantToken;
     }
 
     public DtlTransactionResult getDtlTransactionResult() {

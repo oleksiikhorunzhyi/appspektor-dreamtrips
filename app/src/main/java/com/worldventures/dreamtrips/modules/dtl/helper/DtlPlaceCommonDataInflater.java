@@ -6,8 +6,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.Offer;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -30,7 +30,7 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
     }
 
     @Override
-    protected void onPlaceApply(DtlPlace place) {
+    protected void onPlaceApply(DTlMerchant place) {
         coverStub.setVisibility(place.getImages().isEmpty() ? View.VISIBLE : View.GONE);
         if (place.getRating() != 0.0f) {
             rating.setVisibility(View.VISIBLE);
@@ -39,11 +39,11 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
             rating.setVisibility(View.GONE);
         }
 
-        int perkMargin = place.hasOffer(Offer.POINT_REWARD) ?
+        int perkMargin = place.hasOffer(DtlOffer.TYPE_POINTS) ?
                 rootView.getResources().getDimensionPixelSize(R.dimen.perks_margin) : 0;
         ((LinearLayout.LayoutParams) perks.getLayoutParams()).setMargins(perkMargin, 0, 0, 0);
         //
-        perks.setVisibility(place.hasOffer(Offer.PERKS) ? View.VISIBLE : View.GONE);
-        earnPointsBadge.setVisibility(place.hasOffer(Offer.POINT_REWARD) ? View.VISIBLE : View.GONE);
+        perks.setVisibility(place.hasOffer(DtlOffer.TYPE_PERK) ? View.VISIBLE : View.GONE);
+        earnPointsBadge.setVisibility(place.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
     }
 }

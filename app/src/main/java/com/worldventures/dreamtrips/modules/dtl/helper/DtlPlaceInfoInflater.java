@@ -4,9 +4,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
-import com.worldventures.dreamtrips.modules.dtl.model.Offer;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -27,11 +26,11 @@ public class DtlPlaceInfoInflater extends DtlPlaceDataInflater {
     }
 
     @Override
-    protected void onPlaceApply(DtlPlace place) {
+    protected void onPlaceApply(DTlMerchant place) {
         title.setText(place.getDisplayName());
         pricing.setRating(place.getBudget());
 
-        if (place.hasOffer(Offer.POINT_REWARD)) {
+        if (place.hasOffer(DtlOffer.TYPE_POINTS)) {
             operationalTime.setVisibility(View.VISIBLE);
             operationalTime.setText(helper.getOperationalTime(place));
         } else operationalTime.setVisibility(View.GONE);

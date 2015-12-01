@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
-import com.worldventures.dreamtrips.modules.dtl.api.location.GetNearbyDtlLocationQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
@@ -68,7 +67,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void loadNearbyCities(Location currentLocation) {
         view.citiesLoadingStarted();
-        doRequest(new GetNearbyDtlLocationQuery(currentLocation.getLatitude(),
+        doRequest(new GetDtlLocationsQuery(currentLocation.getLatitude(),
                         currentLocation.getLongitude()),
                 dtlLocations -> onNearbyLocationLoaded(dtlLocations, currentLocation));
     }
@@ -91,7 +90,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void onLocationSelected(DtlLocation location) {
         trackLocationSelection(location);
         DtlLocation currentLocation = db.getSelectedDtlLocation();
-        if (currentLocation == null || !currentLocation.getLocationId().equals(location.getLocationId())) {
+        if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
             db.saveSelectedDtlLocation(location);
             db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
         }
@@ -107,10 +106,10 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
      */
     private void trackLocationSelection(DtlLocation location) {
         if (db.getSelectedDtlLocation() != null)
-            TrackingHelper.dtlChangeLocation(location.getLocationId());
+            TrackingHelper.dtlChangeLocation(location.getId());
         String locationSelectType = status.equals(Status.NEARBY) ?
                 TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_NEARBY : TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_SEARCH;
-        TrackingHelper.dtlSelectLocation(locationSelectType, location.getLocationId());
+        TrackingHelper.dtlSelectLocation(locationSelectType, location.getId());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -138,11 +137,11 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void search(String caption) {
         if (view != null) {
-            int oldLenght = this.caption != null ? this.caption.length() : 0;
+            int oldLength = this.caption != null ? this.caption.length() : 0;
 
             this.caption = caption;
 
-            boolean apiSearch = oldLenght < caption.length() &&
+            boolean apiSearch = oldLength < caption.length() &&
                     caption.length() == SEARCH_SYMBOL_COUNT;
 
             if (caption.length() < SEARCH_SYMBOL_COUNT) flushSearch();
@@ -174,11 +173,13 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void localSearch() {
         if (searchLocations != null && !searchLocations.isEmpty())
-            view.bind(Observable.from(searchLocations)
-                            .filter(dtlLocation ->
-                                    dtlLocation.getLongName().toLowerCase().contains(caption))
-                            .toList()
-                            .compose(new IoToMainComposer<>())
+            view.bind(Observable.from(Queryable
+                                    .from(searchLocations)
+                                    .filter(dtlLocation ->
+                                            dtlLocation.getLongName().toLowerCase().contains(caption))
+                                    .sort(DtlLocation.ALPHABETICAL_COMPARATOR)
+                                    .toList()
+                    ).toList().compose(new IoToMainComposer<>())
             ).subscribe(view::setItems, e -> Timber.e(e, "Smth went wrong while search"));
     }
 

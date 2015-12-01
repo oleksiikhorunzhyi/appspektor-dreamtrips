@@ -6,7 +6,7 @@ import android.net.Uri;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class DtlPlaceSingleImageDataInflater extends DtlPlaceCommonDataInflater 
     }
 
     @Override
-    protected void onPlaceApply(DtlPlace place) {
+    protected void onPlaceApply(DTlMerchant place) {
         super.onPlaceApply(place);
         setImage(place.getImages());
     }

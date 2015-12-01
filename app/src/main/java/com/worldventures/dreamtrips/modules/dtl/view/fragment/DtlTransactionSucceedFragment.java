@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
@@ -23,7 +23,7 @@ import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_transaction_succeed)
-public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, DtlPlace>
+public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, DTlMerchant>
         implements DtlTransactionSucceedPresenter.View {
 
     @InjectView(R.id.total)
@@ -59,7 +59,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
     }
 
     @Override
-    public void showShareDialog(int amount, DtlPlace place) {
+    public void showShareDialog(int amount, DTlMerchant place) {
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);

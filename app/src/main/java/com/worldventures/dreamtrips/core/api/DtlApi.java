@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.core.api;
 
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
-import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
 
 import java.util.ArrayList;
 
@@ -34,13 +34,10 @@ public interface DtlApi {
     DtlTransactionResult earnPoints(@Path("id") String placeId,
                                     @Body DtlTransaction request);
 
-    @POST("/api/dtl/v2/merchants/{id}/suggestion")
-    Void suggestDining(@Path("id") String placeId, @Body SuggestPlacePostData request);
-
     @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/rating")
-    Void rate(@Path("id") String placeId, @Field("stars") int stars, @Field("transactionId") String transactionId);
+    Void rate(@Path("id") String placeId, @Field("stars") int stars, @Field("transaction_id") String transactionId);
 
-    @POST("/api/dtl/v2/merchants/")
-    Void suggestPlace(@Body SuggestPlacePostData request);
+    @POST("/api/dtl/v2/leads")
+    Void suggestPlace(@Body DtlLead lead);
 }

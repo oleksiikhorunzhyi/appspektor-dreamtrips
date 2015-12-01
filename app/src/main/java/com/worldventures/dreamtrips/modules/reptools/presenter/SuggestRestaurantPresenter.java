@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
 import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
-import com.worldventures.dreamtrips.modules.dtl.model.RateContainer;
-import com.worldventures.dreamtrips.modules.dtl.model.SuggestPlacePostData;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
 
 public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<SuggestRestaurantPresenter.View> {
@@ -10,12 +9,16 @@ public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<Sugges
     @Override
     public void submitClicked() {
         view.showProgress();
-        doRequest(new SuggestPlaceCommand(new SuggestPlacePostData(view.getRestaurantName(),
-                        view.getCity(), view.getContactName(), view.getPhone(),
-                        obtainContactTime(),
-                        new RateContainer(view.getFoodRating(), view.getServiceRating(),
-                                view.getCleanlinessRating(), view.getUniquenessRating()),
-                        view.getAdditionalInfo())),
+        DtlLead.Builder leadBuilder = new DtlLead.Builder()
+                .merchant(new DtlLead.Merchant(null, view.getRestaurantName(), view.getCity()))
+                .contact(new DtlLead.Contact(view.getContactName(), view.getPhone(), obtainContactTime()))
+                .rating(DtlLead.Rating.FOOD, view.getFoodRating())
+                .rating(DtlLead.Rating.SERVICE, view.getServiceRating())
+                .rating(DtlLead.Rating.CLEANLINESS, view.getCleanlinessRating())
+                .rating(DtlLead.Rating.UNIQUENESS, view.getUniquenessRating())
+                .comment(view.getAdditionalInfo());
+
+        doRequest(new SuggestPlaceCommand(leadBuilder.build()),
                 aVoid -> {
                     view.merchantSubmitted();
                     view.hideProgress();

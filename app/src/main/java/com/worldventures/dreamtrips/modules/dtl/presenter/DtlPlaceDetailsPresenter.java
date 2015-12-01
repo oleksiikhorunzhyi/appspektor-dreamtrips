@@ -62,38 +62,36 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     private void processTransaction() {
         dtlTransaction = snapper.getDtlTransaction(place.getId());
 
-        if (dtlTransaction != null
-                && !checkSucceedEvent()
-                && !checkTransactionOutOfDate()) {
-            // we should clean transaction, as for now we don't allow user to save his progress
-            // in the enrollment wizard(maybe needed in future)
-            if (dtlTransaction.getUploadTask() != null)
-                photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-            snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
+        if (dtlTransaction != null) {
+            checkSucceedEvent();
+            checkTransactionOutOfDate();
         }
         //
         view.setTransaction(dtlTransaction);
     }
 
-    private boolean checkSucceedEvent() {
+    private void checkSucceedEvent() {
         DtlTransactionSucceedEvent event = eventBus.getStickyEvent(DtlTransactionSucceedEvent.class);
         if (event != null) {
             eventBus.removeStickyEvent(event);
             view.showSucceed(place, dtlTransaction);
-            return true;
-        } else return false;
+        }
     }
 
-    private boolean checkTransactionOutOfDate() {
-        if (dtlTransaction != null && dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
+    private void checkTransactionOutOfDate() {
+        if (dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
             snapper.deleteDtlTransaction(place.getId());
             dtlTransaction = null;
-            return true;
-        } else return false;
+        }
     }
 
     public void onCheckInClicked() {
         if (dtlTransaction != null) {
+            // we should clean transaction, as for now we don't allow user to save his progress
+            // in the enrollment wizard(maybe needed in future)
+            if (dtlTransaction.getUploadTask() != null)
+                photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+            snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
             view.openTransaction(place, dtlTransaction);
         } else {
             view.disableCheckinButton();

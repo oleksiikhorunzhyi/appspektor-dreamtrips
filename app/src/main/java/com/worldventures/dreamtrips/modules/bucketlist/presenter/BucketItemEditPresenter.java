@@ -142,6 +142,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             return;
         }
 
+        view.hidePhotoPicker();
+
         Queryable.from(chosenImages).forEachR(choseImage ->
                 imageSelected(Uri.parse(choseImage.getFileThumbnail()), type));
     }
@@ -160,8 +162,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                 type = "facebook";
                 break;
         }
-
-        view.hidePhotoPicker();
 
         UploadTask task = new UploadTask();
         task.setStatus(UploadTask.Status.IN_PROGRESS);

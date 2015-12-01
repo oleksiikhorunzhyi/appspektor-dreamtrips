@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 
 import java.util.ArrayList;
 
-public class FixedPhotoFsPresenter extends TripImagesListPresenter {
+public class FixedPhotoFsPresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
 
     private ArrayList<IFullScreenObject> photos;
 

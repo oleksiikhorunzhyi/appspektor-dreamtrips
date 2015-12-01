@@ -235,6 +235,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             return;
         }
 
+        view.hidePhotoPicker();
+
         imageSelected(chosenImages.get(0));
     }
 
@@ -252,8 +254,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                     onCoverChosen(chosenImage);
                     break;
             }
-
-            view.hidePhotoPicker();
         }
     }
 

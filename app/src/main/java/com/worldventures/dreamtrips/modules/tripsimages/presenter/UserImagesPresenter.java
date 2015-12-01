@@ -19,7 +19,7 @@ import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class UserImagesPresenter extends TripImagesListPresenter {
+public class UserImagesPresenter extends TripImagesListPresenter<UserImagesPresenter.View> {
 
     public static final int REQUESTER_ID = -10;
 
@@ -72,6 +72,8 @@ public class UserImagesPresenter extends TripImagesListPresenter {
 
         eventBus.post(new MyImagesSelectionEvent());
 
+        view.hidePhotoPicker();
+
         String fileThumbnail = photos.get(0).getFileThumbnail();
         imageSelected(Uri.parse(fileThumbnail), type);
     }
@@ -95,4 +97,7 @@ public class UserImagesPresenter extends TripImagesListPresenter {
         }
     }
 
+    public interface View extends TripImagesListPresenter.View {
+        void hidePhotoPicker();
+    }
 }

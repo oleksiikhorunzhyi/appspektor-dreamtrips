@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -15,7 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
-public class UsersImagesListFragment<P extends UserImagesPresenter> extends TripImagesListFragment<P> {
+public class UsersImagesListFragment<P extends UserImagesPresenter> extends TripImagesListFragment<P> implements UserImagesPresenter.View {
 
     @InjectView(R.id.fab_photo)
     protected FloatingActionButton fabPhoto;
@@ -38,5 +37,10 @@ public class UsersImagesListFragment<P extends UserImagesPresenter> extends Trip
         } else {
             TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
         }
+    }
+
+    @Override
+    public void hidePhotoPicker() {
+        photoPickerLayout.hidePanel();
     }
 }

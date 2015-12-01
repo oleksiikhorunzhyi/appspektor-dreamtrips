@@ -63,6 +63,7 @@ public class InviteFragment
     FilterableArrayListAdapter<Member> adapter;
     RecyclerViewStateDelegate stateDelegate;
 
+    private boolean inhibitSpinner = true;
     private WeakHandler weakHandler;
 
     @Override
@@ -111,9 +112,9 @@ public class InviteFragment
             }
         });
 
-        SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(getActivity(),
+        SimpleImageArrayAdapter spinnerAdapter = new SimpleImageArrayAdapter(getActivity(),
                 new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(this);
 
         tvSearch.setOnQueryTextListener(this);
@@ -133,6 +134,7 @@ public class InviteFragment
         });
 
         buttonContinue.setVisibility(View.GONE);
+
     }
 
     private void setUpView() {
@@ -157,6 +159,7 @@ public class InviteFragment
         lvUsers.setAdapter(null);
         tvSearch.setOnQueryTextListener(null);
         tvSearch.setOnQueryTextFocusChangeListener(null);
+        spinner.setOnItemSelectedListener(null);
     }
 
     @Override
@@ -173,7 +176,7 @@ public class InviteFragment
     @Override
     public void showContinue() {
         if (buttonContinue != null) {
-            buttonContinue.postDelayed(() -> buttonContinue.setVisibility(View.VISIBLE), 500l);
+            buttonContinue.setVisibility(View.VISIBLE);
         }
     }
 
@@ -221,6 +224,10 @@ public class InviteFragment
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (inhibitSpinner) {
+            inhibitSpinner = false;
+            return;
+        }
         getPresenter().loadMembers();
     }
 

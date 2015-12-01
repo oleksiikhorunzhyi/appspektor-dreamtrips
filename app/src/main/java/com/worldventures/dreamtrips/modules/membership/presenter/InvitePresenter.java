@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import android.accounts.AccountManager;
 import android.content.ContentProviderOperation;
 import android.content.Intent;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -55,8 +56,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     @State
     ArrayList<Member> members = new ArrayList<>();
-    @State
-    ArrayList<Member> selectedMembers = new ArrayList<>();
 
     @Override
     public void handleError(SpiceException error) {
@@ -64,19 +63,30 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.finishLoading();
     }
 
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        if (members.isEmpty()) {
+            loadMembers();
+        } else {
+            handleResponse();
+        }
+    }
+
+    @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
+    }
+
     public void loadMembers() {
         view.startLoading();
         Type from = Type.from(view.getSelectedType());
         PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
-        if (members == null || members.isEmpty()) {
-            doRequest(request, members -> {
-                InvitePresenter.this.members = members;
-                handleResponse();
-            });
-        } else {
+        doRequest(request, members -> {
+            InvitePresenter.this.members = members;
             handleResponse();
-        }
+        });
     }
 
     private void handleResponse() {
@@ -206,21 +216,23 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void showContinueBtnIfNeed() {
-        if (selectedMembers != null && selectedMembers.size() > 0 && view != null) {
+        int count = Queryable.from(members).count(element -> element.isChecked());
+        if (count > 0 && view != null) {
             view.showContinue();
         }
     }
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
         boolean isVisible = isVisible();
-        selectedMembers.clear();
-        selectedMembers.addAll(Queryable.from(members).filter(Member::isChecked).toList());
 
         eventBus.removeStickyEvent(MemberStickyEvent.class);
-        eventBus.postSticky(new MemberStickyEvent(selectedMembers));
+        eventBus.postSticky(new MemberStickyEvent(Queryable.from(members).filter(element -> {
+            return element.isChecked();
+        }).toList()));
 
         view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
-        view.setSelectedCount(selectedMembers.size());
+        int count = Queryable.from(members).count(element -> element.isChecked());
+        view.setSelectedCount(count);
 
         if (event.isSelected()) {
             view.move(event.getMember(), 0);
@@ -316,7 +328,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
     private void resetSelected() {
         Queryable.from(members).forEachR(m -> m.setIsChecked(false));
-        if (selectedMembers != null) selectedMembers.clear();
         view.setSelectedCount(0);
         view.showNextStepButtonVisibility(false);
     }

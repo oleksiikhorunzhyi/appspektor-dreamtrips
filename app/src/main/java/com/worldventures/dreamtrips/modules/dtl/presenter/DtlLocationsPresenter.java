@@ -177,7 +177,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
                                     .from(searchLocations)
                                     .filter(dtlLocation ->
                                             dtlLocation.getLongName().toLowerCase().contains(caption))
-                                    .sort(DtlLocation.ALPHABETICAL_COMPARATOR)
+                                    .sort(new DtlLocation.DtlLocationRangeComparator(caption))
                                     .toList()
                     ).toList().compose(new IoToMainComposer<>())
             ).subscribe(view::setItems, e -> Timber.e(e, "Smth went wrong while search"));

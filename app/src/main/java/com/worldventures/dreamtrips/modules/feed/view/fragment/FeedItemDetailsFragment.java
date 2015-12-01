@@ -77,9 +77,9 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
         adapter.notifyItemInserted(0);
         //todo until Trip becomes as all normal entities
         if (feedItem instanceof TripFeedItem) {
-            additionalContainer.setVisibility(View.GONE);
-            feedDetailsLeftSpace.setVisibility(View.VISIBLE);
-            feedDetailsRightSpace.setVisibility(View.VISIBLE);
+            if (additionalContainer != null) additionalContainer.setVisibility(View.GONE);
+            if (feedDetailsLeftSpace != null) feedDetailsLeftSpace.setVisibility(View.VISIBLE);
+            if (feedDetailsRightSpace != null) feedDetailsRightSpace.setVisibility(View.VISIBLE);
         }
     }
 

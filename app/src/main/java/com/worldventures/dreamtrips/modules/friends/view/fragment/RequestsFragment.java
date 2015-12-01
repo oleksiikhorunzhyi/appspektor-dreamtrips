@@ -110,7 +110,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return adapter.getItem(position) instanceof String ? spanCount : 1;
+                    return adapter.getItem(position) instanceof RequestHeaderModel ? spanCount : 1;
                 }
             });
             return gridLayoutManager;

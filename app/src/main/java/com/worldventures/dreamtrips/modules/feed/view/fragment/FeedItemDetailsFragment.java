@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -30,6 +31,12 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     @Optional
     @InjectView(R.id.comments_additional_info_container)
     ViewGroup additionalContainer;
+    @Optional
+    @InjectView(R.id.feedDetailsLeftSpace)
+    View feedDetailsLeftSpace;
+    @Optional
+    @InjectView(R.id.feedDetailsRightSpace)
+    View feedDetailsRightSpace;
 
     private FragmentCompass childCompass;
 
@@ -51,11 +58,10 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
                 additionalContainer.setVisibility(View.GONE);
             }
         }
-
         adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
         adapter.registerCell(PhotoFeedItem.class, FeedItemDetailsCell.class);
-        adapter.registerCell(TripFeedItem.class, FeedItemDetailsCell.class);
+        adapter.registerCell(TripFeedItem.class, TripFeedItemDetailsCell.class);
     }
 
     @Override
@@ -69,6 +75,12 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     public void setFeedItem(FeedItem feedItem) {
         adapter.addItem(0, feedItem);
         adapter.notifyItemInserted(0);
+        //todo until Trip becomes as all normal entities
+        if (feedItem instanceof TripFeedItem) {
+            if (additionalContainer != null) additionalContainer.setVisibility(View.GONE);
+            if (feedDetailsLeftSpace != null) feedDetailsLeftSpace.setVisibility(View.VISIBLE);
+            if (feedDetailsRightSpace != null) feedDetailsRightSpace.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

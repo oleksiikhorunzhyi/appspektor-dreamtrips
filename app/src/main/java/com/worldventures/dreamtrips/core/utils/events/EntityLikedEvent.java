@@ -1,20 +1,17 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+
 public class EntityLikedEvent {
 
-    protected boolean liked;
-    protected String id;
+    FeedEntity feedEntity;
 
-    public EntityLikedEvent(String id, boolean liked) {
-        this.id = id;
-        this.liked = liked;
+
+    public EntityLikedEvent(FeedEntity feedEntity) {
+        this.feedEntity = feedEntity;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public String getId() {
-        return id;
+    public FeedEntity getFeedEntity() {
+        return feedEntity;
     }
 }

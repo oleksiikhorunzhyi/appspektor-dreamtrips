@@ -2,14 +2,12 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.app.Activity;
 
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import javax.inject.Inject;
@@ -22,6 +20,8 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     SnappyRepository db;
     @Inject
     BucketItemManager bucketItemManager;
+    @Inject
+    FeedEntityManager feedEntityManager;
 
     protected TripModel trip;
     protected SweetDialogHelper sweetDialogHelper;
@@ -37,6 +37,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     public void onInjected() {
         super.onInjected();
         sweetDialogHelper = new SweetDialogHelper();
+        feedEntityManager.setRequestingPresenter(this);
     }
 
     @Override
@@ -45,7 +46,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         initData();
     }
-
 
     protected void initData() {
         view.setup(trip);
@@ -61,25 +61,25 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     }
 
     public void likeTrip() {
-        toggleTripLike();
+        if (!trip.isLiked()) {
+            feedEntityManager.like(trip);
+        } else {
+            feedEntityManager.unlike(trip);
+        }
+    }
 
-        DreamTripsRequest<Void> request = trip.isLiked() ?
-                new LikeEntityCommand(trip.getUid()) :
-                new UnlikeEntityCommand(trip.getUid());
-
-        doRequest(request, object -> {
-            sweetDialogHelper.notifyTripLiked(activity, trip);
-            eventBus.post(new EntityLikedEvent(trip.getUid(), trip.isLiked()));
+    public void onEvent(EntityLikedEvent event) {
+        if (event.getFeedEntity().getUid().equals(trip.getUid())) {
+            trip.syncLikeState(event.getFeedEntity());
+            view.setup(trip);
             onSuccessTripAction();
-        }, (error) -> {
-            toggleTripLike();
-            handleError(error);
-        });
+            if (view.isVisibleOnScreen()) {
+                sweetDialogHelper.notifyTripLiked(activity, trip);
+            }
+        }
     }
 
     private void toggleTripLike() {
-        trip.setLiked(!trip.isLiked());
-        view.setup(trip);
     }
 
     private void onSuccessTripAction() {

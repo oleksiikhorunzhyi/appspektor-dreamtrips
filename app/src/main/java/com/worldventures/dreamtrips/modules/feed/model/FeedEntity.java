@@ -34,4 +34,6 @@ public interface FeedEntity extends Serializable, UidItem {
 
     void setFirstLikerName(String fullName);
 
+    void syncLikeState(FeedEntity feedEntity);
+
 }

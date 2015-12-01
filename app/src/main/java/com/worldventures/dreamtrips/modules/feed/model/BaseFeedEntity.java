@@ -104,6 +104,12 @@ public abstract class BaseFeedEntity implements FeedEntity {
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
+    public void syncLikeState(FeedEntity feedEntity) {
+        this.setLiked(feedEntity.isLiked());
+        this.setLikesCount(feedEntity.getLikesCount());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -129,4 +135,5 @@ public abstract class BaseFeedEntity implements FeedEntity {
                 ", uid='" + uid + '\'' +
                 '}';
     }
+
 }

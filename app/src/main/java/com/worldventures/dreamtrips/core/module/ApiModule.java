@@ -32,6 +32,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -147,6 +148,10 @@ public class ApiModule {
         OkHttpClient okHttpClient = new OkHttpClient();
         CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
         okHttpClient.setCookieHandler(cookieManager);
+        //Currently `api/{uid}/likes` (10k+ms)
+        okHttpClient.setConnectTimeout(15, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(15, TimeUnit.SECONDS);
+        okHttpClient.setWriteTimeout(15, TimeUnit.SECONDS);
         return okHttpClient;
     }
 

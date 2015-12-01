@@ -12,12 +12,11 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
 public class DtlLead {
 
-    // TODO finish new error handling codes once server ready
-    public static final String NAME = "name";
-    public static final String CITY = "city";
-    public static final String CONTACT = "contact_name";
-    public static final String DESCRIPTION = "description";
-    public static final String PHONE = "phone";
+    public static final String NAME = "merchant.name";
+    public static final String CITY = "merchant.city";
+    public static final String CONTACT = "contact.name";
+    public static final String COMMENT = "comment";
+    public static final String PHONE = "contact.phone";
 
     private Merchant merchant;
     private Contact contact;

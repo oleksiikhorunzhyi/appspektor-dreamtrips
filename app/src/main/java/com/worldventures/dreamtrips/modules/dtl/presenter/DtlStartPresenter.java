@@ -37,7 +37,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         //
         DtlLocation dtlLocation = db.getSelectedDtlLocation();
         if (dtlLocation != null) {
-            TrackingHelper.dtlLocationLoaded(dtlLocation.getLocationId());
+            TrackingHelper.dtlLocationLoaded(dtlLocation.getId());
             view.openMerchants(new PlacesBundle(dtlLocation));
         }
         else

@@ -10,7 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationCategory;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocationType;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -29,8 +29,8 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
     protected void syncUIStateWithModel() {
         StringBuilder sb = new StringBuilder();
         sb.append(getModelObject().getLongName());
-        Queryable.from(getModelObject().getWithinLocations())
-                .filter(temp -> temp.getCategory() != DtlLocationCategory.METRO)
+        Queryable.from(getModelObject().getLocatedIn())
+                .filter(temp -> temp.getType() != DtlLocationType.METRO)
                 .sort(DtlLocation.CATEGORY_COMPARATOR)
                 .forEachR(tempLocation -> {
                     sb.append(", ");
@@ -38,7 +38,7 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
                 });
 
         city.setText(sb.toString());
-        city.setCompoundDrawablesWithIntrinsicBounds(getModelObject().getCategory() == DtlLocationCategory.CITY ?
+        city.setCompoundDrawablesWithIntrinsicBounds(getModelObject().getType() == DtlLocationType.CITY ?
                 R.drawable.city_icon : R.drawable.metro_area_icon, 0, 0, 0);
     }
 

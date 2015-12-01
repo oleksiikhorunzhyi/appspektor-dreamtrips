@@ -90,7 +90,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void onLocationSelected(DtlLocation location) {
         trackLocationSelection(location);
         DtlLocation currentLocation = db.getSelectedDtlLocation();
-        if (currentLocation == null || !currentLocation.getLocationId().equals(location.getLocationId())) {
+        if (currentLocation == null || !currentLocation.getId().equals(location.getId())) {
             db.saveSelectedDtlLocation(location);
             db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
         }
@@ -106,10 +106,10 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
      */
     private void trackLocationSelection(DtlLocation location) {
         if (db.getSelectedDtlLocation() != null)
-            TrackingHelper.dtlChangeLocation(location.getLocationId());
+            TrackingHelper.dtlChangeLocation(location.getId());
         String locationSelectType = status.equals(Status.NEARBY) ?
                 TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_NEARBY : TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_SEARCH;
-        TrackingHelper.dtlSelectLocation(locationSelectType, location.getLocationId());
+        TrackingHelper.dtlSelectLocation(locationSelectType, location.getId());
     }
 
     ///////////////////////////////////////////////////////////////////////////

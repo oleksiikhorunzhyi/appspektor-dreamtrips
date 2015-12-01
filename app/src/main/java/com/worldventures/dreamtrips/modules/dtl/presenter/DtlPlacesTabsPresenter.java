@@ -58,7 +58,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void loadPlaces() {
-        doRequest(new GetDtlPlacesQuery(location.getLocationId()),
+        doRequest(new GetDtlPlacesQuery(location.getId()),
                 this::placeLoaded,
                 spiceException -> {
                     super.handleError(spiceException);

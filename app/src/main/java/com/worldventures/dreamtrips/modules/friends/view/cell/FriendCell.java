@@ -25,7 +25,7 @@ public class FriendCell extends BaseUserCell {
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
 
-        String circleName = getModelObject().getCircles();
+        String circleName = getModelObject().getCirclesString();
         tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
         tvGroup.setText(circleName);
     }

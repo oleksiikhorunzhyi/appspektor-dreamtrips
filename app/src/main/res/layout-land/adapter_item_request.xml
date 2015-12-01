@@ -60,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textSize="14sp"
-                android:visibility="gone"
                 tools:text="10 mutual friends"/>
         </LinearLayout>
 

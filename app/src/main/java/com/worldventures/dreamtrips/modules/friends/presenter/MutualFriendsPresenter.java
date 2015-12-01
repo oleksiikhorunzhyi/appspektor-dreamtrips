@@ -22,6 +22,11 @@ public class MutualFriendsPresenter extends BaseUserListPresenter<MutualFriendsP
     }
 
     @Override
+    public void scrolled(int totalItemCount, int lastVisible) {
+        // now api doesn't have pagination therefore lazy loading is disabled
+    }
+
+    @Override
     protected void userStateChanged(User user) {
         view.finishLoading();
 

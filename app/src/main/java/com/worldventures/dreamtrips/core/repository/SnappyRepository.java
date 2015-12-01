@@ -482,8 +482,8 @@ public class SnappyRepository {
 
     public void cleanDtlTransaction(String id, DtlTransaction dtlTransaction) {
         dtlTransaction.setUploadTask(null);
-        dtlTransaction.setAmount(0.0d);
-        dtlTransaction.setReceiptPhoto(null);
+        dtlTransaction.setBillTotal(0.0d);
+        dtlTransaction.setReceiptPhotoUrl(null);
         dtlTransaction.setCode(null);
         dtlTransaction.setVerified(false);
         dtlTransaction.setDtlTransactionResult(null);

@@ -186,11 +186,11 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
                     .setConfirmText(getString(R.string.ok))
                     .setConfirmClickListener(sweetAlertDialog -> {
                         switch (fieldError.field) {
-                            case DtlTransaction.AMOUNT:
-                            case DtlTransaction.RECEIPT:
+                            case DtlTransaction.BILL_TOTAL:
+                            case DtlTransaction.RECEIPT_PHOTO_URL:
                                 getPresenter().photoUploadFailed();
                                 break;
-                            case DtlTransaction.TOKEN:
+                            case DtlTransaction.MERCHANT_TOKEN:
                             case DtlTransaction.LOCATION:
                                 scanner.startCamera();
                                 sweetAlertDialog.dismissWithAnimation();

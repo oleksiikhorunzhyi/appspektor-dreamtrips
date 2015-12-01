@@ -60,7 +60,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     private void onReceiptUploaded() {
         view.showProgress(R.string.dtl_wait_for_earn);
         //
-        dtlTransaction.setReceiptPhoto(photoUploadingSpiceManager.
+        dtlTransaction.setReceiptPhotoUrl(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
         doRequest(new EarnPointsRequest(dtlPlace.getId(), dtlTransaction),

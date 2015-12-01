@@ -30,7 +30,7 @@ public interface DtlApi {
                                                        @Field("bill_total") double price,
                                                        @Field("checkin_time") String checkinTime);
 
-    @POST("/api/dtl/v2/merchants/{id}/points")
+    @POST("/api/dtl/v2/merchants/{id}/transactions")
     DtlTransactionResult earnPoints(@Path("id") String placeId,
                                     @Body DtlTransaction request);
 

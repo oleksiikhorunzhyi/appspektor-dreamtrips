@@ -67,13 +67,13 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     public void verify() {
         view.showProgress();
         //
-        dtlTransaction.setAmount(Double.parseDouble(amount));
-        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getId(), dtlTransaction.getAmount()),
+        dtlTransaction.setBillTotal(Double.parseDouble(amount));
+        doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getId(), dtlTransaction.getBillTotal()),
                 this::attachDtPoints);
     }
 
     private void attachDtPoints(Double points) {
-        dtlTransaction.setAmount(Double.parseDouble(amount));
+        dtlTransaction.setBillTotal(Double.parseDouble(amount));
         dtlTransaction.setPoints(points);
         //
         snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);

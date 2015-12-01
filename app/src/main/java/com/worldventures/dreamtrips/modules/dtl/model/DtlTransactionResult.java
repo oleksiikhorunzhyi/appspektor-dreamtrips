@@ -6,12 +6,12 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlTransactionResult {
 
-    String transactionId;
+    String id;
     double creditedAmount;
     double currentBalance;
 
-    public String getTransactionId() {
-        return transactionId;
+    public String getId() {
+        return id;
     }
 
     public double getEarnedPoints() {

@@ -14,7 +14,9 @@ import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import javax.inject.Inject;
 
@@ -61,15 +63,25 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
 
     private void loadFullEventInfo() {
         doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
-            FeedEntity freshItem = feedEntityHolder.getItem();
-            freshItem.setFirstLikerName(feedEntity.getFirstLikerName());
-            feedEntity = freshItem;
+            surviveNeedfulFields(feedEntity, feedEntityHolder);
+            feedEntity = feedEntityHolder.getItem();
             feedItem.setItem(feedEntity);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
             //
             if (view.isTabletLandscape())
                 view.showAdditionalInfo(feedEntity.getOwner());
         }, spiceException -> Timber.e(spiceException, TAG));
+    }
+
+    private void surviveNeedfulFields(FeedEntity feedEntity, FeedEntityHolder feedEntityHolder) {
+        feedEntity.setFirstLikerName(feedEntity.getFirstLikerName());
+        if (feedEntityHolder.getType() == FeedEntityHolder.Type.TRIP) {
+            TripModel freshItem = (TripModel) feedEntityHolder.getItem();
+            TripModel oldItem = (TripModel) feedEntity;
+            freshItem.setPrice(oldItem.getPrice());
+            freshItem.setPriceAvailable(oldItem.isPriceAvailable());
+            freshItem.setInBucketList(oldItem.isInBucketList());
+        }
     }
 
     public void onEvent(FeedEntityChangedEvent event) {
@@ -89,7 +101,7 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
         }
     }
 
-    public void onEvent(EntityLikedEvent event){
+    public void onEvent(EntityLikedEvent event) {
         feedEntity.syncLikeState(event.getFeedEntity());
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
 

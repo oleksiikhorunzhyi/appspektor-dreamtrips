@@ -16,9 +16,9 @@ public class MutualStringUtil {
 
     public String createMutualString(User user) {
         String mutualString = null;
-        if (user.getMutualFriends() > 0) {
+        if (user.getMutualFriends().getCount() > 0) {
             mutualString = context.getString(R.string.social_postfix_mutual_friends,
-                    user.getMutualFriends());
+                    user.getMutualFriends().getCount());
         }
 
         return mutualString;
@@ -26,16 +26,16 @@ public class MutualStringUtil {
 
     public String createCircleAndMutualString(User user) {
         StringBuilder sb = new StringBuilder();
-        if (!TextUtils.isEmpty(user.getCircles())) {
-            sb.append(user.getCircles());
+        if (!TextUtils.isEmpty(user.getCirclesString())) {
+            sb.append(user.getCirclesString());
 
-            if (user.getMutualFriends() > 0) {
+            if (user.getMutualFriends().getCount() > 0) {
                 sb.append(", ");
             }
         }
 
-        if (user.getMutualFriends() > 0) {
-            sb.append(context.getString(R.string.social_postfix_mutual_friends, user.getMutualFriends()));
+        if (user.getMutualFriends().getCount() > 0) {
+            sb.append(context.getString(R.string.social_postfix_mutual_friends, user.getMutualFriends().getCount()));
         }
 
         return sb.toString();

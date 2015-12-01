@@ -38,18 +38,6 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
     }
 
     @Override
-    protected void onUsersAdded(ArrayList<User> freshUsers) {
-        Queryable.from(freshUsers).forEachR(friend -> friend.setCircles(circles));
-        super.onUsersAdded(freshUsers);
-    }
-
-    @Override
-    protected void onUsersLoaded(ArrayList<User> freshUsers) {
-        Queryable.from(freshUsers).forEachR(friend -> friend.setCircles(circles));
-        super.onUsersLoaded(freshUsers);
-    }
-
-    @Override
     public void onInjected() {
         super.onInjected();
         Collections.sort(circles);

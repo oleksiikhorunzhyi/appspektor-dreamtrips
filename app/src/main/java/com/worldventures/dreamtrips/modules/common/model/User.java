@@ -61,14 +61,12 @@ public class User extends BaseEntity implements Parcelable {
     //TODO TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
     private boolean socialEnabled;
 
-
-    @SerializedName("circle_ids")
-    HashSet<String> circleIds;
+    @SerializedName("circles")
+    List<Circle> circles;
 
     @SerializedName("mutual_friends")
-    int mutualFriends;
+    MutualFriends mutualFriends;
 
-    private transient String circles;
     private transient boolean avatarUploadInProgress;
     private transient boolean coverUploadInProgress;
 
@@ -81,31 +79,16 @@ public class User extends BaseEntity implements Parcelable {
     }
 
 
-    public int getMutualFriends() {
+    public MutualFriends getMutualFriends() {
         return mutualFriends;
     }
 
-    public void setCircles(List<Circle> circles) {
-        List<String> userCircles = new ArrayList<>();
-
-        for (String s : circleIds) {
-            for (Circle circle : circles) {
-                if (circle.getId() != null && circle.getId().equals(s)) {
-                    userCircles.add(circle.getName());
-                    break;
-                }
-            }
-        }
-
-        this.circles = TextUtils.join(", ", userCircles);
+    public String getCirclesString() {
+        return TextUtils.join(", ", Queryable.from(circles).map(Circle::getName).toList());
     }
 
-    public String getCircles() {
+    public List<Circle> getCircles() {
         return circles;
-    }
-
-    public HashSet<String> getCircleIds() {
-        return circleIds;
     }
 
     public String getBackgroundPhotoUrl() {
@@ -320,6 +303,44 @@ public class User extends BaseEntity implements Parcelable {
 
     }
 
+    public static class MutualFriends implements Parcelable, Serializable {
+
+        private int count;
+
+        public MutualFriends() {
+        }
+
+        protected MutualFriends(Parcel in) {
+            this.count = in.readInt();
+        }
+
+        public static final Creator<MutualFriends> CREATOR = new Creator<MutualFriends>() {
+            @Override
+            public MutualFriends createFromParcel(Parcel in) {
+                return new MutualFriends(in);
+            }
+
+            @Override
+            public MutualFriends[] newArray(int size) {
+                return new MutualFriends[size];
+            }
+        };
+
+        public int getCount() {
+            return count;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.count);
+        }
+    }
+
     public void setAvatarUploadInProgress(boolean avatarUploadInProgress) {
         this.avatarUploadInProgress = avatarUploadInProgress;
     }
@@ -371,9 +392,8 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeStringList(this.subscriptions);
         dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.circleIds);
-        dest.writeInt(this.mutualFriends);
-        dest.writeString(this.circles);
+        dest.writeParcelable(this.mutualFriends, 0);
+        dest.writeList(this.circles);
     }
 
     protected User(Parcel in) {
@@ -400,9 +420,9 @@ public class User extends BaseEntity implements Parcelable {
         this.subscriptions = in.createStringArrayList();
         this.socialEnabled = in.readByte() != 0;
         this.termsAccepted = in.readByte() != 0;
-        this.circleIds = (HashSet<String>) in.readSerializable();
-        this.mutualFriends = in.readInt();
-        this.circles = in.readString();
+        this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
+        circles = new ArrayList<>();
+        in.readList(circles, Circle.class.getClassLoader());
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

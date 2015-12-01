@@ -94,10 +94,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             previousTotal = totalItemCount;
         }
         if (!loading
-                && lastVisible >= totalItemCount - 1
-                && totalItemCount % getPerPageCount() == 0) {
+                && lastVisible >= totalItemCount - 1) {
             view.startLoading();
-            doRequest(getUserListQuery(users.size() / getPerPageCount() + 1), this::onUsersAdded);
+            doRequest(getUserListQuery((int) (Math.ceil((double) users.size() / getPerPageCount()) + 1)), this::onUsersAdded);
             loading = true;
         }
     }
@@ -185,13 +184,12 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             if (friend.getId() == event.getFriend().getId()) {
                 switch (event.getState()) {
                     case REMOVED:
-                        friend.getCircleIds().remove(event.getCircle().getId());
+                        friend.getCircles().remove(event.getCircle());
                         break;
                     case ADDED:
-                        friend.getCircleIds().add(event.getCircle().getId());
+                        friend.getCircles().add(event.getCircle());
                         break;
                 }
-                friend.setCircles(circles);
                 view.refreshUsers(users);
                 break;
             }

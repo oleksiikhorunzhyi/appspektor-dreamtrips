@@ -22,21 +22,6 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedIte
     }
 
     @Override
-    protected void onUsersAdded(ArrayList<User> freshUsers) {
-        super.onUsersAdded(updateUserCircles(freshUsers));
-    }
-
-    @Override
-    protected void onUsersLoaded(ArrayList<User> freshUsers) {
-        super.onUsersLoaded(updateUserCircles(freshUsers));
-    }
-
-    private ArrayList<User> updateUserCircles(ArrayList<User> freshUsers){
-        Queryable.from(freshUsers).forEachR(friend -> friend.setCircles(circles));
-        return freshUsers;
-    }
-
-    @Override
     protected void userStateChanged(User user) {
         view.finishLoading();
 

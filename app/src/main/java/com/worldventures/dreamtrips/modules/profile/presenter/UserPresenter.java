@@ -165,13 +165,12 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         if (user.getId() == event.getFriend().getId()) {
             switch (event.getState()) {
                 case REMOVED:
-                    user.getCircleIds().remove(event.getCircle().getId());
+                    user.getCircles().remove(event.getCircle());
                     break;
                 case ADDED:
-                    user.getCircleIds().add(event.getCircle().getId());
+                    user.getCircles().add(event.getCircle());
                     break;
             }
-            user.setCircles(snappyRepository.getCircles());
             view.notifyUserChanged();
         }
     }

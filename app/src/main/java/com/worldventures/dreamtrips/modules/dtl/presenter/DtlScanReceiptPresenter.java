@@ -50,6 +50,11 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
             view.attachReceipt(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
         }
 
+        if (dtlTransaction.getBillTotal() != 0d) {
+            view.preSetBillAmount(dtlTransaction.getBillTotal());
+            this.amount = String.valueOf(dtlTransaction.getBillTotal());
+        }
+
         checkVerification();
     }
 
@@ -137,5 +142,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         void disableVerification();
 
         void showProgress();
+
+        void preSetBillAmount(double amount);
     }
 }

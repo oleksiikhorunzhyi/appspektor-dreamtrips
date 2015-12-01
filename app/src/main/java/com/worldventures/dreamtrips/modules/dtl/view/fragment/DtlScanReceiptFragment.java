@@ -106,6 +106,11 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         return new DtlScanReceiptPresenter(getArgs());
     }
 
+    @Override
+    public void preSetBillAmount(double amount) {
+        amountInput.setText(String.valueOf(amount));
+    }
+
     @OnClick(R.id.verify)
     void onVerify() {
         if (amountInput.validate()) getPresenter().verify();

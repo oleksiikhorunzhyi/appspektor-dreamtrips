@@ -16,6 +16,7 @@
             android:id="@+id/sdv_avatar"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
             fresco:placeholderImage="@drawable/ic_avatar_placeholder"
             fresco:placeholderImageScaleType="centerInside"
             fresco:roundAsCircle="true"/>

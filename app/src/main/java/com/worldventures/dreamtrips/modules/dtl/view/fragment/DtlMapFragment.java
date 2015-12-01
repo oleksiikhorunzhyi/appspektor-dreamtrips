@@ -78,6 +78,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                             .data(new PlacesBundle(bundle.getLocation()))
                             .fragmentManager(getFragmentManager())
                             .backStackEnabled(false)
+                            .clearBackStack(true)
                             .containerId(R.id.dtl_container)
                             .build());
                     return true;

@@ -91,14 +91,16 @@ public class DtlFilterData implements Parcelable {
     }
 
     public enum DistanceType {
-        MILES(R.string.miles, true), KMS(R.string.kms, false);
+        MILES(R.string.miles, "ml", true), KMS(R.string.kms, "km", false);
 
         @StringRes
         int textResId;
         boolean selected;
+        String analyticsTypeName;
 
-        DistanceType(@StringRes int textResId, boolean selected) {
+        DistanceType(@StringRes int textResId, String analyticsTypeName, boolean selected) {
             this.textResId = textResId;
+            this.analyticsTypeName = analyticsTypeName;
             this.selected = selected;
         }
 
@@ -108,6 +110,10 @@ public class DtlFilterData implements Parcelable {
 
         public boolean isSelected() {
             return selected;
+        }
+
+        public String getTypeNameForAnalytics() {
+            return analyticsTypeName;
         }
     }
 

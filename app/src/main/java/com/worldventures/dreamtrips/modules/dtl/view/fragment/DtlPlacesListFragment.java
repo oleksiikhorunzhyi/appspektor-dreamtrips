@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
@@ -14,15 +15,13 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.core.selectable.SelectionManager;
+import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.List;
 
@@ -50,9 +49,13 @@ public class DtlPlacesListFragment
     protected View emptyView;
     //
     BaseArrayListAdapter<DtlPlace> adapter;
-    private WeakHandler weakHandler;
-
+    RecyclerView.Adapter wrappedAdapter;
+    //
     RecyclerViewStateDelegate stateDelegate;
+    //
+    SelectionManager selectionManager;
+
+    private WeakHandler weakHandler;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,7 +76,6 @@ public class DtlPlacesListFragment
         return new DtlPlacesListPresenter((DtlPlaceType) getArguments().getSerializable(EXTRA_TYPE));
     }
 
-
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -81,7 +83,12 @@ public class DtlPlacesListFragment
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlPlace.class, DtlPlaceCell.class);
-        recyclerView.setAdapter(adapter);
+
+        selectionManager = new SingleSelectionManager(recyclerView);
+        selectionManager.setEnabled(isTabletLandscape());
+        //
+        wrappedAdapter = selectionManager.provideWrappedAdapter(adapter);
+        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
         recyclerView.setEmptyView(emptyView);
         //
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -110,8 +117,16 @@ public class DtlPlacesListFragment
     }
 
     @Override
+    public void toggleSelection(DtlPlace dtlPlace) {
+        int index = adapter.getItems().indexOf(dtlPlace);
+        if (index != -1)
+            selectionManager.toggleSelection(index);
+    }
+
+    @Override
     public void onDestroyView() {
         stateDelegate.onDestroyView();
+        selectionManager.release();
         super.onDestroyView();
     }
 

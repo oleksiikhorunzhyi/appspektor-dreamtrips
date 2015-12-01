@@ -11,7 +11,6 @@ import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -81,14 +80,9 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
 
     @Override
     public void onPageSelected(int position) {
-        getPresenter().trackState(position);
+        getPresenter().trackState(adapter.getItem(position).getClass());
         SoftInputUtil.hideSoftInputMethod(pager);
         eventBus.post(new ScreenChangedEvent());
-
-        Fragment tab = adapter.getItem(position);
-        if (tab instanceof InviteFragment) {
-            TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_VIEW);
-        }
     }
 
     @Override

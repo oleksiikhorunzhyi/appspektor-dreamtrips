@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacesQuery;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
@@ -105,6 +106,14 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         return bundle;
     }
 
+    /**
+     * Analytics-related
+     */
+    public void trackTabChange(int newPosition) {
+        String newTabName = dtlPlaceTypes.get(newPosition).equals(DtlPlaceType.OFFER) ?
+                TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
+        TrackingHelper.dtlPlacesTab(newTabName);
+    }
 
     public void onEventMainThread(final PlaceClickedEvent event) {
         if (!view.isTabletLandscape()) {

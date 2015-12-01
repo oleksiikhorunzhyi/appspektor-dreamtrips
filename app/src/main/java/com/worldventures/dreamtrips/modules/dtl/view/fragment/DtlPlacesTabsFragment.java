@@ -78,6 +78,7 @@ public class DtlPlacesTabsFragment
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
+                getPresenter().trackTabChange(position);
             }
 
             @Override

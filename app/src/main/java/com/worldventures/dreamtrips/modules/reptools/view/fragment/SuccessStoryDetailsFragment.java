@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
@@ -19,7 +18,6 @@ import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetai
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_success_stories_details)
 public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsPresenter>
@@ -106,18 +104,8 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
     @Override
     public void showShareDialog() {
         new ShareDialog(getActivity(), type -> {
-            switch (type) {
-                case ShareFragment.FB:
-                    TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_FACEBOOK, story.getUrl());
-                    getPresenter().onFbShare(story);
-                    break;
-                case ShareFragment.TW:
-                    TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_TWITTER, story.getUrl());
-                    getPresenter().onTwitterShare(story);
-                    break;
-                default:
-                    Timber.w("Sharing of this type is not implemented");
-            }
+            TrackingHelper.shareSuccessStory(type, story.getUrl());
+            getPresenter().onShare(type, story);
         }).show();
     }
 

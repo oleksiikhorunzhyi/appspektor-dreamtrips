@@ -220,10 +220,18 @@
                     android:background="@color/white_semi_transparent"
                     android:gravity="center"
                     android:padding="@dimen/spacing_small"
-                    android:text="Directions"
+                    android:text="@string/directions"
                     android:textAllCaps="true"
                     android:textColor="#005e92"
                     android:textSize="14sp"/>
+
+                <!-- Next layer is just to get clicks on map -->
+                <FrameLayout
+                    android:id="@+id/dtl_place_details_map_click_interceptor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    />
             </FrameLayout>
 
         </LinearLayout>

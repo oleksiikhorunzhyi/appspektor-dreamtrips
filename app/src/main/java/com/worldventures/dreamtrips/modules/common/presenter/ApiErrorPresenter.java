@@ -24,11 +24,13 @@ public class ApiErrorPresenter {
     }
 
     public boolean hasView() {
-        return apiErrorView == null;
+        return apiErrorView != null;
     }
 
     public void handleError(SpiceException spiceException) {
         if (!hasView()) return;
+
+        apiErrorView.onApiCallFailed();
 
         if (spiceException.getCause() instanceof DtApiException) {
             ErrorResponse errorResponse = ((DtApiException) spiceException.getCause()).getErrorResponse();

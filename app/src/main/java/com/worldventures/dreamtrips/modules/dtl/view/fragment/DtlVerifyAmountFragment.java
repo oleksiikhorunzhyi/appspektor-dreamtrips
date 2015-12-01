@@ -92,7 +92,7 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
 
     @Override
     public void attachTransaction(DtlTransaction dtlTransaction) {
-        spentAmount.setText(getString(R.string.dtl_spent_amount, dtlTransaction.getBillTotal()));
+        spentAmount.setText(String.format("$ %.2f", dtlTransaction.getBillTotal()));
         receipt.setImageURI(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
     }
 }

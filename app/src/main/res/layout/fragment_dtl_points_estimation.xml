@@ -76,7 +76,9 @@
             android:layout_marginLeft="@dimen/spacing_normal"
             android:text="$"
             android:textColor="#DC000000"
-            android:textSize="@dimen/font_large"/>
+            android:textSize="@dimen/font_large"
+            tools:ignore="HardcodedText"
+            />
 
         <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
             android:id="@+id/inputPoints"

@@ -8,6 +8,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
@@ -46,6 +47,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     }
 
     public void codeScanned(String content) {
+        TrackingHelper.dtlScanMerchant(content);
         dtlTransaction.setCode(content);
         snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
         //
@@ -68,6 +70,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     }
 
     private void processTransactionResult(DtlTransactionResult result) {
+        TrackingHelper.dtlPointsEarned(Double.valueOf(result.getEarnedPoints()).intValue());
         view.hideProgress();
         //
         dtlTransaction.setDtlTransactionResult(result);

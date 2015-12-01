@@ -5,13 +5,22 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
 
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
+import com.jakewharton.rxbinding.support.v7.widget.SearchViewQueryTextEvent;
 import com.worldventures.dreamtrips.R;
 
-public class DtlPlaceSearchViewDelegate implements SearchView.OnQueryTextListener {
+import java.util.concurrent.TimeUnit;
+
+import rx.Subscription;
+
+public class DtlPlaceSearchViewDelegate {
+
+    private static final int DEBOUNCE_INTERVAL_LENGTH = 900; // milliseconds
 
     private Context c;
     private QueryChangedListener onQueryChangedListener;
     private SearchView searchView;
+    private Subscription searchViewSubscription;
 
     public DtlPlaceSearchViewDelegate(Context c) {
         this.c = c;
@@ -22,34 +31,27 @@ public class DtlPlaceSearchViewDelegate implements SearchView.OnQueryTextListene
         if (searchItem != null) {
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setQueryHint(c.getString(R.string.search));
-            searchView.setOnCloseListener(() -> {
-                if (onQueryChangedListener != null) {
-                    onQueryChangedListener.onQueryChanged(null);
-                }
-                return false;
-            });
-            searchView.setOnQueryTextListener(this);
+            searchView.setOnCloseListener(this::onSearchViewClosed);
             searchView.post(() -> searchView.setQuery(defValue, true));
+
+            searchViewSubscription = RxSearchView.queryTextChangeEvents(searchView)
+                    .debounce(DEBOUNCE_INTERVAL_LENGTH, TimeUnit.MILLISECONDS)
+                    .subscribe(this::onQueryTextChange);
         }
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
+    private boolean onSearchViewClosed() {
+        searchViewSubscription.unsubscribe();
         if (onQueryChangedListener != null) {
-            onQueryChangedListener.onQueryChanged(query);
-        }
-        if (searchView != null) {
-            searchView.clearFocus();
+            onQueryChangedListener.onQueryChanged(null);
         }
         return false;
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
+    public void onQueryTextChange(SearchViewQueryTextEvent event) {
         if (onQueryChangedListener != null) {
-            onQueryChangedListener.onQueryChanged(newText);
+            onQueryChangedListener.onQueryChanged(event.queryText().toString());
         }
-        return false;
     }
 
     public interface QueryChangedListener {

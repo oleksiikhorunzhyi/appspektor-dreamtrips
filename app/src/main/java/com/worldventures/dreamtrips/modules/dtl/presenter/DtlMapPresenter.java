@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
@@ -109,6 +110,8 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
                                 currentLocation))
                 .filter(dtlPlace -> dtlPlace.containsQuery(query))
                 .toList();
+
+        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, places.size());
 
         return Observable.from(places).toList();
     }

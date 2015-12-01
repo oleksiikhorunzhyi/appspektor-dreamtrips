@@ -8,11 +8,13 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
@@ -72,6 +74,10 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         performFiltering();
     }
 
+    public void onEventMainThread(TogglePlaceSelectionEvent event) {
+        if (dtlPlaces.contains(event.getDtlPlace())) view.toggleSelection(event.getDtlPlace());
+    }
+
     @Override
     public void onFilter() {
         performFiltering();
@@ -108,8 +114,9 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
             dtlPlace.calculateDistance(currentLocation);
         }
 
-        Collections
-                .sort(places, new DtlPlace.DtlPlaceDistanceComparator(currentLocation));
+        Collections.sort(places, DtlPlace.DISTANCE_COMPARATOR);
+
+        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, places.size());
 
         return Observable.from(places).toList();
     }
@@ -134,5 +141,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         void showProgress();
 
         void hideProgress();
+
+        void toggleSelection(DtlPlace dtlPlace);
     }
 }

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
@@ -384,6 +385,11 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
             additionalInfo.setError(errorResponse.getMessageForField(DtlLead.DESCRIPTION));
         }
         return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
+        hideProgress();
     }
 
     /**

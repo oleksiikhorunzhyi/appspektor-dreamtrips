@@ -14,17 +14,20 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
     StaticPageProvider provider;
     @Inject
     SnappyRepository snappyRepository;
-
-    private LogoutDelegate logoutDelegate;
+    @Inject
+    LogoutDelegate logoutDelegate;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-
-        logoutDelegate = new LogoutDelegate(this);
         logoutDelegate.setOnLogoutSuccessListener(view::dismissDialog);
-        view.inject(logoutDelegate);
         view.loadContent(provider.getStaticInfoUrl(StaticInfoFragment.TERMS_TITLE));
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     public void acceptTerms(String text) {

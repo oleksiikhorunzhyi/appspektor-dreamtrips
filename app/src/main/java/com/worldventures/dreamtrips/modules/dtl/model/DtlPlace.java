@@ -146,6 +146,22 @@ public class DtlPlace implements Parcelable {
         return offers == null || offers.isEmpty();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DtlPlace dtlPlace = (DtlPlace) o;
+
+        return !(id != null ? !id.equals(dtlPlace.id) : dtlPlace.id != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
@@ -267,22 +283,10 @@ public class DtlPlace implements Parcelable {
         return displayName + " " + distanceInMiles;
     }
 
-    public static class DtlPlaceDistanceComparator implements Comparator<DtlPlace> {
-
-        private LatLng currentLocation;
-
-        public DtlPlaceDistanceComparator(LatLng currentLocation) {
-            this.currentLocation = currentLocation;
-        }
-
+    public static Comparator<DtlPlace> DISTANCE_COMPARATOR = new Comparator<DtlPlace>() {
         @Override
         public int compare(DtlPlace lhs, DtlPlace rhs) {
-           /* double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
-                    lhs.getCoordinates().asLatLng());
-            double distanceToRight = LocationHelper.distanceInMiles(currentLocation,
-                    rhs.getCoordinates().asLatLng());
-            */
             return Double.valueOf(lhs.distanceInMiles - rhs.distanceInMiles).intValue();
         }
-    }
+    };
 }

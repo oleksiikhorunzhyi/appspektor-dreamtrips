@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -46,7 +45,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
@@ -165,16 +163,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     public void actionShare() {
         eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
         new ShareDialog(getActivity(), type -> {
-            switch (type) {
-                case ShareFragment.FB:
-                    getPresenter().onFbShare();
-                    break;
-                case ShareFragment.TW:
-                    getPresenter().onTwitterShare();
-                    break;
-                default:
-                    Timber.w("Sharing of this type is not implemented");
-            }
+            getPresenter().onShare(type);
         }).show();
     }
 

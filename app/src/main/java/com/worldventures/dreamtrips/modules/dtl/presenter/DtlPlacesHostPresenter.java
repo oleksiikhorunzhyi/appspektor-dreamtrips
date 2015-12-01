@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 public class DtlPlacesHostPresenter extends Presenter<DtlPlacesHostPresenter.View> {
 
     public void onEventMainThread(final PlaceClickedEvent event) {
-        view.showDetails(event.getPlace());
+        if (view.isTabletLandscape()) view.showDetails(event.getPlace());
     }
 
     public interface View extends Presenter.View {

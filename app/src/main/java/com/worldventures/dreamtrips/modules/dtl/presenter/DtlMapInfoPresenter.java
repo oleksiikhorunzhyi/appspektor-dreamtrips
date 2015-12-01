@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 
 public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapInfoPresenter.View> {
@@ -21,6 +22,7 @@ public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapIn
     }
 
     public void onPlaceClick() {
+        eventBus.post(new TogglePlaceSelectionEvent(place));
         view.showDetails(place);
     }
 

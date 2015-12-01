@@ -6,6 +6,7 @@ import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
@@ -35,8 +36,10 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         initialized = true;
         //
         DtlLocation dtlLocation = db.getSelectedDtlLocation();
-        if (dtlLocation != null)
+        if (dtlLocation != null) {
+            TrackingHelper.dtlLocationLoaded(dtlLocation.getLocationId());
             view.openMerchants(new PlacesBundle(dtlLocation));
+        }
         else
             view.openDtlLocationsScreen();
     }

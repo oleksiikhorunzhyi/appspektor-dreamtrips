@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.module.ActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
@@ -137,10 +137,11 @@ public abstract class BaseActivity extends InjectingActivity {
     }
 
     public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
-        NavigationBuilder.create()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .with(router).move(Route.LOGIN);
-    }
+        Bundle args = new Bundle();
+        args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, ToolbarConfig.Builder.create().visible(false).build());
+        router.finish(); // for sure if activity start finishing
+        router.openComponentActivity(Route.LOGIN, args,
+                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

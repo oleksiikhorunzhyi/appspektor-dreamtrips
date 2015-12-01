@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
@@ -65,6 +66,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     }
 
     public void apply() {
+        TrackingHelper.dtlMerchantFilter(dtlFilterData);
         dtlFilterDelegate.performFiltering();
     }
 

@@ -159,6 +159,12 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     }
 
     @Override
+    public void onApiCallFailed() {
+        progress.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onDestroyView() {
         if (searchView != null) {
             searchView.setOnCloseListener(null);

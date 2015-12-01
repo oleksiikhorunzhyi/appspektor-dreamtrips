@@ -7,6 +7,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -68,12 +69,15 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         view.showProgress();
         //
         dtlTransaction.setBillTotal(Double.parseDouble(amount));
+        TrackingHelper.dtlVerifyAmountUser(amount);
+
         doRequest(new GetDtlPlacePointsEstimationQuery(dtlPlace.getId(), dtlTransaction.getBillTotal()),
                 this::attachDtPoints);
     }
 
     private void attachDtPoints(Double points) {
-        dtlTransaction.setBillTotal(Double.parseDouble(amount));
+        TrackingHelper.dtlVerifyAmountSuccess();
+        //
         dtlTransaction.setPoints(points);
         //
         snapper.saveDtlTransaction(dtlPlace.getId(), dtlTransaction);
@@ -106,6 +110,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     }
 
     private void attachPhoto(String filePath) {
+        TrackingHelper.dtlCaptureReceipt(filePath);
         view.attachReceipt(Uri.parse(filePath));
 
         UploadTask uploadTask = new UploadTask();

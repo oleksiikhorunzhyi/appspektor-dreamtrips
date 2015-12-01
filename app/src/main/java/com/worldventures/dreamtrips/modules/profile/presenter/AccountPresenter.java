@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -47,6 +46,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Inject
     RootComponentsProvider rootComponentsProvider;
+    @Inject
+    LogoutDelegate logoutDelegate;
 
     private String coverTempFilePath;
 
@@ -56,8 +57,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     int callbackType;
 
     int REQUESTER_ID = 3745742;
-
-    private LogoutDelegate logoutDelegate;
 
     public AccountPresenter() {
         super();
@@ -82,6 +81,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onInjected() {
         super.onInjected();
         user = getAccount();
+        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     private void onAvatarUploadSuccess(User obj) {
@@ -128,8 +128,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
-        logoutDelegate = new LogoutDelegate(this);
-        view.inject(logoutDelegate);
     }
 
     @Override

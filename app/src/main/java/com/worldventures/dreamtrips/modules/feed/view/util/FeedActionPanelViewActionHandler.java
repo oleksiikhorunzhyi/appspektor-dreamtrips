@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
@@ -82,11 +81,7 @@ public class FeedActionPanelViewActionHandler {
                 break;
         }
 
-        if (shareType.equals(ShareFragment.FB)) {
-            activityRouter.openShareFacebook(imageUrl, shareUrl, text);
-        } else {
-            activityRouter.openShareTwitter(imageUrl, shareUrl, text);
-        }
+        activityRouter.openShare(imageUrl, shareUrl, text, shareType);
     }
 
 }

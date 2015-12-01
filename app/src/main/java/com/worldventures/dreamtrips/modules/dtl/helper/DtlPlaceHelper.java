@@ -47,17 +47,24 @@ public class DtlPlaceHelper {
 
     public List<ImageTextItem> getContactsData(DtlPlace place) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
-        addContactIfNotEmpty(items,
-                String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(), place.getState(), place.getZip()),
-                R.drawable.address_icon, IntentUtils.newMapIntent(place.getCoordinates().getLat(), place.getCoordinates().getLng()));
-        addContactIfNotEmpty(items, place.getPhone(), R.drawable.phone_icon, IntentUtils.newDialerIntent(place.getPhone()));
-        addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon, IntentUtils.browserIntent(place.getWebsite()));
+        addContactIfNotEmpty(items, String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),
+                        place.getState(), place.getZip()),
+                R.drawable.address_icon,
+                IntentUtils.newMapIntent(place.getCoordinates().getLat(), place.getCoordinates().getLng()),
+                ImageTextItem.Type.ADDRESS);
+        addContactIfNotEmpty(items, place.getPhone(), R.drawable.phone_icon,
+                IntentUtils.newDialerIntent(place.getPhone()),
+                ImageTextItem.Type.PHONE_NUMBER);
+        addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon,
+                IntentUtils.browserIntent(place.getWebsite()),
+                ImageTextItem.Type.WEBSITE_URL);
         return items;
     }
 
-    private void addContactIfNotEmpty(List<ImageTextItem> items, String contact, @DrawableRes int icon, Intent intent) {
+    private void addContactIfNotEmpty(List<ImageTextItem> items, String contact, @DrawableRes int icon,
+                                      Intent intent, ImageTextItem.Type type) {
         if (TextUtils.isEmpty(contact)) return;
-        items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent));
+        items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type));
     }
 
     public Spannable getOperationalTime(DtlPlace dtlPlace) {

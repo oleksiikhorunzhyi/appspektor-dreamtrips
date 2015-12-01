@@ -89,7 +89,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">演示</string>
     <string name="dtl_open_now">現在營業</string>
-    <string name="dtl_closed">關閉</string>
+    <string name="dtl_closed">現在關閉</string>
     <string name="miles">公里/&lt;b&gt;英里&lt;/b&gt;</string>
     <string name="kms">&lt;b&gt;公里&lt;/b&gt;/英里</string>
     <string name="wrong_qr">無效商家代碼或不正確地點。如果問題仍然存在，請聯繫會員服務</string>

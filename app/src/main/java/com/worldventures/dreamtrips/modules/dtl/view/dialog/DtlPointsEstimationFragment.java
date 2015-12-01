@@ -102,11 +102,15 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
 
     @Override
     public boolean onApiError(ErrorResponse errorResponse) {
-        stopProgress();
         if (errorResponse.containsField(DtlPointsEstimationPresenter.BILL_TOTAL)) {
             inputPoints.setError(errorResponse.getMessageForField(DtlPointsEstimationPresenter.BILL_TOTAL));
         }
         return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
+        stopProgress();
     }
 
     private void stopProgress() {

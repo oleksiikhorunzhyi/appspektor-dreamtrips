@@ -143,11 +143,15 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
 
     @Override
     public boolean onApiError(ErrorResponse errorResponse) {
-        progressDialog.dismiss();
         if (errorResponse.containsField(DtlPointsEstimationPresenter.BILL_TOTAL)) {
             amountInput.setError(errorResponse.getMessageForField(DtlPointsEstimationPresenter.BILL_TOTAL));
         }
         return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
+        progressDialog.dismiss();
     }
 
     @Override

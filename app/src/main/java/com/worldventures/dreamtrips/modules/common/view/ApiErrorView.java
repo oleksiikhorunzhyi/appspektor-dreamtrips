@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view;
 
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-
-import java.util.List;
 
 public interface ApiErrorView extends Presenter.View {
 
@@ -15,5 +12,10 @@ public interface ApiErrorView extends Presenter.View {
      * @return {@code true} - if error was handled, {@code false} - if should be handled upper.
      */
     boolean onApiError(ErrorResponse errorResponse);
+
+    /**
+     * Called if api call failed for some reason, here you can close progress dialog etc.
+     */
+    void onApiCallFailed();
 
 }

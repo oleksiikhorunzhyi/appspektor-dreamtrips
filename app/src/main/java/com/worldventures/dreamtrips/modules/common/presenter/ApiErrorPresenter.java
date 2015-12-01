@@ -30,6 +30,8 @@ public class ApiErrorPresenter {
     public void handleError(SpiceException spiceException) {
         if (!hasView()) return;
 
+        apiErrorView.onApiCallFailed();
+
         if (spiceException.getCause() instanceof DtApiException) {
             ErrorResponse errorResponse = ((DtApiException) spiceException.getCause()).getErrorResponse();
             if (errorResponse == null || errorResponse.getErrors() == null

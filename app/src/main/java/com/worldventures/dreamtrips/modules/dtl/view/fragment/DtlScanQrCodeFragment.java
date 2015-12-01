@@ -174,9 +174,12 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     }
 
     @Override
-    public boolean onApiError(ErrorResponse errorResponse) {
+    public void onApiCallFailed() {
         hideProgress();
-        //
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
         FieldError fieldError = Queryable.from(errorResponse.getErrors()).firstOrDefault();
         //
         if (fieldError != null) {

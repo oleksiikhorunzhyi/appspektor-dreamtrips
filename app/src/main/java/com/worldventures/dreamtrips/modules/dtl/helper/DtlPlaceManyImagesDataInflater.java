@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class DtlPlaceManyImagesDataInflater extends DtlPlaceCommonDataInflater {
     }
 
     @Override
-    protected void onPlaceApply(DtlPlace place) {
+    protected void onPlaceApply(DTlMerchant place) {
         super.onPlaceApply(place);
         setImages(place.getImages());
     }

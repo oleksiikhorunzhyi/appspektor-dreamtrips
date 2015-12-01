@@ -13,7 +13,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.DayOfWeek;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.OperationHours;
@@ -40,12 +40,12 @@ public class DtlPlaceHelper {
         this.context = context;
     }
 
-    public String getCategories(DtlPlace place) {
+    public String getCategories(DTlMerchant place) {
         List<DtlPlaceAttribute> categories = place.getCategories();
         return categories == null ? null : TextUtils.join(", ", categories);
     }
 
-    public List<ImageTextItem> getContactsData(DtlPlace place) {
+    public List<ImageTextItem> getContactsData(DTlMerchant place) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
         addContactIfNotEmpty(items, String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),
                         place.getState(), place.getZip()),
@@ -67,14 +67,14 @@ public class DtlPlaceHelper {
         items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type));
     }
 
-    public Spannable getOperationalTime(DtlPlace dtlPlace) {
+    public Spannable getOperationalTime(DTlMerchant DTlMerchant) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 
-        if (dtlPlace.getOperationDays() != null) {
+        if (DTlMerchant.getOperationDays() != null) {
             DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-            OperationDay operationDay = Queryable.from(dtlPlace.getOperationDays())
+            OperationDay operationDay = Queryable.from(DTlMerchant.getOperationDays())
                     .firstOrDefault(element -> element.getDayOfWeek() == current);
 
             if (operationDay != null && operationDay.getOperationHours() != null) {

@@ -118,12 +118,11 @@ public class DtlLocation implements Parcelable {
         }
     }
 
-    public static Comparator<DtlLocation> CATEGORY_COMPARATOR = new Comparator<DtlLocation>() {
-        @Override
-        public int compare(DtlLocation lhs, DtlLocation rhs) {
-            return lhs.type.ordinal() - rhs.type.ordinal();
-        }
-    };
+    public static Comparator<DtlLocation> CATEGORY_COMPARATOR = (lhs, rhs) ->
+            lhs.type.ordinal() - rhs.type.ordinal();
+
+    public static Comparator<DtlLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) ->
+            lhs.getLongName().compareToIgnoreCase(rhs.getLongName());
 
 }
 

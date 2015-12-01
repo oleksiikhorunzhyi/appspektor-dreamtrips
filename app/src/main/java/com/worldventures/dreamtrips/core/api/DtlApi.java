@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.api;
 
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
@@ -23,12 +23,13 @@ public interface DtlApi {
     ArrayList<DtlLocation> getNearbyDtlLocations(@Query("ll") String latLng, @Query("query") String query);
 
     @GET("/api/dtl/v2/locations/{id}/merchants")
-    ArrayList<DtlPlace> getDtlPlaces(@Path("id") String locationId);
+    ArrayList<DTlMerchant> getDtlPlaces(@Path("id") String locationId);
 
+    @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/estimations")
-    EstimationPointsHolder getDtlPlacePointsEstimation(@Path("id") String placeId,
-                                                       @Field("bill_total") double price,
-                                                       @Field("checkin_time") String checkinTime);
+    EstimationPointsHolder estimatePoints(@Path("id") String placeId,
+                                          @Field("bill_total") double price,
+                                          @Field("checkin_time") String checkinTime);
 
     @POST("/api/dtl/v2/merchants/{id}/transactions")
     DtlTransactionResult earnPoints(@Path("id") String placeId,

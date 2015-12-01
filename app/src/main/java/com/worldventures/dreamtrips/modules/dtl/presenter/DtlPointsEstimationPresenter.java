@@ -3,10 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacePointsEstimationQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.place.EstimatePointsRequest;
 
 public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
@@ -28,7 +27,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
         if (!validateInput(userInput)) return;
         //
         view.showProgress();
-        doRequest(new GetDtlPlacePointsEstimationQuery(placeId,
+        doRequest(new EstimatePointsRequest(placeId,
                 Double.valueOf(userInput)), aDouble -> {
             view.showEstimatedPoints(aDouble.intValue());
         });

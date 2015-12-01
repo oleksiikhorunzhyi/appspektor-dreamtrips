@@ -16,7 +16,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class DtlPlace implements Parcelable {
+public class DTlMerchant implements Parcelable {
 
     String id;
     String type;
@@ -42,7 +42,7 @@ public class DtlPlace implements Parcelable {
     List<DtlPlaceMedia> images;
     List<OperationDay> operationDays;
 
-    public DtlPlace() {
+    public DTlMerchant() {
     }
 
     public String getId() {
@@ -151,9 +151,9 @@ public class DtlPlace implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DtlPlace dtlPlace = (DtlPlace) o;
+        DTlMerchant DTlMerchant = (DTlMerchant) o;
 
-        return !(id != null ? !id.equals(dtlPlace.id) : dtlPlace.id != null);
+        return !(id != null ? !id.equals(DTlMerchant.id) : DTlMerchant.id != null);
 
     }
 
@@ -166,7 +166,7 @@ public class DtlPlace implements Parcelable {
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    protected DtlPlace(Parcel in) {
+    protected DTlMerchant(Parcel in) {
         id = in.readString();
         type = in.readString();
         partnerStatus = (PartnerStatus) in.readSerializable();
@@ -217,15 +217,15 @@ public class DtlPlace implements Parcelable {
         dest.writeTypedList(operationDays);
     }
 
-    public static final Creator<DtlPlace> CREATOR = new Creator<DtlPlace>() {
+    public static final Creator<DTlMerchant> CREATOR = new Creator<DTlMerchant>() {
         @Override
-        public DtlPlace createFromParcel(Parcel in) {
-            return new DtlPlace(in);
+        public DTlMerchant createFromParcel(Parcel in) {
+            return new DTlMerchant(in);
         }
 
         @Override
-        public DtlPlace[] newArray(int size) {
-            return new DtlPlace[size];
+        public DTlMerchant[] newArray(int size) {
+            return new DTlMerchant[size];
         }
     };
 
@@ -283,9 +283,9 @@ public class DtlPlace implements Parcelable {
         return displayName + " " + distanceInMiles;
     }
 
-    public static Comparator<DtlPlace> DISTANCE_COMPARATOR = new Comparator<DtlPlace>() {
+    public static Comparator<DTlMerchant> DISTANCE_COMPARATOR = new Comparator<DTlMerchant>() {
         @Override
-        public int compare(DtlPlace lhs, DtlPlace rhs) {
+        public int compare(DTlMerchant lhs, DTlMerchant rhs) {
             return Double.valueOf(lhs.distanceInMiles - rhs.distanceInMiles).intValue();
         }
     };

@@ -42,7 +42,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
@@ -148,7 +148,7 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void setPlace(DtlPlace place) {
+    public void setPlace(DTlMerchant place) {
         commonDataInflater.apply(place);
         placeInfoInflater.apply(place);
         categoryDataInflater.apply(place);
@@ -158,12 +158,12 @@ public class DtlPlaceDetailsFragment
         setMap(place);
     }
 
-    private void setType(DtlPlace dtlPlace) {
-        earnWrapper.setVisibility(dtlPlace.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
-        merchantWrapper.setVisibility(dtlPlace.hasNoOffers() ? View.VISIBLE : View.GONE);
+    private void setType(DTlMerchant DTlMerchant) {
+        earnWrapper.setVisibility(DTlMerchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
+        merchantWrapper.setVisibility(DTlMerchant.hasNoOffers() ? View.VISIBLE : View.GONE);
     }
 
-    private void setDescriptions(DtlPlace place) {
+    private void setDescriptions(DTlMerchant place) {
         this.description.setText(Html.fromHtml(place.getDescription()));
         //
         String perksDescription = "";
@@ -175,7 +175,7 @@ public class DtlPlaceDetailsFragment
         this.perksDescriptionHeader.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
     }
 
-    private void setAdditional(DtlPlace place) {
+    private void setAdditional(DTlMerchant place) {
         Queryable.from(helper.getContactsData(place)).forEachR(contact -> {
             TextView contactView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.list_item_dtl_place_contact, additionalContainer, false);
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
@@ -195,7 +195,7 @@ public class DtlPlaceDetailsFragment
         });
     }
 
-    private void setMap(DtlPlace place) {
+    private void setMap(DTlMerchant place) {
         GoogleMapOptions mapOptions = new GoogleMapOptions();
         mapOptions.liteMode(true);
         //
@@ -235,13 +235,13 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
-       router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(dtlPlace).build());
+    public void openTransaction(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction) {
+       router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(DTlMerchant).build());
     }
 
     @Override
-    public void showSucceed(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
-        router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog().data(dtlPlace).build());
+    public void showSucceed(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction) {
+        router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog().data(DTlMerchant).build());
         getPresenter().trackEarnFlowView();
     }
 
@@ -262,7 +262,7 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void share(DtlPlace place) {
+    public void share(DTlMerchant place) {
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);

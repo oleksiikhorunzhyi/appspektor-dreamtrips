@@ -8,7 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
@@ -878,7 +878,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, merchantTypeAction, data);
     }
 
-    public static void dtlSuggestMerchant(@Nullable DtlPlace place) {
+    public static void dtlSuggestMerchant(@Nullable DTlMerchant place) {
         Map data = prepareAttributeMap(ATTRIBUTE_MERCHANT);
         if (place != null) {
             data.put(DTL_ATTRIBUTE_MERCHANT, new StrBuilder(place.getId()).setNullText("")

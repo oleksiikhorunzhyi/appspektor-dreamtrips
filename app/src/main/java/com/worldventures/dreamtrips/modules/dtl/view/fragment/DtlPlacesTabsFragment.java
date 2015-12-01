@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 
@@ -144,7 +144,7 @@ public class DtlPlacesTabsFragment
     }
 
     @Override
-    public void openDetails(DtlPlace place) {
+    public void openDetails(DTlMerchant place) {
         router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new PlaceDetailsBundle(place, false))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

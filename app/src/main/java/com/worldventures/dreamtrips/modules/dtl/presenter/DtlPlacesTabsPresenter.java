@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
@@ -67,21 +67,21 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         );
     }
 
-    private void placeLoaded(List<DtlPlace> dtlPlaces) {
-        Map<DtlPlaceType, Collection<DtlPlace>> byTypeMap =
-                Queryable.from(dtlPlaces).groupToMap(DtlPlace::getPlaceType);
+    private void placeLoaded(List<DTlMerchant> DTlMerchants) {
+        Map<DtlPlaceType, Collection<DTlMerchant>> byTypeMap =
+                Queryable.from(DTlMerchants).groupToMap(DTlMerchant::getPlaceType);
 
         Queryable.from(byTypeMap.keySet())
                 .forEachR(type -> updatePlacesByType(type, byTypeMap.get(type)));
 
-        saveAmenities(dtlPlaces);
+        saveAmenities(DTlMerchants);
 
         eventBus.post(new PlacesUpdateFinished());
     }
 
-    private void saveAmenities(List<DtlPlace> dtlPlaces) {
+    private void saveAmenities(List<DTlMerchant> DTlMerchants) {
         Set<DtlPlaceAttribute> amenitiesSet = new HashSet<>();
-        Queryable.from(dtlPlaces).forEachR(dtlPlace -> {
+        Queryable.from(DTlMerchants).forEachR(dtlPlace -> {
                     if (dtlPlace.getAmenities() != null)
                         amenitiesSet.addAll(dtlPlace.getAmenities());
                 }
@@ -90,8 +90,8 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         db.saveAmenities(amenitiesSet);
     }
 
-    private void updatePlacesByType(DtlPlaceType type, Collection<DtlPlace> dtlPlaces) {
-        db.saveDtlPlaces(type, new ArrayList<>(dtlPlaces));
+    private void updatePlacesByType(DtlPlaceType type, Collection<DTlMerchant> DTlMerchants) {
+        db.saveDtlPlaces(type, new ArrayList<>(DTlMerchants));
         eventBus.post(new PlacesUpdatedEvent(type));
     }
 
@@ -129,6 +129,6 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
         void initToolbar(DtlLocation location);
 
-        void openDetails(DtlPlace place);
+        void openDetails(DTlMerchant place);
     }
 }

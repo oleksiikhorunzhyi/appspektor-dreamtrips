@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
@@ -146,12 +146,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void showPlaceInfo(DtlPlace dtlPlace) {
+    public void showPlaceInfo(DTlMerchant DTlMerchant) {
         router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(new PlaceDetailsBundle(dtlPlace, bundle.isSlave()))
+                .data(new PlaceDetailsBundle(DTlMerchant, bundle.isSlave()))
                 .build());
     }
 

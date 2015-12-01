@@ -173,11 +173,13 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     private void localSearch() {
         if (searchLocations != null && !searchLocations.isEmpty())
-            view.bind(Observable.from(searchLocations)
-                            .filter(dtlLocation ->
-                                    dtlLocation.getLongName().toLowerCase().contains(caption))
-                            .toList()
-                            .compose(new IoToMainComposer<>())
+            view.bind(Observable.from(Queryable
+                                    .from(searchLocations)
+                                    .filter(dtlLocation ->
+                                            dtlLocation.getLongName().toLowerCase().contains(caption))
+                                    .sort(DtlLocation.ALPHABETICAL_COMPARATOR)
+                                    .toList()
+                    ).toList().compose(new IoToMainComposer<>())
             ).subscribe(view::setItems, e -> Timber.e(e, "Smth went wrong while search"));
     }
 

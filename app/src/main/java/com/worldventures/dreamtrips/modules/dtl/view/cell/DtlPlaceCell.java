@@ -7,18 +7,17 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
-import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_place)
-public class DtlPlaceCell extends AbstractCell<DtlPlace> implements SelectableCell {
+public class DtlPlaceCell extends AbstractCell<DTlMerchant> implements SelectableCell {
 
     DtlPlaceCommonDataInflater commonDataInflater;
     DtlPlaceInfoInflater categoryDataInflater;

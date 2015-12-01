@@ -5,12 +5,12 @@ import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
 
 import java.util.Date;
 
-public class GetDtlPlacePointsEstimationQuery extends DtlRequest<Double> {
+public class EstimatePointsRequest extends DtlRequest<Double> {
 
     private final String id;
     private final double price;
 
-    public GetDtlPlacePointsEstimationQuery(String id, double price) {
+    public EstimatePointsRequest(String id, double price) {
         super(Double.class);
         this.id = id;
         this.price = price;
@@ -18,7 +18,7 @@ public class GetDtlPlacePointsEstimationQuery extends DtlRequest<Double> {
 
     @Override
     public Double loadDataFromNetwork() {
-        return getService().getDtlPlacePointsEstimation(id, price,
+        return getService().estimatePoints(id, price,
                 DateTimeUtils.convertDateToUTCString(new Date(System.currentTimeMillis()))).getPoints();
     }
 }

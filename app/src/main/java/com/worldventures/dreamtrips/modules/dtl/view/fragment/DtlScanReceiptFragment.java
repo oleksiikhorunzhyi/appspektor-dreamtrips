@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
@@ -37,7 +37,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.fragment_scan_receipt)
 @MenuResource(R.menu.menu_mock)
-public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, DtlPlace>
+public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, DTlMerchant>
         implements DtlScanReceiptPresenter.View {
 
     @InjectView(R.id.verify)
@@ -159,7 +159,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         progressDialog.show(getFragmentManager());
     }
 
-    public void openVerify(DtlPlace dtlPlace, DtlTransaction dtlTransaction) {
+    public void openVerify(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction) {
         progressDialog.dismiss();
         dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
     }

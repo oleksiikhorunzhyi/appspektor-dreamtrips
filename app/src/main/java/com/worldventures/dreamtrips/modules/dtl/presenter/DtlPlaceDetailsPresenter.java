@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 
@@ -41,7 +41,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Inject
     LocationDelegate locationDelegate;
 
-    public DtlPlaceDetailsPresenter(DtlPlace place) {
+    public DtlPlaceDetailsPresenter(DTlMerchant place) {
         super(place);
     }
 
@@ -197,9 +197,9 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void openSuggestMerchant(SuggestPlaceBundle data);
 
-        void openTransaction(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+        void openTransaction(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction);
 
-        void showSucceed(DtlPlace dtlPlace, DtlTransaction dtlTransaction);
+        void showSucceed(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction);
 
         void openMap(PlacesBundle placesBundle);
 
@@ -207,7 +207,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void setSuggestMerchantButtonAvailable(boolean available);
 
-        void share(DtlPlace place);
+        void share(DTlMerchant place);
 
         void resolutionRequired(Status status);
 

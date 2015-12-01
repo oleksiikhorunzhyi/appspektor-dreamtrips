@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
 
     private DtlLocation dtlLocation;
 
-    List<DtlPlace> dtlPlaces = new ArrayList<>();
+    List<DTlMerchant> DTlMerchants = new ArrayList<>();
 
     public DtlMapPresenter(PlacesMapBundle bundle) {
         dtlLocation = bundle.getLocation();
@@ -63,12 +63,12 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
 
     public void onMapLoaded() {
         mapReady = true;
-        dtlPlaces.clear();
+        DTlMerchants.clear();
 
         view.centerIn(dtlLocation);
 
         for (DtlPlaceType type : DtlPlaceType.values()) {
-            dtlPlaces.addAll(db.getDtlPlaces(type));
+            DTlMerchants.addAll(db.getDtlPlaces(type));
         }
 
         performFiltering();
@@ -76,10 +76,10 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     public void onMarkerClick(String merchantId) {
-        showPlaceInfo(Queryable.from(dtlPlaces).firstOrDefault(item -> item.getId().equals(merchantId)));
+        showPlaceInfo(Queryable.from(DTlMerchants).firstOrDefault(item -> item.getId().equals(merchantId)));
     }
 
-    private void showPlaceInfo(DtlPlace place) {
+    private void showPlaceInfo(DTlMerchant place) {
         view.showPlaceInfo(place);
     }
 
@@ -96,7 +96,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
         ).subscribe(this::showPins, this::onError);
     }
 
-    private Observable<List<DtlPlace>> filter(Location location, String query) {
+    private Observable<List<DTlMerchant>> filter(Location location, String query) {
         LatLng currentLocation = LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
                 new LatLng(location.getLatitude(), location.getLongitude()),
                 dtlLocation.getCoordinates().asLatLng(),
@@ -104,7 +104,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
                 ? new LatLng(location.getLatitude(), location.getLongitude())
                 : dtlLocation.getCoordinates().asLatLng();
 
-        List<DtlPlace> places = Queryable.from(dtlPlaces)
+        List<DTlMerchant> places = Queryable.from(DTlMerchants)
                 .filter(dtlPlace ->
                         dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
                                 currentLocation))
@@ -120,7 +120,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
         Timber.e(e, "Something went wrong while filtering");
     }
 
-    private void showPins(List<DtlPlace> filtered) {
+    private void showPins(List<DTlMerchant> filtered) {
         if (view != null) {
             view.clearMap();
             Queryable.from(filtered).forEachR(dtlPlace ->
@@ -160,7 +160,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
 
         void clearMap();
 
-        void showPlaceInfo(DtlPlace dtlPlace);
+        void showPlaceInfo(DTlMerchant DTlMerchant);
 
         void prepareInfoWindow(int height);
 

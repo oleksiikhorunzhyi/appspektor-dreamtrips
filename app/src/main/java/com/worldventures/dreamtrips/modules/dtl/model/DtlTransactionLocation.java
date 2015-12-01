@@ -7,11 +7,11 @@ public class DtlTransactionLocation {
     private double latitude;
     private double longitude;
 
-    public static DtlTransactionLocation fromDtlPlace(DtlPlace dtlPlace, double latitude, double longitude) {
+    public static DtlTransactionLocation fromDtlPlace(DTlMerchant DTlMerchant, double latitude, double longitude) {
         DtlTransactionLocation  dtlTransactionLocation = new DtlTransactionLocation();
-        dtlTransactionLocation.city = dtlPlace.getCity();
-        dtlTransactionLocation.state = dtlPlace.getState();
-        dtlTransactionLocation.country = dtlPlace.getCountry();
+        dtlTransactionLocation.city = DTlMerchant.getCity();
+        dtlTransactionLocation.state = DTlMerchant.getState();
+        dtlTransactionLocation.country = DTlMerchant.getCountry();
         dtlTransactionLocation.latitude = latitude;
         dtlTransactionLocation.longitude = longitude;
         return dtlTransactionLocation;

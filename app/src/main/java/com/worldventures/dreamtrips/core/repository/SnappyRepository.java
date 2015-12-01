@@ -12,7 +12,7 @@ import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlace;
+import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
@@ -454,7 +454,7 @@ public class SnappyRepository {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
     }
 
-    public void saveDtlPlaces(DtlPlaceType type, List<DtlPlace> places) {
+    public void saveDtlPlaces(DtlPlaceType type, List<DTlMerchant> places) {
         clearAllForKey(DTL_PLACES_PREFIX + type);
         putList(DTL_PLACES_PREFIX + type, places);
     }
@@ -468,8 +468,8 @@ public class SnappyRepository {
         return readList(DTL_AMENITIES, DtlPlaceAttribute.class);
     }
 
-    public List<DtlPlace> getDtlPlaces(DtlPlaceType type) {
-        return readList(DTL_PLACES_PREFIX + type, DtlPlace.class);
+    public List<DTlMerchant> getDtlPlaces(DtlPlaceType type) {
+        return readList(DTL_PLACES_PREFIX + type, DTlMerchant.class);
     }
 
     ///////////////////////////////////////////////////////////////////////////

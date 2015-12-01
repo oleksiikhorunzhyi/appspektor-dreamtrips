@@ -26,7 +26,6 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
     @Override
     protected void userStateChanged(User user) {
         view.finishLoading();
-        users.remove(user);
         view.refreshUsers(users);
     }
 

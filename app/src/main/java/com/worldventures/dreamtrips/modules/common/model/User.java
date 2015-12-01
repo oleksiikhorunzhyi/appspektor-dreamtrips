@@ -64,7 +64,7 @@ public class User extends BaseEntity implements Parcelable {
     @SerializedName("circles")
     List<Circle> circles;
 
-    @SerializedName("mutual_friends")
+    @SerializedName("mutuals")
     MutualFriends mutualFriends;
 
     private transient boolean avatarUploadInProgress;

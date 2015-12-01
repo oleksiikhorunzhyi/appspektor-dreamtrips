@@ -36,8 +36,9 @@ public interface DtlApi {
                                     @Body DtlTransaction request);
 
     @FormUrlEncoded
-    @POST("/api/dtl/v2/merchants/{id}/rating")
-    Void rate(@Path("id") String placeId, @Field("stars") int stars, @Field("transaction_id") String transactionId);
+    @POST("/api/dtl/v2/merchants/{id}/ratings")
+    Void rate(@Path("id") String placeId, @Field("rating") int stars,
+              @Field("transaction_id") String transactionId);
 
     @POST("/api/dtl/v2/leads")
     Void suggestPlace(@Body DtlLead lead);

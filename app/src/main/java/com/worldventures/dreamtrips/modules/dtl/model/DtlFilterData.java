@@ -2,10 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,21 +89,14 @@ public class DtlFilterData implements Parcelable {
     }
 
     public enum DistanceType {
-        MILES(R.string.miles, "ml", true), KMS(R.string.kms, "km", false);
+        MILES("ml", true), KMS("km", false);
 
-        @StringRes
-        int textResId;
         boolean selected;
         String analyticsTypeName;
 
-        DistanceType(@StringRes int textResId, String analyticsTypeName, boolean selected) {
-            this.textResId = textResId;
+        DistanceType(String analyticsTypeName, boolean selected) {
             this.analyticsTypeName = analyticsTypeName;
             this.selected = selected;
-        }
-
-        public int getTextResId() {
-            return textResId;
         }
 
         public boolean isSelected() {

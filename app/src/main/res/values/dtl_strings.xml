@@ -96,4 +96,6 @@
     <string name="directions">Directions</string>
     <string name="checked_in">You have successfully checked in</string>
     <string name="point_estimator">Point estimator</string>
+    <string name="km">km</string>
+    <string name="mi">mi</string>
 </resources>

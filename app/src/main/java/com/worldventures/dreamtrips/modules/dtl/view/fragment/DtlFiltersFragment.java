@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
-import android.text.Html;
 import android.view.View;
-import android.widget.TextView;
 
 import com.appyvet.rangebar.RangeBar;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -38,8 +36,6 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
     protected SwitchCompat switchCompat;
     @InjectView(R.id.recyclerViewFilters)
     protected EmptyRecyclerView recyclerViewFilters;
-    @InjectView(R.id.switchHint)
-    protected TextView switchHint;
 
     protected BaseArrayListAdapter<DtlPlacesFilterAttribute> filtersAdapter;
 
@@ -85,8 +81,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
     public void attachFilterData(DtlFilterData filterData) {
         rangeBarDistance.setRangePinsByValue(10.0f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
-        switchCompat.setChecked(filterData.getDistanceType().isSelected());
-        switchHint.setText(Html.fromHtml(getString(filterData.getDistanceType().getTextResId())));
+        switchCompat.setChecked(filterData.getDistanceType() == DtlFilterData.DistanceType.KMS);
         if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())
             setupAttributesHeader(filterData);
     }

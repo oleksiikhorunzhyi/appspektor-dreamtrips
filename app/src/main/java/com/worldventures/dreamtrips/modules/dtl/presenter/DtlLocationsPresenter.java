@@ -90,7 +90,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void onLocationSelected(DtlLocation location) {
         trackLocationSelection(location);
         DtlLocation currentLocation = db.getSelectedDtlLocation();
-        if (currentLocation == null || !currentLocation.getId().equals(location.getId())) {
+        if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
             db.saveSelectedDtlLocation(location);
             db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
         }

@@ -51,7 +51,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     @Override
     public void onInjected() {
         super.onInjected();
-        entityManager.setDreamSpiceManager(dreamSpiceManager);
+        entityManager.setRequestingPresenter(this);
     }
 
     private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {

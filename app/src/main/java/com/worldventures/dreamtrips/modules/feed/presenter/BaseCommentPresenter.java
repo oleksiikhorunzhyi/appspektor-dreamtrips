@@ -73,7 +73,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @Override
     public void onInjected() {
         super.onInjected();
-        entityManager.setDreamSpiceManager(dreamSpiceManager);
+        entityManager.setRequestingPresenter(this);
     }
 
     private void loadComments() {

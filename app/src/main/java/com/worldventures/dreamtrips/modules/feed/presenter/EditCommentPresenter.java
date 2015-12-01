@@ -7,9 +7,13 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import javax.inject.Inject;
+
 public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
 
     private Comment comment;
+
+    @Inject
     FeedEntityManager entityManager;
 
     public EditCommentPresenter(Comment comment) {
@@ -28,7 +32,7 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
     @Override
     public void onInjected() {
         super.onInjected();
-        entityManager.setDreamSpiceManager(dreamSpiceManager);
+        entityManager.setRequestingPresenter(this);
     }
 
     public void onSave() {

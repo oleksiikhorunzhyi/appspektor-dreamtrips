@@ -37,7 +37,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     public void onInjected() {
         super.onInjected();
         sweetDialogHelper = new SweetDialogHelper();
-        feedEntityManager.setDreamSpiceManager(dreamSpiceManager);
+        feedEntityManager.setRequestingPresenter(this);
     }
 
     @Override

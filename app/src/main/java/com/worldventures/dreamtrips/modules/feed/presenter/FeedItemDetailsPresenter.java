@@ -52,7 +52,7 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
     @Override
     public void onInjected() {
         super.onInjected();
-        entityManager.setDreamSpiceManager(dreamSpiceManager);
+        entityManager.setRequestingPresenter(this);
     }
 
     @Override

@@ -105,7 +105,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             }
         };
         adapterController.setSpiceManager(dreamSpiceManager);
-        entityManager.setDreamSpiceManager(dreamSpiceManager);
+        entityManager.setRequestingPresenter(this);
     }
 
     public void takeView(View view) {

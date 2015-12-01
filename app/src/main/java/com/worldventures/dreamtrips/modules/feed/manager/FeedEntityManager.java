@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.manager;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
+import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.feed.api.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.api.EditCommentCommand;
@@ -15,26 +14,23 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.api.DreamSpiceManager.FailureListener;
-import static com.worldventures.dreamtrips.core.api.DreamSpiceManager.SuccessListener;
-
 
 public class FeedEntityManager {
 
-    DreamSpiceManager dreamSpiceManager;
     EventBus eventBus;
+    RequestingPresenter requestingPresenter;
 
     public FeedEntityManager(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
-    public void setDreamSpiceManager(DreamSpiceManager dreamSpiceManager) {
-        this.dreamSpiceManager = dreamSpiceManager;
+    public void setRequestingPresenter(RequestingPresenter requestingPresenter) {
+        this.requestingPresenter = requestingPresenter;
     }
 
     public void like(FeedEntity feedEntity) {
         LikeEntityCommand command = new LikeEntityCommand(feedEntity.getUid());
-        doRequest(command, aVoid -> {
+        requestingPresenter.doRequest(command, aVoid -> {
             actualizeLikes(feedEntity, true);
             eventBus.post(new EntityLikedEvent(feedEntity));
         }, spiceException -> {
@@ -44,7 +40,7 @@ public class FeedEntityManager {
 
     public void unlike(FeedEntity feedEntity) {
         UnlikeEntityCommand command = new UnlikeEntityCommand(feedEntity.getUid());
-        doRequest(command, aVoid -> {
+        requestingPresenter.doRequest(command, aVoid -> {
             actualizeLikes(feedEntity, false);
             eventBus.post(new EntityLikedEvent(feedEntity));
         }, spiceException -> {
@@ -54,20 +50,20 @@ public class FeedEntityManager {
 
 
     public void createComment(FeedEntity feedEntity, String comment) {
-        doRequest(new CreateCommentCommand(feedEntity.getUid(), comment),
+        requestingPresenter.doRequest(new CreateCommentCommand(feedEntity.getUid(), comment),
                 comment1 -> eventBus.post(new CommentEvent(comment1, CommentEvent.Type.ADDED)),
                 spiceException -> handelCommentError(spiceException, CommentEvent.Type.ADDED));
 
     }
 
     public void deleteComment(Comment comment) {
-        doRequest(new DeleteCommentCommand(comment.getUid()), jsonObject -> {
+        requestingPresenter.doRequest(new DeleteCommentCommand(comment.getUid()), jsonObject -> {
             eventBus.post(new CommentEvent(comment, CommentEvent.Type.REMOVED));
         }, spiceException -> handelCommentError(spiceException, CommentEvent.Type.REMOVED));
     }
 
     public void updateComment(Comment comment) {
-        doRequest(new EditCommentCommand(comment), result -> {
+        requestingPresenter.doRequest(new EditCommentCommand(comment), result -> {
             eventBus.post(new CommentEvent(comment, CommentEvent.Type.EDITED));
         }, spiceException -> handelCommentError(spiceException, CommentEvent.Type.EDITED));
     }
@@ -83,10 +79,6 @@ public class FeedEntityManager {
         int currentCount = feedEntity.getLikesCount();
         currentCount = feedEntity.isLiked() ? currentCount + 1 : currentCount - 1;
         feedEntity.setLikesCount(currentCount);
-    }
-
-    protected <T> void doRequest(SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
-        dreamSpiceManager.execute(request, successListener, failureListener);
     }
 
 

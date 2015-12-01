@@ -73,7 +73,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Override
     public void onInjected() {
         super.onInjected();
-        entityManager.setDreamSpiceManager(dreamSpiceManager);
+        entityManager.setRequestingPresenter(this);
     }
 
     @Override

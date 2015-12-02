@@ -286,7 +286,9 @@ public class DTlMerchant implements Parcelable {
     public static Comparator<DTlMerchant> DISTANCE_COMPARATOR = new Comparator<DTlMerchant>() {
         @Override
         public int compare(DTlMerchant lhs, DTlMerchant rhs) {
-            return Double.valueOf(lhs.distanceInMiles - rhs.distanceInMiles).intValue();
+            if (lhs.distanceInMiles == rhs.distanceInMiles) return 0;
+            if (lhs.distanceInMiles > rhs.distanceInMiles) return 1;
+            else return -1;
         }
     };
 }

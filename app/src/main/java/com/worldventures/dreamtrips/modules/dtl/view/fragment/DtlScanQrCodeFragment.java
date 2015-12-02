@@ -153,6 +153,8 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Override
     public void showProgress(@StringRes int titleText) {
         if (pDialog == null || !pDialog.isShowing()) {
+            scanner.stopCamera();
+            //
             pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
             pDialog.setTitleText(getString(titleText));
@@ -164,11 +166,30 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     public void photoUploadError() {
-        SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+        showImageUploadError(sweetAlertDialog -> {
+            sweetAlertDialog.dismiss();
+            getPresenter().photoUploadFailed();
+        });
+    }
+
+    @Override
+    public void noConnection() {
+        showImageUploadError(sweetAlertDialog -> {
+            sweetAlertDialog.dismissWithAnimation();
+            scanner.startCamera();
+        });
+    }
+
+    SweetAlertDialog alertDialog;
+
+    private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
+        if (alertDialog != null && alertDialog.isShowing()) return;
+
+        alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                 .setTitleText(getString(R.string.alert))
                 .setContentText(getString(R.string.dtl_photo_upload_error))
                 .setConfirmText(getString(R.string.ok))
-                .setConfirmClickListener(sweetAlertDialog -> getPresenter().photoUploadFailed());
+                .setConfirmClickListener(onSweetClickListener);
         alertDialog.setCancelable(false);
         alertDialog.show();
     }

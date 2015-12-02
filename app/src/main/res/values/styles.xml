@@ -140,7 +140,7 @@
     </style>
 
     <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
-        <item name="colorButtonNormal">@color/selector_white_button_color</item>
+        <item name="colorButtonNormal">@color/white</item>
     </style>
 
 </resources>

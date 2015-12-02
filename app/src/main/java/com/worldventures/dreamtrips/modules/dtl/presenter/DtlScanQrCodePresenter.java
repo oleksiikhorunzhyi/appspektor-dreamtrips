@@ -66,8 +66,14 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
         doRequest(new EarnPointsRequest(DTlMerchant.getId(), dtlTransaction),
-                this::processTransactionResult);
+                this::processTransactionResult, spiceException -> {
+                    super.handleError(spiceException);
+                    dtlTransaction.setCode(null);
+                    snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
+                });
     }
+
+
 
     private void processTransactionResult(DtlTransactionResult result) {
         TrackingHelper.dtlPointsEarned(Double.valueOf(result.getEarnedPoints()).intValue());

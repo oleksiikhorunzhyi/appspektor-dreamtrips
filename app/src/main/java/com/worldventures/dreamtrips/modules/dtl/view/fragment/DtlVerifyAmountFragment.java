@@ -11,6 +11,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
@@ -93,6 +94,8 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     @Override
     public void attachTransaction(DtlTransaction dtlTransaction) {
         spentAmount.setText(String.format("$ %.2f", dtlTransaction.getBillTotal()));
-        receipt.setImageURI(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
+        receipt.setController(
+                GraphicUtils.provideFrescoResizingController(Uri.parse(dtlTransaction.getUploadTask().getFilePath()),
+                        receipt.getController(), 4096));
     }
 }

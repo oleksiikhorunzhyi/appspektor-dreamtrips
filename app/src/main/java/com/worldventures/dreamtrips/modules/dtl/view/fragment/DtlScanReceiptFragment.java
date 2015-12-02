@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -129,7 +130,8 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @Override
     public void attachReceipt(Uri uri) {
         fabProgress.setVisibility(View.VISIBLE);
-        receipt.setImageURI(uri);
+        // fresco won't allow image bigger than 4096
+        receipt.setController(GraphicUtils.provideFrescoResizingController(uri, receipt.getController(), 4096));
         fabProgress.showProgress(false);
         fabProgress.setIcon(R.drawable.ic_upload_done, R.drawable.ic_upload_done);
         int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);
@@ -168,5 +170,4 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         progressDialog.dismiss();
         dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
     }
-
 }

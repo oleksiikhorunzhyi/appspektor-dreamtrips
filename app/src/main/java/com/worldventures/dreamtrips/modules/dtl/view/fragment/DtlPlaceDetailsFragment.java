@@ -44,6 +44,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInf
 import com.worldventures.dreamtrips.modules.dtl.model.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.util.ImageTextItem;
@@ -236,7 +237,7 @@ public class DtlPlaceDetailsFragment
 
     @Override
     public void openTransaction(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction) {
-       router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(DTlMerchant).build());
+        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(DTlMerchant).build());
     }
 
     @Override
@@ -266,7 +267,11 @@ public class DtlPlaceDetailsFragment
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            shareBundle.setText(getString(R.string.dtl_details_share_title, place.getDisplayName()));
+            if (place.getPlaceType() == DtlPlaceType.OFFER)
+                shareBundle.setText(getString(place.hasOffer(DtlOffer.TYPE_POINTS) ?
+                                R.string.dtl_details_share_title :
+                                R.string.dtl_details_share_title_without_points,
+                        place.getDisplayName()));
             shareBundle.setShareUrl(place.getWebsite());
             DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());

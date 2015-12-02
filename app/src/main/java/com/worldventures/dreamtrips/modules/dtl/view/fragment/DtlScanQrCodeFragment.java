@@ -176,6 +176,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     @Override
     public void onApiCallFailed() {
         hideProgress();
+        scanner.startCamera();
     }
 
     @Override

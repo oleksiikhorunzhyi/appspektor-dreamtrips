@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +20,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -92,10 +94,21 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
-        fragmentCompass.setContainerId(R.id.container_filters);
-        fragmentCompass.disableBackStack();
-        fragmentCompass.switchBranch(Route.TRIP_FILTERS, null);
+        showFilters();
     }
+
+    private void showFilters() {
+        Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
+        if (filtersFragment != null && filtersFragment.getClass().getName()
+                .equals(Route.TRIP_FILTERS.getClazzName())) return;
+
+        router.moveTo(Route.TRIP_FILTERS, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .containerId(R.id.container_filters)
+                .fragmentManager(getFragmentManager())
+                .build());
+    }
+
 
     @Override
     public void onResume() {

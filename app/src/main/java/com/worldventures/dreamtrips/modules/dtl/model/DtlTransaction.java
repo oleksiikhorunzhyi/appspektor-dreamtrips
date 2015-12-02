@@ -14,7 +14,7 @@ public class DtlTransaction {
 
     public static final String MERCHANT_TOKEN = "merchant_token";
     public static final String BILL_TOTAL = "bill_total";
-    public static final String LOCATION = "location";
+    public static final String LOCATION = "location.ll";
     public static final String RECEIPT_PHOTO_URL = "receipt_photo_url";
 
     String checkinTime;

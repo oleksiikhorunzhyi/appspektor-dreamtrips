@@ -56,7 +56,9 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
     public void photoUploadFailed() {
         snapper.cleanDtlTransaction(DTlMerchant.getId(), dtlTransaction);
-        view.openScanReceipt(dtlTransaction);
+        //
+        if (view != null)
+            view.openScanReceipt(dtlTransaction);
     }
 
     private void onReceiptUploaded() {
@@ -72,7 +74,6 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                     snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
                 });
     }
-
 
 
     private void processTransactionResult(DtlTransactionResult result) {
@@ -102,14 +103,21 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                 //restart upload if failed
                 transferObserver = photoUploadingSpiceManager.upload(dtlTransaction.getUploadTask());
                 uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
+                setListener();
                 break;
             case COMPLETED:
                 onReceiptUploaded();
                 break;
+            case WAITING_FOR_NETWORK:
+                view.noConnection();
+                break;
         }
 
-        transferObserver.setTransferListener(this);
+    }
 
+    private void setListener() {
+        transferObserver.setTransferListener(this);
+        //
         view.showProgress(R.string.dtl_wait_for_receipt);
     }
 
@@ -123,6 +131,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                 case FAILED:
                     receiptUploadError();
                     break;
+                case WAITING_FOR_NETWORK:
+                    view.noConnection();
             }
         }
     }
@@ -139,7 +149,6 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
     private void receiptUploadError() {
         view.photoUploadError();
-        view.alert(context.getString(R.string.dtl_photo_upload_error));
         view.hideProgress();
     }
 
@@ -157,6 +166,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         void hideProgress();
 
         void photoUploadError();
+
+        void noConnection();
 
         void setPlace(DTlMerchant DTlMerchant);
 

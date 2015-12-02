@@ -104,10 +104,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="@dimen/spacing_normal"
-                android:enabled="false"
                 android:text="@string/dtl_points_estimation_calculate_button_caption"
                 android:textAllCaps="true"
-                android:textColor="@color/black"
+                android:textColor="@color/tripButtonDisabled"
                 android:textSize="@dimen/dtlCalculationCalculateButtonTextSize"
                 android:theme="@style/WhiteButtonTheme"
                 />

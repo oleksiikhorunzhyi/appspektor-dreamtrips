@@ -7,19 +7,15 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
-
-import java.util.Map;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -42,7 +38,10 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            calculateButton.setEnabled(s.length() > 0);
+            //work around for disappearing background of button
+            calculateButton.setTextColor(s.length() > 0
+                    ? getResources().getColor(R.color.black)
+                    : getResources().getColor(R.color.tripButtonDisabled));
         }
     };
 
@@ -70,7 +69,6 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         pointsEstimated.setText(R.string.dtl_points_estimation_default_result);
         progressBar.setVisibility(View.VISIBLE);
         calculateButton.setVisibility(View.INVISIBLE);
-        calculateButton.setEnabled(false);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
 
     @OnClick(R.id.calculateButton)
     void calculateClicked() {
-        if (inputPoints.validate())
+        if (inputPoints.getText().length() > 0 && inputPoints.validate())
             getPresenter().onCalculateClicked(inputPoints.getText().toString());
     }
 
@@ -116,7 +114,6 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     private void stopProgress() {
         progressBar.setVisibility(View.INVISIBLE);
         calculateButton.setVisibility(View.VISIBLE);
-        calculateButton.setEnabled(true);
     }
 
 }

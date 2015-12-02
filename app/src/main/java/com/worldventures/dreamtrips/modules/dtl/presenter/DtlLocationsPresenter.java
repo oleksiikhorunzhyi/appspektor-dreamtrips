@@ -92,7 +92,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         DtlLocation currentLocation = db.getSelectedDtlLocation();
         if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
             db.saveSelectedDtlLocation(location);
-            db.clearAllForKey(SnappyRepository.DTL_PLACES_PREFIX);
+            db.clearMerchantData();
         }
         view.showMerchants(new PlacesBundle(location));
     }

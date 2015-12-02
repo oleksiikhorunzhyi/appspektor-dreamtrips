@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,6 +167,8 @@ public class DtlPlaceDetailsFragment
 
     private void setDescriptions(DTlMerchant place) {
         this.description.setText(Html.fromHtml(place.getDescription()));
+        this.description.setMovementMethod(new LinkMovementMethod());
+
         //
         String perksDescription = "";
         if (place.hasOffer(DtlOffer.TYPE_PERK))

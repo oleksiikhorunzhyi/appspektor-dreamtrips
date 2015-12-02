@@ -267,11 +267,10 @@ public class DtlPlaceDetailsFragment
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            if (place.getPlaceType() == DtlPlaceType.OFFER)
-                shareBundle.setText(getString(place.hasOffer(DtlOffer.TYPE_POINTS) ?
-                                R.string.dtl_details_share_title :
-                                R.string.dtl_details_share_title_without_points,
-                        place.getDisplayName()));
+            shareBundle.setText(getString(place.hasOffer(DtlOffer.TYPE_POINTS) ?
+                            R.string.dtl_details_share_title :
+                            R.string.dtl_details_share_title_without_points,
+                    place.getDisplayName()));
             shareBundle.setShareUrl(place.getWebsite());
             DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());

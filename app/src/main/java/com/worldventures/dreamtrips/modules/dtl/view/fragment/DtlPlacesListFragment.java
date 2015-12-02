@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -47,6 +48,8 @@ public class DtlPlacesListFragment
     protected SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView)
     protected View emptyView;
+    @InjectView(R.id.place_holder_offers)
+    protected TextView emptyTextView;
     //
     BaseArrayListAdapter<DTlMerchant> adapter;
     RecyclerView.Adapter wrappedAdapter;
@@ -121,6 +124,11 @@ public class DtlPlacesListFragment
         int index = adapter.getItems().indexOf(DTlMerchant);
         if (index != -1)
             selectionManager.toggleSelection(index);
+    }
+
+    @Override
+    public void setComingSoon() {
+        emptyTextView.setText(R.string.dtl_coming_soon_offers);
     }
 
     @Override

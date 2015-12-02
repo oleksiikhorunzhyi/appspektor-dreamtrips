@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -16,6 +19,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -45,7 +49,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @InjectView(R.id.name)
     TextView name;
     @InjectView(R.id.post)
-    EditText post;
+    KeyCallbackEditText post;
     @InjectView(R.id.post_button)
     Button postButton;
     @InjectView(R.id.fab_progress)
@@ -66,6 +70,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     SweetAlertDialog dialog;
 
+    private WeakHandler handler;
+
     private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
         @Override
         public void onTextChanged(CharSequence constraint, int start, int before, int count) {
@@ -77,6 +83,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        handler = new WeakHandler();
         photoPickerLayout.setup(this, false);
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages));
     }
@@ -101,6 +108,15 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void onResume() {
         super.onResume();
         post.addTextChangedListener(textWatcher);
+        post.setOnKeyPreImeListener((keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                post.clearFocus();
+            }
+        });
+        post.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && photoPickerLayout.isPanelVisible())
+                handler.postDelayed(photoPickerLayout::hidePanel, 250);
+        });
         backStackDelegate.setListener(this::onBackPressed);
         if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
             photoPickerLayout.showPanel();
@@ -163,6 +179,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();
         } else {
+            post.clearFocus();
             photoPickerLayout.showPanel();
         }
     }

@@ -230,10 +230,10 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.getbase:floatingactionbutton:1.10.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
-    compile('com.afollestad.material-dialogs:core:0.8.5.0@aar') {
+    compile('com.afollestad.material-dialogs:core:0.8.5.2@aar') {
         transitive = true
     }
-    compile('com.afollestad.material-dialogs:commons:0.8.5.0@aar') {
+    compile('com.afollestad.material-dialogs:commons:0.8.5.2@aar') {
         transitive = true
     }
     compile 'com.orhanobut:dialogplus:1.10@aar'

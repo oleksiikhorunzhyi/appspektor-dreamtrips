@@ -1,12 +1,15 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -38,6 +41,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
 
     OnDoneClickListener onDoneClickListener;
 
+    private InputMethodManager inputMethodManager;
+    private WeakHandler handler;
+
     private PhotoPickerPresenter presenter;
 
     private BaseArrayListAdapter adapter;
@@ -62,6 +68,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         draggableView = inflate(getContext(), R.layout.gallery_view, null);
 
         presenter = new PhotoPickerPresenter();
+
+        inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        handler = new WeakHandler();
     }
 
     @Override
@@ -157,15 +166,15 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
     }
 
     public void showPanel() {
-        setPanelHeight((int) photoPicker.getContext()
-                .getResources().getDimension(R.dimen.picker_panel_height));
+        inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
+        //
+        handler.postDelayed(() -> setPanelHeight((int) photoPicker.getContext()
+                .getResources().getDimension(R.dimen.picker_panel_height)), 100);
     }
 
     public void hidePanel() {
         presenter.cancelAllSelections();
-
         photoPicker.scrollToPosition(0);
-
         setPanelHeight(0);
     }
 

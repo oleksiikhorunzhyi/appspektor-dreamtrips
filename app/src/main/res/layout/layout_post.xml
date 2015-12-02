@@ -68,6 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_tiny"
                         android:textColor="@color/black"
+                        android:focusable="true"
                         tools:text="Jason Gordon"/>
 
                     <TextView
@@ -103,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <EditText
+                    <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
                         android:id="@+id/post"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

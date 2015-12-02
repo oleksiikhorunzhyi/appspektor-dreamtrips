@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class MutualStringUtil {
@@ -17,7 +18,10 @@ public class MutualStringUtil {
     public String createMutualString(User user) {
         String mutualString = null;
         if (hasMutualFriends(user)) {
-            mutualString = context.getString(R.string.social_postfix_mutual_friends,
+            mutualString = context.getString(
+                    QuantityHelper.chooseResource(user.getMutualFriends().getCount(),
+                            R.string.social_postfix_mutual_friends_one,
+                            R.string.social_postfix_mutual_friends),
                     user.getMutualFriends().getCount());
         }
 
@@ -35,7 +39,7 @@ public class MutualStringUtil {
         }
 
         if (hasMutualFriends(user)) {
-            sb.append(context.getString(R.string.social_postfix_mutual_friends, user.getMutualFriends().getCount()));
+            sb.append(createMutualString(user));
         }
 
         return sb.toString();

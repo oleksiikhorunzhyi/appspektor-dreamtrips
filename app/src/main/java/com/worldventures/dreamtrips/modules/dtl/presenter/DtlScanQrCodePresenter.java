@@ -105,6 +105,9 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                 uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
                 setListener();
                 break;
+            case IN_PROGRESS:
+                setListener();
+                break;
             case COMPLETED:
                 onReceiptUploaded();
                 break;

@@ -59,6 +59,8 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         dtlFilterDelegate.addListener(this);
 
         performFiltering();
+
+        if (placeType == DtlPlaceType.OFFER) view.setComingSoon();
     }
 
     @Override
@@ -143,5 +145,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         void hideProgress();
 
         void toggleSelection(DTlMerchant DTlMerchant);
+
+        void setComingSoon();
     }
 }

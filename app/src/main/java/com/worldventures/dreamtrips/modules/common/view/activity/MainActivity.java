@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,6 +27,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.Optional;
 import icepick.State;
+import techery.io.messenger.MessengerStartActivity;
 
 
 @Layout(R.layout.activity_main)
@@ -162,6 +164,12 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Override
     public void onNavigationDrawerItemSelected(ComponentDescription component) {
+        //navigate to messenger
+        if (component.getKey().equals("Messenger")) {
+            startActivity(new Intent(this, MessengerStartActivity.class));
+            return;
+        }
+        //
         eventBus.post(new MenuPressedEvent());
         //
         closeLeftDrawer();

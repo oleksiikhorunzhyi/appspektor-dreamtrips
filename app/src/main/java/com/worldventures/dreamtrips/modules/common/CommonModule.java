@@ -30,10 +30,10 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmen
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
-import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.messager.MessengerModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
@@ -99,7 +99,8 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
-        featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
+        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlModule.DTL));
+        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerModule.MESSENGER));
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(VideoModule.MEMBERSHIP);

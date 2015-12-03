@@ -216,13 +216,13 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
                             case DtlTransaction.RECEIPT_PHOTO_URL:
                                 getPresenter().photoUploadFailed();
                                 break;
-                            case DtlTransaction.MERCHANT_TOKEN:
                             case DtlTransaction.LOCATION:
-                                scanner.startCamera();
-                                sweetAlertDialog.dismissWithAnimation();
+                            case DtlTransaction.CHECKIN:
+                                getActivity().finish();
                                 break;
                             default:
-                                getActivity().finish();
+                                scanner.startCamera();
+                                sweetAlertDialog.dismissWithAnimation();
                                 break;
                         }
                     });

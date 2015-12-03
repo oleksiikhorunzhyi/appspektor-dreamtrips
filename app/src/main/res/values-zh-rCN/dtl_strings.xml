@@ -51,7 +51,7 @@
     <string name="dtl_check_in">入住并赚取</string>
     <string name="dtl_earn">赚取</string>
     <string name="dtl_spent_amount">$ %s</string>
-    <string name="dtl_dt_points">％d DreamTrip点数</string>
+    <string name="dtl_dt_points">%d DreamTrip点数</string>
     <string name="suggest_merchant_title">推荐商家</string>
     <string name="suggest_merchant_restaurant_name_hint">餐厅名称</string>
     <string name="suggest_merchant_restaurant_city_hint">城市：</string>

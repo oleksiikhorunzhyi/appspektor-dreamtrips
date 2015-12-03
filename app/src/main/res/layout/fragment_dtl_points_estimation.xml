@@ -90,6 +90,7 @@
             android:layout_weight="2"
             android:hint="@string/dtl_points_estimation_default_result"
             android:inputType="numberDecimal"
+            android:maxLength="10"
             app:met_floatingLabel="none"
             />
 

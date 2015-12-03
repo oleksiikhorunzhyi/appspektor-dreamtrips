@@ -96,6 +96,6 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
         spentAmount.setText(String.format("$ %.2f", dtlTransaction.getBillTotal()));
         receipt.setController(
                 GraphicUtils.provideFrescoResizingController(Uri.parse(dtlTransaction.getUploadTask().getFilePath()),
-                        receipt.getController(), 4096));
+                        receipt.getController()));
     }
 }

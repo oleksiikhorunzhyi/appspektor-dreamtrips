@@ -40,6 +40,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     @Inject
     SnappyRepository snappyRepository;
 
+    private boolean deleteRequestLocked;
+
     @Override
     public void onInjected() {
         super.onInjected();
@@ -84,6 +86,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     public void handleError(SpiceException error) {
         super.handleError(error);
         if (view != null) view.finishLoading();
+        deleteRequestLocked = false;
     }
 
     protected abstract Query<ArrayList<User>> getUserListQuery(int page);
@@ -128,25 +131,24 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void onEvent(CancelRequestEvent event) {
-        if (view.isVisibleOnScreen()) {
-            view.startLoading();
-            doRequest(new DeleteRequestCommand(event.getUser().getId()),
-                    object -> {
-                        User user = event.getUser();
-                        user.setRelationship(User.Relationship.NONE);
-                        userActionSucceed(user);
-                    });
-        }
+        deleteRequest(event.getUser());
     }
 
     public void onEvent(HideRequestEvent event) {
+        deleteRequest(event.getUser());
+    }
+
+    private void deleteRequest(User user) {
+        if (deleteRequestLocked) return;
+        //
         if (view.isVisibleOnScreen()) {
+            deleteRequestLocked = true;
             view.startLoading();
-            doRequest(new DeleteRequestCommand(event.getUser().getId()),
+            doRequest(new DeleteRequestCommand(user.getId()),
                     object -> {
-                        User user = event.getUser();
                         user.setRelationship(User.Relationship.NONE);
                         userActionSucceed(user);
+                        deleteRequestLocked = false;
                     });
         }
     }

@@ -41,6 +41,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
     List<Circle> circles;
 
+    private boolean deleteRequestLocked;
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
@@ -128,16 +130,20 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(CancelRequestEvent event) {
-        view.startLoading();
-        doRequest(new DeleteRequestCommand(event.getUser().getId()),
-                object -> onSuccess(event.getPosition()),
-                this::onError);
+        deleteRequest(event.getUser().getId(), event.getPosition());
     }
 
     public void onEvent(HideRequestEvent event) {
+        deleteRequest(event.getUser().getId(), event.getPosition());
+    }
+
+    private void deleteRequest(int userId, int position) {
+        if (deleteRequestLocked) return;
+        //
+        deleteRequestLocked = true;
         view.startLoading();
-        doRequest(new DeleteRequestCommand(event.getUser().getId()),
-                object -> onSuccess(event.getPosition()),
+        doRequest(new DeleteRequestCommand(userId),
+                object -> onSuccess(position),
                 this::onError);
     }
 
@@ -153,6 +159,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     private void onSuccess(int position) {
+        deleteRequestLocked = false;
         if (view != null) {
             view.finishLoading();
             if (position < view.getAdapter().getItemCount()) {
@@ -163,6 +170,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     private void onError(SpiceException exception) {
+        deleteRequestLocked = false;
         if (view != null) {
             view.finishLoading();
             handleError(exception);

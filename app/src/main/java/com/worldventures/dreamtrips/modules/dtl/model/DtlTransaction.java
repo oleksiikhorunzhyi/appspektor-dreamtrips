@@ -12,9 +12,9 @@ public class DtlTransaction {
 
     public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000l;
 
-    public static final String MERCHANT_TOKEN = "merchant_token";
     public static final String BILL_TOTAL = "bill_total";
     public static final String LOCATION = "location.ll";
+    public static final String CHECKIN = "checkin_time";
     public static final String RECEIPT_PHOTO_URL = "receipt_photo_url";
 
     String checkinTime;

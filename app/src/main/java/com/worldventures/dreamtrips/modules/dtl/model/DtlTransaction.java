@@ -114,4 +114,26 @@ public class DtlTransaction {
     public boolean isVerified() {
         return verified;
     }
+
+    public Request asTransactionRequest() {
+        Request dtlTransactionRequest = new Request();
+        dtlTransactionRequest.billTotal = billTotal;
+        dtlTransactionRequest.checkinTime = checkinTime;
+        dtlTransactionRequest.points = points;
+        dtlTransactionRequest.receiptPhotoUrl = receiptPhotoUrl;
+        dtlTransactionRequest.merchantToken = merchantToken;
+        dtlTransactionRequest.location = location;
+        return dtlTransactionRequest;
+    }
+
+    public static class Request {
+        String checkinTime;
+        double billTotal;
+        double points;
+        String receiptPhotoUrl;
+        String merchantToken;
+        DtlTransactionLocation location;
+
+
+    }
 }

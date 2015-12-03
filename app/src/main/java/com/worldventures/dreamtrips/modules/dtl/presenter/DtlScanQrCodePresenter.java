@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -22,7 +23,7 @@ import javax.inject.Inject;
 
 public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
-    private final DTlMerchant DTlMerchant;
+    private final DTlMerchant dtlMerchant;
     private TransferObserver transferObserver;
 
     DtlTransaction dtlTransaction;
@@ -30,8 +31,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Inject
     SnappyRepository snapper;
 
-    public DtlScanQrCodePresenter(DTlMerchant DTlMerchant) {
-        this.DTlMerchant = DTlMerchant;
+    public DtlScanQrCodePresenter(DTlMerchant dtlMerchant) {
+        this.dtlMerchant = dtlMerchant;
     }
 
     @Override
@@ -39,8 +40,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         super.takeView(view);
         apiErrorPresenter.setView(view);
         //
-        dtlTransaction = snapper.getDtlTransaction(DTlMerchant.getId());
-        view.setPlace(DTlMerchant);
+        dtlTransaction = snapper.getDtlTransaction(dtlMerchant.getId());
+        view.setPlace(dtlMerchant);
 
         if (!TextUtils.isEmpty(dtlTransaction.getCode()))
             checkReceiptUploading();
@@ -49,13 +50,13 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     public void codeScanned(String content) {
         TrackingHelper.dtlScanMerchant(content);
         dtlTransaction.setCode(content);
-        snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
         //
         checkReceiptUploading();
     }
 
     public void photoUploadFailed() {
-        snapper.cleanDtlTransaction(DTlMerchant.getId(), dtlTransaction);
+        snapper.cleanDtlTransaction(dtlMerchant.getId(), dtlTransaction);
         //
         if (view != null)
             view.openScanReceipt(dtlTransaction);
@@ -67,21 +68,23 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         dtlTransaction.setReceiptPhotoUrl(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
-        doRequest(new EarnPointsRequest(DTlMerchant.getId(), dtlTransaction),
-                this::processTransactionResult, spiceException -> {
-                    super.handleError(spiceException);
-                    dtlTransaction.setCode(null);
-                    snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
-                });
+        doRequest(new EarnPointsRequest(dtlMerchant.getId(), dtlTransaction),
+                this::processTransactionResult);
     }
 
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        dtlTransaction.setCode(null);
+        snapper.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+    }
 
     private void processTransactionResult(DtlTransactionResult result) {
         TrackingHelper.dtlPointsEarned(Double.valueOf(result.getEarnedPoints()).intValue());
         view.hideProgress();
         //
         dtlTransaction.setDtlTransactionResult(result);
-        snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
         //
         eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
         view.finish();

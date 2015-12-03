@@ -104,11 +104,12 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
         Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
     }
 
-    @Override
+
     public void setPlace(DTlMerchant place) {
         name.setText(place.getDisplayName());
         if (!TextUtils.isEmpty(place.getAddress1())) {
-            address.setText(place.getAddress1());
+            address.setText(String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),
+                    place.getState(), place.getZip()));
         }
         if (!place.getImages().isEmpty()) {
             placeImage.setImageURI(Uri.parse(place.getImages().get(0).getImagePath()));

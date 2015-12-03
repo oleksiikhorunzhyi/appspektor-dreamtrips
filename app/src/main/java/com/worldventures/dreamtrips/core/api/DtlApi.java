@@ -33,7 +33,7 @@ public interface DtlApi {
 
     @POST("/api/dtl/v2/merchants/{id}/transactions")
     DtlTransactionResult earnPoints(@Path("id") String placeId,
-                                    @Body DtlTransaction request);
+                                    @Body DtlTransaction.Request request);
 
     @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/ratings")

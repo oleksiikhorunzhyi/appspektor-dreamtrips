@@ -17,7 +17,7 @@ public class EarnPointsRequest extends DtlRequest<DtlTransactionResult> {
 
     @Override
     public DtlTransactionResult loadDataFromNetwork() throws Exception {
-        return getService().earnPoints(id, request);
+        return getService().earnPoints(id, request.asTransactionRequest());
     }
 
 

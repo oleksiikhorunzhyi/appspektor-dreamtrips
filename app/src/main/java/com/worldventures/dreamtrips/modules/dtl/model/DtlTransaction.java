@@ -17,17 +17,14 @@ public class DtlTransaction {
     public static final String CHECKIN = "checkin_time";
     public static final String RECEIPT_PHOTO_URL = "receipt_photo_url";
 
-    String checkinTime;
     long checkinTimestamp;
     double billTotal;
     double points;
     String receiptPhotoUrl;
     String merchantToken;
-    DtlTransactionLocation location;
+    double lat;
+    double lng;
     boolean verified;
-
-    //
-
     DtlTransactionResult dtlTransactionResult;
     UploadTask uploadTask;
 
@@ -36,19 +33,13 @@ public class DtlTransaction {
 
     public DtlTransaction(long checkinTime, double billTotal, String receiptPhotoUrl, String code) {
         this.checkinTimestamp = checkinTime;
-        this.checkinTime = DateTimeUtils.convertDateToUTCString(new Date(checkinTime));
         this.billTotal = billTotal;
         this.receiptPhotoUrl = receiptPhotoUrl;
         this.merchantToken = code;
     }
 
-    public void setLocation(DtlTransactionLocation location) {
-        this.location = location;
-    }
-
     public void setTimestamp(long timestamp) {
         this.checkinTimestamp = timestamp;
-        this.checkinTime = DateTimeUtils.convertDateToUTCString(new Date(timestamp));
     }
 
     public void setBillTotal(double billTotal) {
@@ -75,20 +66,21 @@ public class DtlTransaction {
         this.uploadTask = uploadTask;
     }
 
-    public long getTimestamp() {
-        return checkinTimestamp;
-    }
-
     public boolean outOfDate(long currentTimeInMillis) {
-        return currentTimeInMillis - checkinTimestamp > DURATION_OF_LIFE;
+        return currentTimeInMillis - checkinTimestamp > DURATION_OF_LIFE ||
+                lat == 0.0d || lng == 0.0d;
     }
 
     public double getBillTotal() {
         return billTotal;
     }
 
-    public String getReceiptPhotoUrl() {
-        return receiptPhotoUrl;
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     public String getCode() {
@@ -118,11 +110,11 @@ public class DtlTransaction {
     public Request asTransactionRequest() {
         Request dtlTransactionRequest = new Request();
         dtlTransactionRequest.billTotal = billTotal;
-        dtlTransactionRequest.checkinTime = checkinTime;
+        dtlTransactionRequest.checkinTime = DateTimeUtils.convertDateToUTCString(new Date(checkinTimestamp));
         dtlTransactionRequest.points = points;
         dtlTransactionRequest.receiptPhotoUrl = receiptPhotoUrl;
         dtlTransactionRequest.merchantToken = merchantToken;
-        dtlTransactionRequest.location = location;
+        dtlTransactionRequest.location = DtlTransactionLocation.fromLatLng(lat, lng);
         return dtlTransactionRequest;
     }
 
@@ -133,7 +125,5 @@ public class DtlTransaction {
         String receiptPhotoUrl;
         String merchantToken;
         DtlTransactionLocation location;
-
-
     }
 }

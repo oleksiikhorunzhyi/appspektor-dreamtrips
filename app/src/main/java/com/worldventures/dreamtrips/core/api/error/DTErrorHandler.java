@@ -36,7 +36,7 @@ public class DTErrorHandler implements ErrorHandler {
 
                 try {
                     ErrorResponse errorResponse = (ErrorResponse) cause.getBodyAs(ErrorResponse.class);
-                    return new DtApiException(errorResponse);
+                    return new DtApiException(errorResponse, cause.getResponse().getStatus());
                 } catch (Exception ex) {
                     Timber.e(ex, "Something went wrong while parsing responseh");
                     return new DtApiException(context.getString(R.string.smth_went_wrong));

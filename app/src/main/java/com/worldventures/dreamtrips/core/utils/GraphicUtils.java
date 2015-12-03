@@ -22,6 +22,7 @@ public class GraphicUtils {
                                                                            int width, int height) {
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setResizeOptions(new ResizeOptions(width, height))
+                .setAutoRotateEnabled(true)
                 .build();
 
         return (PipelineDraweeController) Fresco.newDraweeControllerBuilder()

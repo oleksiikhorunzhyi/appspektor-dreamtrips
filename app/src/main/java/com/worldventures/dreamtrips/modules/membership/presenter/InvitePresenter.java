@@ -15,8 +15,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -295,19 +293,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void continueAction() {
-        fragmentCompass.remove(Route.SELECT_INVITE_TEMPLATE.getClazzName());
-        if (view.isTabletLandscape()) {
-            openTemplateInView();
-        } else {
-            NavigationBuilder.create().with(activityRouter).move(Route.SELECT_INVITE_TEMPLATE);
-        }
+        view.continueAction2();
     }
 
     public void openTemplateInView() {
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_templates);
-        NavigationBuilder.create().with(fragmentCompass).attach(Route.SELECT_INVITE_TEMPLATE);
-
+        view.openTemplateView();
     }
 
     private void setMembers() {
@@ -367,5 +357,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         void setSelectedCount(int count);
 
         void move(Member member, int to);
+
+        void openTemplateView();
+
+        void continueAction2();
     }
 }

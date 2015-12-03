@@ -179,7 +179,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
-        fragmentCompass.pop();
+        view.back();
     }
 
     public void onEvent(LoadFlagEvent event) {
@@ -271,5 +271,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         void showEdit(BucketBundle bucketBundle);
 
         void setLikersPanel(FeedEntity entity);
+
+        void back();
     }
 }

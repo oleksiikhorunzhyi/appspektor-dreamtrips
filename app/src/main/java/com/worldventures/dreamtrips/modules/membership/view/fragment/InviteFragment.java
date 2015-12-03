@@ -214,6 +214,27 @@ public class InviteFragment
     }
 
     @Override
+    public void openTemplateView() {
+        router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_templates)
+                .build());
+    }
+
+    @Override
+    public void continueAction2() {
+        router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forRemoval()
+                .useDefaults()
+                .build());
+        if (isTabletLandscape()) {
+            openTemplateView();
+        } else {
+            router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity().build());
+        }
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (inhibitSpinner) {
             inhibitSpinner = false;
@@ -258,7 +279,7 @@ public class InviteFragment
 
     @OnClick(R.id.bt_continue)
     public void continueAction() {
-        performContinue();
+        getPresenter().continueAction();
     }
 
     @Override
@@ -266,24 +287,5 @@ public class InviteFragment
         frameContactCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         if (!tvSearch.hasFocus())
             buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void performContinue() {
-        fragmentCompass.remove(Route.SELECT_INVITE_TEMPLATE.getClazzName());
-        if (isTabletLandscape()) {
-            openTemplateInView();
-        } else {
-            router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity().build());
-        }
-    }
-
-    @Override
-    public void openTemplateInView() {
-        router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_templates)
-                .build());
     }
 }

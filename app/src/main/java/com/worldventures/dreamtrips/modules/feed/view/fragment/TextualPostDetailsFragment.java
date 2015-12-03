@@ -70,6 +70,11 @@ public class TextualPostDetailsFragment extends BaseFragmentWithArgs<TextualPost
         post.setText(textualPost.getDescription());
     }
 
+    @Override
+    public void back() {
+        router.back();
+    }
+
     public void onEvent(FeedEntityEditClickEvent event) {
         if (isVisibleOnScreen()) {
             showActionPopup(event.getAnchor());

@@ -135,6 +135,7 @@ public abstract class BaseActivity extends InjectingActivity {
     public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
         router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .flags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .build());
     }
 

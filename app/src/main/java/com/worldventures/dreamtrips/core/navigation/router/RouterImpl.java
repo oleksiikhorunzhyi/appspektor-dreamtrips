@@ -9,7 +9,6 @@ import android.view.Gravity;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
@@ -45,9 +44,17 @@ public class RouterImpl implements Router {
         openActivity(route, NavigationConfigBuilder.forActivity().build());
     }
 
+    @Override
+    public void back() {
+        activity.onBackPressed();
+    }
+
     private void openActivity(Route route, NavigationConfig config) {
         ActivityRouter activityRouter = new ActivityRouter(activity);
-        activityRouter.openComponentActivity(route, getArgs(config));
+        if (config.getFlags() != -1)
+            activityRouter.openComponentActivity(route, getArgs(config), config.getFlags());
+        else
+            activityRouter.openComponentActivity(route, getArgs(config));
     }
 
     private void openFragment(Route route, NavigationConfig config) {

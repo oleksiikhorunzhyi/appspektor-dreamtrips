@@ -81,17 +81,4 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 
-    @Override
-    public void openBucketList(Parcelable data) {
-        router.moveTo(Route.FOREIGN_BUCKET_LIST, NavigationConfigBuilder.forActivity()
-                .data(data)
-                .build());
-    }
-
-    @Override
-    public void openTripImages(Parcelable data) {
-        router.moveTo(Route.FOREIGN_TRIP_IMAGES, NavigationConfigBuilder.forActivity()
-                .data(data)
-                .build());
-    }
 }

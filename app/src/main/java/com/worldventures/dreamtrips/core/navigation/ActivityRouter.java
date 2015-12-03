@@ -14,8 +14,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 public class ActivityRouter extends ActivityBoundRouter {

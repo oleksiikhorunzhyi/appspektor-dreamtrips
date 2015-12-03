@@ -62,7 +62,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
 
     @Override
     public void showShareDialog(int amount, DtlMerchant merchant) {
-        new ShareDialog(activityRouter.getContext(), type -> {
+        new ShareDialog(getContext(), type -> {
             getPresenter().trackSharing(type);
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);

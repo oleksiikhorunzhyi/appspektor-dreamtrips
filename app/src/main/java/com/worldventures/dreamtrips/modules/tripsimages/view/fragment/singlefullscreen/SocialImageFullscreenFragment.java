@@ -8,9 +8,9 @@ import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
@@ -104,11 +104,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     public void openEdit(EditPhotoBundle bundle) {
-        NavigationBuilder.create()
-                .with(activityRouter)
+        router.moveTo(Route.PHOTO_EDIT, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(bundle)
-                .attach(Route.PHOTO_EDIT);
+                .build());
     }
 
     @Override

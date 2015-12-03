@@ -37,7 +37,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 @Layout(R.layout.adapter_item_feed_photo_child)
 public class PhotoDetailsFeedFragment extends BaseFragmentWithArgs<PhotoDetailsFeedPresenter, PhotoBundle> implements PhotoDetailsFeedPresenter.View {
 
-
     @InjectView(R.id.photo)
     SimpleDraweeView photoView;
     @InjectView(R.id.title)
@@ -89,6 +88,11 @@ public class PhotoDetailsFeedFragment extends BaseFragmentWithArgs<PhotoDetailsF
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(new EditPhotoBundle(photo))
                 .build());
+    }
+
+    @Override
+    public void back() {
+        router.back();
     }
 
     @Override

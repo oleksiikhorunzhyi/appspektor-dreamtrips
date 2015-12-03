@@ -277,7 +277,7 @@ public class DtlMerchantDetailsFragment
 
     @Override
     public void share(DtlMerchant merchant) {
-        new ShareDialog(activityRouter.getContext(), type -> {
+        new ShareDialog(getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
             shareBundle.setText(getString(merchant.hasOffer(DtlOffer.TYPE_POINTS) ?

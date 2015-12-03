@@ -36,7 +36,7 @@ public class PhotoDetailsFeedPresenter extends Presenter<PhotoDetailsFeedPresent
 
     private void itemDeleted() {
         eventBus.post(new FeedEntityDeletedEvent(photo));
-        fragmentCompass.pop();
+        view.back();
     }
 
     public void onEdit() {
@@ -48,5 +48,7 @@ public class PhotoDetailsFeedPresenter extends Presenter<PhotoDetailsFeedPresent
         void setupView(Photo photo);
 
         void moveToEdit(Photo photo);
+
+        void back();
     }
 }

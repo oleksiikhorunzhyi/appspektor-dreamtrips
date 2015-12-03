@@ -162,18 +162,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         photoPickerLayout.hidePanel();
     }
 
-    @Override
-    public void openBucketList(Parcelable data) {
-        router.moveTo(Route.BUCKET_LIST, NavigationConfigBuilder.forActivity().build());
-    }
-
-    @Override
-    public void openTripImages(Parcelable data) {
-        router.moveTo(Route.ACCOUNT_IMAGES, NavigationConfigBuilder.forActivity()
-                .data(data)
-                .build());
-    }
-
     private boolean onBackPressed() {
         if (photoPickerLayout.isShowsFacebookAlbumFragment()) {
             return false;

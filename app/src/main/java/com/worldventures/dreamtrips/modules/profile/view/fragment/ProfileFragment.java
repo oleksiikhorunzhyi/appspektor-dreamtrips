@@ -80,11 +80,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     protected abstract void initialToolbar();
 
     private void restorePostIfNeeded() {
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
-        if (baseFragment instanceof PostFragment) {
-            showPostContainer();
-        }
+
     }
 
     @Override

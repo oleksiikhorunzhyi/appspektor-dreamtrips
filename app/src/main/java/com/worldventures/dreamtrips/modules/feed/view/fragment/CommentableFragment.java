@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
@@ -101,7 +100,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         //
         likersPanelHelper = new LikersPanelHelper(View.GONE);
         likersNaviagtionWrapper = new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
-                activityRouter, fragmentCompass, tabletAnalytic
+                router, getFragmentManager(), tabletAnalytic
         );
     }
 
@@ -144,11 +143,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     }
 
     private void restorePostIfNeeded() {
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
-        if (baseFragment instanceof PostFragment) {
-            fragmentCompass.showContainer();
-        }
+
     }
 
     @Override
@@ -170,6 +165,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         likersPanel.setOnClickListener(v -> {
             likersNaviagtionWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid()));
         });
+    }
+
+    @Override
+    public void back() {
+        router.back();
     }
 
     @Override

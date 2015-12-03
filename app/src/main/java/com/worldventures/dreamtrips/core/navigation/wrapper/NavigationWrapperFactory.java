@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.core.navigation.wrapper;
 
 import android.support.v4.app.FragmentManager;
 
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 

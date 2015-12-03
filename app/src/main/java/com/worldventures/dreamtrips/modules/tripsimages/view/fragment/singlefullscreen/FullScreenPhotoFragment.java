@@ -11,12 +11,23 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.InjectView;
 
@@ -29,6 +40,9 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
     @State
     protected IFullScreenObject photo;
 
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     @Override
     public void setContent(IFullScreenObject photo) {
@@ -79,4 +93,22 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
         super.onDestroyView();
     }
 
+    @Override
+    public void openShare(String imageUrl, String text, @ShareFragment.ShareType String type) {
+        ShareBundle data = new ShareBundle();
+        data.setImageUrl(imageUrl);
+        data.setText(text == null ? "" : text);
+        data.setShareType(type);
+        router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
+    }
+
+    @Override
+    public void openUser(UserBundle bundle) {
+        router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
+                .data(bundle)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .build());
+    }
 }

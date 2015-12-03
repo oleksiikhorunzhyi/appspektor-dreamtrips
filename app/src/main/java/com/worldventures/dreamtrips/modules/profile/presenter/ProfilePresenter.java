@@ -113,6 +113,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public interface View extends BaseFeedPresenter.View {
+        
         Bundle getArguments();
 
         void openPost();
@@ -126,9 +127,5 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         void notifyUserChanged();
 
         void setUser(User user);
-
-        void openBucketList(Parcelable data);
-
-        void openTripImages(Parcelable data);
     }
 }

@@ -212,10 +212,6 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         view.showErrorMessage();
     }
 
-    public void actionMap() {
-        fragmentCompass.replace(Route.MAP);
-    }
-
     public interface View extends Presenter.View {
         void dataSetChanged();
 

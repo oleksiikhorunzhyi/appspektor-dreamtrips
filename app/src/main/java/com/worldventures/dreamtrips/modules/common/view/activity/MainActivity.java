@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,6 +17,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -26,7 +31,6 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.Optional;
 import icepick.State;
-
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
@@ -170,7 +174,39 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         //
         navigationDrawerFragment.setCurrentComponent(component);
         currentComponent = component;
-        getPresentationModel().openComponent(component);
+        openComponent(component);
+    }
+
+    private void openComponent(ComponentDescription component) {
+        openComponent(component, null);
+    }
+
+    private void openComponent(ComponentDescription component, @Nullable Bundle args) {
+        setTitle(component.getToolbarTitle());
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
+        // check if current
+        boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
+        if (theSame) return;
+        // check if in stack
+        String backStackName = null;
+        FragmentManager fm = getSupportFragmentManager();
+        for (int entry = 0; entry < fm.getBackStackEntryCount(); entry++) {
+            String name = fm.getBackStackEntryAt(entry).getName();
+            if (name.equals(component.getKey())) {
+                backStackName = name;
+                break;
+            }
+        }
+        if (backStackName != null) {
+            fm.popBackStack(backStackName, 0);
+            return;
+        }
+        router.moveTo(Route.restoreByKey(component.getKey()), NavigationConfigBuilder.forFragment()
+                .fragmentManager(getSupportFragmentManager())
+                .containerId(R.id.container_main)
+                .backStackEnabled(true)
+                .data(args)
+                .build());
     }
 
     @Override

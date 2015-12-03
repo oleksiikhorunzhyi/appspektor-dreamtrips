@@ -144,8 +144,8 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
             return Queryable.from(fragment.getChildFragmentManager().getFragments()).filter(element -> {
                 return ((BucketItem.BucketType) element.getArguments().getSerializable("BUNDLE_TYPE")).getName().equals(((BucketItem) getModelObject().getItem()).getType());
             }).first().getChildFragmentManager().getFragments().get(0).getChildFragmentManager();
-        } else if (fragmentCompass.getCurrentFragment() instanceof FeedItemDetailsFragment) {
-            return fragmentCompass.getCurrentFragment().getChildFragmentManager();
+        } else if (fragmentManager.getFragments().get(fragmentManager.getFragments().size() - 1) instanceof FeedItemDetailsFragment) {
+            return fragmentManager.getFragments().get(fragmentManager.getFragments().size() - 1).getChildFragmentManager();
         }
 
         return fragmentManager;

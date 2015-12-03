@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.bundle.MutualFriendsBundle;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
-import com.worldventures.dreamtrips.modules.friends.view.util.MutualStringUtil;
+import com.worldventures.dreamtrips.modules.friends.view.util.MutualFriendsUtil;
 
 import javax.inject.Inject;
 
@@ -46,11 +46,11 @@ public abstract class BaseUserCell extends AbstractCell<User> {
     @InjectView(R.id.tv_group)
     TextView tvGroup;
 
-    protected MutualStringUtil mutualStringUtil;
+    protected MutualFriendsUtil mutualFriendsUtil;
 
     public BaseUserCell(View view) {
         super(view);
-        mutualStringUtil = new MutualStringUtil(view.getContext());
+        mutualFriendsUtil = new MutualFriendsUtil(view.getContext());
     }
 
     @Override
@@ -75,7 +75,10 @@ public abstract class BaseUserCell extends AbstractCell<User> {
 
     @OnClick(R.id.tv_mutual)
     void onMutualClick() {
-        createActionPanelNavigationWrapper().navigate(Route.MUTUAL_FRIENDS, new MutualFriendsBundle(getModelObject().getId()));
+        if (!mutualFriendsUtil.hasMutualFriends(getModelObject())) return;
+        //
+        createActionPanelNavigationWrapper()
+                .navigate(Route.MUTUAL_FRIENDS, new MutualFriendsBundle(getModelObject().getId()));
     }
 
     @OnClick(R.id.sdv_avatar)
@@ -84,7 +87,7 @@ public abstract class BaseUserCell extends AbstractCell<User> {
     }
 
     protected String createMutualString() {
-        return mutualStringUtil.createMutualString(getModelObject());
+        return mutualFriendsUtil.createMutualString(getModelObject());
     }
 
     private NavigationWrapper createActionPanelNavigationWrapper() {

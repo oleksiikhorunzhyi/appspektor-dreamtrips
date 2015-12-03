@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-public class MutualStringUtil {
+public class MutualFriendsUtil {
 
     private Context context;
 
-    public MutualStringUtil(Context context) {
+    public MutualFriendsUtil(Context context) {
         this.context = context;
     }
 
@@ -45,7 +45,7 @@ public class MutualStringUtil {
         return sb.toString();
     }
 
-    private boolean hasMutualFriends(User user) {
+    public boolean hasMutualFriends(User user) {
         return user.getMutualFriends() != null && user.getMutualFriends().getCount() > 0;
     }
 }

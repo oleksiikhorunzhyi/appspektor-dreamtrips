@@ -14,6 +14,6 @@ public class FeedFriendCell extends BaseUserCell {
 
     @Override
     protected String createMutualString() {
-        return mutualStringUtil.createCircleAndMutualString(getModelObject());
+        return mutualFriendsUtil.createCircleAndMutualString(getModelObject());
     }
 }

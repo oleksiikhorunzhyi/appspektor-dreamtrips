@@ -51,7 +51,6 @@ public class RequestCell extends BaseUserCell {
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.VISIBLE);
-                tvMutual.setVisibility(View.GONE);
                 break;
             case REJECT:
                 reject.setVisibility(View.GONE);

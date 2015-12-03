@@ -84,6 +84,7 @@ public class User extends BaseEntity implements Parcelable {
     }
 
     public String getCirclesString() {
+        if (circles == null || circles.size() == 0) return "";
         return TextUtils.join(", ", Queryable.from(circles).map(Circle::getName).toList());
     }
 

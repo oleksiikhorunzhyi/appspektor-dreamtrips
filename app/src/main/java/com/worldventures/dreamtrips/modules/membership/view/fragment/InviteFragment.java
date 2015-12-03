@@ -134,7 +134,12 @@ public class InviteFragment
         });
 
         buttonContinue.setVisibility(View.GONE);
+    }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getPresenter().deselectAll();
     }
 
     private void setUpView() {
@@ -156,7 +161,6 @@ public class InviteFragment
     @Override
     public void onPause() {
         super.onPause();
-        lvUsers.setAdapter(null);
         tvSearch.setOnQueryTextListener(null);
         tvSearch.setOnQueryTextFocusChangeListener(null);
         spinner.setOnItemSelectedListener(null);
@@ -164,6 +168,7 @@ public class InviteFragment
 
     @Override
     public void onDestroyView() {
+        lvUsers.setAdapter(null);
         stateDelegate.onDestroyView();
         super.onDestroyView();
     }

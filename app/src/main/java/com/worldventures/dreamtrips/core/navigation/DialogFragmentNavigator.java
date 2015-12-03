@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
@@ -104,7 +105,8 @@ public class DialogFragmentNavigator implements Navigator {
         @Override
         public void onPause() {
             super.onPause();
-            OrientationUtil.unlockOrientation(getActivity());
+            if (isLastInStack())
+                OrientationUtil.unlockOrientation(getActivity());
         }
 
         public void onEvent(CloseDialogEvent event) {
@@ -116,6 +118,11 @@ public class DialogFragmentNavigator implements Navigator {
             if (route.getClazzName().equals(event.getFragmentClazz())) {
                 dismissAllowingStateLoss();
             }
+        }
+
+        private boolean isLastInStack() {
+            return getFragmentManager().getFragments() != null && Queryable.from(getFragmentManager().getFragments())
+                    .count(fragment -> fragment instanceof NavigationDialogFragment) < 2;
         }
     }
 }

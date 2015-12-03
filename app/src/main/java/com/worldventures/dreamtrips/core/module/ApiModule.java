@@ -149,9 +149,9 @@ public class ApiModule {
         CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
         okHttpClient.setCookieHandler(cookieManager);
         //Currently `api/{uid}/likes` (10k+ms)
-        okHttpClient.setConnectTimeout(15, TimeUnit.SECONDS);
-        okHttpClient.setReadTimeout(15, TimeUnit.SECONDS);
-        okHttpClient.setWriteTimeout(15, TimeUnit.SECONDS);
+        okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+        okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
         return okHttpClient;
     }
 

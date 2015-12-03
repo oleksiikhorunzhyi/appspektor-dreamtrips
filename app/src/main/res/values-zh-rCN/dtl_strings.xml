@@ -98,4 +98,7 @@
     <string name="point_estimator">点数估计</string>
     <string name="km">英里</string>
     <string name="mi">公里</string>
+    <string name="dtl_coming_soon_offers">优惠即将推出</string>
+    <string name="dtl_details_share_title_without_points">我发现%s在使用DreamTrips app</string>
+    <string name="rep_suggest_restaurant">推荐餐厅</string>
 </resources>

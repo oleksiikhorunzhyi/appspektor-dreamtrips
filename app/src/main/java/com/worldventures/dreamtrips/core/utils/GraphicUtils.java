@@ -11,6 +11,14 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 public class GraphicUtils {
 
+    // this is the biggest size that Fresco's SimpleDraweeView can handle
+    private static final int DEFAULT_DRESCO_MAX_IMAGE_SIZE = 4096;
+
+    public static PipelineDraweeController provideFrescoResizingController(Uri uri, DraweeController oldController) {
+        return provideFrescoResizingController(uri, oldController,
+                DEFAULT_DRESCO_MAX_IMAGE_SIZE, DEFAULT_DRESCO_MAX_IMAGE_SIZE);
+    }
+
     public static PipelineDraweeController provideFrescoResizingController(Uri uri,
                                                                            DraweeController oldController,
                                                                            int size) {

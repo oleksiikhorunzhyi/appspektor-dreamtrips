@@ -130,8 +130,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     @Override
     public void attachReceipt(Uri uri) {
         fabProgress.setVisibility(View.VISIBLE);
-        // fresco won't allow image bigger than 4096
-        receipt.setController(GraphicUtils.provideFrescoResizingController(uri, receipt.getController(), 4096));
+        receipt.setController(GraphicUtils.provideFrescoResizingController(uri, receipt.getController()));
         fabProgress.showProgress(false);
         fabProgress.setIcon(R.drawable.ic_upload_done, R.drawable.ic_upload_done);
         int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);

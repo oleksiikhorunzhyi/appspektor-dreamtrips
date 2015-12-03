@@ -142,9 +142,12 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
     @Override
     public void startLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
+        // timeout was set according to the issue:
+        // https://code.google.com/p/android/issues/detail?id=77712
+        weakHandler.postDelayed(() -> {
+            if (refreshLayout != null)
+                refreshLayout.setRefreshing(true);
+        }, 100);
     }
 
     @Override

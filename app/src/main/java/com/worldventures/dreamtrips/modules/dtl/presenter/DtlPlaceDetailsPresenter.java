@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
 
@@ -124,8 +124,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         view.enableCheckinButton();
         dtlTransaction = new DtlTransaction();
         dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
-        dtlTransaction.setLocation(DtlTransactionLocation.fromDtlPlace(place,
-                location.getLatitude(), location.getLongitude()));
+        dtlTransaction.setLat(location.getLatitude());
+        dtlTransaction.setLng(location.getLongitude());
 
         snapper.saveDtlTransaction(place.getId(), dtlTransaction);
         view.setTransaction(dtlTransaction);
@@ -151,24 +151,32 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         view.openMap(new PlacesBundle(dtlLocation));
     }
 
-    /** Analytic-related */
+    /**
+     * Analytic-related
+     */
     public void trackScreen() {
         String placeTypeAction = place.hasNoOffers() ?
                 TrackingHelper.DTL_ACTION_DINING_VIEW : TrackingHelper.DTL_ACTION_OFFER_VIEW;
         TrackingHelper.dtlPlaceView(placeTypeAction, place.getId());
     }
 
-    /** Analytic-related */
+    /**
+     * Analytic-related
+     */
     public void trackSharing(@ShareFragment.ShareType String type) {
         TrackingHelper.dtlShare(type);
     }
 
-    /** Analytic-related */
+    /**
+     * Analytic-related
+     */
     public void trackPointEstimator() {
         TrackingHelper.dtlPointsEstimationView();
     }
 
-    /** Analytic-related */
+    /**
+     * Analytic-related
+     */
     public void trackEarnFlowView() {
         TrackingHelper.dtlEarnView();
     }

@@ -79,6 +79,7 @@ public class InviteFragment
         stateDelegate.onCreate(savedInstanceState);
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -122,7 +123,6 @@ public class InviteFragment
         tvSearch.setIconifiedByDefault(false);
         tvSearch.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_INVITE_SHARE));
 
-        setSelectedCount(0);
         tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 buttonContinue.setVisibility(View.GONE);
@@ -134,12 +134,6 @@ public class InviteFragment
         });
 
         buttonContinue.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getPresenter().deselectAll();
     }
 
     private void setUpView() {
@@ -159,30 +153,18 @@ public class InviteFragment
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        tvSearch.setOnQueryTextListener(null);
-        tvSearch.setOnQueryTextFocusChangeListener(null);
-        spinner.setOnItemSelectedListener(null);
-    }
-
-    @Override
     public void onDestroyView() {
         lvUsers.setAdapter(null);
         stateDelegate.onDestroyView();
+        tvSearch.setOnQueryTextListener(null);
+        tvSearch.setOnQueryTextFocusChangeListener(null);
+        spinner.setOnItemSelectedListener(null);
         super.onDestroyView();
     }
 
     @Override
     public void setSelectedCount(int count) {
         textViewSelectedCount.setText(String.format(getString(R.string.selected), count));
-    }
-
-    @Override
-    public void showContinue() {
-        if (buttonContinue != null) {
-            buttonContinue.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -274,8 +256,8 @@ public class InviteFragment
 
     @Override
     public void showNextStepButtonVisibility(boolean isVisible) {
-        int visibility = isVisible ? View.VISIBLE : View.GONE;
-        frameContactCount.setVisibility(visibility);
-        if (!tvSearch.hasFocus()) buttonContinue.setVisibility(visibility);
+        frameContactCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (!tvSearch.hasFocus())
+            buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
     }
 }

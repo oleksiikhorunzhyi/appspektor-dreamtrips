@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public interface DtlApi {
     ArrayList<DtlLocation> getNearbyDtlLocations(@Query("ll") String latLng, @Query("query") String query);
 
     @GET("/api/dtl/v2/locations/{id}/merchants")
-    ArrayList<DTlMerchant> getDtlPlaces(@Path("id") String locationId);
+    ArrayList<DtlMerchant> getDtlPlaces(@Path("id") String locationId);
 
     @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/estimations")

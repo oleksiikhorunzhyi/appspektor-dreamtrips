@@ -1,13 +1,13 @@
-package com.worldventures.dreamtrips.modules.dtl.model;
+package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DtlPlaceAttribute implements Parcelable {
+public class DtlMerchantAttribute implements Parcelable {
 
     private String name;
 
-    public DtlPlaceAttribute() {
+    public DtlMerchantAttribute() {
     }
 
     public String getName() {
@@ -19,7 +19,7 @@ public class DtlPlaceAttribute implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DtlPlaceAttribute that = (DtlPlaceAttribute) o;
+        DtlMerchantAttribute that = (DtlMerchantAttribute) o;
 
         return !(name != null ? !name.equals(that.name) : that.name != null);
 
@@ -39,7 +39,7 @@ public class DtlPlaceAttribute implements Parcelable {
         dest.writeString(name);
     }
 
-    protected DtlPlaceAttribute(Parcel in) {
+    protected DtlMerchantAttribute(Parcel in) {
         name = in.readString();
     }
 
@@ -48,15 +48,15 @@ public class DtlPlaceAttribute implements Parcelable {
         return 0;
     }
 
-    public static final Creator<DtlPlaceAttribute> CREATOR = new Creator<DtlPlaceAttribute>() {
+    public static final Creator<DtlMerchantAttribute> CREATOR = new Creator<DtlMerchantAttribute>() {
         @Override
-        public DtlPlaceAttribute createFromParcel(Parcel in) {
-            return new DtlPlaceAttribute(in);
+        public DtlMerchantAttribute createFromParcel(Parcel in) {
+            return new DtlMerchantAttribute(in);
         }
 
         @Override
-        public DtlPlaceAttribute[] newArray(int size) {
-            return new DtlPlaceAttribute[size];
+        public DtlMerchantAttribute[] newArray(int size) {
+            return new DtlMerchantAttribute[size];
         }
     };
 

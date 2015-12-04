@@ -3,21 +3,21 @@ package com.worldventures.dreamtrips.modules.dtl.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 public class SuggestPlaceBundle implements Parcelable {
 
-    private DTlMerchant place;
+    private DtlMerchant place;
 
-    public SuggestPlaceBundle(DTlMerchant place) {
+    public SuggestPlaceBundle(DtlMerchant place) {
         this.place = place;
     }
 
-    public DTlMerchant getPlace() {
+    public DtlMerchant getPlace() {
         return place;
     }
 
-    public void setPlace(DTlMerchant place) {
+    public void setPlace(DtlMerchant place) {
         this.place = place;
     }
 
@@ -26,7 +26,7 @@ public class SuggestPlaceBundle implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected SuggestPlaceBundle(Parcel in) {
-        place = in.readParcelable(DTlMerchant.class.getClassLoader());
+        place = in.readParcelable(DtlMerchant.class.getClassLoader());
     }
 
     @Override

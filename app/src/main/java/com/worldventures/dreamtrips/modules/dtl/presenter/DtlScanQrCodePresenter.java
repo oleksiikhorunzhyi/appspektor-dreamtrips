@@ -15,15 +15,15 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 
 import javax.inject.Inject;
 
 public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
-    private final DTlMerchant dtlMerchant;
+    private final DtlMerchant dtlMerchant;
     private TransferObserver transferObserver;
 
     DtlTransaction dtlTransaction;
@@ -31,7 +31,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Inject
     SnappyRepository snapper;
 
-    public DtlScanQrCodePresenter(DTlMerchant dtlMerchant) {
+    public DtlScanQrCodePresenter(DtlMerchant dtlMerchant) {
         this.dtlMerchant = dtlMerchant;
     }
 
@@ -175,7 +175,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
         void noConnection();
 
-        void setPlace(DTlMerchant DTlMerchant);
+        void setPlace(DtlMerchant DtlMerchant);
 
         void openScanReceipt(DtlTransaction dtlTransaction);
     }

@@ -1,11 +1,11 @@
-package com.worldventures.dreamtrips.modules.dtl.model;
+package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 
-public class DtlPlaceMedia implements Parcelable, ImagePathHolder {
+public class DtlMerchantMedia implements Parcelable, ImagePathHolder {
 
     private String imageId;
     private String url;
@@ -14,7 +14,7 @@ public class DtlPlaceMedia implements Parcelable, ImagePathHolder {
     private String description;
     private String logo;
 
-    public DtlPlaceMedia() {
+    public DtlMerchantMedia() {
     }
 
     @Override
@@ -25,7 +25,7 @@ public class DtlPlaceMedia implements Parcelable, ImagePathHolder {
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
-    protected DtlPlaceMedia(Parcel in) {
+    protected DtlMerchantMedia(Parcel in) {
         imageId = in.readString();
         url = in.readString();
         logoUrl = in.readString();
@@ -34,15 +34,15 @@ public class DtlPlaceMedia implements Parcelable, ImagePathHolder {
         logo = in.readString();
     }
 
-    public static final Creator<DtlPlaceMedia> CREATOR = new Creator<DtlPlaceMedia>() {
+    public static final Creator<DtlMerchantMedia> CREATOR = new Creator<DtlMerchantMedia>() {
         @Override
-        public DtlPlaceMedia createFromParcel(Parcel in) {
-            return new DtlPlaceMedia(in);
+        public DtlMerchantMedia createFromParcel(Parcel in) {
+            return new DtlMerchantMedia(in);
         }
 
         @Override
-        public DtlPlaceMedia[] newArray(int size) {
-            return new DtlPlaceMedia[size];
+        public DtlMerchantMedia[] newArray(int size) {
+            return new DtlMerchantMedia[size];
         }
     };
 

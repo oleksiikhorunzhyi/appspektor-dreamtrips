@@ -42,11 +42,10 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflate
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 
@@ -150,7 +149,7 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void setPlace(DTlMerchant place) {
+    public void setPlace(DtlMerchant place) {
         commonDataInflater.apply(place);
         placeInfoInflater.apply(place);
         categoryDataInflater.apply(place);
@@ -160,12 +159,12 @@ public class DtlPlaceDetailsFragment
         setMap(place);
     }
 
-    private void setType(DTlMerchant DTlMerchant) {
-        earnWrapper.setVisibility(DTlMerchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
-        merchantWrapper.setVisibility(DTlMerchant.hasNoOffers() ? View.VISIBLE : View.GONE);
+    private void setType(DtlMerchant DtlMerchant) {
+        earnWrapper.setVisibility(DtlMerchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
+        merchantWrapper.setVisibility(DtlMerchant.hasNoOffers() ? View.VISIBLE : View.GONE);
     }
 
-    private void setDescriptions(DTlMerchant place) {
+    private void setDescriptions(DtlMerchant place) {
         this.description.setText(Html.fromHtml(place.getDescription()));
         this.description.setMovementMethod(new LinkMovementMethod());
 
@@ -179,7 +178,7 @@ public class DtlPlaceDetailsFragment
         this.perksDescriptionHeader.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
     }
 
-    private void setAdditional(DTlMerchant place) {
+    private void setAdditional(DtlMerchant place) {
         Queryable.from(helper.getContactsData(place)).forEachR(contact -> {
             TextView contactView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.list_item_dtl_place_contact, additionalContainer, false);
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
@@ -199,7 +198,7 @@ public class DtlPlaceDetailsFragment
         });
     }
 
-    private void setMap(DTlMerchant place) {
+    private void setMap(DtlMerchant place) {
         GoogleMapOptions mapOptions = new GoogleMapOptions();
         mapOptions.liteMode(true);
         //
@@ -239,13 +238,13 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void openTransaction(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction) {
-        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(DTlMerchant).build());
+    public void openTransaction(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction) {
+        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(DtlMerchant).build());
     }
 
     @Override
-    public void showSucceed(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction) {
-        router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog().data(DTlMerchant).build());
+    public void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction) {
+        router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog().data(DtlMerchant).build());
         getPresenter().trackEarnFlowView();
     }
 
@@ -266,7 +265,7 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void share(DTlMerchant place) {
+    public void share(DtlMerchant place) {
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
@@ -275,7 +274,7 @@ public class DtlPlaceDetailsFragment
                             R.string.dtl_details_share_title_without_points,
                     place.getDisplayName()));
             shareBundle.setShareUrl(place.getWebsite());
-            DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
+            DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
             //
             getPresenter().trackSharing(type);

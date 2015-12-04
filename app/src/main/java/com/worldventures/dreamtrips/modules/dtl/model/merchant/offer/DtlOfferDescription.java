@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model;
+package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
 import android.os.Parcel;
 import android.os.Parcelable;

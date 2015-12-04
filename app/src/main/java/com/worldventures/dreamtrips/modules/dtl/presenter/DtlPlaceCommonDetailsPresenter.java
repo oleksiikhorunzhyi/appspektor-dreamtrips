@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 public class DtlPlaceCommonDetailsPresenter<T extends DtlPlaceCommonDetailsPresenter.View> extends Presenter<T> {
-    protected final DTlMerchant place;
+    protected final DtlMerchant place;
 
-    public DtlPlaceCommonDetailsPresenter(DTlMerchant place) {
+    public DtlPlaceCommonDetailsPresenter(DtlMerchant place) {
         this.place = place;
     }
 
@@ -17,6 +17,6 @@ public class DtlPlaceCommonDetailsPresenter<T extends DtlPlaceCommonDetailsPrese
     }
 
     public interface View extends Presenter.View {
-        void setPlace(DTlMerchant place);
+        void setPlace(DtlMerchant place);
     }
 }

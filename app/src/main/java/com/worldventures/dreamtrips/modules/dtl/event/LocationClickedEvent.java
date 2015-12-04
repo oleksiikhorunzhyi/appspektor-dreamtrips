@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.event;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 public class LocationClickedEvent {
 

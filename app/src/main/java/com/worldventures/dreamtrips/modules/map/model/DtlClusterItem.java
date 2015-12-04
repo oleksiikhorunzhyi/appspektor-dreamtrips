@@ -2,18 +2,18 @@ package com.worldventures.dreamtrips.modules.map.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
 public class DtlClusterItem implements ClusterItem {
 
     private final LatLng latLng;
     private final String id;
-    private DtlPlaceType dtlPlaceType;
+    private DtlMerchantType dtlMerchantType;
 
-    public DtlClusterItem(String id, LatLng latLng, DtlPlaceType dtlPlaceType) {
+    public DtlClusterItem(String id, LatLng latLng, DtlMerchantType dtlMerchantType) {
         this.id = id;
         this.latLng = latLng;
-        this.dtlPlaceType = dtlPlaceType;
+        this.dtlMerchantType = dtlMerchantType;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class DtlClusterItem implements ClusterItem {
         return id;
     }
 
-    public DtlPlaceType getDtlPlaceType() {
-        return dtlPlaceType;
+    public DtlMerchantType getDtlMerchantType() {
+        return dtlMerchantType;
     }
 }

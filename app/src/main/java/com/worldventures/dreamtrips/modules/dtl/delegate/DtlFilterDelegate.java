@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.delegate;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 
 import java.util.ArrayList;
 import java.util.List;

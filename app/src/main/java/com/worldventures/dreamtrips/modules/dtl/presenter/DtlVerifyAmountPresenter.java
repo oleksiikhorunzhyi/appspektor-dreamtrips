@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 import javax.inject.Inject;
 
@@ -12,17 +12,17 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     @Inject
     SnappyRepository snapper;
 
-    private final DTlMerchant DTlMerchant;
+    private final DtlMerchant DtlMerchant;
     private DtlTransaction dtlTransaction;
 
-    public DtlVerifyAmountPresenter(DTlMerchant place) {
-        this.DTlMerchant = place;
+    public DtlVerifyAmountPresenter(DtlMerchant place) {
+        this.DtlMerchant = place;
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlTransaction = snapper.getDtlTransaction(DTlMerchant.getId());
+        dtlTransaction = snapper.getDtlTransaction(DtlMerchant.getId());
         view.attachTransaction(dtlTransaction);
         view.attachDtPoints(Double.valueOf(dtlTransaction.getPoints()).intValue());
     }
@@ -31,7 +31,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
         photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
         dtlTransaction.setUploadTask(null);
 
-        snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(DtlMerchant.getId(), dtlTransaction);
 
         view.openScanReceipt(dtlTransaction);
     }
@@ -39,7 +39,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     public void scanQr() {
         dtlTransaction.setVerified(true);
 
-        snapper.saveDtlTransaction(DTlMerchant.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(DtlMerchant.getId(), dtlTransaction);
 
         view.openScanQr(dtlTransaction);
     }

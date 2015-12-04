@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.api.place;
 
 import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
+import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 
 public class SuggestPlaceCommand extends DtlRequest<Void> {
 

@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl.event;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 public class PlaceClickedEvent {
 
-    private final DTlMerchant place;
+    private final DtlMerchant place;
 
-    public PlaceClickedEvent(DTlMerchant place) {
+    public PlaceClickedEvent(DtlMerchant place) {
         this.place = place;
     }
 
-    public DTlMerchant getPlace() {
+    public DtlMerchant getPlace() {
         return place;
     }
 }

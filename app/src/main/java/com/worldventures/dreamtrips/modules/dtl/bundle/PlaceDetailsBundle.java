@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
 
 /**
@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFra
  */
 public class PlaceDetailsBundle implements Parcelable {
 
-    private DTlMerchant place;
+    private DtlMerchant place;
     /**
      * Set to false when showing details as separate activity, true when showing as a fragment in current screen hierarchy
      */
@@ -21,12 +21,12 @@ public class PlaceDetailsBundle implements Parcelable {
      * @param place place model to supply to screen
      * @param isSlave indicator that screen is slave (shown in current view hierarchy) or master (new activity)
      */
-    public PlaceDetailsBundle(DTlMerchant place, boolean isSlave) {
+    public PlaceDetailsBundle(DtlMerchant place, boolean isSlave) {
         this.place = place;
         this.isSlave = isSlave;
     }
 
-    public DTlMerchant getPlace() {
+    public DtlMerchant getPlace() {
         return place;
     }
 
@@ -39,7 +39,7 @@ public class PlaceDetailsBundle implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected PlaceDetailsBundle(Parcel in) {
-        place = in.readParcelable(DTlMerchant.class.getClassLoader());
+        place = in.readParcelable(DtlMerchant.class.getClassLoader());
         isSlave = in.readByte() != 0;
     }
 

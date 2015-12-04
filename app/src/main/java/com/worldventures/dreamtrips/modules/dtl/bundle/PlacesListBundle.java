@@ -3,24 +3,24 @@ package com.worldventures.dreamtrips.modules.dtl.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
 /**
  * Bundle to be supplied for {@link com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment}
  */
 public class PlacesListBundle implements Parcelable {
 
-    private DtlPlaceType placeType;
+    private DtlMerchantType placeType;
 
-    public PlacesListBundle(DtlPlaceType placeType) {
+    public PlacesListBundle(DtlMerchantType placeType) {
         this.placeType = placeType;
     }
 
-    public DtlPlaceType getPlaceType() {
+    public DtlMerchantType getPlaceType() {
         return placeType;
     }
 
-    public void setPlaceType(DtlPlaceType placeType) {
+    public void setPlaceType(DtlMerchantType placeType) {
         this.placeType = placeType;
     }
 
@@ -29,7 +29,7 @@ public class PlacesListBundle implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected PlacesListBundle(Parcel in) {
-        placeType = (DtlPlaceType) in.readSerializable();
+        placeType = (DtlMerchantType) in.readSerializable();
     }
 
     public static final Creator<PlacesListBundle> CREATOR = new Creator<PlacesListBundle>() {

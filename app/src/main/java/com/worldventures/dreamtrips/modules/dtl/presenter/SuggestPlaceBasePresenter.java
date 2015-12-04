@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.model.ContactTime;
+import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLeadContactTime;
 
 public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresenter.View> extends Presenter<T> {
 
@@ -27,11 +25,11 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
         view.openPdf(PDF);
     }
 
-    protected ContactTime obtainContactTime() {
+    protected DtlLeadContactTime obtainContactTime() {
         if (view.intervalDate()) {
-            return new ContactTime(view.getFromTimestamp(), view.getToTimestamp());
+            return new DtlLeadContactTime(view.getFromTimestamp(), view.getToTimestamp());
         } else {
-            return new ContactTime(view.getFromTimestamp(), view.getFromTimestamp());
+            return new DtlLeadContactTime(view.getFromTimestamp(), view.getFromTimestamp());
         }
     }
 

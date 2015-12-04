@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model;
+package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,6 +8,10 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.Collections;
@@ -16,7 +20,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class DTlMerchant implements Parcelable {
+public class DtlMerchant implements Parcelable {
 
     String id;
     String type;
@@ -37,12 +41,12 @@ public class DTlMerchant implements Parcelable {
     float rating;
     String timeZone;
     List<DtlOffer> offers;
-    List<DtlPlaceAttribute> categories;
-    List<DtlPlaceAttribute> amenities;
-    List<DtlPlaceMedia> images;
+    List<DtlMerchantAttribute> categories;
+    List<DtlMerchantAttribute> amenities;
+    List<DtlMerchantMedia> images;
     List<OperationDay> operationDays;
 
-    public DTlMerchant() {
+    public DtlMerchant() {
     }
 
     public String getId() {
@@ -113,15 +117,15 @@ public class DTlMerchant implements Parcelable {
         return offers;
     }
 
-    public List<DtlPlaceAttribute> getCategories() {
+    public List<DtlMerchantAttribute> getCategories() {
         return categories;
     }
 
-    public List<DtlPlaceAttribute> getAmenities() {
+    public List<DtlMerchantAttribute> getAmenities() {
         return amenities;
     }
 
-    public List<DtlPlaceMedia> getImages() {
+    public List<DtlMerchantMedia> getImages() {
         return images;
     }
 
@@ -129,8 +133,8 @@ public class DTlMerchant implements Parcelable {
         return operationDays;
     }
 
-    public DtlPlaceType getPlaceType() {
-        return hasNoOffers() ? DtlPlaceType.DINING : DtlPlaceType.OFFER;
+    public DtlMerchantType getPlaceType() {
+        return hasNoOffers() ? DtlMerchantType.DINING : DtlMerchantType.OFFER;
     }
 
     public boolean hasOffer(DtlOffer dtlOffer) {
@@ -151,9 +155,9 @@ public class DTlMerchant implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DTlMerchant DTlMerchant = (DTlMerchant) o;
+        DtlMerchant DtlMerchant = (DtlMerchant) o;
 
-        return !(id != null ? !id.equals(DTlMerchant.id) : DTlMerchant.id != null);
+        return !(id != null ? !id.equals(DtlMerchant.id) : DtlMerchant.id != null);
 
     }
 
@@ -166,7 +170,7 @@ public class DTlMerchant implements Parcelable {
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    protected DTlMerchant(Parcel in) {
+    protected DtlMerchant(Parcel in) {
         id = in.readString();
         type = in.readString();
         partnerStatus = (PartnerStatus) in.readSerializable();
@@ -185,9 +189,9 @@ public class DTlMerchant implements Parcelable {
         budget = in.readInt();
         rating = in.readFloat();
         offers = in.createTypedArrayList(DtlOffer.CREATOR);
-        categories = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
-        amenities = in.createTypedArrayList(DtlPlaceAttribute.CREATOR);
-        images = in.createTypedArrayList(DtlPlaceMedia.CREATOR);
+        categories = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
+        amenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
+        images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
         operationDays = in.createTypedArrayList(OperationDay.CREATOR);
     }
 
@@ -217,15 +221,15 @@ public class DTlMerchant implements Parcelable {
         dest.writeTypedList(operationDays);
     }
 
-    public static final Creator<DTlMerchant> CREATOR = new Creator<DTlMerchant>() {
+    public static final Creator<DtlMerchant> CREATOR = new Creator<DtlMerchant>() {
         @Override
-        public DTlMerchant createFromParcel(Parcel in) {
-            return new DTlMerchant(in);
+        public DtlMerchant createFromParcel(Parcel in) {
+            return new DtlMerchant(in);
         }
 
         @Override
-        public DTlMerchant[] newArray(int size) {
-            return new DTlMerchant[size];
+        public DtlMerchant[] newArray(int size) {
+            return new DtlMerchant[size];
         }
     };
 
@@ -239,7 +243,7 @@ public class DTlMerchant implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     public boolean containsQuery(String query) {
-        List<DtlPlaceAttribute> categories = getCategories();
+        List<DtlMerchantAttribute> categories = getCategories();
 
         return displayName.toLowerCase().contains(query.toLowerCase()) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
@@ -283,9 +287,9 @@ public class DTlMerchant implements Parcelable {
         return displayName + " " + distanceInMiles;
     }
 
-    public static Comparator<DTlMerchant> DISTANCE_COMPARATOR = new Comparator<DTlMerchant>() {
+    public static Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
         @Override
-        public int compare(DTlMerchant lhs, DTlMerchant rhs) {
+        public int compare(DtlMerchant lhs, DtlMerchant rhs) {
             if (lhs.distanceInMiles == rhs.distanceInMiles) return 0;
             if (lhs.distanceInMiles > rhs.distanceInMiles) return 1;
             else return -1;

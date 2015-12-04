@@ -12,11 +12,11 @@ import android.text.style.ForegroundColorSpan;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.DayOfWeek;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.OperationDay;
-import com.worldventures.dreamtrips.modules.dtl.model.OperationHours;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 
 import org.joda.time.DateTime;
@@ -40,12 +40,12 @@ public class DtlPlaceHelper {
         this.context = context;
     }
 
-    public String getCategories(DTlMerchant place) {
-        List<DtlPlaceAttribute> categories = place.getCategories();
+    public String getCategories(DtlMerchant place) {
+        List<DtlMerchantAttribute> categories = place.getCategories();
         return categories == null ? null : TextUtils.join(", ", categories);
     }
 
-    public List<ImageTextItem> getContactsData(DTlMerchant place) {
+    public List<ImageTextItem> getContactsData(DtlMerchant place) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
         addContactIfNotEmpty(items, String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),
                         place.getState(), place.getZip()),
@@ -67,14 +67,14 @@ public class DtlPlaceHelper {
         items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type));
     }
 
-    public Spannable getOperationalTime(DTlMerchant DTlMerchant) {
+    public Spannable getOperationalTime(DtlMerchant DtlMerchant) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 
-        if (DTlMerchant.getOperationDays() != null) {
+        if (DtlMerchant.getOperationDays() != null) {
             DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-            OperationDay operationDay = Queryable.from(DTlMerchant.getOperationDays())
+            OperationDay operationDay = Queryable.from(DtlMerchant.getOperationDays())
                     .firstOrDefault(element -> element.getDayOfWeek() == current);
 
             if (operationDay != null && operationDay.getOperationHours() != null) {

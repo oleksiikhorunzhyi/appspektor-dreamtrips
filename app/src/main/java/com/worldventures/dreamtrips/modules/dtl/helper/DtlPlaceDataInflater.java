@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.helper;
 
 import android.view.View;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.ButterKnife;
 
@@ -15,12 +15,12 @@ public abstract class DtlPlaceDataInflater {
         ButterKnife.inject(this, rootView);
     }
 
-    public void apply(DTlMerchant place) {
+    public void apply(DtlMerchant place) {
         if (rootView == null) {
             throw new IllegalStateException("Root view is not set, call setView() method first");
         }
         onPlaceApply(place);
     }
 
-    protected abstract void onPlaceApply(DTlMerchant place);
+    protected abstract void onPlaceApply(DtlMerchant place);
 }

@@ -12,12 +12,12 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflate
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_place)
-public class DtlPlaceCell extends AbstractCell<DTlMerchant> implements SelectableCell {
+public class DtlPlaceCell extends AbstractCell<DtlMerchant> implements SelectableCell {
 
     DtlPlaceCommonDataInflater commonDataInflater;
     DtlPlaceInfoInflater categoryDataInflater;

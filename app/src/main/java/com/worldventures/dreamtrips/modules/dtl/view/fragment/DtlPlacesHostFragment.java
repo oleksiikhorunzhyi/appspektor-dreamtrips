@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
 
 import butterknife.InjectView;
@@ -79,7 +79,7 @@ public class DtlPlacesHostFragment
     }
 
     @Override
-    public void showDetails(DTlMerchant place) {
+    public void showDetails(DtlMerchant place) {
         removeDetails();
         router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_landscape_slave_container)

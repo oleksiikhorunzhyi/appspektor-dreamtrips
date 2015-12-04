@@ -6,8 +6,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -30,7 +30,7 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
     }
 
     @Override
-    protected void onPlaceApply(DTlMerchant place) {
+    protected void onPlaceApply(DtlMerchant place) {
         coverStub.setVisibility(place.getImages().isEmpty() ? View.VISIBLE : View.GONE);
         if (place.getRating() != 0.0f) {
             rating.setVisibility(View.VISIBLE);

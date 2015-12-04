@@ -16,10 +16,10 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
 
     private DtlLocation dtlLocation;
 
-    List<DTlMerchant> dTlMerchants = new ArrayList<>();
+    List<DtlMerchant> dtlMerchants = new ArrayList<>();
 
     public DtlMapPresenter(PlacesMapBundle bundle) {
         dtlLocation = bundle.getLocation();
@@ -74,9 +74,9 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     private void setMerchants() {
-        dTlMerchants.clear();
-        for (DtlPlaceType type : DtlPlaceType.values()) {
-            dTlMerchants.addAll(db.getDtlPlaces(type));
+        dtlMerchants.clear();
+        for (DtlMerchantType type : DtlMerchantType.values()) {
+            dtlMerchants.addAll(db.getDtlPlaces(type));
         }
 
         performFiltering();
@@ -84,10 +84,10 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     public void onMarkerClick(String merchantId) {
-        showPlaceInfo(Queryable.from(dTlMerchants).firstOrDefault(item -> item.getId().equals(merchantId)));
+        showPlaceInfo(Queryable.from(dtlMerchants).firstOrDefault(item -> item.getId().equals(merchantId)));
     }
 
-    private void showPlaceInfo(DTlMerchant place) {
+    private void showPlaceInfo(DtlMerchant place) {
         view.showPlaceInfo(place);
     }
 
@@ -104,7 +104,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
         ).subscribe(this::showPins, this::onError);
     }
 
-    private Observable<List<DTlMerchant>> filter(Location location, String query) {
+    private Observable<List<DtlMerchant>> filter(Location location, String query) {
         LatLng currentLocation = LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
                 new LatLng(location.getLatitude(), location.getLongitude()),
                 dtlLocation.getCoordinates().asLatLng(),
@@ -112,7 +112,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
                 ? new LatLng(location.getLatitude(), location.getLongitude())
                 : dtlLocation.getCoordinates().asLatLng();
 
-        List<DTlMerchant> places = Queryable.from(dTlMerchants)
+        List<DtlMerchant> places = Queryable.from(dtlMerchants)
                 .filter(dtlPlace ->
                         dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
                                 currentLocation))
@@ -128,7 +128,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
         Timber.e(e, "Something went wrong while filtering");
     }
 
-    private void showPins(List<DTlMerchant> filtered) {
+    private void showPins(List<DtlMerchant> filtered) {
         if (view != null) {
             view.clearMap();
             Queryable.from(filtered).forEachR(dtlPlace ->
@@ -164,11 +164,11 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     public interface View extends RxView {
-        void addPin(String id, LatLng latLng, DtlPlaceType type);
+        void addPin(String id, LatLng latLng, DtlMerchantType type);
 
         void clearMap();
 
-        void showPlaceInfo(DTlMerchant DTlMerchant);
+        void showPlaceInfo(DtlMerchant DtlMerchant);
 
         void prepareInfoWindow(int height);
 

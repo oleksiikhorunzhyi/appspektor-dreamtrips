@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.dtl.event;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 public class TogglePlaceSelectionEvent {
-    private DTlMerchant DTlMerchant;
+    private DtlMerchant DtlMerchant;
 
-    public TogglePlaceSelectionEvent(DTlMerchant DTlMerchant) {
-        this.DTlMerchant = DTlMerchant;
+    public TogglePlaceSelectionEvent(DtlMerchant DtlMerchant) {
+        this.DtlMerchant = DtlMerchant;
     }
 
-    public DTlMerchant getDTlMerchant() {
-        return DTlMerchant;
+    public DtlMerchant getDtlMerchant() {
+        return DtlMerchant;
     }
 }

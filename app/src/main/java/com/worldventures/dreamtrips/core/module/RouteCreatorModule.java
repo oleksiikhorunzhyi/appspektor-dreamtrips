@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlTransactionRouteCreator;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 import javax.inject.Named;
 

@@ -24,9 +24,9 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 
 import java.util.List;
@@ -111,9 +111,9 @@ public class DtlPlacesTabsFragment
     }
 
     @Override
-    public void setTypes(List<DtlPlaceType> types) {
+    public void setTypes(List<DtlMerchantType> types) {
         if (adapter.getCount() == 0) {
-            for (DtlPlaceType type : types) {
+            for (DtlMerchantType type : types) {
                 adapter.add(new DataFragmentItem<>(DtlPlacesListFragment.class, getString(type.getCaptionResId()), type));
             }
             adapter.notifyDataSetChanged();
@@ -147,7 +147,7 @@ public class DtlPlacesTabsFragment
     }
 
     @Override
-    public void openDetails(DTlMerchant place) {
+    public void openDetails(DtlMerchant place) {
         router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new PlaceDetailsBundle(place, false))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

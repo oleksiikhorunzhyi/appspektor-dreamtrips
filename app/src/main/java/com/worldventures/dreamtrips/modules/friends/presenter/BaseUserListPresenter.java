@@ -51,7 +51,12 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        reload();
+        if (isNeedPreload())
+            reload();
+    }
+
+    protected boolean isNeedPreload() {
+        return true;
     }
 
     @Override

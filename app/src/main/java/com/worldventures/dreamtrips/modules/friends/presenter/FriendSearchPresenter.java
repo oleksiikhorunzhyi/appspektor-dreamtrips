@@ -37,7 +37,25 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
 
     public void setQuery(String query) {
         this.query = query;
+        if (query.length() < 3) {
+            if (users.size() > 0)
+                onUsersLoaded(new ArrayList<>());
+
+            return;
+        }
+        //
         reload();
+    }
+
+    @Override
+    protected boolean isNeedPreload() {
+        return false;
+    }
+
+    @Override
+    public void scrolled(int totalItemCount, int lastVisible) {
+        if (query.length() < 3) return;
+        super.scrolled(totalItemCount, lastVisible);
     }
 
     public String getQuery() {

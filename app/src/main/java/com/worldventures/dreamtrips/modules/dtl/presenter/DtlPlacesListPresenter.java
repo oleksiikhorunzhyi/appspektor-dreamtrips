@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -11,12 +12,10 @@ import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -29,7 +28,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import timber.log.Timber;
 
-public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> implements DtlFilterDelegate.FilterListener {
+public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> implements
+        DtlFilterDelegate.FilterListener, DtlMerchantDelegate.MerchantUpdatedListener {
 
     @Inject
     SnappyRepository db;
@@ -37,10 +37,10 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     LocationDelegate locationDelegate;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
+    @Inject
+    DtlMerchantDelegate dtlMerchantDelegate;
 
     protected DtlMerchantType placeType;
-
-    private List<DtlMerchant> DtlMerchants;
 
     private DtlLocation dtlLocation;
 
@@ -49,40 +49,48 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     }
 
     @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlFilterDelegate.addListener(this);
+        dtlMerchantDelegate.attachListener(this);
+    }
+
+    @Override
     public void takeView(View view) {
         super.takeView(view);
-        DtlMerchants = db.getDtlPlaces(placeType);
         dtlLocation = db.getSelectedDtlLocation();
-
-        if (DtlMerchants.isEmpty()) view.showProgress();
-
-        dtlFilterDelegate.addListener(this);
-
+        //
+        view.showProgress();
+        //
         performFiltering();
-
+        //
         if (placeType == DtlMerchantType.OFFER) view.setComingSoon();
     }
 
     @Override
     public void dropView() {
         dtlFilterDelegate.removeListener(this);
+        dtlMerchantDelegate.detachListener(this);
         super.dropView();
     }
 
-    public void onEventMainThread(PlacesUpdatedEvent event) {
-        if (!event.getType().equals(placeType)) return;
-        //
-        DtlMerchants = db.getDtlPlaces(placeType);
+    @Override
+    public void onMerchantsUploaded() {
         performFiltering();
     }
 
-    public void onEventMainThread(TogglePlaceSelectionEvent event) {
-        if (DtlMerchants.contains(event.getDtlMerchant())) view.toggleSelection(event.getDtlMerchant());
+    @Override
+    public void onMerchantsFailed(SpiceException spiceException) {
+        view.hideProgress();
     }
 
     @Override
     public void onFilter() {
         performFiltering();
+    }
+
+    public void onEventMainThread(DtlSearchPlaceRequestEvent event) {
+        performFiltering(event.getSearchQuery());
     }
 
     private void performFiltering() {
@@ -99,21 +107,17 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     }
 
     private Observable<List<DtlMerchant>> filter(Location location, String query) {
-        LatLng currentLocation = LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
-                new LatLng(location.getLatitude(), location.getLongitude()),
-                dtlLocation.getCoordinates().asLatLng(),
-                DtlFilterData.DistanceType.MILES)
-                ? new LatLng(location.getLatitude(), location.getLongitude())
-                : dtlLocation.getCoordinates().asLatLng();
-
-        List<DtlMerchant> places = Queryable.from(DtlMerchants)
-                .filter(dtlPlace ->
-                        dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
-                                currentLocation))
-                .filter(dtlPlace -> dtlPlace.containsQuery(query)).toList();
+        LatLng currentLatLng = LocationHelper.getAcceptedLocation(location, dtlLocation);
+        //
+        List<DtlMerchant> places = Queryable.from(dtlMerchantDelegate.getMerchants())
+                .filter(dtlMerchant -> placeType == null ||
+                        dtlMerchant.getMerchantType() == placeType)
+                .filter(dtlMerchant -> dtlMerchant.applyFilter(dtlFilterDelegate.getDtlFilterData(),
+                        currentLatLng))
+                .filter(dtlMerchant -> dtlMerchant.containsQuery(query)).toList();
 
         for (DtlMerchant DtlMerchant : places) {
-            DtlMerchant.calculateDistance(currentLocation);
+            DtlMerchant.calculateDistance(currentLatLng);
         }
 
         Collections.sort(places, DtlMerchant.DISTANCE_COMPARATOR);
@@ -123,17 +127,12 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         return Observable.from(places).toList();
     }
 
-
-    public void onEventMainThread(PlacesUpdateFinished event) {
-        view.hideProgress();
-    }
-
-    public void onEventMainThread(DtlSearchPlaceRequestEvent event) {
-        performFiltering(event.getSearchQuery());
-    }
-
     private void onError(Throwable e) {
         Timber.e(e, "Something went wrong while filtering");
+    }
+
+    public void onEventMainThread(TogglePlaceSelectionEvent event) {
+        view.toggleSelection(event.getDtlMerchant());
     }
 
     public interface View extends RxView {

@@ -40,8 +40,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Inject
     LocationDelegate locationDelegate;
 
-    public DtlPlaceDetailsPresenter(DtlMerchant place) {
-        super(place);
+    public DtlPlaceDetailsPresenter(String id) {
+        super(id);
     }
 
     @Override

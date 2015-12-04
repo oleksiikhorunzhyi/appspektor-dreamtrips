@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 public class DtlPlacesHostPresenter extends Presenter<DtlPlacesHostPresenter.View> {
 
     public void onEventMainThread(final PlaceClickedEvent event) {
-        if (view.isTabletLandscape()) view.showDetails(event.getPlace());
+        if (view.isTabletLandscape()) view.showDetails(event.getMerchantId());
     }
 
     public interface View extends Presenter.View {
 
-        void showDetails(DtlMerchant place);
+        void showDetails(String id);
     }
 }

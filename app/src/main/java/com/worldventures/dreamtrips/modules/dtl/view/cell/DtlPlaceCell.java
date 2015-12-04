@@ -47,7 +47,7 @@ public class DtlPlaceCell extends AbstractCell<DtlMerchant> implements Selectabl
         if (!selectableDelegate.isSelected(getAdapterPosition()))
             selectableDelegate.toggleSelection(getAdapterPosition());
         //
-        getEventBus().post(new PlaceClickedEvent(getModelObject()));
+        getEventBus().post(new PlaceClickedEvent(getModelObject().getId()));
     }
 
     @Override

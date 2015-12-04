@@ -3,29 +3,19 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacesQuery;
-import com.worldventures.dreamtrips.modules.dtl.api.place.GetNearbyMerchantsRequest;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -35,23 +25,29 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
     @Inject
     SnappyRepository db;
+    @Inject
+    DtlMerchantDelegate dtlMerchantDelegate;
+    //
     @State
     boolean initialized;
 
     private DtlLocation location;
-    private List<DtlMerchantType> dtlMerchantTypes;
 
     public DtlPlacesTabsPresenter(@Nullable DtlLocation location) {
-        if (location == null) {
-            location = db.getSelectedDtlLocation();
-        }
+        if (location == null) location = db.getSelectedDtlLocation();
         this.location = location;
-        dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlMerchantDelegate.setRequestingPresenter(this);
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
         view.initToolbar(location);
         setTabs();
 
@@ -62,51 +58,23 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void loadPlaces() {
-        doRequest(new GetDtlPlacesQuery(location.getId()), this::placeLoaded);
+        dtlMerchantDelegate.loadMerchants(location);
     }
 
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
-        eventBus.post(new PlacesUpdateFinished());
-    }
-
-    private void placeLoaded(List<DtlMerchant> DtlMerchants) {
-        Map<DtlMerchantType, Collection<DtlMerchant>> byTypeMap =
-                Queryable.from(DtlMerchants).groupToMap(DtlMerchant::getPlaceType);
-
-        Queryable.from(byTypeMap.keySet())
-                .forEachR(type -> updatePlacesByType(type, byTypeMap.get(type)));
-
-        saveAmenities(DtlMerchants);
-
-        eventBus.post(new PlacesUpdateFinished());
-    }
-
-    private void saveAmenities(List<DtlMerchant> DtlMerchants) {
-        Set<DtlMerchantAttribute> amenitiesSet = new HashSet<>();
-        Queryable.from(DtlMerchants).forEachR(dtlPlace -> {
-                    if (dtlPlace.getAmenities() != null)
-                        amenitiesSet.addAll(dtlPlace.getAmenities());
-                }
-        );
-
-        db.saveAmenities(amenitiesSet);
-    }
-
-    private void updatePlacesByType(DtlMerchantType type, Collection<DtlMerchant> DtlMerchants) {
-        db.saveDtlPlaces(type, new ArrayList<>(DtlMerchants));
-        eventBus.post(new PlacesUpdatedEvent(type));
+        dtlMerchantDelegate.onMerchantLoadingError(error);
     }
 
     public void setTabs() {
-        view.setTypes(dtlMerchantTypes);
+        view.setTypes(dtlMerchantDelegate.getDtlMerchantTypes());
         view.updateSelection();
     }
 
     public Bundle prepareArgsForTab(int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DtlPlacesListFragment.EXTRA_TYPE, dtlMerchantTypes.get(position));
+        bundle.putSerializable(DtlPlacesListFragment.EXTRA_TYPE, dtlMerchantDelegate.getDtlMerchantTypes().get(position));
         return bundle;
     }
 
@@ -114,18 +82,18 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        String newTabName = dtlMerchantTypes.get(newPosition).equals(DtlMerchantType.OFFER) ?
+        String newTabName = dtlMerchantDelegate.getDtlMerchantTypes().get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
         TrackingHelper.dtlPlacesTab(newTabName);
     }
 
     public void onEventMainThread(final PlaceClickedEvent event) {
         if (!view.isTabletLandscape()) {
-            view.openDetails(event.getPlace());
+            view.openDetails(event.getMerchantId());
         }
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends ApiErrorView {
 
         void setTypes(List<DtlMerchantType> types);
 
@@ -133,6 +101,6 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
         void initToolbar(DtlLocation location);
 
-        void openDetails(DtlMerchant place);
+        void openDetails(String merchantId);
     }
 }

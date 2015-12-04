@@ -101,6 +101,8 @@ public class DtlPlacesListFragment
 
     @Override
     public void setItems(List<DtlMerchant> places) {
+        if (places != null && !places.isEmpty()) hideProgress();
+        //
         adapter.setItems(places);
         stateDelegate.restoreStateIfNeeded();
     }

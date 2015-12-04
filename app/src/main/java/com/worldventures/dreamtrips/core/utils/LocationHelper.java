@@ -1,11 +1,23 @@
 package com.worldventures.dreamtrips.core.utils;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 
 public class LocationHelper {
 
-    public static boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLocation, DtlFilterData.DistanceType distanceType) {
+    public static LatLng getAcceptedLocation(Location deviceLocation, DtlLocation cityLocation) {
+        LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
+        LatLng cityLatLng = cityLocation.getCoordinates().asLatLng();
+
+        return checkLocation(DtlFilterData.MAX_DISTANCE, deviceLatLng, cityLatLng, DtlFilterData.DistanceType.MILES)
+                ? deviceLatLng : cityLatLng;
+    }
+
+    public static boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLocation,
+                                        DtlFilterData.DistanceType distanceType) {
         return (distanceType == DtlFilterData.DistanceType.KMS ?
                 distanceInKms(currentLocation, targetLocation)
                 : distanceInMiles(currentLocation, targetLocation)) < maxDistance;

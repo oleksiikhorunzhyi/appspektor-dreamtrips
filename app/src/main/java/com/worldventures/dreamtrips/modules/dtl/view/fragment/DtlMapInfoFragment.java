@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
@@ -24,7 +24,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_map_info)
 public class DtlMapInfoFragment
-        extends BaseFragmentWithArgs<DtlMapInfoPresenter, PlaceDetailsBundle>
+        extends BaseFragmentWithArgs<DtlMapInfoPresenter, DtlMerchantDetailsBundle>
         implements DtlMapInfoPresenter.View {
 
     DtlPlaceCommonDataInflater commonDataInflater;
@@ -32,7 +32,7 @@ public class DtlMapInfoFragment
 
     @Override
     protected DtlMapInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlMapInfoPresenter(getArgs().getPlace());
+        return new DtlMapInfoPresenter(getArgs().getId());
     }
 
     @Override
@@ -86,12 +86,12 @@ public class DtlMapInfoFragment
     }
 
     @Override
-    public void showDetails(DtlMerchant place) {
+    public void showDetails(String id) {
         if (tabletAnalytic.isTabletLandscape() && getArgs().isSlave()) {
-            eventBus.post(new PlaceClickedEvent(place));
+            eventBus.post(new PlaceClickedEvent(id));
         } else {
             router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()
-                    .data(new PlaceDetailsBundle(place, false))
+                    .data(new DtlMerchantDetailsBundle(id, false))
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .build());
         }

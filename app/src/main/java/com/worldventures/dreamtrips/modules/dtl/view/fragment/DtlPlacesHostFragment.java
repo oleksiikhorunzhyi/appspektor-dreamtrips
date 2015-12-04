@@ -10,10 +10,9 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
 
 import butterknife.InjectView;
@@ -79,13 +78,13 @@ public class DtlPlacesHostFragment
     }
 
     @Override
-    public void showDetails(DtlMerchant place) {
+    public void showDetails(String merchantId) {
         removeDetails();
         router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
-                .data(new PlaceDetailsBundle(place, true))
+                .data(new DtlMerchantDetailsBundle(merchantId, true))
                 .build());
     }
 }

@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -12,16 +13,14 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +28,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import timber.log.Timber;
 
-public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements DtlFilterDelegate.FilterListener {
+public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
+        DtlFilterDelegate.FilterListener, DtlMerchantDelegate.MerchantUpdatedListener {
 
     @Inject
     SnappyRepository db;
@@ -37,58 +37,62 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     LocationDelegate locationDelegate;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
+    @Inject
+    DtlMerchantDelegate dtlMerchantDelegate;
 
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
     private DtlLocation dtlLocation;
 
-    List<DtlMerchant> dtlMerchants = new ArrayList<>();
-
     public DtlMapPresenter(PlacesMapBundle bundle) {
         dtlLocation = bundle.getLocation();
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlMerchantDelegate.attachListener(this);
+        dtlFilterDelegate.addListener(this);
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         view.initToolbar(dtlLocation);
-        dtlFilterDelegate.addListener(this);
     }
 
     @Override
     public void dropView() {
+        dtlMerchantDelegate.detachListener(this);
         dtlFilterDelegate.removeListener(this);
         super.dropView();
     }
 
-    public void onEventMainThread(PlacesUpdatedEvent event) {
-        setMerchants();
-    }
-
     public void onMapLoaded() {
         mapReady = true;
-
+        //
         view.centerIn(dtlLocation);
         setMerchants();
     }
 
-    private void setMerchants() {
-        dtlMerchants.clear();
-        for (DtlMerchantType type : DtlMerchantType.values()) {
-            dtlMerchants.addAll(db.getDtlPlaces(type));
-        }
+    @Override
+    public void onMerchantsUploaded() {
+        setMerchants();
+    }
 
+    @Override
+    public void onMerchantsFailed(SpiceException exception) {
+        //
+    }
+
+    private void setMerchants() {
         performFiltering();
         checkPendingMapInfo();
     }
 
     public void onMarkerClick(String merchantId) {
-        showPlaceInfo(Queryable.from(dtlMerchants).firstOrDefault(item -> item.getId().equals(merchantId)));
-    }
-
-    private void showPlaceInfo(DtlMerchant place) {
-        view.showPlaceInfo(place);
+        view.showPlaceInfo(merchantId);
     }
 
     private void performFiltering() {
@@ -105,17 +109,11 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     private Observable<List<DtlMerchant>> filter(Location location, String query) {
-        LatLng currentLocation = LocationHelper.checkLocation(DtlFilterData.MAX_DISTANCE,
-                new LatLng(location.getLatitude(), location.getLongitude()),
-                dtlLocation.getCoordinates().asLatLng(),
-                DtlFilterData.DistanceType.MILES)
-                ? new LatLng(location.getLatitude(), location.getLongitude())
-                : dtlLocation.getCoordinates().asLatLng();
-
-        List<DtlMerchant> places = Queryable.from(dtlMerchants)
+        LatLng currentLatLng = LocationHelper.getAcceptedLocation(location, dtlLocation);
+        //
+        List<DtlMerchant> places = Queryable.from(dtlMerchantDelegate.getMerchants())
                 .filter(dtlPlace ->
-                        dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
-                                currentLocation))
+                        dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(), currentLatLng))
                 .filter(dtlPlace -> dtlPlace.containsQuery(query))
                 .toList();
 
@@ -133,7 +131,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
             view.clearMap();
             Queryable.from(filtered).forEachR(dtlPlace ->
                     view.addPin(dtlPlace.getId(), new LatLng(dtlPlace.getCoordinates().getLat(),
-                            dtlPlace.getCoordinates().getLng()), dtlPlace.getPlaceType()));
+                            dtlPlace.getCoordinates().getLng()), dtlPlace.getMerchantType()));
             view.renderPins();
         }
     }
@@ -168,7 +166,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
 
         void clearMap();
 
-        void showPlaceInfo(DtlMerchant DtlMerchant);
+        void showPlaceInfo(String merchantId);
 
         void prepareInfoWindow(int height);
 

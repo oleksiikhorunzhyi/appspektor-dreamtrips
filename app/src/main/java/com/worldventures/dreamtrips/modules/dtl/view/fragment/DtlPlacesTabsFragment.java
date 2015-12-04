@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -19,19 +20,19 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmen
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 
 import java.util.List;
 
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
 
 @Layout(R.layout.fragment_dtl_places_tabs)
@@ -147,10 +148,27 @@ public class DtlPlacesTabsFragment
     }
 
     @Override
-    public void openDetails(DtlMerchant place) {
+    public void openDetails(String merchantId) {
         router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()
-                .data(new PlaceDetailsBundle(place, false))
+                .data(new DtlMerchantDetailsBundle(merchantId, false))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .build());
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.alert))
+                .setContentText(errorResponse.getFirstMessage())
+                .setConfirmText(getString(R.string.ok))
+                .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation);
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+        return true;
+    }
+
+    @Override
+    public void onApiCallFailed() {
+        //
     }
 }

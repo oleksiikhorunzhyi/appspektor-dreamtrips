@@ -64,6 +64,7 @@ public class SnappyRepository {
 
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
+    public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
 
@@ -452,6 +453,15 @@ public class SnappyRepository {
 
     public DtlLocation getSelectedDtlLocation() {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
+    }
+
+    public void saveDtlMerhants(List<DtlMerchant> merchants) {
+        clearAllForKey(DTL_MERCHANTS);
+        putList(DTL_MERCHANTS, merchants);
+    }
+
+    public List<DtlMerchant> getDtlMerchants() {
+        return readList(DTL_MERCHANTS, DtlMerchant.class);
     }
 
     public void saveDtlPlaces(DtlMerchantType type, List<DtlMerchant> places) {

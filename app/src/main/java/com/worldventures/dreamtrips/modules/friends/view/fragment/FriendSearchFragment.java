@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBun
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
 
+import java.util.ArrayList;
+
 
 @Layout(R.layout.fragment_search_friends)
 @MenuResource(R.menu.menu_search)
@@ -69,7 +71,10 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
             }
         });
 
-        searchView.setQuery(getPresenter().getQuery(), true);
+        if (getPresenter().getQuery().length() > 0)
+            searchView.setQuery(getPresenter().getQuery(), true);
+        else
+            adapter.addItems(new ArrayList<>());
     }
 
     @Override
@@ -80,7 +85,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
     private void updateEmptyCaption(int querySize) {
         if (emptyView.getVisibility() == View.VISIBLE) {
-            if (querySize > 0) {
+            if (querySize > 2) {
                 caption.setText(R.string.filter_no_results);
             } else {
                 caption.setText(R.string.start_searching);

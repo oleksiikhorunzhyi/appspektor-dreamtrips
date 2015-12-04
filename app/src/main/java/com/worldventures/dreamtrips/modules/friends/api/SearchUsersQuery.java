@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.friends.api;
 
-import android.text.TextUtils;
-
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -22,7 +20,6 @@ public class SearchUsersQuery extends Query<ArrayList<User>> {
 
     @Override
     public ArrayList<User> loadDataFromNetwork() throws Exception {
-        if (TextUtils.isEmpty(query) || query.length() < 3) return new ArrayList<>();
         return getService().searchUsers(query, page, perPage);
     }
 }

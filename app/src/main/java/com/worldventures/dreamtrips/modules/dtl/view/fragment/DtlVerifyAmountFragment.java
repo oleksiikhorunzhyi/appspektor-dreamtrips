@@ -14,8 +14,8 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_verify_amount)
-public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmountPresenter, DTlMerchant>
+public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmountPresenter, DtlMerchant>
         implements DtlVerifyAmountPresenter.View {
 
     @InjectView(R.id.dt_points)

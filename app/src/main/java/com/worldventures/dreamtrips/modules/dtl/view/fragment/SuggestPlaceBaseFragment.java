@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
+import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.DigitsValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;

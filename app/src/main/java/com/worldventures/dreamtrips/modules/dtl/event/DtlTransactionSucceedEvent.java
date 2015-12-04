@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.event;
 
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 public class DtlTransactionSucceedEvent {
 

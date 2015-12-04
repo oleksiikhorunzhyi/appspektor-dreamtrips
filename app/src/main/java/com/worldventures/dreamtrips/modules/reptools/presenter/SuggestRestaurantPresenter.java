@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
+import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
 
 public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<SuggestRestaurantPresenter.View> {

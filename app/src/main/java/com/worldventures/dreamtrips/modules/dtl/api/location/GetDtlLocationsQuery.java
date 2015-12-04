@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.api.location;
 
 import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 import java.util.ArrayList;
 

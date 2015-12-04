@@ -8,7 +8,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 public class DtlTransactionRouteCreator implements RouteCreator<DtlTransaction> {
 

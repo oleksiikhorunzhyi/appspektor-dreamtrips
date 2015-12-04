@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model;
+package com.worldventures.dreamtrips.modules.dtl.model.leads;
 
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
@@ -77,9 +77,9 @@ public class DtlLead {
 
         private String name;
         private String phone;
-        private ContactTime time;
+        private DtlLeadContactTime time;
 
-        public Contact(String name, String phone, ContactTime time) {
+        public Contact(String name, String phone, DtlLeadContactTime time) {
             this.name = name;
             this.phone = phone;
             this.time = time;

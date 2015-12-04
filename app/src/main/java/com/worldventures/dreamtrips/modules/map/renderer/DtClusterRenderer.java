@@ -16,7 +16,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 
 import butterknife.ButterKnife;
@@ -40,7 +40,7 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
     @Override
     protected void onBeforeClusterItemRendered(DtlClusterItem cluster, MarkerOptions markerOptions) {
         itemBadgeView.setVisibility(View.GONE);
-        if (cluster.getDtlPlaceType() == DtlPlaceType.DINING) {
+        if (cluster.getDtlMerchantType() == DtlMerchantType.DINING) {
             pin.setImageResource(R.drawable.blue_pin_icon_big);
         } else {
             pin.setImageResource(R.drawable.offer_pin_icon);

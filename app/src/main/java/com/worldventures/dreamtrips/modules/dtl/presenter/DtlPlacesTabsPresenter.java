@@ -11,10 +11,10 @@ import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacesQuery;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
 
 import java.util.ArrayList;
@@ -37,14 +37,14 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     boolean initialized;
 
     private DtlLocation location;
-    private List<DtlPlaceType> dtlPlaceTypes;
+    private List<DtlMerchantType> dtlMerchantTypes;
 
     public DtlPlacesTabsPresenter(@Nullable DtlLocation location) {
         if (location == null) {
             location = db.getSelectedDtlLocation();
         }
         this.location = location;
-        dtlPlaceTypes = Arrays.asList(DtlPlaceType.OFFER, DtlPlaceType.DINING);
+        dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
     }
 
     @Override
@@ -67,21 +67,21 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         );
     }
 
-    private void placeLoaded(List<DTlMerchant> DTlMerchants) {
-        Map<DtlPlaceType, Collection<DTlMerchant>> byTypeMap =
-                Queryable.from(DTlMerchants).groupToMap(DTlMerchant::getPlaceType);
+    private void placeLoaded(List<DtlMerchant> DtlMerchants) {
+        Map<DtlMerchantType, Collection<DtlMerchant>> byTypeMap =
+                Queryable.from(DtlMerchants).groupToMap(DtlMerchant::getPlaceType);
 
         Queryable.from(byTypeMap.keySet())
                 .forEachR(type -> updatePlacesByType(type, byTypeMap.get(type)));
 
-        saveAmenities(DTlMerchants);
+        saveAmenities(DtlMerchants);
 
         eventBus.post(new PlacesUpdateFinished());
     }
 
-    private void saveAmenities(List<DTlMerchant> DTlMerchants) {
-        Set<DtlPlaceAttribute> amenitiesSet = new HashSet<>();
-        Queryable.from(DTlMerchants).forEachR(dtlPlace -> {
+    private void saveAmenities(List<DtlMerchant> DtlMerchants) {
+        Set<DtlMerchantAttribute> amenitiesSet = new HashSet<>();
+        Queryable.from(DtlMerchants).forEachR(dtlPlace -> {
                     if (dtlPlace.getAmenities() != null)
                         amenitiesSet.addAll(dtlPlace.getAmenities());
                 }
@@ -90,19 +90,19 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         db.saveAmenities(amenitiesSet);
     }
 
-    private void updatePlacesByType(DtlPlaceType type, Collection<DTlMerchant> DTlMerchants) {
-        db.saveDtlPlaces(type, new ArrayList<>(DTlMerchants));
+    private void updatePlacesByType(DtlMerchantType type, Collection<DtlMerchant> DtlMerchants) {
+        db.saveDtlPlaces(type, new ArrayList<>(DtlMerchants));
         eventBus.post(new PlacesUpdatedEvent(type));
     }
 
     public void setTabs() {
-        view.setTypes(dtlPlaceTypes);
+        view.setTypes(dtlMerchantTypes);
         view.updateSelection();
     }
 
     public Bundle prepareArgsForTab(int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DtlPlacesListFragment.EXTRA_TYPE, dtlPlaceTypes.get(position));
+        bundle.putSerializable(DtlPlacesListFragment.EXTRA_TYPE, dtlMerchantTypes.get(position));
         return bundle;
     }
 
@@ -110,7 +110,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        String newTabName = dtlPlaceTypes.get(newPosition).equals(DtlPlaceType.OFFER) ?
+        String newTabName = dtlMerchantTypes.get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
         TrackingHelper.dtlPlacesTab(newTabName);
     }
@@ -123,12 +123,12 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
     public interface View extends Presenter.View {
 
-        void setTypes(List<DtlPlaceType> types);
+        void setTypes(List<DtlMerchantType> types);
 
         void updateSelection();
 
         void initToolbar(DtlLocation location);
 
-        void openDetails(DTlMerchant place);
+        void openDetails(DtlMerchant place);
     }
 }

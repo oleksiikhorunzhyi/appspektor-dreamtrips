@@ -24,8 +24,8 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
 
 import javax.inject.Inject;
@@ -43,7 +43,7 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
 @RuntimePermissions
-public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, DTlMerchant>
+public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, DtlMerchant>
         implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
     @InjectView(R.id.scanner_view)
@@ -105,7 +105,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     }
 
 
-    public void setPlace(DTlMerchant place) {
+    public void setPlace(DtlMerchant place) {
         name.setText(place.getDisplayName());
         if (!TextUtils.isEmpty(place.getAddress1())) {
             address.setText(String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),

@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLead;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSuggestMerchantPresenter.View> {
 
-    private DTlMerchant place;
+    private DtlMerchant place;
 
     public DtlSuggestMerchantPresenter(SuggestPlaceBundle data) {
         place = data.getPlace();
@@ -47,7 +47,7 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
 
     public interface View extends SuggestPlaceBasePresenter.View {
 
-        void syncUiWithPlace(DTlMerchant place);
+        void syncUiWithPlace(DtlMerchant place);
 
     }
 }

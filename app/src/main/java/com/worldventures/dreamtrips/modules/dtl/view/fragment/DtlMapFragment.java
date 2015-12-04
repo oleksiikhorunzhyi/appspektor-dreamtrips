@@ -23,9 +23,9 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
@@ -147,17 +147,17 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void showPlaceInfo(DTlMerchant DTlMerchant) {
+    public void showPlaceInfo(DtlMerchant DtlMerchant) {
         router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(new PlaceDetailsBundle(DTlMerchant, bundle.isSlave()))
+                .data(new PlaceDetailsBundle(DtlMerchant, bundle.isSlave()))
                 .build());
     }
 
     @Override
-    public void addPin(String id, LatLng latLng, DtlPlaceType type) {
+    public void addPin(String id, LatLng latLng, DtlMerchantType type) {
         clusterManager.addItem(new DtlClusterItem(id, latLng, type));
     }
 

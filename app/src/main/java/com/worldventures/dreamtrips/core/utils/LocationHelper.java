@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.utils;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 
 public class LocationHelper {
 

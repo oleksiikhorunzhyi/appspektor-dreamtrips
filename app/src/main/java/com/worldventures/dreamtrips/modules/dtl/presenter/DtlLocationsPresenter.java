@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuer
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 import java.util.ArrayList;
 import java.util.List;

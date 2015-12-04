@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapInfoPresenter.View> {
 
-    public DtlMapInfoPresenter(DTlMerchant place) {
+    public DtlMapInfoPresenter(DtlMerchant place) {
         super(place);
     }
 
@@ -33,6 +33,6 @@ public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapIn
     public interface View extends DtlPlaceCommonDetailsPresenter.View {
         void hideLayout();
         void showLayout();
-        void showDetails(DTlMerchant place);
+        void showDetails(DtlMerchant place);
     }
 }

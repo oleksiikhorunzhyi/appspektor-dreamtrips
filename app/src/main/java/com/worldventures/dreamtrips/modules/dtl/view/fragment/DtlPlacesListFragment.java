@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
 
@@ -51,7 +51,7 @@ public class DtlPlacesListFragment
     @InjectView(R.id.place_holder_offers)
     protected TextView emptyTextView;
     //
-    BaseArrayListAdapter<DTlMerchant> adapter;
+    BaseArrayListAdapter<DtlMerchant> adapter;
     RecyclerView.Adapter wrappedAdapter;
     //
     RecyclerViewStateDelegate stateDelegate;
@@ -76,7 +76,7 @@ public class DtlPlacesListFragment
 
     @Override
     protected DtlPlacesListPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlacesListPresenter((DtlPlaceType) getArguments().getSerializable(EXTRA_TYPE));
+        return new DtlPlacesListPresenter((DtlMerchantType) getArguments().getSerializable(EXTRA_TYPE));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class DtlPlacesListFragment
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
-        adapter.registerCell(DTlMerchant.class, DtlPlaceCell.class);
+        adapter.registerCell(DtlMerchant.class, DtlPlaceCell.class);
 
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
@@ -100,7 +100,7 @@ public class DtlPlacesListFragment
     }
 
     @Override
-    public void setItems(List<DTlMerchant> places) {
+    public void setItems(List<DtlMerchant> places) {
         adapter.setItems(places);
         stateDelegate.restoreStateIfNeeded();
     }
@@ -120,8 +120,8 @@ public class DtlPlacesListFragment
     }
 
     @Override
-    public void toggleSelection(DTlMerchant DTlMerchant) {
-        int index = adapter.getItems().indexOf(DTlMerchant);
+    public void toggleSelection(DtlMerchant DtlMerchant) {
+        int index = adapter.getItems().indexOf(DtlMerchant);
         if (index != -1)
             selectionManager.toggleSelection(index);
     }

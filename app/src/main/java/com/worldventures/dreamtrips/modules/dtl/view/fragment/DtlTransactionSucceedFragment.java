@@ -13,9 +13,9 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 
 import butterknife.InjectView;
@@ -23,7 +23,7 @@ import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_transaction_succeed)
-public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, DTlMerchant>
+public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, DtlMerchant>
         implements DtlTransactionSucceedPresenter.View {
 
     @InjectView(R.id.total)
@@ -59,13 +59,13 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
     }
 
     @Override
-    public void showShareDialog(int amount, DTlMerchant place) {
+    public void showShareDialog(int amount, DtlMerchant place) {
         new ShareDialog(activityRouter.getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
             shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));
             shareBundle.setShareUrl(place.getWebsite());
-            DtlPlaceMedia media = Queryable.from(place.getImages()).firstOrDefault();
+            DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
             router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
                     .data(shareBundle)

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 import javax.inject.Inject;
 

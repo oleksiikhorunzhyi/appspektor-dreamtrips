@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.api.place;
 
 import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 
 public class EarnPointsRequest extends DtlRequest<DtlTransactionResult> {
 

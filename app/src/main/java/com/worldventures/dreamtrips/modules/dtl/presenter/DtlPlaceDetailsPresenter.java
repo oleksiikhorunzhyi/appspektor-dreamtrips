@@ -19,10 +19,9 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransactionLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 import java.util.Calendar;
 
@@ -41,7 +40,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Inject
     LocationDelegate locationDelegate;
 
-    public DtlPlaceDetailsPresenter(DTlMerchant place) {
+    public DtlPlaceDetailsPresenter(DtlMerchant place) {
         super(place);
     }
 
@@ -203,9 +202,9 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void openSuggestMerchant(SuggestPlaceBundle data);
 
-        void openTransaction(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction);
+        void openTransaction(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
 
-        void showSucceed(DTlMerchant DTlMerchant, DtlTransaction dtlTransaction);
+        void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
 
         void openMap(PlacesBundle placesBundle);
 
@@ -213,7 +212,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void setSuggestMerchantButtonAvailable(boolean available);
 
-        void share(DTlMerchant place);
+        void share(DtlMerchant place);
 
         void resolutionRequired(Status status);
 

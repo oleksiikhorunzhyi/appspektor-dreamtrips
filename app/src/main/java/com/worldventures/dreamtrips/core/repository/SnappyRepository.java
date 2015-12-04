@@ -11,11 +11,11 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlaceType;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -454,22 +454,22 @@ public class SnappyRepository {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
     }
 
-    public void saveDtlPlaces(DtlPlaceType type, List<DTlMerchant> places) {
+    public void saveDtlPlaces(DtlMerchantType type, List<DtlMerchant> places) {
         clearAllForKey(DTL_PLACES_PREFIX + type);
         putList(DTL_PLACES_PREFIX + type, places);
     }
 
-    public void saveAmenities(Collection<DtlPlaceAttribute> amenities) {
+    public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
         clearAllForKey(DTL_AMENITIES);
         putList(DTL_AMENITIES, amenities);
     }
 
-    public List<DtlPlaceAttribute> getAmenities() {
-        return readList(DTL_AMENITIES, DtlPlaceAttribute.class);
+    public List<DtlMerchantAttribute> getAmenities() {
+        return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
     }
 
-    public List<DTlMerchant> getDtlPlaces(DtlPlaceType type) {
-        return readList(DTL_PLACES_PREFIX + type, DTlMerchant.class);
+    public List<DtlMerchant> getDtlPlaces(DtlMerchantType type) {
+        return readList(DTL_PLACES_PREFIX + type, DtlMerchant.class);
     }
 
     public void clearMerchantData() {

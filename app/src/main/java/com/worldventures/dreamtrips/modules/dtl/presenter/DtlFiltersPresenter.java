@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
 
 import java.util.List;
 

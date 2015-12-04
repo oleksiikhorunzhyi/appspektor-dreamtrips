@@ -7,7 +7,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.DTlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
 
 @Layout(R.layout.fragment_suggest_merchant)
@@ -21,7 +21,7 @@ public class DtlSuggestMerchantFragment extends SuggestPlaceBaseFragment<DtlSugg
     }
 
     @Override
-    public void syncUiWithPlace(DTlMerchant place) {
+    public void syncUiWithPlace(DtlMerchant place) {
         restaurantName.setText(place.getDisplayName());
         restaurantName.setFocusable(false);
         restaurantName.setFocusableInTouchMode(false);

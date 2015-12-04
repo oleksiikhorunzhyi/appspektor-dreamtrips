@@ -55,6 +55,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void saveItem() {
+        view.showLoading();
         savingItem = true;
         BucketPostItem bucketPostItem = new BucketPostItem();
         bucketPostItem.setId(bucketItemId);

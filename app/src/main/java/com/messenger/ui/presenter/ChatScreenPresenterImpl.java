@@ -4,30 +4,61 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.util.Date;
-
-import de.greenrobot.event.EventBus;
 import com.messenger.app.Environment;
 import com.messenger.event.ChatMessageEvent;
 import com.messenger.loader.LoaderModule;
 import com.messenger.loader.SimpleLoader;
+import com.messenger.messengerservers.ConnectionException;
+import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.listeners.ChatMessageListener;
 import com.messenger.model.ChatConversation;
 import com.messenger.model.ChatMessage;
 import com.messenger.model.ChatUser;
+import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 
+import java.util.Date;
+
+import de.greenrobot.event.EventBus;
 
 public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen>
         implements ChatScreenPresenter {
     private ChatConversation chatConversation;
+    private Chat chat;
+
+    private ChatMessageListener chatMessageListener = this::handleMessage;
+
+    private void handleMessage(Message message, User user) {
+        //noinspection all
+        getView().onReceiveMessage(message);
+    }
+
+    @Override
+    public void attachView(ChatScreen view) {
+        super.attachView(view);
+        chat = ((ChatActivity) getActivity()).getChat();
+        chat.addOnChatMessageListener(chatMessageListener);
+    }
+
+    @Override
+    public void detachView(boolean retainInstance) {
+        super.detachView(retainInstance);
+        chat.removeOnChatMessageListener(chatMessageListener);
+    }
 
     @Override public void loadChatConversation() {
-        getView().showLoading();
+        final ChatScreen view = getView();
+        assert view != null;
+
+        view.showLoading();
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
 
         // create new or load existing conversation
@@ -38,14 +69,14 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
                 if (isViewAttached()) {
                     getViewState().setChatConversation(data);
                     getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-                    getView().setChatConversation(data);
-                    getView().showContent();
+                    view.setChatConversation(data);
+                    view.showContent();
                 }
             }
 
             @Override public void onError(Throwable error) {
                 if (isViewAttached()) {
-                    getView().showError(error);
+                    view.showError(error);
                     getViewState().setLoadingState(ChatLayoutViewState.LoadingState.ERROR);
                 }
             }
@@ -85,6 +116,13 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
             Toast.makeText(getContext(), "Provide some message", Toast.LENGTH_SHORT).show();
             return false;
         }
+
+        try {
+            chat.sendMessage(new Message.Builder().text(message).build());
+        } catch (ConnectionException e) {
+            Log.d("TEST", "send message", e);
+        }
+
         final ChatUser conversationOwner = getViewState().getChatConversation().getConversationOwner();
         ChatMessage chatMessage = Environment.newChatMessage();
         chatMessage.setUser(conversationOwner);

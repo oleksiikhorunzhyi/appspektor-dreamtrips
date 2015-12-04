@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.R;;
 import com.messenger.model.ChatConversation;
 import com.messenger.model.ChatMessage;
 
+@Deprecated
 public class ChatConversationAdapter extends RecyclerView.Adapter<ChatConversationAdapter.ViewHolder> {
 
     private Context context;

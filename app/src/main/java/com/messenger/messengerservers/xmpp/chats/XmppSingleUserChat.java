@@ -27,7 +27,7 @@ public class XmppSingleUserChat extends SingleUserChat {
         @Override
         public void processMessage(Chat chat, org.jivesoftware.smack.packet.Message message) {
             User user = new User(chat.getParticipant());
-            handleReceiveMessage(message.getBody(), user);
+            handleReceiveMessage(XmppMessageConverter.convert(message), user);
         }
 
         @Override

@@ -6,18 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.worldventures.dreamtrips.R;;
 import com.messenger.ui.view.ActivityAwareScreen;
 import com.messenger.ui.view.NewChatScreenImpl;
 
 public class MessengerStartActivity extends AppCompatActivity {
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_messenger_start);
-//    }
-
 
     private ActivityAwareScreen screen;
 

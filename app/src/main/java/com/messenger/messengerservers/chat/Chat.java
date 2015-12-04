@@ -32,7 +32,7 @@ public abstract class Chat {
         onChatStateChangedListeners.remove(listener);
     }
 
-    protected void handleReceiveMessage(String message, User user) {
+    protected void handleReceiveMessage(Message message, User user) {
         for (ChatMessageListener l: chatMessageListeners) {
             l.receivedMessage(message, user);
         }

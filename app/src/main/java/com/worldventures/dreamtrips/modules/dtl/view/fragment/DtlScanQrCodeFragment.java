@@ -220,6 +220,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
                             case DtlTransaction.CHECKIN:
                                 getActivity().finish();
                                 break;
+                            case DtlTransaction.MERCHANT_TOKEN:
                             default:
                                 scanner.startCamera();
                                 sweetAlertDialog.dismissWithAnimation();

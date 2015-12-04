@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.api.AcceptTermsConditionsCommand;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
@@ -31,11 +32,19 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
     }
 
     public void acceptTerms(String text) {
+        view.disableButtons();
         doRequest(new AcceptTermsConditionsCommand(text), aVoid -> view.dismissDialog());
     }
 
     public void logout() {
+        view.disableButtons();
         logoutDelegate.logout();
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.enableButtons();
     }
 
     public interface View extends Presenter.View {
@@ -44,5 +53,9 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
         void dismissDialog();
 
         void inject(Object object);
+
+        void enableButtons();
+
+        void disableButtons();
     }
 }

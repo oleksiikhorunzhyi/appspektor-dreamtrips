@@ -90,22 +90,17 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void handleResponse() {
-        view.finishLoading();
-        sortContacts();
-        setMembers();
-        getInvitations();
-        openTemplateInView();
-        showContinueBtnIfNeed();
-        TrackingHelper.inviteShareContacts(getAccountUserId());
-    }
-
-    private void getInvitations() {
-        view.startLoading();
         doRequest(new GetInvitationsQuery(), inviteTemplates -> {
             view.finishLoading();
+            sortContacts();
+            sortSelected();
             linkHistoryWithMembers(inviteTemplates);
             setMembers();
+            openTemplateInView();
+            showContinueBtnIfNeed();
         });
+
+        TrackingHelper.inviteShareContacts(getAccountUserId());
     }
 
     private void linkHistoryWithMembers(ArrayList<History> inviteTemplates) {
@@ -205,6 +200,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                 }
                 view.setFilter(query);
                 sortSelected();
+                setMembers();
             }
         }, 150L);
     }
@@ -218,7 +214,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     public void showContinueBtnIfNeed() {
         int count = Queryable.from(members).count(element -> element.isChecked());
         if (count > 0 && view != null) {
-            view.showContinue();
+            view.setSelectedCount(count);
+            view.showNextStepButtonVisibility(true);
         }
     }
 
@@ -230,7 +227,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             return element.isChecked();
         }).toList()));
 
-        view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
+        view.showNextStepButtonVisibility(isVisible);
         int count = Queryable.from(members).count(element -> element.isChecked());
         view.setSelectedCount(count);
 
@@ -321,9 +318,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void sortSelected() {
-        view.sort((lhs, rhs) -> lhs.isChecked() && !rhs.isChecked() ? -1 :
-                !lhs.isChecked() && rhs.isChecked() ? 1 :
-                        0);
+        Collections.sort(members, (lhs, rhs) -> lhs.isChecked() && !rhs.isChecked() ? -1 : !lhs.isChecked() && rhs.isChecked() ? 1 : 0);
     }
 
     private void resetSelected() {
@@ -348,8 +343,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         void showNextStepButtonVisibility(boolean isVisible);
 
         void setSelectedCount(int count);
-
-        void showContinue();
 
         void move(Member member, int to);
     }

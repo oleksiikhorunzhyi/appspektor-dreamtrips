@@ -62,7 +62,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void loadPlaces() {
-        doRequest(new GetNearbyMerchantsRequest(location), this::placeLoaded);
+        doRequest(new GetDtlPlacesQuery(location.getId()), this::placeLoaded);
     }
 
     @Override

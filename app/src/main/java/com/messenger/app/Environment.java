@@ -39,7 +39,7 @@ public class Environment {
         switch (getEnvironment()) {
             case MOCK:
             default:
-                return new MockChatUser(1, "Name Surname " + String.valueOf(1),
+                return new MockChatUser("Name Surname " + String.valueOf(1),
                     "http://www.skivecore.com/members/0/Default.jpg");
         }
     }

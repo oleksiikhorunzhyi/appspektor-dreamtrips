@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockChatContacts implements ChatContacts, Parcelable {
+public class  MockChatContacts implements ChatContacts, Parcelable {
 
     private List<ChatUser> users = new ArrayList<>();
 

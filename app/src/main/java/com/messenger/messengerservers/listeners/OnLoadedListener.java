@@ -5,4 +5,6 @@ import java.util.List;
 public interface OnLoadedListener<T> {
 
     void onLoaded(List<T> users);
+
+    void onFailed();
 }

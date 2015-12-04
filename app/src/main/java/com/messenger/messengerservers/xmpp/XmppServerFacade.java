@@ -58,11 +58,12 @@ public class XmppServerFacade implements MessengerServerFacade {
 
         connectionExecutor.execute(() -> {
                     PingManager.setDefaultPingInterval(45);
-                    SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
+//                    SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
                     XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
                             .setUsernameAndPassword(username, password)
                             .setServiceName(JidCreatorHelper.SERVICE_NAME)
                             .setHost(ServerParameters.URL)
+                            .setResource("smack-client")
                             .setDebuggerEnabled(true)
                             .setPort(ServerParameters.PORT)
                             .setSendPresence(false)

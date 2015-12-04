@@ -5,13 +5,11 @@ import android.os.Parcelable;
 
 public class MockChatUser implements ChatUser {
 
-    private long id;
     private String name;
     private String avatarUrl;
     private boolean isOnline;
 
-    public MockChatUser(long id, String name, String avatarUrl) {
-        this.id = id;
+    public MockChatUser(String name, String avatarUrl) {
         this.name = name;
         this.avatarUrl = avatarUrl;
     }
@@ -44,14 +42,6 @@ public class MockChatUser implements ChatUser {
         this.isOnline = isOnline;
     }
 
-    @Override public long getId() {
-        return id;
-    }
-
-    @Override public void setId(long id) {
-        this.id = id;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Object
     ///////////////////////////////////////////////////////////////////////////
@@ -60,11 +50,11 @@ public class MockChatUser implements ChatUser {
         if (o == null) return false;
         if (!(o instanceof MockChatUser)) return false;
         MockChatUser user = (MockChatUser) o;
-        return user.id == id;
+        return user.name.equals(name);
     }
 
     @Override public int hashCode() {
-        return Long.valueOf(id).hashCode();
+        return name.hashCode();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -74,14 +64,12 @@ public class MockChatUser implements ChatUser {
     @Override public int describeContents() { return 0; }
 
     @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
         dest.writeString(this.name);
         dest.writeString(this.avatarUrl);
         dest.writeInt(isOnline ? 1 : 0);
     }
 
     private MockChatUser(Parcel in) {
-        this.id = in.readLong();
         this.name = in.readString();
         this.avatarUrl = in.readString();
         this.isOnline = in.readInt() == 1 ? true : false;

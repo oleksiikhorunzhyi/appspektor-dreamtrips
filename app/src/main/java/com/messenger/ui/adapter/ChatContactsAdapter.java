@@ -15,8 +15,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.ButterKnife;
-import com.worldventures.dreamtrips.R;;
-import com.messenger.model.ChatContacts;
+import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatUser;
 
 public class ChatContactsAdapter extends RecyclerView.Adapter<ChatContactsAdapter.ViewHolder> {
@@ -27,7 +26,7 @@ public class ChatContactsAdapter extends RecyclerView.Adapter<ChatContactsAdapte
 
     private Context context;
 
-    private ChatContacts chatContacts;
+    private List<ChatUser> chatContacts;
     private List<ChatUser> selectedContacts = new ArrayList<>();
     private SelectionListener selectionListener;
 
@@ -55,11 +54,11 @@ public class ChatContactsAdapter extends RecyclerView.Adapter<ChatContactsAdapte
     }
 
     @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
-        ChatUser user = chatContacts.getUsers().get(position);
+        ChatUser user = chatContacts.get(position);
         holder.nameTextView.setText(user.getName());
         holder.onlineStatusImageView.setVisibility(user.isOnline() ? View.VISIBLE : View.GONE);
         holder.itemView.setOnClickListener((v) -> {
-            ChatUser selectedUser = chatContacts.getUsers().get(position);
+            ChatUser selectedUser = chatContacts.get(position);
             if (!selectedContacts.contains(selectedUser)) {
                 selectedContacts.add(selectedUser);
             } else {
@@ -76,10 +75,10 @@ public class ChatContactsAdapter extends RecyclerView.Adapter<ChatContactsAdapte
     }
 
     @Override public int getItemCount() {
-        return chatContacts == null ? 0 : chatContacts.getUsers().size();
+        return chatContacts == null ? 0 : chatContacts.size();
     }
 
-    public void setChatContacts(ChatContacts chatContacts) {
+    public void setChatContacts(List<ChatUser> chatContacts) {
         this.chatContacts = chatContacts;
         notifyDataSetChanged();
     }

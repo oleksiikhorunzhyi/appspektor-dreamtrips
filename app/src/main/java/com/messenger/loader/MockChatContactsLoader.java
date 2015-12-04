@@ -12,7 +12,7 @@ public class MockChatContactsLoader extends MockLoader<ChatContacts> {
     @Override public ChatContacts provideData() {
         ArrayList<ChatUser> users = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            ChatUser user = new MockChatUser(i, "Name Surname " + String.valueOf(i + 1),
+            ChatUser user = new MockChatUser("Name Surname " + String.valueOf(i + 1),
                     "http://www.skivecore.com/members/0/Default.jpg");
             users.add(user);
             user.setOnline(i % 2 == 0);

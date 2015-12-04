@@ -16,18 +16,33 @@ import java.util.concurrent.ExecutorService;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.AsyncLoader;
+import com.messenger.messengerservers.loaders.Loader;
 
-public class XmppContactLoader extends AsyncLoader<User> {
+public class XmppContactLoader extends Loader<User> {
     private final XMPPConnection connection;
 
     public XmppContactLoader(XMPPConnection connection, @Nullable ExecutorService executorService) {
-        super(executorService);
         this.connection = connection;
     }
 
     @Override
-    protected List<User> loadEntities() {
+    public void load() {
         Roster roster = Roster.getInstanceFor(connection);
+        roster.addRosterLoadedListener(roster1 -> {
+
+            Log.e("Xmpp roster new ver", roster1.getEntries().size()+"");
+            Collection<RosterEntry> entries = roster1.getEntries();
+            ArrayList<User> users = new ArrayList<>(entries.size());
+
+            for (RosterEntry entry : entries) {
+                if (entry.getType() != RosterPacket.ItemType.both) {
+                    continue;
+                }
+                String name = entry.getName();
+                users.add(new User(name != null ? name : entry.getUser()));
+                onEntityLoadedListener.onLoaded(users);
+            }
+        });
 
         if (!roster.isLoaded()) {
             try {
@@ -36,17 +51,5 @@ public class XmppContactLoader extends AsyncLoader<User> {
                 Log.w("XmppContactLoader", "reload failed", e);
             }
         }
-        Collection<RosterEntry> entries = roster.getEntries();
-        ArrayList<User> users = new ArrayList<>(entries.size());
-
-        for (RosterEntry entry : entries) {
-            if (entry.getType() != RosterPacket.ItemType.both) {
-                continue;
-            }
-            String name = entry.getName();
-            users.add(new User(name != null ? name : entry.getUser()));
-        }
-
-        return users;
     }
 }

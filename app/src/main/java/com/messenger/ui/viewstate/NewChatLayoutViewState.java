@@ -23,7 +23,7 @@ public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScree
     }
 
     private LoadingState loadingState = LoadingState.LOADING;
-    private ChatContacts chatContacts;
+    private List<ChatUser> chatContacts;
     private List<ChatUser> selectedContacts;
     private Throwable error;
 
@@ -35,11 +35,11 @@ public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScree
         this.loadingState = loadingState;
     }
 
-    public ChatContacts getChatContacts() {
+    public List<ChatUser> getChatContacts() {
         return chatContacts;
     }
 
-    public void setChatContacts(ChatContacts chatContacts) {
+    public void setChatContacts(List<ChatUser> chatContacts) {
         this.chatContacts = chatContacts;
     }
 
@@ -66,7 +66,7 @@ public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScree
     @Override public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(loadingState.ordinal());
         parcel.writeSerializable(error);
-        parcel.writeParcelable(chatContacts, flags);
+        parcel.writeList(chatContacts);
         parcel.writeList(selectedContacts);
     }
 

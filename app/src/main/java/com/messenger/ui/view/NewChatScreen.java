@@ -14,7 +14,7 @@ public interface NewChatScreen extends ActivityAwareScreen {
 
     void showError(Throwable e);
 
-    void setContacts(ChatContacts chatContacts);
+    void setContacts(List<ChatUser> chatContacts);
 
     void setSelectedContacts(List<ChatUser> selectedContacts);
 

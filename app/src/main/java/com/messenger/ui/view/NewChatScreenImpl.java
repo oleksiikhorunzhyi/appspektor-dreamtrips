@@ -1,5 +1,6 @@
 package com.messenger.ui.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,8 +23,7 @@ import java.util.List;
 import butterknife.InjectView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.worldventures.dreamtrips.R;;
-import com.messenger.model.ChatContacts;
+import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.adapter.ChatContactsAdapter;
 import com.messenger.ui.presenter.NewChatLayoutPresenter;
@@ -79,7 +79,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     }
 
     @Override public NewChatLayoutPresenter createPresenter() {
-        return new NewChatLayoutPresenterImpl();
+        return new NewChatLayoutPresenterImpl((Activity)getContext());
     }
 
     @Override public void showLoading() {
@@ -100,7 +100,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         errorView.setVisibility(View.VISIBLE);
     }
 
-    @Override public void setContacts(ChatContacts chatContacts) {
+    @Override public void setContacts(List<ChatUser> chatContacts) {
         adapter.setChatContacts(chatContacts);
         adapter.notifyDataSetChanged();
     }
@@ -141,4 +141,5 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     @Override public String getConversationName() {
         return conversationNameEditText.getText().toString();
     }
+    
 }

@@ -47,7 +47,7 @@
     <string name="dtl_invalid">輸入無效</string>
     <string name="dtl_verify_amount">核實金額</string>
     <string name="dtl_total_amount">總金額</string>
-    <string name="dtl_verify_earn_hint">You could earn </string>
+    <string name="dtl_verify_earn_hint">您可以賺取 </string>
     <string name="dtl_check_in">入住並賺取</string>
     <string name="dtl_earn">賺取</string>
     <string name="dtl_spent_amount">$ %s</string>

@@ -101,8 +101,8 @@ public class DtlPlaceHelper {
                     stringBuilder.append(String.format("%s - %s",
                             localTimeStart.toString(OPERATION_TIME_FORMATTER),
                             localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
+                    stringBuilder.append(", ");
                 }
-                stringBuilder.append(", ");
             }
         }
 

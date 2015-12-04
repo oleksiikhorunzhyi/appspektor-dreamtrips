@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.place.GetDtlPlacesQuery;
+import com.worldventures.dreamtrips.modules.dtl.api.place.GetNearbyMerchantsRequest;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
@@ -55,16 +57,18 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
         if (!initialized)
             loadPlaces();
+
+        initialized = true;
     }
 
     private void loadPlaces() {
-        doRequest(new GetDtlPlacesQuery(location.getId()),
-                this::placeLoaded,
-                spiceException -> {
-                    super.handleError(spiceException);
-                    eventBus.post(new PlacesUpdateFinished());
-                }
-        );
+        doRequest(new GetNearbyMerchantsRequest(location), this::placeLoaded);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        eventBus.post(new PlacesUpdateFinished());
     }
 
     private void placeLoaded(List<DtlMerchant> DtlMerchants) {

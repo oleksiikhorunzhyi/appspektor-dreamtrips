@@ -223,7 +223,9 @@ public class InviteFragment
 
     @Override
     public void move(Member member, int to) {
-        lvUsers.scrollToPosition(0);
+        if (to > 0)
+            lvUsers.scrollToPosition(0);
+        //
         adapter.moveItemSafely(member, to);
     }
 

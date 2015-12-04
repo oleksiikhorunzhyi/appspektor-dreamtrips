@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -69,6 +70,8 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     protected BucketPhotosView bucketPhotosView;
     @InjectView(R.id.photo_picker)
     protected PhotoPickerLayout photoPickerLayout;
+    @InjectView(R.id.loading_view)
+    protected ViewGroup loadingView;
 
     private boolean categorySelected = false;
 
@@ -202,6 +205,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
 
     @Override
     public void done() {
+        loadingView.setVisibility(View.GONE);
         getActivity().onBackPressed();
         hideSoftInput(editTextDescription);
     }
@@ -278,6 +282,11 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public void showPhotoPicker() {
         photoPickerLayout.showPanel();
+    }
+
+    @Override
+    public void showLoading() {
+        loadingView.setVisibility(View.VISIBLE);
     }
 
     @Override

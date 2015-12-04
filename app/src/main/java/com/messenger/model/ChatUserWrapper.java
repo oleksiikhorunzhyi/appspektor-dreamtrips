@@ -12,16 +12,6 @@ public class ChatUserWrapper implements ChatUser {
     }
 
     @Override
-    public long getId() {
-        return -1;
-    }
-
-    @Override
-    public void setId(long id) {
-
-    }
-
-    @Override
     public String getName() {
         return user.getUserName();
     }

@@ -15,8 +15,10 @@ public class User implements ChatUser{
         this.userName = userName;
     }
 
-    public User (Parcel parcel){
-
+    public User (Parcel in){
+        this.userName = in.readString();
+        this.userAvatarUrl = in.readString();
+        this.online = in.readInt() == 1 ? true : false;
     }
 
     public String getUserName() {
@@ -66,7 +68,9 @@ public class User implements ChatUser{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(this.userName);
+        dest.writeString(this.userAvatarUrl);
+        dest.writeInt(online ? 1 : 0);
     }
 
 

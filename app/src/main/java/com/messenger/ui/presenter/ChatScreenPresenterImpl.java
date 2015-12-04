@@ -31,7 +31,6 @@ import de.greenrobot.event.EventBus;
 
 public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen>
         implements ChatScreenPresenter {
-    private ChatConversation chatConversation;
     private Chat chat;
 
     private ChatMessageListener chatMessageListener = this::handleMessage;
@@ -139,7 +138,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     @Override public void setChatConversation(ChatConversation chatConversation) {
-        this.chatConversation = chatConversation;
+        //this.chatConversation = chatConversation;
     }
 
     ///////////////////////////////////////////////////////////////////////////

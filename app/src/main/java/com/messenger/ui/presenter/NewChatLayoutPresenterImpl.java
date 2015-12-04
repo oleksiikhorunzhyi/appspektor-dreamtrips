@@ -23,13 +23,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.messenger.app.Environment;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
+import com.messenger.model.ChatConversation;
 import com.messenger.model.ChatUser;
+import com.messenger.model.MockChatConversation;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
@@ -222,15 +223,16 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                List<ChatUser> userList = getViewState().getChatContacts();
+                List<ChatUser> userList = getViewState().getSelectedContacts();
 
                 if (userList.size() != 1){
                     Toast.makeText(activity, "You must provide one user to start 1:1 chat", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
-                Intent intent = new Intent(getContext(), ChatActivity.class);
-                getActivity().startActivity(intent);
+                ChatConversation chatConversation = new MockChatConversation();
+                chatConversation.setChatUsers(userList);
+                ChatActivity.start(activity, ChatActivity.CHAT_TYPE_SINGLE, chatConversation);
                 return true;
         }
         return false;

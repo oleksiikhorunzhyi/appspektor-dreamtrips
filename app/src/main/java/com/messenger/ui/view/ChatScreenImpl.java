@@ -98,8 +98,9 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         return false;
     }
 
-    @Override public InjectingActivity getActivity() {
-        return (InjectingActivity) getContext();
+    @Override
+    public AppCompatActivity getActivity() {
+        return (AppCompatActivity) getContext();
     }
 
     @Override

@@ -68,8 +68,8 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
         }
 
         Queryable.from(photos).filter(PhotoGalleryModel::isChecked).forEachR(model -> model.setChecked(false));
-
-        view.updatePickedItemsCount(0);
+        if (view != null)
+            view.updatePickedItemsCount(0);
     }
 
     public void setLimit(int pickLimit) {

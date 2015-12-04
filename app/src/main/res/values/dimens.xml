@@ -139,4 +139,15 @@
     <dimen name="suggest_merchant_pickers_left_margin">50dp</dimen>
 
     <dimen name="perks_margin">-12dp</dimen>
+
+    <!-- New chat screen -->
+    <dimen name="new_chat_progress_bar_margin_top">50dp</dimen>
+    <dimen name="new_chat_content_header_size">54dp</dimen>
+    <dimen name="new_chat_name_conversation_icon_size">40dp</dimen>
+    <dimen name="new_chat_name_conversation_name_text_size">16sp</dimen>
+    <dimen name="new_chat_name_conversation_name_left_margin">14dp</dimen>
+    <dimen name="new_chat_name_chosen_contacts_text_size">12sp</dimen>
+    <dimen name="new_chat_list_item_contact_text_size">20sp</dimen>
+    <dimen name="new_chat_list_item_vertical_padding">16dp</dimen>
+    <dimen name="new_chat_list_item_horizontal_padding">10dp</dimen>
 </resources>

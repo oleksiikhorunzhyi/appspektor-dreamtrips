@@ -484,4 +484,18 @@
     <string name="photo_limitation_message">Please choose up to %d photos</string>
     <string name="pending">Pending…</string>
 
+    <!---->
+    <!--New chat-->
+    <!---->
+    <string name="new_chat_title">New Conversation</string>
+    <string name="new_chat_error_loading_contacts">Could not load contacts</string>
+    <string name="new_chat_new_conversation_title_hint">Set name of conversation</string>
+    <string name="new_chat_chosen_contacts_header_default_value">To:</string>
+    <string name="menu_done">Done</string>
+
+    <!---->
+    <!--Chat -->
+    <!---->
+    <string name="chat_message_edittext_hint">Your message</string>
+    <string name="chat_error_loading">Could not load chat history</string>
 </resources>

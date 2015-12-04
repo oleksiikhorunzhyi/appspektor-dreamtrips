@@ -271,7 +271,26 @@ dependencies {
     compile 'com.github.pwittchen:networkevents:2.1.2'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.0.6'
     //Messager
-    compile project(':messenger')
+
+    compile 'com.makeramen:roundedimageview:2.2.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    compile 'com.hannesdorfmann.mosby:mvp:2.0.0'
+    compile 'com.hannesdorfmann.mosby:mvp-common:2.0.0'
+    compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
+
+    compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'frankiesardo:icepick:3.1.0'
+    provided 'frankiesardo:icepick-processor:3.1.0'
+
+    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0'
+    compile 'org.igniterealtime.smack:smack-tcp:4.1.0'
+    compile 'com.google.code.gson:gson:2.4'
+
+//    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+//    compile "com.raizlabs.android:DBFlow-Core:2.2.1"
+//    compile "com.raizlabs.android:DBFlow:2.2.1"
+    compile 'com.apptentive:apptentive-android:2.0.1'
 }
 
 apply plugin: "de.felixschulze.gradle.hockeyapp"

@@ -68,4 +68,21 @@ g    <color name="dtl_tab_text_normal">#B1B2B1</color>
     <color name="share_camera_color">#929292</color>
     <color name="share_photo_bg_color">#EEEEEE</color>
     <color name="picker_panel_blue">#005E92</color>
+
+
+    <!--messenger-->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="action_bar_background">#A8A8A8</color>
+
+    <color name="new_chat_conversation_name_header_hint">#B7B8B9</color>
+    <color name="new_chat_conversation_name_header_text">@color/contact_list_item_contact_name</color>
+    <color name="contact_list_item_contact_name">#737477</color>
+    <color name="contact_list_item_contacts_divider">#DDDDDD</color>
+    <color name="contact_list_header_selected_contacts">#89A9BE</color>
+    <color name="green_online">#BDDC9D</color>
+    <!--end messenger-->
+
 </resources>

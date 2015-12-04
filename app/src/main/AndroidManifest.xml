@@ -67,7 +67,7 @@
             android:value="${surveyApiToken}"/>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}" />
+            android:value="${fabricApiKey}"/>
         <!-- This will prevent VERBOSE and DEBUG level logging. -->
         <meta-data
             android:name="apptentive_log_level"
@@ -86,13 +86,13 @@
 
         <activity
             android:name=".modules.common.view.activity.MainActivity"
-            android:label="@string/trips"
             android:configChanges="layoutDirection|locale"
+            android:label="@string/trips"
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.common.view.activity.ComponentActivity"
-            android:parentActivityName=".modules.common.view.activity.MainActivity"
             android:configChanges="layoutDirection|locale"
+            android:parentActivityName=".modules.common.view.activity.MainActivity"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -109,6 +109,13 @@
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:screenOrientation="sensorLandscape"/>
+
+        <!--Chat activities-->
+        <activity
+            android:name="com.messenger.ui.activity.ChatActivity"/>
+
+        <activity
+            android:name="com.messenger.ui.activity.MessengerStartActivity"/>
 
         <!--For result activities-->
 

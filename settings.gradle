@@ -1,1 +1,1 @@
-include ':app', ':messenger'
+include ':app'

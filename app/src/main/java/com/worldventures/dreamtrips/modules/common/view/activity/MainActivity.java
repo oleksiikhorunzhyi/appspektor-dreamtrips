@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.Optional;
 import icepick.State;
-import techery.io.messenger.MessengerStartActivity;
+import com.messenger.ui.activity.MessengerStartActivity;
 
 
 @Layout(R.layout.activity_main)

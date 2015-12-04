@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.messager;
+package com.worldventures.dreamtrips.modules.messenger;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;

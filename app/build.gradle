@@ -271,7 +271,7 @@ dependencies {
     compile 'com.github.pwittchen:networkevents:2.1.2'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.0.6'
     //Messager
-    compile project(':messager')
+    compile project(':messenger')
 }
 
 apply plugin: "de.felixschulze.gradle.hockeyapp"

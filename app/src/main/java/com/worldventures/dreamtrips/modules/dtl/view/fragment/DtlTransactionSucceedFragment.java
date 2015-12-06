@@ -61,6 +61,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
     @Override
     public void showShareDialog(int amount, DtlMerchant place) {
         new ShareDialog(activityRouter.getContext(), type -> {
+            getPresenter().trackSharing(type);
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
             shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));

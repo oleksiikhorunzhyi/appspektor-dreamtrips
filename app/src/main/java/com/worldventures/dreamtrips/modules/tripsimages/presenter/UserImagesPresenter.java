@@ -57,7 +57,7 @@ public class UserImagesPresenter extends TripImagesListPresenter<UserImagesPrese
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == REQUESTER_ID) {
+        if (view.isVisibleOnScreen() && event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
 

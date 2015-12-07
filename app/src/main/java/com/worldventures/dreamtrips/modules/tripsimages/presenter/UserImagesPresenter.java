@@ -47,7 +47,7 @@ public class UserImagesPresenter extends TripImagesListPresenter<UserImagesPrese
     }
 
     public void onEvent(AttachPhotoEvent event) {
-        if (event.getRequestType() != -1)
+        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
             pickImage(event.getRequestType());
     }
 

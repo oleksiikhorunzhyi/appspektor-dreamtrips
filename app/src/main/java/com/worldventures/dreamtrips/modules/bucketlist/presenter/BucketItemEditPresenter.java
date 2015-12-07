@@ -118,7 +118,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public void onEvent(AttachPhotoEvent event) {
-        if (event.getRequestType() != -1)
+        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
             pickImage(event.getRequestType());
     }
 

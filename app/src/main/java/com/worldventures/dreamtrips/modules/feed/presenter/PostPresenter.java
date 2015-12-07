@@ -255,7 +255,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     ////////////////////////////////////////
 
     public void onEvent(AttachPhotoEvent event) {
-        if (event.getRequestType() != -1)
+        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
             pickImage(event.getRequestType());
     }
 

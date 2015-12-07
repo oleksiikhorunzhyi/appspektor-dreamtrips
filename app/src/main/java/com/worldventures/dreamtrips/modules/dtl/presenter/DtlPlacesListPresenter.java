@@ -12,13 +12,14 @@ import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> implements
-        DtlFilterDelegate.FilterListener, DtlMerchantDelegate.MerchantUpdatedListener {
+        DtlFilterDelegate.FilterListener, DtlMerchantStore.MerchantUpdatedListener {
 
     @Inject
     SnappyRepository db;
@@ -38,7 +39,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantDelegate dtlMerchantDelegate;
+    DtlMerchantStore dtlMerchantStore;
 
     protected DtlMerchantType placeType;
 
@@ -52,7 +53,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     public void onInjected() {
         super.onInjected();
         dtlFilterDelegate.addListener(this);
-        dtlMerchantDelegate.attachListener(this);
+        dtlMerchantStore.attachListener(this);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     @Override
     public void dropView() {
         dtlFilterDelegate.removeListener(this);
-        dtlMerchantDelegate.detachListener(this);
+        dtlMerchantStore.detachListener(this);
         super.dropView();
     }
 
@@ -101,30 +102,40 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         view.bind(locationDelegate
                         .getLastKnownLocation()
                         .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
-                        .flatMap(location -> filter(location, query))
+                        .flatMap(location -> mapToMerchantList(location, query))
+                        .doOnNext(merchants -> track(merchants, query))
                         .compose(new IoToMainComposer<>())
         ).subscribe(view::setItems, this::onError);
     }
 
-    private Observable<List<DtlMerchant>> filter(Location location, String query) {
+    private Observable<List<DtlMerchant>> mapToMerchantList(Location location, String query) {
         LatLng currentLatLng = LocationHelper.getAcceptedLocation(location, dtlLocation);
         //
-        List<DtlMerchant> places = Queryable.from(dtlMerchantDelegate.getMerchants())
-                .filter(dtlMerchant -> placeType == null ||
-                        dtlMerchant.getMerchantType() == placeType)
-                .filter(dtlMerchant -> dtlMerchant.applyFilter(dtlFilterDelegate.getDtlFilterData(),
-                        currentLatLng))
-                .filter(dtlMerchant -> dtlMerchant.containsQuery(query)).toList();
+        List<DtlMerchant> merchants = Queryable
+                .from(dtlMerchantStore.getMerchants())
+                .filter(DtlMerchantsPredicate.Builder.create()
+                        .withDtlFilterData(dtlFilterDelegate.getDtlFilterData())
+                        .withLatLng(currentLatLng)
+                        .withMerchantType(placeType)
+                        .withQuery(query)
+                        .build())
+                .toList();
+        //
+        sort(merchants, currentLatLng);
+        //
+        return Observable.from(merchants).toList();
+    }
 
-        for (DtlMerchant DtlMerchant : places) {
-            DtlMerchant.calculateDistance(currentLatLng);
+    private void sort(List<DtlMerchant> merchants, LatLng latLng) {
+        for (DtlMerchant dtlMerchant : merchants) {
+            dtlMerchant.calculateDistance(latLng);
         }
 
-        Collections.sort(places, DtlMerchant.DISTANCE_COMPARATOR);
+        Collections.sort(merchants, DtlMerchant.DISTANCE_COMPARATOR);
+    }
 
-        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, places.size());
-
-        return Observable.from(places).toList();
+    private void track(List<DtlMerchant> merchants, String query) {
+        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, merchants.size());
     }
 
     private void onError(Throwable e) {

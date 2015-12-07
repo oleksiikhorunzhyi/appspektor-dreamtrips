@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DtlMerchantDelegate {
+public class DtlMerchantStore {
 
     private SnappyRepository db;
     private RequestingPresenter requestingPresenter;
@@ -27,7 +27,7 @@ public class DtlMerchantDelegate {
     //
     private List<MerchantUpdatedListener> listeners = new ArrayList<>();
 
-    public DtlMerchantDelegate(SnappyRepository db) {
+    public DtlMerchantStore(SnappyRepository db) {
         this.db = db;
         dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
     }
@@ -69,11 +69,12 @@ public class DtlMerchantDelegate {
      * @return list of current merchants
      */
     public List<DtlMerchant> getMerchants() {
-        return merchants == null ? getCachedMerchants() : merchants;
+        if (merchants == null) getCachedMerchants();
+        return merchants;
     }
 
     /**
-     * Attach listener to {@link DtlMerchantDelegate} to notify about changes
+     * Attach listener to {@link DtlMerchantStore} to notify about changes
      * should be called in {@link Presenter#onInjected()}
      * @param merchantUpdatedListener listener
      */
@@ -82,7 +83,7 @@ public class DtlMerchantDelegate {
     }
 
     /**
-     * Detach listener from {@link DtlMerchantDelegate}
+     * Detach listener from {@link DtlMerchantStore}
      * should be called in {@link Presenter#dropView()}
      * @param merchantUpdatedListener listener
      */
@@ -106,9 +107,8 @@ public class DtlMerchantDelegate {
         Queryable.from(listeners).forEachR(MerchantUpdatedListener::onMerchantsUploaded);
     }
 
-    private List<DtlMerchant> getCachedMerchants() {
+    private void getCachedMerchants() {
         merchants = db.getDtlMerchants();
-        return merchants;
     }
 
     private void saveAmenities(List<DtlMerchant> DtlMerchants) {

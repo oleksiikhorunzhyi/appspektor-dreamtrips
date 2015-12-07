@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import icepick.State;
 
 public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
-        DtlMerchantDelegate.MerchantUpdatedListener {
+        DtlMerchantStore.MerchantUpdatedListener {
 
     @Inject
     LocationDelegate locationDelegate;
@@ -29,7 +29,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantDelegate dtlMerchantDelegate;
+    DtlMerchantStore dtlMerchantStore;
 
     @State
     DtlFilterData dtlFilterData;
@@ -37,7 +37,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchantDelegate.attachListener(this);
+        dtlMerchantStore.attachListener(this);
     }
 
     @Override

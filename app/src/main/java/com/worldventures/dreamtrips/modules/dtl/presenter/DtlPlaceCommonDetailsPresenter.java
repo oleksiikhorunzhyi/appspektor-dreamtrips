@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import javax.inject.Inject;
@@ -11,7 +11,7 @@ public class DtlPlaceCommonDetailsPresenter<T extends DtlPlaceCommonDetailsPrese
     protected final String merchantId;
 
     @Inject
-    DtlMerchantDelegate dtlMerchantDelegate;
+    DtlMerchantStore dtlMerchantStore;
 
     public DtlPlaceCommonDetailsPresenter(String id) {
         this.merchantId = id;
@@ -20,7 +20,7 @@ public class DtlPlaceCommonDetailsPresenter<T extends DtlPlaceCommonDetailsPrese
     @Override
     public void onInjected() {
         super.onInjected();
-        place = dtlMerchantDelegate.getMerchantById(merchantId);
+        place = dtlMerchantStore.getMerchantById(merchantId);
     }
 
     @Override

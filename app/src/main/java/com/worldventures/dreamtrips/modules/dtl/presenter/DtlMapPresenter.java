@@ -13,13 +13,14 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
-        DtlFilterDelegate.FilterListener, DtlMerchantDelegate.MerchantUpdatedListener {
+        DtlFilterDelegate.FilterListener, DtlMerchantStore.MerchantUpdatedListener {
 
     @Inject
     SnappyRepository db;
@@ -38,7 +39,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantDelegate dtlMerchantDelegate;
+    DtlMerchantStore dtlMerchantStore;
 
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
@@ -52,7 +53,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchantDelegate.attachListener(this);
+        dtlMerchantStore.attachListener(this);
         dtlFilterDelegate.addListener(this);
     }
 
@@ -64,7 +65,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
 
     @Override
     public void dropView() {
-        dtlMerchantDelegate.detachListener(this);
+        dtlMerchantStore.detachListener(this);
         dtlFilterDelegate.removeListener(this);
         super.dropView();
     }
@@ -103,23 +104,26 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
         view.bind(locationDelegate
                         .getLastKnownLocation()
                         .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
-                        .flatMap(location -> filter(location, query))
+                        .flatMap(location -> mapToMerchantList(location, query))
+                        .doOnNext(merchants -> track(merchants, query))
                         .compose(new IoToMainComposer<>())
         ).subscribe(this::showPins, this::onError);
     }
 
-    private Observable<List<DtlMerchant>> filter(Location location, String query) {
-        LatLng currentLatLng = LocationHelper.getAcceptedLocation(location, dtlLocation);
-        //
-        List<DtlMerchant> merchants = Queryable.from(dtlMerchantDelegate.getMerchants())
-                .filter(dtlPlace ->
-                        dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(), currentLatLng))
-                .filter(dtlPlace -> dtlPlace.containsQuery(query))
-                .toList();
+    private Observable<List<DtlMerchant>> mapToMerchantList(Location location, String query) {
+        return Observable.from(
+                Queryable.from(dtlMerchantStore.getMerchants())
+                        .filter(DtlMerchantsPredicate.Builder.create()
+                                .withDtlFilterData(dtlFilterDelegate.getDtlFilterData())
+                                .withLatLng(LocationHelper.getAcceptedLocation(location, dtlLocation))
+                                .withQuery(query)
+                                .build())
+                        .toList()
+        ).toList();
+    }
 
+    private void track(List<DtlMerchant> merchants, String query) {
         if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, merchants.size());
-
-        return Observable.from(merchants).toList();
     }
 
     private void onError(Throwable e) {

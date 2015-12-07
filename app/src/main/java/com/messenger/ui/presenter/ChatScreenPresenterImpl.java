@@ -98,7 +98,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     @Override public void applyViewState() {
         switch (getViewState().getLoadingState()) {
             case LOADING:
-                getView().showLoading();
+//                getView().showLoading();
                 break;
             case CONTENT:
                 getView().showContent();

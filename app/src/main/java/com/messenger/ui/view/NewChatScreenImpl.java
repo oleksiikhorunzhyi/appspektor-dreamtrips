@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -65,9 +66,8 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         initUi();
     }
 
-    @SuppressWarnings("Deprecated")
     private void initUi() {
-        setBackgroundColor(getResources().getColor(R.color.white));
+        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
         toolbarPresenter.setTitle(R.string.new_chat_title);
         toolbarPresenter.enableUpNavigationButton();

@@ -14,8 +14,9 @@ public final class XmppMessageConverter {
     }
 
     public static org.jivesoftware.smack.packet.Message convert(Message message){
+        Locale locale = message.getLocale();
         MessageBody messageBody = new MessageBody.Builder()
-                .locale(message.getLocale().toString())
+                .locale(locale != null ? locale.toString() : null)
                 .text(message.getText())
                 .build();
         String bodyJson = new Gson().toJson(messageBody);

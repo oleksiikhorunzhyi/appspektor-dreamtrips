@@ -16,7 +16,7 @@ public class ProdChatConversation implements ChatConversation{
 
     public ProdChatConversation(Parcel parcel) {
         name = parcel.readString();
-        users = parcel.readList();
+        parcel.readList(users, users.getClass().getClassLoader());
     }
 
     @Override

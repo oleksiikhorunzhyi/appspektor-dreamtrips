@@ -17,18 +17,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.Message;
-
-import com.messenger.ui.presenter.ChatScreenPresenterImpl;
-import com.worldventures.dreamtrips.R;
-
-import com.messenger.ui.presenter.ChatScreenPresenterImpl;
-import com.techery.spares.ui.activity.InjectingActivity;
-import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatConversation;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;

@@ -83,10 +83,10 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     @Override public void onNewViewState() {
-        state = new ChatLayoutViewState();
-        getViewState().setChatConversation(chatConversation);
-        loadChatConversation();
-        EventBus.getDefault().register(this);
+//        state = new ChatLayoutViewState();
+//        getViewState().setChatConversation(chatConversation);
+//        loadChatConversation();
+//        EventBus.getDefault().register(this);
     }
 
     @Override public ChatLayoutViewState getViewState() {

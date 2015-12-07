@@ -79,8 +79,9 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         messengerServerFacade.addAuthorizationListener(new AuthorizeListener() {
             @Override
             public void onSuccess() {
+                messengerServerFacade.setPresenceStatus(true);
                 Log.e("Xmpp server", "Vse normul");
-                getActivity().runOnUiThread(() -> loadChatContacts());
+                getActivity().runOnUiThread(NewChatLayoutPresenterImpl.this::loadChatContacts);
             }
         });
 
@@ -102,6 +103,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     @Override public void loadChatContacts() {
         if (getView() != null){
             getView().showLoading();
+            // TODO: 12/4/15 null
             getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
         }
 
@@ -112,7 +114,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
                 if (getView() == null) return;
 
                 Log.i("Xmpp Load contacts", "" + users.size());
-                activity.runOnUiThread(() ->{
+                activity.runOnUiThread(() -> {
                     if (isViewAttached()) {
                         getViewState().setChatContacts(users);
                         getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.CONTENT);
@@ -126,7 +128,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
             public void onFailed() {
                 if (getView() == null) return;
 
-                activity.runOnUiThread(() ->{
+                activity.runOnUiThread(() -> {
                     if (isViewAttached()) {
                         getView().showError(new Exception("Server exception"));
                         getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.ERROR);
@@ -225,7 +227,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
             case R.id.action_done:
                 List<ChatUser> userList = getViewState().getSelectedContacts();
 
-                if (userList.size() != 1){
+                if (userList != null && userList.size() != 1){
                     Toast.makeText(activity, "You must provide one user to start 1:1 chat", Toast.LENGTH_SHORT).show();
                     return true;
                 }

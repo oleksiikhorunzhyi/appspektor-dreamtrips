@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -85,8 +86,9 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     @OnEditorAction(R.id.chat_message_edit_text)
     protected boolean onEditAction(int action) {
         if (action == EditorInfo.IME_ACTION_GO) {
-            if (getPresenter().onNewMessageFromUi(messageEditText.getText().toString())) {
-                messageEditText.setText("");
+            Editable textMessage = messageEditText.getText();
+            if (getPresenter().onNewMessageFromUi(textMessage.toString())) {
+                textMessage.clear();
                 recyclerView.smoothScrollToPosition(adapter.getItemCount());
                 return true;
             }
@@ -153,6 +155,11 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @Override
     public void onReceiveMessage(Message message) {
+        recyclerView.post(() -> adapter.addMessage(message));
+    }
+
+    @Override
+    public void onSendMessage(Message message) {
         adapter.addMessage(message);
     }
 }

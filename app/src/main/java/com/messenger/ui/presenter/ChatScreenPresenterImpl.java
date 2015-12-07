@@ -9,26 +9,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.messenger.app.Environment;
 import com.messenger.event.ChatMessageEvent;
-import com.messenger.loader.LoaderModule;
-import com.messenger.loader.SimpleLoader;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.ChatMessageListener;
 import com.messenger.model.ChatConversation;
-import com.messenger.model.ChatMessage;
-import com.messenger.model.ChatUser;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 
-import java.util.Date;
 import java.util.Locale;
-
-import de.greenrobot.event.EventBus;
 
 public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen>
         implements ChatScreenPresenter {
@@ -119,11 +111,15 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         }
 
         try {
-            chat.sendMessage(new Message.Builder()
+            Message msg;
+            chat.sendMessage(msg = new Message.Builder()
                     .locale(Locale.getDefault())
                     .from((User) chatConversation.getChatUsers().get(0))
                     .text(message)
                     .build());
+
+            //noinspection all
+            getView().onSendMessage(msg);
         } catch (ConnectionException e) {
             Log.d("TEST", "send message", e);
         }

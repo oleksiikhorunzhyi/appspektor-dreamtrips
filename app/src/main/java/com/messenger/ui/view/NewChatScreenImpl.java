@@ -59,6 +59,12 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         init(context);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        presenter.connect();
+    }
+
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
         LayoutInflater.from(context).inflate(R.layout.screen_new_chat, this, true);

@@ -2,13 +2,13 @@ package com.messenger.ui.viewstate;
 
 import android.os.Parcel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.messenger.app.Environment;
-import com.messenger.model.ChatContacts;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.view.NewChatScreen;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScreen> {
 
@@ -79,8 +79,10 @@ public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScree
     public NewChatLayoutViewState(Parcel in) {
         loadingState = LoadingState.values()[in.readInt()];
         error = (Throwable) in.readSerializable();
-        chatContacts = in.readParcelable(Environment.getChatContactsClassLoader());
-        selectedContacts = new ArrayList<>();
-        in.readList(selectedContacts, Environment.getChatUserClassLoader());
+        // TODO: 12/7/15
+        chatContacts = new CopyOnWriteArrayList<>();
+        in.readList(chatContacts, ArrayList.class.getClass().getClassLoader());
+        selectedContacts = new CopyOnWriteArrayList<>();
+        in.readList(selectedContacts, ArrayList.class.getClass().getClassLoader());
     }
 }

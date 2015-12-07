@@ -9,4 +9,5 @@ public interface ChatScreen extends ActivityAwareScreen {
     void showError(Throwable e);
     void setChatConversation(ChatConversation chatConversation);
     void onReceiveMessage(Message message);
+    void onSendMessage(Message message);
 }

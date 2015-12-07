@@ -62,7 +62,6 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     public void attachView(NewChatScreen view) {
         super.attachView(view);
         ((Injector)view.getActivity().getApplication()).inject(this);
-        connect();
     }
 
     @Override

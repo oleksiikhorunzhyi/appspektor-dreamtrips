@@ -19,6 +19,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -89,7 +90,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @InjectView(R.id.iv_comment)
     protected ImageView ivComment;
 
-    private TripImagesListFragment.Type type;
+    @State
+    TripImagesListFragment.Type type;
+    @State
+    IFullScreenObject photo;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -146,8 +150,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
-        IFullScreenObject photo = getArgs().getPhoto();
-        type = getArgs().getType();
+        if (photo == null) photo = getArgs().getPhoto(); //state in args could be not actual
+        if (type == null) type = getArgs().getType();
 
         FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo, type, getArgs().isForeign());
         if (photo != null) {
@@ -221,8 +225,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
                 .onDelete(this::deletePhoto)
                 .onEdit(() -> {
-                    eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
-                    getPresenter().onEdit();
+                    if (isVisibleOnScreen()) {
+                        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
+                        getPresenter().onEdit();
+                    }
                 })
                 .dismissListener(menu -> view.setEnabled(true))
                 .show();

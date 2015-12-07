@@ -29,7 +29,6 @@ import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.Tri
 
 public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
-    private FeedEntity feedEntity;
     @Inject
     FeedEntityManager entityManager;
 
@@ -40,10 +39,10 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         super.takeView(view);
         uidItemDelegate = new UidItemDelegate(this);
         loadEntity(feedEntityHolder -> {
-            feedEntity = feedEntityHolder.getItem();
-            photo.setLiked(feedEntity.isLiked());
+            FeedEntity feedEntity = feedEntityHolder.getItem();
+            photo.syncLikeState(feedEntity);
             photo.setCommentsCount(feedEntity.getCommentsCount());
-            photo.setLikesCount(feedEntity.getLikesCount());
+            photo.setComments(feedEntity.getComments());
             setupActualViewState();
         });
     }
@@ -81,10 +80,10 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         }
     }
 
-    public void onEvent(EntityLikedEvent event){
+    public void onEvent(EntityLikedEvent event) {
         photo.syncLikeState(event.getFeedEntity());
-        view.setLiked(event.getFeedEntity().isLiked());
-        view.setLikeCount(event.getFeedEntity().getLikesCount());
+        view.setLiked(photo.isLiked());
+        view.setLikeCount(photo.getLikesCount());
         TrackingHelper.like(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
 
@@ -97,7 +96,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     public void onCommentsAction() {
         new NavigationWrapperFactory()
                 .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, view)
-                .navigate(Route.COMMENTS, new CommentsBundle(feedEntity, false));
+                .navigate(Route.COMMENTS, new CommentsBundle(photo, false));
 
     }
 
@@ -110,7 +109,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     public void onEdit() {
-        view.openEdit(new EditPhotoBundle(photo));
+        if (view != null) view.openEdit(new EditPhotoBundle(photo));
     }
 
     @Override

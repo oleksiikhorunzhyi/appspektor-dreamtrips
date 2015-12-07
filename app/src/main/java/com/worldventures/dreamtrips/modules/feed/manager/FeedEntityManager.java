@@ -11,6 +11,9 @@ import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
@@ -19,6 +22,7 @@ public class FeedEntityManager {
 
     EventBus eventBus;
     RequestingPresenter requestingPresenter;
+    List<String> uidsInLikeRequest = new ArrayList<>();
 
     public FeedEntityManager(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -29,23 +33,33 @@ public class FeedEntityManager {
     }
 
     public void like(FeedEntity feedEntity) {
-        LikeEntityCommand command = new LikeEntityCommand(feedEntity.getUid());
-        requestingPresenter.doRequest(command, aVoid -> {
-            actualizeLikes(feedEntity, true);
-            eventBus.post(new EntityLikedEvent(feedEntity));
-        }, spiceException -> {
-            Timber.e(spiceException, this.getClass().getSimpleName());
-        });
+        if (!uidsInLikeRequest.contains(feedEntity.getUid())) {
+            uidsInLikeRequest.add(feedEntity.getUid());
+            LikeEntityCommand command = new LikeEntityCommand(feedEntity.getUid());
+            requestingPresenter.doRequest(command, aVoid -> {
+                actualizeLikes(feedEntity, true);
+                eventBus.post(new EntityLikedEvent(feedEntity));
+                uidsInLikeRequest.remove(feedEntity.getUid());
+            }, spiceException -> {
+                Timber.e(spiceException, this.getClass().getSimpleName());
+                uidsInLikeRequest.remove(feedEntity.getUid());
+            });
+        }
     }
 
     public void unlike(FeedEntity feedEntity) {
-        UnlikeEntityCommand command = new UnlikeEntityCommand(feedEntity.getUid());
-        requestingPresenter.doRequest(command, aVoid -> {
-            actualizeLikes(feedEntity, false);
-            eventBus.post(new EntityLikedEvent(feedEntity));
-        }, spiceException -> {
-            Timber.e(spiceException, this.getClass().getSimpleName());
-        });
+        if (!uidsInLikeRequest.contains(feedEntity.getUid())) {
+            uidsInLikeRequest.add(feedEntity.getUid());
+            UnlikeEntityCommand command = new UnlikeEntityCommand(feedEntity.getUid());
+            requestingPresenter.doRequest(command, aVoid -> {
+                actualizeLikes(feedEntity, false);
+                eventBus.post(new EntityLikedEvent(feedEntity));
+                uidsInLikeRequest.remove(feedEntity.getUid());
+            }, spiceException -> {
+                Timber.e(spiceException, this.getClass().getSimpleName());
+                uidsInLikeRequest.remove(feedEntity.getUid());
+            });
+        }
     }
 
 

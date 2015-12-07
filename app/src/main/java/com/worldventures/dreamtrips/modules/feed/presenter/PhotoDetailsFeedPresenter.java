@@ -39,7 +39,7 @@ public class PhotoDetailsFeedPresenter extends Presenter<PhotoDetailsFeedPresent
     }
 
     public void onEdit() {
-        view.moveToEdit(photo);
+        if (view != null) view.moveToEdit(photo);
     }
 
     public interface View extends Presenter.View {

@@ -36,7 +36,9 @@ public class TextualPostDetailsFragment extends BaseFragmentWithArgs<TextualPost
         anchor.setEnabled(false);
         FeedItemMenuBuilder.create(getActivity(), anchor, R.menu.menu_feed_entity_edit)
                 .onDelete(this::showDeleteDialog)
-                .onEdit(() -> getPresenter().onEdit())
+                .onEdit(() -> {
+                    if (isVisibleOnScreen()) getPresenter().onEdit();
+                })
                 .dismissListener(menu -> anchor.setEnabled(true))
                 .show();
     }

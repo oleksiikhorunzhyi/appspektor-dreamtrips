@@ -157,7 +157,10 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @Override
     public void onReceiveMessage(Message message) {
-        recyclerView.post(() -> adapter.addMessage(message));
+        recyclerView.post(() -> {
+            adapter.addMessage(message);
+            recyclerView.smoothScrollToPosition(adapter.getItemCount());
+        });
     }
 
     @Override

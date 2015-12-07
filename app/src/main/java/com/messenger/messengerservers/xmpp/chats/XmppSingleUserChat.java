@@ -39,7 +39,18 @@ public class XmppSingleUserChat extends SingleUserChat {
     public XmppSingleUserChat(AbstractXMPPConnection connection, User companion) {
         this.connection = connection;
         chatStateManager = ChatStateManager.getInstance(connection);
-        chat = ChatManager.getInstanceFor(connection).createChat(JidCreatorHelper.obtainJid(companion));
+        String companionJid = JidCreatorHelper.obtainJid(companion);
+        String userJid = connection.getUser().split("/")[0];
+        String thread = JidCreatorHelper.obtainThreadSingleChat(userJid, companionJid);
+
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+        Chat existingChat = chatManager.getThreadChat(thread);
+        if (existingChat == null){
+            chat = chatManager.createChat(companionJid, thread, null);
+        } else {
+            chat = existingChat;
+        }
+
         chat.addMessageListener(messageListener);
     }
 

@@ -88,12 +88,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         cell.fillWithItem(item);
     }
 
-
-    @Override
-    public void onViewDetachedFromWindow(AbstractCell holder) {
-        holder.clearResources();
-    }
-
     @Override
     public int getItemCount() {
         return this.items.size();

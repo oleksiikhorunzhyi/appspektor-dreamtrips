@@ -456,11 +456,6 @@
     <string name="feed_close_friends">Close Friends</string>
     <string name="start_searching">Type to start searching</string>
 
-    <plurals name="people_liked">
-        <item quantity="one">%s liked</item>
-        <item quantity="other">%d people liked</item>r
-    </plurals>
-
     <string name="people_liked_one">%s liked</string>
     <string name="people_liked_other">%s people liked</string>
 

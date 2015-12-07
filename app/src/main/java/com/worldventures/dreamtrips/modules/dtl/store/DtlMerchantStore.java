@@ -17,18 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DtlMerchantStore extends BaseStore {
+public class DtlMerchantStore extends RequestingCachingBaseStore {
 
-    private SnappyRepository db;
-    private RequestingPresenter requestingPresenter;
-    //
     private List<DtlMerchantType> dtlMerchantTypes;
     private List<DtlMerchant> merchants;
     //
     private List<MerchantUpdatedListener> listeners = new ArrayList<>();
 
     public DtlMerchantStore(SnappyRepository db) {
-        this.db = db;
+        super(db);
         dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
     }
 
@@ -50,7 +47,7 @@ public class DtlMerchantStore extends BaseStore {
      * @param location {@link DtlLocation} current location
      */
     public void loadMerchants(DtlLocation location) {
-        checkFields();
+        checkState();
         //
         requestingPresenter.doRequest(new GetNearbyMerchantsRequest(location), this::placeLoaded);
     }
@@ -61,6 +58,7 @@ public class DtlMerchantStore extends BaseStore {
      * @param spiceException actual exception
      */
     public void onMerchantLoadingError(SpiceException spiceException) {
+        checkListeners(listeners);
         Queryable.from(listeners).forEachR(listener -> listener.onMerchantsFailed(spiceException));
     }
 
@@ -104,6 +102,7 @@ public class DtlMerchantStore extends BaseStore {
         db.saveDtlMerhants(merchants);
         saveAmenities(dtlMerchants);
         //
+        checkListeners(listeners);
         Queryable.from(listeners).forEachR(MerchantUpdatedListener::onMerchantsUploaded);
     }
 
@@ -120,11 +119,6 @@ public class DtlMerchantStore extends BaseStore {
         );
 
         db.saveAmenities(amenitiesSet);
-    }
-
-    private void checkFields() {
-        if (requestingPresenter == null)
-            throw new IllegalStateException("You should set RequestingPresenter before loading anything");
     }
 
     public interface MerchantUpdatedListener {

@@ -12,19 +12,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+public class DtlLocationStore extends RequestingCachingBaseStore {
 
-public class DtlLocationStore extends BaseStore {
-
-    private SnappyRepository db;
-    private RequestingPresenter requestingPresenter;
-    //
     private DtlLocation currentLocation;
     //
     private List<LocationsLoadedListener> loadedListeners = new ArrayList<>();
 
     public DtlLocationStore(SnappyRepository db) {
-        this.db = db;
+        super(db);
         currentLocation = db.getSelectedDtlLocation();
     }
 
@@ -34,6 +29,7 @@ public class DtlLocationStore extends BaseStore {
 
     public void loadNearbyLocations(Location userLocation) {
         // TODO : handle failure
+        checkState();
         requestingPresenter.doRequest(new GetDtlLocationsQuery(userLocation), this::onLocationsLoaded);
     }
 
@@ -46,6 +42,7 @@ public class DtlLocationStore extends BaseStore {
     }
 
     private void onLocationsLoaded(List<DtlLocation> locations) {
+        checkListeners(loadedListeners);
         Queryable.from(loadedListeners).forEachR(listener -> listener.onLocationsLoaded(locations));
     }
 

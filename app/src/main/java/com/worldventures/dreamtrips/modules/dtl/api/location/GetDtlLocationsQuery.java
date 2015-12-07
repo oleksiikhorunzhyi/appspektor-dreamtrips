@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.api.location;
 
+import android.location.Location;
+
 import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
@@ -10,9 +12,10 @@ public class GetDtlLocationsQuery extends DtlRequest<ArrayList<DtlLocation>> {
     private String query;
     private String latLng;
 
-    public GetDtlLocationsQuery(double latitude, double longitude) {
+    public GetDtlLocationsQuery(Location location) {
         super((Class<ArrayList<DtlLocation>>) new ArrayList<DtlLocation>().getClass());
-        this.latLng = new StringBuilder().append(latitude).append(",").append(longitude).toString();
+        this.latLng = new StringBuilder().append(location.getLatitude())
+                .append(",").append(location.getLongitude()).toString();
     }
 
     public GetDtlLocationsQuery(String query) {

@@ -48,7 +48,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Activity activity;
-    private User user;
+    static User user;
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -226,7 +226,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                List<ChatUser> userList = getViewState().getSelectedContacts();
+                ArrayList<ChatUser> userList = new ArrayList<>(getViewState().getSelectedContacts());
 
                 if (userList == null || userList.size() != 1){
                     Toast.makeText(activity, "You must provide one user to start 1:1 chat", Toast.LENGTH_SHORT).show();

@@ -5,8 +5,7 @@ import android.os.Parcelable;
 
 import com.messenger.model.ChatUser;
 
-public class User implements ChatUser{
-
+public class User implements ChatUser {
     private String userName;
     private String userAvatarUrl =  "http://www.skivecore.com/members/0/Default.jpg";
     private boolean online;
@@ -18,7 +17,7 @@ public class User implements ChatUser{
     public User (Parcel in){
         this.userName = in.readString();
         this.userAvatarUrl = in.readString();
-        this.online = in.readInt() == 1 ? true : false;
+        this.online = in.readInt() == 1;
     }
 
     public String getUserName() {
@@ -32,7 +31,6 @@ public class User implements ChatUser{
 
     @Override
     public void setName(String name) {
-
     }
 
     @Override
@@ -42,7 +40,6 @@ public class User implements ChatUser{
 
     @Override
     public void setAvatarUrl(String avatarUrl) {
-
     }
 
     @Override

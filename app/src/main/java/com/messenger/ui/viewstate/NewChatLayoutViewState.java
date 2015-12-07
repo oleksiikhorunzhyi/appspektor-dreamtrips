@@ -3,6 +3,7 @@ package com.messenger.ui.viewstate;
 import android.os.Parcel;
 
 import com.messenger.app.Environment;
+import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.view.NewChatScreen;
 
@@ -79,10 +80,9 @@ public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScree
     public NewChatLayoutViewState(Parcel in) {
         loadingState = LoadingState.values()[in.readInt()];
         error = (Throwable) in.readSerializable();
-        // TODO: 12/7/15
-        chatContacts = new CopyOnWriteArrayList<>();
-        in.readList(chatContacts, ArrayList.class.getClass().getClassLoader());
+        chatContacts = new ArrayList<>();
+        in.readList(chatContacts, User.class.getClassLoader());
         selectedContacts = new CopyOnWriteArrayList<>();
-        in.readList(selectedContacts, ArrayList.class.getClass().getClassLoader());
+        in.readList(selectedContacts, User.class.getClassLoader());
     }
 }

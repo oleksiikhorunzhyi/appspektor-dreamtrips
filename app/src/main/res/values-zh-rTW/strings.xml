@@ -23,6 +23,7 @@
     <string name="action_map">地圖</string>
     <string name="action_like">點讚</string>
     <string name="title_activity_login">登錄活動</string>
+    <string name="trips">DreamTrips</string>
     <string name="drawer_open">已打開的目錄</string>
     <string name="drawer_close">已關閉的目錄</string>
     <string name="empty"/>
@@ -32,6 +33,7 @@
     <string name="logout_dialog_negative_btn">取消</string>
     <string name="member_images">會員圖片</string>
     <string name="my_images">我的圖片</string>
+    <string name="you_should_be_here">You Should Be Here</string>
     <string name="title_activity_full_screen_photo">顯示全屏圖片</string>
     <string name="skip_login">跳過登錄</string>
     <string name="duration">%d 晚</string>
@@ -294,6 +296,7 @@
     <string name="social_add_friend_no">否</string>
     <string name="social_add_friend_title">添加好友</string>
     <string name="social_add_friend_content" formatted="false">添加%s為您的好友？</string>
+    <string name="social_postfix_mutual_friends_one">%d共同朋友</string>
     <string name="social_postfix_mutual_friends">%d共同好友</string>
     <string name="social_user_wrapper_cell_actions">行動</string>
     <string name="social_remove_friend_title">解除好友</string>
@@ -446,7 +449,15 @@
 
     <string name="no_feed">您將在此看到您好友的活動。點擊下方鏈接尋找您的好友</string>
     <string name="search_friends">搜索好友</string>
+
+    <string name="feed_share_post">分享帖子</string>
+    <string name="feed_share_photos">分享照片</string>
+    <string name="feed_view_profile_btn">查看個人資料</string>
+    <string name="feed_close_friends">密友</string>
     <string name="start_searching">鍵入開始搜索</string>
+
+    <string name="people_liked_one">%s 點贊的</string>
+    <string name="people_liked_other">%s 人們喜歡</string>
 
     <string name="terms_and_conditions_title">條款和條件</string>
     <string name="terms_and_conditions_subtitle">請閱讀並接受以下條款和條件以繼續進行</string>
@@ -457,7 +468,7 @@
     <string name="camera">Camera</string>
     <string name="add_from_facebook">從Facebook添加</string>
 
-    <string name="photos_selected">%d selected</string>
+    <string name="photos_selected">%d 選擇</string>
 
     <string name="no_friends">您在這個列表中尚無朋友</string>
     <string name="feed_add_friends">添加朋友</string>
@@ -470,6 +481,6 @@
     <string name="no_mutual_friends">You don\'t have any mutual friends</string>
 
     <string name="photo_limitation_message">Please choose up to %d photos</string>
-    <string name="pending">Pending…</string>
+    <string name="pending">朋友</string>
 
 </resources>

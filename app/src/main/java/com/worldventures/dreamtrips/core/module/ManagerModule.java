@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlLocationStore;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
@@ -84,6 +85,12 @@ public class ManagerModule {
     @Provides
     DtlFilterDelegate dtlFilterDelegate() {
         return new DtlFilterDelegate();
+    }
+
+    @Singleton
+    @Provides
+    DtlLocationStore dtlMerchantDelegate(SnappyRepository snappyRepository) {
+        return new DtlLocationStore(snappyRepository);
     }
 
     @Provides

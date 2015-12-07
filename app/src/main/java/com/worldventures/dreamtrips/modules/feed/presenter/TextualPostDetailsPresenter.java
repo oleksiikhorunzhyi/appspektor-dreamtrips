@@ -39,7 +39,7 @@ public class TextualPostDetailsPresenter extends Presenter<TextualPostDetailsPre
     }
 
     public void onEdit() {
-        view.moveToEdit(textualPost);
+        if (view != null) view.moveToEdit(textualPost);
     }
 
     public interface View extends Presenter.View {

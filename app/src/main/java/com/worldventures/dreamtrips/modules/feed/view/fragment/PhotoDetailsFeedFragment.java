@@ -52,7 +52,9 @@ public class PhotoDetailsFeedFragment extends BaseFragmentWithArgs<PhotoDetailsF
         anchor.setEnabled(false);
         FeedItemMenuBuilder.create(getActivity(), anchor, R.menu.menu_feed_entity_edit)
                 .onDelete(this::showDeleteDialog)
-                .onEdit(() -> getPresenter().onEdit())
+                .onEdit(() -> {
+                    if (isVisibleOnScreen()) getPresenter().onEdit();
+                })
                 .dismissListener(menu -> anchor.setEnabled(true))
                 .show();
     }

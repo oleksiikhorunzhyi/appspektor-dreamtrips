@@ -81,7 +81,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         }
     }
 
-    public void onEvent(EntityLikedEvent event){
+    public void onEvent(EntityLikedEvent event) {
         photo.syncLikeState(event.getFeedEntity());
         view.setLiked(event.getFeedEntity().isLiked());
         view.setLikeCount(event.getFeedEntity().getLikesCount());
@@ -110,7 +110,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     public void onEdit() {
-        view.openEdit(new EditPhotoBundle(photo));
+        if (view != null) view.openEdit(new EditPhotoBundle(photo));
     }
 
     @Override

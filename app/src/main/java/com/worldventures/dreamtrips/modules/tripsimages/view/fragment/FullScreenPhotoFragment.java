@@ -221,8 +221,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
                 .onDelete(this::deletePhoto)
                 .onEdit(() -> {
-                    eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
-                    getPresenter().onEdit();
+                    if (isVisibleOnScreen()) {
+                        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
+                        getPresenter().onEdit();
+                    }
                 })
                 .dismissListener(menu -> view.setEnabled(true))
                 .show();

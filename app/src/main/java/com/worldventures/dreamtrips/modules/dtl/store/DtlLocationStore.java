@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.delegate;
+package com.worldventures.dreamtrips.modules.dtl.store;
 
 import android.location.Location;
 import android.support.annotation.Nullable;
@@ -14,7 +14,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DtlLocationStore {
+public class DtlLocationStore extends BaseStore {
 
     private SnappyRepository db;
     private RequestingPresenter requestingPresenter;

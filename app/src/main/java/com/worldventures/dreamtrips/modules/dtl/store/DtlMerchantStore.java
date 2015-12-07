@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.delegate;
+package com.worldventures.dreamtrips.modules.dtl.store;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DtlMerchantStore {
+public class DtlMerchantStore extends BaseStore {
 
     private SnappyRepository db;
     private RequestingPresenter requestingPresenter;

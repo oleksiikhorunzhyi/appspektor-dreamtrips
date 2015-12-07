@@ -39,7 +39,7 @@ public class XmppContactLoader extends Loader<User> {
                     continue;
                 }
                 String name = entry.getName();
-                users.add(new User(name != null ? name : entry.getUser()));
+                users.add(new User(name != null ? name : entry.getUser().split("@")[0]));
                 onEntityLoadedListener.onLoaded(users);
             }
         });

@@ -68,7 +68,6 @@ public class ChatActivity extends AppCompatActivity {
         } else if (chatType == CHAT_TYPE_GROUP) {
             chat = messengerServerFacade.createMultiUserChat(new User(users.get(0).getName()));
         } else {
-            //todo crautch
             chat = messengerServerFacade.createSingleUserChat((User) chatConversation.getChatUsers().get(0));
         }
     }

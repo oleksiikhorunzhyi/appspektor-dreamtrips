@@ -49,6 +49,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     private ToolbarPresenter toolbarPresenter;
 
     private ChatAdapter adapter;
+    private ChatConversation chatConversation;
 
 //    private ChatConversation chatConversation;
 
@@ -116,7 +117,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     @Override
     public ChatScreenPresenter createPresenter() {
         ChatScreenPresenter presenter = new ChatScreenPresenterImpl();
-//        presenter.setChatConversation(this.chatConversation);
+        presenter.setChatConversation(this.chatConversation);
         return presenter;
     }
 
@@ -143,11 +144,11 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @Override
     public void setChatConversation(ChatConversation chatConversation) {
-//        this.chatConversation = chatConversation;
+        this.chatConversation = chatConversation;
 //        adapter.setChatConversation(chatConversation);
-//        adapter.notifyDataSetChanged();
-//        toolbarPresenter.setTitle(TextUtils.isEmpty(chatConversation.getConversationName()) ? "<No Name Given>" :
-//                chatConversation.getConversationName());
+        adapter.notifyDataSetChanged();
+        toolbarPresenter.setTitle(TextUtils.isEmpty(chatConversation.getConversationName()) ? "<No Name Given>" :
+                chatConversation.getConversationName());
     }
 
     @Override

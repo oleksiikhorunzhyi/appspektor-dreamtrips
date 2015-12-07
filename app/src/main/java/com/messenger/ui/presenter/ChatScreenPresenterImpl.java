@@ -26,6 +26,7 @@ import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 
 import java.util.Date;
+import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 
@@ -34,6 +35,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     private Chat chat;
 
     private ChatMessageListener chatMessageListener = this::handleMessage;
+    private ChatConversation chatConversation;
 
     private void handleMessage(Message message, User user) {
         //noinspection all
@@ -117,18 +119,22 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         }
 
         try {
-            chat.sendMessage(new Message.Builder().text(message).build());
+            chat.sendMessage(new Message.Builder()
+                    .locale(Locale.getDefault())
+                    .from((User) chatConversation.getChatUsers().get(0))
+                    .text(message)
+                    .build());
         } catch (ConnectionException e) {
             Log.d("TEST", "send message", e);
         }
 
-        final ChatUser conversationOwner = getViewState().getChatConversation().getConversationOwner();
-        ChatMessage chatMessage = Environment.newChatMessage();
-        chatMessage.setUser(conversationOwner);
-        chatMessage.setMessage(message);
-        chatMessage.setDate(new Date());
-
-        EventBus.getDefault().post(new ChatMessageEvent(chatMessage));
+//        final ChatUser conversationOwner = getViewState().getChatConversation().getConversationOwner();
+//        ChatMessage chatMessage = Environment.newChatMessage();
+//        chatMessage.setUser(conversationOwner);
+//        chatMessage.setMessage(message);
+//        chatMessage.setDate(new Date());
+//
+//        EventBus.getDefault().post(new ChatMessageEvent(chatMessage));
         return true;
     }
 
@@ -138,7 +144,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     @Override public void setChatConversation(ChatConversation chatConversation) {
-        //this.chatConversation = chatConversation;
+        this.chatConversation = chatConversation;
     }
 
     ///////////////////////////////////////////////////////////////////////////

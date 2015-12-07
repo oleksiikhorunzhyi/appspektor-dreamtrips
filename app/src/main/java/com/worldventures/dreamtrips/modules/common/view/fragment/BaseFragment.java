@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import icepick.Icepick;
+import timber.log.Timber;
 
 
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
@@ -160,13 +161,23 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Override
     public void informUser(String message) {
         if (isAdded() && getView() != null)
-            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+            try {
+                Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                // Snackbar initialization can produce NullPointerException on view parent getContext();
+                Timber.e(e.getMessage());
+            }
     }
 
     @Override
     public void informUser(int stringId) {
         if (isAdded() && getView() != null)
-            Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
+            try {
+                Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                // Snackbar initialization can produce NullPointerException on view parent getContext();
+                Timber.e(e.getMessage());
+            }
     }
 
     @Override

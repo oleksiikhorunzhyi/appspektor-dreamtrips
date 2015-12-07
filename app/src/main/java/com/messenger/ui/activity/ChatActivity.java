@@ -66,9 +66,9 @@ public class ChatActivity extends AppCompatActivity {
         if ((chatType = intent.getIntExtra(EXTRA_CHAT_TYPE, -1)) == -1) {
             throw new IllegalArgumentException();
         } else if (chatType == CHAT_TYPE_GROUP) {
-            chat = messengerServerFacade.createMultiUserChat(new User(users.get(0).getName()));
+            chat = messengerServerFacade.createMultiUserChat(new User(users.get(1).getName()));
         } else {
-            chat = messengerServerFacade.createSingleUserChat((User) chatConversation.getChatUsers().get(0));
+            chat = messengerServerFacade.createSingleUserChat((User) chatConversation.getChatUsers().get(1));
         }
     }
 

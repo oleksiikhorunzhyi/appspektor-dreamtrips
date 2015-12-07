@@ -48,6 +48,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Activity activity;
+    private User user;
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -90,6 +91,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
                 .setView(editText)
                 .setPositiveButton("Ok", (dialog, possitiveButton) -> {
                     String userName = editText.getText().toString();
+                    user = new User(userName);
                     if (StringUtils.isEmpty(userName)) return;
                     messengerServerFacade.authorizeAsync(userName, userName);
                 })
@@ -226,12 +228,13 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
             case R.id.action_done:
                 List<ChatUser> userList = getViewState().getSelectedContacts();
 
-                if (userList != null && userList.size() != 1){
+                if (userList == null || userList.size() != 1){
                     Toast.makeText(activity, "You must provide one user to start 1:1 chat", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 ChatConversation chatConversation = new MockChatConversation();
+                userList.add(0, user);
                 chatConversation.setChatUsers(userList);
                 ChatActivity.start(activity, ChatActivity.CHAT_TYPE_SINGLE, chatConversation);
                 return true;

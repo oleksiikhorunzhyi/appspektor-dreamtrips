@@ -16,40 +16,40 @@ import java.util.concurrent.ExecutorService;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.AsyncLoader;
-import com.messenger.messengerservers.loaders.Loader;
 
-public class XmppContactLoader extends Loader<User> {
+public class XmppContactLoader extends AsyncLoader<User> {
     private final XMPPConnection connection;
 
     public XmppContactLoader(XMPPConnection connection, @Nullable ExecutorService executorService) {
+        super(executorService);
         this.connection = connection;
     }
 
     @Override
-    public void load() {
+    public List<User> loadEntities() {
         Roster roster = Roster.getInstanceFor(connection);
-        roster.addRosterLoadedListener(roster1 -> {
-
-            Log.e("Xmpp roster new ver", roster1.getEntries().size()+"");
-            Collection<RosterEntry> entries = roster1.getEntries();
-            ArrayList<User> users = new ArrayList<>(entries.size());
-
-            for (RosterEntry entry : entries) {
-                if (entry.getType() != RosterPacket.ItemType.both) {
-                    continue;
-                }
-                String name = entry.getName();
-                users.add(new User(name != null ? name : entry.getUser().split("@")[0]));
-                onEntityLoadedListener.onLoaded(users);
-            }
-        });
-
         if (!roster.isLoaded()) {
             try {
-                roster.reload();
+                roster.reloadAndWait();
             } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {
                 Log.w("XmppContactLoader", "reload failed", e);
             }
         }
+
+        Log.e("Xmpp roster new ver", roster.getEntries().size()+"");
+        Collection<RosterEntry> entries = roster.getEntries();
+        ArrayList<User> users = new ArrayList<>(entries.size());
+
+        for (RosterEntry entry : entries) {
+            if (entry.getType() != RosterPacket.ItemType.both) {
+                continue;
+            }
+            String name = entry.getName();
+            String userName = entry.getUser();
+            User user = new User(name != null ? name : userName.substring(0, userName.indexOf("@")));
+            users.add(user);
+        }
+
+        return users;
     }
 }

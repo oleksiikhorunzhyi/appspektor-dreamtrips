@@ -65,6 +65,7 @@
             android:layout_height="wrap_content"
             android:text="@string/chat_error_loading"
             android:layout_gravity="center"
+            android:visibility="gone"
             />
         <ProgressBar
             android:id="@+id/chat_loading_view"

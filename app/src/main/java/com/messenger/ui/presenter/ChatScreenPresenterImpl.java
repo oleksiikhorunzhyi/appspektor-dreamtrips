@@ -22,6 +22,7 @@ import com.messenger.ui.viewstate.ChatLayoutViewState;
 
 import java.util.Locale;
 
+
 public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen>
         implements ChatScreenPresenter {
     private Chat chat;

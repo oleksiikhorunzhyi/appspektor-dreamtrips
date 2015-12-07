@@ -54,32 +54,32 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     @Override public void loadChatConversation() {
-        final ChatScreen view = getView();
-        assert view != null;
-
-        view.showLoading();
-        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-
-        // create new or load existing conversation
-        SimpleLoader<ChatConversation> loader = LoaderModule
-                .getChatConversationLoader(getViewState().getChatConversation());
-        loader.loadData(new SimpleLoader.LoadListener<ChatConversation>() {
-            @Override public void onLoadSuccess(ChatConversation data) {
-                if (isViewAttached()) {
-                    getViewState().setChatConversation(data);
-                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-                    view.setChatConversation(data);
-                    view.showContent();
-                }
-            }
-
-            @Override public void onError(Throwable error) {
-                if (isViewAttached()) {
-                    view.showError(error);
-                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.ERROR);
-                }
-            }
-        });
+//        final ChatScreen view = getView();
+//        assert view != null;
+//
+//        view.showLoading();
+//        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+//
+//        // create new or load existing conversation
+//        SimpleLoader<ChatConversation> loader = LoaderModule
+//                .getChatConversationLoader(getViewState().getChatConversation());
+//        loader.loadData(new SimpleLoader.LoadListener<ChatConversation>() {
+//            @Override public void onLoadSuccess(ChatConversation data) {
+//                if (isViewAttached()) {
+//                    getViewState().setChatConversation(data);
+//                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
+//                    view.setChatConversation(data);
+//                    view.showContent();
+//                }
+//            }
+//
+//            @Override public void onError(Throwable error) {
+//                if (isViewAttached()) {
+//                    view.showError(error);
+//                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.ERROR);
+//                }
+//            }
+//        });
     }
 
     @Override public void onNewViewState() {

@@ -12,11 +12,12 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatConversation;
+import com.messenger.model.ChatUser;
 import com.messenger.ui.view.ActivityAwareScreen;
 import com.messenger.ui.view.ChatScreenImpl;
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -60,11 +61,12 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(screen);
         this.screen = screen;
 
+        List<ChatUser> users = chatConversation.getChatUsers();
         Intent intent = getIntent();
         if ((chatType = intent.getIntExtra(EXTRA_CHAT_TYPE, -1)) == -1) {
             throw new IllegalArgumentException();
         } else if (chatType == CHAT_TYPE_GROUP) {
-            chat = messengerServerFacade.createMultiUserChat(null);
+            chat = messengerServerFacade.createMultiUserChat(new User(users.get(0).getName()));
         } else {
             //todo crautch
             chat = messengerServerFacade.createSingleUserChat((User) chatConversation.getChatUsers().get(0));

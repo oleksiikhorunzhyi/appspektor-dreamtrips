@@ -98,6 +98,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             setMembers();
             openTemplateInView();
             showContinueBtnIfNeed();
+            view.setSelectedCount(Queryable.from(members).count(Member::isChecked));
         });
 
         TrackingHelper.inviteShareContacts(getAccountUserId());

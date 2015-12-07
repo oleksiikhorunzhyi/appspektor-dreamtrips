@@ -13,6 +13,7 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -57,7 +58,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
-        ivImage.setImageURI(uri);
+        ivImage.setController(GraphicUtils.provideFrescoResizingController(uri, ivImage.getController()));
     }
 
     @Override

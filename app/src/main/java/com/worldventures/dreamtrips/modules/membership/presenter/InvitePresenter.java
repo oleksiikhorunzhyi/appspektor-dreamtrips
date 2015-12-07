@@ -200,7 +200,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                 }
                 view.setFilter(query);
                 sortSelected();
-                setMembers();
+                updatePositions(query);
             }
         }, 150L);
     }
@@ -236,7 +236,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         } else {
             int to = event.getMember().getOriginalPosition();
             Member lastSelectedMember = Queryable.from(members).lastOrDefault((member) -> member.isChecked());
-            int lastSelected = lastSelectedMember != null ? members.indexOf(lastSelectedMember) : 0;
+            int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
             view.move(event.getMember(), to < lastSelected ? lastSelected : to);
         }
     }
@@ -309,8 +309,18 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void setMembers() {
-        Queryable.from(members).forEachR((member) -> member.setOriginalPosition(members.indexOf(member)));
+        setMembers(null);
+    }
+
+    private void setMembers(String query) {
+        updatePositions(query);
         view.setMembers(new ArrayList<>(members));
+    }
+
+    private void updatePositions(String query) {
+        List<Member> temporaryList = TextUtils.isEmpty(query) ? members
+                : Queryable.from(members).filter(item -> item.containsQuery(query)).toList();
+        Queryable.from(temporaryList).forEachR((member) -> member.setOriginalPosition(temporaryList.indexOf(member)));
     }
 
     private void sortContacts() {

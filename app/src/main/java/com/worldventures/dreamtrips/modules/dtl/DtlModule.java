@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresent
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
@@ -67,7 +67,7 @@ import dagger.Provides;
                 DtlScanReceiptPresenter.class,
                 DtlPlacesListFragment.class,
                 DtlPlacesListPresenter.class,
-                DtlPlaceCell.class,
+                DtlMerchantCell.class,
                 DtlHeaderCell.class,
                 DtlPlaceDetailsPresenter.class,
                 DtlPlaceDetailsFragment.class,
@@ -83,7 +83,7 @@ import dagger.Provides;
                 DtlScanQrCodePresenter.class,
                 DtlTransactionSucceedFragment.class,
                 DtlTransactionSucceedPresenter.class,
-                DtlPlaceCell.class,
+                DtlMerchantCell.class,
                 DtlSuggestMerchantFragment.class,
                 DtlSuggestMerchantPresenter.class,
 

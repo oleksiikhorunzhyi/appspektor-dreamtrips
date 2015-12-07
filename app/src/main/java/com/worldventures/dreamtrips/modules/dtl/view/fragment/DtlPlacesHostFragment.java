@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
 
 import butterknife.InjectView;
@@ -58,7 +58,7 @@ public class DtlPlacesHostFragment
                     .containerId(R.id.dtl_landscape_slave_container)
                     .backStackEnabled(false)
                     .fragmentManager(getChildFragmentManager())
-                    .data(new PlacesMapBundle(getArgs().getLocation(), true))
+                    .data(new DtlMapBundle(getArgs().getLocation(), true))
                     .build());
             landscapeSlave.setVisibility(View.VISIBLE);
         } else {

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlMerchantDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
@@ -45,7 +45,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
 
     private DtlLocation dtlLocation;
 
-    public DtlMapPresenter(PlacesMapBundle bundle) {
+    public DtlMapPresenter(DtlMapBundle bundle) {
         dtlLocation = bundle.getLocation();
     }
 
@@ -111,15 +111,15 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
     private Observable<List<DtlMerchant>> filter(Location location, String query) {
         LatLng currentLatLng = LocationHelper.getAcceptedLocation(location, dtlLocation);
         //
-        List<DtlMerchant> places = Queryable.from(dtlMerchantDelegate.getMerchants())
+        List<DtlMerchant> merchants = Queryable.from(dtlMerchantDelegate.getMerchants())
                 .filter(dtlPlace ->
                         dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(), currentLatLng))
                 .filter(dtlPlace -> dtlPlace.containsQuery(query))
                 .toList();
 
-        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, places.size());
+        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, merchants.size());
 
-        return Observable.from(places).toList();
+        return Observable.from(merchants).toList();
     }
 
     private void onError(Throwable e) {

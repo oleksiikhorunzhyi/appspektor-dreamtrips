@@ -8,12 +8,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 /**
  * Bundle to be supplied when navigating to {@link com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment}
  */
-public class PlacesMapBundle implements Parcelable {
+public class DtlMapBundle implements Parcelable {
 
     private DtlLocation location;
     private boolean isSlave;
 
-    public PlacesMapBundle(DtlLocation location, boolean isSlave) {
+    public DtlMapBundle(DtlLocation location, boolean isSlave) {
         this.location = location;
         this.isSlave = isSlave;
     }
@@ -38,7 +38,7 @@ public class PlacesMapBundle implements Parcelable {
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    protected PlacesMapBundle(Parcel in) {
+    protected DtlMapBundle(Parcel in) {
         location = in.readParcelable(DtlLocation.class.getClassLoader());
         isSlave = in.readByte() == 1;
     }
@@ -49,15 +49,15 @@ public class PlacesMapBundle implements Parcelable {
         dest.writeByte(isSlave ? (byte) 1 : 0);
     }
 
-    public static final Creator<PlacesMapBundle> CREATOR = new Creator<PlacesMapBundle>() {
+    public static final Creator<DtlMapBundle> CREATOR = new Creator<DtlMapBundle>() {
         @Override
-        public PlacesMapBundle createFromParcel(Parcel in) {
-            return new PlacesMapBundle(in);
+        public DtlMapBundle createFromParcel(Parcel in) {
+            return new DtlMapBundle(in);
         }
 
         @Override
-        public PlacesMapBundle[] newArray(int size) {
-            return new PlacesMapBundle[size];
+        public DtlMapBundle[] newArray(int size) {
+            return new DtlMapBundle[size];
         }
     };
 

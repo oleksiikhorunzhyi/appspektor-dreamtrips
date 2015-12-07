@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
@@ -39,7 +39,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     //
-    PlacesMapBundle bundle;
+    DtlMapBundle bundle;
     @State
     LatLng selectedLocation;
 

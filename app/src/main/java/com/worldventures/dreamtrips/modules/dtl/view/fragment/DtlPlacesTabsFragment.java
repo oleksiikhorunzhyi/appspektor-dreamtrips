@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -97,7 +97,7 @@ public class DtlPlacesTabsFragment
             switch (item.getItemId()) {
                 case R.id.action_map:
                     router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment().useDefaults()
-                            .data(new PlacesMapBundle(getArgs().getLocation(), false))
+                            .data(new DtlMapBundle(getArgs().getLocation(), false))
                             .fragmentManager(getParentFragment().getFragmentManager())
                             .containerId(R.id.dtl_container)
                             .build());

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.initializer;
 
+import android.os.Build;
+
 import com.squareup.leakcanary.RefWatcher;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
@@ -13,6 +15,6 @@ public class LeakCanaryInitializer implements AppInitializer {
 
     @Override
     public void initialize(Injector injector) {
-        injector.inject(this);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) injector.inject(this);
     }
 }

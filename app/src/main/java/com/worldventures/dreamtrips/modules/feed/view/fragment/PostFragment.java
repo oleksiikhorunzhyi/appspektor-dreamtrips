@@ -15,6 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
@@ -192,7 +193,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void attachPhoto(Uri uri) {
         photoPickerLayout.hidePanel();
 
-        attachedPhoto.setImageURI(uri);
+        attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController()));
+
         if (uri != null) {
             post.setHint(R.string.photo_hint);
             imageContainer.setVisibility(View.VISIBLE);

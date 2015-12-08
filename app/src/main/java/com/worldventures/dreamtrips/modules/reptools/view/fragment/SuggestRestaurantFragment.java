@@ -5,11 +5,11 @@ import android.os.Bundle;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.SuggestPlaceBaseFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.SuggestMerchantBaseFragment;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuggestRestaurantPresenter;
 
 @MenuResource(R.menu.menu_suggest_merchant)
-public class SuggestRestaurantFragment extends SuggestPlaceBaseFragment<SuggestRestaurantPresenter>
+public class SuggestRestaurantFragment extends SuggestMerchantBaseFragment<SuggestRestaurantPresenter>
         implements SuggestRestaurantPresenter.View {
 
     @Override

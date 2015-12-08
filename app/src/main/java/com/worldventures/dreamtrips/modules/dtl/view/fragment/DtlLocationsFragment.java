@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantsBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
@@ -174,8 +174,8 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     }
 
     @Override
-    public void showMerchants(PlacesBundle bundle) {
-        router.moveTo(Route.DTL_PLACES_HOLDER, NavigationConfigBuilder.forFragment()
+    public void showMerchants(MerchantsBundle bundle) {
+        router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_container)
                 .fragmentManager(getFragmentManager())
                 .backStackEnabled(false)

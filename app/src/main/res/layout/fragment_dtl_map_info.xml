@@ -6,7 +6,7 @@
     >
 
     <LinearLayout
-        android:id="@+id/place_details_root"
+        android:id="@+id/merchant_details_root"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"

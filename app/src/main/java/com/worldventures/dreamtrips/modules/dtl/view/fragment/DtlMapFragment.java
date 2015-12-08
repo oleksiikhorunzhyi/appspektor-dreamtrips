@@ -17,12 +17,12 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantsMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchMerchantRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -34,13 +34,13 @@ import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import butterknife.InjectView;
 import icepick.State;
 
-@Layout(R.layout.fragment_dtl_places_map)
+@Layout(R.layout.fragment_dtl_merchants_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     //
-    PlacesMapBundle bundle;
+    MerchantsMapBundle bundle;
     @State
     LatLng selectedLocation;
 
@@ -66,16 +66,16 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        new DtlPlaceSearchViewDelegate(getContext()).init(searchItem, lastQuery, query -> {
+        new DtlMerchantSearchViewDelegate(getContext()).init(searchItem, lastQuery, query -> {
             lastQuery = query;
-            eventBus.post(new DtlSearchPlaceRequestEvent(query));
+            eventBus.post(new DtlSearchMerchantRequestEvent(query));
         });
 
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:
-                    router.moveTo(Route.DTL_PLACES_HOLDER, NavigationConfigBuilder.forFragment()
-                            .data(new PlacesBundle(bundle.getLocation()))
+                    router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
+                            .data(new MerchantsBundle(bundle.getLocation()))
                             .fragmentManager(getFragmentManager())
                             .backStackEnabled(false)
                             .clearBackStack(true)
@@ -147,12 +147,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void showPlaceInfo(DtlMerchant DtlMerchant) {
+    public void showMerchantInfo(DtlMerchant DtlMerchant) {
         router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(new PlaceDetailsBundle(DtlMerchant, bundle.isSlave()))
+                .data(new MerchantDetailsBundle(DtlMerchant, bundle.isSlave()))
                 .build());
     }
 

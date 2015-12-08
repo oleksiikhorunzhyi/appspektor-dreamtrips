@@ -7,10 +7,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
+import com.worldventures.dreamtrips.modules.dtl.event.MerchantsUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 
 import java.util.List;
 
@@ -44,13 +44,13 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         toggleAmenitiesSelection(event.isChecked());
     }
 
-    public void onEvent(PlacesUpdateFinished event) {
+    public void onEvent(MerchantsUpdateFinished event) {
         attachAmenities();
     }
 
     private void attachAmenities() {
-        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities()).map(element ->
-                        new DtlPlacesFilterAttribute(element.getName())
+        List<DtlMerchantsFilterAttribute> amenities = Queryable.from(db.getAmenities()).map(element ->
+                        new DtlMerchantsFilterAttribute(element.getName())
         ).toList();
 
         dtlFilterData.setAmenities(amenities);

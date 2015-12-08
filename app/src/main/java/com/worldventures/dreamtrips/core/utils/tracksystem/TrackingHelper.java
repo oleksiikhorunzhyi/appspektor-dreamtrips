@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
@@ -822,7 +822,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
     }
 
-    public static void dtlPlacesTab(@MagicConstant(stringValues = {DTL_ACTION_OFFERS_TAB, DTL_ACTION_DINING_TAB})
+    public static void dtlMerchantsTab(@MagicConstant(stringValues = {DTL_ACTION_OFFERS_TAB, DTL_ACTION_DINING_TAB})
                                     String tabType) {
         sendSimpleAttributetoAdobeTracker(tabType, ATTRIBUTE_LIST);
     }
@@ -843,7 +843,7 @@ public class TrackingHelper {
                 .append(":").append(filterData.getDistanceType().getTypeNameForAnalytics())
                 .append(":")
                 .append(Queryable.from(filterData.getSelectedAmenities())
-                        .joinStrings(":", DtlPlacesFilterAttribute::getAttributeName));
+                        .joinStrings(":", DtlMerchantsFilterAttribute::getAttributeName));
 
         data.put(DTL_ATTRIBUTE_FILTER, stringBuilder.toString());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);
@@ -871,7 +871,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_MAP_VIEW, data);
     }
 
-    public static void dtlPlaceView(@MagicConstant(stringValues = {DTL_ACTION_OFFER_VIEW, DTL_ACTION_DINING_VIEW})
+    public static void dtlMerchantView(@MagicConstant(stringValues = {DTL_ACTION_OFFER_VIEW, DTL_ACTION_DINING_VIEW})
                                     String merchantTypeAction, String merchantId) {
         Map data = prepareAttributeMap(ATTRIBUTE_VIEW);
         data.put(DTL_ATTRIBUTE_MERCHANT, merchantId);

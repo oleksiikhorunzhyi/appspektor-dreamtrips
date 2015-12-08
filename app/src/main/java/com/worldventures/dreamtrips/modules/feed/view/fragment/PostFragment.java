@@ -193,13 +193,13 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void attachPhoto(Uri uri) {
         photoPickerLayout.hidePanel();
 
-        attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController()));
-
         if (uri != null) {
+            attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController()));
             post.setHint(R.string.photo_hint);
             imageContainer.setVisibility(View.VISIBLE);
             image.setImageResource(R.drawable.ic_post_add_image_selected);
         } else {
+            attachedPhoto.setImageURI(null);
             post.setHint(R.string.post_hint);
             imageContainer.setVisibility(View.GONE);
             image.setImageResource(R.drawable.ic_post_add_image_normal);

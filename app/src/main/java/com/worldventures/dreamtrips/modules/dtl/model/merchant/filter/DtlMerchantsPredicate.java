@@ -2,8 +2,14 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.functions.Predicate;
+import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+
+import java.util.Collections;
+import java.util.List;
 
 public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
 
@@ -25,22 +31,47 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     @Override
     public boolean apply(DtlMerchant dtlMerchant) {
         return checkType(dtlMerchant)
-                && checkFilter(dtlMerchant)
+                && applyFilter(dtlMerchant)
                 && checkQuery(dtlMerchant);
     }
 
-    private boolean checkType(DtlMerchant dtlMerchant) {
+    public boolean checkType(DtlMerchant dtlMerchant) {
         return merchantType == null ||
                 dtlMerchant.getMerchantType() == merchantType;
     }
 
-    private boolean checkFilter(DtlMerchant dtlMerchant) {
-        return dtlMerchant.applyFilter(dtlFilterData,
-                currentLatLng);
+    public boolean checkQuery(DtlMerchant dtlMerchant) {
+        List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
+
+        return dtlMerchant.getDisplayName().toLowerCase().contains(query.toLowerCase()) || (categories != null &&
+                Queryable.from(categories).firstOrDefault(element ->
+                        element.getName().toLowerCase().contains(query.toLowerCase())) != null);
     }
 
-    private boolean checkQuery(DtlMerchant dtlMerchant) {
-        return dtlMerchant.containsQuery(query);
+    public boolean applyFilter(DtlMerchant dtlMerchant) {
+        return checkPrice(dtlMerchant)
+                && checkDistance(dtlMerchant)
+                && checkAmenities(dtlMerchant);
+    }
+
+    public boolean checkPrice(DtlMerchant dtlMerchant) {
+        return dtlMerchant.getBudget() >= dtlFilterData.getMinPrice() &&
+                dtlMerchant.getBudget() <= dtlFilterData.getMaxPrice();
+    }
+
+    public boolean checkDistance(DtlMerchant dtlMerchant) {
+        return dtlFilterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
+                || currentLatLng == null
+                || LocationHelper.checkLocation(dtlFilterData.getMaxDistance(),
+                currentLatLng, dtlMerchant.getCoordinates().asLatLng(), dtlFilterData.getDistanceType());
+    }
+
+    public boolean checkAmenities(DtlMerchant dtlMerchant) {
+        List<DtlPlacesFilterAttribute> selectedAmenities = dtlFilterData.getSelectedAmenities();
+        return selectedAmenities == null || dtlMerchant.getAmenities() == null ||
+                !Collections.disjoint(selectedAmenities, Queryable.from(dtlMerchant.getAmenities()).map(element ->
+                                new DtlPlacesFilterAttribute(element.getName())
+                ).toList());
     }
 
     public static class Builder {

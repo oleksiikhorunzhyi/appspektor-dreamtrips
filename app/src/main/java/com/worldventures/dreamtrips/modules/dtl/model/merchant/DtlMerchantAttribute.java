@@ -10,6 +10,10 @@ public class DtlMerchantAttribute implements Parcelable {
     public DtlMerchantAttribute() {
     }
 
+    public DtlMerchantAttribute(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

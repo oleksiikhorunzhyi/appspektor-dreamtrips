@@ -21,6 +21,8 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
     @Inject
     SnappyRepository db;
 
+    private int nextPage;
+
     public FeedListAdditionalInfoPresenter(FeedAdditionalInfoBundle args) {
         super(args);
     }
@@ -29,21 +31,24 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
     public void takeView(View view) {
         super.takeView(view);
         if (view.isTabletLandscape()) {
-            loadFriends(1);
+            nextPage = 1;
+            loadFriends();
             view.setCurrentCircle(getFilterCircle());
         }
     }
 
-    public void loadFriends(int page) {
-        doRequest(new GetFriendsQuery(getFilterCircle(), null, page, getPageSize()), users -> {
-            if (page == 1) view.setFriends(users);
+    public void loadFriends() {
+        doRequest(new GetFriendsQuery(getFilterCircle(), null, nextPage, getPageSize()), users -> {
+            if (nextPage == 1) view.setFriends(users);
             else view.addFriends(users);
+            this.nextPage++;
         });
     }
 
     public void circlePicked(Circle c) {
+        nextPage = 1;
         db.saveFeedFriendPickedCircle(c);
-        loadFriends(1);
+        loadFriends();
     }
 
     public void onCircleFilterClicked() {

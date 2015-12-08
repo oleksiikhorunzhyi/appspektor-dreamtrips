@@ -72,9 +72,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 loading = false;
                 previousTotal = totalItemCount;
             }
-            int pageSize = getPresenter().getPageSize();
-            if (!loading && lastVisibleItemPosition >= totalItemCount - 1 && totalItemCount % pageSize == 0) {
-                getPresenter().loadFriends(adapter.getCount() / pageSize + 1);
+
+            if (!loading && lastVisibleItemPosition >= totalItemCount - 1) {
+                getPresenter().loadFriends();
                 loading = true;
             }
         }

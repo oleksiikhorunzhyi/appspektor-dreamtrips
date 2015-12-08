@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -41,7 +41,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         apiErrorPresenter.setView(view);
         //
         dtlTransaction = snapper.getDtlTransaction(dtlMerchant.getId());
-        view.setPlace(dtlMerchant);
+        view.setMerchant(dtlMerchant);
 
         if (!TextUtils.isEmpty(dtlTransaction.getCode()))
             checkReceiptUploading();
@@ -175,7 +175,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
         void noConnection();
 
-        void setPlace(DtlMerchant DtlMerchant);
+        void setMerchant(DtlMerchant DtlMerchant);
 
         void openScanReceipt(DtlTransaction dtlTransaction);
     }

@@ -10,11 +10,11 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantsMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdatedEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchMerchantRequestEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.MerchantUpdatedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
@@ -45,7 +45,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
 
     List<DtlMerchant> dtlMerchants = new ArrayList<>();
 
-    public DtlMapPresenter(PlacesMapBundle bundle) {
+    public DtlMapPresenter(MerchantsMapBundle bundle) {
         dtlLocation = bundle.getLocation();
     }
 
@@ -62,7 +62,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
         super.dropView();
     }
 
-    public void onEventMainThread(PlacesUpdatedEvent event) {
+    public void onEventMainThread(MerchantUpdatedEvent event) {
         setMerchants();
     }
 
@@ -76,7 +76,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     private void setMerchants() {
         dtlMerchants.clear();
         for (DtlMerchantType type : DtlMerchantType.values()) {
-            dtlMerchants.addAll(db.getDtlPlaces(type));
+            dtlMerchants.addAll(db.getDtlMerchants(type));
         }
 
         performFiltering();
@@ -84,11 +84,11 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     }
 
     public void onMarkerClick(String merchantId) {
-        showPlaceInfo(Queryable.from(dtlMerchants).firstOrDefault(item -> item.getId().equals(merchantId)));
+        showMerchantInfo(Queryable.from(dtlMerchants).firstOrDefault(item -> item.getId().equals(merchantId)));
     }
 
-    private void showPlaceInfo(DtlMerchant place) {
-        view.showPlaceInfo(place);
+    private void showMerchantInfo(DtlMerchant merchant) {
+        view.showMerchantInfo(merchant);
     }
 
     private void performFiltering() {
@@ -112,16 +112,16 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
                 ? new LatLng(location.getLatitude(), location.getLongitude())
                 : dtlLocation.getCoordinates().asLatLng();
 
-        List<DtlMerchant> places = Queryable.from(dtlMerchants)
-                .filter(dtlPlace ->
-                        dtlPlace.applyFilter(dtlFilterDelegate.getDtlFilterData(),
+        List<DtlMerchant> merchants = Queryable.from(dtlMerchants)
+                .filter(dtlMerchant ->
+                        dtlMerchant.applyFilter(dtlFilterDelegate.getDtlFilterData(),
                                 currentLocation))
-                .filter(dtlPlace -> dtlPlace.containsQuery(query))
+                .filter(dtlMerchant -> dtlMerchant.containsQuery(query))
                 .toList();
 
-        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, places.size());
+        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, merchants.size());
 
-        return Observable.from(places).toList();
+        return Observable.from(merchants).toList();
     }
 
     private void onError(Throwable e) {
@@ -131,9 +131,9 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
     private void showPins(List<DtlMerchant> filtered) {
         if (view != null) {
             view.clearMap();
-            Queryable.from(filtered).forEachR(dtlPlace ->
-                    view.addPin(dtlPlace.getId(), new LatLng(dtlPlace.getCoordinates().getLat(),
-                            dtlPlace.getCoordinates().getLng()), dtlPlace.getPlaceType()));
+            Queryable.from(filtered).forEachR(dtlMerchant ->
+                    view.addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
+                            dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
             view.renderPins();
         }
     }
@@ -159,7 +159,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
         }
     }
 
-    public void onEventMainThread(DtlSearchPlaceRequestEvent event) {
+    public void onEventMainThread(DtlSearchMerchantRequestEvent event) {
         performFiltering(event.getSearchQuery());
     }
 
@@ -168,7 +168,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements 
 
         void clearMap();
 
-        void showPlaceInfo(DtlMerchant DtlMerchant);
+        void showMerchantInfo(DtlMerchant DtlMerchant);
 
         void prepareInfoWindow(int height);
 

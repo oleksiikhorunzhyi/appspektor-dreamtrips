@@ -1,23 +1,23 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
-import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.SuggestRestaurantCommand;
+import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestMerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSuggestMerchantPresenter.View> {
+public class DtlSuggestMerchantPresenter extends SuggestRestaurantBasePresenter<DtlSuggestMerchantPresenter.View> {
 
-    private DtlMerchant place;
+    private DtlMerchant merchant;
 
-    public DtlSuggestMerchantPresenter(SuggestPlaceBundle data) {
-        place = data.getPlace();
+    public DtlSuggestMerchantPresenter(SuggestMerchantBundle data) {
+        merchant = data.getMerchant();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.syncUiWithPlace(place);
+        view.syncUiWithMerchant(merchant);
         TrackingHelper.dtlSuggestMerchantView();
     }
 
@@ -25,7 +25,7 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
     public void submitClicked() {
         view.showProgress();
         DtlLead.Builder leadBuilder = new DtlLead.Builder()
-                .merchant(new DtlLead.Merchant(place.getId(), place.getDisplayName(), place.getCity()))
+                .merchant(new DtlLead.Merchant(merchant.getId(), merchant.getDisplayName(), merchant.getCity()))
                 .contact(new DtlLead.Contact(view.getContactName(), view.getPhone(), obtainContactTime()))
                 .rating(DtlLead.Rating.FOOD, view.getFoodRating())
                 .rating(DtlLead.Rating.SERVICE, view.getServiceRating())
@@ -33,9 +33,9 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
                 .rating(DtlLead.Rating.UNIQUENESS, view.getUniquenessRating())
                 .comment(view.getAdditionalInfo());
 
-        doRequest(new SuggestPlaceCommand(leadBuilder.build()),
+        doRequest(new SuggestRestaurantCommand(leadBuilder.build()),
                 aVoid -> {
-                    TrackingHelper.dtlSuggestMerchant(place);
+                    TrackingHelper.dtlSuggestMerchant(merchant);
                     view.hideProgress();
                     view.merchantSubmitted();
                 },
@@ -45,9 +45,9 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
                 });
     }
 
-    public interface View extends SuggestPlaceBasePresenter.View {
+    public interface View extends SuggestRestaurantBasePresenter.View {
 
-        void syncUiWithPlace(DtlMerchant place);
+        void syncUiWithMerchant(DtlMerchant merchant);
 
     }
 }

@@ -9,19 +9,19 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.InjectView;
 
-public class DtlCategoryDataInflater extends DtlMerchantDataInflater {
+public class DtlCategoryDataInflater extends DtlPlaceDataInflater {
 
-    protected DtlMerchantHelper helper;
+    protected DtlPlaceHelper helper;
     @InjectView(R.id.category_title)
     TextView category;
 
-    public DtlCategoryDataInflater(DtlMerchantHelper helper) {
+    public DtlCategoryDataInflater(DtlPlaceHelper helper) {
         this.helper = helper;
     }
 
     @Override
-    protected void onMerchantApply(DtlMerchant merchant) {
-        String categories = helper.getCategories(merchant);
+    protected void onPlaceApply(DtlMerchant place) {
+        String categories = helper.getCategories(place);
         if (!TextUtils.isEmpty(categories)) {
             category.setVisibility(View.VISIBLE);
             category.setText(categories);

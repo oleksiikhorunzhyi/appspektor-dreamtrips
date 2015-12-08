@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPres
 
 @Layout(R.layout.fragment_suggest_merchant)
 @MenuResource(R.menu.menu_suggest_merchant)
-public class DtlSuggestMerchantFragment extends SuggestMerchantBaseFragment<DtlSuggestMerchantPresenter>
+public class DtlSuggestMerchantFragment extends SuggestPlaceBaseFragment<DtlSuggestMerchantPresenter>
         implements DtlSuggestMerchantPresenter.View {
 
     @Override
@@ -21,8 +21,8 @@ public class DtlSuggestMerchantFragment extends SuggestMerchantBaseFragment<DtlS
     }
 
     @Override
-    public void syncUiWithMerchant(DtlMerchant merchant) {
-        restaurantName.setText(merchant.getDisplayName());
+    public void syncUiWithPlace(DtlMerchant place) {
+        restaurantName.setText(place.getDisplayName());
         restaurantName.setFocusable(false);
         restaurantName.setFocusableInTouchMode(false);
         restaurantName.setClickable(false);

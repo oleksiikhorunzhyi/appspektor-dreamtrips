@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.dtl.api.merchant.RateMerchantRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.place.RatePlaceRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
@@ -38,7 +38,7 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
 
     public void done() {
         if (stars != 0)
-            doRequest(new RateMerchantRequest(DtlMerchant.getId(),
+            doRequest(new RatePlaceRequest(DtlMerchant.getId(),
                     stars, dtlTransaction.getDtlTransactionResult().getId()));
     }
 

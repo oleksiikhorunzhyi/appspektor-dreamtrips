@@ -454,7 +454,7 @@ public class SnappyRepository {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
     }
 
-    public void saveDtlMerchants(DtlMerchantType type, List<DtlMerchant> places) {
+    public void saveDtlPlaces(DtlMerchantType type, List<DtlMerchant> places) {
         clearAllForKey(DTL_PLACES_PREFIX + type);
         putList(DTL_PLACES_PREFIX + type, places);
     }
@@ -468,7 +468,7 @@ public class SnappyRepository {
         return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
     }
 
-    public List<DtlMerchant> getDtlMerchants(DtlMerchantType type) {
+    public List<DtlMerchant> getDtlPlaces(DtlMerchantType type) {
         return readList(DTL_PLACES_PREFIX + type, DtlMerchant.class);
     }
 

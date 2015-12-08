@@ -27,7 +27,7 @@
             android:layout_height="wrap_content">
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/merchant_image"
+                android:id="@+id/place_image"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 fresco:actualImageScaleType="focusCrop"

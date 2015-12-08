@@ -6,8 +6,8 @@
     <string name="dtl_locations_or_caption">或</string>
     <string name="dtl_locations_select_nearby_cities">从附近选择</string>
     <string name="dtl_locations_select_popular">发现受欢迎的</string>
-    <string name="dtl_merchant_tab_offers">优惠</string>
-    <string name="dtl_merchant_tab_dining">餐饮</string>
+    <string name="dtl_place_tab_offers">优惠</string>
+    <string name="dtl_place_tab_dining">餐饮</string>
     <string name="dtl_place_list_empty_text">没有所选类型的地方</string>
     <string name="dtl_points_estimation_explanation">点数计算解释在这里</string>
     <string name="dtl_points_estimation_calculate_button_caption">计算</string>

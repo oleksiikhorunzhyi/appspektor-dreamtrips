@@ -47,7 +47,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
 
     @Override
     protected DtlPointsEstimationPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPointsEstimationPresenter(getArgs().getMerchantId());
+        return new DtlPointsEstimationPresenter(getArgs().getPlaceId());
     }
 
     @Override

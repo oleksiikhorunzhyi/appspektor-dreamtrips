@@ -15,8 +15,8 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     private final DtlMerchant DtlMerchant;
     private DtlTransaction dtlTransaction;
 
-    public DtlVerifyAmountPresenter(DtlMerchant merchant) {
-        this.DtlMerchant = merchant;
+    public DtlVerifyAmountPresenter(DtlMerchant place) {
+        this.DtlMerchant = place;
     }
 
     @Override

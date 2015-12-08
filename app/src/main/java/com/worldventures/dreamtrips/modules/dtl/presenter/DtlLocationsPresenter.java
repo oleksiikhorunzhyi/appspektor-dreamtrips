@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -94,7 +94,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
             db.saveSelectedDtlLocation(location);
             db.clearMerchantData();
         }
-        view.showMerchants(new MerchantsBundle(location));
+        view.showMerchants(new PlacesBundle(location));
     }
 
     private void setItems() {
@@ -193,7 +193,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
         void citiesLoadingStarted();
 
-        void showMerchants(MerchantsBundle bundle);
+        void showMerchants(PlacesBundle bundle);
 
         void showSearch();
     }

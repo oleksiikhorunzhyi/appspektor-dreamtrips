@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMapInfoPresenter.View> {
+public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapInfoPresenter.View> {
 
-    public DtlMapInfoPresenter(DtlMerchant merchant) {
-        super(merchant);
+    public DtlMapInfoPresenter(DtlMerchant place) {
+        super(place);
     }
 
     @Override
@@ -21,18 +21,18 @@ public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMa
         view.showLayout();
     }
 
-    public void onMerchantClick() {
-        eventBus.post(new ToggleMerchantSelectionEvent(merchant));
-        view.showDetails(merchant);
+    public void onPlaceClick() {
+        eventBus.post(new TogglePlaceSelectionEvent(place));
+        view.showDetails(place);
     }
 
     public void onSizeReady(int height) {
         eventBus.post(new DtlMapInfoReadyEvent(height));
     }
 
-    public interface View extends DtlMerchantCommonDetailsPresenter.View {
+    public interface View extends DtlPlaceCommonDetailsPresenter.View {
         void hideLayout();
         void showLayout();
-        void showDetails(DtlMerchant merchant);
+        void showDetails(DtlMerchant place);
     }
 }

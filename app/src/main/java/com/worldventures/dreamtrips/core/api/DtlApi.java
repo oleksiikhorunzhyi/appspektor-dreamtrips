@@ -23,26 +23,26 @@ public interface DtlApi {
     ArrayList<DtlLocation> getNearbyDtlLocations(@Query("ll") String latLng, @Query("query") String query);
 
     @GET("/api/dtl/v2/locations/{id}/merchants")
-    ArrayList<DtlMerchant> getDtlMerchants(@Path("id") String locationId);
+    ArrayList<DtlMerchant> getDtlPlaces(@Path("id") String locationId);
 
     @GET("/api/dtl/v2/merchants")
-    ArrayList<DtlMerchant> getNearbyDtlMerchants(@Query("ll") String ll);
+    ArrayList<DtlMerchant> getNearbyDtlPlaces(@Query("ll") String ll);
 
     @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/estimations")
-    EstimationPointsHolder estimatePoints(@Path("id") String merchantId,
+    EstimationPointsHolder estimatePoints(@Path("id") String placeId,
                                           @Field("bill_total") double price,
                                           @Field("checkin_time") String checkinTime);
 
     @POST("/api/dtl/v2/merchants/{id}/transactions")
-    DtlTransactionResult earnPoints(@Path("id") String merchantId,
+    DtlTransactionResult earnPoints(@Path("id") String placeId,
                                     @Body DtlTransaction.Request request);
 
     @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/ratings")
-    Void rate(@Path("id") String merchantId, @Field("rating") int stars,
+    Void rate(@Path("id") String placeId, @Field("rating") int stars,
               @Field("transaction_id") String transactionId);
 
     @POST("/api/dtl/v2/leads")
-    Void suggestLead(@Body DtlLead lead);
+    Void suggestPlace(@Body DtlLead lead);
 }

@@ -5,16 +5,16 @@ import android.support.annotation.StringRes;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.merchant.EstimatePointsRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.place.EstimatePointsRequest;
 
 public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
     public static final String BILL_TOTAL = "billTotal";
 
-    protected String merchantId;
+    protected String placeId;
 
-    public DtlPointsEstimationPresenter(String merchantId) {
-        this.merchantId = merchantId;
+    public DtlPointsEstimationPresenter(String placeId) {
+        this.placeId = placeId;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
         if (!validateInput(userInput)) return;
         //
         view.showProgress();
-        doRequest(new EstimatePointsRequest(merchantId,
+        doRequest(new EstimatePointsRequest(placeId,
                 Double.valueOf(userInput)), aDouble -> {
             view.showEstimatedPoints(aDouble.intValue());
         });

@@ -10,7 +10,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -133,7 +133,7 @@ public class DtlMerchant implements Parcelable {
         return operationDays;
     }
 
-    public DtlMerchantType getMerchantType() {
+    public DtlMerchantType getPlaceType() {
         return hasNoOffers() ? DtlMerchantType.DINING : DtlMerchantType.OFFER;
     }
 
@@ -268,10 +268,10 @@ public class DtlMerchant implements Parcelable {
     }
 
     private boolean checkAmenities(DtlFilterData filterData) {
-        List<DtlMerchantsFilterAttribute> selectedAmenities = filterData.getSelectedAmenities();
+        List<DtlPlacesFilterAttribute> selectedAmenities = filterData.getSelectedAmenities();
         return selectedAmenities == null || getAmenities() == null ||
                 !Collections.disjoint(selectedAmenities, Queryable.from(getAmenities()).map(element ->
-                                new DtlMerchantsFilterAttribute(element.getName())
+                                new DtlPlacesFilterAttribute(element.getName())
                 ).toList());
     }
 

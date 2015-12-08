@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -57,17 +57,17 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     TextView name;
     @InjectView(R.id.address)
     TextView address;
-    @InjectView(R.id.merchant_image)
-    SimpleDraweeView merchantImage;
+    @InjectView(R.id.place_image)
+    SimpleDraweeView placeImage;
 
-    DtlMerchantHelper helper;
+    DtlPlaceHelper helper;
 
     private DtlEnrollWizard dtlEnrollWizard;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        helper = new DtlMerchantHelper(activity);
+        helper = new DtlPlaceHelper(activity);
     }
 
     @Override
@@ -105,14 +105,14 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     }
 
 
-    public void setMerchant(DtlMerchant merchant) {
-        name.setText(merchant.getDisplayName());
-        if (!TextUtils.isEmpty(merchant.getAddress1())) {
-            address.setText(String.format("%s, %s, %s, %s", merchant.getAddress1(), merchant.getCity(),
-                    merchant.getState(), merchant.getZip()));
+    public void setPlace(DtlMerchant place) {
+        name.setText(place.getDisplayName());
+        if (!TextUtils.isEmpty(place.getAddress1())) {
+            address.setText(String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),
+                    place.getState(), place.getZip()));
         }
-        if (!merchant.getImages().isEmpty()) {
-            merchantImage.setImageURI(Uri.parse(merchant.getImages().get(0).getImagePath()));
+        if (!place.getImages().isEmpty()) {
+            placeImage.setImageURI(Uri.parse(place.getImages().get(0).getImagePath()));
         }
     }
 

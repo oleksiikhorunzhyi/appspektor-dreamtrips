@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/adapter_item_dtl_merchant">
+    tools:showIn="@layout/adapter_item_dtl_place">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/merchant_details_cover"
+        android:id="@+id/place_details_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -465,22 +465,22 @@
     <string name="terms_and_conditions_accept">決定參加</string>
     <string name="terms_and_conditions_reject">現在不參加</string>
 
-    <string name="camera">Camera</string>
+    <string name="camera">相機</string>
     <string name="add_from_facebook">從Facebook添加</string>
 
     <string name="photos_selected">%d 選擇</string>
 
     <string name="no_friends">您在這個列表中尚無朋友</string>
     <string name="feed_add_friends">添加朋友</string>
-    <string name="all_friends">All friends</string>
-    <string name="trip_view_and_book"><![CDATA[View & Book it]]></string>
+    <string name="all_friends">所有朋友</string>
+    <string name="trip_view_and_book"><![CDATA[查看並預定它]]></string>
     <string name="accept_all">接受所有請求</string>
-    <string name="request_count_desc">You have %d incoming Friend requests</string>
+    <string name="request_count_desc">您有%d個新交友請求</string>
 
-    <string name="user_mutual_friends">Mutual friends</string>
-    <string name="no_mutual_friends">You don\'t have any mutual friends</string>
+    <string name="user_mutual_friends">共同朋友</string>
+    <string name="no_mutual_friends">您沒有任何共同朋友</string>
 
-    <string name="photo_limitation_message">Please choose up to %d photos</string>
+    <string name="photo_limitation_message">請最多選擇%d張照片</string>
     <string name="pending">朋友</string>
 
 </resources>

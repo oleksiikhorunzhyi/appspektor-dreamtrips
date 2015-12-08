@@ -52,6 +52,35 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
         requestingPresenter.doRequest(new GetNearbyMerchantsRequest(location), this::placeLoaded);
     }
 
+    private void placeLoaded(List<DtlMerchant> dtlMerchants) {
+        this.merchants = dtlMerchants;
+        saveMerchants();
+        saveAmenities(dtlMerchants);
+        //
+        notifyListeners();
+    }
+
+    private void notifyListeners() {
+        checkListeners(listeners);
+        Queryable.from(listeners).forEachR(MerchantUpdatedListener::onMerchantsUploaded);
+    }
+
+    private void saveMerchants() {
+        db.saveDtlMerhants(merchants);
+    }
+
+    private void saveAmenities(List<DtlMerchant> dtlMerchants) {
+        Set<DtlMerchantAttribute> amenitiesSet = new HashSet<>();
+        Queryable.from(dtlMerchants).forEachR(dtlPlace -> {
+                    if (dtlPlace.getAmenities() != null)
+                        amenitiesSet.addAll(dtlPlace.getAmenities());
+                }
+        );
+
+        db.saveAmenities(amenitiesSet);
+    }
+
+
     /**
      * should be called in {@link Presenter#handleError(SpiceException)} to notify listeners about
      * failed merchant loading
@@ -97,28 +126,8 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
         return Queryable.from(getMerchants()).firstOrDefault(merchant -> merchant.getId().equals(id));
     }
 
-    private void placeLoaded(List<DtlMerchant> dtlMerchants) {
-        this.merchants = dtlMerchants;
-        db.saveDtlMerhants(merchants);
-        saveAmenities(dtlMerchants);
-        //
-        checkListeners(listeners);
-        Queryable.from(listeners).forEachR(MerchantUpdatedListener::onMerchantsUploaded);
-    }
-
     private void getCachedMerchants() {
         merchants = db.getDtlMerchants();
-    }
-
-    private void saveAmenities(List<DtlMerchant> DtlMerchants) {
-        Set<DtlMerchantAttribute> amenitiesSet = new HashSet<>();
-        Queryable.from(DtlMerchants).forEachR(dtlPlace -> {
-                    if (dtlPlace.getAmenities() != null)
-                        amenitiesSet.addAll(dtlPlace.getAmenities());
-                }
-        );
-
-        db.saveAmenities(amenitiesSet);
     }
 
     public interface MerchantUpdatedListener {

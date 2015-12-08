@@ -264,7 +264,8 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == REQUESTER_ID) {
+        if (view.isVisibleOnScreen() && event.getRequesterID() == REQUESTER_ID) {
+            eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
 
             attachImages(Queryable.from(event.getImages()).toList());

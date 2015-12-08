@@ -71,38 +71,36 @@ public class DtlPlaceHelper {
         StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 
-        if (DtlMerchant.getOperationDays() != null) {
-            DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-            OperationDay operationDay = Queryable.from(DtlMerchant.getOperationDays())
-                    .firstOrDefault(element -> element.getDayOfWeek() == current);
+        OperationDay operationDay = Queryable.from(DtlMerchant.getOperationDays())
+                .firstOrDefault(element -> element.getDayOfWeek() == current);
 
-            if (operationDay != null && operationDay.getOperationHours() != null) {
-                for (OperationHours hours : operationDay.getOperationHours()) {
-                    TimeZone timeZone = TimeZone.getDefault();
-                    LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
-                    LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
-                    //
-                    DateTime dateTimeStart = DateTime.now().withTime(localTimeStart.getHourOfDay(),
-                            localTimeStart.getMinuteOfHour(), 0, 0);
-                    DateTime dateTimeEnd = DateTime.now().withTime(localTimeEnd.getHourOfDay(),
-                            localTimeEnd.getMinuteOfHour(), 0, 0);
+        if (operationDay != null && operationDay.getOperationHours() != null) {
+            for (OperationHours hours : operationDay.getOperationHours()) {
+                TimeZone timeZone = TimeZone.getDefault();
+                LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
+                LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
+                //
+                DateTime dateTimeStart = DateTime.now().withTime(localTimeStart.getHourOfDay(),
+                        localTimeStart.getMinuteOfHour(), 0, 0);
+                DateTime dateTimeEnd = DateTime.now().withTime(localTimeEnd.getHourOfDay(),
+                        localTimeEnd.getMinuteOfHour(), 0, 0);
 
-                    if (dateTimeEnd.isBefore(dateTimeStart)) {
-                        dateTimeEnd = dateTimeEnd.withFieldAdded(DurationFieldType.days(), 1);
-                    }
-
-                    if (!openNow) {
-                        DateTime currentDate = DateTime.now();
-                        openNow = currentDate.isAfter(dateTimeStart)
-                                && currentDate.isBefore(dateTimeEnd);
-                    }
-
-                    stringBuilder.append(String.format("%s - %s",
-                            localTimeStart.toString(OPERATION_TIME_FORMATTER),
-                            localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
-                    stringBuilder.append(", ");
+                if (dateTimeEnd.isBefore(dateTimeStart)) {
+                    dateTimeEnd = dateTimeEnd.withFieldAdded(DurationFieldType.days(), 1);
                 }
+
+                if (!openNow) {
+                    DateTime currentDate = DateTime.now();
+                    openNow = currentDate.isAfter(dateTimeStart)
+                            && currentDate.isBefore(dateTimeEnd);
+                }
+
+                stringBuilder.append(String.format("%s - %s",
+                        localTimeStart.toString(OPERATION_TIME_FORMATTER),
+                        localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
+                stringBuilder.append(", ");
             }
         }
 

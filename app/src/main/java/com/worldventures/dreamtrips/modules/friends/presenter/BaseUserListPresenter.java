@@ -33,7 +33,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
     private int previousTotal = 0;
     private boolean loading = true;
-
+    private int nextPage = 1;
     protected List<User> users = new ArrayList<>();
     protected List<Circle> circles;
 
@@ -69,9 +69,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void reload() {
+        nextPage = 1;
         resetLazyLoadFields();
         view.startLoading();
-        doRequest(getUserListQuery(1), this::onUsersLoaded);
+        doRequest(getUserListQuery(nextPage), this::onUsersLoaded);
     }
 
     protected void onUsersLoaded(ArrayList<User> freshUsers) {
@@ -82,6 +83,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     protected void onUsersAdded(ArrayList<User> freshUsers) {
+        nextPage++;
         users.addAll(freshUsers);
         view.refreshUsers(users);
         view.finishLoading();
@@ -101,10 +103,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading
-                && lastVisible >= totalItemCount - 1) {
+        if (!loading && lastVisible >= totalItemCount - 1) {
             view.startLoading();
-            doRequest(getUserListQuery((int) (Math.ceil((double) users.size() / getPerPageCount()) + 1)), this::onUsersAdded);
+            doRequest(getUserListQuery(nextPage), this::onUsersAdded);
             loading = true;
         }
     }

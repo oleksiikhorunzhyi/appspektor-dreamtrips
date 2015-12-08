@@ -239,7 +239,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
 
     protected int getPerPageCount() {
-        return 30;
+        return 100;
     }
 
     public interface View extends Presenter.View {

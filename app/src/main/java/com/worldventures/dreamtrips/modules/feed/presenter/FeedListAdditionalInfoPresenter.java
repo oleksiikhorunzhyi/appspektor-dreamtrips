@@ -69,7 +69,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
     }
 
     public int getPageSize() {
-        return 20;
+        return 100;
     }
 
     public void onEvent(UnfriendEvent event) {

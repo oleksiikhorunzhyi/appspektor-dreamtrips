@@ -76,6 +76,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     protected void onUsersLoaded(ArrayList<User> freshUsers) {
+        nextPage++;
         users.clear();
         users.addAll(freshUsers);
         view.refreshUsers(users);

@@ -30,7 +30,8 @@ public class DtlPlaceInfoInflater extends DtlPlaceDataInflater {
         title.setText(place.getDisplayName());
         pricing.setRating(place.getBudget());
 
-        if (place.hasOffer(DtlOffer.TYPE_POINTS)) {
+        if (place.hasOffer(DtlOffer.TYPE_POINTS) &&
+                place.getOperationDays() != null && !place.getOperationDays().isEmpty()) {
             operationalTime.setVisibility(View.VISIBLE);
             operationalTime.setText(helper.getOperationalTime(place));
         } else operationalTime.setVisibility(View.GONE);

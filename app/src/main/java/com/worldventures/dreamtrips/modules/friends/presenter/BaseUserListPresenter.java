@@ -106,8 +106,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
         }
         if (!loading && lastVisible >= totalItemCount - 1) {
             view.startLoading();
-            doRequest(getUserListQuery(nextPage), this::onUsersAdded);
             loading = true;
+            doRequest(getUserListQuery(nextPage), this::onUsersAdded);
         }
     }
 

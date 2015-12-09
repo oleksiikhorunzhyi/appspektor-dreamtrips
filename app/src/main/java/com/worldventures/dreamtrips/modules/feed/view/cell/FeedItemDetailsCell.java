@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemCommonDataHelper;
@@ -135,6 +136,8 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
             return Queryable.from(fragmentCompass.getCurrentFragment().getChildFragmentManager().getFragments()).filter(element -> {
                 return ((BucketItem.BucketType) element.getArguments().getSerializable("BUNDLE_TYPE")).getName().equals(((BucketItem) getModelObject().getItem()).getType());
             }).first().getChildFragmentManager().getFragments().get(0).getChildFragmentManager();
+        } else if (fragmentCompass.getCurrentFragment() instanceof FeedItemDetailsFragment) {
+            return fragmentCompass.getCurrentFragment().getChildFragmentManager();
         }
 
         return fragmentManager;

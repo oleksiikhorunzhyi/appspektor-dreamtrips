@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.module.dtl.store;
+package com.worldventures.dreamtrips.module.dtl.repository;
 
 import android.location.Location;
 
@@ -7,7 +7,8 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,9 +26,9 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DtlLocationStoreTest {
+public class DtlLocationRepositoryTest {
 
-    private DtlLocationStore dtlLocationStore;
+    private DtlLocationRepository dtlLocationRepository;
     @Mock
     private RequestingPresenter requestingPresenter;
     @Mock
@@ -37,8 +38,8 @@ public class DtlLocationStoreTest {
 
     @Before
     public void beforeEachTest() {
-        dtlLocationStore = new DtlLocationStore(db);
-        dtlLocationStore.setRequestingPresenter(requestingPresenter);
+        dtlLocationRepository = new DtlLocationRepository(db);
+        dtlLocationRepository.setRequestingPresenter(requestingPresenter);
     }
 
     @Test
@@ -47,16 +48,16 @@ public class DtlLocationStoreTest {
                 mock(DtlLocation.class)));
 
         doAnswer(invocation -> {
-            ((DreamSpiceManager.SuccessListener<List<DtlLocation>>)invocation.getArguments()[1])
+            ((DreamSpiceManager.SuccessListener<List<DtlLocation>>) invocation.getArguments()[1])
                     .onRequestSuccess(locations);
             return null;
         }).when(requestingPresenter).doRequest(any(SpiceRequest.class),
                 any(DreamSpiceManager.SuccessListener.class));
 
         List<DtlLocation> locationsObtained = new ArrayList<>();
-        dtlLocationStore.attachListener(locations1 -> locationsObtained.addAll(locations1));
+        dtlLocationRepository.attachListener(locations1 -> locationsObtained.addAll(locations1));
 
-        dtlLocationStore.loadNearbyLocations(defaultLocation);
+        dtlLocationRepository.loadNearbyLocations(defaultLocation);
 
         assertThat(locationsObtained).isEqualTo(locations);
     }
@@ -65,21 +66,21 @@ public class DtlLocationStoreTest {
     public void persistLocation_LocationPersisted() {
         DtlLocation location = mock(DtlLocation.class);
 
-        dtlLocationStore.persistLocation(location);
+        dtlLocationRepository.persistLocation(location);
 
-        assertThat(dtlLocationStore.getSelectedLocation()).isEqualTo(location);
+        assertThat(dtlLocationRepository.getSelectedLocation()).isEqualTo(location);
     }
 
     @Test
     public void persistLocation_LocationUpdated() {
         DtlLocation locationOld = new DtlLocation();
         locationOld.setId("oldId");
-        dtlLocationStore.persistLocation(locationOld);
+        dtlLocationRepository.persistLocation(locationOld);
 
         DtlLocation locationNew = new DtlLocation();
         locationNew.setId("newId");
-        dtlLocationStore.persistLocation(locationNew);
+        dtlLocationRepository.persistLocation(locationNew);
 
-        assertThat(dtlLocationStore.getSelectedLocation()).isEqualTo(locationNew);
+        assertThat(dtlLocationRepository.getSelectedLocation()).isEqualTo(locationNew);
     }
 }

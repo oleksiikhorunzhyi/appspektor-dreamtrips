@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.module.dtl.store;
+package com.worldventures.dreamtrips.module.dtl.repository;
 
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -6,7 +6,8 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.junit.Before;
@@ -25,9 +26,9 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DtlMerchantStoreTest {
+public class DtlMerchantRepositoryTest {
 
-    private DtlMerchantStore dtlMerchantStore;
+    private DtlMerchantRepository dtlMerchantRepository;
     @Mock
     private RequestingPresenter requestingPresenter;
     @Mock
@@ -37,8 +38,8 @@ public class DtlMerchantStoreTest {
 
     @Before
     public void beforeEachTest() {
-        dtlMerchantStore = new DtlMerchantStore(db);
-        dtlMerchantStore.setRequestingPresenter(requestingPresenter);
+        dtlMerchantRepository = new DtlMerchantRepository(db);
+        dtlMerchantRepository.setRequestingPresenter(requestingPresenter);
     }
 
     @Test
@@ -47,16 +48,16 @@ public class DtlMerchantStoreTest {
                 mock(DtlMerchant.class)));
 
         doAnswer(invocation -> {
-            ((DreamSpiceManager.SuccessListener<List<DtlMerchant>>)invocation.getArguments()[1])
+            ((DreamSpiceManager.SuccessListener<List<DtlMerchant>>) invocation.getArguments()[1])
                     .onRequestSuccess(items);
             return null;
         }).when(requestingPresenter).doRequest(any(SpiceRequest.class),
                 any(DreamSpiceManager.SuccessListener.class));
 
 
-        dtlMerchantStore.loadMerchants(defaultLocation);
+        dtlMerchantRepository.loadMerchants(defaultLocation);
 
-        assertThat(dtlMerchantStore.getMerchants()).isEqualTo(items);
+        assertThat(dtlMerchantRepository.getMerchants()).isEqualTo(items);
     }
 
     public static DtlLocation getDefaultLocation() {

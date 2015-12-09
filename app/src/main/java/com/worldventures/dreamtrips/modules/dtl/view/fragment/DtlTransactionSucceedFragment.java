@@ -67,10 +67,9 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
             shareBundle.setShareType(type);
             shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));
             //don't attach media if website exist
-            if (TextUtils.isEmpty(place.getWebsite())) {
-                DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
-                if (media != null) shareBundle.setImageUrl(media.getImagePath());
-            } else shareBundle.setShareUrl(place.getWebsite());
+            shareBundle.setShareUrl(place.getWebsite());
+            DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
+            if (media != null) shareBundle.setImageUrl(media.getImagePath());
             router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
                     .data(shareBundle)
                     .build());

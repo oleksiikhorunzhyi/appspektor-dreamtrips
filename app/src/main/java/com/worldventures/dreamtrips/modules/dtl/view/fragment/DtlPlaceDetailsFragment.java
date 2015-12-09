@@ -273,11 +273,9 @@ public class DtlPlaceDetailsFragment
                             R.string.dtl_details_share_title :
                             R.string.dtl_details_share_title_without_points,
                     place.getDisplayName()));
-            //don't attach media if website exist
-            if (TextUtils.isEmpty(place.getWebsite())) {
-                DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
-                if (media != null) shareBundle.setImageUrl(media.getImagePath());
-            } else shareBundle.setShareUrl(place.getWebsite());
+            shareBundle.setShareUrl(place.getWebsite());
+            DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
+            if (media != null) shareBundle.setImageUrl(media.getImagePath());
             //
             getPresenter().trackSharing(type);
             //

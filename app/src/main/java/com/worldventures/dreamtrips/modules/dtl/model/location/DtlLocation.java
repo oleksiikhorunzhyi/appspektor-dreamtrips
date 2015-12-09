@@ -32,6 +32,10 @@ public class DtlLocation implements Parcelable {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public DtlLocationType getType() {
         return type;
     }

@@ -55,6 +55,8 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     TextView progressText;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    @InjectView(R.id.search_hint)
+    TextView searchHint;
     @InjectView(R.id.progress)
     View progress;
 
@@ -135,6 +137,11 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     public void startLoading() {
         progress.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setSearchHintVisibility(boolean visible) {
+        searchHint.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override

@@ -42,9 +42,9 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflate
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.util.ImageTextItem;
@@ -273,9 +273,11 @@ public class DtlPlaceDetailsFragment
                             R.string.dtl_details_share_title :
                             R.string.dtl_details_share_title_without_points,
                     place.getDisplayName()));
-            shareBundle.setShareUrl(place.getWebsite());
-            DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
-            if (media != null) shareBundle.setImageUrl(media.getImagePath());
+            //don't attach media if website exist
+            if (TextUtils.isEmpty(place.getWebsite())) {
+                DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
+                if (media != null) shareBundle.setImageUrl(media.getImagePath());
+            } else shareBundle.setShareUrl(place.getWebsite());
             //
             getPresenter().trackSharing(type);
             //

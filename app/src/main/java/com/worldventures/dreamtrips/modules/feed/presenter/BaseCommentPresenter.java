@@ -52,6 +52,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     String comment;
     private int page = 1;
     private int commentsCount = 0;
+    private boolean loadInitiated;
     private UidItemDelegate uidItemDelegate;
 
     @Inject
@@ -65,15 +66,28 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        loadComments();
-        loadLikes();
         view.setComment(comment);
+        checkCommentsAndLikesToLoad();
     }
 
     @Override
     public void onInjected() {
         super.onInjected();
         entityManager.setRequestingPresenter(this);
+    }
+
+    /** Request comments and likes only once per view loading if suitable count > 0 */
+    protected void checkCommentsAndLikesToLoad() {
+        if (loadInitiated) return;
+        //
+        if (feedEntity.getCommentsCount() > 0) {
+            loadComments();
+            loadInitiated = true;
+        }
+        if (feedEntity.getLikesCount() > 0) {
+            loadLikes();
+            loadInitiated = true;
+        }
     }
 
     private void loadComments() {

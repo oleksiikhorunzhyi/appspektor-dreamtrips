@@ -67,9 +67,9 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
             feedEntity = feedEntityHolder.getItem();
             feedItem.setItem(feedEntity);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
+            checkCommentsAndLikesToLoad();
             //
-            if (view.isTabletLandscape())
-                view.showAdditionalInfo(feedEntity.getOwner());
+            if (view.isTabletLandscape()) view.showAdditionalInfo(feedEntity.getOwner());
         }, spiceException -> Timber.e(spiceException, TAG));
     }
 

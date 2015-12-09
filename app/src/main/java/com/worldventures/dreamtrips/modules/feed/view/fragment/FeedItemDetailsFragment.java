@@ -39,6 +39,7 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     View feedDetailsRightSpace;
 
     private FragmentCompass childCompass;
+    private int loadMoreOffset;
 
     @Override
     protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     public void setFeedItem(FeedItem feedItem) {
         adapter.addItem(0, feedItem);
         adapter.notifyItemInserted(0);
+        loadMoreOffset = 1;
         //todo until Trip becomes as all normal entities
         if (feedItem instanceof TripFeedItem) {
             if (additionalContainer != null) additionalContainer.setVisibility(View.GONE);
@@ -100,11 +102,11 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
 
     @Override
     protected int getAdditionalItemsCount() {
-        return super.getAdditionalItemsCount() + 1;
+        return super.getAdditionalItemsCount() + loadMoreOffset;
     }
 
     @Override
     protected int getLoadMorePosition() {
-        return super.getLoadMorePosition() + 1;
+        return super.getLoadMorePosition() + loadMoreOffset;
     }
 }

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -25,7 +25,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantStore dtlMerchantStore;
+    DtlMerchantRepository dtlMerchantRepository;
     //
     @State
     boolean initialized;
@@ -40,7 +40,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchantStore.setRequestingPresenter(this);
+        dtlMerchantRepository.setRequestingPresenter(this);
     }
 
     @Override
@@ -57,23 +57,23 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void loadPlaces() {
-        dtlMerchantStore.loadMerchants(location);
+        dtlMerchantRepository.loadMerchants(location);
     }
 
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
-        dtlMerchantStore.onMerchantLoadingError(error);
+        dtlMerchantRepository.onMerchantLoadingError(error);
     }
 
     public void setTabs() {
-        view.setTypes(dtlMerchantStore.getDtlMerchantTypes());
+        view.setTypes(dtlMerchantRepository.getDtlMerchantTypes());
         view.updateSelection();
     }
 
     public Bundle prepareArgsForTab(int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DtlPlacesListFragment.EXTRA_TYPE, dtlMerchantStore.getDtlMerchantTypes().get(position));
+        bundle.putSerializable(DtlPlacesListFragment.EXTRA_TYPE, dtlMerchantRepository.getDtlMerchantTypes().get(position));
         return bundle;
     }
 
@@ -81,7 +81,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        String newTabName = dtlMerchantStore.getDtlMerchantTypes().get(newPosition).equals(DtlMerchantType.OFFER) ?
+        String newTabName = dtlMerchantRepository.getDtlMerchantTypes().get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
         TrackingHelper.dtlPlacesTab(newTabName);
     }

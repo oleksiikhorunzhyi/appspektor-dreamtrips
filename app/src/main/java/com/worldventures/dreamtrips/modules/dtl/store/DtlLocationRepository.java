@@ -12,13 +12,13 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DtlLocationStore extends RequestingCachingBaseStore {
+public class DtlLocationRepository extends RequestingCachingBaseStore {
 
     private DtlLocation currentLocation;
     //
     private List<LocationsLoadedListener> loadedListeners = new ArrayList<>();
 
-    public DtlLocationStore(SnappyRepository db) {
+    public DtlLocationRepository(SnappyRepository db) {
         super(db);
         currentLocation = db.getSelectedDtlLocation();
     }

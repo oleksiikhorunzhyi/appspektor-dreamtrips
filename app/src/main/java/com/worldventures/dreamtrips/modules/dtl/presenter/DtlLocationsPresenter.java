@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -25,10 +25,10 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
-implements DtlLocationStore.LocationsLoadedListener {
+implements DtlLocationRepository.LocationsLoadedListener {
 
     @Inject
-    DtlLocationStore dtlLocationStore;
+    DtlLocationRepository dtlLocationRepository;
     //
     @State
     ArrayList<DtlLocation> dtlLocations;
@@ -40,14 +40,14 @@ implements DtlLocationStore.LocationsLoadedListener {
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlLocationStore.setRequestingPresenter(this);
+        dtlLocationRepository.setRequestingPresenter(this);
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlLocationStore.attachListener(this);
+        dtlLocationRepository.attachListener(this);
         //
         if (dtlLocations != null || searchLocations != null) {
             setItems();
@@ -66,7 +66,7 @@ implements DtlLocationStore.LocationsLoadedListener {
         if (event.getLocation() != null) {
             userGpsLocation = event.getLocation();
             view.citiesLoadingStarted();
-            dtlLocationStore.loadNearbyLocations(userGpsLocation);
+            dtlLocationRepository.loadNearbyLocations(userGpsLocation);
         } else {
             view.finishLoading();
             view.showSearch();
@@ -80,7 +80,7 @@ implements DtlLocationStore.LocationsLoadedListener {
         setItems();
         //
         if (dtlLocations.isEmpty()) view.showSearch();
-        else if (dtlLocationStore.getSelectedLocation() == null) selectNearest(userGpsLocation);
+        else if (dtlLocationRepository.getSelectedLocation() == null) selectNearest(userGpsLocation);
     }
 
     private void selectNearest(Location currentLocation) {
@@ -90,8 +90,8 @@ implements DtlLocationStore.LocationsLoadedListener {
     }
 
     public void onLocationSelected(DtlLocation location) {
-        trackLocationSelection(dtlLocationStore.getSelectedLocation(), location);
-        dtlLocationStore.persistLocation(location);
+        trackLocationSelection(dtlLocationRepository.getSelectedLocation(), location);
+        dtlLocationRepository.persistLocation(location);
         view.showMerchants(new PlacesBundle(location));
     }
 

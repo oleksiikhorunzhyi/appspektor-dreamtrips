@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -30,7 +30,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.View> implements
-        DtlFilterDelegate.FilterListener, DtlMerchantStore.MerchantUpdatedListener {
+        DtlFilterDelegate.FilterListener, DtlMerchantRepository.MerchantUpdatedListener {
 
     @Inject
     SnappyRepository db;
@@ -39,7 +39,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantStore dtlMerchantStore;
+    DtlMerchantRepository dtlMerchantRepository;
 
     protected DtlMerchantType placeType;
 
@@ -53,7 +53,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     public void onInjected() {
         super.onInjected();
         dtlFilterDelegate.addListener(this);
-        dtlMerchantStore.attachListener(this);
+        dtlMerchantRepository.attachListener(this);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
     @Override
     public void dropView() {
         dtlFilterDelegate.removeListener(this);
-        dtlMerchantStore.detachListener(this);
+        dtlMerchantRepository.detachListener(this);
         super.dropView();
     }
 
@@ -112,7 +112,7 @@ public class DtlPlacesListPresenter extends Presenter<DtlPlacesListPresenter.Vie
         LatLng currentLatLng = LocationHelper.getAcceptedLocation(location, dtlLocation);
         //
         List<DtlMerchant> merchants = Queryable
-                .from(dtlMerchantStore.getMerchants())
+                .from(dtlMerchantRepository.getMerchants())
                 .filter(DtlMerchantsPredicate.Builder.create()
                         .withDtlFilterData(dtlFilterDelegate.getDtlFilterData())
                         .withLatLng(currentLatLng)

@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -30,7 +30,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
-        DtlFilterDelegate.FilterListener, DtlMerchantStore.MerchantUpdatedListener {
+        DtlFilterDelegate.FilterListener, DtlMerchantRepository.MerchantUpdatedListener {
 
     @Inject
     SnappyRepository db;
@@ -39,7 +39,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantStore dtlMerchantStore;
+    DtlMerchantRepository dtlMerchantRepository;
 
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
@@ -53,7 +53,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchantStore.attachListener(this);
+        dtlMerchantRepository.attachListener(this);
         dtlFilterDelegate.addListener(this);
     }
 
@@ -65,7 +65,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
 
     @Override
     public void dropView() {
-        dtlMerchantStore.detachListener(this);
+        dtlMerchantRepository.detachListener(this);
         dtlFilterDelegate.removeListener(this);
         super.dropView();
     }
@@ -112,7 +112,7 @@ public class DtlMapPresenter extends Presenter<DtlMapPresenter.View> implements
 
     private Observable<List<DtlMerchant>> mapToMerchantList(Location location, String query) {
         return Observable.from(
-                Queryable.from(dtlMerchantStore.getMerchants())
+                Queryable.from(dtlMerchantRepository.getMerchants())
                         .filter(DtlMerchantsPredicate.Builder.create()
                                 .withDtlFilterData(dtlFilterDelegate.getDtlFilterData())
                                 .withLatLng(LocationHelper.getAcceptedLocation(location, dtlLocation))

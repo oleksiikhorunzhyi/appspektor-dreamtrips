@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -27,7 +27,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     @Inject
     LocationDelegate gpsLocationDelegate;
     @Inject
-    DtlLocationStore dtlLocationStore;
+    DtlLocationRepository dtlLocationRepository;
 
     @Override
     public void takeView(View view) {
@@ -35,7 +35,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         if (initialized) return;
         initialized = true;
         //
-        DtlLocation dtlLocation = dtlLocationStore.getSelectedLocation();
+        DtlLocation dtlLocation = dtlLocationRepository.getSelectedLocation();
         if (dtlLocation != null) {
             TrackingHelper.dtlLocationLoaded(dtlLocation.getId());
             view.openMerchants(new PlacesBundle(dtlLocation));

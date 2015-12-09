@@ -17,14 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DtlMerchantStore extends RequestingCachingBaseStore {
+public class DtlMerchantRepository extends RequestingCachingBaseStore {
 
     private List<DtlMerchantType> dtlMerchantTypes;
     private List<DtlMerchant> merchants;
     //
     private List<MerchantUpdatedListener> listeners = new ArrayList<>();
 
-    public DtlMerchantStore(SnappyRepository db) {
+    public DtlMerchantRepository(SnappyRepository db) {
         super(db);
         dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
     }
@@ -72,7 +72,7 @@ public class DtlMerchantStore extends RequestingCachingBaseStore {
     }
 
     /**
-     * Attach listener to {@link DtlMerchantStore} to notify about changes
+     * Attach listener to {@link DtlMerchantRepository} to notify about changes
      * should be called in {@link Presenter#onInjected()}
      * @param merchantUpdatedListener listener
      */
@@ -81,7 +81,7 @@ public class DtlMerchantStore extends RequestingCachingBaseStore {
     }
 
     /**
-     * Detach listener from {@link DtlMerchantStore}
+     * Detach listener from {@link DtlMerchantRepository}
      * should be called in {@link Presenter#dropView()}
      * @param merchantUpdatedListener listener
      */

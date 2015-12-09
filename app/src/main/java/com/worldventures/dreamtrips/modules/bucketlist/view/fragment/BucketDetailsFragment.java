@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -271,7 +272,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void done() {
-        getActivity().onBackPressed();
+        if (getActivity() instanceof ComponentActivity)
+            getActivity().onBackPressed();
     }
 
     @Override

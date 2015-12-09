@@ -49,7 +49,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @State
     FeedEntity feedEntity;
     @State
-    String comment;
+    String draftComment;
     private int page = 1;
     private int commentsCount = 0;
     private boolean loadInitiated;
@@ -66,7 +66,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        view.setComment(comment);
+        view.setDraftComment(draftComment);
         checkCommentsAndLikesToLoad();
     }
 
@@ -99,12 +99,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), this::onLikersLoaded);
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDraftComment(String comment) {
+        this.draftComment = comment;
     }
 
     public void post() {
-        entityManager.createComment(feedEntity, comment);
+        entityManager.createComment(feedEntity, draftComment);
     }
 
 
@@ -264,7 +264,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         void updateComment(Comment comment);
 
-        void setComment(String comment);
+        void setDraftComment(String comment);
 
         void setLoading(boolean loading);
 

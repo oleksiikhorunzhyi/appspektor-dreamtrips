@@ -65,7 +65,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             super.onTextChanged(s, start, before, count);
             String text = s.toString().trim();
-            getPresenter().setComment(text);
+            getPresenter().setDraftComment(text);
             post.setEnabled(text.length() > 0);
         }
     };
@@ -207,7 +207,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     }
 
     @Override
-    public void setComment(String comment) {
+    public void setDraftComment(String comment) {
         input.setText(comment);
     }
 

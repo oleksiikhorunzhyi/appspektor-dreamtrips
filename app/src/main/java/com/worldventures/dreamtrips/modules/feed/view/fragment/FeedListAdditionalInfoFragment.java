@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -90,6 +92,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         adapter.registerCell(User.class, FeedFriendCell.class);
         friendsView.setAdapter(adapter);
         friendsView.setLayoutManager(new NestedLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        friendsView.addItemDecoration(new SimpleListDividerDecorator(ResourcesCompat.getDrawable(getResources(), R.drawable.list_divider, null), true));
     }
 
     @Override

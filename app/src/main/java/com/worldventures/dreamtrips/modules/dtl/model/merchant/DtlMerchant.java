@@ -9,8 +9,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -133,7 +133,7 @@ public class DtlMerchant implements Parcelable {
         return operationDays;
     }
 
-    public DtlMerchantType getPlaceType() {
+    public DtlMerchantType getMerchantType() {
         return hasNoOffers() ? DtlMerchantType.DINING : DtlMerchantType.OFFER;
     }
 

@@ -17,14 +17,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_place)
-public class DtlPlaceCell extends AbstractCell<DtlMerchant> implements SelectableCell {
+public class DtlMerchantCell extends AbstractCell<DtlMerchant> implements SelectableCell {
 
     DtlPlaceCommonDataInflater commonDataInflater;
     DtlPlaceInfoInflater categoryDataInflater;
 
     private SelectableDelegate selectableDelegate;
 
-    public DtlPlaceCell(View view) {
+    public DtlMerchantCell(View view) {
         super(view);
         DtlPlaceHelper helper = new DtlPlaceHelper(view.getContext());
         commonDataInflater = new DtlPlaceSingleImageDataInflater(helper);
@@ -37,8 +37,6 @@ public class DtlPlaceCell extends AbstractCell<DtlMerchant> implements Selectabl
     protected void syncUIStateWithModel() {
         commonDataInflater.apply(getModelObject());
         categoryDataInflater.apply(getModelObject());
-
-
         itemView.setSelected(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
@@ -47,7 +45,7 @@ public class DtlPlaceCell extends AbstractCell<DtlMerchant> implements Selectabl
         if (!selectableDelegate.isSelected(getAdapterPosition()))
             selectableDelegate.toggleSelection(getAdapterPosition());
         //
-        getEventBus().post(new PlaceClickedEvent(getModelObject()));
+        getEventBus().post(new PlaceClickedEvent(getModelObject().getId()));
     }
 
     @Override

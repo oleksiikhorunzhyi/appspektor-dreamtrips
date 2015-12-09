@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPlaceCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
 
 import java.util.List;
 
@@ -85,7 +85,7 @@ public class DtlPlacesListFragment
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
-        adapter.registerCell(DtlMerchant.class, DtlPlaceCell.class);
+        adapter.registerCell(DtlMerchant.class, DtlMerchantCell.class);
 
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
@@ -101,6 +101,8 @@ public class DtlPlacesListFragment
 
     @Override
     public void setItems(List<DtlMerchant> places) {
+        if (places != null && !places.isEmpty()) hideProgress();
+        //
         adapter.setItems(places);
         stateDelegate.restoreStateIfNeeded();
     }

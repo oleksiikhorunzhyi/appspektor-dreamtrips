@@ -32,9 +32,9 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlCategoryDataInflater;
@@ -42,9 +42,9 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflate
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceManyImagesDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.util.ImageTextItem;
@@ -58,7 +58,7 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_place_details)
 public class DtlPlaceDetailsFragment
-        extends RxBaseFragmentWithArgs<DtlPlaceDetailsPresenter, PlaceDetailsBundle>
+        extends RxBaseFragmentWithArgs<DtlPlaceDetailsPresenter, DtlMerchantDetailsBundle>
         implements DtlPlaceDetailsPresenter.View {
 
     private static final int REQUEST_CHECK_SETTINGS = 1489;
@@ -106,7 +106,7 @@ public class DtlPlaceDetailsFragment
 
     @Override
     protected DtlPlaceDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlaceDetailsPresenter(getArgs().getPlace());
+        return new DtlPlaceDetailsPresenter(getArgs().getId());
     }
 
     @Override
@@ -260,7 +260,7 @@ public class DtlPlaceDetailsFragment
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(false)
                 .fragmentManager(getFragmentManager())
-                .data(new PlacesMapBundle(placesBundle.getLocation(), true))
+                .data(new DtlMapBundle(placesBundle.getLocation(), true))
                 .build());
     }
 
@@ -274,8 +274,11 @@ public class DtlPlaceDetailsFragment
                             R.string.dtl_details_share_title_without_points,
                     place.getDisplayName()));
             shareBundle.setShareUrl(place.getWebsite());
-            DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
-            if (media != null) shareBundle.setImageUrl(media.getImagePath());
+            // don't attach media is website is attached, this image will go nowhere
+            if (TextUtils.isEmpty(place.getWebsite())) {
+                DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
+                if (media != null) shareBundle.setImageUrl(media.getImagePath());
+            }
             //
             getPresenter().trackSharing(type);
             //

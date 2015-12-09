@@ -1,13 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.PlacesUpdateFinished;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
@@ -18,7 +19,8 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
+public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
+        DtlMerchantRepository.MerchantUpdatedListener {
 
     @Inject
     LocationDelegate locationDelegate;
@@ -26,9 +28,17 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
     SnappyRepository db;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
+    @Inject
+    DtlMerchantRepository dtlMerchantRepository;
 
     @State
     DtlFilterData dtlFilterData;
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlMerchantRepository.attachListener(this);
+    }
 
     @Override
     public void takeView(View view) {
@@ -44,8 +54,14 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> {
         toggleAmenitiesSelection(event.isChecked());
     }
 
-    public void onEvent(PlacesUpdateFinished event) {
+    @Override
+    public void onMerchantsUploaded() {
         attachAmenities();
+    }
+
+    @Override
+    public void onMerchantsFailed(SpiceException spiceException) {
+        //nothing to do here
     }
 
     private void attachAmenities() {

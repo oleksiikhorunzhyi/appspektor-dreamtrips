@@ -3,31 +3,30 @@ package com.worldventures.dreamtrips.modules.dtl.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
 
 /**
  * Bundle to be supplied when navigating to {@link DtlPlaceDetailsFragment}
  */
-public class PlaceDetailsBundle implements Parcelable {
+public class DtlMerchantDetailsBundle implements Parcelable {
 
-    private DtlMerchant place;
+    private String id;
     /**
      * Set to false when showing details as separate activity, true when showing as a fragment in current screen hierarchy
      */
     private boolean isSlave;
 
     /**
-     * @param place place model to supply to screen
+     * @param id merchant id
      * @param isSlave indicator that screen is slave (shown in current view hierarchy) or master (new activity)
      */
-    public PlaceDetailsBundle(DtlMerchant place, boolean isSlave) {
-        this.place = place;
+    public DtlMerchantDetailsBundle(String id, boolean isSlave) {
+        this.id = id;
         this.isSlave = isSlave;
     }
 
-    public DtlMerchant getPlace() {
-        return place;
+    public String getId() {
+        return id;
     }
 
     public boolean isSlave() {
@@ -38,14 +37,14 @@ public class PlaceDetailsBundle implements Parcelable {
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    protected PlaceDetailsBundle(Parcel in) {
-        place = in.readParcelable(DtlMerchant.class.getClassLoader());
+    protected DtlMerchantDetailsBundle(Parcel in) {
+        id = in.readString();
         isSlave = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(place, flags);
+        dest.writeString(id);
         dest.writeByte((byte) (isSlave ? 1 : 0));
     }
 
@@ -54,15 +53,15 @@ public class PlaceDetailsBundle implements Parcelable {
         return 0;
     }
 
-    public static final Creator<PlaceDetailsBundle> CREATOR = new Creator<PlaceDetailsBundle>() {
+    public static final Creator<DtlMerchantDetailsBundle> CREATOR = new Creator<DtlMerchantDetailsBundle>() {
         @Override
-        public PlaceDetailsBundle createFromParcel(Parcel in) {
-            return new PlaceDetailsBundle(in);
+        public DtlMerchantDetailsBundle createFromParcel(Parcel in) {
+            return new DtlMerchantDetailsBundle(in);
         }
 
         @Override
-        public PlaceDetailsBundle[] newArray(int size) {
-            return new PlaceDetailsBundle[size];
+        public DtlMerchantDetailsBundle[] newArray(int size) {
+            return new DtlMerchantDetailsBundle[size];
         }
     };
 }

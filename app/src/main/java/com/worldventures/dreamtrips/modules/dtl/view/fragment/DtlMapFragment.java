@@ -17,14 +17,13 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
@@ -40,7 +39,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     //
-    PlacesMapBundle bundle;
+    DtlMapBundle bundle;
     @State
     LatLng selectedLocation;
 
@@ -147,12 +146,12 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void showPlaceInfo(DtlMerchant DtlMerchant) {
+    public void showPlaceInfo(String merchantId) {
         router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(new PlaceDetailsBundle(DtlMerchant, bundle.isSlave()))
+                .data(new DtlMerchantDetailsBundle(merchantId, bundle.isSlave()))
                 .build());
     }
 

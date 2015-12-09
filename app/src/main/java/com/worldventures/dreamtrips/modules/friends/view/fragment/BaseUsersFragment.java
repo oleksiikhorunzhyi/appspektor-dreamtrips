@@ -62,15 +62,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     private WeakHandler weakHandler;
     private LinearLayoutManager layoutManager;
 
-    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int itemCount = layoutManager.getItemCount();
-            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-            getPresenter().scrolled(itemCount, lastVisibleItemPosition);
-        }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +88,14 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
         layoutManager = createLayoutManager();
         recyclerView.setLayoutManager(layoutManager);
-        refreshLayout.setOnRefreshListener(this);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
+                checkScrolledItems();
+            }
+        });
+        refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
@@ -106,19 +103,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
         return ViewUtils.isLandscapeOrientation(getActivity()) ?
                 new GridLayoutManager(getActivity(), ViewUtils.isTablet(getActivity()) ? 3 : 1) :
                 new LinearLayoutManager(getActivity());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        recyclerView.addOnScrollListener(onScrollListener);
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        recyclerView.removeOnScrollListener(onScrollListener);
     }
 
     @Override
@@ -133,14 +117,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     }
 
     @Override
-    public void finishLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
-        stateDelegate.restoreStateIfNeeded();
-    }
-
-    @Override
     public void startLoading() {
         // timeout was set according to the issue:
         // https://code.google.com/p/android/issues/detail?id=77712
@@ -151,8 +127,23 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     }
 
     @Override
+    public void finishLoading() {
+        weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
+        stateDelegate.restoreStateIfNeeded();
+    }
+
+    @Override
     public void refreshUsers(List<User> users) {
         adapter.setItems(users);
+        checkScrolledItems();
+    }
+
+    private void checkScrolledItems() {
+        int itemCount = layoutManager.getItemCount();
+        int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+        getPresenter().scrolled(itemCount, lastVisibleItemPosition);
     }
 
     @Override

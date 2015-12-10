@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.module.dtl.repository;
 
 import android.location.Location;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
-
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,17 @@ public class DtlLocationRepositoryTest {
                 any(DreamSpiceManager.SuccessListener.class));
 
         List<DtlLocation> locationsObtained = new ArrayList<>();
-        dtlLocationRepository.attachListener(locations1 -> locationsObtained.addAll(locations1));
+        dtlLocationRepository.attachListener(new DtlLocationRepository.LocationsLoadedListener() {
+            @Override
+            public void onLocationsLoaded(List<DtlLocation> locations) {
+                locationsObtained.addAll(locations);
+            }
+
+            @Override
+            public void onLocationsFailed(SpiceException exception) {
+
+            }
+        });
 
         dtlLocationRepository.loadNearbyLocations(defaultLocation);
 

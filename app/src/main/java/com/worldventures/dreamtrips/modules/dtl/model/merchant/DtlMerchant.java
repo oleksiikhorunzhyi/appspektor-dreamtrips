@@ -110,6 +110,11 @@ public class DtlMerchant implements Parcelable {
         return budget;
     }
 
+    //from 1 to 5
+    public void setBudget(int budget) {
+        this.budget = budget;
+    }
+
     public float getRating() {
         return rating;
     }
@@ -128,6 +133,10 @@ public class DtlMerchant implements Parcelable {
 
     public void setCategories(List<DtlMerchantAttribute> categories) {
         this.categories = categories;
+    }
+
+    public void setAmenities(List<DtlMerchantAttribute> amenities) {
+        this.amenities = amenities;
     }
 
     public List<DtlMerchantAttribute> getAmenities() {

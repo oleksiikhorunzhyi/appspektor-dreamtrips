@@ -223,7 +223,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == REQUESTER_ID) {
+        if (view.isVisibleOnScreen() && event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(ImagePickedEvent.class);
             imageSelected(event.getImages()[0]);

@@ -91,7 +91,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void onEvent(OnTripImageClickedEvent event) {
-        if (event.getUserId() == user.getId()) {
+        if (view.isVisibleOnScreen() && event.getUserId() == user.getId()) {
             openTripImages();
         }
     }

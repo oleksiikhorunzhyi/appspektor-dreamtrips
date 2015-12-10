@@ -114,9 +114,22 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     }
 
     @Override
-    public void onDestroyView() {
-        if (ivImage != null && ivImage.getController() != null)
+    public void onStart() {
+        getPresenter().setupActualViewState();
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        if (ivImage != null && ivImage.getController() != null) {
             ivImage.getController().onDetach();
+            ivImage.setImageURI(null);
+        }
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
     }

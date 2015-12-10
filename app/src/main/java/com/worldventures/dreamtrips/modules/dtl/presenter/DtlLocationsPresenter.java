@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -10,10 +11,10 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,12 @@ implements DtlLocationRepository.LocationsLoadedListener {
         view.startLoading();
     }
 
+    @Override
+    public void dropView() {
+        super.dropView();
+        dtlLocationRepository.detachListener(this);
+    }
+
     public void onEvent(LocationObtainedEvent event) {
         if (event.getLocation() != null) {
             userGpsLocation = event.getLocation();
@@ -75,12 +82,19 @@ implements DtlLocationRepository.LocationsLoadedListener {
 
     @Override
     public void onLocationsLoaded(List<DtlLocation> locations) {
-        this.dtlLocations = dtlLocations;
         view.finishLoading();
+        //
+        dtlLocations.clear();
+        dtlLocations.addAll(locations);
         setItems();
         //
         if (dtlLocations.isEmpty()) view.showSearch();
         else if (dtlLocationRepository.getSelectedLocation() == null) selectNearest(userGpsLocation);
+    }
+
+    @Override
+    public void onLocationsFailed(SpiceException exception) {
+        handleError(exception);
     }
 
     private void selectNearest(Location currentLocation) {

@@ -4,6 +4,7 @@ import android.location.Location;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
@@ -30,7 +31,8 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
     public void loadNearbyLocations(Location userLocation) {
         // TODO : handle failure
         checkState();
-        requestingPresenter.doRequest(new GetDtlLocationsQuery(userLocation), this::onLocationsLoaded);
+        requestingPresenter.doRequest(new GetDtlLocationsQuery(userLocation),
+                this::onLocationsLoaded, this::onLocationsLoadingFailed);
     }
 
     public void persistLocation(DtlLocation location) {
@@ -39,6 +41,11 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
             db.saveSelectedDtlLocation(location);
             db.clearMerchantData();
         }
+    }
+
+    private void onLocationsLoadingFailed(SpiceException spiceException) {
+        checkListeners(loadedListeners);
+        Queryable.from(loadedListeners).forEachR(listener -> listener.onLocationsFailed(spiceException));
     }
 
     private void onLocationsLoaded(List<DtlLocation> locations) {
@@ -66,5 +73,7 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
     public interface LocationsLoadedListener {
 
         void onLocationsLoaded(List<DtlLocation> locations);
+
+        void onLocationsFailed(SpiceException exception);
     }
 }

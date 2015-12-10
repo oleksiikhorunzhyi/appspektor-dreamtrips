@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
@@ -221,9 +221,9 @@ public class TrackingHelper {
     public static void view(TripImagesListFragment.Type type, String id, String memberId) {
         if (type.equals(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_YSBH, "view_ysbh_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.MEMBER_IMAGES)) {
+        } else if (type.equals(TripImagesListFragment.Type.MEMBERS_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_ALL_USERS, "view_user_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
+        } else if (type.equals(TripImagesListFragment.Type.ACCOUNT_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_MINE, "view_user_photo", id);
         }
     }
@@ -231,24 +231,18 @@ public class TrackingHelper {
     public static void like(TripImagesListFragment.Type type, String id, String memberId) {
         if (type.equals(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_YSBH, "like_ysbh_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.MEMBER_IMAGES)) {
+        } else if (type.equals(TripImagesListFragment.Type.MEMBERS_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_ALL_USERS, "like_user_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
+        } else if (type.equals(TripImagesListFragment.Type.ACCOUNT_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_MINE, "like_user_photo", id);
         }
     }
 
-    public static void flag(TripImagesListFragment.Type type, String id, String memberId) {
+    public static void flag(String id, String memberId) {
         Map<String, Object> data = new HashMap<>();
-        if (type.equals(TripImagesListFragment.Type.MEMBER_IMAGES)) {
-            data.put(FIELD_MEMBER_ID, memberId);
-            data.put("flag_user_photo", id);
-            trackMemberAction(CATEGORY_NAV_MENU, ACTION_PHOTOS_ALL_USERS, data);
-        } else if (type.equals(TripImagesListFragment.Type.MY_IMAGES)) {
-            data.put(FIELD_MEMBER_ID, memberId);
-            data.put("flag_user_photo", id);
-            trackMemberAction(CATEGORY_NAV_MENU, ACTION_PHOTOS_MINE, data);
-        }
+        data.put(FIELD_MEMBER_ID, memberId);
+        data.put("flag_user_photo", id);
+        trackMemberAction(CATEGORY_NAV_MENU, ACTION_PHOTOS_ALL_USERS, data);
     }
 
     public static void all(String memberId) {
@@ -882,9 +876,9 @@ public class TrackingHelper {
         Map data = prepareAttributeMap(ATTRIBUTE_MERCHANT);
         if (place != null) {
             data.put(DTL_ATTRIBUTE_MERCHANT, new StrBuilder(place.getId()).setNullText("")
-                            .append(place.getDisplayName()).append(":")
-                            .append(place.getCity()).append(":")
-                            .append(place.getState()).toString()
+                    .append(place.getDisplayName()).append(":")
+                    .append(place.getCity()).append(":")
+                    .append(place.getState()).toString()
             );
         }
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_MERCHANT, data);

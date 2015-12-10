@@ -121,7 +121,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void logout() {
-       logoutDelegate.logout();
+        logoutDelegate.logout();
     }
 
     @Override
@@ -141,7 +141,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         NavigationBuilder
                 .create()
                 .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES))
+                .data(new TripsImagesBundle(TripImagesListFragment.Type.ACCOUNT_IMAGES, getAccount().getId()))
                 .move(Route.ACCOUNT_IMAGES);
     }
 

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
@@ -35,11 +34,11 @@ public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.V
     }
 
     public void trackState(int position) {
-        if (position == TripImagesListFragment.Type.MY_IMAGES.ordinal()) {
+        if (position == TripImagesListFragment.Type.ACCOUNT_IMAGES.ordinal()) {
             TrackingHelper.mine(getAccountUserId());
         } else if (position == TripImagesListFragment.Type.YOU_SHOULD_BE_HERE.ordinal()) {
             TrackingHelper.ysbh(getAccountUserId());
-        } else if (position == TripImagesListFragment.Type.MEMBER_IMAGES.ordinal()) {
+        } else if (position == TripImagesListFragment.Type.MEMBERS_IMAGES.ordinal()) {
             TrackingHelper.all(getAccountUserId());
         } else if (position == TripImagesListFragment.Type.VIDEO_360.ordinal()) {
             TrackingHelper.video360(getAccountUserId());

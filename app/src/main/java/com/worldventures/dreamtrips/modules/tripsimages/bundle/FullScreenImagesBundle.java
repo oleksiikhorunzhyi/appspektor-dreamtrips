@@ -6,13 +6,12 @@ import android.os.Parcelable;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class FullScreenImagesBundle implements Parcelable {
 
-    private TripImagesListFragment.Type type;
-    private int foreignUserId;
+    private TripImagesListFragment.Type tab;
+    private int userId;
     private int position;
     private ArrayList<IFullScreenObject> fixedList;
     private boolean foreign;
@@ -21,19 +20,19 @@ public class FullScreenImagesBundle implements Parcelable {
     }
 
     protected FullScreenImagesBundle(Parcel in) {
-        type = (TripImagesListFragment.Type) in.readSerializable();
-        foreignUserId = in.readInt();
+        tab = (TripImagesListFragment.Type) in.readSerializable();
+        userId = in.readInt();
         position = in.readInt();
         fixedList = (ArrayList<IFullScreenObject>) in.readSerializable();
         foreign = in.readByte() == 1;
     }
 
-    public TripImagesListFragment.Type getType() {
-        return type;
+    public TripImagesListFragment.Type getTab() {
+        return tab;
     }
 
-    public int getForeignUserId() {
-        return foreignUserId;
+    public int getUserId() {
+        return userId;
     }
 
     public int getPosition() {
@@ -67,8 +66,8 @@ public class FullScreenImagesBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeSerializable(type);
-        parcel.writeInt(foreignUserId);
+        parcel.writeSerializable(tab);
+        parcel.writeInt(userId);
         parcel.writeInt(position);
         parcel.writeSerializable(fixedList);
         parcel.writeByte((byte) (foreign ? 1 : 0));
@@ -83,12 +82,12 @@ public class FullScreenImagesBundle implements Parcelable {
         }
 
         public Builder type(TripImagesListFragment.Type type) {
-            instance.type = type;
+            instance.tab = type;
             return this;
         }
 
-        public Builder foreignUserId(int userId) {
-            instance.foreignUserId = userId;
+        public Builder userId(int userId) {
+            instance.userId = userId;
             return this;
         }
 

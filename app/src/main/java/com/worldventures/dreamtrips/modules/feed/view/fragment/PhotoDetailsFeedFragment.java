@@ -108,7 +108,8 @@ public class PhotoDetailsFeedFragment extends BaseFragmentWithArgs<PhotoDetailsF
             items.add(photo);
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(0)
-                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .userId(photo.getOwner().getId())
+                    .type(TripImagesListFragment.Type.FIXED_PHOTO_LIST)
                     .fixedList(items)
                     .build();
 

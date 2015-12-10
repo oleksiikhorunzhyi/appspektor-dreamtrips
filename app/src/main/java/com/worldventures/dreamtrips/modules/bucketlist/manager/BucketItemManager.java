@@ -347,7 +347,7 @@ public class BucketItemManager {
     public void deleteBucketItemPhoto(BucketPhoto bucketPhoto, BucketItem bucketItem,
                                       DreamSpiceManager.SuccessListener<JsonObject> successListener,
                                       DreamSpiceManager.FailureListener failureListener) {
-        dreamSpiceManager.execute(new DeleteBucketPhotoCommand(bucketPhoto.getFsId(),
+        dreamSpiceManager.execute(new DeleteBucketPhotoCommand(bucketPhoto.getFSId(),
                 bucketItem.getUid()), jsonObject -> {
             successListener.onRequestSuccess(jsonObject);
             bucketItem.getPhotos().remove(bucketPhoto);

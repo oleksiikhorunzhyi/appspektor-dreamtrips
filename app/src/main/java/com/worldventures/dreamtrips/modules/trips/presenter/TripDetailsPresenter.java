@@ -81,7 +81,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     public void onItemClick(int position) {
         FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                 .position(position)
-                .type(TripImagesListFragment.Type.FIXED_LIST)
+                .userId(trip.getOwner().getId())
+                .type(TripImagesListFragment.Type.TRIP_PHOTO)
                 .fixedList(new ArrayList<>(filteredImages))
                 .build();
 

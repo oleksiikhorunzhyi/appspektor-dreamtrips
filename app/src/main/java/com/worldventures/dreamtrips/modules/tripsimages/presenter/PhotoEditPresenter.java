@@ -52,7 +52,7 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
 
         view.setImage(Uri.parse(photo.getFSImage().getUrl()));
         view.setTitle(photo.getTitle());
-        view.setLocation(photo.getFsLocation());
+        view.setLocation(photo.getFSLocation());
 
         if (photo.getTags() != null)
             view.setTags(TextUtils.join(", ", photo.getTags()));

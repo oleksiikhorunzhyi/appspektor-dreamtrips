@@ -24,11 +24,11 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripImageBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
@@ -77,6 +77,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
 
         this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), this);
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
+        this.arrayListAdapter.registerCell(YSBHPhoto.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(UploadTask.class, PhotoUploadCell.class);
         this.recyclerView.setAdapter(this.arrayListAdapter);
@@ -85,11 +86,11 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         this.recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), (view1, position) ->{
+                new RecyclerItemClickListener(getActivity(), (view1, position) -> {
                     if (getArgs().getType() == Type.YOU_SHOULD_BE_HERE)
-                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, getPresenter().getPhoto(position).getFsId());
+                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, getPresenter().getPhoto(position).getFSId());
                     if (getArgs().getType() == Type.INSPIRE_ME)
-                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, getPresenter().getPhoto(position).getFsId());
+                        TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, getPresenter().getPhoto(position).getFSId());
 
                     this.getPresenter().onItemClick(position);
                 }));
@@ -130,8 +131,8 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         Type type = getArgs().getType();
-        int foreignUserId = getArgs().getForeignUserId();
-        return (T) TripImagesListPresenter.create(new TripImageBundle(type, false, foreignUserId, null, 0));
+        int userId = getArgs().getUserId();
+        return (T) TripImagesListPresenter.create(type, userId, null, false, 0);
     }
 
     @Override
@@ -200,12 +201,14 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     }
 
     public enum Type {
-        MEMBER_IMAGES,
-        MY_IMAGES,
+        MEMBERS_IMAGES,
+        ACCOUNT_IMAGES,
         VIDEO_360,
         INSPIRE_ME,
         YOU_SHOULD_BE_HERE,
-        FIXED_LIST,
-        FOREIGN_IMAGES
+        FIXED_PHOTO_LIST,
+        BUCKET_PHOTO,
+        TRIP_PHOTO,
+        USER_IMAGES
     }
 }

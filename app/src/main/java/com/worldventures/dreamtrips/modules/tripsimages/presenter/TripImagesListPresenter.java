@@ -23,9 +23,11 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripImageBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.UserImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +57,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
     protected int userId;
 
-    protected TripImagesListPresenter(Type type, int userId) {
+    protected TripImagesListPresenter(TripImagesListFragment.Type tab, int userId) {
         super();
-        this.type = type;
+        this.type = tab;
         this.userId = userId;
     }
 
@@ -84,7 +86,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         view.fillWithItems(photos);
         view.setSelection(currentPhotoPosition);
 
-        if (type != Type.FIXED_LIST && !fullscreenMode) reload();
+        if (!fullscreenMode) reload();
     }
 
     private void resetLazyLoadFields() {
@@ -120,7 +122,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
-        if (type != Type.MY_IMAGES) {
+        if (type != Type.ACCOUNT_IMAGES) {
             getAdapterController().reload();
         } else {
             savePhotoIfNeeded(event.getUploadTask());
@@ -139,9 +141,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                     startUpload((UploadTask) obj);
                 }
             } else {
-                if (this instanceof UserImagesPresenter) {
+                if (this instanceof MemberImagesPresenter) {
                     IFullScreenObject screenObject = photos.get(position);
-                    eventBus.post(new TripImageAnalyticEvent(screenObject.getFsId(), TrackingHelper.ATTRIBUTE_VIEW));
+                    eventBus.post(new TripImageAnalyticEvent(screenObject.getFSId(), TrackingHelper.ATTRIBUTE_VIEW));
                 }
                 view.openFullscreen(getFullscreenArgs(position).build());
             }
@@ -152,6 +154,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     protected FullScreenImagesBundle.Builder getFullscreenArgs(int position) {
         return new FullScreenImagesBundle.Builder()
                 .position(position)
+                .userId(userId)
                 .type(type);
     }
 
@@ -250,7 +253,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
     public void onEvent(EntityLikedEvent event) {
         for (Object o : photos) {
-            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getFeedEntity().getUid())) {
+            if (o instanceof Photo && ((Photo) o).getFSId().equals(event.getFeedEntity().getUid())) {
                 ((Photo) o).syncLikeState(event.getFeedEntity());
             }
         }
@@ -259,7 +262,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     public void onEventMainThread(PhotoDeletedEvent event) {
         for (int i = 0; i < photos.size(); i++) {
             IFullScreenObject o = photos.get(i);
-            if (o.getFsId().equals(event.getPhotoId())) {
+            if (o.getFSId().equals(event.getPhotoId())) {
                 photos.remove(i);
                 view.remove(i);
                 db.savePhotoEntityList(type, userId, photos);
@@ -290,32 +293,35 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         this.fullscreenMode = isFullscreen;
     }
 
-    public static TripImagesListPresenter create(TripImageBundle bundle) {
+    public static TripImagesListPresenter create(TripImagesListFragment.Type type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition) {
         TripImagesListPresenter presenter;
-        switch (bundle.getType()) {
-            case MEMBER_IMAGES:
-                presenter = new UserImagesPresenter(bundle.getUserId());
+        switch (type) {
+            case MEMBERS_IMAGES:
+                presenter = new MemberImagesPresenter();
                 break;
-            case MY_IMAGES:
-                presenter = new AccountImagesPresenter(bundle.getUserId());
+            case ACCOUNT_IMAGES:
+                presenter = new UserImagesPresenter(Type.ACCOUNT_IMAGES, userId);
+                break;
+            case USER_IMAGES:
+                presenter = new UserImagesPresenter(Type.USER_IMAGES, userId);
                 break;
             case YOU_SHOULD_BE_HERE:
-                presenter = new YSBHPresenter(bundle.getUserId());
+                presenter = new YSBHPresenter(userId);
                 break;
             case INSPIRE_ME:
-                presenter = new InspireMePresenter(bundle.getUserId());
+                presenter = new InspireMePresenter(userId);
                 break;
-            case FIXED_LIST:
-                presenter = new FixedPhotoFsPresenter(bundle.getPhotos(), bundle.getUserId());
-                break;
-            case FOREIGN_IMAGES:
-                presenter = new ForeignImagesPresenter(bundle.getUserId());
+            case FIXED_PHOTO_LIST:
+            case BUCKET_PHOTO:
+            case TRIP_PHOTO:
+                presenter = new FixedListPhotosFullScreenPresenter(photos, userId);
                 break;
             default:
                 throw new RuntimeException("Trip image type is not found");
         }
-        presenter.setFullscreenMode(bundle.isFullScreenMode());
-        presenter.setCurrentPhotoPosition(bundle.getCurrentPhotosPosition());
+
+        presenter.setFullscreenMode(fullScreenMode);
+        presenter.setCurrentPhotoPosition(currentPhotosPosition);
         return presenter;
     }
 

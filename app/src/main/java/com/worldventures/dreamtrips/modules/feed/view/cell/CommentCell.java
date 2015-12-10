@@ -66,7 +66,8 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     SessionHolder<UserSession> appSessionHolder;
     @Inject
     ActivityRouter activityRouter;
-    @Inject @Named(RouteCreatorModule.PROFILE)
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
     private CommentCellHelper commentCellHelper;
@@ -149,8 +150,7 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     public void showFlagDialog(List<Flag> flags) {
         flag.hideProgress();
         FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flag);
-        popupMenu.show(flags, (flagReasonId, reason) -> getEventBus().post(
-                new ItemFlaggedEvent(getModelObject(), flagReasonId, reason)));
+        popupMenu.show(flags, (flagReasonId, reason) -> getEventBus().post(new ItemFlaggedEvent(getModelObject(), flagReasonId, reason)));
     }
 
     @Optional

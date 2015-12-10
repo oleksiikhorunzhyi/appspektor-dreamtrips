@@ -68,7 +68,8 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
             items.add(getModelObject().getItem());
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(0)
-                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .userId(getModelObject().getItem().getOwner().getId())
+                    .type(TripImagesListFragment.Type.FIXED_PHOTO_LIST)
                     .fixedList(items)
                     .build();
 

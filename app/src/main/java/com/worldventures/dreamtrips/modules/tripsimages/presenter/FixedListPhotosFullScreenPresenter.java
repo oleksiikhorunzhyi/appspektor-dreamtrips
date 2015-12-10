@@ -5,12 +5,12 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 
 import java.util.ArrayList;
 
-public class FixedPhotoFsPresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
+public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
 
     private ArrayList<IFullScreenObject> photos;
 
-    public FixedPhotoFsPresenter(ArrayList<IFullScreenObject> photos, int userId) {
-        super(TripImagesListFragment.Type.FIXED_LIST, userId);
+    public FixedListPhotosFullScreenPresenter(ArrayList<IFullScreenObject> photos, int userId) {
+        super(TripImagesListFragment.Type.FIXED_PHOTO_LIST, userId);
         this.photos = photos;
     }
 

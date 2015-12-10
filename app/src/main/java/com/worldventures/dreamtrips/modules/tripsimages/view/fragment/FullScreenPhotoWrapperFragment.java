@@ -14,21 +14,26 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripImageBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.BucketPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.FullScreenPhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.InspirePhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.SocialImageFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.TripPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.YSBHPhotoFullscreenFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.InjectView;
-import icepick.State;
 
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
@@ -40,15 +45,27 @@ public class FullScreenPhotoWrapperFragment
     protected ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
+
     protected BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>> adapter;
+    protected Map<TripImagesListFragment.Type, Class<? extends FullScreenPhotoFragment>> tabTypeMap = new HashMap<>();
+
+    {
+        tabTypeMap.put(TripImagesListFragment.Type.INSPIRE_ME, InspirePhotoFullscreenFragment.class);
+        tabTypeMap.put(TripImagesListFragment.Type.MEMBERS_IMAGES, SocialImageFullscreenFragment.class);
+        tabTypeMap.put(TripImagesListFragment.Type.ACCOUNT_IMAGES, SocialImageFullscreenFragment.class);
+        tabTypeMap.put(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE, YSBHPhotoFullscreenFragment.class);
+        tabTypeMap.put(TripImagesListFragment.Type.TRIP_PHOTO, TripPhotoFullscreenFragment.class);
+        tabTypeMap.put(TripImagesListFragment.Type.BUCKET_PHOTO, BucketPhotoFullscreenFragment.class);
+        tabTypeMap.put(TripImagesListFragment.Type.FIXED_PHOTO_LIST, SocialImageFullscreenFragment.class);
+    }
 
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        TripImagesListFragment.Type type = getArgs().getType();
-        int foreignUserId = getArgs().getForeignUserId();
+        TripImagesListFragment.Type tab = getArgs().getTab();
+        int userId = getArgs().getUserId();
         int position = getArgs().getPosition();
         ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-        return TripImagesListPresenter.create(new TripImageBundle(type, true, foreignUserId, fixedList, position));
+        return TripImagesListPresenter.create(tab, userId, fixedList, true, position);
     }
 
     @Override
@@ -87,8 +104,7 @@ public class FullScreenPhotoWrapperFragment
         adapter = new BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>>(getActivity().getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
-                FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position).getObject(),
-                        getArgs().getType(), getArgs().isForeign());
+                FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position).getObject(), getArgs().getTab(), getArgs().isForeign());
                 ((BaseFragmentWithArgs) fragment).setArgs(data);
             }
 
@@ -137,8 +153,14 @@ public class FullScreenPhotoWrapperFragment
     }
 
     private void addToAdapter(List<IFullScreenObject> items) {
-        Queryable.from(items).forEachR(item ->
-                adapter.add(new FragmentItemWithObject<>(FullScreenPhotoFragment.class, "", item)));
+        Queryable.from(items).forEachR(item -> {
+            Class<? extends FullScreenPhotoFragment> aClass = tabTypeMap.get(getArgs().getTab());
+            if (aClass == null) {
+                throw new IllegalStateException();
+            } else {
+                adapter.add(new FragmentItemWithObject<>(aClass, "", item));
+            }
+        });
     }
 
     @Override

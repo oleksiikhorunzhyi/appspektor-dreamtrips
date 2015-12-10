@@ -87,7 +87,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         User.Relationship userRelationship = user.getRelationship();
         if (userRelationship == null) return;
 
-        switch (userRelationship){
+        switch (userRelationship) {
             case REJECT:
             case NONE:
                 view.showAddFriendDialog(circles, this::addAsFriend);
@@ -190,8 +190,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         NavigationBuilder
                 .create()
                 .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.FOREIGN_IMAGES, user.getId()))
-                .move(Route.FOREIGN_TRIP_IMAGES);
+                .data(new TripsImagesBundle(TripImagesListFragment.Type.MEMBERS_IMAGES, user.getId()))
+                .move(Route.LIST_IMAGES);
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

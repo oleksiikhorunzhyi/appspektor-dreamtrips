@@ -7,14 +7,14 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.UserImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
-public class UsersImagesListFragment<P extends UserImagesPresenter> extends TripImagesListFragment<P> implements UserImagesPresenter.View {
+public class UsersImagesListFragment<P extends MemberImagesPresenter> extends TripImagesListFragment<P> implements MemberImagesPresenter.View {
 
     @InjectView(R.id.fab_photo)
     protected FloatingActionButton fabPhoto;

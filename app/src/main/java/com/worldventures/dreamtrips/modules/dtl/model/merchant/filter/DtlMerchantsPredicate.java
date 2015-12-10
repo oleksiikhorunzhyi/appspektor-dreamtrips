@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -62,8 +61,7 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     public boolean checkDistance(DtlMerchant dtlMerchant) {
         return dtlFilterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
                 || currentLatLng == null
-                || LocationHelper.checkLocation(dtlFilterData.getMaxDistance(),
-                currentLatLng, dtlMerchant.getCoordinates().asLatLng(), dtlFilterData.getDistanceType());
+                || dtlMerchant.getDistance() < dtlFilterData.getMaxDistance();
     }
 
     public boolean checkAmenities(DtlMerchant dtlMerchant) {
@@ -105,7 +103,8 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
         }
 
         public DtlMerchantsPredicate build() {
-            return new DtlMerchantsPredicate(dtlFilterData, currentLatLng, query, merchantType);
+            return new DtlMerchantsPredicate(dtlFilterData, currentLatLng, query,
+                    merchantType);
         }
     }
 

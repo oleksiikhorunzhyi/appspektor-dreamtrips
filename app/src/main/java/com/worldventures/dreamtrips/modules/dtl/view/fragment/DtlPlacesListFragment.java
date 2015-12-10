@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
 
 import java.util.List;
@@ -33,8 +33,8 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_places_list)
 public class DtlPlacesListFragment
-        extends RxBaseFragment<DtlPlacesListPresenter>
-        implements DtlPlacesListPresenter.View {
+        extends RxBaseFragment<DtlMerchantListPresenter>
+        implements DtlMerchantListPresenter.View {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
 
@@ -75,8 +75,8 @@ public class DtlPlacesListFragment
     }
 
     @Override
-    protected DtlPlacesListPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlacesListPresenter((DtlMerchantType) getArguments().getSerializable(EXTRA_TYPE));
+    protected DtlMerchantListPresenter createPresenter(Bundle savedInstanceState) {
+        return new DtlMerchantListPresenter((DtlMerchantType) getArguments().getSerializable(EXTRA_TYPE));
     }
 
     @Override

@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -66,7 +66,7 @@ import dagger.Provides;
                 DtlScanReceiptFragment.class,
                 DtlScanReceiptPresenter.class,
                 DtlPlacesListFragment.class,
-                DtlPlacesListPresenter.class,
+                DtlMerchantListPresenter.class,
                 DtlMerchantCell.class,
                 DtlHeaderCell.class,
                 DtlPlaceDetailsPresenter.class,

@@ -11,9 +11,9 @@ public class DtlDistanceComparatorTest {
     @Test
     public void testEqual() {
         DtlMerchant dtlMerchantFirst = new DtlMerchant();
-        dtlMerchantFirst.setDistanceInMiles(10.0d);
+        dtlMerchantFirst.setDistance(10.0d);
         DtlMerchant dtlMerchantSecond = new DtlMerchant();
-        dtlMerchantSecond.setDistanceInMiles(10.0d);
+        dtlMerchantSecond.setDistance(10.0d);
 
         int result = DtlMerchant.DISTANCE_COMPARATOR.compare(dtlMerchantFirst, dtlMerchantSecond);
 
@@ -23,9 +23,9 @@ public class DtlDistanceComparatorTest {
     @Test
     public void testGreaterThan() {
         DtlMerchant dtlMerchantFirst = new DtlMerchant();
-        dtlMerchantFirst.setDistanceInMiles(11.0d);
+        dtlMerchantFirst.setDistance(11.0d);
         DtlMerchant dtlMerchantSecond = new DtlMerchant();
-        dtlMerchantSecond.setDistanceInMiles(10.0d);
+        dtlMerchantSecond.setDistance(10.0d);
 
         int result = DtlMerchant.DISTANCE_COMPARATOR.compare(dtlMerchantFirst, dtlMerchantSecond);
 
@@ -35,9 +35,9 @@ public class DtlDistanceComparatorTest {
     @Test
     public void testLessThan() {
         DtlMerchant dtlMerchantFirst = new DtlMerchant();
-        dtlMerchantFirst.setDistanceInMiles(9.0d);
+        dtlMerchantFirst.setDistance(9.0d);
         DtlMerchant dtlMerchantSecond = new DtlMerchant();
-        dtlMerchantSecond.setDistanceInMiles(10.0d);
+        dtlMerchantSecond.setDistance(10.0d);
 
         int result = DtlMerchant.DISTANCE_COMPARATOR.compare(dtlMerchantFirst, dtlMerchantSecond);
 

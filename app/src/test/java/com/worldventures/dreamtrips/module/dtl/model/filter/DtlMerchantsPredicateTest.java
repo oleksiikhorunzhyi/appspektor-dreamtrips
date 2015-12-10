@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.module.dtl.model.filter;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -13,6 +15,10 @@ import org.junit.Test;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class DtlMerchantsPredicateTest {
@@ -168,7 +174,8 @@ public class DtlMerchantsPredicateTest {
     public void checkDistance_Success_MaxDistance() {
         DtlFilterData dtlFilterData = DtlFilterData.createDefault();
         DtlMerchantsPredicate predicate =
-                DtlMerchantsPredicate.Builder.create().withDtlFilterData(dtlFilterData).build();
+                DtlMerchantsPredicate.Builder.create()
+                        .withDtlFilterData(dtlFilterData).build();
 
         DtlMerchant dtlMerchant = new DtlMerchant();
 
@@ -180,8 +187,10 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkDistance_Success() {
         DtlFilterData dtlFilterData = DtlFilterData.createDefault();
+        DtlLocationHelper dtlLocationHelper = mock(DtlLocationHelper.class);
         DtlMerchantsPredicate predicate =
-                DtlMerchantsPredicate.Builder.create().withDtlFilterData(dtlFilterData).build();
+                DtlMerchantsPredicate.Builder.create()
+                        .withDtlFilterData(dtlFilterData).build();
 
         DtlMerchant dtlMerchant = new DtlMerchant();
 

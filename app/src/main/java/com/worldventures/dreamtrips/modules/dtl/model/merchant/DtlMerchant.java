@@ -5,9 +5,7 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -260,27 +258,26 @@ public class DtlMerchant implements Parcelable {
     // Sorting part
     ///////////////////////////////////////////////////////////////////////////
 
-    private transient double distanceInMiles;
+    private transient double distance;
 
-    public void setDistanceInMiles(double distanceInMiles) {
-        this.distanceInMiles = distanceInMiles;
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
-    public void calculateDistance(LatLng currentLocation) {
-        setDistanceInMiles(LocationHelper.distanceInMiles(currentLocation,
-                getCoordinates().asLatLng()));
+    public double getDistance() {
+        return distance;
     }
 
     @Override
     public String toString() {
-        return displayName + " " + distanceInMiles;
+        return displayName + " " + distance;
     }
 
     public static Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
         @Override
         public int compare(DtlMerchant lhs, DtlMerchant rhs) {
-            if (lhs.distanceInMiles == rhs.distanceInMiles) return 0;
-            if (lhs.distanceInMiles > rhs.distanceInMiles) return 1;
+            if (lhs.distance == rhs.distance) return 0;
+            if (lhs.distance > rhs.distance) return 1;
             else return -1;
         }
     };

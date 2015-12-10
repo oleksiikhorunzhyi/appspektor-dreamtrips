@@ -174,12 +174,13 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
     public void showPanel() {
         inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
+        requestPhotos();
         setPanelHeight((int) photoPicker.getContext().getResources().getDimension(R.dimen.picker_panel_height));
     }
 
     public void hidePanel() {
         presenter.cancelAllSelections();
-        if (photoPicker != null) photoPicker.scrollToPosition(0);
+        if (photoPicker != null) photoPicker.setAdapter(null);
         setPanelHeight(0);
     }
 

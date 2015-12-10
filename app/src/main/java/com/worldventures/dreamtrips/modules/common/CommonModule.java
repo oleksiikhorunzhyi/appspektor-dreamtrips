@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDial
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.Palyer360Activity;
+import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
@@ -30,7 +30,6 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmen
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
-import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
@@ -64,7 +63,7 @@ import dagger.Provides;
                 MainActivity.class,
                 PlayerActivity.class,
                 ShareFragment.class,
-                Palyer360Activity.class,
+                Player360Activity.class,
                 FilterableArrayListAdapter.class,
                 DraggableArrayListAdapter.class,
                 NavigationDrawerFragment.class,

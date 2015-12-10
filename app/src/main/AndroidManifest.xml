@@ -102,8 +102,8 @@
 
 
         <activity
-            android:name=".modules.common.view.activity.Palyer360Activity"
-            android:screenOrientation="landscape"/>
+            android:name=".modules.common.view.activity.Player360Activity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <activity
             android:name=".modules.common.view.activity.PlayerActivity"

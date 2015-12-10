@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
     private PM presenter;
     private PickImageDelegate pickImageDelegate;
+    private Handler handler = new Handler();
 
     public PM getPresentationModel() {
         return presenter;
@@ -153,14 +155,11 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
     }
 
     private void imagePicked(ChosenImage... chosenImages) {
-        runOnUiThread(() -> {
-            new WeakHandler().postDelayed(() -> {
-                eventBus.removeStickyEvent(ImagePickedEvent.class);
-                eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
-                        pickImageDelegate.getRequesterId(),
-                        chosenImages));
-            }, 400);
-        });
+        handler.postDelayed(() -> {
+            eventBus.removeStickyEvent(ImagePickedEvent.class);
+            eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
+                    pickImageDelegate.getRequesterId(),
+                    chosenImages));
+        }, 400);
     }
-
 }

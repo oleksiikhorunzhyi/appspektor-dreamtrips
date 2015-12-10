@@ -40,6 +40,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     CachedPostEntity cachedPostEntity;
 
     public PostPresenter() {
+        priorityEventBus = 1;
     }
 
     @Override
@@ -255,8 +256,10 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     ////////////////////////////////////////
 
     public void onEvent(AttachPhotoEvent event) {
-        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
+        if (view.isVisibleOnScreen() && event.getRequestType() != -1) {
+            eventBus.cancelEventDelivery(event);
             pickImage(event.getRequestType());
+        }
     }
 
     public void pickImage(int requestType) {

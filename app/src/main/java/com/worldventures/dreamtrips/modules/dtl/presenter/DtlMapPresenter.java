@@ -43,6 +43,10 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
         view.showPlaceInfo(merchantId);
     }
 
+    public void applySearch(String query) {
+        dtlSearchDelegate.applySearch(query);
+    }
+
     private void showPins(List<DtlMerchant> filtered) {
         if (view != null) {
             view.clearMap();

@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -28,7 +28,8 @@ import rx.Observable;
 import timber.log.Timber;
 
 public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter<VT> implements
-        DtlFilterDelegate.FilterListener, DtlMerchantRepository.MerchantUpdatedListener {
+        DtlFilterDelegate.FilterListener, DtlMerchantRepository.MerchantUpdatedListener,
+        DtlSearchDelegate.SearchListener {
 
     @Inject
     LocationDelegate locationDelegate;
@@ -36,6 +37,8 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
+    @Inject
+    DtlSearchDelegate dtlSearchDelegate;
 
     protected DtlLocation dtlLocation;
     protected DtlMerchantType dtlMerchantType;
@@ -45,12 +48,14 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         super.onInjected();
         dtlMerchantRepository.attachListener(this);
         dtlFilterDelegate.addListener(this);
+        dtlSearchDelegate.addListener(this);
     }
 
     @Override
     public void dropView() {
         dtlMerchantRepository.detachListener(this);
         dtlFilterDelegate.removeListener(this);
+        dtlSearchDelegate.removeListener(this);
         super.dropView();
     }
 
@@ -67,6 +72,11 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     @Override
     public void onFilter() {
         performFiltering();
+    }
+
+    @Override
+    public void onSearch(String query) {
+        performFiltering(query);
     }
 
     protected void performFiltering() {
@@ -117,10 +127,6 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
 
     private void track(List<DtlMerchant> merchants, String query) {
         if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, merchants.size());
-    }
-
-    public void onEventMainThread(DtlSearchPlaceRequestEvent event) {
-        performFiltering(event.getSearchQuery());
     }
 
     private void onError(Throwable e) {

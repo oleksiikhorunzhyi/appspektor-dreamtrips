@@ -6,6 +6,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
@@ -42,6 +43,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlSuggestMerchant
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -107,4 +110,11 @@ public class DtlModule {
     LocationDelegate provideLocationDelegate(@ForApplication Context context) {
         return new LocationDelegate(context);
     }
+
+    @Singleton
+    @Provides
+    DtlSearchDelegate provideSearchDelegate() {
+        return new DtlSearchDelegate();
+    }
+
 }

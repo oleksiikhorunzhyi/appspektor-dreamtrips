@@ -20,11 +20,10 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmen
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
+import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
@@ -88,9 +87,9 @@ public class DtlPlacesTabsFragment
         });
         toolbar.inflateMenu(R.menu.menu_dtl_list);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        new DtlPlaceSearchViewDelegate(getContext()).init(searchItem, lastQuery, query -> {
+        new SearchViewHelper().init(searchItem, lastQuery, query -> {
             lastQuery = query;
-            eventBus.post(new DtlSearchPlaceRequestEvent(query));
+            getPresenter().applySearch(query);
         });
 
         toolbar.setOnMenuItemClickListener(item -> {

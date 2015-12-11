@@ -10,6 +10,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
@@ -25,8 +26,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.UserImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
@@ -155,7 +156,23 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         return new FullScreenImagesBundle.Builder()
                 .position(position)
                 .userId(userId)
+                .route(getRouteByType(type))
                 .type(type);
+    }
+
+    private Route getRouteByType(Type type) {
+        switch (type) {
+            case ACCOUNT_IMAGES:
+            case MEMBERS_IMAGES:
+            case FIXED:
+                return Route.SOCIAL_IMAGE_FULLSCREEN;
+            case INSPIRE_ME:
+                return Route.INSPIRE_PHOTO_FULLSCREEN;
+            case YOU_SHOULD_BE_HERE:
+                return Route.YSBH_FULLSCREEN;
+            default:
+                return Route.SOCIAL_IMAGE_FULLSCREEN;
+        }
     }
 
     private void savePhotoIfNeeded(UploadTask uploadTask) {
@@ -300,10 +317,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 presenter = new MemberImagesPresenter();
                 break;
             case ACCOUNT_IMAGES:
-                presenter = new UserImagesPresenter(Type.ACCOUNT_IMAGES, userId);
-                break;
-            case USER_IMAGES:
-                presenter = new UserImagesPresenter(Type.USER_IMAGES, userId);
+                presenter = new AccountImagesPresenter(Type.ACCOUNT_IMAGES, userId);
                 break;
             case YOU_SHOULD_BE_HERE:
                 presenter = new YSBHPresenter(userId);
@@ -311,9 +325,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             case INSPIRE_ME:
                 presenter = new InspireMePresenter(userId);
                 break;
-            case FIXED_PHOTO_LIST:
-            case BUCKET_PHOTO:
-            case TRIP_PHOTO:
+            case FIXED:
                 presenter = new FixedListPhotosFullScreenPresenter(photos, userId);
                 break;
             default:

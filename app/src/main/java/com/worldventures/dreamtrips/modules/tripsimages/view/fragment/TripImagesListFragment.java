@@ -206,9 +206,6 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         VIDEO_360,
         INSPIRE_ME,
         YOU_SHOULD_BE_HERE,
-        FIXED_PHOTO_LIST,
-        BUCKET_PHOTO,
-        TRIP_PHOTO,
-        USER_IMAGES
+        FIXED
     }
 }

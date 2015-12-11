@@ -4,6 +4,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
@@ -151,7 +152,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(photos.indexOf(selectedPhoto))
-                    .type(TripImagesListFragment.Type.BUCKET_PHOTO)
+                    .type(TripImagesListFragment.Type.FIXED)
+                    .route(Route.BUCKET_PHOTO_FULLSCREEN)
                     .userId(bucketItem.getOwner().getId())
                     .fixedList(photos)
                     .foreign(bucketItem.getOwner().getId() != appSessionHolder.get().get().getUser().getId())

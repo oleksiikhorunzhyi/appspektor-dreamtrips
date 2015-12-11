@@ -14,7 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
-public class UsersImagesListFragment<P extends MemberImagesPresenter> extends TripImagesListFragment<P> implements MemberImagesPresenter.View {
+public class MemberImagesListFragment<P extends MemberImagesPresenter> extends TripImagesListFragment<P> implements MemberImagesPresenter.View {
 
     @InjectView(R.id.fab_photo)
     protected FloatingActionButton fabPhoto;

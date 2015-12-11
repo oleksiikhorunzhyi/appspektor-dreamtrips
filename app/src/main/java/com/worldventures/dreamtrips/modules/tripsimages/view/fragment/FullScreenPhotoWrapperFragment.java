@@ -47,23 +47,14 @@ public class FullScreenPhotoWrapperFragment
     protected Toolbar toolbar;
 
     protected BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>> adapter;
-    protected Map<TripImagesListFragment.Type, Route> tabTypeMap = new HashMap<>();
-
-    {
-        tabTypeMap.put(TripImagesListFragment.Type.INSPIRE_ME, Route.INSPIRE_PHOTO_FULLSCREEN);
-        tabTypeMap.put(TripImagesListFragment.Type.MEMBERS_IMAGES, Route.SOCIAL_IMAGE_FULLSCREEN);
-        tabTypeMap.put(TripImagesListFragment.Type.ACCOUNT_IMAGES, Route.SOCIAL_IMAGE_FULLSCREEN);
-        tabTypeMap.put(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE, Route.YSBH_FULLSCREEN);
-        tabTypeMap.put(TripImagesListFragment.Type.TRIP_PHOTO, Route.TRIP_PHOTO_FULLSCREEN);
-        tabTypeMap.put(TripImagesListFragment.Type.BUCKET_PHOTO, Route.BUCKET_PHOTO_FULLSCREEN);
-        tabTypeMap.put(TripImagesListFragment.Type.FIXED_PHOTO_LIST, Route.SOCIAL_IMAGE_FULLSCREEN);
-    }
+    protected Route route;
 
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
         TripImagesListFragment.Type tab = getArgs().getTab();
         int userId = getArgs().getUserId();
         int position = getArgs().getPosition();
+        this.route = getArgs().getRoute();
         ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
         return TripImagesListPresenter.create(tab, userId, fixedList, true, position);
     }
@@ -154,7 +145,6 @@ public class FullScreenPhotoWrapperFragment
 
     private void addToAdapter(List<IFullScreenObject> items) {
         Queryable.from(items).forEachR(item -> {
-            Route route = tabTypeMap.get(getArgs().getTab());
             if (route == null) {
                 throw new IllegalStateException("You must specify route for this type");
             } else {

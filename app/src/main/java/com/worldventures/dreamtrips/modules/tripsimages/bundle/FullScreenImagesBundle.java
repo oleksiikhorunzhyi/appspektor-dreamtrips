@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
@@ -15,6 +16,7 @@ public class FullScreenImagesBundle implements Parcelable {
     private int position;
     private ArrayList<IFullScreenObject> fixedList;
     private boolean foreign;
+    private Route route;
 
     public FullScreenImagesBundle() {
     }
@@ -25,6 +27,7 @@ public class FullScreenImagesBundle implements Parcelable {
         position = in.readInt();
         fixedList = (ArrayList<IFullScreenObject>) in.readSerializable();
         foreign = in.readByte() == 1;
+        route = (Route) in.readSerializable();
     }
 
     public TripImagesListFragment.Type getTab() {
@@ -45,6 +48,10 @@ public class FullScreenImagesBundle implements Parcelable {
 
     public boolean isForeign() {
         return foreign;
+    }
+
+    public Route getRoute() {
+        return route;
     }
 
     public static final Creator<FullScreenImagesBundle> CREATOR = new Creator<FullScreenImagesBundle>() {
@@ -71,6 +78,7 @@ public class FullScreenImagesBundle implements Parcelable {
         parcel.writeInt(position);
         parcel.writeSerializable(fixedList);
         parcel.writeByte((byte) (foreign ? 1 : 0));
+        parcel.writeSerializable(route);
     }
 
     public static class Builder {
@@ -103,6 +111,11 @@ public class FullScreenImagesBundle implements Parcelable {
 
         public Builder foreign(boolean foreign) {
             instance.foreign = foreign;
+            return this;
+        }
+
+        public Builder route(Route route) {
+            instance.route = route;
             return this;
         }
 

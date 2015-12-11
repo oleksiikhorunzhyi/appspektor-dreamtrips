@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class UserImagesPresenter extends MemberImagesPresenter {
+public class AccountImagesPresenter extends MemberImagesPresenter {
 
-    public UserImagesPresenter(Type type, int userId) {
+    public AccountImagesPresenter(Type type, int userId) {
         super(type, userId);
     }
 

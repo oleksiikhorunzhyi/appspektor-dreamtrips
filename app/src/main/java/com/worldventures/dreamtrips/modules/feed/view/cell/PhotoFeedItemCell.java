@@ -69,7 +69,8 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(0)
                     .userId(getModelObject().getItem().getOwner().getId())
-                    .type(TripImagesListFragment.Type.FIXED_PHOTO_LIST)
+                    .type(TripImagesListFragment.Type.FIXED)
+                    .route(Route.SOCIAL_IMAGE_FULLSCREEN)
                     .fixedList(items)
                     .build();
 

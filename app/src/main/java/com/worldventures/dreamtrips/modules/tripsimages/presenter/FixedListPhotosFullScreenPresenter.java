@@ -10,7 +10,7 @@ public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<
     private ArrayList<IFullScreenObject> photos;
 
     public FixedListPhotosFullScreenPresenter(ArrayList<IFullScreenObject> photos, int userId) {
-        super(TripImagesListFragment.Type.FIXED_PHOTO_LIST, userId);
+        super(TripImagesListFragment.Type.FIXED, userId);
         this.photos = photos;
     }
 

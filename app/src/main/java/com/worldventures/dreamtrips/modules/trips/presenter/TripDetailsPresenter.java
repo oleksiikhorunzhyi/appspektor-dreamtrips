@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
@@ -82,7 +83,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
         FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                 .position(position)
                 .userId(trip.getOwner().getId())
-                .type(TripImagesListFragment.Type.TRIP_PHOTO)
+                .route(Route.TRIP_PHOTO_FULLSCREEN)
+                .type(TripImagesListFragment.Type.FIXED)
                 .fixedList(new ArrayList<>(filteredImages))
                 .build();
 

@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMembersPhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.UserImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
@@ -32,7 +32,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditF
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.UsersImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.BucketPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.FullScreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.InspirePhotoFullscreenFragment;
@@ -49,7 +49,7 @@ import dagger.Provides;
                 TripImagesTabsPresenter.class,
                 TripImagesListPresenter.class,
                 InspireMePresenter.class,
-                UserImagesPresenter.class,
+                AccountImagesPresenter.class,
                 MemberImagesPresenter.class,
                 YSBHPresenter.class,
                 FullScreenPhotoFragment.class,
@@ -76,7 +76,7 @@ import dagger.Provides;
                 FullScreenPhotoWrapperFragment.class,
                 GetUserPhotosQuery.class,
                 AccountImagesListFragment.class,
-                UsersImagesListFragment.class,
+                MemberImagesListFragment.class,
 
                 InspirePhotoFullscreenFragment.class,
                 YSBHPhotoFullscreenFragment.class,

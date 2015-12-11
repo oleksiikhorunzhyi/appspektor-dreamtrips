@@ -106,7 +106,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
                         .build())
                 .toList();
         //
-        afterMapping(dtlMerchants);
+        afterMapping(merchants);
         //
         return Observable.from(merchants).toList();
     }

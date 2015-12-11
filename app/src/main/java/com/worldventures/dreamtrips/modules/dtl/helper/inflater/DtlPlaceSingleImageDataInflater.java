@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.helper;
+package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.graphics.PointF;
 import android.net.Uri;
@@ -6,6 +6,8 @@ import android.net.Uri;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.fragment.FragmentHelper;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -83,7 +84,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         handler = new WeakHandler();
-        photoPickerLayout.setup(this, false);
+        inject(photoPickerLayout);
+        photoPickerLayout.setup(getChildFragmentManager(), false);
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages));
     }
 

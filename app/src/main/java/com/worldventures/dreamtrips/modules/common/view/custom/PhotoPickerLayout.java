@@ -1,33 +1,32 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.presenter.PhotoPickerPresenter;
-import com.worldventures.dreamtrips.modules.feed.model.AttachPhotoModel;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
-import com.worldventures.dreamtrips.modules.feed.view.cell.AttachPhotoCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
-import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPickerPresenter.View {
+public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
     @InjectView(R.id.button_cancel)
     TextView cancel;
@@ -35,22 +34,22 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
     TextView done;
     @InjectView(R.id.selected_count)
     TextView selectedCount;
-    @InjectView(R.id.picker)
-    RecyclerView photoPicker;
+    @InjectView(R.id.photo_container)
+    ViewGroup container;
 
-    OnDoneClickListener onDoneClickListener;
+    @Inject
+    Router router;
+    @Inject
+    PhotoPickerDelegate photoPickerDelegate;
 
     private InputMethodManager inputMethodManager;
 
-    private PhotoPickerPresenter presenter;
-
-    private BaseArrayListAdapter adapter;
-
     private View draggableView;
 
-    private Injector injector;
+    private FragmentManager fragmentManager;
 
     private boolean multiPickEnabled;
+    private int pickLimit;
 
     public PhotoPickerLayout(Context context) {
         this(context, null);
@@ -65,8 +64,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
 
         draggableView = inflate(getContext(), R.layout.gallery_view, null);
 
-        presenter = new PhotoPickerPresenter();
-
         inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
@@ -78,16 +75,12 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         ButterKnife.inject(this);
 
         setDragView(draggableView);
-        setScrollableView(draggableView.findViewById(R.id.picker));
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        presenter.onStop();
-        presenter.dropView();
         ButterKnife.reset(this);
-
     }
 
     @Override
@@ -100,33 +93,51 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         }
     }
 
-    public void setup(Injector injector, boolean multiPickEnabled) {
-        this.injector = injector;
+    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled) {
+        this.fragmentManager = fragmentManager;
         this.multiPickEnabled = multiPickEnabled;
+        photoPickerDelegate.setupPhotoPickerLayout(this);
         hidePanel();
-        injector.inject(presenter);
-        presenter.takeView(PhotoPickerLayout.this);
-        presenter.onStart();
-        requestPhotos();
     }
 
     /**
      * post(()->{}) because requestPhotos has to be called after `onAttachedToWindow`
      */
-    private void requestPhotos() {
+    private void openGallery() {
         post(() -> {
             if (ViewCompat.isAttachedToWindow(PhotoPickerLayout.this)) {
-                presenter.loadGallery();
+                router.moveTo(Route.GALLERY, NavigationConfigBuilder.forFragment()
+                        .fragmentManager(fragmentManager)
+                        .backStackEnabled(true)
+                        .containerId(container.getId())
+                        .build());
             }
         });
     }
 
-    public void setup(Injector injector, boolean multiPickEnabled, int pickLimit) {
-        this.setup(injector, multiPickEnabled);
-        presenter.setLimit(pickLimit);
+    public void openFacebookAlbums() {
+        router.moveTo(Route.PICK_FB_ALBUM, NavigationConfigBuilder.forFragment()
+                .fragmentManager(fragmentManager)
+                .backStackEnabled(true)
+                .containerId(container.getId())
+                .build());
+        cancel.setText(R.string.back);
     }
 
-    @Override
+    public void openFacebookPhoto(Bundle bundle) {
+        router.moveTo(Route.PICK_FB_PHOTO, NavigationConfigBuilder.forFragment()
+                .fragmentManager(fragmentManager)
+                .backStackEnabled(true)
+                .containerId(container.getId())
+                .data(bundle)
+                .build());
+    }
+
+    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, int pickLimit) {
+        this.setup(fragmentManager, multiPickEnabled);
+        this.pickLimit = pickLimit;
+    }
+
     public void updatePickedItemsCount(int pickedCount) {
         if (pickedCount == 0) {
             selectedCount.setText(null);
@@ -136,51 +147,53 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
         }
     }
 
-    @Override
-    public void updateItem(PhotoGalleryModel item) {
-        adapter.updateItem(item);
-    }
-
-    @Override
-    public void initPhotos(List<PhotoGalleryModel> photos) {
-        adapter = new BaseArrayListAdapter<>(photoPicker.getContext(), injector);
-        adapter.registerCell(PhotoGalleryModel.class, PhotoGalleryCell.class);
-        adapter.registerCell(AttachPhotoModel.class, AttachPhotoCell.class);
-        adapter.addItem(new AttachPhotoModel(AttachPhotoModel.CAMERA, R.drawable.ic_picker_camera, R.string.camera, R.color.share_camera_color));
-        adapter.addItem(new AttachPhotoModel(AttachPhotoModel.FACEBOOK, R.drawable.fb_logo, R.string.add_from_facebook, R.color.facebook_color));
-        adapter.addItems(photos);
-
-        photoPicker.setLayoutManager(new GridAutofitLayoutManager(photoPicker.getContext(),
-                photoPicker.getContext().getResources().getDimension(R.dimen.photo_picker_size)));
-        photoPicker.setAdapter(adapter);
-
-        cancel.setOnClickListener(view -> hidePanel());
-    }
-
-    @Override
     public boolean isMultiPickEnabled() {
         return multiPickEnabled;
     }
 
+    public int getPickLimit() {
+        return pickLimit;
+    }
+
     @OnClick(R.id.button_done)
     void onDone() {
-        if (onDoneClickListener != null) {
-            onDoneClickListener.onDone(presenter.getSelectedPhotos());
+        photoPickerDelegate.onDone();
+
+        hidePanel();
+    }
+
+    @OnClick(R.id.button_cancel)
+    void onCancel() {
+        if (fragmentManager.getBackStackEntryCount() > 1) {
+            fragmentManager.popBackStack();
+            updatePickedItemsCount(0);
+            updateCancelButtonState();
+            return;
         }
 
         hidePanel();
     }
 
+    private void updateCancelButtonState() {
+        if (fragmentManager.getBackStackEntryCount() < 2)
+            cancel.setText(R.string.cancel);
+        else
+            cancel.setText(R.string.back);
+    }
+
     public void showPanel() {
         inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
-        requestPhotos();
-        setPanelHeight((int) photoPicker.getContext().getResources().getDimension(R.dimen.picker_panel_height));
+        if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
+        updateCancelButtonState();
+        setPanelHeight((int) container.getResources().getDimension(R.dimen.picker_panel_height));
     }
 
     public void hidePanel() {
-        presenter.cancelAllSelections();
-        if (photoPicker != null) photoPicker.setAdapter(null);
+        if (!ViewCompat.isAttachedToWindow(this)) return;
+        //
+        updatePickedItemsCount(0);
+        clearAllBackStack();
         setPanelHeight(0);
     }
 
@@ -189,35 +202,14 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout implements PhotoPick
     }
 
     public void setOnDoneClickListener(OnDoneClickListener onDoneClickListener) {
-        this.onDoneClickListener = onDoneClickListener;
-    }
-
-    @Override
-    public void informUser(int stringId) {
-
-    }
-
-    @Override
-    public void informUser(String string) {
-        Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void alert(String s) {
-
-    }
-
-    @Override
-    public boolean isVisibleOnScreen() {
-        return false;
-    }
-
-    @Override
-    public boolean isTabletLandscape() {
-        return false;
+        photoPickerDelegate.setOnDoneClickListener(onDoneClickListener);
     }
 
     public interface OnDoneClickListener {
         void onDone(List<ChosenImage> chosenImages);
+    }
+
+    private void clearAllBackStack() {
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

@@ -4,31 +4,32 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
-import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import icepick.State;
 
-public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
+public class BasePickerPresenter<T extends BasePickerPresenter.View> extends Presenter<T> {
 
     @State
-    ArrayList<PhotoGalleryModel> photos;
+    protected ArrayList<BasePhotoPickerModel> photos;
 
     private int pickLimit;
 
     public void onEvent(PhotoPickedEvent event) {
+        if (!view.isVisibleOnScreen()) return;
+        //
         if (!view.isMultiPickEnabled()) {
-            PhotoGalleryModel photoGalleryModel = Queryable.from(photos).filter(element ->
+            BasePhotoPickerModel photoGalleryModel = Queryable.from(photos).filter(element ->
                     element.isChecked() && !element.equals(event.model)).firstOrDefault();
             if (photoGalleryModel != null) {
                 photoGalleryModel.setChecked(false);
                 view.updateItem(photoGalleryModel);
             }
         } else {
-            if (isLimitReached(Queryable.from(photos).count(PhotoGalleryModel::isChecked))) {
+            if (isLimitReached(Queryable.from(photos).count(BasePhotoPickerModel::isChecked))) {
                 event.model.setChecked(false);
                 view.informUser(String.format(context.getResources()
                         .getString(R.string.photo_limitation_message), pickLimit));
@@ -36,41 +37,18 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
             }
         }
 
-        view.updatePickedItemsCount(Queryable.from(photos).count(PhotoGalleryModel::isChecked));
+        view.updatePickedItemsCount(Queryable.from(photos).count(BasePhotoPickerModel::isChecked));
         view.updateItem(event.model);
     }
 
-    public void loadGallery() {
-        if (photos != null) {
-            view.initPhotos(photos);
-            return;
-        }
-
-        PhotoGalleryRequest request = new PhotoGalleryRequest(context);
-        doRequest(request, photos -> {
-            this.photos = photos;
-            view.initPhotos(this.photos);
-        });
-    }
-
     public List<ChosenImage> getSelectedPhotos() {
-        return Queryable.from(photos).filter(PhotoGalleryModel::isChecked).map(element -> {
+        return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).map(element -> {
             ChosenImage chosenImage = new ChosenImage();
             chosenImage.setFileThumbnail(element.getThumbnailPath());
             chosenImage.setFilePathOriginal(element.getOriginalPath());
 
             return chosenImage;
         }).toList();
-    }
-
-    public void cancelAllSelections() {
-        if (photos == null) {
-            return;
-        }
-
-        Queryable.from(photos).filter(PhotoGalleryModel::isChecked).forEachR(model -> model.setChecked(false));
-        if (view != null)
-            view.updatePickedItemsCount(0);
     }
 
     public void setLimit(int pickLimit) {
@@ -83,11 +61,11 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
 
     public interface View extends Presenter.View {
 
-        void updatePickedItemsCount(int pickedCount);
+        void updateItem(BasePhotoPickerModel item);
 
-        void updateItem(PhotoGalleryModel item);
+        void addItems(List<BasePhotoPickerModel> items);
 
-        void initPhotos(List<PhotoGalleryModel> photos);
+        void updatePickedItemsCount(int count);
 
         boolean isMultiPickEnabled();
     }

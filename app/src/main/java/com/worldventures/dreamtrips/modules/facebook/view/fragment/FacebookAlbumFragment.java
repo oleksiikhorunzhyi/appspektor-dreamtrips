@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.facebook.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.facebook.Response;
 import com.facebook.Session;
@@ -12,22 +12,20 @@ import com.facebook.model.GraphObject;
 import com.facebook.widget.LoginButton;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookAlbum;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumCell;
+import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 
@@ -38,12 +36,11 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
     protected RecyclerView lvItems;
     @InjectView(R.id.login_button)
     protected LoginButton loginButton;
-    @InjectView(R.id.toolbar_actionbar)
-    protected Toolbar toolbar;
+    @InjectView(R.id.progress)
+    protected ProgressBar progressBar;
 
     @Inject
-    @ForActivity
-    Provider<Injector> injector;
+    PhotoPickerDelegate photoPickerDelegate;
 
     int previousTotal;
     boolean loading;
@@ -62,12 +59,9 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        progressBar.setVisibility(View.VISIBLE);
         adapter = new BaseArrayListAdapter(getActivity(), this);
         adapter.registerCell(FacebookAlbum.class, FacebookAlbumCell.class);
-        toolbar.setTitle(getString(R.string.fab_select_album));
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(v -> fragmentCompass.pop());
-        toolbar.getBackground().setAlpha(255);
         lvItems.setAdapter(adapter);
 
         lvItems.addOnItemTouchListener(
@@ -75,11 +69,12 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
                     String facebookId = (adapter.getItem(position)).getId();
                     Bundle b = new Bundle();
                     b.putString(FacebookPhotoFragment.BUNDLE_ALBUM_ID, facebookId);
-                    fragmentCompass.add(Route.PICK_FB_PHOTO, b);
+                    photoPickerDelegate.openFacebookPhoto(b);
                 })
 
         );
-        layoutManager = new GridLayoutManager(getActivity(), 2);
+        layoutManager = new GridAutofitLayoutManager(getContext(),
+                getContext().getResources().getDimension(R.dimen.photo_picker_size));
 
         lvItems.setLayoutManager(layoutManager);
         lvItems.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -90,6 +85,9 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
                 scrolled(itemCount, lastVisibleItemPosition);
             }
         });
+
+        photoPickerDelegate.attachScrollableView(lvItems);
+        photoPickerDelegate.setSelectedPhotosProvider(null);
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {
@@ -139,6 +137,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
 
     @Override
     public void handleResponse(Response response) {
+        progressBar.setVisibility(View.GONE);
         if (response != null && response.getError() == null) {
             List<GraphObject> graphObjects = FacebookUtils.typedListFromResponse(response, GraphObject.class);
             List<FacebookAlbum> albums = new ArrayList<>(graphObjects.size());

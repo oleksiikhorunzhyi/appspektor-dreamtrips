@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
@@ -73,6 +74,7 @@ import dagger.Provides;
                 ComponentPresenter.class,
                 CopyFileCommand.class,
                 ProgressDialogFragment.class,
+                PhotoPickerLayout.class,
 
                 DialogFragmentNavigator.NavigationDialogFragment.class,
                 BaseImageFragment.class,

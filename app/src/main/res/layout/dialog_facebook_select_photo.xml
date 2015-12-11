@@ -5,16 +5,8 @@
     android:orientation="vertical"
     android:background="@android:color/white">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_actionbar"
-        style="@style/ToolBarStyle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp" />
-
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/lv_items"
+        android:id="@+id/picker"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/spacing_tiniest" />

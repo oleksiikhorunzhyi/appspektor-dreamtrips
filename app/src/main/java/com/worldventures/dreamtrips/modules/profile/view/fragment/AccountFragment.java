@@ -44,7 +44,8 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
         profileToolbar.inflateMenu(R.menu.profile_fragment);
 
-        photoPickerLayout.setup(this, false);
+        inject(photoPickerLayout);
+        photoPickerLayout.setup(getChildFragmentManager(), false);
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
 
         profileToolbar.setOnMenuItemClickListener(item -> {

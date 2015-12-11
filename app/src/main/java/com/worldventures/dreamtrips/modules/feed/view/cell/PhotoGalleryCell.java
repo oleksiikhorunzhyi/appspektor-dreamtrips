@@ -15,7 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 
 import butterknife.InjectView;
 

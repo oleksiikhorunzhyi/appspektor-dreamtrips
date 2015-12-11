@@ -59,10 +59,10 @@ android {
     }
     productFlavors {
         dev {
-            applicationId "com.worldventures.dreamtrips.dev"
-
+            applicationIdSuffix ".dev"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
+            
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.dev",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             ext.enableCrashlytics = false
@@ -74,11 +74,10 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         stage {
-            applicationId "com.worldventures.dreamtrips.stage"
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+            applicationIdSuffix ".stage"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.stage",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
@@ -91,11 +90,10 @@ android {
         }
         perf {
             // the same as stage except API endpoint
-            applicationId "com.worldventures.dreamtrips.perf"
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+            applicationIdSuffix ".perf"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-perf" + "-${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.perf",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz/"'
@@ -107,10 +105,7 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         prod {
-            applicationId "com.worldventures.dreamtrips"
-
             manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa",
-                                    appId         : "com.worldventures.dreamtrips",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'

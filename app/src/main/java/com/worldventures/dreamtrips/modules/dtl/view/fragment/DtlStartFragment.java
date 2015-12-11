@@ -99,7 +99,7 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
 
     @Override
     public void openMerchants(PlacesBundle bundle) {
-        router.moveTo(Route.DTL_PLACES_HOLDER, provideNavigationConfig(bundle));
+        router.moveTo(Route.DTL_MERCHANTS_HOLDER, provideNavigationConfig(bundle));
     }
 
     @Override

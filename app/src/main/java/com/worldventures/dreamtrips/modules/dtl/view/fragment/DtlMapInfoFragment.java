@@ -90,7 +90,7 @@ public class DtlMapInfoFragment
         if (tabletAnalytic.isTabletLandscape() && getArgs().isSlave()) {
             eventBus.post(new PlaceClickedEvent(id));
         } else {
-            router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()
+            router.moveTo(Route.DTL_MERCHANT_DETAILS, NavigationConfigBuilder.forActivity()
                     .data(new DtlMerchantDetailsBundle(id, false))
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .build());

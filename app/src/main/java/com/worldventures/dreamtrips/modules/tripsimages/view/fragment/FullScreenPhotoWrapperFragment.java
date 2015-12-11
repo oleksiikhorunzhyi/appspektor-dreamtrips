@@ -47,16 +47,16 @@ public class FullScreenPhotoWrapperFragment
     protected Toolbar toolbar;
 
     protected BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>> adapter;
-    protected Map<TripImagesListFragment.Type, Class<? extends FullScreenPhotoFragment>> tabTypeMap = new HashMap<>();
+    protected Map<TripImagesListFragment.Type, Route> tabTypeMap = new HashMap<>();
 
     {
-        tabTypeMap.put(TripImagesListFragment.Type.INSPIRE_ME, InspirePhotoFullscreenFragment.class);
-        tabTypeMap.put(TripImagesListFragment.Type.MEMBERS_IMAGES, SocialImageFullscreenFragment.class);
-        tabTypeMap.put(TripImagesListFragment.Type.ACCOUNT_IMAGES, SocialImageFullscreenFragment.class);
-        tabTypeMap.put(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE, YSBHPhotoFullscreenFragment.class);
-        tabTypeMap.put(TripImagesListFragment.Type.TRIP_PHOTO, TripPhotoFullscreenFragment.class);
-        tabTypeMap.put(TripImagesListFragment.Type.BUCKET_PHOTO, BucketPhotoFullscreenFragment.class);
-        tabTypeMap.put(TripImagesListFragment.Type.FIXED_PHOTO_LIST, SocialImageFullscreenFragment.class);
+        tabTypeMap.put(TripImagesListFragment.Type.INSPIRE_ME, Route.INSPIRE_PHOTO_FULLSCREEN);
+        tabTypeMap.put(TripImagesListFragment.Type.MEMBERS_IMAGES, Route.SOCIAL_IMAGE_FULLSCREEN);
+        tabTypeMap.put(TripImagesListFragment.Type.ACCOUNT_IMAGES, Route.SOCIAL_IMAGE_FULLSCREEN);
+        tabTypeMap.put(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE, Route.YSBH_FULLSCREEN);
+        tabTypeMap.put(TripImagesListFragment.Type.TRIP_PHOTO, Route.TRIP_PHOTO_FULLSCREEN);
+        tabTypeMap.put(TripImagesListFragment.Type.BUCKET_PHOTO, Route.BUCKET_PHOTO_FULLSCREEN);
+        tabTypeMap.put(TripImagesListFragment.Type.FIXED_PHOTO_LIST, Route.SOCIAL_IMAGE_FULLSCREEN);
     }
 
     @Override
@@ -154,11 +154,11 @@ public class FullScreenPhotoWrapperFragment
 
     private void addToAdapter(List<IFullScreenObject> items) {
         Queryable.from(items).forEachR(item -> {
-            Class<? extends FullScreenPhotoFragment> aClass = tabTypeMap.get(getArgs().getTab());
-            if (aClass == null) {
-                throw new IllegalStateException();
+            Route route = tabTypeMap.get(getArgs().getTab());
+            if (route == null) {
+                throw new IllegalStateException("You must specify route for this type");
             } else {
-                adapter.add(new FragmentItemWithObject<>(aClass, "", item));
+                adapter.add(new FragmentItemWithObject<>(route, "", item));
             }
         });
     }

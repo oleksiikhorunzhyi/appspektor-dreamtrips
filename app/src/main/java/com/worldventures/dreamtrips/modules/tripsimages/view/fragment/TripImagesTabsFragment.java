@@ -8,6 +8,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -48,11 +49,11 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
                 }
             };
 
-            this.adapter.add(new FragmentItem(UsersImagesListFragment.class, getString(R.string.member_images)));
-            this.adapter.add(new FragmentItem(AccountImagesListFragment.class, getString(R.string.my_images)));
-            this.adapter.add(new FragmentItem(ThreeSixtyVideosFragment.class, getString(R.string.three_sixty)));
-            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.inspire_me)));
-            this.adapter.add(new FragmentItem(TripImagesListFragment.class, getString(R.string.you_should_be_here)));
+            this.adapter.add(new FragmentItem(Route.USER_IMAGES, getString(R.string.member_images)));
+            this.adapter.add(new FragmentItem(Route.ACCOUNT_IMAGES, getString(R.string.my_images)));
+            this.adapter.add(new FragmentItem(Route.THREE_SIXTY_VIDEOS, getString(R.string.three_sixty)));
+            this.adapter.add(new FragmentItem(Route.LIST_IMAGES, getString(R.string.inspire_me)));
+            this.adapter.add(new FragmentItem(Route.LIST_IMAGES, getString(R.string.you_should_be_here)));
 
         }
 

@@ -115,7 +115,7 @@ public class DtlPlacesTabsFragment
     public void setTypes(List<DtlMerchantType> types) {
         if (adapter.getCount() == 0) {
             for (DtlMerchantType type : types) {
-                adapter.add(new DataFragmentItem<>(DtlPlacesListFragment.class, getString(type.getCaptionResId()), type));
+                adapter.add(new DataFragmentItem<>(Route.DTL_MERCHANTS_LIST, getString(type.getCaptionResId()), type));
             }
             adapter.notifyDataSetChanged();
         }
@@ -149,7 +149,7 @@ public class DtlPlacesTabsFragment
 
     @Override
     public void openDetails(String merchantId) {
-        router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forActivity()
+        router.moveTo(Route.DTL_MERCHANT_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new DtlMerchantDetailsBundle(merchantId, false))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .build());

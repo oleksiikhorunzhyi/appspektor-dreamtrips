@@ -133,7 +133,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     public void openBucketList() {
         shouldReload = true;
-        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_LIST);
+        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_TABS);
     }
 
     @Override

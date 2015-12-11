@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -114,7 +115,7 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     public void setTypes(List<BucketType> types) {
         if (adapter.getCount() == 0) {
             for (BucketType type : types) {
-                adapter.add(new DataFragmentItem<>(getBucketListFragmentClass(), getString(type.getRes()), type));
+                adapter.add(new DataFragmentItem<>(getBucketRoute(), getString(type.getRes()), type));
             }
             adapter.notifyDataSetChanged();
         }
@@ -123,8 +124,8 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     }
 
     @NonNull
-    protected Class<? extends BucketListFragment> getBucketListFragmentClass() {
-        return BucketListFragment.class;
+    protected Route getBucketRoute() {
+        return Route.BUCKET_LIST;
     }
 
     @Override

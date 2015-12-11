@@ -182,7 +182,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 .create()
                 .data(new ForeignBucketTabsBundle(user))
                 .with(activityRouter)
-                .move(Route.FOREIGN_BUCKET_LIST);
+                .move(Route.FOREIGN_BUCKET_TABS);
     }
 
     @Override

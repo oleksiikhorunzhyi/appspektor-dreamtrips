@@ -295,7 +295,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         viewPagerBucketGallery.setAdapter(adapter);
         viewPagerBucketGallery.setCurrentItem(0);
         Queryable.from(photos).forEachR(photo ->
-                        adapter.add(new FragmentItem(TripImagePagerFragment.class, ""))
+                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);

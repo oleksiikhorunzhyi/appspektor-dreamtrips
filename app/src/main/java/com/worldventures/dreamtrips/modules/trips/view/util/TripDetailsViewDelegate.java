@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -81,7 +82,7 @@ public class TripDetailsViewDelegate {
         };
 
         Queryable.from(filteredImages).forEachR(photo ->
-                        adapter.add(new FragmentItem(TripImagePagerFragment.class, ""))
+                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
 
         if (viewPagerGallery != null) {

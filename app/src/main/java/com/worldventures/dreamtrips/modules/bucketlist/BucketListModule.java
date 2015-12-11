@@ -82,7 +82,7 @@ import dagger.Provides;
 )
 public class BucketListModule {
 
-    public static final String BUCKETLIST = Route.BUCKET_LIST.name();
+    public static final String BUCKETLIST = Route.BUCKET_TABS.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideBucketListComponent() {

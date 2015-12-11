@@ -4,13 +4,16 @@ import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListPopularFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPopularTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
+import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -21,6 +24,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesHostFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
@@ -40,6 +44,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragm
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoDetailsFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
+import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendSearchFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFragment;
@@ -50,6 +55,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFrag
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
@@ -57,6 +63,9 @@ import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragmen
 import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryListFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuggestRestaurantFragment;
+import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
@@ -67,8 +76,17 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountIma
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.UsersImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.BucketPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.InspirePhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.SocialImageFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.TripPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.YSBHPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
+import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 public enum Route {
     LOGIN(LoginFragment.class),
@@ -84,6 +102,8 @@ public enum Route {
 
     BUCKET_EDIT(BucketItemEditFragment.class, R.string.bucket_list_edit_header),
     POPULAR_BUCKET(BucketListPopularFragment.class),
+    BUCKET_LIST(BucketListFragment.class),
+    FOREIGN_BUCKET_LIST(ForeignBucketListFragment.class),
     POPULAR_TAB_BUCKER(BucketPopularTabsFragment.class, R.string.bucket_list_location_popular),
     DETAIL_BUCKET(BucketDetailsFragment.class),
     DETAIL_FOREIGN_BUCKET(ForeignBucketDetailsFragment.class),
@@ -92,15 +112,19 @@ public enum Route {
     ENROLL(StaticInfoFragment.EnrollFragment.class),
     TRIPLIST(TripListFragment.class),
     TRIP_FILTERS(FiltersFragment.class),
+    TRIP_IMAGES_PAGER(TripImagePagerFragment.class),
     OTA(OtaFragment.class),
     TAB_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
     LIST_IMAGES(TripImagesListFragment.class, R.string.trip_images),
     ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
+    USER_IMAGES(UsersImagesListFragment.class),
+    BASE_IMAGES(BaseImageFragment.class),
     MEMBERSHIP(MembershipFragment.class),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
+    INVITE(InviteFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
-    BUCKET_LIST(BucketTabsFragment.class, R.string.bucket_list),
-    FOREIGN_BUCKET_LIST(ForeignBucketTabsFragment.class, R.string.bucket_list),
+    BUCKET_TABS(BucketTabsFragment.class, R.string.bucket_list),
+    FOREIGN_BUCKET_TABS(ForeignBucketTabsFragment.class, R.string.bucket_list),
     ACCOUNT_PROFILE(AccountFragment.class),
     FOREIGN_PROFILE(UserFragment.class),
     REP_TOOLS(RepToolsFragment.class),
@@ -116,6 +140,7 @@ public enum Route {
     PHOTO_EDIT(PhotoEditFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
+    FRIEND_LIST(FriendListFragment.class),
     FRIEND_REQUESTS(RequestsFragment.class, R.string.social_requests),
     FRIEND_PREFERENCES(FriendPreferenceFragment.class, R.string.friend_pref_lists_header),
     FEED(FeedFragment.class, R.string.feed_title),
@@ -135,20 +160,35 @@ public enum Route {
     DTL_START(DtlStartFragment.class),
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
     DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
-    DTL_PLACES_HOLDER(DtlPlacesHostFragment.class),
-    DTL_PLACES_LIST(DtlPlacesTabsFragment.class),
+    DTL_MERCHANTS_HOLDER(DtlPlacesHostFragment.class),
+    DTL_MERCHANTS_TABS(DtlPlacesTabsFragment.class),
+    DTL_MERCHANTS_LIST(DtlPlacesListFragment.class),
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
     DTL_FILTERS(DtlFiltersFragment.class),
     DTL_MAP(DtlMapFragment.class),
     DTL_MAP_INFO(DtlMapInfoFragment.class),
-    DTL_PLACE_DETAILS(DtlPlaceDetailsFragment.class),
+    DTL_MERCHANT_DETAILS(DtlPlaceDetailsFragment.class),
     DTL_SUGGEST_MERCHANT(DtlSuggestMerchantFragment.class, R.string.suggest_merchant_title),
 
     DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
 
-    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends);
+    MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
+
+    TRAINING_VIDEOS(TrainingVideosFragment.class),
+    ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
+    SUGGEST_RESTAURANT(SuggestRestaurantFragment.class),
+    SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
+
+    INSPIRE_PHOTO_FULLSCREEN(InspirePhotoFullscreenFragment.class),
+    SOCIAL_IMAGE_FULLSCREEN(SocialImageFullscreenFragment.class),
+    YSBH_FULLSCREEN(YSBHPhotoFullscreenFragment.class),
+    TRIP_PHOTO_FULLSCREEN(TripPhotoFullscreenFragment.class),
+    BUCKET_PHOTO_FULLSCREEN(BucketPhotoFullscreenFragment.class),
+
+    THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),
+    PRESENTATION_VIDEOS(PresentationVideosFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes
@@ -175,5 +215,9 @@ public enum Route {
 
     public String getClazzName() {
         return fragmentClass.getName();
+    }
+
+    public Class getClazz() {
+        return fragmentClass;
     }
 }

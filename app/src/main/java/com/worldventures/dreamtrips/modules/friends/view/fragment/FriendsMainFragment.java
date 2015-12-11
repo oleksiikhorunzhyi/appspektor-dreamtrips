@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -32,8 +33,8 @@ public class FriendsMainFragment extends BaseFragmentWithArgs<FriendsMainPresent
         super.afterCreateView(rootView);
 
         adapter = new BasePagerAdapter<>(getChildFragmentManager());
-        adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
-        adapter.add(new FragmentItem(RequestsFragment.class, getString(R.string.social_requests)));
+        adapter.add(new FragmentItem(Route.FRIEND_LIST, getString(R.string.social_my_friends)));
+        adapter.add(new FragmentItem(Route.FRIEND_REQUESTS, getString(R.string.social_requests)));
 
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

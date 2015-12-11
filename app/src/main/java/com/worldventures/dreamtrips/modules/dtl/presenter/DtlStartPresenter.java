@@ -8,11 +8,10 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
-import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
 import javax.inject.Inject;
 
@@ -32,6 +31,8 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        gpsLocationDelegate.setPermissionView(view);
+        //
         if (initialized) return;
         initialized = true;
         //
@@ -42,10 +43,6 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         } else {
             view.openDtlLocationsScreen();
         }
-    }
-
-    public void onEvent(RequestLocationUpdateEvent event) {
-        view.checkPermissions();
     }
 
     public void permissionGranted() {
@@ -65,14 +62,14 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     }
 
     private void onLocationObtained(Location location) {
-        eventBus.post(new LocationObtainedEvent(location));
+        gpsLocationDelegate.onLocationObtained(location);
     }
 
     public void locationNotGranted() {
-        eventBus.post(new LocationObtainedEvent());
+        gpsLocationDelegate.onLocationObtained(null);
     }
 
-    public interface View extends RxView {
+    public interface View extends RxView, PermissionView {
         void checkPermissions();
 
         void resolutionRequired(Status status);

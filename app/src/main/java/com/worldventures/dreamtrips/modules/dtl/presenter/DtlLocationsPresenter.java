@@ -11,8 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
@@ -26,7 +25,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
-implements DtlLocationRepository.LocationsLoadedListener {
+        implements DtlLocationRepository.LocationsLoadedListener, LocationDelegate.LocationListener {
 
     @Inject
     DtlLocationRepository dtlLocationRepository;
@@ -37,11 +36,14 @@ implements DtlLocationRepository.LocationsLoadedListener {
     Status status = Status.NEARBY;
     //
     private Location userGpsLocation;
+    @Inject
+    LocationDelegate gpsLocationDelegate;
 
     @Override
     public void onInjected() {
         super.onInjected();
         dtlLocationRepository.setRequestingPresenter(this);
+        gpsLocationDelegate.attachListener(this);
     }
 
     @Override
@@ -58,20 +60,22 @@ implements DtlLocationRepository.LocationsLoadedListener {
         searchLocations = new ArrayList<>();
         dtlLocations = new ArrayList<>();
         //
-        eventBus.post(new RequestLocationUpdateEvent());
+        gpsLocationDelegate.tryRequestLocation();
         //
         view.startLoading();
     }
 
     @Override
     public void dropView() {
-        super.dropView();
+        gpsLocationDelegate.detachListener(this);
         dtlLocationRepository.detachListener(this);
+        super.dropView();
     }
 
-    public void onEvent(LocationObtainedEvent event) {
-        if (event.getLocation() != null) {
-            userGpsLocation = event.getLocation();
+    @Override
+    public void onLocationObtained(Location location) {
+        if (location != null) {
+            userGpsLocation = location;
             view.citiesLoadingStarted();
             dtlLocationRepository.loadNearbyLocations(userGpsLocation);
         } else {
@@ -89,7 +93,8 @@ implements DtlLocationRepository.LocationsLoadedListener {
         setItems();
         //
         if (dtlLocations.isEmpty()) view.showSearch();
-        else if (dtlLocationRepository.getSelectedLocation() == null) selectNearest(userGpsLocation);
+        else if (dtlLocationRepository.getSelectedLocation() == null)
+            selectNearest(userGpsLocation);
     }
 
     @Override

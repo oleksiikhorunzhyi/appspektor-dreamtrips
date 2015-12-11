@@ -13,10 +13,10 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceInfoInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 

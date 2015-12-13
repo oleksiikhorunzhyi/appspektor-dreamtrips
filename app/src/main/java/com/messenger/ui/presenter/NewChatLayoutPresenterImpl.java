@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,140 +12,57 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.Toast;
+
+import com.worldventures.dreamtrips.R;
+import com.messenger.app.Environment;
+import com.messenger.loader.LoaderModule;
+import com.messenger.loader.SimpleLoader;
+import com.messenger.model.ChatConversation;
+import com.messenger.model.ChatUser;
+import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.view.NewChatScreen;
+import com.messenger.ui.viewstate.NewChatLayoutViewState;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.listeners.AuthorizeListener;
-import com.messenger.messengerservers.listeners.OnLoadedListener;
-import com.messenger.messengerservers.loaders.Loader;
-import com.messenger.model.ChatConversation;
-import com.messenger.model.ChatUser;
-import com.messenger.model.MockChatConversation;
-import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.view.NewChatScreen;
-import com.messenger.ui.viewstate.NewChatLayoutViewState;
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
-
-import org.apache.commons.lang3.StringUtils;
-
-import javax.inject.Inject;
-
-public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewChatScreen>
+public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewChatScreen, NewChatLayoutViewState>
         implements NewChatLayoutPresenter {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Activity activity;
-    static User user;
 
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    MessengerServerFacade messengerServerFacade;
-
-    public NewChatLayoutPresenterImpl(Activity activity) {
-        this.activity = activity;
-    }
-
-    @Override
-    public void attachView(NewChatScreen view) {
-        super.attachView(view);
-        ((Injector)view.getActivity().getApplication()).inject(this);
-    }
-
-    @Override
-    public void connect() {
-        if (messengerServerFacade.isAuthorized()) {
-            loadChatContacts();
-            return;
-        }
-        showInputUserNameDialog();
-    }
-
-    private void showInputUserNameDialog(){
-        final EditText editText = new EditText(getActivity());
-        messengerServerFacade.addAuthorizationListener(new AuthorizeListener() {
-            @Override
-            public void onSuccess() {
-                messengerServerFacade.setPresenceStatus(true);
-                Log.e("Xmpp server", "Vse normul");
-                getActivity().runOnUiThread(NewChatLayoutPresenterImpl.this::loadChatContacts);
-            }
-        });
-
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Input test user's name")
-                .setMessage("The format must look like techery_userN, where N is between 1 and 10.")
-                .setView(editText)
-                .setPositiveButton("Ok", (dialog, possitiveButton) -> {
-                    String userName = editText.getText().toString();
-                    user = new User(userName);
-                    if (StringUtils.isEmpty(userName)) return;
-                    messengerServerFacade.authorizeAsync(userName, userName);
-                })
-                .setNegativeButton("Cancel", (dialog, whichButton) -> {
-                    getActivity().finish();
-                })
-                .show();
-    }
+    private SimpleLoader<List<ChatUser>> simpleChatContactsLoader = LoaderModule.getChatContactsLoader();
 
     @Override public void loadChatContacts() {
-        if (getView() != null){
-            getView().showLoading();
-            // TODO: 12/4/15 null
-            getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
-        }
+        getView().showLoading();
+        getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
 
-        Loader<User> loaderContacts = messengerServerFacade.getLoaderManager().getContactLoader();
-        loaderContacts.setOnEntityLoadedListener(new OnLoadedListener<ChatUser>() {
-            @Override
-            public void onLoaded(List<ChatUser> users) {
-                if (getView() == null) return;
-
-                Log.i("Xmpp Load contacts", "" + users.size());
-                activity.runOnUiThread(() -> {
-                    if (isViewAttached()) {
-                        getViewState().setChatContacts(users);
-                        getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.CONTENT);
-                        getView().setContacts(users);
-                        getView().showContent();
-                    }
-                });
+        simpleChatContactsLoader.loadData(new SimpleLoader.LoadListener<List<ChatUser>>() {
+            @Override public void onLoadSuccess(List<ChatUser> data) {
+                if (isViewAttached()) {
+                    getViewState().setData(data);
+                    getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.CONTENT);
+                    getView().setContacts(data);
+                    getView().showContent();
+                }
             }
 
-            @Override
-            public void onFailed() {
-                if (getView() == null) return;
-
-                activity.runOnUiThread(() -> {
-                    if (isViewAttached()) {
-                        getView().showError(new Exception("Server exception"));
-                        getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.ERROR);
-                    }
-                });
+            @Override public void onError(Throwable error) {
+                if (isViewAttached()) {
+                    getView().showError(error);
+                    getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.ERROR);
+                }
             }
         });
-        loaderContacts.load();
     }
 
     @Override public void onNewViewState() {
         state = new NewChatLayoutViewState();
-        if (messengerServerFacade.isAuthorized()) loadChatContacts();
-    }
-
-    @Override public NewChatLayoutViewState getViewState() {
-        return (NewChatLayoutViewState) state;
+        loadChatContacts();
     }
 
     @Override public void applyViewState() {
@@ -161,8 +77,8 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
                 getView().showError(getViewState().getError());
                 break;
         }
-        if (getViewState().getChatContacts() != null) {
-            getView().setContacts(getViewState().getChatContacts());
+        if (getViewState().getData() != null) {
+            getView().setContacts(getViewState().getData());
         }
         if (getViewState().getSelectedContacts() != null) {
             getView().setSelectedContacts(getViewState().getSelectedContacts());
@@ -177,8 +93,13 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
 
     private void refreshSelectedContactsHeader(List<ChatUser> selectedContacts) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getContext().getString(R.string.new_chat_chosen_contacts_header_default_value));
-        sb.append(" ");
+        sb.append(getContext().getString(R.string.new_chat_chosen_contacts_header_contacts_list_start_value));
+        if (!selectedContacts.isEmpty()) {
+            sb.append(" (");
+            sb.append(String.valueOf(selectedContacts.size()));
+            sb.append(")");
+        }
+        sb.append(": ");
 
         List<String> userNames = new ArrayList<>();
 
@@ -214,7 +135,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Action Bar
+    // Activity related
     ///////////////////////////////////////////////////////////////////////////
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -226,20 +147,30 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                ArrayList<ChatUser> userList = new ArrayList<>(getViewState().getSelectedContacts());
-
-                if (userList == null || userList.size() != 1){
-                    Toast.makeText(activity, "You must provide one user to start 1:1 chat", Toast.LENGTH_SHORT).show();
+                if (getViewState().getSelectedContacts() == null || getViewState().getSelectedContacts().isEmpty()) {
+                    Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
+                            Toast.LENGTH_SHORT).show();
                     return true;
                 }
+                ChatConversation chatConversation = Environment.newChatConversation();
+                chatConversation.setConversationName(getView().getConversationName());
+                chatConversation.setConversationOwner(Environment.getCurrentUser());
+                ArrayList<ChatUser> chatUsers = new ArrayList<>();
+                chatUsers.add(Environment.getCurrentUser());
+                chatUsers.addAll(getViewState().getSelectedContacts());
+                chatConversation.setChatUsers(chatUsers);
 
-                ChatConversation chatConversation = new MockChatConversation();
-                userList.add(0, user);
-                chatConversation.setChatUsers(userList);
-                ChatActivity.start(activity, ChatActivity.CHAT_TYPE_SINGLE, chatConversation);
+                Intent intent = new Intent(getContext(), ChatActivity.class);
+                intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, chatConversation);
+                getActivity().startActivity(intent);
+                getActivity().finish();
                 return true;
         }
         return false;
+    }
+
+    @Override public void onDestroy() {
+        
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -269,10 +200,10 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     ///////////////////////////////////////////////////////////////////////////
 
     protected Context getContext() {
-        return activity;
+        return getView().getContext();
     }
 
-    protected Activity getActivity() {
-        return activity;
+    protected AppCompatActivity getActivity() {
+        return getView().getActivity();
     }
 }

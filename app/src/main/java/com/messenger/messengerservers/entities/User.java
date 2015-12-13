@@ -25,6 +25,16 @@ public class User implements ChatUser {
     }
 
     @Override
+    public long getId() {
+        return 0;
+    }
+
+    @Override
+    public void setId(long id) {
+
+    }
+
+    @Override
     public String getName() {
         return userName;
     }
@@ -50,6 +60,16 @@ public class User implements ChatUser {
     @Override
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    @Override
+    public boolean isCloseFriend() {
+        return false;
+    }
+
+    @Override
+    public void setCloseFriend(boolean isCloseFriend) {
+
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

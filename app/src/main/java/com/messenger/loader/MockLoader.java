@@ -7,7 +7,7 @@ public abstract class MockLoader<T> extends SimpleLoader<T> {
 
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    public void loadData(final LoadListener<T> listener) {
+    public void loadData(LoadListener<T> listener) {
         if (listener == null) {
             throw new IllegalArgumentException("Listener must not be null");
         }

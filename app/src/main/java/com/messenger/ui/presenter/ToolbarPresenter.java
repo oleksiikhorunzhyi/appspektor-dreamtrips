@@ -7,13 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.worldventures.dreamtrips.R;;
+import com.worldventures.dreamtrips.R;
 
 public class ToolbarPresenter {
 
-    ActionBar actionBar;
+    private ActionBar actionBar;
 
-    public ToolbarPresenter(final Toolbar toolbar, AppCompatActivity appCompatActivity) {
+    public ToolbarPresenter(Toolbar toolbar, AppCompatActivity appCompatActivity) {
         appCompatActivity.setSupportActionBar(toolbar);
         actionBar = appCompatActivity.getSupportActionBar();
         toolbar.setBackgroundColor(appCompatActivity.getResources().getColor(R.color.action_bar_background));
@@ -35,6 +35,14 @@ public class ToolbarPresenter {
 
     public void setTitle(String name) {
         getActionBar().setTitle(name);
+    }
+
+    public void setSubtitle(@StringRes int name) {
+        getActionBar().setSubtitle(name);
+    }
+
+    public void setSubtitle(String name) {
+        getActionBar().setSubtitle(name);
     }
 
     public void enableUpNavigationButton() {

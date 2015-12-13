@@ -1,25 +1,23 @@
 package com.messenger.ui.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.messenger.ui.view.ActivityAwareScreen;
-import com.messenger.ui.view.NewChatScreenImpl;
+import com.messenger.ui.view.ConversationListScreenImpl;
 
 public class MessengerStartActivity extends AppCompatActivity {
 
-    private ActivityAwareScreen screen;
+    ActivityAwareScreen screen;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NewChatScreenImpl newChatScreen = new NewChatScreenImpl(this);
-        newChatScreen.setId(android.R.id.primary);
-        setContentView(newChatScreen);
-        screen = newChatScreen;
+        ConversationListScreenImpl conversationListScreen = new ConversationListScreenImpl(this);
+        setContentView(conversationListScreen);
+        this.screen = conversationListScreen;
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -32,5 +30,10 @@ public class MessengerStartActivity extends AppCompatActivity {
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         screen.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        screen.onDestroy();
     }
 }

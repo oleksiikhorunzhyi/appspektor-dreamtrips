@@ -6,11 +6,10 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-
-import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
+import com.messenger.ui.presenter.ViewStateMvpPresenter;
 
-public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends ViewStateMvpPresenter<V>>
+public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends ViewStateMvpPresenter<V, ?>>
         extends MvpLinearLayout<V, P> {
 
     private static final String KEY_SUPER_INSTANCE_STATE = "superstate";

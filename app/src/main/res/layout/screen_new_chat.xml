@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/new_chat_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
-        android:focusableInTouchMode="true" >
+        android:focusableInTouchMode="true"
+        >
+
         <LinearLayout
             android:id="@+id/new_chat_content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/new_chat_content_header_size"
@@ -26,64 +32,73 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 >
-                <ImageView
+
+                <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/new_chat_conversation_icon"
                     android:layout_width="@dimen/new_chat_name_conversation_icon_size"
                     android:layout_height="@dimen/new_chat_name_conversation_icon_size"
-                    android:src="@android:drawable/ic_menu_camera"
-                    android:scaleType="centerCrop"
                     android:layout_gravity="center_vertical"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_camera"
+                    app:riv_oval="true"
                     />
+
                 <EditText
                     android:id="@+id/new_chat_conversation_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/new_chat_name_conversation_name_left_margin"
+                    android:background="@null"
                     android:hint="@string/new_chat_new_conversation_title_hint"
-                    android:textColorHint="@color/new_chat_conversation_name_header_hint"
-                    android:textColor="@color/new_chat_conversation_name_header_text"
-                    android:textSize="@dimen/new_chat_name_conversation_name_text_size"
+                    android:imeOptions="actionDone"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:imeOptions="actionDone"
-                    android:background="@null"
+                    android:textColor="@color/new_chat_header_text_color"
+                    android:textColorHint="@color/new_chat_header_text_color"
+                    android:textSize="@dimen/new_chat_name_conversation_name_text_size"
                     />
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/contact_list_item_contacts_divider"
+                android:background="@color/list_item_divider_color"
                 />
+
             <TextView
                 android:id="@+id/new_chat_chosen_contacts_textview"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/new_chat_content_header_size"
+                android:gravity="center_vertical"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:textColor="#A0A7AF"
+                android:text="@string/new_chat_chosen_contacts_header_empty"
+                android:textColor="@color/new_chat_header_text_color"
                 android:textSize="@dimen/new_chat_name_chosen_contacts_text_size"
-                android:gravity="center_vertical"
-                android:text="@string/new_chat_chosen_contacts_header_default_value"
                 />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/contact_list_item_contacts_divider"
+                android:background="@color/list_item_divider_color"
                 />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/new_chat_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
         </LinearLayout>
+
         <TextView
             android:id="@+id/new_chat_error_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/new_chat_error_loading_contacts"
             android:layout_gravity="center"
+            android:text="@string/new_chat_error_loading_contacts"
             />
+
         <ProgressBar
             android:id="@+id/new_chat_loading_view"
             android:layout_width="wrap_content"

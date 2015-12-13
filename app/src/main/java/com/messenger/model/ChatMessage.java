@@ -11,4 +11,6 @@ public interface ChatMessage extends Parcelable {
     void setUser(ChatUser chatUser);
     Date getDate();
     void setDate(Date date);
+    boolean isUnread();
+    void setUnread(boolean isUnread);
 }

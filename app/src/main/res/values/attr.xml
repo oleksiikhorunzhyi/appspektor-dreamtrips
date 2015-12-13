@@ -20,4 +20,7 @@
             <enum name="width" value="1"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="OverlappingViewsLayout">
+        <attr name="ovl_overlap_part" format="float|reference" />
+    </declare-styleable>
 </resources>

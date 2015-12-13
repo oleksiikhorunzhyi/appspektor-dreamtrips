@@ -71,18 +71,40 @@ g    <color name="dtl_tab_text_normal">#B1B2B1</color>
 
 
     <!--messenger-->
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!-- General -->
+    <color name="main_background">#FFFFFF</color>
+    <color name="action_bar_background">@color/colorPrimary</color>
+    <color name="online_indicator">@color/colorAccent</color>
 
-    <color name="action_bar_background">#A8A8A8</color>
+    <!-- Lists -->
+    <color name="list_item_text_color">#272626</color>
+    <color name="list_item_description_text_color">#A7A9AA</color>
+    <color name="list_item_divider_color">#E9E9E9</color>
 
-    <color name="new_chat_conversation_name_header_hint">#B7B8B9</color>
-    <color name="new_chat_conversation_name_header_text">@color/contact_list_item_contact_name</color>
-    <color name="contact_list_item_contact_name">#737477</color>
-    <color name="contact_list_item_contacts_divider">#DDDDDD</color>
-    <color name="contact_list_header_selected_contacts">#89A9BE</color>
-    <color name="green_online">#BDDC9D</color>
+    <!-- New chat screen -->
+    <color name="new_chat_header_text_color">#CECECE</color>
+    <color name="new_chat_conversation_name_header_text">@color/list_item_text_color</color>
+    <color name="contact_list_item_contact_name">@color/list_item_text_color</color>
+    <color name="contact_list_header_selected_contacts">#7BC5FD</color>
+    <color name="new_chat_list_item_section_name_text">#080808</color>
+    <color name="new_chat_list_item_section_background">#F6F6F6</color>
+
+    <!-- Chat screen -->
+    <color name="chat_color_username">#CBCBCB</color>
+    <color name="chat_color_message">#444444</color>
+    <color name="chat_color_message_own">@android:color/white</color>
+
+    <color name="chat_typing_textview">#A4A6AA</color>
+    <color name="chat_date_entry">#AFAFAF</color>
+    <color name="chat_typing_dot_1">#EFEFEF</color>
+    <color name="chat_typing_dot_2">#DEDEDE</color>
+    <color name="chat_typing_dot_3">#CECECE</color>
+
+    <!-- Conversation list screen -->
+    <color name="conversation_list_unread_conversation_bg">#EBF7FF</color>
+    <color name="conversation_list_read_conversation_bg">@android:color/white</color>
+    <color name="conversation_list_search_hint_text_color">#CDCDCD</color>
+    <color name="conversation_list_search_text_color">#CDCDCD</color>
     <!--end messenger-->
 
 </resources>

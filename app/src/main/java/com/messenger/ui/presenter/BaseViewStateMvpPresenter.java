@@ -1,19 +1,18 @@
 package com.messenger.ui.presenter;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 import icepick.Icepick;
 import icepick.State;
-import com.messenger.ui.viewstate.BaseRestorableViewState;
 
-public abstract class BaseViewStateMvpPresenter<V extends MvpView> extends MvpBasePresenter<V>
-        implements ViewStateMvpPresenter<V> {
+public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
+        implements ActivityAwareViewStateMvpPresenter<V, S> {
 
-    @State
-    BaseRestorableViewState<V> state;
+    @State S state;
 
     @Override public void onSaveInstanceState(Bundle bundle) {
         Icepick.saveInstanceState(this, bundle);
@@ -24,7 +23,7 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView> extends MvpBa
         applyViewState();
     }
 
-    @Override public BaseRestorableViewState<V> getViewState() {
+    @Override public S getViewState() {
         return state;
     }
 }

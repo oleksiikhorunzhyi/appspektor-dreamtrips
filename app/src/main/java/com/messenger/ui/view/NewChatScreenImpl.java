@@ -1,10 +1,8 @@
 package com.messenger.ui.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,17 +17,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
-import butterknife.InjectView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.adapter.ChatContactsAdapter;
 import com.messenger.ui.presenter.NewChatLayoutPresenter;
 import com.messenger.ui.presenter.NewChatLayoutPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.recyclerview.VerticalDivider;
+
+import java.util.List;
+
+import butterknife.InjectView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, NewChatLayoutPresenter>
         implements NewChatScreen {
@@ -38,8 +38,10 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     @InjectView(R.id.new_chat_loading_view) View loadingView;
     @InjectView(R.id.new_chat_error_view) View errorView;
 
-    @InjectView(R.id.new_chat_toolbar) Toolbar toolbar;
-    @InjectView(R.id.new_chat_recycler_view) RecyclerView recyclerView;
+    @InjectView(R.id.new_chat_toolbar)
+    Toolbar toolbar;
+    @InjectView(R.id.new_chat_recycler_view)
+    RecyclerView recyclerView;
 
     @InjectView(R.id.new_chat_conversation_icon) ImageView conversationIcon;
     @InjectView(R.id.new_chat_conversation_name) EditText conversationNameEditText;
@@ -59,12 +61,6 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         init(context);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        presenter.connect();
-    }
-
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
         LayoutInflater.from(context).inflate(R.layout.screen_new_chat, this, true);
@@ -72,8 +68,9 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         initUi();
     }
 
+    @SuppressWarnings("Deprecated")
     private void initUi() {
-        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+        setBackgroundColor(getResources().getColor(R.color.main_background));
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
         toolbarPresenter.setTitle(R.string.new_chat_title);
         toolbarPresenter.enableUpNavigationButton();
@@ -81,11 +78,12 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter = new ChatContactsAdapter(getContext()));
+        recyclerView.addItemDecoration(new VerticalDivider(getResources().getDrawable(R.drawable.divider_list)));
         adapter.setSelectionListener((selectedUsers) -> getPresenter().onSelectedUsersStateChanged(selectedUsers));
     }
 
     @Override public NewChatLayoutPresenter createPresenter() {
-        return new NewChatLayoutPresenterImpl((Activity)getContext());
+        return new NewChatLayoutPresenterImpl();
     }
 
     @Override public void showLoading() {
@@ -107,7 +105,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     }
 
     @Override public void setContacts(List<ChatUser> chatContacts) {
-        adapter.setChatContacts(chatContacts);
+        adapter.setContacts(chatContacts);
         adapter.notifyDataSetChanged();
     }
 
@@ -140,6 +138,10 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         getPresenter().onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override public void onDestroy() {
+        getPresenter().onDestroy();
+    }
+
     @OnClick(R.id.new_chat_conversation_icon) public void onConversationItemClick() {
         getPresenter().onHandleTakePictureIntent();
     }
@@ -147,5 +149,4 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     @Override public String getConversationName() {
         return conversationNameEditText.getText().toString();
     }
-    
 }

@@ -1,12 +1,13 @@
 package com.messenger.ui.presenter;
 
-import java.util.List;
-
 import com.messenger.model.ChatUser;
 import com.messenger.ui.view.NewChatScreen;
+import com.messenger.ui.viewstate.NewChatLayoutViewState;
 
-public interface NewChatLayoutPresenter extends ActivityAwareViewStateMvpPresenter<NewChatScreen> {
-    void connect();
+import java.util.List;
+
+public interface NewChatLayoutPresenter extends ActivityAwareViewStateMvpPresenter<NewChatScreen,
+        NewChatLayoutViewState> {
     void loadChatContacts();
     void onSelectedUsersStateChanged(List<ChatUser> selectedUsers);
     void onHandleTakePictureIntent();

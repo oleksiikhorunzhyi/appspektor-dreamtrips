@@ -1,48 +1,21 @@
 package com.messenger.ui.viewstate;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.messenger.app.Environment;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
-import com.messenger.ui.view.NewChatScreen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScreen> {
-
-    public enum LoadingState {
-        LOADING,
-        CONTENT,
-        ERROR
-    }
+public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
 
     public NewChatLayoutViewState() {
 
     }
 
-    private LoadingState loadingState = LoadingState.LOADING;
-    private List<ChatUser> chatContacts;
-    private List<ChatUser> selectedContacts;
-    private Throwable error;
-
-    public LoadingState getLoadingState() {
-        return loadingState;
-    }
-
-    public void setLoadingState(LoadingState loadingState) {
-        this.loadingState = loadingState;
-    }
-
-    public List<ChatUser> getChatContacts() {
-        return chatContacts;
-    }
-
-    public void setChatContacts(List<ChatUser> chatContacts) {
-        this.chatContacts = chatContacts;
-    }
+    private List<ChatUser> selectedContacts = new ArrayList<>();
 
     public List<ChatUser> getSelectedContacts() {
         return selectedContacts;
@@ -52,37 +25,27 @@ public class NewChatLayoutViewState extends BaseRestorableViewState<NewChatScree
         this.selectedContacts = selectedContacts;
     }
 
-    public Throwable getError() {
-        return error;
-    }
-
-    public void setError(Throwable error) {
-        this.error = error;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
 
     @Override public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeInt(loadingState.ordinal());
-        parcel.writeSerializable(error);
-        parcel.writeList(chatContacts);
+        super.writeToParcel(parcel, flags);
+        parcel.writeList(getData());
         parcel.writeList(selectedContacts);
     }
 
-    public static final Creator<NewChatLayoutViewState> CREATOR = new Creator<NewChatLayoutViewState>() {
+    public static final Parcelable.Creator<NewChatLayoutViewState> CREATOR = new Parcelable.Creator<NewChatLayoutViewState>() {
         public NewChatLayoutViewState createFromParcel(Parcel source) {return new NewChatLayoutViewState(source);}
 
         public NewChatLayoutViewState[] newArray(int size) {return new NewChatLayoutViewState[size];}
     };
 
     public NewChatLayoutViewState(Parcel in) {
-        loadingState = LoadingState.values()[in.readInt()];
-        error = (Throwable) in.readSerializable();
-        chatContacts = new ArrayList<>();
-        in.readList(chatContacts, User.class.getClassLoader());
-        selectedContacts = new CopyOnWriteArrayList<>();
-        in.readList(selectedContacts, User.class.getClassLoader());
+        super(in);
+        setData(new ArrayList<>());
+        in.readList(getData(), Environment.getChatUserClassLoader());
+        selectedContacts = new ArrayList<>();
+        in.readList(selectedContacts, Environment.getChatUserClassLoader());
     }
 }

@@ -14,4 +14,5 @@ public interface ActivityAwareScreen extends MvpView {
     boolean onCreateOptionsMenu(Menu menu);
     boolean onOptionsItemSelected(MenuItem item);
     void onActivityResult(int requestCode, int resultCode, Intent data);
+    void onDestroy();
 }

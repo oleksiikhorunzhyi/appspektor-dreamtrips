@@ -2,16 +2,18 @@ package com.messenger.messengerservers.xmpp.paginations;
 
 import android.util.Log;
 
+import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.paginations.PagePagination;
+import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
+import com.messenger.messengerservers.xmpp.packets.ObtainMessageListPacket;
+import com.messenger.messengerservers.xmpp.providers.MessagePageProvider;
+
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ProviderManager;
 
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.paginations.PagePagination;
-import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
-import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
-import com.messenger.messengerservers.xmpp.packets.ObtainMessageListPacket;
-import com.messenger.messengerservers.xmpp.providers.MessagePageProvider;
+import java.util.List;
+
 
 public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     public static final int MAX_MESSAGE = 20;
@@ -33,15 +35,20 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         Log.i("Send XMPP Packet: ", packet.toString());
 
         try {
-            ProviderManager.addIQProvider(MessagePagePacket.IQ_ELEMENT, MessagePagePacket.NAMESPACE, new MessagePageProvider());
+            ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider());
             connection.sendStanzaWithResponseCallback(packet,
-                    (stanza) -> stanza instanceof ConversationsPacket,
+                    (stanza) -> stanza instanceof MessagePagePacket,
                     (stanzaPacket) -> {
-                        onEntityLoadedListener.onLoaded(((MessagePagePacket) stanzaPacket).getMessages());
-                        ProviderManager.removeIQProvider(MessagePagePacket.IQ_ELEMENT, MessagePagePacket.NAMESPACE);
+                        List<Message> messages = ((MessagePagePacket) stanzaPacket).getMessages();
+                        for (Message message : messages) {
+                            message.setConversationId(conversationId);
+                        }
+
+                        onEntityLoadedListener.onLoaded(messages);
+                        ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);
                     });
         } catch (SmackException.NotConnectedException e) {
-            Log.i("XmppMessagePagePaginate",  "Loading error", e);
+            Log.i("XmppMessagePagePaginate", "Loading error", e);
         }
     }
 

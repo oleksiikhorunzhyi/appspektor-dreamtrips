@@ -1,10 +1,6 @@
 package com.messenger.messengerservers;
 
-import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.chat.SingleUserChat;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
-import com.messenger.messengerservers.listeners.GlobalMessageReceiver;
 
 public interface MessengerServerFacade {
 
@@ -15,22 +11,20 @@ public interface MessengerServerFacade {
 
     boolean isAuthorized();
 
+    void setPresenceStatus(boolean active);
+
     void addAuthorizationListener(AuthorizeListener listener);
 
     void removeAuthorizationListener(AuthorizeListener listener);
 
-    SingleUserChat createSingleUserChat(User companion);
-
-    MultiUserChat createMultiUserChat(User owner);
+    ChatManager getChatManager();
 
     LoaderManager getLoaderManager();
 
-    PaginationManager getPaginatorManager();
+    PaginationManager getPaginationManager();
+
+    ContactManager getContactManager();
 
     GlobalEventEmitter getGlobalEventEmitter();
-
-    void setGlobalMessageReceiver(GlobalMessageReceiver globalMessageReceiver);
-
-    void setPresenceStatus(boolean active);
 
 }

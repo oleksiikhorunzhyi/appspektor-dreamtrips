@@ -1,22 +1,20 @@
 package com.messenger.messengerservers.xmpp.util;
 
 import com.google.gson.Gson;
-
-import java.util.Locale;
-
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.xmpp.entities.MessageBody;
 
+import java.util.Locale;
+
 public final class XmppMessageConverter {
 
-    private XmppMessageConverter(){
+    private XmppMessageConverter() {
 
     }
 
-    public static org.jivesoftware.smack.packet.Message convert(Message message){
-        Locale locale = message.getLocale();
+    public static org.jivesoftware.smack.packet.Message convert(Message message) {
         MessageBody messageBody = new MessageBody.Builder()
-                .locale(locale != null ? locale.toString() : null)
+                .locale(message.getLocale().toString())
                 .text(message.getText())
                 .build();
         String bodyJson = new Gson().toJson(messageBody);
@@ -28,15 +26,21 @@ public final class XmppMessageConverter {
         return smackMessage;
     }
 
-    public static Message convert(org.jivesoftware.smack.packet.Message message){
+    public static Message convert(org.jivesoftware.smack.packet.Message message) {
         MessageBody stanzaMessageBody = new Gson().fromJson(message.getBody(), MessageBody.class);
 
-        return new Message.Builder()
-                .from(JidCreatorHelper.obtainUser(message.getFrom()))
-                .to(JidCreatorHelper.obtainUser(message.getTo()))
+        Message.Builder builder = new Message.Builder()
                 .text(stanzaMessageBody.getText())
-                .locale(new Locale(stanzaMessageBody.getLocale()))
-                .build();
+                .locale(new Locale(stanzaMessageBody.getLocale()));
+
+        if (message.getTo() != null) {
+            builder.to(JidCreatorHelper.obtainUser(message.getTo()));
+        }
+        if (message.getFrom() != null) {
+            builder.from(JidCreatorHelper.obtainUser(message.getFrom()));
+        }
+
+        return builder.build();
     }
 
 }

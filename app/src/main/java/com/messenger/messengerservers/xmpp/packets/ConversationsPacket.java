@@ -1,11 +1,12 @@
 package com.messenger.messengerservers.xmpp.packets;
 
+import com.messenger.messengerservers.entities.Conversation;
+
 import org.jivesoftware.smack.packet.IQ;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.messenger.messengerservers.entities.Conversation;
 
 public class ConversationsPacket extends IQ {
 

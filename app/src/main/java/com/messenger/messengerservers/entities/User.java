@@ -3,13 +3,26 @@ package com.messenger.messengerservers.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.model.ChatUser;
+import com.messenger.storege.MessengerDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ModelContainer;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
-public class User implements ChatUser {
-    private String userName;
+@ModelContainer
+@Table(databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class User extends BaseModel {
+    @PrimaryKey
+    @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
+    @Column
+    String userName;
+    @Column boolean online;
     private String userAvatarUrl =  "http://www.skivecore.com/members/0/Default.jpg";
-    private boolean online;
 
+    public User() {}
     public User(String userName) {
         this.userName = userName;
     }
@@ -24,30 +37,26 @@ public class User implements ChatUser {
         return userName;
     }
 
-    @Override
     public String getName() {
         return userName;
     }
 
-    @Override
     public void setName(String name) {
+        this.userName = name;
     }
 
-    @Override
     public String getAvatarUrl() {
         return userAvatarUrl;
     }
 
-    @Override
     public void setAvatarUrl(String avatarUrl) {
+        this.userAvatarUrl = avatarUrl;
     }
 
-    @Override
     public boolean isOnline() {
-        return false;
+        return online;
     }
 
-    @Override
     public void setOnline(boolean online) {
         this.online = online;
     }
@@ -58,12 +67,10 @@ public class User implements ChatUser {
         public User[] newArray(int size) {return new User[size];}
     };
 
-    @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.userName);
         dest.writeString(this.userAvatarUrl);
@@ -72,3 +79,4 @@ public class User implements ChatUser {
 
 
 }
+

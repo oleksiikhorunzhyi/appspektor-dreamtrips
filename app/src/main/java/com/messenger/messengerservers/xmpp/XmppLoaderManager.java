@@ -1,29 +1,57 @@
 package com.messenger.messengerservers.xmpp;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
-
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.loaders.XmppContactLoader;
 import com.messenger.messengerservers.xmpp.loaders.XmppConversationLoader;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+
 public class XmppLoaderManager implements LoaderManager {
+    private final List<Loader> loaders = new CopyOnWriteArrayList<>();
+    private final XmppServerFacade facade;
 
-    AbstractXMPPConnection connection;
+    private final AuthorizeListener authorizeListener = new AuthorizeListener() {
+        @Override
+        public void onSuccess() {
+            super.onSuccess();
+            for (Loader loader : loaders) {
+                loader.load();
+            }
+        }
+    };
 
-    public XmppLoaderManager(AbstractXMPPConnection connection) {
-        this.connection = connection;
+    public XmppLoaderManager(XmppServerFacade facade) {
+        this.facade = facade;
+        facade.addAuthorizationListener(authorizeListener);
     }
 
     @Override
-    public Loader<User> getContactLoader() {
-        return new XmppContactLoader(connection, null);
+    public Loader<User> createContactLoader() {
+        Loader<User> loader  = new XmppContactLoader(facade, null);
+        loaders.add(loader);
+        return loader;
     }
 
     @Override
-    public Loader<Conversation> getConversationLoader() {
-        return new XmppConversationLoader(connection);
+    public Loader<Conversation> createConversationLoader() {
+        Loader<Conversation> loader= new XmppConversationLoader(facade);
+        loaders.add(loader);
+        return loader;
+    }
+
+    @Override
+    public void destroyLoader(Loader loader) {
+        loaders.remove(loader);
+    }
+
+    @Override
+    public void close() {
+        facade.removeAuthorizationListener(authorizeListener);
     }
 }

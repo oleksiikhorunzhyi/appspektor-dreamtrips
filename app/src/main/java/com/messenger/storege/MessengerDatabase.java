@@ -1,11 +1,24 @@
-//package com.messenger.storege;
-//
-//import com.raizlabs.android.dbflow.annotation.Database;
-//
-//@Database(name = MessengerDatabase.NAME, version = MessengerDatabase.VERSION)
-//public class MessengerDatabase {
-//
-//    public static final String NAME = "App";
-//
-//    public static final int VERSION = 1;
-//}
+package com.messenger.storege;
+
+import android.content.ContentResolver;
+import android.net.Uri;
+
+import com.raizlabs.android.dbflow.annotation.Database;
+import com.raizlabs.android.dbflow.annotation.provider.ContentProvider;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
+
+@ContentProvider(authority = MessengerDatabase.AUTHORITY,
+        databaseName = MessengerDatabase.NAME,
+        baseContentUri = ContentResolver.SCHEME_CONTENT)
+@Database(name = MessengerDatabase.NAME, version = MessengerDatabase.VERSION)
+public class MessengerDatabase {
+    public static final String AUTHORITY = "techery.io.messengerdreamtrips.storege";
+
+    public static final String NAME = "MessengerDatabase";
+
+    public static final int VERSION = 1;
+
+    public static Uri buildUri(String... paths) {
+        return ContentUtils.buildUri(AUTHORITY, paths);
+    }
+}

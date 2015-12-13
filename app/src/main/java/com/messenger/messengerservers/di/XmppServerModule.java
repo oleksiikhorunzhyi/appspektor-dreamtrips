@@ -20,7 +20,7 @@ public class XmppServerModule {
 
     @Singleton
     @Provides
-    MessengerServerFacade provideXmppServerFacade(){
+    MessengerServerFacade provideXmppServerFacade() {
         return new XmppServerFacade();
     }
 }

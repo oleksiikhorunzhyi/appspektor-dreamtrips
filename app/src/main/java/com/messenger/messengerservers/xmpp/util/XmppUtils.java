@@ -1,8 +1,10 @@
 package com.messenger.messengerservers.xmpp.util;
 
+
 import com.messenger.messengerservers.ChatState;
 
 public final class XmppUtils {
+
     private XmppUtils() {
     }
 
@@ -38,10 +40,6 @@ public final class XmppUtils {
             default:
                 throw new Error();
         }
-    }
-
-    public static String generateStanzaId() {
-        return "id-" + System.currentTimeMillis();
     }
 
 }

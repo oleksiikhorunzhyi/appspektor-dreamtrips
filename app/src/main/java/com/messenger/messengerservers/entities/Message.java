@@ -1,50 +1,95 @@
 package com.messenger.messengerservers.entities;
 
+import android.net.Uri;
+
+import com.messenger.storege.MessengerDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.container.ForeignKeyContainer;
+import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
+
 import java.util.Date;
 import java.util.Locale;
 
-public class Message {
-    
-    private String id;
-    private User from;
-    private User to;
-    private String text;
-    private Date date;
+@TableEndpoint(name = Message.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = Message.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class Message extends BaseProviderModel<Message> {
+    static final String TABLE_NAME = "Messages";
+
+    @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
+    public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
+
+    @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
+    @PrimaryKey @Column String id;
+    @ForeignKey(
+            references = {@ForeignKeyReference(
+                    columnName = "fromId",
+                    columnType = Long.class,
+                    foreignColumnName = "userName")},
+            saveForeignKeyModel = false)
+    @Column ForeignKeyContainer<User> from = new ForeignKeyContainer<>(User.class);
+    @ForeignKey(
+            references = {@ForeignKeyReference(
+                    columnName = "toId",
+                    columnType = Long.class,
+                    foreignColumnName = "userName")},
+            saveForeignKeyModel = false)
+    @Column ForeignKeyContainer<User> to = new ForeignKeyContainer<>(User.class);
+    @Column String text;
+    @Column Date date;
+    @Column String conversationId;
+
     private Locale locale;
 
     public Message() {
     }
 
     public Message(User from, User to, String text, String id) {
-        this.from = from;
-        this.to = to;
+        this.from.setModel(from);
+        this.to.setModel(to);
         this.text = text;
         this.id = id;
     }
 
     private Message(Builder builder) {
+        id = builder.id;
+        setConversationId(builder.conversationId);
         setFrom(builder.from);
         setTo(builder.to);
         setText(builder.text);
-        date = builder.date;
-        locale = builder.locale;
+        setDate(builder.date);
+        setLocale(builder.locale);
     }
 
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
 
     public User getFrom() {
-        return from;
+        return from.toModel();
     }
 
     public void setFrom(User from) {
-        this.from = from;
+        this.from.setModel(from);
     }
 
     public User getTo() {
-        return to;
+        return to.toModel();
     }
 
     public void setTo(User to) {
-        this.to = to;
+        this.to.setModel(to);
     }
 
     public String getText() {
@@ -75,8 +120,29 @@ public class Message {
         this.locale = locale;
     }
 
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
+    }
+
     public static final class Builder {
         private String id;
+        private String conversationId;
         private User from;
         private User to;
         private String text;
@@ -90,7 +156,12 @@ public class Message {
             this.id = val;
             return this;
         }
-        
+
+        public Builder conversationId(String conversationId){
+            this.conversationId = conversationId;
+            return this;
+        }
+
         public Builder from(User val) {
             from = val;
             return this;

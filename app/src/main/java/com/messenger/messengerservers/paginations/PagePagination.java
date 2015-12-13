@@ -1,9 +1,10 @@
 package com.messenger.messengerservers.paginations;
 
-import java.util.List;
-
 import com.messenger.messengerservers.Persister;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
+
+import java.util.List;
+
 
 public abstract class PagePagination<T> {
 

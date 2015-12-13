@@ -2,7 +2,7 @@ package com.messenger.messengerservers.xmpp.packets;
 
 import org.jivesoftware.smack.packet.IQ;
 
-public class ObtainMessageListPacket extends IQ{
+public class ObtainMessageListPacket extends IQ {
 
     private static final String NAMESPACE = "urn:xmpp:archive";
     private static final String ELEMENT_RETRIVE = "retrieve";
@@ -13,7 +13,7 @@ public class ObtainMessageListPacket extends IQ{
 
     public ObtainMessageListPacket() {
         super(ELEMENT_RETRIVE, NAMESPACE);
-        setType(IQ.Type.get);
+        setType(Type.get);
         setPacketID("page" + page);
     }
 

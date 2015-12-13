@@ -283,9 +283,17 @@ dependencies {
     compile 'frankiesardo:icepick:3.1.0'
     provided 'frankiesardo:icepick-processor:3.1.0'
 
+    compile "com.raizlabs.android:DBFlow-Core:2.2.1"
+    compile "com.raizlabs.android:DBFlow:2.2.1"
+    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0'
+
     compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.4'
+
+
 
 //    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
 //    compile "com.raizlabs.android:DBFlow-Core:2.2.1"

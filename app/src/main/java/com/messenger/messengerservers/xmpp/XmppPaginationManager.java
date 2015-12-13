@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.xmpp;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
 
 import com.messenger.messengerservers.PaginationManager;
 import com.messenger.messengerservers.entities.Conversation;
@@ -10,14 +9,14 @@ import com.messenger.messengerservers.xmpp.paginations.XmppConversationHistoryPa
 
 public class XmppPaginationManager implements PaginationManager {
 
-    private AbstractXMPPConnection connection;
+    private final XmppServerFacade facade;
 
-    public XmppPaginationManager(AbstractXMPPConnection connection) {
-        this.connection = connection;
+    public XmppPaginationManager(XmppServerFacade facade) {
+        this.facade = facade;
     }
 
     @Override
     public PagePagination<Message> getConversationHistoryPagination(Conversation conversation) {
-        return new XmppConversationHistoryPaginator(connection, conversation.getId());
+        return new XmppConversationHistoryPaginator(facade.getConnection(), conversation.getId());
     }
 }

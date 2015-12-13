@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class VerticalDivider extends RecyclerView.ItemDecoration{
+public class VerticalDivider extends RecyclerView.ItemDecoration {
     private Drawable divider;
 
     public VerticalDivider(Drawable divider) {

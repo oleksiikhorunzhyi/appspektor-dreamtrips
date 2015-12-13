@@ -3,6 +3,7 @@ package com.messenger.messengerservers.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.messenger.model.ChatUser;
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -14,7 +15,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 @ModelContainer
 @Table(databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class User extends BaseModel {
+public class User extends BaseModel implements ChatUser{
     @PrimaryKey
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @Column

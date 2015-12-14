@@ -52,7 +52,7 @@ public class RequestCell extends BaseUserCell {
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.VISIBLE);
                 break;
-            case REJECT:
+            case REJECTED:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.VISIBLE);

@@ -37,7 +37,7 @@ public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShou
 
     @Override
     protected YouShouldBeHerePhotoFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-        return new YouShouldBeHerePhotoFullscreenPresenter((YSBHPhoto) getArgs().getPhoto(), getArgs().getTab());
+        return new YouShouldBeHerePhotoFullscreenPresenter((YSBHPhoto) getArgs().getPhoto(), getArgs().getType());
     }
 
     @Override

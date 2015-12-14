@@ -217,7 +217,7 @@ public enum Route {
         return fragmentClass.getName();
     }
 
-    public Class getClazz() {
+    public Class<? extends BaseFragment> getClazz() {
         return fragmentClass;
     }
 }

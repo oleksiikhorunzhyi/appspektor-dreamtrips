@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class InspirationFullscreenPresenter extends FullScreenPresenter<Inspiration, InspirationFullscreenPresenter.View> {
 
-    public InspirationFullscreenPresenter(Inspiration photo, TripImagesType tab) {
-        super(photo, tab);
+    public InspirationFullscreenPresenter(Inspiration photo, TripImagesType type) {
+        super(photo, type);
     }
 
 

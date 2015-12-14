@@ -57,25 +57,42 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
     protected int userId;
 
-    protected TripImagesListPresenter(TripImagesType tab, int userId) {
+    protected TripImagesListPresenter(TripImagesType type, int userId) {
         super();
-        this.type = tab;
+        this.type = type;
         this.userId = userId;
+    }
+
+    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition) {
+        TripImagesListPresenter presenter;
+        switch (type) {
+            case MEMBERS_IMAGES:
+                presenter = new MemberImagesPresenter();
+                break;
+            case ACCOUNT_IMAGES:
+                presenter = new AccountImagesPresenter(TripImagesType.ACCOUNT_IMAGES, userId);
+                break;
+            case YOU_SHOULD_BE_HERE:
+                presenter = new YSBHPresenter(userId);
+                break;
+            case INSPIRE_ME:
+                presenter = new InspireMePresenter(userId);
+                break;
+            case FIXED:
+                presenter = new FixedListPhotosFullScreenPresenter(photos, userId);
+                break;
+            default:
+                throw new RuntimeException("Trip image type is not found");
+        }
+
+        presenter.setFullscreenMode(fullScreenMode);
+        presenter.setCurrentPhotoPosition(currentPhotosPosition);
+        return presenter;
     }
 
     @Override
     public void onInjected() {
         super.onInjected();
-    }
-
-    protected void syncPhotosAndUpdatePosition() {
-        photos.addAll(db.readPhotoEntityList(type, userId));
-
-        if (fullscreenMode) {
-            int prevPhotosCount = photos.size();
-            photos = Queryable.from(photos).filter(element -> !(element instanceof UploadTask)).toList();
-            currentPhotoPosition -= prevPhotosCount - photos.size();
-        }
     }
 
     @Override
@@ -89,9 +106,25 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         if (!fullscreenMode) reload();
     }
 
-    private void resetLazyLoadFields() {
-        previousTotal = 0;
-        loading = false;
+    @Override
+    public void dropView() {
+        if (roboSpiceAdapterController != null)
+            roboSpiceAdapterController.setAdapter(null);
+        super.dropView();
+    }
+
+    protected void syncPhotosAndUpdatePosition() {
+        photos.addAll(db.readPhotoEntityList(type, userId));
+
+        if (fullscreenMode) {
+            int prevPhotosCount = photos.size();
+            photos = Queryable.from(photos).filter(element -> !(element instanceof UploadTask)).toList();
+            currentPhotoPosition -= prevPhotosCount - photos.size();
+        }
+    }
+
+    public void setFullscreenMode(boolean isFullscreen) {
+        this.fullscreenMode = isFullscreen;
     }
 
     public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
@@ -106,27 +139,12 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    @Override
-    public void dropView() {
-        if (roboSpiceAdapterController != null)
-            roboSpiceAdapterController.setAdapter(null);
-        super.dropView();
-    }
-
     public IFullScreenObject getPhoto(int position) {
         return photos.get(position);
     }
 
     public void setCurrentPhotoPosition(int currentPhotoPosition) {
         this.currentPhotoPosition = currentPhotoPosition;
-    }
-
-    public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
-        if (type != TripImagesType.ACCOUNT_IMAGES) {
-            getAdapterController().reload();
-        } else {
-            savePhotoIfNeeded(event.getUploadTask());
-        }
     }
 
     public void onItemClick(int position) {
@@ -174,30 +192,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    private void savePhotoIfNeeded(UploadTask uploadTask) {
-        doRequest(new CopyFileCommand(context, uploadTask.getFilePath()), filePath ->
-                uploadPhoto(uploadTask, filePath));
-    }
-
-    private void uploadPhoto(UploadTask uploadTask, String filePath) {
-        uploadTask.setFilePath(filePath);
-        uploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
-
-        photos.add(0, uploadTask);
-        view.add(0, uploadTask);
-        db.savePhotoEntityList(type, userId, photos);
-        startUpload(uploadTask);
-    }
-
-    private void startUpload(UploadTask uploadTask) {
-        TrackingHelper.photoUploadStarted(uploadTask.getType(), "");
-        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
-        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
-        db.saveUploadTask(uploadTask);
-        transferObserver.setTransferListener(this);
-    }
-
     @Override
     public void onStateChanged(int id, TransferState state) {
         if (view != null) {
@@ -220,13 +214,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    private void photoError(UploadTask uploadTask) {
-        if (uploadTask != null) {
-            uploadTask.setStatus(UploadTask.Status.FAILED);
-            updateTask(uploadTask);
-        }
-    }
-
     @Override
     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
     }
@@ -243,6 +230,13 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }, spiceException -> {
             photoError(getCurrentTask(task.getAmazonTaskId()));
         });
+    }
+
+    private void photoError(UploadTask uploadTask) {
+        if (uploadTask != null) {
+            uploadTask.setStatus(UploadTask.Status.FAILED);
+            updateTask(uploadTask);
+        }
     }
 
     private void processPhoto(int index, Photo photo) {
@@ -267,25 +261,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
     }
 
-    public void onEvent(EntityLikedEvent event) {
-        for (Object o : photos) {
-            if (o instanceof Photo && ((Photo) o).getFSId().equals(event.getFeedEntity().getUid())) {
-                ((Photo) o).syncLikeState(event.getFeedEntity());
-            }
-        }
-    }
-
-    public void onEventMainThread(PhotoDeletedEvent event) {
-        for (int i = 0; i < photos.size(); i++) {
-            IFullScreenObject o = photos.get(i);
-            if (o.getFSId().equals(event.getPhotoId())) {
-                photos.remove(i);
-                view.remove(i);
-                db.savePhotoEntityList(type, userId, photos);
-            }
-        }
-    }
-
     private TripImagesRoboSpiceController getAdapterController() {
         if (roboSpiceAdapterController == null) {
             roboSpiceAdapterController = getTripImagesRoboSpiceController();
@@ -303,38 +278,11 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         getAdapterController().reload();
     }
 
+    //////////////////////////////////
+    /// abstract Robospice controller
+    //////////////////////////////////
+
     public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
-
-    public void setFullscreenMode(boolean isFullscreen) {
-        this.fullscreenMode = isFullscreen;
-    }
-
-    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition) {
-        TripImagesListPresenter presenter;
-        switch (type) {
-            case MEMBERS_IMAGES:
-                presenter = new MemberImagesPresenter();
-                break;
-            case ACCOUNT_IMAGES:
-                presenter = new AccountImagesPresenter(TripImagesType.ACCOUNT_IMAGES, userId);
-                break;
-            case YOU_SHOULD_BE_HERE:
-                presenter = new YSBHPresenter(userId);
-                break;
-            case INSPIRE_ME:
-                presenter = new InspireMePresenter(userId);
-                break;
-            case FIXED:
-                presenter = new FixedListPhotosFullScreenPresenter(photos, userId);
-                break;
-            default:
-                throw new RuntimeException("Trip image type is not found");
-        }
-
-        presenter.setFullscreenMode(fullScreenMode);
-        presenter.setCurrentPhotoPosition(currentPhotosPosition);
-        return presenter;
-    }
 
     public abstract class TripImagesRoboSpiceController extends DreamSpiceAdapterController<IFullScreenObject> {
 
@@ -385,6 +333,66 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 .getTransferById(uploadTask.getAmazonTaskId());
         transferObserver.setTransferListener(this);
         onStateChanged(transferObserver.getId(), transferObserver.getState());
+    }
+
+    private void resetLazyLoadFields() {
+        previousTotal = 0;
+        loading = false;
+    }
+
+    ////////////////////////////
+    /// Events
+    ////////////////////////////
+
+    public void onEvent(EntityLikedEvent event) {
+        for (Object o : photos) {
+            if (o instanceof Photo && ((Photo) o).getFSId().equals(event.getFeedEntity().getUid())) {
+                ((Photo) o).syncLikeState(event.getFeedEntity());
+            }
+        }
+    }
+
+    public void onEventMainThread(PhotoDeletedEvent event) {
+        for (int i = 0; i < photos.size(); i++) {
+            IFullScreenObject o = photos.get(i);
+            if (o.getFSId().equals(event.getPhotoId())) {
+                photos.remove(i);
+                view.remove(i);
+                db.savePhotoEntityList(type, userId, photos);
+            }
+        }
+    }
+
+    public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
+        if (type != TripImagesType.ACCOUNT_IMAGES) {
+            getAdapterController().reload();
+        } else {
+            savePhotoIfNeeded(event.getUploadTask());
+        }
+    }
+
+    private void savePhotoIfNeeded(UploadTask uploadTask) {
+        doRequest(new CopyFileCommand(context, uploadTask.getFilePath()), filePath ->
+                uploadPhoto(uploadTask, filePath));
+    }
+
+    private void uploadPhoto(UploadTask uploadTask, String filePath) {
+        uploadTask.setFilePath(filePath);
+        uploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
+
+        photos.add(0, uploadTask);
+        view.add(0, uploadTask);
+        db.savePhotoEntityList(type, userId, photos);
+        startUpload(uploadTask);
+    }
+
+    private void startUpload(UploadTask uploadTask) {
+        TrackingHelper.photoUploadStarted(uploadTask.getType(), "");
+        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
+        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
+
+        db.saveUploadTask(uploadTask);
+        transferObserver.setTransferListener(this);
     }
 
     public void onEvent(FeedEntityChangedEvent event) {

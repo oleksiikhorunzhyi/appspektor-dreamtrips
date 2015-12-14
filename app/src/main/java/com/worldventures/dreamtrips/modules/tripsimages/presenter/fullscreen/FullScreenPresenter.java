@@ -26,9 +26,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
-    public FullScreenPresenter(T photo, TripImagesType tab) {
+    public FullScreenPresenter(T photo, TripImagesType type) {
         this.photo = photo;
-        this.type = tab;
+        this.type = type;
     }
 
     @Override

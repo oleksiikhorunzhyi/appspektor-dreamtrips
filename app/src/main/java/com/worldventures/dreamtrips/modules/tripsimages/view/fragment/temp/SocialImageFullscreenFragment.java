@@ -45,23 +45,14 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     protected SocialImageFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-        return new SocialImageFullscreenPresenter((Photo) getArgs().getPhoto(), getArgs().getTab());
+        return new SocialImageFullscreenPresenter((Photo) getArgs().getPhoto(), getArgs().getType());
     }
 
-    private void deletePhoto() {
-        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_DELETE_IMAGE));
-        Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
-                .setTitleText(getResources().getString(R.string.photo_delete))
-                .setContentText(getResources().getString(R.string.photo_delete_caption))
-                .setConfirmText(getResources().getString(R.string.post_delete_confirm))
-                .setConfirmClickListener(sDialog -> {
-                    sDialog.dismissWithAnimation();
-                    getPresenter().onDeleteAction();
-                });
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
+    @Override
+    public void setContent(IFullScreenObject photo) {
+        super.setContent(photo);
+        viewDelegate.setContent((Photo) photo);
     }
-
 
     @Override
     public void openEdit(EditPhotoBundle bundle) {
@@ -72,7 +63,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
                 .attach(Route.PHOTO_EDIT);
     }
 
-
     @Override
     public void showFlagDialog(List<Flag> flags) {
         hideProgress();
@@ -80,11 +70,14 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     }
 
     @Override
-    public void setContent(IFullScreenObject photo) {
-        super.setContent(photo);
-        viewDelegate.setContent((Photo) photo);
+    public void showProgress() {
+        flag.showProgress();
     }
 
+    @Override
+    public void hideProgress() {
+        flag.hideProgress();
+    }
 
     @OnClick(R.id.iv_share)
     public void actionShare() {
@@ -135,14 +128,18 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         getPresenter().onFlagAction(this);
     }
 
-    @Override
-    public void showProgress() {
-        flag.showProgress();
-    }
-
-    @Override
-    public void hideProgress() {
-        flag.hideProgress();
+    private void deletePhoto() {
+        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_DELETE_IMAGE));
+        Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(R.string.photo_delete))
+                .setContentText(getResources().getString(R.string.photo_delete_caption))
+                .setConfirmText(getResources().getString(R.string.post_delete_confirm))
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    getPresenter().onDeleteAction();
+                });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
 }

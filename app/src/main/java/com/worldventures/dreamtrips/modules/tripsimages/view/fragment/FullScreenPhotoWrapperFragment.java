@@ -28,7 +28,6 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment
         extends BaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
@@ -44,12 +43,12 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        TripImagesType tab = getArgs().getTab();
+        TripImagesType type = getArgs().getType();
         int userId = getArgs().getUserId();
         int position = getArgs().getPosition();
         this.route = getArgs().getRoute();
         ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-        return TripImagesListPresenter.create(tab, userId, fixedList, true, position);
+        return TripImagesListPresenter.create(type, userId, fixedList, true, position);
     }
 
     @Override
@@ -88,7 +87,7 @@ public class FullScreenPhotoWrapperFragment
         adapter = new BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>>(getActivity().getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
-                FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position).getObject(), getArgs().getTab(), getArgs().isForeign());
+                FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position).getObject(), getArgs().getType(), getArgs().isForeign());
                 ((BaseFragmentWithArgs) fragment).setArgs(data);
             }
 

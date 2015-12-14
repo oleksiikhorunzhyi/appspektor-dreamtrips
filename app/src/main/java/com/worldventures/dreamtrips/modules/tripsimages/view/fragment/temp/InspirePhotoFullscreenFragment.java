@@ -34,7 +34,7 @@ public class InspirePhotoFullscreenFragment extends FullScreenPhotoFragment<Insp
 
     @Override
     protected InspirationFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-        return new InspirationFullscreenPresenter((Inspiration) getArgs().getPhoto(), getArgs().getTab());
+        return new InspirationFullscreenPresenter((Inspiration) getArgs().getPhoto(), getArgs().getType());
     }
 
     @Override

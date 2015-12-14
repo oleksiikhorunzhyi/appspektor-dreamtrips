@@ -31,7 +31,7 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
 
     @Override
     protected BucketFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-        return new BucketFullscreenPresenter((BucketPhoto) getArgs().getPhoto(), getArgs().getTab(), getArgs().isForeign());
+        return new BucketFullscreenPresenter((BucketPhoto) getArgs().getPhoto(), getArgs().getType(), getArgs().isForeign());
     }
 
     @Override

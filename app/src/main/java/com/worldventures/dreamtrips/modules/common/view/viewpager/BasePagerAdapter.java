@@ -41,7 +41,7 @@ public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapt
 
     private Fragment getFragment(int i) {
         try {
-            Fragment value = (Fragment) fragmentItems.get(i).route.getClazz().newInstance();
+            Fragment value = fragmentItems.get(i).route.getClazz().newInstance();
             setArgs(i, value);
             return value;
         } catch (Exception e) {

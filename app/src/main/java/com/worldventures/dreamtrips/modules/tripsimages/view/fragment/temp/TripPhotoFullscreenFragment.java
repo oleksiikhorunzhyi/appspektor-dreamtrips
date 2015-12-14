@@ -18,6 +18,6 @@ public class TripPhotoFullscreenFragment extends FullScreenPhotoFragment<TripIma
 
     @Override
     protected TripImageFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripImageFullscreenPresenter((TripImage) getArgs().getPhoto(), getArgs().getTab());
+        return new TripImageFullscreenPresenter((TripImage) getArgs().getPhoto(), getArgs().getType());
     }
 }

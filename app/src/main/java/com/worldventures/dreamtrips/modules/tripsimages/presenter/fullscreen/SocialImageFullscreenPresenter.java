@@ -32,8 +32,8 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
     UidItemDelegate uidItemDelegate;
 
-    public SocialImageFullscreenPresenter(Photo photo, TripImagesType tab) {
-        super(photo, tab);
+    public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
+        super(photo, type);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class FullScreenImagesBundle implements Parcelable {
 
-    private TripImagesType tab;
+    private TripImagesType type;
     private int userId;
     private int position;
     private ArrayList<IFullScreenObject> fixedList;
@@ -22,7 +22,7 @@ public class FullScreenImagesBundle implements Parcelable {
     }
 
     protected FullScreenImagesBundle(Parcel in) {
-        tab = (TripImagesType) in.readSerializable();
+        type = (TripImagesType) in.readSerializable();
         userId = in.readInt();
         position = in.readInt();
         fixedList = (ArrayList<IFullScreenObject>) in.readSerializable();
@@ -30,8 +30,8 @@ public class FullScreenImagesBundle implements Parcelable {
         route = (Route) in.readSerializable();
     }
 
-    public TripImagesType getTab() {
-        return tab;
+    public TripImagesType getType() {
+        return type;
     }
 
     public int getUserId() {
@@ -73,7 +73,7 @@ public class FullScreenImagesBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeSerializable(tab);
+        parcel.writeSerializable(type);
         parcel.writeInt(userId);
         parcel.writeInt(position);
         parcel.writeSerializable(fixedList);
@@ -90,7 +90,7 @@ public class FullScreenImagesBundle implements Parcelable {
         }
 
         public Builder type(TripImagesType type) {
-            instance.tab = type;
+            instance.type = type;
             return this;
         }
 

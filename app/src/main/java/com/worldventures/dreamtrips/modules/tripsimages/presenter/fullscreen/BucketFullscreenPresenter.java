@@ -14,8 +14,8 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
 
     boolean foreign;
 
-    public BucketFullscreenPresenter(BucketPhoto p1, TripImagesType p3, boolean foreign) {
-        super(p1, p3);
+    public BucketFullscreenPresenter(BucketPhoto photo, TripImagesType type, boolean foreign) {
+        super(photo, type);
         this.foreign = foreign;
     }
 

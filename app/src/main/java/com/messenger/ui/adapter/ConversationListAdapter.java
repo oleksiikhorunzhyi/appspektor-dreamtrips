@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
+import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 import com.messenger.app.Environment;
@@ -24,7 +27,7 @@ import java.util.List;
 import butterknife.InjectView;
 import butterknife.ButterKnife;
 
-public class ConversationListAdapter extends RecyclerView.Adapter<ConversationListAdapter.ViewHolder> {
+public class ConversationListAdapter extends RecyclerView.Adapter<BaseConversationViewHolder> {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
@@ -47,37 +50,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         ButterKnife.inject(this, (Activity) context);
     }
 
-    public static class OneToOneConversationViewHolder extends ViewHolder {
-        @InjectView(R.id.conversation_avatar_view) AvatarView avatarView;
-
-        public OneToOneConversationViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public static class GroupConversationViewHolder extends ViewHolder {
-        @InjectView(R.id.conversation_group_avatars_view) GroupAvatarsView groupAvatarsView;
-
-        public GroupConversationViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        View itemView;
-        @InjectView(R.id.conversation_name_textview) TextView nameTextView;
-        @InjectView(R.id.conversation_last_message_textview) TextView lastMessageTextView;
-        @InjectView(R.id.conversation_last_message_date_textview) TextView lastMessageDateTextView;
-        @InjectView(R.id.conversation_unread_messages_count_textview) TextView unreadMessagesCountTextView;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            this.itemView = itemView;
-            ButterKnife.inject(this, itemView);
-        }
-    }
-
-    @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @Override public BaseConversationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ONE_TO_ONE_CONVERSATION:
                 View oneToOneLayout = LayoutInflater.from(parent.getContext())
@@ -91,7 +64,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         throw new IllegalStateException("There is no such view type in adapter");
     }
 
-    @Override public void onBindViewHolder(ViewHolder holder, int position) {
+    @Override public void onBindViewHolder(BaseConversationViewHolder holder, int position) {
         final ChatConversation chatConversation = conversationList.get(position);
 
         holder.itemView.setOnClickListener(view -> {
@@ -100,48 +73,48 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
             }
         });
 
-        boolean hasChatMessages = chatConversation.getMessages() != null && chatConversation.getMessages().size() > 0;
-        if (hasChatMessages) {
-            ChatMessage lastMessage = chatConversation.getMessages().get(chatConversation.getMessages().size() - 1);
-
-            if (lastMessage.getUser().equals(Environment.getCurrentUser())) {
-                String lastMessageText = String.format(context
-                                .getString(R.string.conversation_list_item_last_message_format_you),
-                                    lastMessage.getMessage());
-                holder.lastMessageTextView.setText(lastMessageText);
-            } else {
-                holder.lastMessageTextView.setText(lastMessage.getMessage());
-            }
-            holder.lastMessageDateTextView.setText(chatDateFormatter.formatLastConversationMessage(lastMessage));
-        } else {
-            holder.lastMessageTextView.setText("");
-            holder.lastMessageDateTextView.setText("");
-        }
+//        boolean hasChatMessages = chatConversation.getMessages() != null && chatConversation.getMessages().size() > 0;
+//        if (hasChatMessages) {
+//            ChatMessage lastMessage = //chatConversation.getMessages().get(chatConversation.getMessages().size() - 1);
+//
+//            if (lastMessage.getUser().equals(Environment.getCurrentUser())) {
+//                String lastMessageText = String.format(context
+//                                .getString(R.string.conversation_list_item_last_message_format_you),
+//                                    lastMessage.getMessage());
+//                holder.getLastMessageTextView().setText(lastMessageText);
+//            } else {
+//                holder.getLastMessageTextView().setText(lastMessage.getMessage());
+//            }
+//            holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage));
+//        } else {
+//            holder.getLastMessageTextView().setText("");
+//            holder.getLastMessageDateTextView().setText("");
+//        }
 
         if (chatConversation.getUnreadMessagesCount() > 0) {
             holder.itemView.setBackgroundColor(context.getResources()
                     .getColor(R.color.conversation_list_unread_conversation_bg));
-            holder.unreadMessagesCountTextView.setVisibility(View.VISIBLE);
-            holder.unreadMessagesCountTextView.setText(String.valueOf(chatConversation.getUnreadMessagesCount()));
+            holder.getUnreadMessagesCountTextView().setVisibility(View.VISIBLE);
+            holder.getUnreadMessagesCountTextView().setText(String.valueOf(chatConversation.getUnreadMessagesCount()));
         } else {
             holder.itemView.setBackgroundColor(context.getResources()
                     .getColor(R.color.conversation_list_read_conversation_bg));
-            holder.unreadMessagesCountTextView.setVisibility(View.INVISIBLE);
+            holder.getUnreadMessagesCountTextView().setVisibility(View.INVISIBLE);
         }
 
         //  1 to 1 or group specific logic
         if (chatConversation.isGroupConversation()) {
-            holder.nameTextView.setText(chatConversation.getConversationName());
+            holder.getNameTextView().setText(chatConversation.getConversationName());
             GroupConversationViewHolder groupHolder = (GroupConversationViewHolder)holder;
-            groupHolder.groupAvatarsView.updateAvatars(chatConversation.getChatUsers());
+            groupHolder.getGroupAvatarsView().updateAvatars(chatConversation.getChatUsers());
         } else {
             ChatUser addressee = chatConversation.getChatUsers().get(1);
-            holder.nameTextView.setText(addressee.getName());
+            holder.getNameTextView().setText(addressee.getName());
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder)holder;
             Picasso.with(context).load(addressee
                     .getAvatarUrl()).placeholder(android.R.drawable.ic_menu_compass)
-                    .into(oneToOneHolder.avatarView);
-            oneToOneHolder.avatarView.setOnline(addressee.isOnline());
+                    .into(oneToOneHolder.getAvatarView());
+            oneToOneHolder.getAvatarView().setOnline(addressee.isOnline());
         }
     }
 

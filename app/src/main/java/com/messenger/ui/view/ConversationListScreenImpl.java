@@ -2,6 +2,7 @@ package com.messenger.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.messenger.ui.adapter.ConversationCursorAdapter;
+import com.messenger.ui.dialog.InputUserDialog;
 import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatConversation;
 import com.messenger.ui.adapter.ConversationListAdapter;
@@ -58,7 +61,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
 
     private ToolbarPresenter toolbarPresenter;
 
-    private List<ConversationListAdapter> recyclerViewsAdapters;
+    private List<ConversationCursorAdapter> recyclerViewsAdapters;
 
     public ConversationListScreenImpl(Context context) {
         super(context);
@@ -101,7 +104,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
             recyclerView.setSaveEnabled(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.addItemDecoration(new VerticalDivider(getResources().getDrawable(R.drawable.divider_list)));
-            ConversationListAdapter adapter = new ConversationListAdapter(getContext());
+            ConversationCursorAdapter adapter = new ConversationCursorAdapter(getContext(), null);
             adapter.setClickListener(conversation -> getPresenter().onConversationSelected(conversation));
             recyclerView.setAdapter(adapter);
             recyclerViewsAdapters.add(adapter);
@@ -128,9 +131,30 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
         errorView.setVisibility(View.VISIBLE);
     }
 
-    @Override public void setConversationList(List<ChatConversation> chatConversationList) {
-        recyclerViewsAdapters.get(TAB_POSITION_ALL_CHATS).setConversationList(chatConversationList, false);
-        recyclerViewsAdapters.get(TAB_POSITION_GROUP_CHATS).setConversationList(chatConversationList, true);
+    @Override
+    public void showInputUserDialog() {
+        InputUserDialog dialog = new InputUserDialog(getActivity());
+        dialog.show(new InputUserDialog.Listener() {
+            @Override
+            public void onUserInput(String userName) {
+                getPresenter().newUserSelected(userName);
+            }
+
+            @Override
+            public void onCancel() {
+                getActivity().finish();
+            }
+        });
+    }
+
+    @Override
+    public void showAllConversation(Cursor cursor) {
+        recyclerViewsAdapters.get(TAB_POSITION_ALL_CHATS).swapCursor(cursor);
+    }
+
+    @Override
+    public void showGroupConversation(Cursor cursor) {
+        recyclerViewsAdapters.get(TAB_POSITION_GROUP_CHATS).swapCursor(cursor);
     }
 
     private class TabsAdapter extends PagerAdapter {

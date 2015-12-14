@@ -27,21 +27,21 @@ public class Message extends BaseProviderModel<Message> {
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @PrimaryKey @Column String id;
+    @PrimaryKey @Column String _id;
     @ForeignKey(
             references = {@ForeignKeyReference(
                     columnName = "fromId",
-                    columnType = Long.class,
+                    columnType = String.class,
                     foreignColumnName = "userName")},
-            saveForeignKeyModel = false)
-    @Column ForeignKeyContainer<User> from = new ForeignKeyContainer<>(User.class);
+            saveForeignKeyModel = true)
+    @Column ForeignKeyContainer<User> from;
     @ForeignKey(
             references = {@ForeignKeyReference(
                     columnName = "toId",
-                    columnType = Long.class,
+                    columnType = String.class,
                     foreignColumnName = "userName")},
-            saveForeignKeyModel = false)
-    @Column ForeignKeyContainer<User> to = new ForeignKeyContainer<>(User.class);
+            saveForeignKeyModel = true)
+    @Column ForeignKeyContainer<User> to;
     @Column String text;
     @Column Date date;
     @Column String conversationId;
@@ -55,11 +55,11 @@ public class Message extends BaseProviderModel<Message> {
         this.from.setModel(from);
         this.to.setModel(to);
         this.text = text;
-        this.id = id;
+        this._id = id;
     }
 
     private Message(Builder builder) {
-        id = builder.id;
+        _id = builder.id;
         setConversationId(builder.conversationId);
         setFrom(builder.from);
         setTo(builder.to);
@@ -81,7 +81,9 @@ public class Message extends BaseProviderModel<Message> {
     }
 
     public void setFrom(User from) {
+        this.from = new ForeignKeyContainer<>(User.class);
         this.from.setModel(from);
+//        this.from.put();
     }
 
     public User getTo() {
@@ -89,6 +91,7 @@ public class Message extends BaseProviderModel<Message> {
     }
 
     public void setTo(User to) {
+        this.to = new ForeignKeyContainer<>(User.class);
         this.to.setModel(to);
     }
 
@@ -97,7 +100,7 @@ public class Message extends BaseProviderModel<Message> {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setText(String text) {

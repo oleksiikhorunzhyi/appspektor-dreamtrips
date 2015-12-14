@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.messenger.di.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
@@ -25,7 +27,9 @@ import dagger.Provides;
                 FrescoInitializer.class,
                 SoftInputInitializer.class,
                 BadgeCountObserverInitializer.class,
-                JodaTimeInitializer.class
+                JodaTimeInitializer.class,
+                StorageInitializer.class
+
         },
         library = true, complete = false)
 public class InitializerModule {
@@ -80,5 +84,10 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideBadgeCountObserverInitializer() {
         return new BadgeCountObserverInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideStorageInitializer(@ForApplication Context context){
+        return new StorageInitializer(context);
     }
 }

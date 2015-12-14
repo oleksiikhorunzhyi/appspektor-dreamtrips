@@ -136,6 +136,13 @@
 
         <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>
 
+        <!--Content Provider-->
+
+        <provider
+            android:authorities="com.worldventures.dreamtrips.storege"
+            android:exported="false"
+            android:name="com.messenger.storege.MessengerDatabase$Provider"/>
+
         <!--Foreign activities-->
 
         <activity

@@ -29,7 +29,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @PrimaryKey @Column String id;
+    @PrimaryKey @Column String _id;
     @Column String subject;
     @Column String type;
 
@@ -37,8 +37,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
             references = {@ForeignKeyReference(
                     columnName = "lastMessageId",
                     columnType = String.class,
-                    foreignColumnName = "id")},
-            saveForeignKeyModel = false)
+                    foreignColumnName = "_id")},
+            saveForeignKeyModel = true)
     @Column Message lastMessage;
 
     public Conversation() {
@@ -58,11 +58,11 @@ public class Conversation extends BaseProviderModel<Conversation> {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
     public String getSubject() {

@@ -3,11 +3,19 @@ package com.messenger.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
+import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.ui.view.ActivityAwareScreen;
 import com.messenger.ui.view.ConversationListScreenImpl;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+
+import javax.inject.Inject;
 
 public class MessengerStartActivity extends AppCompatActivity {
 

@@ -13,6 +13,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.ProviderManager;
 
+import java.util.List;
+
 public class XmppConversationLoader extends Loader<Conversation> {
 
     private static final int MAX_CONVERSATIONS = 30;
@@ -34,8 +36,14 @@ public class XmppConversationLoader extends Loader<Conversation> {
             facade.getConnection().sendStanzaWithResponseCallback(packet,
                     (stanza) -> stanza instanceof ConversationsPacket,
                     (stanzaPacket) -> {
+                        List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
+
+                        if(persister != null){
+                            persister.save(conversations);
+                        }
+
                         if (onEntityLoadedListener != null) {
-                            onEntityLoadedListener.onLoaded(((ConversationsPacket) stanzaPacket).getConversations());
+                            onEntityLoadedListener.onLoaded(conversations);
                         }
                         ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
                     });

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
-import com.messenger.messengerservers.di.XmppServerModule;
+import com.messenger.di.XmppServerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
 import com.techery.spares.module.InjectingApplicationModule;

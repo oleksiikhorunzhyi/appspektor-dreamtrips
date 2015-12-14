@@ -12,7 +12,7 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
         baseContentUri = ContentResolver.SCHEME_CONTENT)
 @Database(name = MessengerDatabase.NAME, version = MessengerDatabase.VERSION)
 public class MessengerDatabase {
-    public static final String AUTHORITY = "techery.io.messengerdreamtrips.storege";
+    public static final String AUTHORITY = "com.worldventures.dreamtrips.storege";
 
     public static final String NAME = "MessengerDatabase";
 

@@ -1,5 +1,7 @@
 package com.messenger.messengerservers.xmpp.providers;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
@@ -7,9 +9,11 @@ import com.messenger.messengerservers.xmpp.entities.MessageBody;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -42,9 +46,9 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             break;
                         case "last-message":
                             String from = parser.getAttributeValue("", "from");
-                            long timestamp = ParserUtils.getLongAttribute(parser, "secs");
+                            long timestamp = ParserUtils.getLongAttribute(parser, "time");
                             String messageId = parser.getAttributeValue("", "client_msg_id");
-                            String messageBody = parser.nextText();
+                            String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
 
                             MessageBody stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
                             message = new Message.Builder()

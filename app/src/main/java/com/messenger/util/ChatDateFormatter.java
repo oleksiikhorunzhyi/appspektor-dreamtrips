@@ -26,21 +26,18 @@ public class ChatDateFormatter {
             .getString(R.string.conversation_list_last_message_date_format_more_than_one_day_ago));
     }
 
-    public String formatLastConversationMessage(ChatMessage chatMessage) {
-        Calendar messageDate = Calendar.getInstance();
-        messageDate.setTime(chatMessage.getDate());
-
+    public String formatLastConversationMessage(Date date) {
         Calendar today = getToday();
 
-        if (messageDate.getTime().after(today.getTime())) {
-            return todayDateFormat.format(chatMessage.getDate());
+        if (date.after(today.getTime())) {
+            return todayDateFormat.format(date);
         } else {
             Calendar yesterday = today;
             yesterday.roll(Calendar.DAY_OF_YEAR, false);
-            if (messageDate.getTime().after(yesterday.getTime())) {
+            if (date.after(yesterday.getTime())) {
                 return context.getString(R.string.conversation_list_last_message_date_format_yesterday);
             } else {
-                return moreThanTwoDaysAgoFormat.format(chatMessage.getDate());
+                return moreThanTwoDaysAgoFormat.format(date);
             }
         }
     }

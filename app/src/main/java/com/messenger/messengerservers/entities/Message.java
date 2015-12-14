@@ -23,11 +23,16 @@ import java.util.Locale;
 public class Message extends BaseProviderModel<Message> {
     static final String TABLE_NAME = "Messages";
 
+    public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_TEXT = "text";
+    public static final String COLUMN_FROM = "fromId";
+    public static final String _ID = "_id";
+
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @PrimaryKey @Column String id;
+    @PrimaryKey @Column String _id;
     @ForeignKey(
             references = {@ForeignKeyReference(
                     columnName = "fromId",
@@ -55,11 +60,11 @@ public class Message extends BaseProviderModel<Message> {
         this.from.setModel(from);
         this.to.setModel(to);
         this.text = text;
-        this.id = id;
+        this._id = id;
     }
 
     private Message(Builder builder) {
-        id = builder.id;
+        _id = builder.id;
         setConversationId(builder.conversationId);
         setFrom(builder.from);
         setTo(builder.to);
@@ -97,7 +102,7 @@ public class Message extends BaseProviderModel<Message> {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setText(String text) {

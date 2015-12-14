@@ -2,6 +2,11 @@ package com.messenger.ui.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -9,65 +14,107 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.User;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.R;
 import com.messenger.app.Environment;
 import com.messenger.event.ChatMessageEvent;
 import com.messenger.event.ChatUsersTypingEvent;
-import com.messenger.loader.LoaderModule;
-import com.messenger.loader.SimpleLoader;
 import com.messenger.model.ChatConversation;
 import com.messenger.model.ChatMessage;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Date;
+
+import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
 
 public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
-    private ChatConversation chatConversation;
+//    private ChatConversation chatConversation;
+    private LoaderManager loaderManager;
+
+    public static final int CONVERSATION_LOADER_ID = 0x3311;
+
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject MessengerServerFacade messengerServerFacade;
+
+    private Chat chat;
+
+    private LoaderManager.LoaderCallbacks<Cursor> loaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//            getView().showLoading();
+//            getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+            return new CursorLoader(getContext(), Message.CONTENT_URI, null, null, null, null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            //noinspection all
+            getView().onConversationCursorLoaded(data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+        }
+    };
+
+    @Override
+    public void attachView(ChatScreen view) {
+        super.attachView(view);
+        loaderManager = getActivity().getSupportLoaderManager();
+        loaderManager.initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
+        ((App) view.getContext().getApplicationContext()).getObjectGraph().inject(this);
+        chat = null;
+    }
 
     public ChatScreenPresenterImpl() {
         EventBus.getDefault().register(this);
     }
 
     @Override public void loadChatConversation() {
-        getView().showLoading();
-        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-
+        getActivity().getSupportLoaderManager()
+                .initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
         // create new or load existing conversation
-        SimpleLoader<ChatConversation> loader = LoaderModule
-                .getChatConversationLoader(getViewState().getData());
-        loader.loadData(new SimpleLoader.LoadListener<ChatConversation>() {
-            @Override public void onLoadSuccess(ChatConversation data) {
-                if (isViewAttached()) {
-                    getViewState().setData(data);
-                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-                    getView().setChatConversation(data);
-                    getView().showContent();
-                }
-            }
-
-            @Override public void onError(Throwable error) {
-                if (isViewAttached()) {
-                    getView().showError(error);
-                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.ERROR);
-                }
-            }
-        });
+//        SimpleLoader<ChatConversation> loader = LoaderModule
+//                .getChatConversationLoader(getViewState().getData());
+//        loader.loadData(new SimpleLoader.LoadListener<ChatConversation>() {
+//            @Override public void onLoadSuccess(ChatConversation data) {
+//                if (isViewAttached()) {
+//                    getViewState().setData(data);
+//                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
+//                    getView().setChatConversation(data);
+//                    getView().showContent();
+//                }
+//            }
+//
+//            @Override public void onError(Throwable error) {
+//                if (isViewAttached()) {
+//                    getView().showError(error);
+//                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.ERROR);
+//                }
+//            }
+//        });
     }
 
     @Override public void onNewViewState() {
         state = new ChatLayoutViewState();
-        getViewState().setData(chatConversation);
-        loadChatConversation();
+//        getViewState().setData(chatConversation);
+//        loadChatConversation();
     }
 
     @Override public ChatLayoutViewState getViewState() {
-        return (ChatLayoutViewState) state;
+        return state;
     }
 
     @Override public void applyViewState() {
@@ -91,14 +138,14 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     @Override public boolean onNewMessageFromUi(String message) {
-        if (TextUtils.isEmpty(message)) {
+        if (TextUtils.getTrimmedLength(message) == 0) {
             Toast.makeText(getContext(), R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
             return false;
         }
         final ChatUser conversationOwner = getViewState().getData().getConversationOwner();
         ChatMessage chatMessage = Environment.newChatMessage();
         chatMessage.setUser(conversationOwner);
-        chatMessage.setMessage(message);
+        chatMessage.setMessage(message.trim());
         chatMessage.setDate(new Date());
 
         EventBus.getDefault().post(new ChatMessageEvent(chatMessage));
@@ -116,7 +163,19 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     @Override public void setChatConversation(ChatConversation chatConversation) {
-        this.chatConversation = chatConversation;
+//        this.chatConversation = chatConversation;
+    }
+
+    @Override
+    public User getUser() {
+        return new User("techery_user4");
+//        return appSessionHolder.get().get();
+    }
+
+    @Override
+    public void detachView(boolean retainInstance) {
+        super.detachView(retainInstance);
+        loaderManager.destroyLoader(CONVERSATION_LOADER_ID);
     }
 
     ///////////////////////////////////////////////////////////////////////////

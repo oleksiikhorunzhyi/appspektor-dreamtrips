@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundl
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import javax.inject.Inject;
 
@@ -32,7 +32,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
     UidItemDelegate uidItemDelegate;
 
-    public SocialImageFullscreenPresenter(Photo photo, TripImagesListFragment.Type tab) {
+    public SocialImageFullscreenPresenter(Photo photo, TripImagesType tab) {
         super(photo, tab);
     }
 

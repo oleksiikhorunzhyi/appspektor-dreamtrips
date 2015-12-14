@@ -17,11 +17,10 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePager
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
-import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import butterknife.InjectView;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 @Layout(R.layout.fragment_trip_images_tabs)
 @MenuResource(R.menu.menu_mock)
@@ -42,7 +41,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
                 @Override
                 public void setArgs(int position, Fragment fragment) {
                     if (fragment instanceof TripImagesListFragment) {
-                        Type type = Type.values()[position];
+                        TripImagesType type = TripImagesType.values()[position];
                         BaseFragmentWithArgs fragmentWithArgs = (BaseFragmentWithArgs) fragment;
                         fragmentWithArgs.setArgs(new TripsImagesBundle(type,getPresenter().getAccount().getId()));
                     }
@@ -52,8 +51,8 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
             this.adapter.add(new FragmentItem(Route.USER_IMAGES, getString(R.string.member_images)));
             this.adapter.add(new FragmentItem(Route.ACCOUNT_IMAGES, getString(R.string.my_images)));
             this.adapter.add(new FragmentItem(Route.THREE_SIXTY_VIDEOS, getString(R.string.three_sixty)));
-            this.adapter.add(new FragmentItem(Route.LIST_IMAGES, getString(R.string.inspire_me)));
-            this.adapter.add(new FragmentItem(Route.LIST_IMAGES, getString(R.string.you_should_be_here)));
+            this.adapter.add(new FragmentItem(Route.TRIP_LIST_IMAGES, getString(R.string.inspire_me)));
+            this.adapter.add(new FragmentItem(Route.TRIP_LIST_IMAGES, getString(R.string.you_should_be_here)));
 
         }
 

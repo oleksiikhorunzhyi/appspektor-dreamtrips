@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
@@ -87,9 +88,9 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
 
         this.recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), (view1, position) -> {
-                    if (getArgs().getType() == Type.YOU_SHOULD_BE_HERE)
+                    if (getArgs().getType() == TripImagesType.YOU_SHOULD_BE_HERE)
                         TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, getPresenter().getPhoto(position).getFSId());
-                    if (getArgs().getType() == Type.INSPIRE_ME)
+                    if (getArgs().getType() == TripImagesType.INSPIRE_ME)
                         TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, getPresenter().getPhoto(position).getFSId());
 
                     this.getPresenter().onItemClick(position);
@@ -130,7 +131,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
 
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
-        Type type = getArgs().getType();
+        TripImagesType type = getArgs().getType();
         int userId = getArgs().getUserId();
         return (T) TripImagesListPresenter.create(type, userId, null, false, 0);
     }
@@ -200,12 +201,4 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         arrayListAdapter.notifyItemRemoved(index);
     }
 
-    public enum Type {
-        MEMBERS_IMAGES,
-        ACCOUNT_IMAGES,
-        VIDEO_360,
-        INSPIRE_ME,
-        YOU_SHOULD_BE_HERE,
-        FIXED
-    }
 }

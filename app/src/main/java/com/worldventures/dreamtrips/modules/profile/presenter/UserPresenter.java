@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRe
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -190,8 +190,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         NavigationBuilder
                 .create()
                 .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.MEMBERS_IMAGES, user.getId()))
-                .move(Route.LIST_IMAGES);
+                .data(new TripsImagesBundle(TripImagesType.MEMBERS_IMAGES, user.getId()))
+                .move(Route.TRIP_LIST_IMAGES);
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

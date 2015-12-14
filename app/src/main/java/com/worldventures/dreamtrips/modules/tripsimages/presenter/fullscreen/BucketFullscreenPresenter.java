@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEv
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import javax.inject.Inject;
 
@@ -14,7 +14,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
 
     boolean foreign;
 
-    public BucketFullscreenPresenter(BucketPhoto p1, TripImagesListFragment.Type p3, boolean foreign) {
+    public BucketFullscreenPresenter(BucketPhoto p1, TripImagesType p3, boolean foreign) {
         super(p1, p3);
         this.foreign = foreign;
     }

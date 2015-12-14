@@ -28,14 +28,13 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View>
         extends Presenter<VT> implements TransferListener {
@@ -46,7 +45,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     @Inject
     protected SnappyRepository db;
 
-    protected Type type;
+    protected TripImagesType type;
     private boolean fullscreenMode;
 
     private int previousTotal = 0;
@@ -58,7 +57,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
     protected int userId;
 
-    protected TripImagesListPresenter(TripImagesListFragment.Type tab, int userId) {
+    protected TripImagesListPresenter(TripImagesType tab, int userId) {
         super();
         this.type = tab;
         this.userId = userId;
@@ -123,7 +122,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
-        if (type != Type.ACCOUNT_IMAGES) {
+        if (type != TripImagesType.ACCOUNT_IMAGES) {
             getAdapterController().reload();
         } else {
             savePhotoIfNeeded(event.getUploadTask());
@@ -160,7 +159,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 .type(type);
     }
 
-    private Route getRouteByType(Type type) {
+    private Route getRouteByType(TripImagesType type) {
         switch (type) {
             case ACCOUNT_IMAGES:
             case MEMBERS_IMAGES:
@@ -310,14 +309,14 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         this.fullscreenMode = isFullscreen;
     }
 
-    public static TripImagesListPresenter create(TripImagesListFragment.Type type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition) {
+    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition) {
         TripImagesListPresenter presenter;
         switch (type) {
             case MEMBERS_IMAGES:
                 presenter = new MemberImagesPresenter();
                 break;
             case ACCOUNT_IMAGES:
-                presenter = new AccountImagesPresenter(Type.ACCOUNT_IMAGES, userId);
+                presenter = new AccountImagesPresenter(TripImagesType.ACCOUNT_IMAGES, userId);
                 break;
             case YOU_SHOULD_BE_HERE:
                 presenter = new YSBHPresenter(userId);

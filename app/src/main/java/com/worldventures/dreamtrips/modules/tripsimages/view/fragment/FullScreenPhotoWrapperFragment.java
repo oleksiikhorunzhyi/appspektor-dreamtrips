@@ -20,18 +20,11 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesB
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.BucketPhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.FullScreenPhotoFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.InspirePhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.SocialImageFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.TripPhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.YSBHPhotoFullscreenFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.InjectView;
 
@@ -51,7 +44,7 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        TripImagesListFragment.Type tab = getArgs().getTab();
+        TripImagesType tab = getArgs().getTab();
         int userId = getArgs().getUserId();
         int position = getArgs().getPosition();
         this.route = getArgs().getRoute();

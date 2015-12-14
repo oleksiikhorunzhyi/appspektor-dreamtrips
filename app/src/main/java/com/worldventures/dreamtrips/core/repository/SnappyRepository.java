@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
@@ -312,12 +312,12 @@ public class SnappyRepository {
     // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
 
-    public void savePhotoEntityList(TripImagesListFragment.Type type, int userId, List<IFullScreenObject> items) {
+    public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type + ":" + userId, items);
 
     }
 
-    public List<IFullScreenObject> readPhotoEntityList(TripImagesListFragment.Type type, int userId) {
+    public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
         return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
     }
 

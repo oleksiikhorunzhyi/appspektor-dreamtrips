@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class InspirationFullscreenPresenter extends FullScreenPresenter<Inspiration, InspirationFullscreenPresenter.View> {
 
-    public InspirationFullscreenPresenter(Inspiration photo, Type tab) {
+    public InspirationFullscreenPresenter(Inspiration photo, TripImagesType tab) {
         super(photo, tab);
     }
 

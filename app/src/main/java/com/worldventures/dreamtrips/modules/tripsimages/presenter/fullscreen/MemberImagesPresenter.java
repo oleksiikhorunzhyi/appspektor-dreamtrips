@@ -12,9 +12,9 @@ import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMemberPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.events.MyImagesSelectionEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +24,10 @@ public class MemberImagesPresenter extends TripImagesListPresenter<MemberImagesP
     public static final int REQUESTER_ID = -10;
 
     public MemberImagesPresenter() {
-        this(TripImagesListFragment.Type.MEMBERS_IMAGES, 0);
+        this(TripImagesType.MEMBERS_IMAGES, 0);
     }
 
-    public MemberImagesPresenter(TripImagesListFragment.Type type, int userId) {
+    public MemberImagesPresenter(TripImagesType type, int userId) {
         super(type, userId);
     }
 

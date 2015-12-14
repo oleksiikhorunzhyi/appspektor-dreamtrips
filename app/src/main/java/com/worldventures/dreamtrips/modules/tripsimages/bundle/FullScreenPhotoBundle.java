@@ -5,15 +5,15 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class FullScreenPhotoBundle implements Parcelable {
 
     private IFullScreenObject photo;
-    private Type tab;
+    private TripImagesType tab;
     private boolean foreign;
 
-    public FullScreenPhotoBundle(IFullScreenObject photo, Type tab, boolean foreign) {
+    public FullScreenPhotoBundle(IFullScreenObject photo, TripImagesType tab, boolean foreign) {
         this.photo = photo;
         this.tab = tab;
         this.foreign = foreign;
@@ -23,7 +23,7 @@ public class FullScreenPhotoBundle implements Parcelable {
         return photo;
     }
 
-    public Type getTab() {
+    public TripImagesType getTab() {
         return tab;
     }
 
@@ -46,7 +46,7 @@ public class FullScreenPhotoBundle implements Parcelable {
     protected FullScreenPhotoBundle(Parcel in) {
         this.photo = in.readParcelable(IFullScreenObject.class.getClassLoader());
         int tmpTab = in.readInt();
-        this.tab = tmpTab == -1 ? null : Type.values()[tmpTab];
+        this.tab = tmpTab == -1 ? null : TripImagesType.values()[tmpTab];
         this.foreign = in.readByte() != 0;
     }
 

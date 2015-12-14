@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverCli
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
@@ -141,7 +141,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         NavigationBuilder
                 .create()
                 .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.ACCOUNT_IMAGES, getAccount().getId()))
+                .data(new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, getAccount().getId()))
                 .move(Route.ACCOUNT_IMAGES);
     }
 

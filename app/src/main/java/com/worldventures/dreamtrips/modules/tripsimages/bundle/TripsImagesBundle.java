@@ -3,21 +3,21 @@ package com.worldventures.dreamtrips.modules.tripsimages.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class TripsImagesBundle implements Parcelable {
 
-    private Type type;
+    private TripImagesType type;
     private int userId;
 
-    public TripsImagesBundle(Type type, int userId) {
+    public TripsImagesBundle(TripImagesType type, int userId) {
         this.type = type;
         this.userId = userId;
     }
 
     protected TripsImagesBundle(Parcel in) {
         userId = in.readInt();
-        type = (Type) in.readSerializable();
+        type = (TripImagesType) in.readSerializable();
     }
 
     public static final Creator<TripsImagesBundle> CREATOR = new Creator<TripsImagesBundle>() {
@@ -32,7 +32,7 @@ public class TripsImagesBundle implements Parcelable {
         }
     };
 
-    public Type getType() {
+    public TripImagesType getType() {
         return type;
     }
 

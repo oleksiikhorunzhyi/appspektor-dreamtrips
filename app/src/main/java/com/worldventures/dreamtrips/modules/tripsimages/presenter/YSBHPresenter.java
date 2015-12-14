@@ -3,13 +3,13 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetYSBHPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 
 public class YSBHPresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
     public YSBHPresenter(int userId) {
-        super(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE, userId);
+        super(TripImagesType.YOU_SHOULD_BE_HERE, userId);
     }
 
     @Override

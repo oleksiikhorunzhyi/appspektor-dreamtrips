@@ -5,7 +5,7 @@ import android.util.Log;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetInspireMePhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
     protected double randomSeed;
 
     public InspireMePresenter(int userId) {
-        super(TripImagesListFragment.Type.INSPIRE_ME, userId);
+        super(TripImagesType.INSPIRE_ME, userId);
     }
 
     @Override

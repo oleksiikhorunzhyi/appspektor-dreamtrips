@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -152,7 +152,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(photos.indexOf(selectedPhoto))
-                    .type(TripImagesListFragment.Type.FIXED)
+                    .type(TripImagesType.FIXED)
                     .route(Route.BUCKET_PHOTO_FULLSCREEN)
                     .userId(bucketItem.getOwner().getId())
                     .fixedList(photos)

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import org.apache.commons.lang3.text.StrBuilder;
 import org.intellij.lang.annotations.MagicConstant;
@@ -218,22 +218,22 @@ public class TrackingHelper {
         trackMemberAction(ACTION_INSPR_SHARE, null, data);
     }
 
-    public static void view(TripImagesListFragment.Type type, String id, String memberId) {
-        if (type.equals(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE)) {
+    public static void view(TripImagesType type, String id, String memberId) {
+        if (type.equals(TripImagesType.YOU_SHOULD_BE_HERE)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_YSBH, "view_ysbh_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.MEMBERS_IMAGES)) {
+        } else if (type.equals(TripImagesType.MEMBERS_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_ALL_USERS, "view_user_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.ACCOUNT_IMAGES)) {
+        } else if (type.equals(TripImagesType.ACCOUNT_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_MINE, "view_user_photo", id);
         }
     }
 
-    public static void like(TripImagesListFragment.Type type, String id, String memberId) {
-        if (type.equals(TripImagesListFragment.Type.YOU_SHOULD_BE_HERE)) {
+    public static void like(TripImagesType type, String id, String memberId) {
+        if (type.equals(TripImagesType.YOU_SHOULD_BE_HERE)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_YSBH, "like_ysbh_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.MEMBERS_IMAGES)) {
+        } else if (type.equals(TripImagesType.MEMBERS_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_ALL_USERS, "like_user_photo", id);
-        } else if (type.equals(TripImagesListFragment.Type.ACCOUNT_IMAGES)) {
+        } else if (type.equals(TripImagesType.ACCOUNT_IMAGES)) {
             trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_MINE, "like_user_photo", id);
         }
     }

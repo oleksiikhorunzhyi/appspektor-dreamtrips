@@ -96,7 +96,7 @@ import dagger.Provides;
 )
 public class TripsImagesModule {
 
-    public static final String TRIP_IMAGES = Route.TAB_IMAGES.name();
+    public static final String TRIP_IMAGES = Route.TRIP_TAB_IMAGES.name();
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTripImagesComponent() {

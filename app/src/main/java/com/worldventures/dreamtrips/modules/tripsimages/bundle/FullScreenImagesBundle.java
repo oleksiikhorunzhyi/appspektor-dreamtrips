@@ -5,13 +5,13 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 
 public class FullScreenImagesBundle implements Parcelable {
 
-    private TripImagesListFragment.Type tab;
+    private TripImagesType tab;
     private int userId;
     private int position;
     private ArrayList<IFullScreenObject> fixedList;
@@ -22,7 +22,7 @@ public class FullScreenImagesBundle implements Parcelable {
     }
 
     protected FullScreenImagesBundle(Parcel in) {
-        tab = (TripImagesListFragment.Type) in.readSerializable();
+        tab = (TripImagesType) in.readSerializable();
         userId = in.readInt();
         position = in.readInt();
         fixedList = (ArrayList<IFullScreenObject>) in.readSerializable();
@@ -30,7 +30,7 @@ public class FullScreenImagesBundle implements Parcelable {
         route = (Route) in.readSerializable();
     }
 
-    public TripImagesListFragment.Type getTab() {
+    public TripImagesType getTab() {
         return tab;
     }
 
@@ -89,7 +89,7 @@ public class FullScreenImagesBundle implements Parcelable {
             instance = new FullScreenImagesBundle();
         }
 
-        public Builder type(TripImagesListFragment.Type type) {
+        public Builder type(TripImagesType type) {
             instance.tab = type;
             return this;
         }

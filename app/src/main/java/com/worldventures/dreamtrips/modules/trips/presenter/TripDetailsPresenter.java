@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,9 +82,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     public void onItemClick(int position) {
         FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                 .position(position)
-                .userId(trip.getOwner().getId())
                 .route(Route.TRIP_PHOTO_FULLSCREEN)
-                .type(TripImagesListFragment.Type.FIXED)
+                .type(TripImagesType.FIXED)
                 .fixedList(new ArrayList<>(filteredImages))
                 .build();
 

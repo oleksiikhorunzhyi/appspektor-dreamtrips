@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
 import java.util.ArrayList;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class AccountImagesPresenter extends MemberImagesPresenter {
 
-    public AccountImagesPresenter(Type type, int userId) {
+    public AccountImagesPresenter(TripImagesType type, int userId) {
         super(type, userId);
     }
 

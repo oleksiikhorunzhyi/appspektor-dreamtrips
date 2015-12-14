@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Pair;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
@@ -86,14 +88,7 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
 
     @Override
     protected void syncUIStateWithModel() {
-        Pair<Route, Parcelable> routeParcelablePair = fragmentFactory.create(getModelObject());
-        router.moveTo(routeParcelablePair.first,
-                NavigationConfigBuilder.forFragment()
-                        .backStackEnabled(false)
-                        .fragmentManager(getFragmentManager())
-                        .data(routeParcelablePair.second)
-                        .containerId(R.id.fragment_container)
-                        .build());
+        syncEntityDetailsFragment();
         //
         feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get().get().getUser().getId(), true);
         feedItemCommonDataHelper.setOnEditClickListener(v -> getEventBus().post(new FeedEntityEditClickEvent(getModelObject(), v)));
@@ -105,6 +100,24 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
         //
         actionView.setState(getModelObject(), isForeignItem(getModelObject()));
         feedActionHandler.init(actionView, createActionPanelNavigationWrapper());
+    }
+
+    private void syncEntityDetailsFragment() {
+        Pair<Route, Parcelable> entityData = fragmentFactory.create(getModelObject());
+        //
+        FragmentManager fm = getFragmentManager();
+        Fragment entityFragment = fm.findFragmentById(R.id.fragment_container);
+        boolean notAdded = entityFragment == null ||
+                !entityFragment.getClass().getName().equals(entityData.first.getClazzName());
+        if (notAdded) {
+            NavigationConfig config = NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(false)
+                    .fragmentManager(fm)
+                    .data(entityData.second)
+                    .containerId(R.id.fragment_container)
+                    .build();
+            router.moveTo(entityData.first, config);
+        }
     }
 
     @Override

@@ -86,6 +86,8 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
 
     public void onEvent(FeedEntityChangedEvent event) {
         if (event.getFeedEntity().equals(feedItem.getItem())) {
+            feedItem.setItem(event.getFeedEntity());
+            feedEntity = event.getFeedEntity();
             view.updateFeedItem(feedItem);
         }
     }

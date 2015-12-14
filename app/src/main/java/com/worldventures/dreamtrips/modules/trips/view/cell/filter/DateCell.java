@@ -66,7 +66,7 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH), false);
         datePickerDialog.setYearRange(calendar.get(Calendar.YEAR), calendar.get(Calendar.YEAR) + 5);
-        datePickerDialog.show(fragmentCompass.getFragmentManager(), "default");
+        datePickerDialog.show(fragmentCompass.getFragmentManager(), tag);
     }
 
     @Override

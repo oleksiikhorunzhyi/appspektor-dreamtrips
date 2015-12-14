@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -62,6 +63,7 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
         doRequest(new DeletePhotoCommand(photo.getFsId()), (jsonObject) -> {
             view.informUser(context.getString(R.string.photo_deleted));
             eventBus.postSticky(new PhotoDeletedEvent(photo.getFsId()));
+            eventBus.postSticky(new FeedEntityDeletedEvent(photo));
         });
     }
 

@@ -88,7 +88,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         if (userRelationship == null) return;
 
         switch (userRelationship){
-            case REJECT:
+            case REJECTED:
             case NONE:
                 view.showAddFriendDialog(circles, this::addAsFriend);
                 break;
@@ -135,7 +135,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> {
                     view.finishLoading();
-                    user.setRelationship(User.Relationship.REJECT);
+                    user.setRelationship(User.Relationship.REJECTED);
                     view.notifyUserChanged();
                 });
     }

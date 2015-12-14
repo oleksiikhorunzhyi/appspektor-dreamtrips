@@ -31,7 +31,7 @@ import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.INCOMING_REQUEST;
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.OUTGOING_REQUEST;
-import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.REJECT;
+import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.REJECTED;
 import static com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand.RequestEntity;
 
 public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
@@ -108,7 +108,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
             sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing)));
             sortedItems.addAll(Queryable.from(items).filter(item ->
-                    (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECT))
+                    (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
                     .toList());
             view.getAdapter().setItems(sortedItems);
         }

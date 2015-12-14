@@ -175,7 +175,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
 
     @Override
     public void showMerchants(PlacesBundle bundle) {
-        router.moveTo(Route.DTL_PLACES_HOLDER, NavigationConfigBuilder.forFragment()
+        router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_container)
                 .fragmentManager(getFragmentManager())
                 .backStackEnabled(false)

@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
@@ -48,9 +49,9 @@ public class BucketPopularTabsFragment extends BaseFragmentWithArgs<BucketPopula
                 }
             };
 
-            this.adapter.add(new FragmentItem(BucketListPopularFragment.class, getString(R.string.bucket_locations)));
-            this.adapter.add(new FragmentItem(BucketListPopularFragment.class, getString(R.string.bucket_activities)));
-            this.adapter.add(new FragmentItem(BucketListPopularFragment.class, getString(R.string.bucket_restaurants)));
+            this.adapter.add(new FragmentItem(Route.POPULAR_BUCKET, getString(R.string.bucket_locations)));
+            this.adapter.add(new FragmentItem(Route.POPULAR_BUCKET, getString(R.string.bucket_activities)));
+            this.adapter.add(new FragmentItem(Route.POPULAR_BUCKET, getString(R.string.bucket_restaurants)));
         }
 
         pager.setAdapter(adapter);

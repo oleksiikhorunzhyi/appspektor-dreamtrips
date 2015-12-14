@@ -3,25 +3,21 @@ package com.worldventures.dreamtrips.modules.tripsimages.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class TripsImagesBundle implements Parcelable {
 
-    private TripImagesListFragment.Type type;
-    private int foreignUserId;
+    private TripImagesType type;
+    private int userId;
 
-    public TripsImagesBundle(TripImagesListFragment.Type type) {
+    public TripsImagesBundle(TripImagesType type, int userId) {
         this.type = type;
-    }
-
-    public TripsImagesBundle(TripImagesListFragment.Type type, int foreignUserId) {
-        this.type = type;
-        this.foreignUserId = foreignUserId;
+        this.userId = userId;
     }
 
     protected TripsImagesBundle(Parcel in) {
-        foreignUserId = in.readInt();
-        type = (TripImagesListFragment.Type) in.readSerializable();
+        userId = in.readInt();
+        type = (TripImagesType) in.readSerializable();
     }
 
     public static final Creator<TripsImagesBundle> CREATOR = new Creator<TripsImagesBundle>() {
@@ -36,12 +32,12 @@ public class TripsImagesBundle implements Parcelable {
         }
     };
 
-    public TripImagesListFragment.Type getType() {
+    public TripImagesType getType() {
         return type;
     }
 
-    public int getForeignUserId() {
-        return foreignUserId;
+    public int getUserId() {
+        return userId;
     }
 
     @Override
@@ -51,7 +47,7 @@ public class TripsImagesBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(foreignUserId);
+        parcel.writeInt(userId);
         parcel.writeSerializable(type);
     }
 }

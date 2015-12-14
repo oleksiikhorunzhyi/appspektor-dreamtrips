@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.api;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class GetYSBHPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
 
     @Override
     public ArrayList<IFullScreenObject> loadDataFromNetwork() throws Exception {
-        ArrayList<Photo> photos = getService().getYouShouldBeHerePhotos(perPage, page);
+        ArrayList<YSBHPhoto> photos = getService().getYouShouldBeHerePhotos(perPage, page);
         ArrayList<IFullScreenObject> result = new ArrayList<>();
         result.addAll(photos);
         return result;

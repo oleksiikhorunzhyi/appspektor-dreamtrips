@@ -176,42 +176,42 @@ public class ImageUploadTask implements IFullScreenObject, Serializable, Parcela
     }
 
     @Override
-    public String getFsDescription() {
+    public String getFSDescription() {
         return title;
     }
 
     @Override
-    public String getFsShareText() {
+    public String getFSShareText() {
         return title;
     }
 
     @Override
-    public int getFsCommentCount() {
+    public int getFSCommentCount() {
         return -1;
     }
 
     @Override
-    public int getFsLikeCount() {
+    public int getFSLikeCount() {
         return 0;
     }
 
     @Override
-    public String getFsLocation() {
+    public String getFSLocation() {
         return locationName;
     }
 
     @Override
-    public String getFsDate() {
+    public String getFSDate() {
         return "";
     }
 
     @Override
-    public String getFsUserPhoto() {
+    public String getFSUserPhoto() {
         return user.getAvatar().getMedium();
     }
 
     @Override
-    public String getFsId() {
+    public String getFSId() {
         return String.valueOf(amazonTaskId);
     }
 

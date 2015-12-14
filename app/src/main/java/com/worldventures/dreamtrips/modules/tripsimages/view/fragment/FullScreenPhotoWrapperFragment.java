@@ -14,22 +14,19 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripImageBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
-import icepick.State;
-
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment
@@ -40,15 +37,18 @@ public class FullScreenPhotoWrapperFragment
     protected ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
+
     protected BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>> adapter;
+    protected Route route;
 
     @Override
     protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        TripImagesListFragment.Type type = getArgs().getType();
-        int foreignUserId = getArgs().getForeignUserId();
+        TripImagesType type = getArgs().getType();
+        int userId = getArgs().getUserId();
         int position = getArgs().getPosition();
+        this.route = getArgs().getRoute();
         ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-        return TripImagesListPresenter.create(new TripImageBundle(type, true, foreignUserId, fixedList, position));
+        return TripImagesListPresenter.create(type, userId, fixedList, true, position);
     }
 
     @Override
@@ -87,8 +87,7 @@ public class FullScreenPhotoWrapperFragment
         adapter = new BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>>(getActivity().getSupportFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
-                FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position).getObject(),
-                        getArgs().getType(), getArgs().isForeign());
+                FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position).getObject(), getArgs().getType(), getArgs().isForeign());
                 ((BaseFragmentWithArgs) fragment).setArgs(data);
             }
 
@@ -137,8 +136,13 @@ public class FullScreenPhotoWrapperFragment
     }
 
     private void addToAdapter(List<IFullScreenObject> items) {
-        Queryable.from(items).forEachR(item ->
-                adapter.add(new FragmentItemWithObject<>(FullScreenPhotoFragment.class, "", item)));
+        Queryable.from(items).forEachR(item -> {
+            if (route == null) {
+                throw new IllegalStateException("You must specify route for this type");
+            } else {
+                adapter.add(new FragmentItemWithObject<>(route, "", item));
+            }
+        });
     }
 
     @Override

@@ -21,18 +21,20 @@ import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundl
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.INSPIRE_ME;
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type.YOU_SHOULD_BE_HERE;
-
-public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
+public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
 
     @Inject
     FeedEntityManager entityManager;
 
     UidItemDelegate uidItemDelegate;
+
+    public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
+        super(photo, type);
+    }
 
     @Override
     public void takeView(View view) {
@@ -59,9 +61,9 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     @Override
     public void onDeleteAction() {
-        doRequest(new DeletePhotoCommand(photo.getFsId()), (jsonObject) -> {
+        doRequest(new DeletePhotoCommand(photo.getFSId()), (jsonObject) -> {
             view.informUser(context.getString(R.string.photo_deleted));
-            eventBus.postSticky(new PhotoDeletedEvent(photo.getFsId()));
+            eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
         });
     }
 
@@ -82,14 +84,8 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
 
     public void onEvent(EntityLikedEvent event) {
         photo.syncLikeState(event.getFeedEntity());
-        view.setLiked(photo.isLiked());
-        view.setLikeCount(photo.getLikesCount());
-        TrackingHelper.like(type, String.valueOf(photo.getFsId()), getAccountUserId());
-    }
-
-    @Override
-    protected boolean isLiked() {
-        return photo.isLiked();
+        view.setContent(photo);
+        TrackingHelper.like(type, String.valueOf(photo.getFSId()), getAccountUserId());
     }
 
     @Override
@@ -110,31 +106,6 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     @Override
     public void onEdit() {
         if (view != null) view.openEdit(new EditPhotoBundle(photo));
-    }
-
-    @Override
-    protected boolean isFlagVisible() {
-        return photo.getOwner() != null && getAccount().getId() != photo.getOwner().getId();
-    }
-
-    @Override
-    protected boolean isDeleteVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isEditVisible() {
-        return photo.getOwner() != null && getAccount().getId() == photo.getOwner().getId();
-    }
-
-    @Override
-    protected boolean isCommentVisible() {
-        return true;
-    }
-
-    @Override
-    protected boolean isLikeVisible() {
-        return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
     }
 
     @Override
@@ -159,5 +130,15 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
                 setupActualViewState();
             }
         }
+    }
+
+
+    public interface View extends FullScreenPresenter.View{
+
+        void showProgress();
+
+        void hideProgress();
+
+        void openEdit(EditPhotoBundle editPhotoBundle);
     }
 }

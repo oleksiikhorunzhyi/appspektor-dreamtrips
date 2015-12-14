@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.presenter;
+package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -9,25 +9,25 @@ import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetMemberPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.events.MyImagesSelectionEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
-
-public class UserImagesPresenter extends TripImagesListPresenter<UserImagesPresenter.View> {
+public class MemberImagesPresenter extends TripImagesListPresenter<MemberImagesPresenter.View> {
 
     public static final int REQUESTER_ID = -10;
 
-    public UserImagesPresenter(int userId) {
-        this(Type.MEMBER_IMAGES, userId);
+    public MemberImagesPresenter() {
+        this(TripImagesType.MEMBERS_IMAGES, 0);
     }
 
-    public UserImagesPresenter(Type type, int userId) {
+    public MemberImagesPresenter(TripImagesType type, int userId) {
         super(type, userId);
     }
 
@@ -36,12 +36,12 @@ public class UserImagesPresenter extends TripImagesListPresenter<UserImagesPrese
         return new TripImagesRoboSpiceController() {
             @Override
             public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-                return new GetUserPhotosQuery(PER_PAGE, 1);
+                return new GetMemberPhotosQuery(PER_PAGE, 1);
             }
 
             @Override
             public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-                return new GetUserPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
+                return new GetMemberPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
             }
         };
     }

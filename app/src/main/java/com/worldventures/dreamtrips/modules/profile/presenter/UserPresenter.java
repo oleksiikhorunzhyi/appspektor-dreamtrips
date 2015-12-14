@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRe
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,7 +87,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         User.Relationship userRelationship = user.getRelationship();
         if (userRelationship == null) return;
 
-        switch (userRelationship){
+        switch (userRelationship) {
             case REJECT:
             case NONE:
                 view.showAddFriendDialog(circles, this::addAsFriend);
@@ -182,7 +182,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 .create()
                 .data(new ForeignBucketTabsBundle(user))
                 .with(activityRouter)
-                .move(Route.FOREIGN_BUCKET_LIST);
+                .move(Route.FOREIGN_BUCKET_TABS);
     }
 
     @Override
@@ -190,8 +190,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         NavigationBuilder
                 .create()
                 .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.FOREIGN_IMAGES, user.getId()))
-                .move(Route.FOREIGN_TRIP_IMAGES);
+                .data(new TripsImagesBundle(TripImagesType.MEMBERS_IMAGES, user.getId()))
+                .move(Route.TRIP_LIST_IMAGES);
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

@@ -1,18 +1,13 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.net.Uri;
-
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
@@ -28,14 +23,10 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
-import com.worldventures.dreamtrips.util.ValidationUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -155,13 +146,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             ArrayList<IFullScreenObject> photos = new ArrayList<>();
             if (bucketItem.getCoverPhoto() != null) {
                 Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
-                        photo.setIsCover(photo.getFsId().equals(bucketItem.getCoverPhoto().getFsId())));
+                        photo.setIsCover(photo.getFSId().equals(bucketItem.getCoverPhoto().getFSId())));
             }
             photos.addAll(bucketItem.getPhotos());
 
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(photos.indexOf(selectedPhoto))
-                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .type(TripImagesType.FIXED)
+                    .route(Route.BUCKET_PHOTO_FULLSCREEN)
+                    .userId(bucketItem.getOwner().getId())
                     .fixedList(photos)
                     .foreign(bucketItem.getOwner().getId() != appSessionHolder.get().get().getUser().getId())
                     .build();
@@ -173,7 +166,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
         if (bucketItem.getPhotos().contains(event.getPhoto())) {
             eventBus.cancelEventDelivery(event);
-            saveCover(event.getPhoto().getFsId());
+            saveCover(event.getPhoto().getFSId());
         }
     }
 

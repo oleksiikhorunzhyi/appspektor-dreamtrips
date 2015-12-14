@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 
@@ -68,7 +68,9 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
             items.add(getModelObject().getItem());
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(0)
-                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .userId(getModelObject().getItem().getOwner().getId())
+                    .type(TripImagesType.FIXED)
+                    .route(Route.SOCIAL_IMAGE_FULLSCREEN)
                     .fixedList(items)
                     .build();
 

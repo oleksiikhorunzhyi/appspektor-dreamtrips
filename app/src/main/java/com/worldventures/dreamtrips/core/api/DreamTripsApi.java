@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 
 import org.json.JSONObject;
@@ -90,19 +91,16 @@ public interface DreamTripsApi {
     List<ActivityModel> getActivities();
 
     @GET("/api/photos")
-    ArrayList<Photo> getUsersPhotos(@Query("per_page") int perPage, @Query("page") int page);
-
-    @GET("/api/users/{id}/photos")
-    ArrayList<Photo> getAccountPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    ArrayList<Photo> getMembersPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/users/{user_id}/photos")
-    ArrayList<Photo> getForeignUserPhotos(@Path("user_id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    ArrayList<Photo> getUserPhotos(@Path("user_id") int userId, @Query("per_page") int query, @Query("page") int page);
 
     @GET("/api/inspirations?random_seed=1")
     ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
 
     @GET("/api/ysbh_photos")
-    ArrayList<Photo> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/success_stories")
     ArrayList<SuccessStory> getSuccessStores();

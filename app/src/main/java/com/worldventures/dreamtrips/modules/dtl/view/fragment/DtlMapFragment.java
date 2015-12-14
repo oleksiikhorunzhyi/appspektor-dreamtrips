@@ -73,7 +73,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:
-                    router.moveTo(Route.DTL_PLACES_HOLDER, NavigationConfigBuilder.forFragment()
+                    router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
                             .data(new PlacesBundle(bundle.getLocation()))
                             .fragmentManager(getFragmentManager())
                             .backStackEnabled(false)

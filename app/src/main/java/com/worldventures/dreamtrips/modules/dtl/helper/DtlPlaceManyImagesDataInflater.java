@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -51,7 +52,7 @@ public class DtlPlaceManyImagesDataInflater extends DtlPlaceCommonDataInflater {
             }
         };
         Queryable.from(mediaList).forEachR(image -> {
-            adapter.add(new FragmentItem(BaseImageFragment.class, ""));
+            adapter.add(new FragmentItem(Route.BASE_IMAGES, ""));
         });
         coverPager.setAdapter(adapter);
         if (mediaList.size() > 1) coverPagerIndicator.setViewPager(coverPager);

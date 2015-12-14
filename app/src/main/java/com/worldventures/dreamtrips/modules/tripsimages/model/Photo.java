@@ -96,7 +96,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         return images.getUrl();
     }
 
-    public String getFsId() {
+    public String getFSId() {
         return uid;
     }
 
@@ -114,27 +114,27 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     @Override
-    public String getFsDescription() {
+    public String getFSDescription() {
         return title;
     }
 
     @Override
-    public String getFsShareText() {
+    public String getFSShareText() {
         return title;
     }
 
     @Override
-    public int getFsCommentCount() {
+    public int getFSCommentCount() {
         return commentsCount;
     }
 
     @Override
-    public int getFsLikeCount() {
+    public int getFSLikeCount() {
         return getLikesCount();
     }
 
     @Override
-    public String getFsLocation() {
+    public String getFSLocation() {
         if (location == null) {
             return "";
         }
@@ -142,12 +142,12 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     @Override
-    public String getFsDate() {
+    public String getFSDate() {
         return DateTimeUtils.convertDateToString(shotAt, DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT);
     }
 
     @Override
-    public String getFsUserPhoto() {
+    public String getFSUserPhoto() {
         if (owner == null) {
             return "";
         } else {
@@ -163,6 +163,18 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        @Override
+        public Photo createFromParcel(Parcel in) {
+            return new Photo(in);
+        }
+
+        @Override
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -198,15 +210,4 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         owner = in.readParcelable(User.class.getClassLoader());
     }
 
-    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-        @Override
-        public Photo createFromParcel(Parcel in) {
-            return new Photo(in);
-        }
-
-        @Override
-        public Photo[] newArray(int size) {
-            return new Photo[size];
-        }
-    };
 }

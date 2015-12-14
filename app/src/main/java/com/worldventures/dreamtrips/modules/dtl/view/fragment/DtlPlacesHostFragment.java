@@ -40,8 +40,8 @@ public class DtlPlacesHostFragment
     private void showMaster() {
         Fragment placesTabsFragment = getChildFragmentManager().findFragmentById(R.id.dtl_master_container);
         if (placesTabsFragment != null && placesTabsFragment.getClass().getName()
-                .equals(Route.DTL_PLACES_LIST.getClazzName())) return;
-        router.moveTo(Route.DTL_PLACES_LIST, NavigationConfigBuilder.forFragment()
+                .equals(Route.DTL_MERCHANTS_TABS.getClazzName())) return;
+        router.moveTo(Route.DTL_MERCHANTS_TABS, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_master_container)
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
@@ -73,14 +73,14 @@ public class DtlPlacesHostFragment
                 .containerId(R.id.dtl_landscape_slave_container)
                 .build();
         // do both - underlying code will safely determine what to delete
-        router.moveTo(Route.DTL_PLACE_DETAILS, navigationConfig);
+        router.moveTo(Route.DTL_MERCHANT_DETAILS, navigationConfig);
         router.moveTo(Route.DTL_MAP, navigationConfig);
     }
 
     @Override
     public void showDetails(String merchantId) {
         removeDetails();
-        router.moveTo(Route.DTL_PLACE_DETAILS, NavigationConfigBuilder.forFragment()
+        router.moveTo(Route.DTL_MERCHANT_DETAILS, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())

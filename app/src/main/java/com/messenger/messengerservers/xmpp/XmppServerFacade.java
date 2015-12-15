@@ -57,9 +57,10 @@ public class XmppServerFacade implements MessengerServerFacade {
     @Override
     public void authorizeAsync(String username, String password) {
         status = AuthorizeStatus.PROGRESS;
+        Log.i("Xmpp Authorize with ", String.format("userName:%s password:%s", username, password));
 
         connectionExecutor.execute(() -> {
-                    //  SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
+                    //SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
                     connection = new XMPPTCPConnection(XMPPTCPConnectionConfiguration.builder()
                             .setUsernameAndPassword(username, password)
                             .setServiceName(JidCreatorHelper.SERVICE_NAME)

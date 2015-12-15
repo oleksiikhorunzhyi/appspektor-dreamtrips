@@ -20,12 +20,14 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.Arrays;
 
-public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder>{
+public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
 
     private Context context;
+
+    private User currentUser;
 
     private ClickListener clickListener;
 
@@ -35,9 +37,11 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         void onConversationClick(Conversation conversation);
     }
 
-    public ConversationCursorAdapter(Context context, Cursor cursor) {
+    public ConversationCursorAdapter(Context context, Cursor cursor, User currentUser) {
         super(cursor);
         this.context = context;
+        this.currentUser = currentUser;
+
         chatDateFormatter = new ChatDateFormatter(context);
     }
 
@@ -53,7 +57,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
         Message lastMessage = chatConversation.getLastMessage();
         String messageText = lastMessage.getText();
-        if (lastMessage.getFrom().equals(Environment.getCurrentUser())) {
+        if (lastMessage.getFrom().equals(currentUser)) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
         }
         holder.getLastMessageTextView().setText(messageText);
@@ -78,7 +82,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
             groupHolder.getGroupAvatarsView().updateAvatars(Arrays.asList(addressee));
         } else {
             holder.getNameTextView().setText(addressee.getName());
-            OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder)holder;
+            OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)
                     .load(addressee.getAvatarUrl())
                     .placeholder(android.R.drawable.ic_menu_compass)
@@ -102,7 +106,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         throw new IllegalStateException("There is no such view type in adapter");
     }
 
-    @Override public int getItemViewType(int position) {
+    @Override
+    public int getItemViewType(int position) {
         Cursor cursor = getCursor();
         int previousPosition = cursor.getPosition();
 
@@ -112,10 +117,10 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         String type = cursor.getString(cursor.getColumnIndex("type"));
         cursor.moveToPosition(previousPosition);
 
-        return isGroupConversation(type)? VIEW_TYPE_GROUP_CONVERSATION : VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
+        return isGroupConversation(type) ? VIEW_TYPE_GROUP_CONVERSATION : VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
     }
 
-    private boolean isGroupConversation(String conversationType){
+    private boolean isGroupConversation(String conversationType) {
         return !conversationType.equalsIgnoreCase(Conversation.Type.CHAT);
     }
 

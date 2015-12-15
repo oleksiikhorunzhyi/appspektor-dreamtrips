@@ -27,17 +27,25 @@ public class User extends BaseModel implements ChatUser {
 
     @PrimaryKey
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @Column String userName;
-    @Column boolean online;
-    private String userAvatarUrl =  "http://www.skivecore.com/members/0/Default.jpg";
+    @Column
+    String _id;
+    @Column
+    String userName;
+    @Column
+    boolean online;
+    private String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
 
-    public User() {}
+    public User() {
+    }
+
     public User(String userName) {
+        this._id = userName;
         this.userName = userName;
     }
 
-    public User (Parcel in){
+    public User(Parcel in) {
         this.userName = in.readString();
+        this._id = this.userName;
         this.userAvatarUrl = in.readString();
         this.online = in.readInt() == 1;
     }
@@ -47,13 +55,8 @@ public class User extends BaseModel implements ChatUser {
     }
 
     @Override
-    public long getId() {
-        return 0;
-    }
-
-    @Override
-    public void setId(long id) {
-
+    public String getId() {
+        return _id;
     }
 
     @Override
@@ -91,10 +94,25 @@ public class User extends BaseModel implements ChatUser {
 
     }
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-        public User createFromParcel(Parcel source) {return new User(source);}
+    @Override
+    public boolean equals(Object o) {
+        User anotherUser = (User) o;
+        return _id.equals(anotherUser._id);
+    }
 
-        public User[] newArray(int size) {return new User[size];}
+    @Override
+    public int hashCode() {
+        return _id.hashCode();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
     };
 
     public int describeContents() {

@@ -33,14 +33,14 @@ public class Message extends BaseProviderModel<Message> {
             references = {@ForeignKeyReference(
                     columnName = "fromId",
                     columnType = String.class,
-                    foreignColumnName = "userName")},
+                    foreignColumnName = "_id")},
             saveForeignKeyModel = true)
     @Column User from;
     @ForeignKey(
             references = {@ForeignKeyReference(
                     columnName = "toId",
                     columnType = String.class,
-                    foreignColumnName = "userName")},
+                    foreignColumnName = "_id")},
             saveForeignKeyModel = true)
     @Column User to;
     @Column String text;

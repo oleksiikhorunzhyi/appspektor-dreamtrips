@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseFeedPresenter;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -12,6 +14,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketLi
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFriendsClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.List;
 
@@ -85,13 +88,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void onEvent(OnBucketListClickedEvent event) {
-        if (event.getUserId() == user.getId()) {
+        if (event.getUserId() == user.getId() && view.isVisibleOnScreen()) {
             openBucketList();
         }
     }
 
     public void onEvent(OnTripImageClickedEvent event) {
-        if (event.getUserId() == user.getId()) {
+        if (event.getUserId() == user.getId() && view.isVisibleOnScreen()) {
             openTripImages();
         }
     }
@@ -114,6 +117,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         void openPost();
 
         void openFriends();
+
+        void openTripImages(Route route, TripsImagesBundle tripImagesBundle);
+
+        void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
 
         void notifyUserChanged();
 

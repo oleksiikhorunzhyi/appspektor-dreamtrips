@@ -151,15 +151,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 });
     }
 
-
     public void onEvent(UnfriendEvent event) {
         unfriend();
     }
 
     public void onEvent(OpenFriendPrefsEvent event) {
-        view.openFriendPrefs(new UserBundle(user));
+        if (view.isVisibleOnScreen()) view.openFriendPrefs(new UserBundle(user));
     }
-
 
     public void onEvent(FriendGroupRelationChangedEvent event) {
         if (user.getId() == event.getFriend().getId()) {
@@ -175,23 +173,15 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         }
     }
 
-
     @Override
     public void openBucketList() {
-        NavigationBuilder
-                .create()
-                .data(new ForeignBucketTabsBundle(user))
-                .with(activityRouter)
-                .move(Route.FOREIGN_BUCKET_TABS);
+        view.openBucketList(Route.FOREIGN_BUCKET_TABS, new ForeignBucketTabsBundle(user));
     }
 
     @Override
     public void openTripImages() {
-        NavigationBuilder
-                .create()
-                .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesType.MEMBERS_IMAGES, user.getId()))
-                .move(Route.TRIP_LIST_IMAGES);
+        view.openTripImages(Route.TRIP_LIST_IMAGES,
+                new TripsImagesBundle(TripImagesType.MEMBERS_IMAGES, user.getId()));
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

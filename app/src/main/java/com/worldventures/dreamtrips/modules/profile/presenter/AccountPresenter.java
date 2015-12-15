@@ -133,16 +133,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     public void openBucketList() {
         shouldReload = true;
-        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_TABS);
+        view.openBucketList(Route.BUCKET_TABS, null);
     }
 
     @Override
     public void openTripImages() {
-        NavigationBuilder
-                .create()
-                .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, getAccount().getId()))
-                .move(Route.ACCOUNT_IMAGES);
+        view.openTripImages(Route.ACCOUNT_IMAGES,
+                new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, getAccount().getId()));
     }
 
     public void photoClicked() {

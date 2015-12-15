@@ -11,6 +11,8 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -20,6 +22,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import butterknife.InjectView;
 
@@ -120,9 +123,21 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
     @Override
     public void openFriends() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .move(Route.FRIENDS);
+        router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity().build());
+    }
+
+    @Override
+    public void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle) {
+        router.moveTo(route, NavigationConfigBuilder.forActivity()
+                .data(foreignBucketBundle)
+                .build());
+    }
+
+    @Override
+    public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
+        router.moveTo(route, NavigationConfigBuilder.forActivity()
+                .data(tripImagesBundle)
+                .build());
     }
 
     @Override

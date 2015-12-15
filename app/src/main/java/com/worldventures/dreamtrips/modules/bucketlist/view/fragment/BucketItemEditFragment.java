@@ -111,7 +111,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
-            getPresenter().saveItem();
+            getPresenter().saveItem(true);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -119,7 +119,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Optional
     @OnClick(R.id.done)
     void onDone() {
-        getPresenter().saveItem();
+        getPresenter().saveItem(true);
     }
 
     private void openDatePicker() {

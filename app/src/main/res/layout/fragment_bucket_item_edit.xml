@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_semi_transparent_darker"
+        android:clickable="true"
         android:visibility="gone">
 
         <ProgressBar

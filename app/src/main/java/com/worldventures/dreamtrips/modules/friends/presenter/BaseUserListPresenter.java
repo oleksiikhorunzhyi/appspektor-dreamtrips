@@ -40,7 +40,6 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     @Inject
     SnappyRepository snappyRepository;
 
-    private boolean deleteRequestLocked;
     private boolean loadUsersRequestLocked;
 
     @Override
@@ -98,7 +97,6 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     public void handleError(SpiceException error) {
         super.handleError(error);
         if (view != null) view.finishLoading();
-        deleteRequestLocked = false;
         loadUsersRequestLocked = false;
     }
 
@@ -152,16 +150,12 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     private void deleteRequest(User user) {
-        if (deleteRequestLocked) return;
-        //
         if (view.isVisibleOnScreen()) {
-            deleteRequestLocked = true;
             view.startLoading();
             doRequest(new DeleteRequestCommand(user.getId()),
                     object -> {
                         user.setRelationship(User.Relationship.NONE);
                         userActionSucceed(user);
-                        deleteRequestLocked = false;
                     });
         }
     }

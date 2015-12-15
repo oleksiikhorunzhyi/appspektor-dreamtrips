@@ -46,10 +46,10 @@ public class UserCell extends BaseUserCell {
                     setStatusParameters(R.drawable.ic_profile_friend, v -> openFriendActionDialog());
                     break;
                 case OUTGOING_REQUEST:
-                case REJECTED:
                     setStatusParameters(R.drawable.ic_profile_friend_respond, null);
                     break;
                 case INCOMING_REQUEST:
+                case REJECTED:
                     setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> acceptRequest());
                     break;
                 default:

@@ -41,6 +41,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     SnappyRepository snappyRepository;
 
     private boolean deleteRequestLocked;
+    private boolean loadUsersRequestLocked;
 
     @Override
     public void onInjected() {
@@ -69,6 +70,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void reload() {
+        loadUsersRequestLocked = true;
         nextPage = 1;
         resetLazyLoadFields();
         view.startLoading();
@@ -76,6 +78,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     protected void onUsersLoaded(ArrayList<User> freshUsers) {
+        loadUsersRequestLocked = false;
         nextPage++;
         users.clear();
         users.addAll(freshUsers);
@@ -84,6 +87,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     protected void onUsersAdded(ArrayList<User> freshUsers) {
+        loadUsersRequestLocked = false;
         nextPage++;
         users.addAll(freshUsers);
         view.refreshUsers(users);
@@ -95,6 +99,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
         super.handleError(error);
         if (view != null) view.finishLoading();
         deleteRequestLocked = false;
+        loadUsersRequestLocked = false;
     }
 
     protected abstract Query<ArrayList<User>> getUserListQuery(int page);
@@ -104,9 +109,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading && lastVisible >= totalItemCount - 1) {
+        if (!loading && !loadUsersRequestLocked && lastVisible >= totalItemCount - 1) {
             view.startLoading();
             loading = true;
+            loadUsersRequestLocked = true;
             doRequest(getUserListQuery(nextPage), this::onUsersAdded);
         }
     }

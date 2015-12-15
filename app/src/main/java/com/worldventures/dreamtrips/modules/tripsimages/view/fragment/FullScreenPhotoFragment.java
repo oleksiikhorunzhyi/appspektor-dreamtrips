@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
@@ -106,11 +105,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         ivImage.setSingleTapListener(this::toggleContent);
         ivImage.setDoubleTapListener(this::hideContent);
 
-        if (ViewUtils.isLandscapeOrientation(getActivity())) {
-            hideContent();
-        } else {
-            showContent();
-        }
+        showContent();
     }
 
     @Override

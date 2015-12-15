@@ -12,11 +12,14 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.List;
 
@@ -49,7 +52,6 @@ public class UserFragment extends ProfileFragment<UserPresenter>
                         })
                 .negativeText(R.string.cancel)
                 .show();
-
     }
 
     @Override
@@ -62,7 +64,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
 
     @Override
     public void openFriendPrefs(UserBundle userBundle) {
-        NavigationBuilder.create().with(activityRouter).data(userBundle).move(Route.FRIEND_PREFERENCES);
+        router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
+                .data(userBundle)
+                .build());
     }
 
     @Override

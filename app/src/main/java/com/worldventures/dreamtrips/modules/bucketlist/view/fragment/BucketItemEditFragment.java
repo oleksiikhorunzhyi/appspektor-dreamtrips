@@ -77,6 +77,8 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (isTabletLandscape()) return;
+        //
         if (menu != null) {
             menu.clear();
         }

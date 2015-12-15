@@ -6,7 +6,6 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -40,6 +39,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.scalablecropp.library.Crop;
+import retrofit.http.HEAD;
 import retrofit.mime.TypedFile;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
@@ -133,16 +133,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     public void openBucketList() {
         shouldReload = true;
-        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_LIST);
+        view.openBucketList(Route.BUCKET_LIST, null);
     }
 
     @Override
     public void openTripImages() {
-        NavigationBuilder
-                .create()
-                .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES))
-                .move(Route.ACCOUNT_IMAGES);
+        view.openTripImages(Route.ACCOUNT_IMAGES,
+                new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES, getAccount().getId()));
     }
 
     public void photoClicked() {

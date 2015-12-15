@@ -7,17 +7,18 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
+import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
-import com.raizlabs.android.dbflow.structure.container.ForeignKeyContainer;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.util.Date;
 import java.util.Locale;
 
+@ModelContainer
 @TableEndpoint(name = Message.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = Message.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Message extends BaseProviderModel<Message> {
@@ -34,14 +35,14 @@ public class Message extends BaseProviderModel<Message> {
                     columnType = String.class,
                     foreignColumnName = "userName")},
             saveForeignKeyModel = true)
-    @Column ForeignKeyContainer<User> from;
+    @Column User from;
     @ForeignKey(
             references = {@ForeignKeyReference(
                     columnName = "toId",
                     columnType = String.class,
                     foreignColumnName = "userName")},
             saveForeignKeyModel = true)
-    @Column ForeignKeyContainer<User> to;
+    @Column User to;
     @Column String text;
     @Column Date date;
     @Column String conversationId;
@@ -52,8 +53,8 @@ public class Message extends BaseProviderModel<Message> {
     }
 
     public Message(User from, User to, String text, String id) {
-        this.from.setModel(from);
-        this.to.setModel(to);
+        this.from = from;
+        this.to = to;
         this.text = text;
         this._id = id;
     }
@@ -77,22 +78,19 @@ public class Message extends BaseProviderModel<Message> {
     }
 
     public User getFrom() {
-        return from.toModel();
+        return from;
     }
 
     public void setFrom(User from) {
-        this.from = new ForeignKeyContainer<>(User.class);
-        this.from.setModel(from);
-//        this.from.put();
+        this.from = from;
     }
 
     public User getTo() {
-        return to.toModel();
+        return to;
     }
 
     public void setTo(User to) {
-        this.to = new ForeignKeyContainer<>(User.class);
-        this.to.setModel(to);
+        this.to = to;
     }
 
     public String getText() {

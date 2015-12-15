@@ -3,12 +3,12 @@ package com.messenger.messengerservers.entities;
 import android.net.Uri;
 import android.support.annotation.StringDef;
 
-
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
+import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -19,7 +19,7 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-
+@ModelContainer
 @TableEndpoint(name = Conversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = Conversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Conversation extends BaseProviderModel<Conversation> {
@@ -39,7 +39,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     columnType = String.class,
                     foreignColumnName = "_id")},
             saveForeignKeyModel = true)
-    @Column Message lastMessage;
+    @Column
+    Message lastMessage;
 
     public Conversation() {
     }

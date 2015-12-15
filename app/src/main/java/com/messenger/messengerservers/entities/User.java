@@ -1,5 +1,6 @@
 package com.messenger.messengerservers.entities;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,15 +12,22 @@ import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 @ModelContainer
-@Table(databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class User extends BaseModel implements ChatUser{
+@TableEndpoint(name = User.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = User.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class User extends BaseModel implements ChatUser {
+    public static final String TABLE_NAME = "Users";
+
+    @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
+    public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
+
     @PrimaryKey
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @Column
-    String userName;
+    @Column String userName;
     @Column boolean online;
     private String userAvatarUrl =  "http://www.skivecore.com/members/0/Default.jpg";
 

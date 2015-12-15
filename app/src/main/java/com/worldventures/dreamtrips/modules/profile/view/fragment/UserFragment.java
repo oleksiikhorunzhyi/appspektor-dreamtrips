@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
@@ -27,6 +29,8 @@ import butterknife.ButterKnife;
 public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
 
+    private DrawableUtil drawableUtil;
+
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
         return new UserPresenter(getArgs());
@@ -37,6 +41,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         super.afterCreateView(rootView);
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+        drawableUtil = new DrawableUtil(getContext());
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
@@ -56,7 +61,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     public void showFriendDialog(User user) {
         ImageView userPhoto = ButterKnife.findById(feedView, R.id.user_photo);
         if (userPhoto != null) {
-            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, userPhoto.getDrawable());
+            userPhoto.setDrawingCacheEnabled(true);
+            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user,
+                    drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
         }
     }
 

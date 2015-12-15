@@ -47,59 +47,59 @@
                 android:layout_height="1dp"
                 android:background="@color/grey_lighter"/>
 
-            <FrameLayout
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                >
 
-                <LinearLayout
-                    android:id="@+id/feed_friend_empty_view"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/additional_info_spacing_vertical"
-                    android:paddingLeft="@dimen/additional_info_spacing_horizontal"
-                    android:paddingRight="@dimen/additional_info_spacing_horizontal"
-                    android:paddingTop="@dimen/additional_info_spacing_vertical"
-                    android:visibility="gone">
+                    android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_friends_placeholder"/>
-
-                    <TextView
-                        android:id="@+id/caption"
+                    <LinearLayout
+                        android:id="@+id/feed_friend_empty_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="@dimen/additional_info_items_margin"
-                        android:alpha="0.54"
-                        android:gravity="center"
-                        android:text="@string/no_friends"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/additional_info_description_size"/>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingBottom="@dimen/additional_info_spacing_vertical"
+                        android:paddingLeft="@dimen/additional_info_spacing_horizontal"
+                        android:paddingRight="@dimen/additional_info_spacing_horizontal"
+                        android:paddingTop="@dimen/additional_info_spacing_vertical"
+                        android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/global"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/caption"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/additional_info_items_margin"
-                        android:text="@string/feed_add_friends"
-                        android:textColor="#3D76A1"
-                        android:textSize="20sp"/>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:src="@drawable/ic_friends_placeholder"/>
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/caption"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="@dimen/additional_info_items_margin"
+                            android:alpha="0.54"
+                            android:gravity="center"
+                            android:text="@string/no_friends"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/additional_info_description_size"/>
 
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/swipe_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
+                        <TextView
+                            android:id="@+id/global"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/caption"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/additional_info_items_margin"
+                            android:text="@string/feed_add_friends"
+                            android:textColor="#3D76A1"
+                            android:textSize="20sp"/>
+
+                    </LinearLayout>
 
                     <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
                         android:id="@+id/lv_close_friends"
@@ -107,12 +107,9 @@
                         android:layout_height="match_parent"
                         android:visibility="gone"
                         tools:listitem="@layout/adapter_item_feed_friend"/>
-                </android.support.v4.widget.SwipeRefreshLayout>
-            </FrameLayout>
-
+                </FrameLayout>
+            </android.support.v4.widget.SwipeRefreshLayout>
         </LinearLayout>
-
     </android.support.v7.widget.CardView>
-
 </LinearLayout>
 

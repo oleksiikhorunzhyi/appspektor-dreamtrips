@@ -107,8 +107,9 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
         //
         FragmentManager fm = getFragmentManager();
         Fragment entityFragment = fm.findFragmentById(R.id.fragment_container);
-        boolean notAdded = entityFragment == null ||
-                !entityFragment.getClass().getName().equals(entityData.first.getClazzName());
+        boolean notAdded = entityFragment == null
+                || entityFragment.getView() == null || entityFragment.getView().getParent() == null
+                || !entityFragment.getClass().getName().equals(entityData.first.getClazzName());
         if (notAdded) {
             NavigationConfig config = NavigationConfigBuilder.forFragment()
                     .backStackEnabled(false)

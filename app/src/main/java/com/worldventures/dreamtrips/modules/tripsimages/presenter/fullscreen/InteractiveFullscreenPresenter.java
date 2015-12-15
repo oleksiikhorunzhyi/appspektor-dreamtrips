@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
-import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -98,15 +97,13 @@ public class InteractiveFullscreenPresenter extends FullScreenPresenter<Photo> {
     public void onCommentsAction() {
         new NavigationWrapperFactory()
                 .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, view)
-                .navigate(Route.COMMENTS, new CommentsBundle(photo, false));
+                .navigate(Route.COMMENTS, new CommentsBundle(photo, false, true));
 
     }
 
     @Override
     public void onLikesAction() {
-        new NavigationWrapperFactory()
-                .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, view)
-                .navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(photo.getUid()));
+        onCommentsAction();
     }
 
     @Override

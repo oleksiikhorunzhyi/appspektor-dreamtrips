@@ -60,13 +60,14 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
-        uidItemDelegate = new UidItemDelegate(this);
+        this.uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
     public void takeView(T view) {
         super.takeView(view);
         view.setDraftComment(draftComment);
+        view.setLikersPanel(feedEntity);
         checkCommentsAndLikesToLoad();
     }
 
@@ -244,6 +245,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         } else {
             feedEntity.setFirstLikerName(null);
         }
+        view.setLikersPanel(feedEntity);
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 
@@ -275,5 +277,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         void onPostError();
 
         void showViewMore();
+
+        void setLikersPanel(FeedEntity entity);
     }
 }

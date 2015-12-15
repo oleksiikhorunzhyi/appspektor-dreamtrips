@@ -41,8 +41,6 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
     List<Circle> circles;
 
-    private boolean deleteRequestLocked;
-
     @Override
     public void takeView(View view) {
         super.takeView(view);
@@ -122,7 +120,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                             circles.get(position).getId()),
                     object -> {
                         eventBus.post(new ReloadFriendListEvent());
-                        onSuccess(event.getPosition());
+                        onSuccess(event.getUser());
                         updateRequestsCount();
                     },
                     this::onError);
@@ -130,20 +128,17 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(CancelRequestEvent event) {
-        deleteRequest(event.getUser().getId(), event.getPosition());
+        deleteRequest(event.getUser(), event.getPosition());
     }
 
     public void onEvent(HideRequestEvent event) {
-        deleteRequest(event.getUser().getId(), event.getPosition());
+        deleteRequest(event.getUser(), event.getPosition());
     }
 
-    private void deleteRequest(int userId, int position) {
-        if (deleteRequestLocked) return;
-        //
-        deleteRequestLocked = true;
+    private void deleteRequest(User user, int position) {
         view.startLoading();
-        doRequest(new DeleteRequestCommand(userId),
-                object -> onSuccess(position),
+        doRequest(new DeleteRequestCommand(user.getId()),
+                object -> onSuccess(user),
                 this::onError);
     }
 
@@ -152,25 +147,20 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         doRequest(new ActOnRequestCommand(event.getUser().getId(),
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> {
-                    onSuccess(event.getPosition());
+                    onSuccess(event.getUser());
                     updateRequestsCount();
                 },
                 this::onError);
     }
 
-    private void onSuccess(int position) {
-        deleteRequestLocked = false;
+    private void onSuccess(User user) {
         if (view != null) {
             view.finishLoading();
-            if (position < view.getAdapter().getItemCount()) {
-                view.getAdapter().remove(position);
-                view.getAdapter().notifyItemRemoved(position);
-            }
+            view.getAdapter().remove(user);
         }
     }
 
     private void onError(SpiceException exception) {
-        deleteRequestLocked = false;
         if (view != null) {
             view.finishLoading();
             handleError(exception);

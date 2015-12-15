@@ -1,28 +1,25 @@
 package com.worldventures.dreamtrips.core.utils;
 
 
-import android.content.Context;
-
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 
 import de.greenrobot.event.EventBus;
-import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class BadgeCountObserver {
 
-    private Context context;
+    private BadgeUpdater badgeUpdater;
     private SnappyRepository database;
     private EventBus eventBus;
 
-    public BadgeCountObserver(Context context, SnappyRepository database, EventBus eventBus) {
-        this.context = context.getApplicationContext();
+    public BadgeCountObserver(BadgeUpdater updater, SnappyRepository database, EventBus eventBus) {
+        this.badgeUpdater = updater;
         this.database = database;
         this.eventBus = eventBus;
         this.eventBus.register(this);
     }
 
     public void onEvent(HeaderCountChangedEvent event) {
-        ShortcutBadger.with(context).count(database.getBadgeNotificationsCount());
+        badgeUpdater.updateBadge(database.getBadgeNotificationsCount());
     }
 }

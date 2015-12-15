@@ -50,4 +50,8 @@ public class NotificationDelegate {
         notificationManager.cancel(id);
     }
 
+    public void cancelAll() {
+        notificationManager.cancelAll();
+    }
+
 }

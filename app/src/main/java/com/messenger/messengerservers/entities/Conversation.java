@@ -37,10 +37,9 @@ public class Conversation extends BaseProviderModel<Conversation> {
             references = {@ForeignKeyReference(
                     columnName = "lastMessageId",
                     columnType = String.class,
-                    foreignColumnName = "_id")},
-            saveForeignKeyModel = true)
-    @Column
-    Message lastMessage;
+                    foreignColumnName = Message._ID)},
+            saveForeignKeyModel = false)
+    @Column Message lastMessage;
 
     public Conversation() {
     }

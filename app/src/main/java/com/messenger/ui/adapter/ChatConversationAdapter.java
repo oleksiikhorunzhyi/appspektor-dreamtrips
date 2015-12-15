@@ -5,28 +5,27 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatConversation;
 import com.messenger.model.ChatMessage;
+import com.messenger.ui.adapter.holders.DateViewHolder;
+import com.messenger.ui.adapter.holders.OwnMessageViewHolder;
+import com.messenger.ui.adapter.holders.UserMessageViewHolder;
+import com.messenger.ui.adapter.holders.ViewHolder;
 import com.messenger.util.ChatDateFormatter;
+import com.squareup.picasso.Picasso;
+import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.InjectView;
-import butterknife.ButterKnife;
-
-public class ChatConversationAdapter extends RecyclerView.Adapter<ChatConversationAdapter.ViewHolder> {
+@Deprecated
+public class ChatConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     // Use this parameter and calculate margins needed for a message to not take up the whole row space
     // dynamically instead of using weights with LinearLayout in item rows or hardcoding margins in dimens.
-    private static final float MESSAGE_SCREEN_WIDTH_SHARE = 0.6f;
 
     private static final boolean DEBUG_PRINT_DATES_FOR_EACH_MESSAGE = false;
 
@@ -43,11 +42,6 @@ public class ChatConversationAdapter extends RecyclerView.Adapter<ChatConversati
     private SimpleDateFormat yesterdayDateEntryFormatter;
     private SimpleDateFormat fewDaysAgoDateEntryFormatter;
     private SimpleDateFormat manyDaysAgoDateEntryFormatter;
-
-    // Use this variable as margins that determine free space left in row after message and avatar took up
-    // the space needed.
-    private static int freeSpaceForMessageRowOwnMessage;
-    private static int freeSpaceForMessageRowUserMessage;
 
     int rowVerticalMargin;
 
@@ -79,49 +73,6 @@ public class ChatConversationAdapter extends RecyclerView.Adapter<ChatConversati
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        View itemView;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            this.itemView = itemView;
-            ButterKnife.inject(this, itemView);
-        }
-    }
-
-    public static class DateViewHolder extends ViewHolder {
-        @InjectView(R.id.chat_date) TextView dateTextView;
-
-        public DateViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public static class OwnMessageViewHolder extends ViewHolder {
-        @InjectView(R.id.chat_message) TextView messageTextView;
-
-        public OwnMessageViewHolder(View itemView) {
-            super(itemView);
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)messageTextView.getLayoutParams();
-            params.setMargins(freeSpaceForMessageRowOwnMessage, params.topMargin, params.rightMargin,
-                    params.bottomMargin);
-        }
-    }
-
-    public static class UserMessageViewHolder extends ViewHolder {
-
-        @InjectView(R.id.chat_item_avatar) ImageView avatarImageView;
-        @InjectView(R.id.chat_username) TextView nameTextView;
-        @InjectView(R.id.chat_message) TextView messageTextView;
-
-        public UserMessageViewHolder(View itemView) {
-            super(itemView);
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)messageTextView.getLayoutParams();
-            params.setMargins(params.leftMargin, params.topMargin, freeSpaceForMessageRowUserMessage,
-                    params.bottomMargin);
-        }
-    }
-
     public ChatConversationAdapter(Context context) {
         this.context = context;
         rowVerticalMargin = context.getResources().getDimensionPixelSize(R.dimen.chat_list_item_vertical_padding);
@@ -134,20 +85,8 @@ public class ChatConversationAdapter extends RecyclerView.Adapter<ChatConversati
                 .getString(R.string.chat_list_date_entry_few_days_ago_format));
         this.manyDaysAgoDateEntryFormatter = new SimpleDateFormat(context
                 .getString(R.string.chat_list_date_entry_many_days_ago_format));
-
-        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        int messageWidth = (int)(screenWidth * MESSAGE_SCREEN_WIDTH_SHARE);
-        int ownMessageWidth = 2 * getDimen(R.dimen.chat_list_item_horizontal_padding)
-                + messageWidth;
-        freeSpaceForMessageRowOwnMessage = screenWidth - ownMessageWidth;
-        int userMessageWidth = ownMessageWidth + getDimen(R.dimen.chat_list_item_horizontal_padding)
-                + getDimen(R.dimen.list_item_small_avatar_image_size);
-        freeSpaceForMessageRowUserMessage = screenWidth - userMessageWidth;
     }
 
-    private int getDimen(int dimen) {
-        return context.getResources().getDimensionPixelSize(dimen);
-    }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {

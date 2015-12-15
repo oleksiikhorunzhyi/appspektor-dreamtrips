@@ -50,14 +50,19 @@ public class ChatDateFormatter {
         return today;
     }
 
+    @Deprecated
     public static long calendarDaysBetweenDates(Date startDate, Date dateEnd) {
+        return calendarDaysBetweenDates(startDate.getTime(), dateEnd.getTime());
+    }
+
+    public static long calendarDaysBetweenDates(long startDate, long dateEnd) {
         Calendar start = Calendar.getInstance();
         start.setTimeZone(TimeZone.getDefault());
-        start.setTimeInMillis(startDate.getTime());
+        start.setTimeInMillis(startDate);
 
         Calendar end = Calendar.getInstance();
         end.setTimeZone(TimeZone.getDefault());
-        end.setTimeInMillis(dateEnd.getTime());
+        end.setTimeInMillis(dateEnd);
 
         // Set the copies to be at midnight, but keep the day information.
 

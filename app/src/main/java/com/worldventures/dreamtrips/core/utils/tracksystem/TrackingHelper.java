@@ -838,13 +838,15 @@ public class TrackingHelper {
         StringBuilder stringBuilder = new StringBuilder()
                 .append(filterData.getMinPrice()).append(":")
                 .append(filterData.getMaxPrice()).append(":");
-
+        //
         stringBuilder.append(filterData.getMaxDistance())
                 .append(":").append(filterData.getDistanceType().getTypeNameForAnalytics())
-                .append(":")
-                .append(Queryable.from(filterData.getSelectedAmenities())
-                        .joinStrings(":", DtlPlacesFilterAttribute::getAttributeName));
-
+                .append(":");
+        //
+        if (filterData.getSelectedAmenities() != null && !filterData.getSelectedAmenities().isEmpty())
+            stringBuilder.append(Queryable.from(filterData.getSelectedAmenities())
+                    .joinStrings(":", DtlPlacesFilterAttribute::getAttributeName));
+        //
         data.put(DTL_ATTRIBUTE_FILTER, stringBuilder.toString());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);
     }

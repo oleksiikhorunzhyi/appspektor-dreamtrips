@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 
@@ -53,6 +54,7 @@ public class DtlFilterData implements Parcelable {
         return amenities;
     }
 
+    @Nullable
     public List<DtlPlacesFilterAttribute> getSelectedAmenities() {
         return amenities != null && !amenities.isEmpty()
                 ? Queryable.from(amenities).filter(DtlPlacesFilterAttribute::isChecked).toList()
@@ -120,6 +122,15 @@ public class DtlFilterData implements Parcelable {
         amenities = in.createTypedArrayList(DtlPlacesFilterAttribute.CREATOR);
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(minPrice);
+        dest.writeInt(maxPrice);
+        dest.writeInt(maxDistance);
+        dest.writeSerializable(distanceType);
+        dest.writeTypedList(amenities);
+    }
+
     public static final Creator<DtlFilterData> CREATOR = new Creator<DtlFilterData>() {
         @Override
         public DtlFilterData createFromParcel(Parcel in) {
@@ -136,14 +147,4 @@ public class DtlFilterData implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(minPrice);
-        dest.writeInt(maxPrice);
-        dest.writeInt(maxDistance);
-        dest.writeSerializable(distanceType);
-        dest.writeTypedList(amenities);
-    }
-
 }

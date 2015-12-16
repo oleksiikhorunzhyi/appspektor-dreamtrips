@@ -139,4 +139,8 @@
     <dimen name="suggest_merchant_pickers_left_margin">50dp</dimen>
 
     <dimen name="perks_margin">-12dp</dimen>
+
+    <!-- dimen for photo tagging-->
+    <dimen name="tag_zone_default_size">150dp</dimen>
+
 </resources>

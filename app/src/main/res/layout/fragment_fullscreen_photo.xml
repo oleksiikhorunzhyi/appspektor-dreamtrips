@@ -7,11 +7,17 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
-        android:id="@+id/iv_image"
+    <com.worldventures.dreamtrips.modules.common.view.custom.TagableImageHolder
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        fresco:actualImageScaleType="fitCenter"/>
+        android:layout_height="match_parent">
+
+        <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            fresco:actualImageScaleType="fitCenter"/>
+
+    </com.worldventures.dreamtrips.modules.common.view.custom.TagableImageHolder>
 
     <View
         android:layout_width="match_parent"

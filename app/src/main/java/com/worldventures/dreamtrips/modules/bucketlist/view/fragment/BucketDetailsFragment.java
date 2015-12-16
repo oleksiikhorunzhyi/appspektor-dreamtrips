@@ -16,6 +16,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.fragment.FragmentUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -209,11 +210,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     private void setForeignIntentAction() {
         diningSite.setOnClickListener(v -> {
             Intent intent = IntentUtils.browserIntent(diningSite.getText().toString());
-            startActivity(intent);
+            FragmentUtil.startSafely(this, intent);
         });
         diningPhone.setOnClickListener(v -> {
             Intent intent = IntentUtils.callIntnet(diningPhone.getText().toString());
-            startActivity(intent);
+            FragmentUtil.startSafely(this, intent);
         });
     }
 

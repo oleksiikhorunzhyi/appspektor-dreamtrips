@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.GetPhotoInfoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -34,11 +35,18 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        updatePhotoInfo();
         syncUi();
     }
 
-    private void syncUi() {
+    private void updatePhotoInfo() {
+        doRequest(new GetPhotoInfoCommand(photo.getFSId()), photo -> {
+            this.photo = photo;
+            view.setupTaggingHolder(this.photo);
+        });
+    }
 
+    private void syncUi() {
         Calendar calendar = Calendar.getInstance();
         Date photoDate = photo.getShotAt();
         if (photoDate != null) calendar.setTime(photoDate);
@@ -100,6 +108,10 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         });
     }
 
+    public boolean isOwnPhoto() {
+        return photo.getOwner().getId() == getAccount().getId();
+    }
+
     public interface View extends Presenter.View {
 
         void finish();
@@ -127,5 +139,7 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         void setTime(String format);
 
         void setEnabledSaveButton(boolean enabled);
+
+        void setupTaggingHolder(Photo photo);
     }
 }

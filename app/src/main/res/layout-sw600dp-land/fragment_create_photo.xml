@@ -1,26 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
+              android:orientation="vertical">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/iv_image"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        fresco:actualImageScaleType="fitCenter"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-        fresco:placeholderImageScaleType="centerCrop"/>
+        android:layout_weight="1">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolBarStyle.Transient"/>
+        <FrameLayout
+            android:id="@+id/photo_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/iv_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                fresco:actualImageScaleType="fitCenter"
+                fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+                fresco:placeholderImageScaleType="centerCrop"/>
+
+            <com.worldventures.dreamtrips.modules.common.view.custom.TagableImageHolder
+                android:id="@+id/taggable_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/ToolBarStyle.Transient"/>
+
+        <ImageView
+            android:id="@+id/tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/toolbar"
+            android:layout_marginRight="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:src="@drawable/ic_tag"/>
+    </RelativeLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_save"
@@ -31,7 +59,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="-32dp"
         android:visibility="visible"
-        app:fab_icon="@drawable/ic_photo_save" />
+        app:fab_icon="@drawable/ic_photo_save"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,7 +90,7 @@
                     android:text="@string/photo_what"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/font_normal"
-                    app:met_hideUnderline="true" />
+                    app:met_hideUnderline="true"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_title"
@@ -95,7 +123,7 @@
                     android:text="@string/photo_where"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/font_normal"
-                    app:met_hideUnderline="true" />
+                    app:met_hideUnderline="true"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_location"
@@ -135,7 +163,7 @@
                     android:text="@string/photo_when"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/font_normal"
-                    app:met_hideUnderline="true" />
+                    app:met_hideUnderline="true"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_date"
@@ -190,7 +218,7 @@
                     android:text="@string/photo_tags"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/font_normal"
-                    app:met_hideUnderline="true" />
+                    app:met_hideUnderline="true"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
                     android:id="@+id/et_tags"
@@ -202,7 +230,7 @@
                     android:textSize="@dimen/font_normal"
                     app:met_baseColor="@android:color/black"
                     app:met_floatingLabel="highlight"
-                    app:met_primaryColor="#2196F3" />
+                    app:met_primaryColor="#2196F3"/>
             </LinearLayout>
         </LinearLayout>
 

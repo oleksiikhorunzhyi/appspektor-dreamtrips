@@ -361,4 +361,7 @@ public interface DreamTripsApi {
 
     @DELETE("/api/photos/{uid}/tags")
     Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
+
+    @GET("/api/photos/{uid}")
+    Photo getPhotoInfo(@Path("uid") String uid);
 }

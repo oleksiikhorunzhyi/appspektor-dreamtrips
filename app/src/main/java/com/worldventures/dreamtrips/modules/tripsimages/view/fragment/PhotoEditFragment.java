@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -16,8 +17,10 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.TagableImageHolder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPresenter;
 
 import java.util.Calendar;
@@ -43,6 +46,10 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     protected DTEditText etTime;
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
+    @InjectView(R.id.taggable_holder)
+    protected TagableImageHolder tagableImageHolder;
+    @InjectView(R.id.tag)
+    protected ImageView tag;
 
     @InjectView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -95,6 +102,19 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     @OnClick(R.id.et_time)
     public void onTime() {
         showTimePickerDialog();
+    }
+
+    @OnClick(R.id.tag)
+    public void onTag() {
+        if (!tagableImageHolder.isSetuped()) return;
+        //
+        if (tagableImageHolder.isShown()) {
+            tag.setSelected(false);
+            tagableImageHolder.hide();
+        } else {
+            tag.setSelected(true);
+            tagableImageHolder.show();
+        }
     }
 
     @Override
@@ -160,6 +180,11 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
 
     public void setEnabledSaveButton(boolean enabled) {
         btnSave.setEnabled(enabled);
+    }
+
+    @Override
+    public void setupTaggingHolder(Photo photo) {
+        tagableImageHolder.setup(this, photo, getPresenter().isOwnPhoto());
     }
 
     @Override

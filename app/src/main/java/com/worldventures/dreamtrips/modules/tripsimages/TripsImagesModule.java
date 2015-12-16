@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMembersPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
@@ -87,7 +88,9 @@ import dagger.Provides;
                 SocialImageFullscreenFragment.class,
 
                 InspirationFullscreenPresenter.class,
-                TripImageFullscreenPresenter.class
+                TripImageFullscreenPresenter.class,
+
+                TaggableImageHolderPresenter.class,
 
 
         },

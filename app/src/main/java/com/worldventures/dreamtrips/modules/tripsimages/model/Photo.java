@@ -21,6 +21,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     private List<String> tags;
     private Image images;
     private String taskId;
+    private List<PhotoTag> photoTags;
 
     public Photo() {
     }
@@ -68,6 +69,10 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     public void setImages(Image images) {
         this.images = images;
+    }
+
+    public List<PhotoTag> getPhotoTags() {
+        return photoTags;
     }
 
     @Override

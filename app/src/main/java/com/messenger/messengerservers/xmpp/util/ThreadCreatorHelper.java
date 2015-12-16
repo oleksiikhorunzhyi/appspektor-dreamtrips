@@ -13,4 +13,6 @@ public final class ThreadCreatorHelper {
         else
             return String.format("%s_%s", user2Jid, user1Jid);
     }
+
+
 }

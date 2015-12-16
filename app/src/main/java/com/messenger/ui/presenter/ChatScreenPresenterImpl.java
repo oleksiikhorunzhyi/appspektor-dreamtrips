@@ -14,31 +14,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.messenger.messengerservers.ChatManager;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.view.ChatScreen;
+import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.R;
-import com.messenger.app.Environment;
-import com.messenger.event.ChatMessageEvent;
-import com.messenger.event.ChatUsersTypingEvent;
-import com.messenger.model.ChatConversation;
-import com.messenger.model.ChatMessage;
-import com.messenger.model.ChatUser;
-import com.messenger.ui.view.ChatScreen;
-import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
-import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-
-
-public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
+public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
 //    private ChatConversation chatConversation;
     private LoaderManager loaderManager;
@@ -49,13 +43,23 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     @Inject MessengerServerFacade messengerServerFacade;
 
     private Chat chat;
+    protected Intent startIntent;
+
+    public ChatScreenPresenterImpl(Intent startIntent) {
+        this.startIntent = startIntent;
+    }
 
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 //            getView().showLoading();
 //            getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-            return new CursorLoader(getContext(), Message.CONTENT_URI, null, null, null, null);
+            return new CursorLoader(getContext(),
+                    Message.CONTENT_URI,
+                    null,
+                    Message.COLUMN_CONVERSATION_ID + " = ?",
+                    new String[] {startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID)},
+                    null);
         }
 
         @Override
@@ -75,16 +79,15 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         loaderManager = getActivity().getSupportLoaderManager();
         loaderManager.initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
         ((App) view.getContext().getApplicationContext()).getObjectGraph().inject(this);
-        chat = null;
+        chat = createChat(messengerServerFacade.getChatManager());
     }
 
-    public ChatScreenPresenterImpl() {
-        EventBus.getDefault().register(this);
-    }
 
-    @Override public void loadChatConversation() {
-        getActivity().getSupportLoaderManager()
-                .initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
+    protected abstract Chat createChat(ChatManager chatManager);
+
+//    @Override public void loadChatConversation() {
+//        getActivity().getSupportLoaderManager()
+//                .initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
         // create new or load existing conversation
 //        SimpleLoader<ChatConversation> loader = LoaderModule
 //                .getChatConversationLoader(getViewState().getData());
@@ -105,7 +108,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
 //                }
 //            }
 //        });
-    }
+//    }
 
     @Override public void onNewViewState() {
         state = new ChatLayoutViewState();
@@ -132,9 +135,6 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
                 getView().showError(getViewState().getError());
                 break;
         }
-        if (getViewState().getData() != null) {
-            getView().setChatConversation(getViewState().getData());
-        }
     }
 
     @Override public boolean onNewMessageFromUi(String message) {
@@ -142,34 +142,38 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
             Toast.makeText(getContext(), R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
             return false;
         }
-        final ChatUser conversationOwner = getViewState().getData().getConversationOwner();
-        ChatMessage chatMessage = Environment.newChatMessage();
-        chatMessage.setUser(conversationOwner);
-        chatMessage.setMessage(message.trim());
-        chatMessage.setDate(new Date());
 
-        EventBus.getDefault().post(new ChatMessageEvent(chatMessage));
+        try {
+            chat.sendMessage(new Message.Builder()
+                            .locale(Locale.getDefault())
+                            .text(message)
+                            .build()
+            );
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
-    public void onEvent(ChatMessageEvent event) {
-        getViewState().getData().getMessages().add(event.chatMessage);
-        applyViewState();
-    }
+//    public void onEvent(ChatMessageEvent event) {
+//        getViewState().getData().getMessages().add(event.chatMessage);
+//        applyViewState();
+//    }
+//
+//    public void onEvent(ChatUsersTypingEvent usersTypingEvent) {
+//        getViewState().getData().setTypingUsers(usersTypingEvent.typingUsers);
+//        applyViewState();
+//    }
 
-    public void onEvent(ChatUsersTypingEvent usersTypingEvent) {
-        getViewState().getData().setTypingUsers(usersTypingEvent.typingUsers);
-        applyViewState();
-    }
-
-    @Override public void setChatConversation(ChatConversation chatConversation) {
+//    @Override public void setChatConversation(ChatConversation chatConversation) {
 //        this.chatConversation = chatConversation;
-    }
+//    }
 
     @Override
     public User getUser() {
-        return new User("techery_user4");
-//        return appSessionHolder.get().get();
+        // TODO: 12/15/15  
+        return messengerServerFacade.getOwner();
     }
 
     @Override
@@ -197,7 +201,6 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     @Override public void onDestroy() {
-        EventBus.getDefault().unregister(this);
     }
 
     ///////////////////////////////////////////////////////////////////////////

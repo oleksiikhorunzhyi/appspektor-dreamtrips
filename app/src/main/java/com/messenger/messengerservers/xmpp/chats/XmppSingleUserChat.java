@@ -27,7 +27,9 @@ import java.util.UUID;
 public class XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
 
     private static final String TAG = "SingleUserChat";
-    private final User companion;
+    private final String companionId;
+    private String thread;
+
     @Nullable
     private ChatStateManager chatStateManager;
     @Nullable
@@ -47,8 +49,9 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         }
     };
 
-    public XmppSingleUserChat(final XmppServerFacade facade, @NonNull User companion) {
-        this.companion = companion;
+    public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String thread) {
+        this.companionId = companionId;
+        this.thread = thread;
         facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
         if (facade.isAuthorized()) {
             setConnection(facade.getConnection());
@@ -90,13 +93,31 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     public void setConnection(@NonNull AbstractXMPPConnection connection) {
         this.connection = connection;
         chatStateManager = ChatStateManager.getInstance(connection);
-        String companionJid = JidCreatorHelper.obtainJid(companion);
+
         String userJid = connection.getUser().split("/")[0];
-        String thread = ThreadCreatorHelper.obtainThreadSingleChat(userJid, companionJid);
+        String companionJid = null;
+
+        if (companionId != null) {
+            companionJid = JidCreatorHelper.obtainUserJid(companionId);
+        }
+        if (thread == null) {
+            if (companionJid == null) throw new Error();
+            thread = ThreadCreatorHelper.obtainThreadSingleChat(userJid, companionJid);
+        }
 
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         Chat existingChat = chatManager.getThreadChat(thread);
+
         if (existingChat == null) {
+            if (companionJid == null) {
+                companionJid = JidCreatorHelper
+                        .obtainUserJid(
+                                thread
+                                        .replace(userJid.split("@")[0], "")
+                                        .replace("_", "")
+                                                //// TODO: 12/15/15  remove after implemented social graph
+                                        .replace("yu", "y_u"));
+            }
             chat = chatManager.createChat(companionJid, thread, null);
         } else {
             chat = existingChat;

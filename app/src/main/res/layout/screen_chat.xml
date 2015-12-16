@@ -36,16 +36,16 @@
                     android:layout_height="match_parent"
                     />
 
-                <com.messenger.ui.widget.ChatUsersTypingView
-                    android:id="@+id/chat_users_typing_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:paddingTop="@dimen/chat_typing_vertical_margin"
-                    android:paddingBottom="@dimen/chat_typing_vertical_margin"
-                    android:paddingLeft="@dimen/chat_list_item_horizontal_padding"
-                    android:paddingRight="@dimen/chat_list_item_horizontal_padding"
-                    />
+                <!--<com.messenger.ui.widget.ChatUsersTypingView-->
+                    <!--android:id="@+id/chat_users_typing_view"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="bottom"-->
+                    <!--android:paddingTop="@dimen/chat_typing_vertical_margin"-->
+                    <!--android:paddingBottom="@dimen/chat_typing_vertical_margin"-->
+                    <!--android:paddingLeft="@dimen/chat_list_item_horizontal_padding"-->
+                    <!--android:paddingRight="@dimen/chat_list_item_horizontal_padding"-->
+                    <!--/>-->
             </FrameLayout>
 
             <View

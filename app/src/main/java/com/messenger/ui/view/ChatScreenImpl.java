@@ -1,5 +1,6 @@
 package com.messenger.ui.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,10 +19,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.messenger.model.ChatConversation;
+import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.ChatConversationCursorAdapter;
+import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
-import com.messenger.ui.presenter.ChatScreenPresenterImpl;
+import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.worldventures.dreamtrips.R;
@@ -40,15 +42,13 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @InjectView(R.id.chat_toolbar) Toolbar toolbar;
     @InjectView(R.id.chat_recycler_view) RecyclerView recyclerView;
-    @InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
+//    @InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
 
     @InjectView(R.id.chat_message_edit_text) EditText messageEditText;
 
     private ToolbarPresenter toolbarPresenter;
 
     private ChatConversationCursorAdapter adapter;
-
-    private ChatConversation chatConversation;
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -62,8 +62,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
-        LayoutInflater.from(context).inflate(R.layout.screen_chat, this, true);
-        ButterKnife.inject(this, this);
+        ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.screen_chat, this, true));
         initUi();
     }
 
@@ -75,7 +74,12 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter = new ChatConversationCursorAdapter(getContext(), null, null));
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        recyclerView.setAdapter(adapter = new ChatConversationCursorAdapter(getContext(), getPresenter().getUser(), null));
     }
 
     @OnEditorAction(R.id.chat_message_edit_text)
@@ -90,7 +94,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     @OnClick(R.id.chat_message_add_button)
     protected void onSendMessage() {
         if (getPresenter().onNewMessageFromUi(messageEditText.getText().toString())) {
-            messageEditText.setText("");
+            messageEditText.getText().clear();
             recyclerView.smoothScrollToPosition(adapter.getItemCount());
         }
     }
@@ -117,9 +121,16 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @NonNull
     @Override public ChatScreenPresenter createPresenter() {
-        ChatScreenPresenter presenter = new ChatScreenPresenterImpl();
-        presenter.setChatConversation(this.chatConversation);
-        return presenter;
+        Intent startIntent = ((Activity) getContext()).getIntent();
+        int chatType = startIntent.getIntExtra(ChatActivity.EXTRA_CHAT_TYPE, 0);
+
+        if (chatType == ChatActivity.CHAT_TYPE_GROUP) {
+            return new ChatGroupScreenPresenter(startIntent);
+        } else if (chatType == ChatActivity.CHAT_TYPE_SINGLE) {
+            return new ChatSingleScreenPresenter(startIntent);
+        } else {
+            throw new Error("Type doesn't exist");
+        }
     }
 
     @Override public void showLoading() {
@@ -140,7 +151,12 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         errorView.setVisibility(View.VISIBLE);
     }
 
-    @Override public void setChatConversation(ChatConversation chatConversation) {
+    @Override
+    public void setSubject(String subject) {
+        toolbarPresenter.setTitle(subject);
+    }
+
+//    @Override public void setChatConversation(ChatConversation chatConversation) {
 //        this.chatConversation = chatConversation;
 //        adapter.setChatConversation(chatConversation);
 //        adapter.notifyDataSetChanged();
@@ -175,7 +191,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 //        }
 //
 //        chatUsersTypingView.updateUsersTyping(chatConversation.getTypingUsers());
-    }
+//    }
 
     @Override
     public void onConversationCursorLoaded(Cursor cursor) {

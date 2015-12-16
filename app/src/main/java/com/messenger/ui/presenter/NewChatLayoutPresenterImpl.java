@@ -17,15 +17,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.worldventures.dreamtrips.R;
 import com.messenger.app.Environment;
 import com.messenger.loader.LoaderModule;
 import com.messenger.loader.SimpleLoader;
 import com.messenger.model.ChatConversation;
 import com.messenger.model.ChatUser;
-import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
+import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,12 +158,15 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
                 chatUsers.add(Environment.getCurrentUser());
                 chatUsers.addAll(getViewState().getSelectedContacts());
                 chatConversation.setChatUsers(chatUsers);
+//
+//                Intent intent = new Intent(getContext(), ChatActivity.class);
+//                intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, chatConversation);
+//                getActivity().startActivity(intent);
+//                getActivity().finish();
 
-                Intent intent = new Intent(getContext(), ChatActivity.class);
-                intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, chatConversation);
-                getActivity().startActivity(intent);
-                getActivity().finish();
-                return true;
+                // TODO: 12/15/15
+                throw new Error("Not implement");
+//                return true;
         }
         return false;
     }

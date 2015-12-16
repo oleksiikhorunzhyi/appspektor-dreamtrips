@@ -114,9 +114,14 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     }
 
     @Override public void onConversationSelected(Conversation conversation) {
-        Intent intent = new Intent(getContext(), ChatActivity.class);
+        if (conversation.getType().equals(Conversation.Type.GROUP)) {
+            ChatActivity.startGroup(getContext(), conversation.getId());
+        } else {
+            ChatActivity.start(getContext(), conversation.getId(), null);
+        }
+//        Intent intent = new Intent(getContext(), ChatActivity.class);
        // intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, conversation);
-        getActivity().startActivity(intent);
+//        getActivity().startActivity(intent);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -188,7 +193,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
 
         private void showConversation(Cursor cursor){
-            Log.e("Loaded conversation", cursor.getCount()+"");
             ConversationListScreen screen = getView();
             if (screen == null) return;
 

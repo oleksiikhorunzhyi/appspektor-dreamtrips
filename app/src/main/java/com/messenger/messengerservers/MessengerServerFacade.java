@@ -1,5 +1,6 @@
 package com.messenger.messengerservers;
 
+import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 
 public interface MessengerServerFacade {
@@ -26,5 +27,7 @@ public interface MessengerServerFacade {
     ContactManager getContactManager();
 
     GlobalEventEmitter getGlobalEventEmitter();
+
+    User getOwner();
 
 }

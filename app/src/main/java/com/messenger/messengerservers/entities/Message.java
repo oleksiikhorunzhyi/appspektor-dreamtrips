@@ -27,6 +27,8 @@ public class Message extends BaseProviderModel<Message> {
     public static final String COLUMN_DATE = "date";
     public static final String COLUMN_TEXT = "text";
     public static final String COLUMN_FROM = "fromId";
+    public static final String COLUMN_CONVERSATION_ID = "conversationId";
+
     public static final String _ID = "_id";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)

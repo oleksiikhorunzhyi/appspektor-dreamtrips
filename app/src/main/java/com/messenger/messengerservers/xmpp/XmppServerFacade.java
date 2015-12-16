@@ -9,6 +9,7 @@ import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
+import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.parameters.ServerParameters;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -141,6 +142,11 @@ public class XmppServerFacade implements MessengerServerFacade {
     @Override
     public GlobalEventEmitter getGlobalEventEmitter() {
         return globalEventEmitter;
+    }
+
+    @Override
+    public User getOwner() {
+        return new User(connection.getUser().split("@")[0]);
     }
 
     public AbstractXMPPConnection getConnection() {

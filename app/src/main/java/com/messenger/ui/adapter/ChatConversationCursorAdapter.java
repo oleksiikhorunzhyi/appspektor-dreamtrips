@@ -139,8 +139,10 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
 
         final int timeColumn = cursor.getColumnIndex(Message.COLUMN_DATE);
         final long currentDate = cursor.getLong(timeColumn);
-        return  (!cursor.moveToPrevious() || ChatDateFormatter.calendarDaysBetweenDates(currentDate, cursor.getLong(timeColumn)) > 0)
+        int result = (!cursor.moveToPrevious() || ChatDateFormatter.calendarDaysBetweenDates(currentDate, cursor.getLong(timeColumn)) > 0)
                 ? messageType << 1 : messageType;
+        cursor.moveToPosition(position);
+        return result;
     }
 
     private String convertTime(long currentDate, long prevDate) {

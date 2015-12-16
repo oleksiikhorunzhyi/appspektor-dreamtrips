@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.messenger.di.ChatFacadeInitializer;
 import com.messenger.di.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -89,5 +90,10 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideStorageInitializer(@ForApplication Context context){
         return new StorageInitializer(context);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideFacadeInitializer(){
+        return new ChatFacadeInitializer();
     }
 }

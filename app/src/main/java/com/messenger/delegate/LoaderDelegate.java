@@ -25,8 +25,6 @@ public class LoaderDelegate {
     public void loadConversations(){
         Loader<Conversation> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
         conversationLoader.setPersister(conversations -> {
-            Log.e("Conversation loaded: ", conversations.size() + " to " + Conversation.CONTENT_URI);
-            Log.e("Message is null ", Boolean.toString(conversations.get(0).getLastMessage() == null));
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, conversations);
         });
         conversationLoader.load();

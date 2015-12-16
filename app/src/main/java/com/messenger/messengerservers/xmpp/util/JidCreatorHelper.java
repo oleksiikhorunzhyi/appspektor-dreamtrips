@@ -13,8 +13,13 @@ public final class JidCreatorHelper {
 
     }
 
+    @Deprecated
     public static String obtainJid(User user) {
-        return user.getUserName() + "@" + SERVICE_NAME;
+        return obtainUserJid(user.getUserName());
+    }
+
+    public static String obtainUserJid(String userId) {
+        return userId + "@" + SERVICE_NAME;
     }
 
     public static String obtainGroupJid(User user) {

@@ -17,8 +17,8 @@ public class XmppChatManager implements ChatManager {
     }
 
     @Override
-    public SingleUserChat createSingleUserChat(User companion) {
-        return new XmppSingleUserChat(facade, companion);
+    public SingleUserChat createSingleUserChat(@Nullable String companionId, @Nullable String conversationId) {
+        return new XmppSingleUserChat(facade, companionId, conversationId);
     }
 
     @Override

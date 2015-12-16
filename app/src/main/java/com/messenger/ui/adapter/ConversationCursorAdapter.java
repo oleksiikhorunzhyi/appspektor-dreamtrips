@@ -52,6 +52,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         });
 
         Message lastMessage = chatConversation.getLastMessage();
+        if (lastMessage == null) return;
         String messageText = lastMessage.getText();
         if (lastMessage.getFrom().equals(Environment.getCurrentUser())) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);

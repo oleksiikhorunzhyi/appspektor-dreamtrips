@@ -32,6 +32,12 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
         } else {
             presenter.onRestoreInstanceState(lastInstanceState);
         }
+        presenter.onAttachedToWindow();
+    }
+
+    @Override protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+       presenter.onDetachedFromWindow();
     }
 
     @Override protected Parcelable onSaveInstanceState() {

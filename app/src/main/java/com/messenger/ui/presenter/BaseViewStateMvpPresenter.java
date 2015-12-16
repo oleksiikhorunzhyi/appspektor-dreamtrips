@@ -1,7 +1,10 @@
 package com.messenger.ui.presenter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
@@ -21,6 +24,36 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     @Override public void onRestoreInstanceState(Bundle instanceState) {
         Icepick.restoreInstanceState(this, instanceState);
         applyViewState();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
     }
 
     @Override public S getViewState() {

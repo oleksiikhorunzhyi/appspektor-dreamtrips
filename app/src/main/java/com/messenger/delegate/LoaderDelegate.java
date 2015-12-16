@@ -5,11 +5,8 @@ import android.util.Log;
 
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
-import com.raizlabs.android.dbflow.annotation.provider.ContentProvider;
-import com.raizlabs.android.dbflow.runtime.TransactionManager;
-import com.raizlabs.android.dbflow.runtime.transaction.process.ProcessModelInfo;
-import com.raizlabs.android.dbflow.runtime.transaction.process.SaveModelTransaction;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 public class LoaderDelegate {
@@ -22,12 +19,20 @@ public class LoaderDelegate {
         this.messengerServerFacade = messengerServerFacade;
     }
 
-    public void loadConversations(){
+    public void loadConversations() {
         Loader<Conversation> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
         conversationLoader.setPersister(conversations -> {
+            Log.e("Loaded conversation", conversations.size()+"");
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, conversations);
         });
         conversationLoader.load();
     }
 
+    public void loadContacts() {
+        Loader<User> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
+        contactLoader.setPersister(users -> {
+            ContentUtils.bulkInsert(User.CONTENT_URI, User.class, users);
+        });
+        contactLoader.load();
+    }
 }

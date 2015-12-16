@@ -1,9 +1,11 @@
 package com.messenger.ui.presenter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -18,17 +20,15 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
-import com.messenger.model.ChatConversation;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatActivity;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
+import com.messenger.ui.viewstate.LceViewState;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
-
-import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -40,36 +40,48 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Inject
     MessengerServerFacade messengerServerFacade;
 
+    private Activity parentActivity;
     private User user;
     private LoaderDelegate loaderDelegate;
     private final CursorLoaderCallback allConversationLoaderCallback = new CursorLoaderCallback(true);
     private final CursorLoaderCallback groupConversationLoaderCallback = new CursorLoaderCallback(false);
 
+    public ConversationListScreenPresenterImpl(Activity activity) {
+        this.parentActivity = activity;
+
+        ((Injector) activity.getApplicationContext()).inject(this);
+        user = new User("techery_user6");
+        loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
+    }
+
     @Override
-    public void attachView(ConversationListScreen view) {
-        super.attachView(view);
-        ((Injector)view.getActivity().getApplication()).inject(this);
-        loaderDelegate = new LoaderDelegate(getContext(), messengerServerFacade);
-    }
-
-    @Override public void loadConversationList() {
-        loaderDelegate.loadConversations();
-    }
-
-    @Override public void onNewViewState() {
+    public void onNewViewState() {
         state = new ConversationListViewState();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getView().showLoading();
+        getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         initialCursorLoader();
-        if (messengerServerFacade.isAuthorized()) {
+
+        if (messengerServerFacade.isAuthorized()){
             loadConversationList();
         } else {
-            getView().showInputUserDialog();
+            connect();
         }
     }
 
-    private void initialCursorLoader(){
-        LoaderManager loaderManager = getActivity().getSupportLoaderManager();
+    @Override
+    public void loadConversationList() {
+        loaderDelegate.loadConversations();
+    }
+
+    private void initialCursorLoader() {
+        LoaderManager loaderManager = ((AppCompatActivity) parentActivity).getSupportLoaderManager();
         Loader loader = loaderManager.getLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER);
-        if (loader == null){
+        if (loader == null) {
             loaderManager.initLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER, null, allConversationLoaderCallback);
             loaderManager.initLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER, null, groupConversationLoaderCallback);
         } else {
@@ -78,14 +90,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
     }
 
-    @Override
-    public void newUserSelected(String userName) {
-        user = new User(userName);
-        Log.e("NEW USER", userName);
-        connect();
-    }
-
-    private void connect(){
+    private void connect() {
         messengerServerFacade.addAuthorizationListener(new AuthorizeListener() {
             @Override
             public void onSuccess() {
@@ -96,7 +101,13 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         messengerServerFacade.authorizeAsync(user.getUserName(), user.getUserName());
     }
 
-    @Override public void applyViewState() {
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public void applyViewState() {
         if (!isViewAttached()) {
             return;
         }
@@ -115,59 +126,48 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     @Override public void onConversationSelected(Conversation conversation) {
         if (conversation.getType().equals(Conversation.Type.GROUP)) {
-            ChatActivity.startGroup(getContext(), conversation.getId());
+            ChatActivity.startGroup(parentActivity, conversation.getId());
         } else {
-            ChatActivity.start(getContext(), conversation.getId(), null);
+            ChatActivity.start(parentActivity, conversation.getId(), null);
         }
 //        Intent intent = new Intent(getContext(), ChatActivity.class);
        // intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, conversation);
 //        getActivity().startActivity(intent);
     }
 
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER);
+        ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Activity related
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
-        getActivity().getMenuInflater().inflate(R.menu.conversation_list, menu);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        parentActivity.getMenuInflater().inflate(R.menu.conversation_list, menu);
         return true;
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                Intent intent = new Intent(getContext(), NewChatActivity.class);
-                getActivity().startActivity(intent);
+                Intent intent = new Intent(parentActivity, NewChatActivity.class);
+                parentActivity.startActivity(intent);
                 return true;
         }
         return false;
-    }
-
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
-    @Override public void onDestroy() {
-
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Helpers
-    ///////////////////////////////////////////////////////////////////////////
-
-    protected Context getContext() {
-        return getView().getContext();
-    }
-
-    protected AppCompatActivity getActivity() {
-        return getView().getActivity();
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Cursor Loader Callback
     ///////////////////////////////////////////////////////////////////////////
 
-    private class CursorLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor>{
+    private class CursorLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
 
         private boolean allConversation;
 
@@ -178,13 +178,15 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             String select = allConversation ? "" : String.format("type not like '%s'", Conversation.Type.CHAT);
-            return new CursorLoader(getActivity(), Conversation.CONTENT_URI,
-                    null, select, null, "Messages.date ask");
+            return new CursorLoader(parentActivity, Conversation.CONTENT_URI,
+                    null, select, null, "Messages.date desc");
         }
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             showConversation(data);
+            state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
+            getView().showContent();
         }
 
         @Override
@@ -192,11 +194,11 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
             showConversation(null);
         }
 
-        private void showConversation(Cursor cursor){
+        private void showConversation(@NonNull Cursor cursor) {
             ConversationListScreen screen = getView();
             if (screen == null) return;
 
-            if (allConversation){
+            if (allConversation) {
                 screen.showAllConversation(cursor);
             } else {
                 screen.showGroupConversation(cursor);

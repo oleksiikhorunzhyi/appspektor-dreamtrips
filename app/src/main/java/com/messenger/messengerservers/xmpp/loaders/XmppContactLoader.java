@@ -6,6 +6,7 @@ import android.util.Log;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.AsyncLoader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.roster.Roster;
@@ -44,7 +45,7 @@ public class XmppContactLoader extends AsyncLoader<User> {
                 continue;
             }
             String name = entry.getName();
-            users.add(new User(name != null ? name : entry.getUser()));
+            users.add(JidCreatorHelper.obtainUser(name != null ? name : entry.getUser()));
         }
 
         return users;

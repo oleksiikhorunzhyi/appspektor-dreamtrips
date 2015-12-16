@@ -20,43 +20,48 @@ public class MockChatUser implements ChatUser {
     // Getters and setters
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return name;
     }
 
-    @Override public void setName(String name) {
+    @Override
+    public void setName(String name) {
         this.name = name;
     }
 
-    @Override public String getAvatarUrl() {
+    @Override
+    public String getAvatarUrl() {
         return avatarUrl;
     }
 
-    @Override public void setAvatarUrl(String avatarUrl) {
+    @Override
+    public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 
-    @Override public boolean isOnline() {
+    @Override
+    public boolean isOnline() {
         return isOnline;
     }
 
-    @Override public void setOnline(boolean isOnline) {
+    @Override
+    public void setOnline(boolean isOnline) {
         this.isOnline = isOnline;
     }
 
-    @Override public long getId() {
-        return id;
+    @Override
+    public String getId() {
+        return Long.toString(id);
     }
 
-    @Override public void setId(long id) {
-        this.id = id;
-    }
-
-    @Override public boolean isCloseFriend() {
+    @Override
+    public boolean isCloseFriend() {
         return isCloseFriend;
     }
 
-    @Override public void setCloseFriend(boolean isCloseFriend) {
+    @Override
+    public void setCloseFriend(boolean isCloseFriend) {
         this.isCloseFriend = isCloseFriend;
     }
 
@@ -64,14 +69,16 @@ public class MockChatUser implements ChatUser {
     // Object
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (o == null) return false;
         if (!(o instanceof MockChatUser)) return false;
         MockChatUser user = (MockChatUser) o;
         return user.id == id;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Long.valueOf(id).hashCode();
     }
 
@@ -79,9 +86,13 @@ public class MockChatUser implements ChatUser {
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override public int describeContents() { return 0; }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.name);
         dest.writeString(this.avatarUrl);
@@ -98,8 +109,12 @@ public class MockChatUser implements ChatUser {
     }
 
     public static final Creator<MockChatUser> CREATOR = new Creator<MockChatUser>() {
-        public MockChatUser createFromParcel(Parcel source) {return new MockChatUser(source);}
+        public MockChatUser createFromParcel(Parcel source) {
+            return new MockChatUser(source);
+        }
 
-        public MockChatUser[] newArray(int size) {return new MockChatUser[size];}
+        public MockChatUser[] newArray(int size) {
+            return new MockChatUser[size];
+        }
     };
 }

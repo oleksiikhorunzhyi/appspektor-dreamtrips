@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.api.place.EstimatePointsRequest;
 public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
     public static final String BILL_TOTAL = "billTotal";
+    private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
 
     protected String placeId;
 
@@ -34,7 +35,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
     }
 
     protected boolean validateInput(String pointsInput) {
-        if (pointsInput.isEmpty()) {
+        if (pointsInput.isEmpty() || !pointsInput.matches(NUMBER_REGEX)) {
             view.showError(R.string.dtl_field_validation_empty_input_error);
             return false;
         }

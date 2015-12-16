@@ -14,6 +14,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
+import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+
 /**
  * Please use SearchView.OnQueryTextListener for listening this AutoCompleteTextView
  *

@@ -18,6 +18,7 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 @ModelContainer
 @TableEndpoint(name = Conversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
@@ -40,6 +41,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     foreignColumnName = Message._ID)},
             saveForeignKeyModel = false)
     @Column Message lastMessage;
+    List<User> participants;
+    int unreadMessageCount = 0;
 
     public Conversation() {
     }
@@ -55,6 +58,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setSubject(builder.subject);
         setType(builder.type);
         setLastMessage(builder.lastMessage);
+        setParticipants(builder.participants);
+        setUnreadMessageCount(builder.unreadMessageCount);
     }
 
     public String getId() {
@@ -88,6 +93,22 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public List<User> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<User> participants) {
+        this.participants = participants;
+    }
+
+    public int getUnreadMessageCount() {
+        return unreadMessageCount;
+    }
+
+    public void setUnreadMessageCount(int unreadMessageCount) {
+        this.unreadMessageCount = unreadMessageCount;
     }
 
     @Override
@@ -127,6 +148,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String subject;
         private String type;
         private Message lastMessage;
+        private List<User> participants;
+        private int unreadMessageCount = 0;
 
         public Builder() {
         }
@@ -148,6 +171,16 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder lastMessage(Message val) {
             lastMessage = val;
+            return this;
+        }
+
+        public Builder participants(List<User> participants){
+            this.participants = participants;
+            return this;
+        }
+
+        public Builder unreadMessageCount(int unreadMessageCount){
+            this.unreadMessageCount = unreadMessageCount;
             return this;
         }
 

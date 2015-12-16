@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.app.Environment;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
@@ -18,7 +17,7 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
 
@@ -47,7 +46,10 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
-        Conversation chatConversation = SqlUtils.convertToModel(false, Conversation.class, cursor);
+        Conversation chatConversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
+        setUnreadMessageCount(holder, chatConversation.getUnreadMessageCount());
+        setLastMessage(holder, chatConversation.getLastMessage());
+        setAvatar(holder, chatConversation);
 
         holder.itemView.setOnClickListener(view -> {
             if (clickListener != null) {
@@ -55,7 +57,22 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
             }
         });
 
-        Message lastMessage = chatConversation.getLastMessage();
+    }
+
+    private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount){
+        if (unreadMessageCount > 0) {
+            holder.itemView.setBackgroundColor(context.getResources()
+                    .getColor(R.color.conversation_list_unread_conversation_bg));
+            holder.getUnreadMessagesCountTextView().setVisibility(View.VISIBLE);
+            holder.getUnreadMessagesCountTextView().setText(String.valueOf(unreadMessageCount));
+        } else {
+            holder.itemView.setBackgroundColor(context.getResources()
+                    .getColor(R.color.conversation_list_read_conversation_bg));
+            holder.getUnreadMessagesCountTextView().setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage){
         if (lastMessage == null) return;
         String messageText = lastMessage.getText();
         if (lastMessage.getFrom().equals(currentUser)) {
@@ -63,25 +80,18 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         }
         holder.getLastMessageTextView().setText(messageText);
         holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage.getDate()));
+    }
 
-//        if (chatConversation.getUnreadMessagesCount() > 0) {
-//            holder.itemView.setBackgroundColor(context.getResources()
-//                    .getColor(R.color.conversation_list_unread_conversation_bg));
-//            holder.getUnreadMessagesCountTextView().setVisibility(View.VISIBLE);
-//            holder.getUnreadMessagesCountTextView().setText(String.valueOf(chatConversation.getUnreadMessagesCount()));
-//        } else {
-//            holder.itemView.setBackgroundColor(context.getResources()
-//                    .getColor(R.color.conversation_list_read_conversation_bg));
-//            holder.getUnreadMessagesCountTextView().setVisibility(View.INVISIBLE);
-//        }
+    private void setAvatar(BaseConversationViewHolder holder, Conversation conversation){
+        List<User> participants = conversation.getParticipants();
+        if (participants == null || participants.size() == 0) return;
 
-        //  1 to 1 or group specific logic
-        User addressee = lastMessage.getFrom();
-        if (isGroupConversation(chatConversation.getType())) {
-            holder.getNameTextView().setText(chatConversation.getSubject());
+        if (isGroupConversation(conversation.getType())) {
+            holder.getNameTextView().setText(conversation.getSubject());
             GroupConversationViewHolder groupHolder = (GroupConversationViewHolder) holder;
-            groupHolder.getGroupAvatarsView().updateAvatars(Arrays.asList(addressee));
+            groupHolder.getGroupAvatarsView().updateAvatars(participants);
         } else {
+            User addressee = participants.get(0);
             holder.getNameTextView().setText(addressee.getName());
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)

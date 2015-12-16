@@ -107,6 +107,12 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
 
     }
 
+    @Override
+    public void setPresenter(ConversationListScreenPresenter presenter) {
+        super.setPresenter(presenter);
+        setAdapters();
+    }
+
     private void setAdapters() {
         recyclerViewsAdapters = new ArrayList<>();
         ConversationListScreenPresenter presenter = getPresenter();
@@ -144,23 +150,6 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
         contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showInputUserDialog() {
-        InputUserDialog dialog = new InputUserDialog(getActivity());
-        dialog.show(new InputUserDialog.Listener() {
-            @Override
-            public void onUserInput(String userName) {
-                getPresenter().newUserSelected(userName);
-                setAdapters();
-            }
-
-            @Override
-            public void onCancel() {
-                getActivity().finish();
-            }
-        });
     }
 
     @Override

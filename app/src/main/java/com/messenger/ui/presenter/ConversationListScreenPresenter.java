@@ -10,8 +10,6 @@ public interface ConversationListScreenPresenter extends ActivityAwareViewStateM
         ConversationListViewState> {
     User getUser();
 
-    void newUserSelected(String userName);
-
     void loadConversationList();
 
     void onConversationSelected(Conversation conversation);

@@ -22,6 +22,7 @@ import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatActivity;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
+import com.messenger.ui.viewstate.LceViewState;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -47,29 +48,32 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
+        user = new User("techery_user6");
         loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
+    }
+
+    @Override
+    public void onNewViewState() {
+        state = new ConversationListViewState();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getView().showLoading();
+        getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
+        initialCursorLoader();
+
+        if (messengerServerFacade.isAuthorized()){
+            loadConversationList();
+        } else {
+            connect();
+        }
     }
 
     @Override
     public void loadConversationList() {
         loaderDelegate.loadConversations();
-    }
-
-    @Override
-    public void onNewViewState() {
-        getView().showLoading();
-        state = new ConversationListViewState();
-        if (messengerServerFacade.isAuthorized()) {
-            loadConversationList();
-        } else {
-            getView().showInputUserDialog();
-        }
-    }
-
-    @Override
-    public void attachView(ConversationListScreen view) {
-        super.attachView(view);
-        initialCursorLoader();
     }
 
     private void initialCursorLoader() {
@@ -84,15 +88,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
     }
 
-    @Override
-    public void newUserSelected(String userName) {
-        user = new User(userName);
-        Log.e("NEW USER", userName);
-        connect();
-    }
-
     private void connect() {
-        UserSession userSession = appSessionHolder.get().get();
         messengerServerFacade.addAuthorizationListener(new AuthorizeListener() {
             @Override
             public void onSuccess() {
@@ -129,13 +125,12 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onConversationSelected(Conversation conversation) {
         Intent intent = new Intent(parentActivity, ChatActivity.class);
-        // intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, conversation);
         parentActivity.startActivity(intent);
     }
 
     @Override
-    public void detachView(boolean retainInstance) {
-        super.detachView(retainInstance);
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
         ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER);
         ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER);
     }
@@ -161,16 +156,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         return false;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
-    @Override
-    public void onDestroy() {
-
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Cursor Loader Callback
     ///////////////////////////////////////////////////////////////////////////
@@ -193,6 +178,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             showConversation(data);
+            state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
             getView().showContent();
         }
 

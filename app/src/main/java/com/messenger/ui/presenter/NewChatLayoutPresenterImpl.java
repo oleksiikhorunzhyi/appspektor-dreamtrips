@@ -65,6 +65,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     public void attachView(NewChatScreen view) {
         super.attachView(view);
         initialCursorLoader();
+        loadChatContacts();
     }
 
     @Override
@@ -72,7 +73,6 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         state = new NewChatLayoutViewState();
         getView().showLoading();
         getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
-        loadChatContacts();
     }
 
     @Override

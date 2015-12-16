@@ -9,6 +9,8 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
 public interface ViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpPresenter<V> {
     void onSaveInstanceState(Bundle bundle);
     void onRestoreInstanceState(Bundle instanceState);
+    void onAttachedToWindow();
+    void onDetachedFromWindow();
     S getViewState();
     void onNewViewState();
     void applyViewState();

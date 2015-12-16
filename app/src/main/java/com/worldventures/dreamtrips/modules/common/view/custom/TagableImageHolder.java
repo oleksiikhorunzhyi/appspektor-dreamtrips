@@ -72,4 +72,7 @@ public class TagableImageHolder extends RelativeLayout {
         view.setLayoutParams(layoutParams);
         addView(view, layoutParams);
     }
+
+    public interface TagListener {
+    }
 }

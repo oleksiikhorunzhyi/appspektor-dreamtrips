@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,6 +26,9 @@ public class TagView extends RelativeLayout {
     public EditText editText;
 
     private float dX, dY;
+
+    private User user;
+    private TagableImageHolder.TagListener tagListener;
 
     public TagView(Context context) {
         super(context);
@@ -92,5 +96,13 @@ public class TagView extends RelativeLayout {
     private void finishDrag() {
         btnClose.setVisibility(View.VISIBLE);
         editText.setVisibility(View.VISIBLE);
+    }
+
+    public void setTag(User user){
+        this.user = user;
+    }
+
+    public void setTagListener(TagableImageHolder.TagListener tagListener){
+        this.tagListener = tagListener;
     }
 }

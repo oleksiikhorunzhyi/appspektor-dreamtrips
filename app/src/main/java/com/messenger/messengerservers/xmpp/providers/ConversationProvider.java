@@ -3,6 +3,7 @@ package com.messenger.messengerservers.xmpp.providers;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.xmpp.entities.MessageBody;
@@ -13,7 +14,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
-import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -42,7 +42,14 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             String subject = parser.getAttributeValue("", "subject");
                             String type = parser.getAttributeValue("", "type");
                             String thread = parser.getAttributeValue("", "thread");
-                            conversation = new Conversation(thread, subject, type.toLowerCase());
+                            int unreadMessegeCount = ParserUtils.getIntegerAttribute(parser, "unread-count");
+                            conversation = new Conversation.Builder()
+                                    .id(thread)
+                                    .type(type.toLowerCase())
+                                    .subject(subject)
+                                    .unreadMessageCount(unreadMessegeCount)
+                                    .build();
+
                             break;
                         case "last-message":
                             String from = parser.getAttributeValue("", "from");
@@ -50,15 +57,29 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
 
-                            MessageBody stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
-                            message = new Message.Builder()
+                            Log.e("Parsed body", messageBody);
+
+                            Message.Builder builder = new Message.Builder()
                                     .id(messageId)
                                     .conversationId(conversation.getId())
-                                    .text(stanzaMessageBody.getText())
-                                    .locale(new Locale(stanzaMessageBody.getLocale()))
                                     .date(new Date(timestamp * 1000))
-                                    .from(JidCreatorHelper.obtainUser(from))
-                                    .build();
+                                    .from(JidCreatorHelper.obtainUser(from));
+
+                            MessageBody stanzaMessageBody = null;
+                            try {
+                                stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
+                            } catch (JsonSyntaxException e){
+                            }
+
+                            if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null){
+                                builder.text("")
+                                        .locale(Locale.getDefault());
+                            } else {
+                                builder.text(stanzaMessageBody.getText())
+                                        .locale( new Locale(stanzaMessageBody.getLocale()));
+                            }
+
+                            message = builder.build();
                     }
                     break;
                 case XmlPullParser.END_TAG:

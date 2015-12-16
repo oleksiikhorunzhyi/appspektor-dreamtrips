@@ -105,8 +105,8 @@ public class ConversationListAdapter extends RecyclerView.Adapter<BaseConversati
         //  1 to 1 or group specific logic
         if (chatConversation.isGroupConversation()) {
             holder.getNameTextView().setText(chatConversation.getConversationName());
-            GroupConversationViewHolder groupHolder = (GroupConversationViewHolder)holder;
-            groupHolder.getGroupAvatarsView().updateAvatars(chatConversation.getChatUsers());
+         //   GroupConversationViewHolder groupHolder = (GroupConversationViewHolder)holder;
+           // groupHolder.getGroupAvatarsView().updateAvatars(chatConversation.getChatUsers());
         } else {
             ChatUser addressee = chatConversation.getChatUsers().get(1);
             holder.getNameTextView().setText(addressee.getName());

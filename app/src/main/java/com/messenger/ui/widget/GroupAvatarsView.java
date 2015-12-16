@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
+import com.messenger.messengerservers.entities.User;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatUser;
@@ -42,7 +43,7 @@ public class GroupAvatarsView extends GridLayout {
         ButterKnife.inject(this, this);
     }
 
-    public void updateAvatars(List<ChatUser> chatUsers) {
+    public void updateAvatars(List<User> chatUsers) {
         for (int i = 0; i < MAX_AVATARS_COUNT; i++) {
             ImageView avatarImageView = avatarImageViews.get(i);
             if (i > chatUsers.size() - 1) {

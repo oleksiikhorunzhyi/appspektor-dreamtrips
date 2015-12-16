@@ -44,6 +44,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     foreignColumnName = Message._ID)},
             saveForeignKeyModel = false)
     @Column Message lastMessage;
+    List<User> participants;
+    int unreadMessageCount = 0;
 
     protected List<ParticipantsRelationship> participants;
 
@@ -61,6 +63,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setSubject(builder.subject);
         setType(builder.type);
         setLastMessage(builder.lastMessage);
+        setParticipants(builder.participants);
+        setUnreadMessageCount(builder.unreadMessageCount);
     }
 
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE}, variableName = "participants")
@@ -107,6 +111,22 @@ public class Conversation extends BaseProviderModel<Conversation> {
         this.lastMessage = lastMessage;
     }
 
+    public List<User> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<User> participants) {
+        this.participants = participants;
+    }
+
+    public int getUnreadMessageCount() {
+        return unreadMessageCount;
+    }
+
+    public void setUnreadMessageCount(int unreadMessageCount) {
+        this.unreadMessageCount = unreadMessageCount;
+    }
+
     @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
@@ -144,6 +164,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String subject;
         private String type;
         private Message lastMessage;
+        private List<User> participants;
+        private int unreadMessageCount = 0;
 
         public Builder() {
         }
@@ -165,6 +187,16 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder lastMessage(Message val) {
             lastMessage = val;
+            return this;
+        }
+
+        public Builder participants(List<User> participants){
+            this.participants = participants;
+            return this;
+        }
+
+        public Builder unreadMessageCount(int unreadMessageCount){
+            this.unreadMessageCount = unreadMessageCount;
             return this;
         }
 

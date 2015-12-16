@@ -292,6 +292,11 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     }
 
     @Override
+    public void hideLoading() {
+        loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void openFullscreen(FullScreenImagesBundle data) {
         NavigationBuilder.create().with(activityRouter).data(data).move(Route.FULLSCREEN_PHOTO_LIST);
     }

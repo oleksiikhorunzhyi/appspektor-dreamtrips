@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -73,6 +74,12 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                 if (closeView) view.done();
             }
         }, this);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.hideLoading();
     }
 
     public Date getDate() {

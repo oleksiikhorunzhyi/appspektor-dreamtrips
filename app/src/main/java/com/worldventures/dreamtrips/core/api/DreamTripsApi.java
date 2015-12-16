@@ -29,6 +29,8 @@ import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
@@ -353,4 +355,10 @@ public interface DreamTripsApi {
 
     @GET("/api/social/friends/{userId}/mutual/")
     ArrayList<User> getMutualFriends(@Path("userId") int userId);
+
+    @POST("/api/photos/{uid}/tags")
+    Void addPhotoTags(@Path("uid") String photoId, @Body AddPhotoTag addTag);
+
+    @DELETE("/api/photos/{uid}/tags")
+    Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
 }

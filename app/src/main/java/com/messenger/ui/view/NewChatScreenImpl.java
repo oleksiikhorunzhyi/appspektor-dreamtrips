@@ -158,7 +158,10 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().onActivityResult(requestCode, resultCode, data);
+        NewChatLayoutPresenter presenter = getPresenter();
+        if (presenter != null){
+            presenter.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

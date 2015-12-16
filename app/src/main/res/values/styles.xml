@@ -143,4 +143,20 @@
         <item name="colorButtonNormal">@color/white</item>
     </style>
 
+    <style name="Player360SeekBar">
+        <item name="android:thumb">@drawable/background_player360_seekbar_thumb_selector</item>
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+        <item name="android:layout_marginBottom">-9dp</item>
+        <item name="android:thumbOffset">3dp</item>
+    </style>
+
+    <style name="Player360HoldableButton">
+        <item name="android:layout_width">27dp</item>
+        <item name="android:layout_height">18dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="holdInitialDelay">1000</item>
+        <item name="holdRepeatDelay">1000</item>
+    </style>
+
 </resources>

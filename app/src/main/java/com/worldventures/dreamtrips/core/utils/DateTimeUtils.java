@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.format.DateUtils;
 
 import com.worldventures.dreamtrips.R;
 
@@ -100,6 +101,16 @@ public class DateTimeUtils {
 
     public static String convertTimeToString(int h, int m) {
         return convertTimeToString(h, m, TIME_FORMAT);
+    }
+
+    /**
+     * Format seconds in float (ex. 96.8) to String (ex. 01:36)
+     *
+     * @param seconds in float
+     * @return String mm:ss
+     */
+    public static String convertTimeToString(float seconds) {
+        return DateUtils.formatElapsedTime((long) (seconds));
     }
 
     public static String convertTimeToString(int h, int m, String timeFormat) {

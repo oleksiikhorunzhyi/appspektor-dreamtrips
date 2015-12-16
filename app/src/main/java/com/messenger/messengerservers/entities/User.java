@@ -21,18 +21,16 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 @Table(tableName = User.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class User extends BaseProviderModel<User> implements ChatUser {
     public static final String TABLE_NAME = "Users";
+    public static final String COLUMN_ID = "_id";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
     @PrimaryKey
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @Column
-    String _id;
-    @Column
-    String userName;
-    @Column
-    boolean online;
+    @Column String _id;
+    @Column String userName;
+    @Column boolean online;
     private String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
 
     public User() {
@@ -96,6 +94,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     @Override
     public boolean equals(Object o) {
+
         User anotherUser = (User) o;
         return _id.equals(anotherUser._id);
     }

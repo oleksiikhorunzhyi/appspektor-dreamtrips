@@ -9,21 +9,26 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
+import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 @ModelContainer
 @TableEndpoint(name = Conversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = Conversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Conversation extends BaseProviderModel<Conversation> {
     public static final String TABLE_NAME = "Conversations";
+    public static final String COLUMN_ID = "_id";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -32,7 +37,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @PrimaryKey @Column String _id;
     @Column String subject;
     @Column String type;
-
     @ForeignKey(
             references = {@ForeignKeyReference(
                     columnName = "lastMessageId",
@@ -40,6 +44,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     foreignColumnName = Message._ID)},
             saveForeignKeyModel = false)
     @Column Message lastMessage;
+
+    protected List<ParticipantsRelationship> participants;
 
     public Conversation() {
     }
@@ -55,6 +61,17 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setSubject(builder.subject);
         setType(builder.type);
         setLastMessage(builder.lastMessage);
+    }
+
+    @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE}, variableName = "participants")
+    public List<ParticipantsRelationship> getParticipants() {
+        if (participants == null) {
+            participants = new Select()
+                    .from(ParticipantsRelationship.class)
+                    .where(Condition.column(ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
+                    .queryList();
+        }
+        return participants;
     }
 
     public String getId() {

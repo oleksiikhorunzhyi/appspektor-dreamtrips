@@ -6,25 +6,11 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ToggleButton;
 
 import com.worldventures.dreamtrips.R;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 public class TagableImageHolder extends RelativeLayout {
-
-    @InjectView(R.id.iv_image)
-    public ImageView imageView;
-
-    public ImageView getImageView() {
-        return imageView;
-    }
 
     public TagableImageHolder(Context context) {
         super(context);
@@ -41,12 +27,6 @@ public class TagableImageHolder extends RelativeLayout {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TagableImageHolder(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        ButterKnife.inject(this);
     }
 
     @Override

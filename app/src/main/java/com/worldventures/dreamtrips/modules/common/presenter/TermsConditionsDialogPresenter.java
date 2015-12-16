@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.api.AcceptTermsConditionsCommand;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
@@ -33,7 +34,12 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
 
     public void acceptTerms(String text) {
         view.disableButtons();
-        doRequest(new AcceptTermsConditionsCommand(text), aVoid -> view.dismissDialog());
+        doRequest(new AcceptTermsConditionsCommand(text), aVoid -> {
+            UserSession userSession = appSessionHolder.get().get();
+            userSession.getUser().setTermsAccepted(true);
+            appSessionHolder.put(userSession);
+            view.dismissDialog();
+        });
     }
 
     public void logout() {

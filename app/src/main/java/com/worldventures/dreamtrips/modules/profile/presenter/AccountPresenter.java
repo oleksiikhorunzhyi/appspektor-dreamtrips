@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -64,7 +66,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     protected void loadProfile() {
         view.startLoading();
-        doRequest(new GetProfileQuery(), this::onProfileLoaded);
+        doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
     }
 
     @Override
@@ -113,9 +115,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     protected void onProfileLoaded(User user) {
         super.onProfileLoaded(user);
-        UserSession userSession = appSessionHolder.get().get();
-        userSession.setUser(user);
-        appSessionHolder.put(userSession);
     }
 
     public void logout() {

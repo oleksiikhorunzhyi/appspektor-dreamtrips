@@ -28,6 +28,7 @@ public class BaseDialogFragment extends InjectingDialogFragment {
 
     /**
      * Method that detaches fragment by tag if already present.
+     * Note: two simultaneous calls want dismiss each other, as fragment want get to manager yet.
      * @param fragmentManager FragmentManager to operate on during transaction
      * @param tag
      */

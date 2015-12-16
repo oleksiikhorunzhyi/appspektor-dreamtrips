@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 public class User extends BaseEntity implements Parcelable {
@@ -185,6 +184,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public boolean isTermsAccepted() {
         return termsAccepted;
+    }
+
+    public void setTermsAccepted(boolean termsAccepted) {
+        this.termsAccepted = termsAccepted;
     }
 
     public String getFullName() {

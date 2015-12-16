@@ -29,7 +29,7 @@ public class LogoutDelegate {
     protected NotificationDelegate notificationDelegate;
     @Inject
     protected BadgeUpdater badgeUpdater;
-
+    //
     protected DreamSpiceManager dreamSpiceManager;
 
     private OnLogoutSuccessListener onLogoutSuccessListener;

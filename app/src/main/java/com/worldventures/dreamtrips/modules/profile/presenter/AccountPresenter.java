@@ -39,7 +39,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.scalablecropp.library.Crop;
-import retrofit.http.HEAD;
 import retrofit.mime.TypedFile;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
@@ -81,7 +80,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onInjected() {
         super.onInjected();
         user = getAccount();
-        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     private void onAvatarUploadSuccess(User obj) {

@@ -26,9 +26,9 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
     }
 
     @Override
-    public void onInjected() {
-        super.onInjected();
-        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
+    public void dropView() {
+        logoutDelegate.setOnLogoutSuccessListener(null);
+        super.dropView();
     }
 
     public void acceptTerms(String text) {

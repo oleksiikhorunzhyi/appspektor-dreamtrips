@@ -45,8 +45,9 @@ public class DtlFilterData implements Parcelable {
     }
 
     public void setPrice(int minPrice, int maxPrice) {
-        this.minPrice = minPrice;
-        this.maxPrice = maxPrice;
+        // monkey-patch for unusual crashes with values out of bounds for rangebar
+        this.minPrice = minPrice < MIN_PRICE ? MIN_PRICE : minPrice;
+        this.maxPrice = maxPrice > MAX_PRICE ? MAX_PRICE : maxPrice;
     }
 
     public List<DtlPlacesFilterAttribute> getAmenities() {
@@ -76,7 +77,8 @@ public class DtlFilterData implements Parcelable {
     }
 
     public void setDistanceType(int maxDistance) {
-        this.maxDistance = maxDistance;
+        // monkey-patch for unusual crashes with values out of bounds for rangebar
+        this.maxDistance = maxDistance > MAX_DISTANCE ? MAX_DISTANCE : maxDistance;
     }
 
     public DistanceType getDistanceType() {

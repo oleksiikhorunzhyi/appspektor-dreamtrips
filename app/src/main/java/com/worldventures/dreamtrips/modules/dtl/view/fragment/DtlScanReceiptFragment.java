@@ -140,7 +140,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
 
     @Override
     public void showCurrency(DtlCurrency currency) {
-        amountInput.setHint(getString(R.string.dtl_receipt_hint, currency.getSuffix()));
+        amountInput.setHint(getString(R.string.dtl_receipt_hint, currency.getCurrencyHint()));
     }
 
     @Override

@@ -66,7 +66,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     public void showCurrency(DtlCurrency dtlCurrency) {
         currency.setText(dtlCurrency.getPrefix());
         enterAmountHint.setText(getString(R.string.dtl_points_estimation_input_hint,
-                dtlCurrency.getSuffix()));
+                dtlCurrency.getCurrencyHint()));
     }
 
     @Override

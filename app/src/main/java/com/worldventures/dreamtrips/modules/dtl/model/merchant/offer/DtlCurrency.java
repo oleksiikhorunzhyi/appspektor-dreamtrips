@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 public class DtlCurrency {
@@ -29,6 +31,10 @@ public class DtlCurrency {
 
     public String getSuffix() {
         return suffix;
+    }
+
+    public String getCurrencyHint() {
+        return !TextUtils.isEmpty(suffix) ? suffix : code;
     }
 
     public void setSuffix(String suffix) {

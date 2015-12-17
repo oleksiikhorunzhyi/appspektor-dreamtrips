@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.view.custom;
+package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -7,58 +7,53 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.AutoCompleteTextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class TagView extends RelativeLayout {
-    @InjectView(R.id.btn_close)
-    public Button btnClose;
-    @InjectView(R.id.editext)
-    public EditText editText;
+public class NewTagView extends TagView {
 
-    private float dX, dY;
+    @InjectView(R.id.new_user_input_name)
+    public AutoCompleteTextView inputFriendName;
 
-    private User user;
-    private TagableImageHolder.TagListener tagListener;
+    private float dX, dY; //values for drag
 
-    public TagView(Context context) {
+    //region Constructors
+    public NewTagView(Context context) {
         super(context);
-        initialize();
     }
 
-    public TagView(Context context, AttributeSet attrs) {
+    public NewTagView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize();
     }
 
-    public TagView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NewTagView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initialize();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public TagView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public NewTagView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        initialize();
     }
+    //endregion
 
-    private void initialize() {
-        LayoutInflater.from(getContext()).inflate(R.layout.layout_tag_view, this, true);
+    @Override
+    protected void initialize() {
+        LayoutInflater.from(getContext()).inflate(R.layout.layout_tag_view_new, this, true);
         ButterKnife.inject(this);
+
+        TagFriendAdapter adapter = new TagFriendAdapter(getContext(), userFriends);
+        inputFriendName.setAdapter(adapter);
+        inputFriendName.setDropDownBackgroundResource(R.drawable.background_common_tag_view);
     }
 
-    @OnClick({R.id.btn_close})
-    public void onCloseClick(View view) {
-        ((ViewGroup) getParent()).removeView(this);
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 
     @Override
@@ -88,21 +83,14 @@ public class TagView extends RelativeLayout {
         }
     }
 
-     private void onDrag() {
-        btnClose.setVisibility(View.INVISIBLE);
-        editText.setVisibility(View.INVISIBLE);
+    @OnClick ({R.id.new_user_delete_tag})
+    public void onClick(){
+        deleteTag();
+    }
+
+    private void onDrag() {
     }
 
     private void finishDrag() {
-        btnClose.setVisibility(View.VISIBLE);
-        editText.setVisibility(View.VISIBLE);
-    }
-
-    public void setTag(User user){
-        this.user = user;
-    }
-
-    public void setTagListener(TagableImageHolder.TagListener tagListener){
-        this.tagListener = tagListener;
     }
 }

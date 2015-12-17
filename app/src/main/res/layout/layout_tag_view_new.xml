@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/tag_common_width"
+    android:layout_height="@dimen/tag_common_height"
+    android:paddingLeft="10dp">
+
+    <AutoCompleteTextView
+        android:id="@+id/new_user_input_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_common_tag_view"
+        android:completionThreshold="1"
+        android:padding="10dp"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:id="@+id/new_user_delete_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:padding="0dp"
+        android:text="X"
+        android:textColor="@android:color/white"/>
+
+</RelativeLayout>

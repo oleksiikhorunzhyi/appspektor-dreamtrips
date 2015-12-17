@@ -58,6 +58,7 @@
     <string name="suggest_merchant_success_snack">發布成功！</string>
     <string name="suggest_merchant_contact_name_hint">聯繫人名稱</string>
     <string name="suggest_merchant_phone_number_hint">電話</string>
+    <string name="suggest_merchant_contact_email_hint">電子郵件</string>
     <string name="suggest_merchant_best_time_contact_caption">最佳聯繫時間</string>
     <string name="suggest_merchant_best_time_contact_switcher">之間</string>
     <string name="suggest_merchant_best_time_contact_from_caption">寄件者：</string>

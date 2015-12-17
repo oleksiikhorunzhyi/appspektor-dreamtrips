@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
-public class ContactWithHeaderViewHolder extends ContactViewHolder {
+public class ContactWithHeaderViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.section_name_textview)
     TextView sectionNameTextView;

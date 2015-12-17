@@ -22,6 +22,8 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 public class User extends BaseProviderModel<User> implements ChatUser {
     public static final String TABLE_NAME = "Users";
 
+    public static final String COLUMN_USER_NAME = "userName";
+
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
@@ -29,7 +31,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @Column
     String _id;
-    @Column
+    @Column(name = COLUMN_USER_NAME)
     String userName;
     @Column
     boolean online;

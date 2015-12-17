@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -136,7 +136,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     }
 
     public void onMerchantClick() {
-        view.openSuggestMerchant(new SuggestPlaceBundle(place));
+        view.openSuggestMerchant(new MerchantIdBundle(place.getId()));
     }
 
     public void onShareClick() {
@@ -200,7 +200,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void showEstimationDialog(PointsEstimationDialogBundle data);
 
-        void openSuggestMerchant(SuggestPlaceBundle data);
+        void openSuggestMerchant(MerchantIdBundle data);
 
         void openTransaction(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
 

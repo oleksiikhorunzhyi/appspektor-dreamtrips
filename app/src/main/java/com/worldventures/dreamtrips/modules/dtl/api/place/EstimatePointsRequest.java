@@ -8,17 +8,19 @@ import java.util.Date;
 public class EstimatePointsRequest extends DtlRequest<Double> {
 
     private final String id;
+    private final String currencyCode;
     private final double price;
 
-    public EstimatePointsRequest(String id, double price) {
+    public EstimatePointsRequest(String id, String currencyCode, double price) {
         super(Double.class);
         this.id = id;
+        this.currencyCode = currencyCode;
         this.price = price;
     }
 
     @Override
     public Double loadDataFromNetwork() {
-        return getService().estimatePoints(id, price,
+        return getService().estimatePoints(id, price, currencyCode,
                 DateTimeUtils.convertDateToUTCString(new Date(System.currentTimeMillis()))).getPoints();
     }
 }

@@ -32,6 +32,7 @@ public interface DtlApi {
     @POST("/api/dtl/v2/merchants/{id}/estimations")
     EstimationPointsHolder estimatePoints(@Path("id") String placeId,
                                           @Field("bill_total") double price,
+                                          @Field("currency_code") String currencyCode,
                                           @Field("checkin_time") String checkinTime);
 
     @POST("/api/dtl/v2/merchants/{id}/transactions")

@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.DigitsValidator;
@@ -42,7 +42,7 @@ import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_suggest_merchant)
 public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresenter>
-        extends BaseFragmentWithArgs<T, SuggestPlaceBundle>
+        extends BaseFragmentWithArgs<T, MerchantIdBundle>
         implements SuggestPlaceBasePresenter.View, DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
 

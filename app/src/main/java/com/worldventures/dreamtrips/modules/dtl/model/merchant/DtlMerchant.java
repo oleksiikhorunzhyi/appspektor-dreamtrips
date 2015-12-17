@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkDescription;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsDescription;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class DtlMerchant implements Parcelable {
+public class DtlMerchant {
 
     String id;
     String type;
@@ -158,8 +158,16 @@ public class DtlMerchant implements Parcelable {
     }
 
     public String getPerkDescription() {
-        return Queryable.from(offers)
-                .first(element -> element.equals(DtlOffer.TYPE_PERK)).getOffer().getDescription();
+        DtlOffer<DtlOfferPerkDescription> dtlOffer = (DtlOffer<DtlOfferPerkDescription>)
+                Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_PERK));
+        return dtlOffer.getOffer().getDescription();
+    }
+
+    public DtlCurrency getDefaultCurrency() {
+        DtlOffer<DtlOfferPointsDescription> dtlOffer = (DtlOffer<DtlOfferPointsDescription>)
+                Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_POINTS));
+
+        return Queryable.from(dtlOffer.getOffer().getCurrencies()).firstOrDefault(DtlCurrency::isDefault);
     }
 
     public boolean hasNoOffers() {
@@ -180,78 +188,6 @@ public class DtlMerchant implements Parcelable {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable part
-    ///////////////////////////////////////////////////////////////////////////
-
-    protected DtlMerchant(Parcel in) {
-        id = in.readString();
-        type = in.readString();
-        partnerStatus = (PartnerStatus) in.readSerializable();
-        displayName = in.readString();
-        address1 = in.readString();
-        address2 = in.readString();
-        city = in.readString();
-        state = in.readString();
-        country = in.readString();
-        zip = in.readString();
-        coordinates = in.readParcelable(Location.class.getClassLoader());
-        phone = in.readString();
-        email = in.readString();
-        description = in.readString();
-        website = in.readString();
-        budget = in.readInt();
-        rating = in.readFloat();
-        offers = in.createTypedArrayList(DtlOffer.CREATOR);
-        categories = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
-        amenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
-        images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
-        operationDays = in.createTypedArrayList(OperationDay.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(type);
-        dest.writeSerializable(partnerStatus);
-        dest.writeString(displayName);
-        dest.writeString(address1);
-        dest.writeString(address2);
-        dest.writeString(city);
-        dest.writeString(state);
-        dest.writeString(country);
-        dest.writeString(zip);
-        dest.writeParcelable(coordinates, flags);
-        dest.writeString(phone);
-        dest.writeString(email);
-        dest.writeString(description);
-        dest.writeString(website);
-        dest.writeInt(budget);
-        dest.writeFloat(rating);
-        dest.writeTypedList(offers);
-        dest.writeTypedList(categories);
-        dest.writeTypedList(amenities);
-        dest.writeTypedList(images);
-        dest.writeTypedList(operationDays);
-    }
-
-    public static final Creator<DtlMerchant> CREATOR = new Creator<DtlMerchant>() {
-        @Override
-        public DtlMerchant createFromParcel(Parcel in) {
-            return new DtlMerchant(in);
-        }
-
-        @Override
-        public DtlMerchant[] newArray(int size) {
-            return new DtlMerchant[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     ///////////////////////////////////////////////////////////////////////////

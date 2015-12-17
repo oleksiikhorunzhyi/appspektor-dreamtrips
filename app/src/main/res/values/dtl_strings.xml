@@ -11,14 +11,14 @@
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
     <string name="dtl_points_estimation_explanation">Points calculation explanation goes here</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
-    <string name="dtl_points_estimation_input_hint">Enter amount in USD</string>
+    <string name="dtl_points_estimation_input_hint">Enter amount in %s</string>
     <string name="dtl_header">Point Estimator</string>
     <string name="dtl_points_estimation_default_result">0.0</string>
     <string name="dtl_field_validation_empty_input_error">Cannot be empty!</string>
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance</string>
-    <string name="dtl_receipt_hint">Enter amount in USD</string>
+    <string name="dtl_receipt_hint">Enter amount in %s</string>
     <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
     <string name="dtl_receipt_scan">Capture Receipt</string>
     <string name="dtl_receipt_rescan">Recapture</string>

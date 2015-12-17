@@ -7,17 +7,19 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 public class EarnPointsRequest extends DtlRequest<DtlTransactionResult> {
 
     private String id;
+    private String currencyCode;
     private DtlTransaction request;
 
-    public EarnPointsRequest(String id, DtlTransaction request) {
+    public EarnPointsRequest(String id, String currencyCode, DtlTransaction request) {
         super(DtlTransactionResult.class);
         this.id = id;
         this.request = request;
+        this.currencyCode = currencyCode;
     }
 
     @Override
     public DtlTransactionResult loadDataFromNetwork() throws Exception {
-        return getService().earnPoints(id, request.asTransactionRequest());
+        return getService().earnPoints(id, request.asTransactionRequest(currencyCode));
     }
 
 

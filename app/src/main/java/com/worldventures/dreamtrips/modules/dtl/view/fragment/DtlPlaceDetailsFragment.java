@@ -32,14 +32,14 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.SuggestPlaceBundle;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlCategoryDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceManyImagesDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -231,20 +231,24 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void openSuggestMerchant(SuggestPlaceBundle data) {
+    public void openSuggestMerchant(MerchantIdBundle data) {
         router.moveTo(Route.DTL_SUGGEST_MERCHANT, NavigationConfigBuilder.forActivity()
                 .data(data)
                 .build());
     }
 
     @Override
-    public void openTransaction(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction) {
-        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity().data(DtlMerchant).build());
+    public void openTransaction(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
+        router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
+                .data(new MerchantIdBundle(dtlMerchant.getId()))
+                .build());
     }
 
     @Override
-    public void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction) {
-        router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog().data(DtlMerchant).build());
+    public void showSucceed(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
+        router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
+                .data(new MerchantIdBundle(dtlMerchant.getId()))
+                .build());
         getPresenter().trackEarnFlowView();
     }
 

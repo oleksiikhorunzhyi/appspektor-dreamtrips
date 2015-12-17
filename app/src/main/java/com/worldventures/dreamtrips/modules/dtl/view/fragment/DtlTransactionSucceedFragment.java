@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
@@ -24,7 +25,7 @@ import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_transaction_succeed)
-public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, DtlMerchant>
+public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, MerchantIdBundle>
         implements DtlTransactionSucceedPresenter.View {
 
     @InjectView(R.id.total)
@@ -80,7 +81,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
 
     @Override
     protected DtlTransactionSucceedPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlTransactionSucceedPresenter(getArgs());
+        return new DtlTransactionSucceedPresenter(getArgs().getMerchantId());
     }
 
 }

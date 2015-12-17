@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 
 import java.util.List;
@@ -71,6 +73,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
         holder.userCover.setImageURI(navigationHeader.getUserCover());
         holder.userName.setText(navigationHeader.getUserName());
         holder.userEmail.setText(navigationHeader.getUserEmail());
+
+        holder.userPhoto.setOnClickListener(v -> navigationDrawerListener.onNavigationDrawerItemSelected(
+                Queryable.from(componentDescriptions)
+                        .filter(element -> element.getKey().equals(Route.ACCOUNT_PROFILE.name()))
+                        .first()));
     }
 
     private void bindItemViewHolder(ItemHolder holder, int i) {

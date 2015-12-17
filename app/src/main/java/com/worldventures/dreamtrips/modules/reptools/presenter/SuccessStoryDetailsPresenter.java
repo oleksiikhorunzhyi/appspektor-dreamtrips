@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.UnlikeSuccessStoryCommand;
@@ -41,12 +42,8 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
         view.showShareDialog();
     }
 
-    public void onFbShare(SuccessStory successStory) {
-        activityRouter.openShareFacebook(null, successStory.getSharingUrl(), null);
-    }
-
-    public void onTwitterShare(SuccessStory successStory) {
-        activityRouter.openShareTwitter(null, successStory.getSharingUrl(), null);
+    public void onShare(@ShareFragment.ShareType String type, SuccessStory successStory) {
+        activityRouter.openShare(null, successStory.getSharingUrl(), null, type);
     }
 
     public interface View extends WebViewFragmentPresenter.View {

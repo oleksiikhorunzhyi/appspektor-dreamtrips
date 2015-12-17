@@ -2,10 +2,17 @@
 <resources>
 
     <dimen name="feed_spacing">200dp</dimen>
-    <dimen name="tablet_details_spacing">200dp</dimen>
-
-
     ///////Post sizes
     <dimen name="post_spacing_horizontal">128dp</dimen>
     <dimen name="post_spacing_vertical">16dp</dimen>
+
+    <!-- Dtl module dimens -->
+    <dimen name="dtl_details_header_height">200dp</dimen>
+
+    ///////Additional info fragment empty view spacing
+    <dimen name="additional_info_spacing_vertical">8dp</dimen>
+    <dimen name="additional_info_spacing_horizontal">16dp</dimen>
+    <dimen name="additional_info_items_margin">8dp</dimen>
+    <dimen name="additional_info_description_size">16sp</dimen>
+
 </resources>

@@ -21,16 +21,14 @@ public class TextualPostDetailsPresenter extends Presenter<TextualPostDetailsPre
     }
 
     public void onEvent(FeedEntityChangedEvent event) {
-        if (event.getFeedEntity().getUid().equals(textualPost.getUid())) {
-            textualPost = (TextualPost) event.getFeedEntity();
-            view.setupView(textualPost);
-        }
+        if (!event.getFeedEntity().getUid().equals(textualPost.getUid())) return;
+        //
+        textualPost = (TextualPost) event.getFeedEntity();
+        view.setupView(textualPost);
     }
 
     public void onDelete() {
-        if (view.isVisibleOnScreen())
-            doRequest(new DeletePostCommand(textualPost.getUid()),
-                    aVoid -> itemDeleted());
+        doRequest(new DeletePostCommand(textualPost.getUid()), aVoid -> itemDeleted());
     }
 
     private void itemDeleted() {

@@ -12,6 +12,8 @@ public class DTEditText extends MaterialEditText {
 
     public static final String NAMESPACE = "http://schemas.android.com/apk/res/android";
 
+    protected boolean requestFocusOnValidationFail;
+
     public DTEditText(Context context) {
         this(context, null);
     }
@@ -25,6 +27,7 @@ public class DTEditText extends MaterialEditText {
         super(context, attrs, style);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DTEditText);
         String valueColor = a.getString(R.styleable.DTEditText_hintColor);
+        requestFocusOnValidationFail = a.getBoolean(R.styleable.DTEditText_requestFocusOnValidationFail, false);
         a.recycle();
         if (valueColor != null && !valueColor.isEmpty()) {
             setHintTextColor(Color.parseColor(valueColor));
@@ -36,5 +39,23 @@ public class DTEditText extends MaterialEditText {
         setFocusableInTouchMode(b1);
         setFocusable(focusable);
         setClickable(clickable);
+    }
+
+    public boolean validateCharactersCount() {
+        boolean isValid = super.isCharactersCountValid();
+        if (!isValid && requestFocusOnValidationFail) {
+            this.requestFocus();
+        }
+        return isValid;
+
+    }
+
+    @Override
+    public boolean validate() {
+        boolean isValid = super.validate();
+        if (!isValid && requestFocusOnValidationFail) {
+            this.requestFocus();
+        }
+        return isValid;
     }
 }

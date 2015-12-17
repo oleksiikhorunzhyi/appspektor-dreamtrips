@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -24,9 +22,6 @@ import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPr
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation_videos)
@@ -39,9 +34,6 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     protected SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
     protected BaseArrayListAdapter<Object> adapter;
 
     RecyclerViewStateDelegate stateDelegate;
@@ -68,7 +60,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         setupLayoutManager();
         this.recyclerView.setEmptyView(emptyView);
 
-        this.adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        this.adapter = new BaseArrayListAdapter<>(getActivity(), this);
         this.adapter.registerCell(Video.class, VideoCell.class);
         this.adapter.registerCell(VideoHeader.class, VideoHeaderLightCell.class);
 

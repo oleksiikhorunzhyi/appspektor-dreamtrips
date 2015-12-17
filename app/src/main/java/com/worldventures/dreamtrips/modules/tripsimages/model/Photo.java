@@ -38,14 +38,6 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         this.shotAt = shotAt;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public List<String> getTags() {
         return tags;
     }
@@ -87,7 +79,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
                 ", tags=" + tags +
                 ", images=" + images +
                 ", taskId='" + taskId + '\'' +
-                ", user=" + user +
+                ", owner=" + owner +
                 '}';
     }
 
@@ -100,6 +92,10 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     @Override
+    public String getImagePath() {
+        return images.getUrl();
+    }
+
     public String getFsId() {
         return uid;
     }
@@ -111,8 +107,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     @Override
     public String getFSTitle() {
-        if (user != null) {
-            return user.getUsername();
+        if (owner != null) {
+            return owner.getUsername();
         }
         return "";
     }
@@ -152,12 +148,21 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     @Override
     public String getFsUserPhoto() {
-        if (user == null) {
+        if (owner == null) {
             return "";
         } else {
-            return user.getAvatar().getMedium();
+            return owner.getAvatar().getMedium();
         }
     }
+
+    @Override
+    public User getUser() {
+        return owner;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public int describeContents() {
@@ -176,7 +181,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         parcel.writeStringList(tags);
         parcel.writeParcelable(images, i);
         parcel.writeString(taskId);
-        parcel.writeParcelable(user, i);
+        parcel.writeParcelable(owner, i);
     }
 
     protected Photo(Parcel in) {
@@ -190,7 +195,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         tags = in.createStringArrayList();
         images = in.readParcelable(Image.class.getClassLoader());
         taskId = in.readString();
-        user = in.readParcelable(User.class.getClassLoader());
+        owner = in.readParcelable(User.class.getClassLoader());
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {

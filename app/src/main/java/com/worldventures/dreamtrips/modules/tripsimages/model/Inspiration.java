@@ -22,7 +22,6 @@ public class Inspiration implements IFullScreenObject, Parcelable {
     private String author;
     private String id;
 
-
     public Inspiration() {
     }
 
@@ -60,6 +59,11 @@ public class Inspiration implements IFullScreenObject, Parcelable {
     @Override
     public Image getFSImage() {
         return images;
+    }
+
+    @Override
+    public String getImagePath() {
+        return getFSImage().getUrl();
     }
 
     @Override

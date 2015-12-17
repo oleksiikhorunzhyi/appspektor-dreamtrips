@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class ImageUploadTask implements Serializable, IFullScreenObject, Parcelable {
+public class ImageUploadTask implements IFullScreenObject, Serializable, Parcelable {
 
     public static final Creator<ImageUploadTask> CREATOR = new Creator<ImageUploadTask>() {
         public ImageUploadTask createFromParcel(Parcel source) {
@@ -163,6 +163,11 @@ public class ImageUploadTask implements Serializable, IFullScreenObject, Parcela
         image.setUrl(getFileUri());
         image.setFromFile(true);
         return image;
+    }
+
+    @Override
+    public String getImagePath() {
+        return getFileUri();
     }
 
     @Override

@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.fragment.InjectingDialogFragment;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -28,9 +26,6 @@ import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLocaleCell;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -46,10 +41,6 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
     SearchView search;
     @InjectView(R.id.filter_title)
     TextView title;
-
-    @Inject
-    @ForActivity
-    Provider<Injector> provider;
 
     @State
     ArrayList<VideoLocale> locales;
@@ -72,7 +63,7 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
         View v = inflater.inflate(R.layout.dialog_choose_locale, null);
         ButterKnife.inject(this, v);
         listCountry.setLayoutManager(new WrapContentLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        adapter = new FilterableArrayListAdapter<>(getActivity(), provider);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(VideoLocale.class, VideoLocaleCell.class);
         adapter.registerCell(VideoLanguage.class, VideoLanguageCell.class);
         adapter.setItems(new ArrayList<>(locales));

@@ -22,8 +22,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
 import java.util.List;
 
-import javax.inject.Provider;
-
 import icepick.Icepick;
 
 
@@ -45,7 +43,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
 
-    public void init(Provider<Injector> injector, Type type) {
+    public void init(Injector injector, Type type) {
         if (imagesAdapter == null) {
             imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
 

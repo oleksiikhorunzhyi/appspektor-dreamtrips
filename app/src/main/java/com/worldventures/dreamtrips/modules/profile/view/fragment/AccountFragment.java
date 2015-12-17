@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -11,23 +10,26 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ActionBarTransparentEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
+import butterknife.InjectView;
 import io.techery.scalablecropp.library.Crop;
 
-@Layout(R.layout.fragment_profile)
+@Layout(R.layout.fragment_account)
 @MenuResource(R.menu.menu_empty)
 public class AccountFragment extends ProfileFragment<AccountPresenter>
         implements AccountPresenter.View {
 
     public static final int AVATAR_CALLBACK = 1;
     public static final int COVER_CALLBACK = 2;
+
+    @InjectView(R.id.photo_picker)
+    PhotoPickerLayout photoPickerLayout;
 
     @Override
     protected AccountPresenter createPresenter(Bundle savedInstanceState) {
@@ -42,6 +44,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
         profileToolbar.inflateMenu(R.menu.profile_fragment);
 
+        photoPickerLayout.setup(this, false);
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
+
         profileToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.item_logout:
@@ -54,26 +59,19 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void onResume() {
         super.onResume();
-        eventBus.post(new ActionBarTransparentEvent(true));
         TrackingHelper.viewMyProfileScreen();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        eventBus.post(new ActionBarTransparentEvent(false));
-    }
-
-    @Override
-    protected BaseArrayListAdapter getAdapter() {
-        return new IgnoreFirstExpandedItemAdapter(feedView.getContext(), injectorProvider);
+    protected BaseArrayListAdapter createAdapter() {
+        return new IgnoreFirstExpandedItemAdapter(feedView.getContext(), this);
     }
 
     @Override
     public void openAvatarPicker() {
         if (isVisibleOnScreen()) {
             getPresenter().setCallbackType(AVATAR_CALLBACK);
-            showChooseSelectPhotoTypeDialog();
+            photoPickerLayout.showPanel();
         }
     }
 
@@ -81,7 +79,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void openCoverPicker() {
         if (isVisibleOnScreen()) {
             getPresenter().setCallbackType(COVER_CALLBACK);
-            showChooseSelectPhotoTypeDialog();
+            photoPickerLayout.showPanel();
         }
     }
 
@@ -97,20 +95,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 badgeView.setVisibility(View.INVISIBLE);
             }
         }
-    }
-
-    private void showChooseSelectPhotoTypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setTitle(R.string.select_photo)
-                .setItems(R.array.photo_dialog_items, (dialogInterface, which) -> {
-                    if (which == 0) {
-                        getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                    } else if (which == 1) {
-                        getPresenter().pickImage(PickImageDelegate.REQUEST_PICK_PICTURE);
-                    } else {
-                        getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                    }
-                });
-        builder.show();
     }
 
     @Override
@@ -140,16 +124,19 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     protected void initialToolbar() {
-        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-            if (getActivity() instanceof MainActivity) {
-                profileToolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-                profileToolbar.setNavigationOnClickListener(view ->
-                                ((MainActivity) getActivity()).openLeftDrawer()
-                );
-            } else {
-                profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-                profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
-            }
+        if (getActivity() instanceof MainActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
+            profileToolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+            profileToolbar.setNavigationOnClickListener(view ->
+                            ((MainActivity) getActivity()).openLeftDrawer()
+            );
+        } else {
+            profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         }
+    }
+
+    @Override
+    public void hidePhotoPicker() {
+        photoPickerLayout.hidePanel();
     }
 }

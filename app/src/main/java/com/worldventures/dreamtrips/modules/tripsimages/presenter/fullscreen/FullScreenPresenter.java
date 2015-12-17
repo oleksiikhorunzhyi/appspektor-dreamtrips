@@ -11,16 +11,15 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,6 +41,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         switch (type) {
             case FIXED_LIST:
             case MEMBER_IMAGES:
+            case FOREIGN_IMAGES:
             case MY_IMAGES:
                 if (photo instanceof BucketPhoto) return new BucketFullscreenPresenter(foreign);
                 else if (photo instanceof TripImage) return new SimpleFullscreenPresenter();
@@ -49,7 +49,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
             case YOU_SHOULD_BE_HERE:
             case INSPIRE_ME:
                 return new InspirationFullscreenPresenter();
-            case FOREIGN_IMAGES:
             case VIDEO_360:
             default:
                 return new SimpleFullscreenPresenter();
@@ -67,7 +66,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        setupActualViewState();
         view.setSocial(featureManager.available(Feature.SOCIAL));
         TrackingHelper.view(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }
@@ -78,7 +76,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     public void onLikeAction() {
     }
 
-    public void onFlagAction() {
+    public void onFlagAction(Flaggable flaggable) {
     }
 
     public void onCommentsAction() {
@@ -150,23 +148,16 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         return type != YOU_SHOULD_BE_HERE && type != INSPIRE_ME;
     }
 
-    public void sendFlagAction(String title, String desc) {
+    public void sendFlagAction(int flagReasonId, String reason) {
     }
 
     public void onDeleteAction() {
     }
 
-    public void onFbShare() {
-        activityRouter.openShareFacebook(photo.getFSImage().getUrl(), null, photo.getFsShareText());
+    public void onShare(@ShareFragment.ShareType String type) {
+        activityRouter.openShare(photo.getFSImage().getUrl(), null, photo.getFsShareText(), type);
         if (photo instanceof Inspiration) {
-            TrackingHelper.insprShare(photo.getFsId(), "facebook");
-        }
-    }
-
-    public void onTwitterShare() {
-        activityRouter.openShareTwitter(photo.getFSImage().getUrl(), null, photo.getFsShareText());
-        if (photo instanceof Inspiration) {
-            TrackingHelper.insprShare(photo.getFsId(), "twitter");
+            TrackingHelper.insprShare(photo.getFsId(), type);
         }
     }
 
@@ -203,8 +194,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
         void setLikeCountVisibility(boolean likeCountVisible);
 
         void setUserPhoto(String fsPhoto);
-
-        void setFlags(List<Flag> flags);
 
         void showProgress();
 

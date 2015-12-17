@@ -5,8 +5,6 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-import java.io.Serializable;
-
 public class TripImage implements IFullScreenObject {
 
     public static final long serialVersionUID = 128L;
@@ -32,6 +30,11 @@ public class TripImage implements IFullScreenObject {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public String getImagePath() {
+        return url;
     }
 
     @Override

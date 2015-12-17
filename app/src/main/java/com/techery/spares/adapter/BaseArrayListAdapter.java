@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import de.greenrobot.event.EventBus;
 
@@ -26,7 +25,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
 
     private final AdapterHelper adapterHelper;
-    private final Provider<Injector> injector;
+    private final Injector injector;
     protected List<BaseItemClass> items = new ArrayList<>();
 
     @Inject
@@ -35,9 +34,9 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     private List<Class> viewTypes = new ArrayList<>();
 
-    public BaseArrayListAdapter(Context context, Provider<Injector> injector) {
+    public BaseArrayListAdapter(Context context, Injector injector) {
         this.injector = injector;
-        this.injector.get().inject(this);
+        this.injector.inject(this);
         this.adapterHelper = new AdapterHelper((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
     }
 
@@ -56,7 +55,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
         cell.setEventBus(eventBus);
         if (cell.shouldInject()) {
-            this.injector.get().inject(cell);
+            this.injector.inject(cell);
             cell.afterInject();
         }
         return cell;
@@ -89,12 +88,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         cell.fillWithItem(item);
     }
 
-
-    @Override
-    public void onViewDetachedFromWindow(AbstractCell holder) {
-        holder.clearResources();
-    }
-
     @Override
     public int getItemCount() {
         return this.items.size();
@@ -114,7 +107,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void addItems(int index, List<BaseItemClass> result) {
         if (result != null) {
             this.items.addAll(index, result);
-            this.notifyDataSetChanged();
+            this.notifyItemRangeInserted(index, result.size());
         }
     }
 
@@ -161,10 +154,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     @Override
-    public void addItems(ArrayList<BaseItemClass> baseItemClasses) {
-        if (baseItemClasses != null) {
-            this.items.addAll(baseItemClasses);
-            this.notifyDataSetChanged();
+    public void addItems(ArrayList<BaseItemClass> items) {
+        if (items != null) {
+            this.items.addAll(items);
+            this.notifyItemRangeInserted(items.size(), items.size());
         }
     }
 
@@ -175,11 +168,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
     public void updateItem(BaseItemClass changedItem) {
         Queryable.from(items).forEachR(item -> {
+            if (!item.equals(changedItem)) return;
             int position = items.indexOf(item);
-            if (changedItem.equals(item)) {
-                items.set(position, changedItem);
-                notifyItemChanged(position);
-            }
+            items.set(position, changedItem);
+            notifyItemChanged(position);
         });
     }
 

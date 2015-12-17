@@ -1,21 +1,24 @@
 package com.worldventures.dreamtrips.core.module;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.core.navigation.router.RouterImpl;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(
         complete = false,
-        library = true
+        library = true,
+        includes = {
+                UiUtilModule.class
+        }
 )
 public class ActivityModule {
 
@@ -31,13 +34,23 @@ public class ActivityModule {
     }
 
     @Provides
-    public ActivityRouter provideActivityCompass(FeatureManager featureManager) {
-        return new ActivityRouter(baseActivity, featureManager);
+    public ActivityRouter provideActivityCompass() {
+        return new ActivityRouter(baseActivity);
     }
 
     @Provides
     public FragmentCompass provideFragmentCompass() {
         return new FragmentCompass(baseActivity, R.id.container_main);
+    }
+
+    @Provides
+    public FragmentManager provideFragmentManager(){
+        return  baseActivity.getSupportFragmentManager();
+    }
+
+    @Provides
+    public Router provideRouter() {
+        return new RouterImpl(baseActivity);
     }
 
 }

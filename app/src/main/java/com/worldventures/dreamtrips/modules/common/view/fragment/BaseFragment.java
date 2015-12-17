@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,13 +16,16 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import dagger.ObjectGraph;
 import icepick.Icepick;
+import timber.log.Timber;
 
 
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
@@ -32,12 +36,21 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     protected ActivityRouter activityRouter;
     @Inject
     protected FragmentCompass fragmentCompass;
+    @Inject
+    protected Router router;
+    @Inject
+    protected Presenter.TabletAnalytic tabletAnalytic;
 
     public PM getPresenter() {
         return presenter;
     }
 
     protected abstract PM createPresenter(Bundle savedInstanceState);
+
+    @Override
+    protected ObjectGraph getInitialObjectGraph() {
+        return super.getInitialObjectGraph().plus(new BaseFragmentModule(this, this, this));
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Lifecycle
@@ -66,11 +79,28 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Layout layout = this.getClass().getAnnotation(Layout.class);
+        Layout layout = getLayoutFromAnnotation(this.getClass());
         if (layout == null) {
             throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
         }
         return inflater.inflate(layout.value(), container, false);
+    }
+
+    /**
+     * Recursively scans class hierarchy searching for {@link Layout} annotation defined.
+     * @param clazz class to search for annotation
+     * @return defined layout if any or <b>null</b>
+     */
+    @Nullable
+    private Layout getLayoutFromAnnotation(Class clazz) {
+        if (clazz == null || clazz.equals(Object.class)) return null;
+        //
+        Layout layout = (Layout) clazz.getAnnotation(Layout.class);
+        if (layout != null) {
+            return layout;
+        } else {
+            return getLayoutFromAnnotation(clazz.getSuperclass());
+        }
     }
 
     @Override
@@ -131,13 +161,23 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     @Override
     public void informUser(String message) {
         if (isAdded() && getView() != null)
-            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+            try {
+                Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                // Snackbar initialization can produce NullPointerException on view parent getContext();
+                Timber.e(e.getMessage());
+            }
     }
 
     @Override
     public void informUser(int stringId) {
         if (isAdded() && getView() != null)
-            Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
+            try {
+                Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                // Snackbar initialization can produce NullPointerException on view parent getContext();
+                Timber.e(e.getMessage());
+            }
     }
 
     @Override
@@ -156,7 +196,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
+        return tabletAnalytic.isTabletLandscape();
     }
 
     @Override
@@ -168,4 +208,10 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         SoftInputUtil.hideSoftInputMethod(view);
     }
 
+    /**
+     * Will hide (if possible) soft input based on current fragment's view
+     */
+    public void tryHideSoftInput() {
+        if (getView() != null) SoftInputUtil.hideSoftInputMethod(getView());
+    }
 }

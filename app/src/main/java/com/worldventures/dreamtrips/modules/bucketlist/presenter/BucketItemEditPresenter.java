@@ -1,16 +1,24 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -47,7 +55,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         if (event != null) onEvent(event);
     }
 
-    public void saveItem() {
+    public void saveItem(boolean closeView) {
+        if (closeView) view.showLoading();
         savingItem = true;
         BucketPostItem bucketPostItem = new BucketPostItem();
         bucketPostItem.setId(bucketItemId);
@@ -60,11 +69,17 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setDate(selectedDate);
         getBucketItemManager().updateBucketItem(bucketPostItem, item -> {
             if (savingItem) {
-                 eventBus.post(new FeedEntityChangedEvent((item)));
+                eventBus.post(new FeedEntityChangedEvent((item)));
                 savingItem = false;
-                view.done();
+                if (closeView) view.done();
             }
         }, this);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.hideLoading();
     }
 
     public Date getDate() {
@@ -98,7 +113,72 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
+    ////////////////////////////////////////
+    /////// Photo picking
+    ////////////////////////////////////////
+
+    public void onEvent(BucketAddPhotoClickEvent event) {
+        if (view.isVisibleOnScreen()) {
+            eventBus.cancelEventDelivery(event);
+            view.showPhotoPicker();
+        }
+    }
+
+    public void onEvent(AttachPhotoEvent event) {
+        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
+            pickImage(event.getRequestType());
+    }
+
     public void onEvent(ImagePickedEvent event) {
         imagePicked(event);
+    }
+
+    public void pickImage(int requestType) {
+        eventBus.post(new ImagePickRequestEvent(requestType, bucketItemId.hashCode()));
+    }
+
+    public void imagePicked(ImagePickedEvent event) {
+        if (event.getRequesterID() == bucketItemId.hashCode()) {
+            eventBus.removeStickyEvent(event);
+
+            attachImages(Queryable.from(event.getImages()).toList(), event.getRequestType());
+        }
+    }
+
+    public void attachImages(List<ChosenImage> chosenImages, int type) {
+        if (chosenImages.size() == 0) {
+            return;
+        }
+
+        view.hidePhotoPicker();
+
+        saveItem(false);
+
+        Queryable.from(chosenImages).forEachR(choseImage ->
+                imageSelected(Uri.parse(choseImage.getFileThumbnail()), type));
+    }
+
+    private void imageSelected(Uri uri, int requestType) {
+        String type = "";
+        switch (requestType) {
+            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
+                type = "camera";
+                break;
+            case PickImageDelegate.REQUEST_MULTI_SELECT:
+            case PickImageDelegate.REQUEST_PICK_PICTURE:
+                type = "album";
+                break;
+            case PickImageDelegate.REQUEST_FACEBOOK:
+                type = "facebook";
+                break;
+        }
+
+        UploadTask task = new UploadTask();
+        task.setStatus(UploadTask.Status.IN_PROGRESS);
+        task.setFilePath(uri.toString());
+        task.setType(type);
+        task.setLinkedItemId(String.valueOf(bucketItemId));
+
+        copyFileIfNeeded(task);
     }
 }

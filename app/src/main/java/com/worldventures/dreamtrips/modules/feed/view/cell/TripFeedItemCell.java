@@ -10,14 +10,14 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 @Layout(R.layout.adapter_item_feed_trip_event)
-public class TripFeedItemCell extends FeedHeaderCell<TripFeedItem> {
+public class TripFeedItemCell extends FeedItemCell<TripFeedItem> {
 
     @Inject
     @ForActivity
@@ -44,10 +44,9 @@ public class TripFeedItemCell extends FeedHeaderCell<TripFeedItem> {
     }
 
     @Override
-    protected void itemClicked() {
-        tripCell.actionItemClick();
-        getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(),
-                FeedEntityHolder.Type.TRIP));
+    protected void openItemDetails() {
+        super.openItemDetails();
+        getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(), FeedEntityHolder.Type.TRIP));
     }
 
     @Override

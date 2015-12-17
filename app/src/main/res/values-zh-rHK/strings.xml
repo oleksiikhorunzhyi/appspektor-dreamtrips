@@ -7,6 +7,7 @@
     <string name="membership">會員</string>
     <string name="trip_images">旅行圖片</string>
     <string name="bucket_list">願望清單</string>
+    <string name="dtl">發現</string>
     <string name="my_profile">我的個人資料</string>
     <string name="terms">條款</string>
     <string name="terms_of_service">服務條款</string>
@@ -22,6 +23,7 @@
     <string name="action_map">地圖</string>
     <string name="action_like">點讚</string>
     <string name="title_activity_login">登錄活動</string>
+    <string name="trips">DreamTrips</string>
     <string name="drawer_open">已打開的目錄</string>
     <string name="drawer_close">已關閉的目錄</string>
     <string name="empty"/>
@@ -31,6 +33,7 @@
     <string name="logout_dialog_negative_btn">取消</string>
     <string name="member_images">會員圖片</string>
     <string name="my_images">我的圖片</string>
+    <string name="you_should_be_here">You Should Be Here</string>
     <string name="title_activity_full_screen_photo">顯示全屏圖片</string>
     <string name="skip_login">跳過登錄</string>
     <string name="duration">%d 晚</string>
@@ -293,6 +296,7 @@
     <string name="social_add_friend_no">否</string>
     <string name="social_add_friend_title">添加好友</string>
     <string name="social_add_friend_content" formatted="false">添加%s為您的好友？</string>
+    <string name="social_postfix_mutual_friends_one">%d共同朋友</string>
     <string name="social_postfix_mutual_friends">%d共同好友</string>
     <string name="social_user_wrapper_cell_actions">行動</string>
     <string name="social_remove_friend_title">解除好友</string>
@@ -376,22 +380,13 @@
     <string name="configuration_failed">配置加載失敗</string>
     <string name="email_app_choose_dialog_title">選擇應用程序</string>
 
-    <plurals name="users_who_liked">
-        <item quantity="one">%d用戶點了贊</item>
-        <item quantity="other">%d用戶點了贊</item>
-    </plurals>
+    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
+    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
+    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
 
-    <plurals name="users_who_liked_with_name">
-        <item quantity="zero">@string/users_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
-
-    <plurals name="account_who_liked_item">
-        <item quantity="zero">@string/account_who_liked_with_first_zero</item>
-        <item quantity="one">@string/users_who_liked_with_first_single</item>
-        <item quantity="other">@string/users_who_liked_with_first_multiple</item>
-    </plurals>
+    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
+    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
+    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
     <string name="account_who_liked_with_first_zero" formatted="false">%s點了贊</string>
     <string name="users_who_liked_with_first_zero" formatted="false">%s點了贊</string>
@@ -440,15 +435,11 @@
     <string name="all">全部</string>
     <string name="you">您</string>
 
-    <plurals name="likes_count">
-        <item quantity="one">%d個贊</item>
-        <item quantity="other">%d個贊</item>
-    </plurals>
+    <string name="likes_count_one">%d個贊</string>
+    <string name="likes_count_other">%d個贊</string>
 
-    <plurals name="comments_count">
-        <item quantity="one">%d條評論</item>
-        <item quantity="other">%d條評論</item>
-    </plurals>
+    <string name="comments_count_one">%d條評論</string>
+    <string name="comments_count_other">%d條評論</string>
 
     <string name="feed_edit_item">編輯</string>
     <string name="feed_delete_item">刪除</string>
@@ -458,12 +449,38 @@
 
     <string name="no_feed">您將在此看到您好友的活動。點擊下方鏈接尋找您的好友</string>
     <string name="search_friends">搜索好友</string>
+
+    <string name="feed_share_post">分享帖子</string>
+    <string name="feed_share_photos">分享照片</string>
+    <string name="feed_view_profile_btn">查看個人資料</string>
+    <string name="feed_close_friends">密友</string>
     <string name="start_searching">鍵入開始搜索</string>
+
+    <string name="people_liked_one">%s 點贊的</string>
+    <string name="people_liked_other">%s 人們喜歡</string>
 
     <string name="terms_and_conditions_title">條款和條件</string>
     <string name="terms_and_conditions_subtitle">請閱讀並接受以下條款和條件以繼續進行</string>
     <string name="terms_and_conditions_checkbox">點擊此處來接受條款和條件</string>
     <string name="terms_and_conditions_accept">決定參加</string>
     <string name="terms_and_conditions_reject">現在不參加</string>
+
+    <string name="camera">相機</string>
+    <string name="add_from_facebook">從Facebook添加</string>
+
+    <string name="photos_selected">%d 選擇</string>
+
+    <string name="no_friends">您在這個列表中尚無朋友</string>
+    <string name="feed_add_friends">添加朋友</string>
+    <string name="all_friends">所有朋友</string>
+    <string name="trip_view_and_book"><![CDATA[查看並預定它]]></string>
+    <string name="accept_all">接受所有請求</string>
+    <string name="request_count_desc">您有%d個新交友請求</string>
+
+    <string name="user_mutual_friends">共同朋友</string>
+    <string name="no_mutual_friends">您沒有任何共同朋友</string>
+
+    <string name="photo_limitation_message">請最多選擇%d張照片</string>
+    <string name="pending">朋友</string>
 
 </resources>

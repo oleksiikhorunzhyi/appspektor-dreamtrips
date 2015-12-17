@@ -55,11 +55,11 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
             switch (event.getState()) {
                 case ADDED:
                     doRequest(new AddFriendToGroupCommand(groupId, userIds), callback);
-                    friend.getCircleIds().add(groupId);
+                    friend.getCircles().add(event.getCircle());
                     break;
                 case REMOVED:
                     doRequest(new DeleteFriendFromGroupCommand(groupId, userIds), callback);
-                    friend.getCircleIds().remove(groupId);
+                    friend.getCircles().remove(event.getCircle());
                     break;
             }
         }, event.getCircle().getId(), SystemClock.uptimeMillis() + 300);

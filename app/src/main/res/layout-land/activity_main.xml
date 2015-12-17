@@ -2,7 +2,6 @@
 <android.support.v4.widget.DrawerLayout
     android:id="@+id/drawer"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -20,9 +19,8 @@
             tools:layout="@layout/fragment_navigation_drawer"/>
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_actionbar"
@@ -43,9 +41,8 @@
 
                 <FrameLayout
                     android:id="@+id/container_main"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
             </LinearLayout>
 
@@ -59,14 +56,11 @@
         android:layout_height="match_parent"
         android:visibility="gone"/>
 
-    <fragment
-        android:id="@+id/fragment_filters"
-        android:name="com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment"
+    <FrameLayout
+        android:id="@+id/container_filters"
         android:layout_width="@dimen/navigation_drawer_width_filter"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:layout="@layout/fragment_navigation_drawer"
-        tools:layout="@layout/layout_filters"/>
-
+        />
 
 </android.support.v4.widget.DrawerLayout>

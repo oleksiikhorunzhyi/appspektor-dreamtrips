@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.cell;
 
+import android.graphics.PointF;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,12 +53,14 @@ public class PhotoCell extends AbstractCell<IFullScreenObject> {
         }
 
         Image fsImage = getModelObject().getFSImage();
+        draweeViewPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
 
         if (fsImage.isFromFile()) {
             draweeViewPhoto.setImageURI(Uri.parse(fsImage.getUrl()));
         } else {
             draweeViewPhoto.setImageURI(Uri.parse(fsImage.getThumbUrl(itemView.getResources())));
         }
+
     }
 
     @Override

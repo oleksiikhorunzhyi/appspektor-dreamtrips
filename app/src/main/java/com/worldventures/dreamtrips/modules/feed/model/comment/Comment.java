@@ -14,6 +14,10 @@ public class Comment implements Parcelable, Serializable, UidItem {
 
     String uid;
     String parent_id;
+    /**
+     * Parent entity uid
+     */
+    String originId;
     String text;
     User user;
     @SerializedName("created_at")

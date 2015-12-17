@@ -127,6 +127,10 @@ public class DateTimeUtils {
         return calendarA.getTime();
     }
 
+    public static Date mergeDateTime(String date, String time) {
+        return mergeDateTime(dateFromString(date), timeFromString(time));
+    }
+
     public static String convertSecondsToString(int seconds) {
         SimpleDateFormat formatter = new SimpleDateFormat("mm:ss", Locale.getDefault());
         return formatter.format(new Date(seconds * 1000L));

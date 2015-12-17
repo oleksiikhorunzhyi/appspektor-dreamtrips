@@ -18,7 +18,6 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -42,19 +41,12 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 
 
 @Layout(R.layout.fragment_notification)
 @MenuResource(R.menu.menu_notifications)
 public class NotificationFragment extends BaseFragment<NotificationPresenter> implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.notifications)
     EmptyRecyclerView notifications;
@@ -79,8 +71,8 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
         friendsBadge.setOnClickListener(v ->
                 NavigationBuilder.create()
@@ -93,7 +85,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter = new NotificationAdapter(getActivity(), injectorProvider);
+        adapter = new NotificationAdapter(getActivity(), this);
         adapter.setHasStableIds(true);
 
         this.adapter.registerCell(PhotoFeedItem.class, NotificationCell.class);
@@ -187,11 +179,6 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
     }
 
     @Override
-    public void openDetails(FeedItem feedItem) {
-
-    }
-
-    @Override
     public void onRefresh() {
         getPresenter().reload();
     }
@@ -207,7 +194,7 @@ public class NotificationFragment extends BaseFragment<NotificationPresenter> im
 
         private static final long LOADER_ID = Long.MIN_VALUE;
 
-        public NotificationAdapter(Context context, Provider<Injector> injector) {
+        public NotificationAdapter(Context context, Injector injector) {
             super(context, injector);
         }
 

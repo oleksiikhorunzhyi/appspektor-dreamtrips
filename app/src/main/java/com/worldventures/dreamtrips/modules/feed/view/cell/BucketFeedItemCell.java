@@ -20,14 +20,14 @@ import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
-public class BucketFeedItemCell extends FeedHeaderCell<BucketFeedItem> {
+public class BucketFeedItemCell extends FeedItemCell<BucketFeedItem> {
 
     @InjectView(R.id.imageViewCover)
     SimpleDraweeView imageViewCover;

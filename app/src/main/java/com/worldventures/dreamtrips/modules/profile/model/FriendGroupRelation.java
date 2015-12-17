@@ -23,8 +23,10 @@ public class FriendGroupRelation {
     }
 
     public boolean isFriendInCircle() {
-        return Queryable.from(friend.getCircleIds()).any(element -> {
-            return element.equals(circle.getId());
+        if (friend.getCircles() == null) return false;
+        //
+        return Queryable.from(friend.getCircles()).any(element -> {
+            return element.equals(circle);
         });
     }
 

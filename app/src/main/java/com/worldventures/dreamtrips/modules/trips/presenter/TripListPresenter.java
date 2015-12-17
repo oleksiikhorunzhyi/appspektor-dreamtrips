@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.app.Activity;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
@@ -11,14 +12,14 @@ import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
+import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
-import com.worldventures.dreamtrips.core.utils.events.LikeTripEvent;
+import com.worldventures.dreamtrips.core.utils.events.LikeTripPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.api.LikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.api.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -37,7 +38,8 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     Prefs prefs;
     @Inject
     BucketItemManager bucketItemManager;
-
+    @Inject
+    FeedEntityManager entityManager;
     private boolean loadFromApi;
     private boolean loadWithStatus;
 
@@ -103,6 +105,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
             }
         };
         adapterController.setSpiceManager(dreamSpiceManager);
+        entityManager.setRequestingPresenter(this);
     }
 
     public void takeView(View view) {
@@ -153,23 +156,24 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     // Like
     ///////////////////////////////////////////////////////////////////////////
 
-    public void onEvent(LikeTripEvent event) {
-        onItemLike(event.getTrip());
+    public void onEvent(LikeTripPressedEvent event) {
+        if (!event.getTrip().isLiked()) {
+            entityManager.like(event.getTrip());
+        } else {
+            entityManager.unlike(event.getTrip());
+        }
     }
 
-    public void onItemLike(TripModel trip) {
-        DreamTripsRequest<Void> request = trip.isLiked() ?
-                new LikeEntityCommand(trip.getUid()) :
-                new UnlikeEntityCommand(trip.getUid());
-
-        doRequest(request, (object) -> {
+    public void onEvent(EntityLikedEvent event) {
+        TripModel trip = Queryable.from(cachedTrips).firstOrDefault(element -> element.getUid().equals(event.getFeedEntity().getUid()));
+        if (trip != null) {
+            trip.syncLikeState(event.getFeedEntity());
             onSuccess(trip);
-            sweetDialogHelper.notifyTripLiked(activity, trip);
-        }, (spiceException) -> {
-            trip.setLiked(!trip.isLiked());
             view.dataSetChanged();
-            handleError(spiceException);
-        });
+            if (view.isVisibleOnScreen()) {
+                sweetDialogHelper.notifyTripLiked(activity, trip);
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

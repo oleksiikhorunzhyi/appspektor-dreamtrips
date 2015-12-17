@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
+import android.support.annotation.StringDef;
 import android.util.Log;
 
 import com.facebook.AppEventsLogger;
@@ -19,13 +19,23 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import butterknife.InjectView;
+
+import static android.text.TextUtils.isEmpty;
+import static com.facebook.widget.FacebookDialog.ShareDialogFeature.SHARE_DIALOG;
 
 @Layout(R.layout.share_fragment)
 public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBundle>
         implements SharePresenter.View {
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({FB, TW})
+    public @interface ShareType {
+    }
 
     public static final String FB = "fb";
     public static final String TW = "tw";
@@ -88,39 +98,30 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
     }
 
     @Override
-    public void shareFBDialog(String url, String link, String text) {
-        if (FacebookDialog.canPresentShareDialog(getActivity().getApplicationContext(),
-                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-            FacebookDialog.ShareDialogBuilder shareDialog =
-                    new FacebookDialog.ShareDialogBuilder(getActivity());
-            if (!TextUtils.isEmpty(url)) {
-                shareDialog.setPicture(url);
-            }
-            if (TextUtils.isEmpty(link)
-                    && !TextUtils.isEmpty(url)) {
-                shareDialog.setLink(url);
-            }
-            if (!TextUtils.isEmpty(link)) {
-                shareDialog.setLink(link);
-            }
-            if (!TextUtils.isEmpty(text)) {
-                shareDialog.setDescription(text);
-            }
+    public void shareFBDialog(String pictureUrl, String linkToShare, String text) {
+        if (FacebookDialog.canPresentShareDialog(getActivity(), SHARE_DIALOG)) {
+            FacebookDialog.ShareDialogBuilder shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity());
+            // set link from arg or pictureUrl if arg is empty
+            if (!isEmpty(linkToShare)) shareDialog.setLink(linkToShare);
+            else if (!isEmpty(pictureUrl)) shareDialog.setLink(pictureUrl);
+            shareDialog.setPicture(pictureUrl);
+            shareDialog.setDescription(text);
+            shareDialog.setName(getString(R.string.app_name));
 
             uiHelper.trackPendingDialogCall(shareDialog.build().present());
         } else {
-            publishFeedDialog(url, link, text, "DreamTrips");
+            publishFeedDialog(pictureUrl, linkToShare, text);
         }
     }
 
-    private void publishFeedDialog(String picture, String link, String text, String appName) {
+    private void publishFeedDialog(String picture, String link, String text) {
         Session session = Session.getActiveSession();
         if (session != null && session.isOpened()) {
             Bundle params = new Bundle();
-            params.putString("name", appName);
-            params.putString("caption", text);
+            params.putString("name", getString(R.string.app_name));
             params.putString("link", link);
             params.putString("picture", picture);
+            params.putString("description", text);
             WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(getActivity(), Session.getActiveSession(), params)).build();
             feedDialog.setOnCompleteListener((bundle, e) -> {
                 if (feedDialog != null) {
@@ -140,7 +141,7 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
                 Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
                 if (session != null && session.isOpened()) {
                     getActivity().runOnUiThread(() -> new Handler().postDelayed(() ->
-                            getPresenter().openShareActivity(picture, link, text), 150));
+                            activityRouter.openShare(picture, link, text, ShareFragment.FB), 150));
                 }
             });
             loginButton.performClick();

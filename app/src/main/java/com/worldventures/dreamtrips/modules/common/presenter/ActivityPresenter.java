@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
 
+import icepick.State;
+
 public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presenter<VT> {
 
     @Inject
@@ -20,11 +22,19 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     protected LocaleSwitcher localeSwitcher;
     @Inject
     protected LocaleHelper localeHelper;
+    @State
+    boolean isTermsShown;
 
     @Override
     public void onInjected() {
         super.onInjected();
         setupUserLocale();
+    }
+
+    @Override
+    public void takeView(VT view) {
+        super.takeView(view);
+        checkTermsAndConditionFromHolder();
     }
 
     @Override
@@ -45,14 +55,26 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     }
 
     public void onEventMainThread(UpdateUserInfoEvent event) {
-        if (event.user == null || event.user.isTermsAccepted() || !canShowTermsDialog()) return;
-        //
-        view.showTermsDialog();
+        if (checkTermsAndConditions(event.user)) return;
         eventBus.removeStickyEvent(event);
     }
 
+    private void checkTermsAndConditionFromHolder() {
+        Optional<UserSession> userSession = appSessionHolder.get();
+        if (userSession.isPresent()) {
+            checkTermsAndConditions(userSession.get().getUser());
+        }
+    }
+
+    private boolean checkTermsAndConditions(User user) {
+        if (user == null || user.isTermsAccepted() || !canShowTermsDialog()) return true;
+        isTermsShown = true;
+        view.showTermsDialog();
+        return false;
+    }
+
     protected boolean canShowTermsDialog() {
-        return true;
+        return !activity.isFinishing() && !isTermsShown;
     }
 
     public interface View extends Presenter.View {

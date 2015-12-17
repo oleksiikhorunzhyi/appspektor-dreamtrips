@@ -54,7 +54,7 @@ public class FacebookPhotoFragment extends BaseFragment<FacebookPhotoPresenter> 
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
-        adapter = new BaseArrayListAdapter(getActivity(), injector);
+        adapter = new BaseArrayListAdapter(getActivity(), this);
         adapter.registerCell(FacebookPhoto.class, FacebookPhotoCell.class);
 
         toolbar.setTitle(R.string.fab_select_photo);

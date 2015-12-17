@@ -4,9 +4,10 @@ import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -15,11 +16,10 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.RouterHelper;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
+import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.core.utils.DeleteTokenGcmTask;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -46,6 +47,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Inject
     RootComponentsProvider rootComponentsProvider;
+    @Inject
+    LogoutDelegate logoutDelegate;
 
     private String coverTempFilePath;
 
@@ -56,8 +59,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     int REQUESTER_ID = 3745742;
 
-    private RouterHelper routerHelper;
-
     public AccountPresenter() {
         super();
     }
@@ -65,7 +66,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     protected void loadProfile() {
         view.startLoading();
-        doRequest(new GetProfileQuery(), this::onProfileLoaded);
+        doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
     }
 
     @Override
@@ -114,52 +115,28 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     protected void onProfileLoaded(User user) {
         super.onProfileLoaded(user);
-        UserSession userSession = appSessionHolder.get().get();
-        userSession.setUser(user);
-        appSessionHolder.put(userSession);
     }
 
     public void logout() {
-        String token = snappyRepository.getGcmRegToken();
-        if (token != null) {
-            doRequest(new UnsubscribeDeviceCommand(token), aVoid -> deleteTokenInGcm());
-        } else {
-            clearUserDataAndFinish();
-        }
-    }
-
-    private void deleteTokenInGcm (){
-        new DeleteTokenGcmTask(context, (task, removeGcmTokenSucceed) -> {
-            clearUserDataAndFinish();
-        }).execute();
-    }
-
-    private void clearUserDataAndFinish(){
-        snappyRepository.clearAll();
-        appSessionHolder.destroy();
-        routerHelper.logout();
+       logoutDelegate.logout();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
-        routerHelper = new RouterHelper(activityRouter);
     }
 
     @Override
     public void openBucketList() {
         shouldReload = true;
-        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_LIST);
+        view.openBucketList(Route.BUCKET_LIST, null);
     }
 
     @Override
     public void openTripImages() {
-        NavigationBuilder
-                .create()
-                .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES))
-                .move(Route.ACCOUNT_IMAGES);
+        view.openTripImages(Route.ACCOUNT_IMAGES,
+                new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES, getAccount().getId()));
     }
 
     public void photoClicked() {
@@ -214,7 +191,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId(), date);
+        return new GetUserTimelineQuery(user.getId());
     }
 
     @Override
@@ -226,6 +203,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     /////// Photo picking
     ////////////////////////////////////////
 
+    public void onEvent(AttachPhotoEvent event) {
+        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
+            pickImage(event.getRequestType());
+    }
+
     public void setCallbackType(int callbackType) {
         this.callbackType = callbackType;
     }
@@ -235,13 +217,22 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == REQUESTER_ID) {
+        if (view.isVisibleOnScreen() && event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(ImagePickedEvent.class);
             imageSelected(event.getImages()[0]);
         }
     }
 
+    public void attachImage(List<ChosenImage> chosenImages) {
+        if (chosenImages.size() == 0) {
+            return;
+        }
+
+        view.hidePhotoPicker();
+
+        imageSelected(chosenImages.get(0));
+    }
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
@@ -262,21 +253,22 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     public void onAvatarChosen(ChosenImage image) {
         if (image != null) {
-            String fileThumbnail = image.getFileThumbnail();
-            if (ValidationUtils.isUrl(fileThumbnail)) {
-                cacheFacebookImage(fileThumbnail, this::uploadAvatar);
+            String filePath = image.getFilePathOriginal();
+            if (ValidationUtils.isUrl(filePath)) {
+                cacheFacebookImage(filePath, this::uploadAvatar);
             } else {
-                uploadAvatar(fileThumbnail);
+                uploadAvatar(filePath);
             }
         }
     }
 
     public void onCoverChosen(ChosenImage image) {
         if (image != null) {
-            if (ValidationUtils.isUrl(image.getFileThumbnail())) {
-                cacheFacebookImage(image.getFileThumbnail(), path -> Crop.prepare(path).startFrom((Fragment) view));
+            String filePath = image.getFilePathOriginal();
+            if (ValidationUtils.isUrl(filePath)) {
+                cacheFacebookImage(filePath, path -> Crop.prepare(path).startFrom((Fragment) view));
             } else {
-                Crop.prepare(image.getFileThumbnail()).startFrom((Fragment) view);
+                Crop.prepare(filePath).startFrom((Fragment) view);
             }
         }
     }
@@ -295,6 +287,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         void openCoverPicker();
 
         void updateBadgeCount(int count);
+
+        void inject(Object object);
+
+        void hidePhotoPicker();
     }
 
 }

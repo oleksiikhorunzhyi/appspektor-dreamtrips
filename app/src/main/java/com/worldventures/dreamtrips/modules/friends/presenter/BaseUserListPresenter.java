@@ -33,12 +33,14 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
     private int previousTotal = 0;
     private boolean loading = true;
-
+    private int nextPage = 1;
     protected List<User> users = new ArrayList<>();
     protected List<Circle> circles;
 
     @Inject
     SnappyRepository snappyRepository;
+
+    private boolean loadUsersRequestLocked;
 
     @Override
     public void onInjected() {
@@ -49,7 +51,12 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        reload();
+        if (isNeedPreload())
+            reload();
+    }
+
+    protected boolean isNeedPreload() {
+        return true;
     }
 
     @Override
@@ -62,12 +69,16 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void reload() {
+        loadUsersRequestLocked = true;
+        nextPage = 1;
         resetLazyLoadFields();
         view.startLoading();
-        doRequest(getUserListQuery(1), this::onUsersLoaded);
+        doRequest(getUserListQuery(nextPage), this::onUsersLoaded);
     }
 
     protected void onUsersLoaded(ArrayList<User> freshUsers) {
+        loadUsersRequestLocked = false;
+        nextPage++;
         users.clear();
         users.addAll(freshUsers);
         view.refreshUsers(users);
@@ -75,6 +86,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     protected void onUsersAdded(ArrayList<User> freshUsers) {
+        loadUsersRequestLocked = false;
+        nextPage++;
         users.addAll(freshUsers);
         view.refreshUsers(users);
         view.finishLoading();
@@ -84,6 +97,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     public void handleError(SpiceException error) {
         super.handleError(error);
         if (view != null) view.finishLoading();
+        loadUsersRequestLocked = false;
     }
 
     protected abstract Query<ArrayList<User>> getUserListQuery(int page);
@@ -93,12 +107,11 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading
-                && lastVisible >= totalItemCount - 1
-                && totalItemCount % getPerPageCount() == 0) {
+        if (!loading && !loadUsersRequestLocked && lastVisible >= totalItemCount - 1) {
             view.startLoading();
-            doRequest(getUserListQuery(users.size() / getPerPageCount() + 1), this::onUsersAdded);
             loading = true;
+            loadUsersRequestLocked = true;
+            doRequest(getUserListQuery(nextPage), this::onUsersAdded);
         }
     }
 
@@ -129,23 +142,18 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void onEvent(CancelRequestEvent event) {
-        if (view.isVisibleOnScreen()) {
-            view.startLoading();
-            doRequest(new DeleteRequestCommand(event.getUser().getId()),
-                    object -> {
-                        User user = event.getUser();
-                        user.setRelationship(User.Relationship.NONE);
-                        userActionSucceed(user);
-                    });
-        }
+        deleteRequest(event.getUser());
     }
 
     public void onEvent(HideRequestEvent event) {
+        deleteRequest(event.getUser());
+    }
+
+    private void deleteRequest(User user) {
         if (view.isVisibleOnScreen()) {
             view.startLoading();
-            doRequest(new DeleteRequestCommand(event.getUser().getId()),
+            doRequest(new DeleteRequestCommand(user.getId()),
                     object -> {
-                        User user = event.getUser();
                         user.setRelationship(User.Relationship.NONE);
                         userActionSucceed(user);
                     });
@@ -185,13 +193,12 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             if (friend.getId() == event.getFriend().getId()) {
                 switch (event.getState()) {
                     case REMOVED:
-                        friend.getCircleIds().remove(event.getCircle().getId());
+                        friend.getCircles().remove(event.getCircle());
                         break;
                     case ADDED:
-                        friend.getCircleIds().add(event.getCircle().getId());
+                        friend.getCircles().add(event.getCircle());
                         break;
                 }
-                friend.setCircles(circles);
                 view.refreshUsers(users);
                 break;
             }
@@ -206,8 +213,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void onEvent(UserClickedEvent event) {
-        if (view.isVisibleOnScreen())
+        if (view.isVisibleOnScreen()) {
             view.openUser(new UserBundle(event.getUser()));
+            eventBus.cancelEventDelivery(event);
+        }
     }
 
     protected abstract void userStateChanged(User user);
@@ -231,7 +240,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
 
     protected int getPerPageCount() {
-        return 30;
+        return 100;
     }
 
     public interface View extends Presenter.View {

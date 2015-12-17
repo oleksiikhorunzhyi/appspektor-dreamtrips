@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import android.accounts.AccountManager;
 import android.content.ContentProviderOperation;
 import android.content.Intent;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
 import timber.log.Timber;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
@@ -51,13 +53,29 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     @ForApplication
     Injector injector;
     WeakHandler queryHandler = new WeakHandler();
-    private List<Member> members = new ArrayList<>();
-    private List<Member> selectedMembers = new ArrayList<>();
+
+    @State
+    ArrayList<Member> members = new ArrayList<>();
 
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
         view.finishLoading();
+    }
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        if (members.isEmpty()) {
+            loadMembers();
+        } else {
+            handleResponse();
+        }
+    }
+
+    @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
     }
 
     public void loadMembers() {
@@ -66,24 +84,24 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         PhoneContactRequest request = new PhoneContactRequest(from);
         injector.inject(request);
         doRequest(request, members -> {
-            view.finishLoading();
             InvitePresenter.this.members = members;
-            sortContacts();
-            resetSelected();
-            setMembers();
-            getInvitations();
-            openTemplateInView();
-            TrackingHelper.inviteShareContacts(getAccountUserId());
+            handleResponse();
         });
     }
 
-    private void getInvitations() {
-        view.startLoading();
+    private void handleResponse() {
         doRequest(new GetInvitationsQuery(), inviteTemplates -> {
             view.finishLoading();
+            sortContacts();
+            sortSelected();
             linkHistoryWithMembers(inviteTemplates);
             setMembers();
+            openTemplateInView();
+            showContinueBtnIfNeed();
+            view.setSelectedCount(Queryable.from(members).count(Member::isChecked));
         });
+
+        TrackingHelper.inviteShareContacts(getAccountUserId());
     }
 
     private void linkHistoryWithMembers(ArrayList<History> inviteTemplates) {
@@ -183,6 +201,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                 }
                 view.setFilter(query);
                 sortSelected();
+                updatePositions(query);
             }
         }, 150L);
     }
@@ -193,28 +212,32 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         setMembers();
     }
 
-    public void searchHidden() {
-        if (selectedMembers != null && selectedMembers.size() > 0 && view != null) {
-            view.showContinue();
+    public void showContinueBtnIfNeed() {
+        int count = Queryable.from(members).count(element -> element.isChecked());
+        if (count > 0 && view != null) {
+            view.setSelectedCount(count);
+            view.showNextStepButtonVisibility(true);
         }
     }
 
     public void onEventMainThread(MemberCellSelectedEvent event) {
         boolean isVisible = isVisible();
-        selectedMembers = Queryable.from(members).filter(Member::isChecked).toList();
 
         eventBus.removeStickyEvent(MemberStickyEvent.class);
-        eventBus.postSticky(new MemberStickyEvent(selectedMembers));
+        eventBus.postSticky(new MemberStickyEvent(Queryable.from(members).filter(element -> {
+            return element.isChecked();
+        }).toList()));
 
-        view.showNextStepButtonVisibility(!view.isTabletLandscape() && isVisible);
-        view.setSelectedCount(selectedMembers.size());
+        view.showNextStepButtonVisibility(isVisible);
+        int count = Queryable.from(members).count(element -> element.isChecked());
+        view.setSelectedCount(count);
 
         if (event.isSelected()) {
             view.move(event.getMember(), 0);
         } else {
             int to = event.getMember().getOriginalPosition();
             Member lastSelectedMember = Queryable.from(members).lastOrDefault((member) -> member.isChecked());
-            int lastSelected = lastSelectedMember != null ? members.indexOf(lastSelectedMember) : 0;
+            int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
             view.move(event.getMember(), to < lastSelected ? lastSelected : to);
         }
     }
@@ -287,8 +310,18 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void setMembers() {
-        Queryable.from(members).forEachR((member) -> member.setOriginalPosition(members.indexOf(member)));
+        setMembers(null);
+    }
+
+    private void setMembers(String query) {
+        updatePositions(query);
         view.setMembers(new ArrayList<>(members));
+    }
+
+    private void updatePositions(String query) {
+        List<Member> temporaryList = TextUtils.isEmpty(query) ? members
+                : Queryable.from(members).filter(item -> item.containsQuery(query)).toList();
+        Queryable.from(temporaryList).forEachR((member) -> member.setOriginalPosition(temporaryList.indexOf(member)));
     }
 
     private void sortContacts() {
@@ -296,14 +329,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void sortSelected() {
-        view.sort((lhs, rhs) -> lhs.isChecked() && !rhs.isChecked() ? -1 :
-                !lhs.isChecked() && rhs.isChecked() ? 1 :
-                        0);
+        Collections.sort(members, (lhs, rhs) -> lhs.isChecked() && !rhs.isChecked() ? -1 : !lhs.isChecked() && rhs.isChecked() ? 1 : 0);
     }
 
     private void resetSelected() {
         Queryable.from(members).forEachR(m -> m.setIsChecked(false));
-        if (selectedMembers != null) selectedMembers.clear();
         view.setSelectedCount(0);
         view.showNextStepButtonVisibility(false);
     }
@@ -324,8 +354,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         void showNextStepButtonVisibility(boolean isVisible);
 
         void setSelectedCount(int count);
-
-        void showContinue();
 
         void move(Member member, int to);
     }

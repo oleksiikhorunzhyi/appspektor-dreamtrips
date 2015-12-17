@@ -10,7 +10,7 @@
 
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/avatar"
+        android:id="@+id/sdv_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="@dimen/spacing_normal"
@@ -25,7 +25,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -34,7 +34,7 @@
             tools:text="Jon Snow"/>
 
         <TextView
-            android:id="@+id/company"
+            android:id="@+id/tv_company"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -43,11 +43,10 @@
             tools:text="Adobe"/>
 
         <TextView
-            android:id="@+id/info"
+            android:id="@+id/tv_mutual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:visibility="gone"
             android:textSize="14sp"
             tools:text="10 mutual friends"/>
     </LinearLayout>

@@ -16,8 +16,6 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -30,6 +28,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
@@ -39,7 +38,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 
@@ -47,10 +45,6 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_friend)
 public class RequestsFragment extends BaseFragment<RequestsPresenter>
         implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.requests)
     RecyclerView recyclerView;
@@ -98,9 +92,9 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(getLayoutManager());
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new BaseArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(User.class, RequestCell.class);
-        adapter.registerCell(String.class, RequestHeaderCell.class);
+        adapter.registerCell(RequestHeaderModel.class, RequestHeaderCell.class);
 
         recyclerView.setAdapter(adapter);
 
@@ -116,7 +110,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return adapter.getItem(position) instanceof String ? spanCount : 1;
+                    return adapter.getItem(position) instanceof RequestHeaderModel ? spanCount : 1;
                 }
             });
             return gridLayoutManager;

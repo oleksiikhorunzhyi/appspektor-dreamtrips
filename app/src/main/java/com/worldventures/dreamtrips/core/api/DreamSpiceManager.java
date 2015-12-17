@@ -15,6 +15,7 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,12 +62,16 @@ public class DreamSpiceManager extends SpiceManager {
     protected EventBus eventBus;
     @Inject
     AuthorizedDataUpdater authorizedDataUpdater;
-
+    @Inject
+    DTErrorHandler dtErrorHandler;
+    @Inject
+    LogoutDelegate logoutDelegate;
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
         injector.inject(this);
         Ln.getConfig().setLoggingLevel(Log.ERROR);
+        logoutDelegate.setDreamSpiceManager(this);
     }
 
     public <T> void execute(final SpiceRequest<T> request) {
@@ -81,7 +87,8 @@ public class DreamSpiceManager extends SpiceManager {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
-                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                        //logout, token is invalid
+                        logoutDelegate.logout();
                     }
                 });
             }
@@ -103,7 +110,8 @@ public class DreamSpiceManager extends SpiceManager {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
-                        failureListener.handleError(new SpiceException(exception.getMessage()));
+                        //logout, token is invalid
+                        logoutDelegate.logout();
                     }
                 });
             }
@@ -123,7 +131,7 @@ public class DreamSpiceManager extends SpiceManager {
 
             loginUser(userPassword, username, onLoginSuccess);
         } else {
-            failureListener.handleError(new SpiceException(getErrorMessage(error)));
+            failureListener.handleError(new SpiceException(getErrorMessage(error), dtErrorHandler.handleSpiceError(error)));
         }
     }
 
@@ -156,7 +164,7 @@ public class DreamSpiceManager extends SpiceManager {
             authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
         }, spiceError -> {
-            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError)));
+            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError), dtErrorHandler.handleSpiceError(spiceError)));
         });
     }
 

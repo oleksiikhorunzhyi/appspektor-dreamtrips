@@ -53,6 +53,16 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     protected int priorityEventBus = 0;
 
+    protected ApiErrorPresenter apiErrorPresenter;
+
+    public Presenter() {
+        apiErrorPresenter = provideApiErrorPresenter();
+    }
+
+    protected ApiErrorPresenter provideApiErrorPresenter() {
+        return new ApiErrorPresenter();
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Lifecycle
     ///////////////////////////////////////////////////////////////////////////
@@ -80,6 +90,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     public void dropView() {
         this.view = null;
+        apiErrorPresenter.dropView();
         if (eventBus.isRegistered(this)) eventBus.unregister(this);
     }
 
@@ -132,26 +143,28 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     @Override
     public <T> void doRequest(SpiceRequest<T> request) {
-        dreamSpiceManager.execute(request, r -> {}, this);
+        dreamSpiceManager.execute(request, r -> {
+        }, this);
     }
 
     @Override
     public <T> void doRequest(SpiceRequest<T> request,
-                                 DreamSpiceManager.SuccessListener<T> successListener) {
+                              DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, successListener, this);
     }
 
     @Override
     public <T> void doRequestWithCacheKey(SpiceRequest<T> request, String cacheKey,
-                                             DreamSpiceManager.SuccessListener<T> successListener) {
+                                          DreamSpiceManager.SuccessListener<T> successListener) {
         dreamSpiceManager.execute(request, cacheKey, DurationInMillis.ALWAYS_RETURNED,
                 successListener, this);
     }
 
     @Override
+    @Deprecated
     public <T> void doRequest(SpiceRequest<T> request,
-                                 DreamSpiceManager.SuccessListener<T> successListener,
-                                 DreamSpiceManager.FailureListener failureListener) {
+                              DreamSpiceManager.SuccessListener<T> successListener,
+                              DreamSpiceManager.FailureListener failureListener) {
         dreamSpiceManager.execute(request, successListener, failureListener);
     }
 
@@ -164,7 +177,9 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     @Override
     public void handleError(SpiceException error) {
-        if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+        if (apiErrorPresenter.hasView()) {
+            apiErrorPresenter.handleError(error);
+        } else if (error != null && !TextUtils.isEmpty(error.getMessage())) {
             if (!error.getMessage().contains("cancelled")) //hotfix, as robospice doesn't mark spice exception
                 view.informUser(error.getMessage());
         } else {
@@ -188,15 +203,17 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     // View binding
     ///////////////////////////////////////////////////////////////////////////
 
-    public interface View {
+    public interface View extends TabletAnalytic {
         void informUser(int stringId);
 
         void informUser(String string);
 
         void alert(String s);
 
-        boolean isTabletLandscape();
-
         boolean isVisibleOnScreen();
+    }
+
+    public interface TabletAnalytic {
+        boolean isTabletLandscape();
     }
 }

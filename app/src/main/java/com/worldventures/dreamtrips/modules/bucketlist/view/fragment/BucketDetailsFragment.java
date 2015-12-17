@@ -12,25 +12,26 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.fragment.FragmentUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.TripImageClickedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
+import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -39,7 +40,6 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
 import java.util.List;
@@ -146,8 +146,12 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         if (isVisibleOnScreen()) {
             event.getAnchor().setEnabled(false);
             FeedItemMenuBuilder.create(getActivity(), event.getAnchor(), R.menu.menu_feed_entity_edit)
-                    .onDelete(() -> getPresenter().onDelete())
-                    .onEdit(() -> getPresenter().onEdit())
+                    .onDelete(() -> {
+                        if (isVisibleOnScreen()) getPresenter().onDelete();
+                    })
+                    .onEdit(() -> {
+                        if (isVisibleOnScreen()) getPresenter().onEdit();
+                    })
                     .dismissListener(menu -> event.getAnchor().setEnabled(true))
                     .show();
         }
@@ -165,12 +169,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setDescription(String description) {
-        if (TextUtils.isEmpty(description)) {
-            textViewDescription.setVisibility(View.GONE);
-        } else {
-            textViewDescription.setVisibility(View.VISIBLE);
-            textViewDescription.setText(description);
-        }
+        setText(textViewDescription, description);
     }
 
     @Override
@@ -211,11 +210,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     private void setForeignIntentAction() {
         diningSite.setOnClickListener(v -> {
             Intent intent = IntentUtils.browserIntent(diningSite.getText().toString());
-            startActivity(intent);
+            FragmentUtil.startSafely(this, intent);
         });
         diningPhone.setOnClickListener(v -> {
             Intent intent = IntentUtils.callIntnet(diningPhone.getText().toString());
-            startActivity(intent);
+            FragmentUtil.startSafely(this, intent);
         });
     }
 
@@ -231,21 +230,22 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setupDiningView(DiningItem diningItem) {
-        if (diningItem != null) {
-            setText(diningName, diningItem.getName());
-            setText(diningPriceRange, diningItem.getPriceRange());
-            setText(diningAddress, diningItem.getAddress());
-            setText(diningPhone, diningItem.getPhoneNumber());
-            setText(diningSite, diningItem.getUrl());
-            if (TextUtils.isEmpty(diningItem.getUrl()) && TextUtils.isEmpty(diningItem.getPhoneNumber())) {
-                diningDivider.setVisibility(View.GONE);
-            } else {
-                diningDivider.setVisibility(View.VISIBLE);
-            }
-        } else {
+        if (diningItem == null) {
             diningContainer.setVisibility(View.GONE);
+            return;
         }
-
+        //
+        diningContainer.setVisibility(View.VISIBLE);
+        setText(diningName, diningItem.getName());
+        setText(diningPriceRange, diningItem.getPriceRange());
+        setText(diningAddress, diningItem.getAddress());
+        setText(diningPhone, diningItem.getPhoneNumber());
+        setText(diningSite, diningItem.getUrl());
+        if (TextUtils.isEmpty(diningItem.getUrl()) && TextUtils.isEmpty(diningItem.getPhoneNumber())) {
+            diningDivider.setVisibility(View.GONE);
+        } else {
+            diningDivider.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -269,7 +269,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void done() {
-        getActivity().onBackPressed();
+        if (getActivity() instanceof ComponentActivity)
+            getActivity().onBackPressed();
     }
 
     @Override
@@ -283,31 +284,25 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setImages(List<BucketPhoto> photos) {
-        BaseStatePagerAdapter adapter =
-                new BaseStatePagerAdapter(getChildFragmentManager()) {
-                    @Override
-                    public void setArgs(int position, Fragment fragment) {
-                        Bundle args = new Bundle();
-                        BucketPhoto bucketPhoto = photos.get(position);
-                        args.putSerializable(TripImagePagerFragment.EXTRA_PHOTO, bucketPhoto);
-                        fragment.setArguments(args);
-                    }
-                };
-
-
+        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+            @Override
+            public void setArgs(int position, Fragment fragment) {
+                BucketPhoto photo = photos.get(position);
+                ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+            }
+        };
         viewPagerBucketGallery.setAdapter(adapter);
         viewPagerBucketGallery.setCurrentItem(0);
-
-        for (Object photo : photos) {
-            adapter.add(new FragmentItem(TripImagePagerFragment.class, ""));
-        }
+        Queryable.from(photos).forEachR(photo ->
+                adapter.add(new FragmentItem(TripImagePagerFragment.class, ""))
+        );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);
     }
 
 
-    public void onEvent(TripImageClickedEvent event) {
-        if (ViewUtils.isFullVisibleOnScreen(this))
+    public void onEvent(ImageClickedEvent event) {
+        if (ViewUtils.isPartVisibleOnScreen(this))
             getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
     }
 
@@ -361,28 +356,5 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @Override
     public void dismissProgressDialog() {
         progressDialog.dismiss();
-    }
-
-    @Override
-    public void showAddPhotoDialog() {
-        int items = R.array.dialog_add_bucket_photo_multiselect;
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getActivity().getString(R.string.select_photo))
-                .items(items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                            break;
-                        case 1:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                            break;
-                        case 2:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_MULTI_SELECT);
-                            break;
-                    }
-                });
-
-        builder.show();
     }
 }

@@ -15,7 +15,9 @@ import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
+import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -30,6 +32,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -62,7 +65,7 @@ public class ApiModule {
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(Context context, SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
+    RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 UserSession userSession = appSessionHolder.get().get();
@@ -97,6 +100,12 @@ public class ApiModule {
     @Singleton
     ConfigApi provideS3Api(GsonConverter gsonConverter) {
         return createRestAdapter(BuildConfig.S3Api, gsonConverter).create(ConfigApi.class);
+    }
+
+    @Provides
+    @Singleton
+    DtlApi provideDtlApi(RestAdapter adapter) {
+        return adapter.create(DtlApi.class);
     }
 
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {
@@ -139,8 +148,15 @@ public class ApiModule {
         OkHttpClient okHttpClient = new OkHttpClient();
         CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
         okHttpClient.setCookieHandler(cookieManager);
+        //Currently `api/{uid}/likes` (10k+ms)
+        okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+        okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
         return okHttpClient;
     }
 
-
+    @Provides
+    DTErrorHandler providesErrorHandler(Context context) {
+        return new DTErrorHandler(context);
+    }
 }

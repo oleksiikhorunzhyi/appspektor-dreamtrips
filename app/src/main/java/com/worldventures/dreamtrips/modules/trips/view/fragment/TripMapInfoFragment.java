@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
+import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -27,6 +28,7 @@ import butterknife.OnClick;
 public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> implements TripMapInfoPresenter.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
+    TripDetailsViewDelegate tripDetailsViewDelegate;
 
     @InjectView(R.id.imageViewTripImage)
     protected SimpleDraweeView imageViewTripImage;
@@ -57,7 +59,7 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
 
     @Override
     protected TripMapInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripMapInfoPresenter();
+        return new TripMapInfoPresenter((TripModel) getArguments().getSerializable(EXTRA_TRIP));
     }
 
     @Override
@@ -65,7 +67,8 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void afterCreateView(final View rootView) {
         super.afterCreateView(rootView);
-        getPresenter().setTrip((TripModel) getArguments().getSerializable(EXTRA_TRIP));
+        tripDetailsViewDelegate = new TripDetailsViewDelegate(rootView);
+
         ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -94,64 +97,8 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     }
 
     @Override
-    public void setName(String name) {
-        textViewName.setText(name);
-    }
-
-    @Override
-    public void setDates(String date) {
-        textViewDate.setText(date);
-    }
-
-    @Override
-    public void setDesription(String text) {
-        textViewDescription.setText(text);
-    }
-
-    @Override
     public void setImage(String image) {
         imageViewTripImage.setImageURI(Uri.parse(image));
-    }
-
-    @Override
-    public void setPrice(String price) {
-        textViewPrice.setText(price);
-    }
-
-    @Override
-    public void setRedemption(String points) {
-        textViewPoints.setText(points);
-    }
-
-    @Override
-    public void setPointsInvisible() {
-        pointsCountLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setFeatured() {
-        textViewFeatured.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setLocation(String place) {
-        textViewPlace.setText(place);
-    }
-
-    @Override
-    public void setSoldOut() {
-        soldOut.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setLike(boolean liked) {
-        likeView.setChecked(liked);
-    }
-
-    @Override
-    public void setInBucket(boolean inBucket) {
-        addToBucketView.setChecked(inBucket);
-        addToBucketView.setEnabled(!inBucket);
     }
 
     @Override
@@ -175,8 +122,11 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     }
 
     @Override
-    public void setDuration(int count) {
-        //nothing to do here
+    public void setup(TripModel tripModel) {
+        tripDetailsViewDelegate.initTripData(tripModel, getPresenter().getAccount());
+        addToBucketView.setChecked(tripModel.isInBucketList());
+        addToBucketView.setEnabled(!tripModel.isInBucketList());
+        likeView.setChecked(tripModel.isLiked());
     }
 
 }

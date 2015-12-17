@@ -16,4 +16,39 @@ public class TextUtils {
         }
         return text;
     }
+
+    /**
+     * Returns a string containing the tokens joined by delimiters.
+     *
+     * @param tokens varargs to be joined. Strings will be formed from
+     *               the objects by calling object.toString().
+     */
+    public static String join(CharSequence delimiter, Object... tokens) {
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        for (Object token : tokens) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                sb.append(delimiter);
+            }
+            sb.append(token);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Give index of first occurence of subString in superString, all lowercased.
+     * @param superString where to search
+     * @param subString substring to search
+     * @return index of first occurence, if any. Otherwise - returns {@link Integer#MAX_VALUE}
+     */
+    public static int substringLocation(String superString, String subString) {
+        String superLowerCase = superString.toLowerCase();
+        String subLowerCase = subString.toLowerCase();
+
+        if (!superLowerCase.contains(subLowerCase)) return Integer.MAX_VALUE;
+
+        return superLowerCase.indexOf(subLowerCase);
+    }
 }

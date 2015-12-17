@@ -15,8 +15,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -38,7 +36,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 
@@ -55,9 +52,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     protected TextView caption;
 
     @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-    @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
@@ -67,15 +61,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
     private WeakHandler weakHandler;
     private LinearLayoutManager layoutManager;
-
-    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int itemCount = layoutManager.getItemCount();
-            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-            getPresenter().scrolled(itemCount, lastVisibleItemPosition);
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,37 +80,29 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        adapter = new LoaderRecycleAdapter<>(getActivity(), injectorProvider);
+        adapter = new LoaderRecycleAdapter<>(getActivity(), this);
         adapter.registerCell(User.class, FriendCell.class);
 
         recyclerView.setEmptyView(emptyView);
         recyclerView.setAdapter(adapter);
 
-        setLayoutManager();
+        layoutManager = createLayoutManager();
         recyclerView.setLayoutManager(layoutManager);
-        refreshLayout.setOnRefreshListener(this);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
+                checkScrolledItems();
+            }
+        });
+        refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        recyclerView.addOnScrollListener(onScrollListener);
-    }
-
-    private void setLayoutManager() {
-        layoutManager = ViewUtils.isLandscapeOrientation(getActivity()) ?
-                new GridLayoutManager(getActivity(),
-                        ViewUtils.isTablet(getActivity()) ? 3 : 1) :
+    protected LinearLayoutManager createLayoutManager() {
+        return ViewUtils.isLandscapeOrientation(getActivity()) ?
+                new GridLayoutManager(getActivity(), ViewUtils.isTablet(getActivity()) ? 3 : 1) :
                 new LinearLayoutManager(getActivity());
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        recyclerView.removeOnScrollListener(onScrollListener);
     }
 
     @Override
@@ -140,6 +117,16 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     }
 
     @Override
+    public void startLoading() {
+        // timeout was set according to the issue:
+        // https://code.google.com/p/android/issues/detail?id=77712
+        weakHandler.postDelayed(() -> {
+            if (refreshLayout != null)
+                refreshLayout.setRefreshing(true);
+        }, 100);
+    }
+
+    @Override
     public void finishLoading() {
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
@@ -148,15 +135,15 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     }
 
     @Override
-    public void startLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
-    }
-
-    @Override
     public void refreshUsers(List<User> users) {
         adapter.setItems(users);
+        checkScrolledItems();
+    }
+
+    private void checkScrolledItems() {
+        int itemCount = layoutManager.getItemCount();
+        int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+        getPresenter().scrolled(itemCount, lastVisibleItemPosition);
     }
 
     @Override

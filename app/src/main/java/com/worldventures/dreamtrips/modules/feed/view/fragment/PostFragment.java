@@ -2,36 +2,44 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.event.BackPressedMessageEvent;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import icepick.State;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.layout_post)
 public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle> implements PostPresenter.View {
+
+    @Inject
+    BackStackDelegate backStackDelegate;
 
     @InjectView(R.id.avatar)
     SimpleDraweeView avatar;
@@ -40,7 +48,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     @InjectView(R.id.name)
     TextView name;
     @InjectView(R.id.post)
-    EditText post;
+    KeyCallbackEditText post;
     @InjectView(R.id.post_button)
     Button postButton;
     @InjectView(R.id.fab_progress)
@@ -53,10 +61,15 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     FrameLayout imageContainer;
     @InjectView(R.id.image)
     ImageView image;
+    @InjectView(R.id.photo_picker)
+    PhotoPickerLayout photoPickerLayout;
+
+    @State
+    boolean pickerDisabled;
 
     SweetAlertDialog dialog;
 
-    private boolean cancel = false;
+    private WeakHandler handler;
 
     private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
         @Override
@@ -65,6 +78,14 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
             getPresenter().postInputChanged(constraint.toString().trim());
         }
     };
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        handler = new WeakHandler();
+        photoPickerLayout.setup(this, false);
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages));
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -86,17 +107,32 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     public void onResume() {
         super.onResume();
         post.addTextChangedListener(textWatcher);
+        post.setOnKeyPreImeListener((keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                post.clearFocus();
+            }
+        });
+        post.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && photoPickerLayout.isPanelVisible())
+                handler.postDelayed(photoPickerLayout::hidePanel, 250);
+        });
+        backStackDelegate.setListener(this::onBackPressed);
+        if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
+            photoPickerLayout.showPanel();
+        }
+        updatePickerState();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         post.removeTextChangedListener(textWatcher);
+        backStackDelegate.setListener(null);
     }
 
     @Override
     protected PostPresenter createPresenter(Bundle savedInstanceState) {
-        if (getArgs() != null)
+        if (getArgs() != null && getArgs().getTextualPost() != null)
             return new PostEditPresenter(getArgs());
         else
             return new PostPresenter();
@@ -139,23 +175,12 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @OnClick(R.id.image)
     void onImage() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getString(R.string.select_photo))
-                .items(R.array.dialog_add_bucket_photo)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_FACEBOOK);
-                            break;
-                        case 1:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_CAPTURE_PICTURE);
-                            break;
-                        case 2:
-                            getPresenter().pickImage(PickImageDelegate.REQUEST_PICK_PICTURE);
-                            break;
-                    }
-                });
-        builder.show();
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
+        } else {
+            post.clearFocus();
+            photoPickerLayout.showPanel();
+        }
     }
 
     @Override
@@ -166,12 +191,15 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void attachPhoto(Uri uri) {
-        attachedPhoto.setImageURI(uri);
+        photoPickerLayout.hidePanel();
+
         if (uri != null) {
+            attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController()));
             post.setHint(R.string.photo_hint);
             imageContainer.setVisibility(View.VISIBLE);
             image.setImageResource(R.drawable.ic_post_add_image_selected);
         } else {
+            attachedPhoto.setImageURI(null);
             post.setHint(R.string.post_hint);
             imageContainer.setVisibility(View.GONE);
             image.setImageResource(R.drawable.ic_post_add_image_normal);
@@ -226,12 +254,18 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
     @Override
     public void enableImagePicker() {
-        image.setEnabled(true);
+        pickerDisabled = false;
+        updatePickerState();
     }
 
     @Override
     public void disableImagePicker() {
-        image.setEnabled(false);
+        pickerDisabled = true;
+        updatePickerState();
+    }
+
+    private void updatePickerState() {
+        image.setEnabled(!pickerDisabled);
     }
 
     @Override
@@ -259,16 +293,11 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
         fragmentCompass.removePost();
-        cancel = true;
-
-        eventBus.post(new BackPressedMessageEvent());
     }
 
-    public void onEvent(BackPressedMessageEvent event) {
-        if (isVisibleOnScreen() && !cancel) {
-            getPresenter().cancelClicked();
-            eventBus.cancelEventDelivery(event);
-        }
+    private boolean onBackPressed() {
+        getPresenter().cancelClicked();
+        return true;
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -82,7 +83,7 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         }
     }
 
-    @OnClick({R.id.comments, R.id.comments_count})
+    @OnClick({R.id.comments})
     public void onCommentIconClick() {
         if (onCommentIconClickListener != null) {
             onCommentIconClickListener.onClick(feedItem);
@@ -132,7 +133,8 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         if (likesCount > 0) {
             if (tvLikesCount != null) {
                 tvLikesCount.setVisibility(View.VISIBLE);
-                Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.likes_count, likesCount, likesCount));
+                Spanned text = Html.fromHtml(String.format(res.getString(
+                        QuantityHelper.chooseResource(likesCount, R.string.likes_count_one, R.string.likes_count_other)), likesCount));
                 tvLikesCount.setText(text);
             }
         } else {
@@ -142,7 +144,8 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         if (tvCommentsCount != null) {
             if (commentsCount > 0) {
                 tvCommentsCount.setVisibility(View.VISIBLE);
-                Spanned text = Html.fromHtml(res.getQuantityString(R.plurals.comments_count, commentsCount, commentsCount));
+                Spanned text = Html.fromHtml(String.format(res.getString(
+                        QuantityHelper.chooseResource(commentsCount, R.string.comments_count_one, R.string.comments_count_other)), commentsCount));
                 tvCommentsCount.setText(text);
             } else tvCommentsCount.setVisibility(View.GONE);
         }
@@ -201,9 +204,9 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
     @Override
     public void showFlagDialog(List<Flag> flags) {
         FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), more);
-        popupMenu.show(flags, (reason, desc) -> {
+        popupMenu.show(flags, (flagReasonId, reason) -> {
             if (onFlagDialogClickListener != null) {
-                onFlagDialogClickListener.onClick(feedItem, reason, desc);
+                onFlagDialogClickListener.onClick(feedItem, flagReasonId, reason);
             }
         });
     }
@@ -213,6 +216,6 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
     }
 
     public interface OnFlagDialogClickListener {
-        void onClick(FeedItem feedItem, String reason, String desc);
+        void onClick(FeedItem feedItem, int flagReasonId, String reason);
     }
 }

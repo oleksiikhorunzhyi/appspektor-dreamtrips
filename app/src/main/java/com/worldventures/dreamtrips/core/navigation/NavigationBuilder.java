@@ -2,15 +2,21 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
+/**
+ * Use {@link com.worldventures.dreamtrips.core.navigation.router.Router} interface
+ */
+@Deprecated
 public class NavigationBuilder {
 
     Navigator navigator;
     Bundle args;
     ToolbarConfig toolbarConfig;
     Parcelable data;
+    private int dialogGravity;
 
     public static NavigationBuilder create() {
         return new NavigationBuilder();
@@ -26,6 +32,16 @@ public class NavigationBuilder {
         return this;
     }
 
+    public NavigationBuilder forDialog(FragmentManager fm) {
+        return forDialog(fm, 0);
+    }
+
+    public NavigationBuilder forDialog(FragmentManager fm, int gravity) {
+        dialogGravity = gravity;
+        navigator = new DialogFragmentNavigator(fm);
+        return this;
+    }
+
     @Deprecated
     public NavigationBuilder args(Bundle args) {
         this.args = args;
@@ -38,11 +54,20 @@ public class NavigationBuilder {
     }
 
     public void move(Route route) {
+        checkNavigatorState();
         navigator.move(route, getArgs());
     }
 
     public void attach(Route route) {
+        checkNavigatorState();
         navigator.attach(route, getArgs());
+    }
+
+    private void checkNavigatorState() {
+        if (navigator == null) {
+            throw new IllegalStateException("navigator can't be null at this point! Maybe you've" +
+                    "forgot to set FragmentCompass, ActivityRouter or FragmentManager(for dialogs) before.");
+        }
     }
 
     public NavigationBuilder data(Parcelable data) {
@@ -56,8 +81,7 @@ public class NavigationBuilder {
         }
         args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, toolbarConfig);
         args.putParcelable(ComponentPresenter.EXTRA_DATA, data);
+        args.putInt(ComponentPresenter.DIALOG_GRAVITY, dialogGravity);
         return args;
     }
-
-
 }

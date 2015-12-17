@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -34,9 +32,6 @@ import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDeco
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -45,10 +40,6 @@ public class InviteFragment
         extends BaseFragment<InvitePresenter>
         implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.frameContactCount)
     LinearLayout frameContactCount;
@@ -72,6 +63,7 @@ public class InviteFragment
     FilterableArrayListAdapter<Member> adapter;
     RecyclerViewStateDelegate stateDelegate;
 
+    private boolean inhibitSpinner = true;
     private WeakHandler weakHandler;
 
     @Override
@@ -87,6 +79,7 @@ public class InviteFragment
         stateDelegate.onCreate(savedInstanceState);
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -101,7 +94,7 @@ public class InviteFragment
         lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL_LIST));
-        adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(Member.class, MemberCell.class);
 
         lvUsers.setAdapter(adapter);
@@ -120,9 +113,9 @@ public class InviteFragment
             }
         });
 
-        SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(getActivity(),
+        SimpleImageArrayAdapter spinnerAdapter = new SimpleImageArrayAdapter(getActivity(),
                 new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(this);
 
         tvSearch.setOnQueryTextListener(this);
@@ -130,12 +123,11 @@ public class InviteFragment
         tvSearch.setIconifiedByDefault(false);
         tvSearch.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_INVITE_SHARE));
 
-        setSelectedCount(0);
         tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 buttonContinue.setVisibility(View.GONE);
             } else {
-                getPresenter().searchHidden();
+                getPresenter().showContinueBtnIfNeed();
             }
 
             getPresenter().searchToggle(hasFocus);
@@ -163,21 +155,16 @@ public class InviteFragment
     @Override
     public void onDestroyView() {
         lvUsers.setAdapter(null);
-        tvSearch.setOnQueryTextListener(this);
         stateDelegate.onDestroyView();
+        tvSearch.setOnQueryTextListener(null);
+        tvSearch.setOnQueryTextFocusChangeListener(null);
+        spinner.setOnItemSelectedListener(null);
         super.onDestroyView();
     }
 
     @Override
     public void setSelectedCount(int count) {
         textViewSelectedCount.setText(String.format(getString(R.string.selected), count));
-    }
-
-    @Override
-    public void showContinue() {
-        if (buttonContinue != null) {
-            buttonContinue.postDelayed(() -> buttonContinue.setVisibility(View.VISIBLE), 500l);
-        }
     }
 
     @Override
@@ -218,12 +205,18 @@ public class InviteFragment
 
     @Override
     public void move(Member member, int to) {
-        lvUsers.scrollToPosition(0);
+        if (to > 0)
+            lvUsers.scrollToPosition(0);
+        //
         adapter.moveItemSafely(member, to);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (inhibitSpinner) {
+            inhibitSpinner = false;
+            return;
+        }
         getPresenter().loadMembers();
     }
 
@@ -263,8 +256,8 @@ public class InviteFragment
 
     @Override
     public void showNextStepButtonVisibility(boolean isVisible) {
-        int visibility = isVisible ? View.VISIBLE : View.GONE;
-        frameContactCount.setVisibility(visibility);
-        if (!tvSearch.hasFocus()) buttonContinue.setVisibility(visibility);
+        frameContactCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (!tvSearch.hasFocus())
+            buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
     }
 }

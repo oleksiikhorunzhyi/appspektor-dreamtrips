@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +29,6 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -52,26 +49,19 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
 public class BucketListFragment<T extends BucketListPresenter> extends BaseFragment<T>
         implements BucketListPresenter.View {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
     public static final int MIN_SYMBOL_COUNT = 3;
@@ -134,7 +124,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         dragDropManager.setInitiateOnLongPress(true);
         dragDropManager.setInitiateOnMove(false);
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
-        adapter = new BucketItemAdapter(getActivity(), injector);
+        adapter = new BucketItemAdapter(getActivity(), this);
 
         if (isSwipeEnabled())
             adapter.registerCell(BucketItem.class, BucketItemCell.class);
@@ -161,7 +151,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     public void onDestroyView() {
         stateDelegate.onDestroyView();
         if (dragDropManager != null) {
-            dragDropManager.release();
+            try {
+                dragDropManager.release();
+            } catch (Exception e) {
+                //internal NPE in RecyclerViewDragDropManager.java:746
+                Timber.e(e, this.getClass().getSimpleName());
+            }
             dragDropManager = null;
         }
         if (recyclerView != null) {
@@ -177,8 +172,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         menuItemAdd = menu.findItem(R.id.action_quick);
 
         if (menuItemAdd != null)
@@ -229,7 +224,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     }
 
     public void onEvent(BucketItemClickedEvent event) {
-        getPresenter().itemClicked(event.getBucketItem());
+        if (isVisibleOnScreen())
+            getPresenter().itemClicked(event.getBucketItem());
     }
 
     @Optional
@@ -318,7 +314,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void onPause() {
-        dragDropManager.cancelDrag();
+        try {
+            dragDropManager.cancelDrag();
+        } catch (Exception e) {
+            //internal NPE in RecyclerViewDragDropManager.java:746
+            Timber.e(e, this.getClass().getSimpleName());
+        }
         super.onPause();
     }
 
@@ -353,14 +354,14 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void openDetails(BucketItem bucketItem) {
-        FeedEntityDetailsBundle bundle = new FeedEntityDetailsBundle(FeedItem.create(bucketItem, bucketItem.getUser()));
+        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
 
-        Route detailsRoute = Route.FEED_ENTITY_DETAILS;
+        Route detailsRoute = Route.FEED_ITEM_DETAILS;
         if (isTabletLandscape()) {
             fragmentCompass.disableBackStack();
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setFragmentManager(getChildFragmentManager());
             fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.clear();
+            fragmentCompass.removeDetailed();
             NavigationBuilder.create()
                     .with(fragmentCompass)
                     .data(bundle)

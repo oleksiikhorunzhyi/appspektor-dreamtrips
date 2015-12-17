@@ -6,13 +6,11 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 
-import javax.inject.Provider;
-
 public class IgnoreFirstExpandedItemAdapter extends IgnoreFirstItemAdapter{
 
     private boolean firstExpanded;
 
-    public IgnoreFirstExpandedItemAdapter(Context context, Provider<Injector> injector) {
+    public IgnoreFirstExpandedItemAdapter(Context context, Injector injector) {
         super(context, injector);
         firstExpanded = false;
     }

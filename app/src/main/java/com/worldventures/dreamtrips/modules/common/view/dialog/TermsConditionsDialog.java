@@ -61,7 +61,9 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
 
             accept.setEnabled(isChecked);
         });
-        accept.setOnClickListener(v -> presenter.acceptTerms(termsText));
+        accept.setOnClickListener(v -> {
+            presenter.acceptTerms(termsText);
+        });
         reject.setOnClickListener(v -> {
             TrackingHelper.logout();
             presenter.logout();
@@ -105,5 +107,17 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
     @Override
     public void dismissDialog() {
         this.dismissIfShown(getFragmentManager());
+    }
+
+    @Override
+    public void enableButtons() {
+        accept.setEnabled(acceptCheckbox.isChecked());
+        reject.setEnabled(true);
+    }
+
+    @Override
+    public void disableButtons() {
+        accept.setEnabled(false);
+        reject.setEnabled(false);
     }
 }

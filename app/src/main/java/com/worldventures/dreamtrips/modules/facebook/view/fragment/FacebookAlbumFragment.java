@@ -62,7 +62,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter = new BaseArrayListAdapter<>(getActivity(), injector);
+        adapter = new BaseArrayListAdapter(getActivity(), this);
         adapter.registerCell(FacebookAlbum.class, FacebookAlbumCell.class);
         toolbar.setTitle(getString(R.string.fab_select_album));
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);

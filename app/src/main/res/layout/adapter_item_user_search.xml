@@ -10,7 +10,7 @@
 
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/avatar"
+        android:id="@+id/sdv_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="@dimen/spacing_normal"
@@ -25,7 +25,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -34,7 +34,7 @@
             tools:text="Jon Snow"/>
 
         <TextView
-            android:id="@+id/company"
+            android:id="@+id/tv_company"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -43,7 +43,7 @@
             tools:text="Adobe"/>
 
         <TextView
-            android:id="@+id/info"
+            android:id="@+id/tv_mutual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -59,6 +59,7 @@
         android:orientation="horizontal">
 
         <com.dd.ShadowLayout
+            android:id="@+id/add_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_tiny"
@@ -73,10 +74,21 @@
                 android:padding="@dimen/spacing_small"
                 android:text="@string/add"
                 android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                />
-
+                android:textColor="@android:color/white"/>
         </com.dd.ShadowLayout>
+
+        <TextView
+            android:id="@+id/pending_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_tiny"
+            android:background="@color/grey_lighter"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/pending"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            />
+
 
     </LinearLayout>
 

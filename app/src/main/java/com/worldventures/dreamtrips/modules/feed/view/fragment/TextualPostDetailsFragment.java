@@ -35,15 +35,20 @@ public class TextualPostDetailsFragment extends BaseFragmentWithArgs<TextualPost
     public void showActionPopup(View anchor) {
         anchor.setEnabled(false);
         FeedItemMenuBuilder.create(getActivity(), anchor, R.menu.menu_feed_entity_edit)
-                .onDelete(this::showDeleteDialog)
-                .onEdit(() -> getPresenter().onEdit())
-                .dismissListener(menu -> anchor.setEnabled(true))
+                .onEdit(() -> {
+                    if (isVisibleOnScreen()) getPresenter().onEdit();
+                })
+                .onDelete(() -> {
+                    if (isVisibleOnScreen()) showDeleteDialog();
+                })
+                .dismissListener(menu -> {
+                    anchor.setEnabled(true);
+                })
                 .show();
     }
 
     @Override
     public void moveToEdit(TextualPost textualPost) {
-        fragmentCompass.removePost();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         fragmentCompass.disableBackStack();
         fragmentCompass.showContainer();

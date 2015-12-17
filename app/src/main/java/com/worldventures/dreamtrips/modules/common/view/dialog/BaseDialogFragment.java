@@ -18,19 +18,27 @@ public class BaseDialogFragment extends InjectingDialogFragment {
 
     @Override
     public void show(@NonNull FragmentManager manager, String tag) {
-        dismissIfShown(manager);
+        dismissIfShown(manager, tag);
         super.show(manager, TAG);
+    }
+
+    protected void dismissIfShown(FragmentManager fragmentManager) {
+        dismissIfShown(fragmentManager, TAG);
     }
 
     /**
      * Method that detaches fragment by tag if already present.
+     * Note: two simultaneous calls want dismiss each other, as fragment want get to manager yet.
      * @param fragmentManager FragmentManager to operate on during transaction
+     * @param tag
      */
-    protected void dismissIfShown(FragmentManager fragmentManager) {
-        Fragment frag = fragmentManager.findFragmentByTag(TAG);
+    protected void dismissIfShown(FragmentManager fragmentManager, String tag) {
+        Fragment frag = fragmentManager.findFragmentByTag(tag);
         if (frag != null) {
-            ((DialogFragment) frag).dismiss();
-            fragmentManager.beginTransaction().remove(frag).commit();
+            if (frag instanceof DialogFragment) {
+                ((DialogFragment) frag).dismiss();
+                fragmentManager.beginTransaction().remove(frag).commit();
+            }
         }
     }
 }

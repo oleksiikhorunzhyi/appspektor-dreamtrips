@@ -38,22 +38,11 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
     }
 
     @Override
-    protected void onUsersAdded(ArrayList<User> freshUsers) {
-        Queryable.from(freshUsers).forEachR(friend -> friend.setCircles(circles));
-        super.onUsersAdded(freshUsers);
-    }
-
-    @Override
-    protected void onUsersLoaded(ArrayList<User> freshUsers) {
-        Queryable.from(freshUsers).forEachR(friend -> friend.setCircles(circles));
-        super.onUsersLoaded(freshUsers);
-    }
-
-    @Override
     public void onInjected() {
         super.onInjected();
         Collections.sort(circles);
         circles.add(0, Circle.all(context.getString(R.string.show_all)));
+        query = "";
     }
 
     public void onFilterClicked() {
@@ -74,7 +63,11 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
     }
 
     public void setQuery(String query) {
+        int previousLength = this.query.length();
         this.query = query;
+        if (query.length() < 3 && (previousLength < query.length() || previousLength < 3))
+            return;
+        //
         reload();
     }
 

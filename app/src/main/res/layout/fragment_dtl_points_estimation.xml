@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:minWidth="280dp"
+              android:orientation="vertical"
+              android:paddingTop="@dimen/spacing_small"
+              android:weightSum="1">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dtl_header"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            />
+
+        <ImageView
+            android:id="@+id/infoToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@drawable/info_icon"/>
+
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dtl_cities_background"
+        android:gravity="center"
+        android:lines="2"
+        android:padding="@dimen/spacing_small"
+        android:singleLine="false"
+        android:text="@string/dtl_estimator_explanation"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="@string/dtl_points_estimation_input_hint"
+        android:textSize="@dimen/font_small"/>
+
+    <LinearLayout
+        android:id="@+id/inputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:text="$"
+            android:textColor="#DC000000"
+            android:textSize="@dimen/font_large"
+            tools:ignore="HardcodedText"
+            />
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+            android:id="@+id/inputPoints"
+            style="@style/SuggestMerchantInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_weight="2"
+            android:hint="@string/dtl_points_estimation_default_result"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:imeActionId="@integer/dtl_keyboard_point_estimator_action_id"
+            android:imeActionLabel="@string/dtl_points_estimation_calculate_button_caption"
+            app:met_floatingLabel="none"
+            />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <Button
+                android:id="@+id/calculateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:text="@string/dtl_points_estimation_calculate_button_caption"
+                android:textAllCaps="true"
+                android:textColor="@color/tripButtonDisabled"
+                android:textSize="@dimen/dtlCalculationCalculateButtonTextSize"
+                android:theme="@style/WhiteButtonTheme"
+                />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:padding="@dimen/spacing_small"
+        android:text="@string/dtl_verify_earn_hint"
+        android:textColor="#222222"
+        android:textSize="@dimen/font_normal"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/pointsEstimated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/dt_points_icon"
+            android:drawablePadding="@dimen/spacing_small"
+            android:drawableStart="@drawable/dt_points_icon"
+            android:gravity="center"
+            android:text="@string/dtl_points_estimation_default_result"
+            android:textColor="#222222"
+            android:textSize="@dimen/font_normal"
+            tools:text="42 DreamTrips Point"
+            />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:background="@drawable/list_divider"/>
+
+    <Button
+        android:id="@+id/button_cancel"
+        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:text="@string/OK"
+        android:textColor="@color/grey"/>
+
+</LinearLayout>

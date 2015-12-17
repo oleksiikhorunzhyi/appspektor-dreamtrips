@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import android.os.Parcel;
 
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
@@ -217,6 +216,11 @@ public class UploadTask implements IFullScreenObject {
     @Override
     public int hashCode() {
         return filePath != null ? filePath.hashCode() : 0;
+    }
+
+    @Override
+    public String getImagePath() {
+        return getFilePath();
     }
 
     @Override

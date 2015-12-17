@@ -27,4 +27,12 @@ public interface BucketItemEditPresenterView extends BucketDetailsBasePresenter.
 
     IBucketPhotoView getBucketPhotosView();
 
+    void hidePhotoPicker();
+
+    void showPhotoPicker();
+
+    void showLoading();
+
+    void hideLoading();
+
 }

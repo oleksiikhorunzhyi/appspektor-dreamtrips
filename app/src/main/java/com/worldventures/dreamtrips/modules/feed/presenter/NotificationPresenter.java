@@ -25,7 +25,7 @@ public class NotificationPresenter extends BaseFeedPresenter<NotificationPresent
 
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new NotificationsQuery(date);
+        return new NotificationsQuery();
     }
 
     @Override

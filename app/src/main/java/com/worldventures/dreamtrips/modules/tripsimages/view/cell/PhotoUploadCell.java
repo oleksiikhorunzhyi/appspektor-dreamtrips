@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.cell;
 
+import android.graphics.PointF;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -9,8 +9,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 
 import javax.inject.Inject;
 
@@ -41,7 +41,8 @@ public class PhotoUploadCell extends AbstractCell<UploadTask> {
 
     @Override
     protected void syncUIStateWithModel() {
-        imageView.setImageURI(Uri.parse(getModelObject().getFilePath()));
+        imageView.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
+        imageView.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject().getFilePath()), imageView.getController()));
         ring.setProgressColor(itemView.getResources().getColor(R.color.white));
 
         if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {

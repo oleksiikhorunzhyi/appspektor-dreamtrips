@@ -17,8 +17,6 @@ import android.view.View;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -30,19 +28,12 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_bucket_popular)
 @MenuResource(R.menu.menu_bucket_popular)
 public class BucketListPopularFragment extends BaseFragment<BucketPopularPresenter>
         implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.recyclerViewBuckets)
     protected EmptyRecyclerView recyclerView;
@@ -84,7 +75,7 @@ public class BucketListPopularFragment extends BaseFragment<BucketPopularPresent
         super.afterCreateView(rootView);
         this.recyclerView.setLayoutManager(getLayoutManager());
         this.recyclerView.setEmptyView(emptyView);
-        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         this.adapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
         this.recyclerView.setAdapter(this.adapter);
         stateDelegate.setRecyclerView(recyclerView);
@@ -109,8 +100,8 @@ public class BucketListPopularFragment extends BaseFragment<BucketPopularPresent
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint(getString(R.string.search));

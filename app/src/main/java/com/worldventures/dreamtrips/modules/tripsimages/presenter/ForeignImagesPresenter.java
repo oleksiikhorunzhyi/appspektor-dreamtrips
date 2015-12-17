@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public class ForeignImagesPresenter extends TripImagesListPresenter {
+public class ForeignImagesPresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
 
     public ForeignImagesPresenter(int userId) {
         super(Type.FOREIGN_IMAGES, userId);

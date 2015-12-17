@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.presenter.delegate;
 
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
@@ -17,19 +18,19 @@ public class UidItemDelegate {
         this.requestingPresenter = requestingPresenter;
     }
 
-    public void loadFlags(Flaggable cell) {
+    public void loadFlags(Flaggable flaggable) {
         if (flagsList == null) {
             requestingPresenter.doRequest(new GetFlagContentQuery(), flags -> {
                 flagsList = flags;
-                cell.showFlagDialog(flagsList);
+                flaggable.showFlagDialog(flagsList);
             });
         } else {
-            cell.showFlagDialog(flagsList);
+            flaggable.showFlagDialog(flagsList);
         }
     }
 
-    public void flagItem(String uid, String nameOfReason) {
-        requestingPresenter.doRequest(new FlagItemCommand(uid, nameOfReason), aVoid -> {
+    public void flagItem(FlagData data) {
+        requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
         });
     }
 }

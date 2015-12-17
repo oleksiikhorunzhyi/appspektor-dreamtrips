@@ -38,6 +38,7 @@ public class ProfileModule {
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideProfileComponent() {
         return new ComponentDescription(MY_PROFILE, 0, R.string.my_profile, R.drawable.ic_profile,
+                true,
                 AccountFragment.class);
     }
 }

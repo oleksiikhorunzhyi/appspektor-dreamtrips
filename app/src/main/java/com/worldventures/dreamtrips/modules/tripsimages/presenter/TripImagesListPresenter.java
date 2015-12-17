@@ -34,8 +34,8 @@ import javax.inject.Inject;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
-public abstract class TripImagesListPresenter
-        extends Presenter<TripImagesListPresenter.View> implements TransferListener {
+public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View>
+        extends Presenter<VT> implements TransferListener {
 
     public static final int PER_PAGE = 15;
     public final static int VISIBLE_TRESHOLD = 5;
@@ -77,7 +77,7 @@ public abstract class TripImagesListPresenter
     }
 
     @Override
-    public void takeView(View view) {
+    public void takeView(VT view) {
         super.takeView(view);
         view.clear();
         syncPhotosAndUpdatePosition();
@@ -250,8 +250,8 @@ public abstract class TripImagesListPresenter
 
     public void onEvent(EntityLikedEvent event) {
         for (Object o : photos) {
-            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getId())) {
-                ((Photo) o).setLiked(event.isLiked());
+            if (o instanceof Photo && ((Photo) o).getFsId().equals(event.getFeedEntity().getUid())) {
+                ((Photo) o).syncLikeState(event.getFeedEntity());
             }
         }
     }

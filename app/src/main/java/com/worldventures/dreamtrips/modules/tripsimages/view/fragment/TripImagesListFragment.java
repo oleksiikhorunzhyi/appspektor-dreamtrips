@@ -12,8 +12,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -37,19 +35,12 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCel
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter>
         extends BaseFragmentWithArgs<T, TripsImagesBundle>
         implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
@@ -84,7 +75,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         this.recyclerView.setLayoutManager(layoutManager);
         stateDelegate.setRecyclerView(recyclerView);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), injector);
+        this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), this);
         this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
         this.arrayListAdapter.registerCell(UploadTask.class, PhotoUploadCell.class);

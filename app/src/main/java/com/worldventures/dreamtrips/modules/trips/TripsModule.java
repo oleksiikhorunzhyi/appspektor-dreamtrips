@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
@@ -33,6 +34,7 @@ import dagger.Provides;
                 TripListPresenter.class,
                 FiltersPresenter.class,
                 TripDetailsFragment.class,
+                TripWithSocialDetailsFragment.class,
                 TripDetailsPresenter.class,
                 TripMapInfoPresenter.class,
                 TripMapPresenter.class,
@@ -68,7 +70,8 @@ public class TripsModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMapTripsComponent() {
-        return new ComponentDescription(MAP_TRIPS, R.string.trips, R.string.trips, R.drawable.ic_dreamtrips, true, TripMapFragment.class);
+        return new ComponentDescription(MAP_TRIPS, R.string.trips, R.string.trips, R.drawable.ic_dreamtrips, true,
+                true, TripMapFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)

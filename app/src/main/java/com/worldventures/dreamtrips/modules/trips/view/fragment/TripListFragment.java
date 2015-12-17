@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,10 +17,10 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -33,9 +34,6 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
@@ -45,10 +43,6 @@ import icepick.State;
 @MenuResource(R.menu.menu_dream_trips)
 public class TripListFragment extends BaseFragment<TripListPresenter> implements
         TripListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.recyclerViewTrips)
     protected EmptyRecyclerView recyclerView;
@@ -92,14 +86,29 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getSpanCount()));
         recyclerView.setEmptyView(emptyView);
 
-        adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(TripModel.class, TripCell.class);
 
         recyclerView.setAdapter(adapter);
 
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+
+        showFilters();
     }
+
+    private void showFilters() {
+        Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
+        if (filtersFragment != null && filtersFragment.getClass().getName()
+                .equals(Route.TRIP_FILTERS.getClazzName())) return;
+
+        router.moveTo(Route.TRIP_FILTERS, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .containerId(R.id.container_filters)
+                .fragmentManager(getFragmentManager())
+                .build());
+    }
+
 
     @Override
     public void onResume() {
@@ -145,8 +154,8 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onMenuInflated(Menu menu) {
+        super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             if (searchOpened) searchItem.expandActionView();

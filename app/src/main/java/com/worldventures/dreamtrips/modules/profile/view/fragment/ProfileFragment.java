@@ -8,32 +8,27 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import butterknife.InjectView;
 
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFeedFragment<T, UserBundle>
         implements ProfilePresenter.View {
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.profile_toolbar)
     protected Toolbar profileToolbar;
@@ -52,12 +47,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         calculateScrollArea();
     }
 
-    private void calculateScrollArea(){
+    private void calculateScrollArea() {
         TypedValue tv = new TypedValue();
         int actionBarHeight = 0;
-        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         int profilePhotoHeight = getResources().getDimensionPixelSize(R.dimen.profile_cover_height);
         scrollArea = profilePhotoHeight - actionBarHeight;
@@ -67,6 +61,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
+        feedView.addItemDecoration(new SideMarginsItemDecorator());
         feedView.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);
@@ -128,16 +123,27 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
     @Override
     public void openFriends() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .move(Route.FRIENDS);
+        router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity().build());
+    }
+
+    @Override
+    public void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle) {
+        router.moveTo(route, NavigationConfigBuilder.forActivity()
+                .data(foreignBucketBundle)
+                .build());
+    }
+
+    @Override
+    public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
+        router.moveTo(route, NavigationConfigBuilder.forActivity()
+                .data(tripImagesBundle)
+                .build());
     }
 
     @Override
     public void openPost() {
         showPostContainer();
 
-        fragmentCompass.removePost();
         fragmentCompass.disableBackStack();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         //
@@ -147,8 +153,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     }
 
     @Override
-    protected BaseArrayListAdapter getAdapter() {
-        return new IgnoreFirstItemAdapter(feedView.getContext(), injectorProvider);
+    protected BaseArrayListAdapter createAdapter() {
+        return new IgnoreFirstItemAdapter(feedView.getContext(), this);
     }
 
     @Override
@@ -156,4 +162,17 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         feedView.getAdapter().notifyDataSetChanged();
     }
 
+    protected void openUser(User user) {
+        if (this.getPresenter().getUser().getId() != user.getId()) {
+            super.openUser(user);
+        } else {
+            feedView.smoothScrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        setToolbarAlpha(100);
+        super.onDestroyView();
+    }
 }

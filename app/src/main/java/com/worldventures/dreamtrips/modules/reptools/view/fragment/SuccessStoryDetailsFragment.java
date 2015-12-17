@@ -5,13 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
@@ -103,18 +103,10 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @Override
     public void showShareDialog() {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.action_share)
-                .items(R.array.share_dialog_items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    if (which == 0) {
-                        TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_FACEBOOK, story.getUrl());
-                        getPresenter().onFbShare(story);
-                    } else {
-                        TrackingHelper.shareSuccessStory(TrackingHelper.ATTRIBUTE_TWITTER, story.getUrl());
-                        getPresenter().onTwitterShare(story);
-                    }
-                }).show();
+        new ShareDialog(getActivity(), type -> {
+            TrackingHelper.shareSuccessStory(type, story.getUrl());
+            getPresenter().onShare(type, story);
+        }).show();
     }
 
     @Override

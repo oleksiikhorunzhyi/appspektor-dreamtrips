@@ -11,14 +11,14 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedHeaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_post_event)
-public class PostFeedItemCell extends FeedHeaderCell<PostFeedItem> {
+public class PostFeedItemCell extends FeedItemCell<PostFeedItem> {
 
     @InjectView(R.id.post)
     TextView post;
@@ -45,7 +45,6 @@ public class PostFeedItemCell extends FeedHeaderCell<PostFeedItem> {
 
     @Override
     protected void onEdit() {
-        super.onEdit();
         fragmentCompass.removePost();
         fragmentCompass.setContainerId(R.id.container_details_floating);
         fragmentCompass.disableBackStack();

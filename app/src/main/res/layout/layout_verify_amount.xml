@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:padding="@dimen/spacing_normal">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dtl_total_amount"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/spent_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:text="@string/dtl_total_amount"
+            android:textColor="@color/black"
+            tools:text="$ 1293423423432423"/>
+
+        <ImageView
+            android:id="@+id/infoToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@drawable/info_icon"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lines="2"
+        android:padding="@dimen/spacing_small"
+        android:background="@color/dtl_cities_background"
+        android:singleLine="false"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:visibility="gone"
+        android:text="@string/dtl_estimator_explanation"
+        android:textColor="@color/black"
+        android:textSize="12sp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/dtl_verify_earn_hint"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/dt_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:drawableRight="@drawable/dt_points_big_icon"
+            android:gravity="center"
+            android:drawablePadding="@dimen/spacing_tiny"
+            android:drawableEnd="@drawable/dt_points_big_icon"
+            android:textColor="@color/open"
+            tools:text="+12"/>
+    </LinearLayout>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/receipt"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dtlReceiptHeight"
+        android:layout_marginTop="@dimen/spacing_medium"
+        fresco:actualImageScaleType="centerInside"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/rescan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_tiny"
+            android:layout_marginRight="@dimen/spacing_tiny"
+            android:layout_weight="1"
+            android:text="@string/dtl_receipt_rescan"
+            android:theme="@style/WhiteButtonTheme"/>
+
+        <Button
+            android:id="@+id/scan_merchant_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_tiny"
+            android:layout_marginStart="@dimen/spacing_tiny"
+            android:layout_weight="2"
+            android:text="@string/dtl_barcode_merchant"
+            android:textColor="@color/white"
+            android:theme="@style/DtlButtonTheme"/>
+    </LinearLayout>
+
+
+</LinearLayout>

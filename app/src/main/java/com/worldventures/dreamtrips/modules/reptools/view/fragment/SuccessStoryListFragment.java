@@ -16,8 +16,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -31,9 +29,6 @@ import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHe
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -56,11 +51,8 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     protected ImageView ivFilter;
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-    private FilterableArrayListAdapter<SuccessStory> adapter;
 
+    private FilterableArrayListAdapter<SuccessStory> adapter;
     private WeakHandler weakHandler = new WeakHandler();
 
     @Override
@@ -123,7 +115,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
         super.afterCreateView(rootView);
         flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
 
-        this.adapter = new FilterableArrayListAdapter<>(getActivity(), injectorProvider);
+        this.adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
         this.adapter.setHasStableIds(true);
         this.recyclerView.setEmptyView(emptyView);
@@ -221,7 +213,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     public void openStory(Bundle bundle) {
         if (isTabletLandscape()) {
             fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.setSupportFragmentManager(getChildFragmentManager());
+            fragmentCompass.setFragmentManager(getChildFragmentManager());
 
             bundle.putBoolean(SuccessStoryDetailsFragment.EXTRA_SLAVE, true);
             NavigationBuilder.create().with(fragmentCompass).args(bundle).move(Route.SUCCESS_STORES_DETAILS);

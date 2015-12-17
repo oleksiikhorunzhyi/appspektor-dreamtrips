@@ -1,29 +1,22 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
-import android.net.Uri;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_request)
-public class RequestCell extends AbstractCell<User> {
+public class RequestCell extends BaseUserCell {
 
     @InjectView(R.id.accept_button)
     FrameLayout accept;
@@ -33,12 +26,14 @@ public class RequestCell extends AbstractCell<User> {
     FrameLayout hide;
     @InjectView(R.id.cancel_button)
     FrameLayout cancel;
-    @InjectView(R.id.avatar)
-    SimpleDraweeView avatar;
-    @InjectView(R.id.name)
-    TextView name;
-    @InjectView(R.id.company)
-    TextView companyName;
+    @InjectView(R.id.hide)
+    View btnHide;
+    @InjectView(R.id.cancel)
+    View btnCancel;
+    @InjectView(R.id.reject)
+    View btnReject;
+    @InjectView(R.id.accept)
+    View btnAccept;
     @InjectView(R.id.buttonContainer)
     ViewGroup container;
 
@@ -48,16 +43,8 @@ public class RequestCell extends AbstractCell<User> {
 
     @Override
     protected void syncUIStateWithModel() {
-        name.setText(getModelObject().getFullName());
+        super.syncUIStateWithModel();
 
-        if (!TextUtils.isEmpty(getModelObject().getCompany())) {
-            companyName.setText(getModelObject().getCompany());
-            companyName.setVisibility(View.VISIBLE);
-        } else {
-            companyName.setVisibility(View.GONE);
-        }
-
-        avatar.setImageURI(Uri.parse(getModelObject().getAvatar().getMedium()));
         container.setVisibility(View.VISIBLE);
 
         switch (getModelObject().getRelationship()) {
@@ -73,45 +60,48 @@ public class RequestCell extends AbstractCell<User> {
                 hide.setVisibility(View.GONE);
                 cancel.setVisibility(View.VISIBLE);
                 break;
-            case REJECT:
+            case REJECTED:
                 reject.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 hide.setVisibility(View.VISIBLE);
                 cancel.setVisibility(View.GONE);
+                tvMutual.setVisibility(View.GONE);
                 break;
         }
-    }
 
-
-    @OnClick(R.id.avatar)
-    void onUserClicked() {
-        getEventBus().post(new UserClickedEvent(getModelObject()));
+        enableButtons();
     }
 
     @OnClick(R.id.accept)
     void onAccept() {
+        btnAccept.setEnabled(false);
         getEventBus().post(new AcceptRequestEvent(getModelObject(), getAdapterPosition()));
     }
 
     @OnClick(R.id.reject)
     void onReject() {
+        btnReject.setEnabled(false);
         getEventBus().post(new RejectRequestEvent(getModelObject(), getAdapterPosition()));
         TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_REJECT_FRIEND_REQUEST);
     }
 
     @OnClick(R.id.hide)
     void onHide() {
+        btnHide.setEnabled(false);
         getEventBus().post(new HideRequestEvent(getModelObject(), getAdapterPosition()));
     }
 
     @OnClick(R.id.cancel)
     void onCancel() {
+        btnCancel.setEnabled(false);
         getEventBus().post(new CancelRequestEvent(getModelObject(), getAdapterPosition()));
         TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_CANCEL_FRIEND_REQUEST);
     }
 
-    @Override
-    public void prepareForReuse() {
-
+    private void enableButtons() {
+        btnAccept.setEnabled(true);
+        btnReject.setEnabled(true);
+        btnHide.setEnabled(true);
+        btnCancel.setEnabled(true);
     }
 }

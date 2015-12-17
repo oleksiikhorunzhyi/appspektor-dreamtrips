@@ -14,20 +14,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
+import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -47,7 +48,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class FullScreenPhotoFragment<T extends IFullScreenObject>
-        extends BaseFragmentWithArgs<FullScreenPresenter<T>, FullScreenPhotoBundle> implements FullScreenPresenter.View {
+        extends BaseFragmentWithArgs<FullScreenPresenter<T>, FullScreenPhotoBundle> implements FullScreenPresenter.View, Flaggable {
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;
@@ -88,7 +89,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @InjectView(R.id.iv_comment)
     protected ImageView ivComment;
 
-    private TripImagesListFragment.Type type;
+    @State
+    TripImagesListFragment.Type type;
+    @State
+    IFullScreenObject photo;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -101,17 +105,26 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         ivImage.setSingleTapListener(this::toggleContent);
         ivImage.setDoubleTapListener(this::hideContent);
 
-        if (ViewUtils.isLandscapeOrientation(getActivity())) {
-            hideContent();
-        } else {
-            showContent();
+        showContent();
+    }
+
+    @Override
+    public void onStart() {
+        getPresenter().setupActualViewState();
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        if (ivImage != null && ivImage.getController() != null) {
+            ivImage.getController().onDetach();
+            ivImage.setImageURI(null);
         }
+        super.onStop();
     }
 
     @Override
     public void onDestroyView() {
-        if (ivImage != null && ivImage.getController() != null)
-            ivImage.getController().onDetach();
         super.onDestroyView();
         ButterKnife.reset(this);
     }
@@ -145,8 +158,8 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
 
     @Override
     protected FullScreenPresenter createPresenter(Bundle savedInstanceState) {
-        IFullScreenObject photo = getArgs().getPhoto();
-        type = getArgs().getType();
+        if (photo == null) photo = getArgs().getPhoto(); //state in args could be not actual
+        if (type == null) type = getArgs().getType();
 
         FullScreenPresenter fullScreenPresenter = FullScreenPresenter.create(photo, type, getArgs().isForeign());
         if (photo != null) {
@@ -161,16 +174,9 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @OnClick(R.id.iv_share)
     public void actionShare() {
         eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.action_share)
-                .items(R.array.share_dialog_items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    if (which == 0) {
-                        getPresenter().onFbShare();
-                    } else {
-                        getPresenter().onTwitterShare();
-                    }
-                }).show();
+        new ShareDialog(getActivity(), type -> {
+            getPresenter().onShare(type);
+        }).show();
     }
 
     public void toggleContent() {
@@ -227,8 +233,10 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
         FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
                 .onDelete(this::deletePhoto)
                 .onEdit(() -> {
-                    eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
-                    getPresenter().onEdit();
+                    if (isVisibleOnScreen()) {
+                        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
+                        getPresenter().onEdit();
+                    }
                 })
                 .dismissListener(menu -> view.setEnabled(true))
                 .show();
@@ -272,7 +280,7 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @OnClick(R.id.flag)
     public void actionFlag() {
         eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFsId(), TrackingHelper.ATTRIBUTE_FLAG_IMAGE));
-        getPresenter().onFlagAction();
+        getPresenter().onFlagAction(this);
     }
 
     @OnClick({R.id.iv_comment, R.id.tv_comments_count})
@@ -297,11 +305,6 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setShareVisibility(boolean shareVisible) {
         ivShare.setVisibility(shareVisible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void setFlags(List<Flag> flags) {
-        flag.showFlagsPopup(flags, (reason, desc) -> getPresenter().sendFlagAction(reason, desc));
     }
 
     @Override
@@ -469,5 +472,11 @@ public class FullScreenPhotoFragment<T extends IFullScreenObject>
     @Override
     public void setSocial(Boolean isEnabled) {
         civUserPhoto.setEnabled(isEnabled);
+    }
+
+    @Override
+    public void showFlagDialog(List<Flag> flags) {
+        hideProgress();
+        flag.showFlagsPopup(flags, (flagReasonId, reason) -> getPresenter().sendFlagAction(flagReasonId, reason));
     }
 }

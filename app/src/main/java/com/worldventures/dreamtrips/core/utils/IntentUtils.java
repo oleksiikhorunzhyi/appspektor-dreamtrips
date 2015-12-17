@@ -8,6 +8,8 @@ import android.provider.Telephony;
 import android.text.Html;
 import android.text.TextUtils;
 
+import java.util.Locale;
+
 public class IntentUtils {
 
     private IntentUtils() {
@@ -26,6 +28,19 @@ public class IntentUtils {
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
         return intent;
     }
+
+    public static Intent newDialerIntent(String phone) {
+        if (TextUtils.isEmpty(phone)) return null;
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phone));
+        return intent;
+    }
+
+    public static Intent newMapIntent(double latitude, double longitude) {
+        String uri = String.format(Locale.ENGLISH, "geo:%f,%f", latitude, longitude);
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+    }
+
 
     public static Intent newSmsIntent(Context context, String body, String... phoneNumber) {
         Uri smsUri;

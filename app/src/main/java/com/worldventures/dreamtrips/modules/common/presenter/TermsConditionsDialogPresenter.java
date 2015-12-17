@@ -1,15 +1,10 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.content.Intent;
-import android.os.Bundle;
-
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.DeleteTokenGcmTask;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.api.AcceptTermsConditionsCommand;
-import com.worldventures.dreamtrips.modules.common.view.util.RouterHelper;
-import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
@@ -21,47 +16,52 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
     StaticPageProvider provider;
     @Inject
     SnappyRepository snappyRepository;
-
-    private RouterHelper routerHelper;
+    @Inject
+    LogoutDelegate logoutDelegate;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-
-        routerHelper = new RouterHelper(activityRouter);
-
+        logoutDelegate.setOnLogoutSuccessListener(view::dismissDialog);
         view.loadContent(provider.getStaticInfoUrl(StaticInfoFragment.TERMS_TITLE));
     }
 
+    @Override
+    public void dropView() {
+        logoutDelegate.setOnLogoutSuccessListener(null);
+        super.dropView();
+    }
+
     public void acceptTerms(String text) {
-        doRequest(new AcceptTermsConditionsCommand(text), aVoid -> view.dismissDialog());
+        view.disableButtons();
+        doRequest(new AcceptTermsConditionsCommand(text), aVoid -> {
+            UserSession userSession = appSessionHolder.get().get();
+            userSession.getUser().setTermsAccepted(true);
+            appSessionHolder.put(userSession);
+            view.dismissDialog();
+        });
     }
 
     public void logout() {
-        String token = snappyRepository.getGcmRegToken();
-        if (token != null) {
-            doRequest(new UnsubscribeDeviceCommand(token), aVoid -> {
-                deleteTokenInGcm();
-            });
-        } else {
-            clearUserDataAndFinish();
-        }
+        view.disableButtons();
+        logoutDelegate.logout();
     }
 
-    private void deleteTokenInGcm (){
-        new DeleteTokenGcmTask(context, (task, removeGcmTokenSucceed) -> clearUserDataAndFinish()).execute();
-    }
-
-    private void clearUserDataAndFinish(){
-        view.dismissDialog();
-        snappyRepository.clearAll();
-        appSessionHolder.destroy();
-        routerHelper.logout();
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.enableButtons();
     }
 
     public interface View extends Presenter.View {
         void loadContent(String url);
 
         void dismissDialog();
+
+        void inject(Object object);
+
+        void enableButtons();
+
+        void disableButtons();
     }
 }

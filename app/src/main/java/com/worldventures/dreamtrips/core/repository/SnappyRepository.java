@@ -11,6 +11,11 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -21,6 +26,7 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -52,7 +58,14 @@ public class SnappyRepository {
     public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
     public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+    public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
+    public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
+
+    public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
+    public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
+    public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
+    public static final String DTL_AMENITIES = "DTL_AMENITIES";
 
     private Context context;
     private ExecutorService executorService;
@@ -134,13 +147,27 @@ public class SnappyRepository {
     // Public
     ///////////////////////////////////////////////////////////////////////////
 
-    public <T> void putList(String key, List<T> list) {
+    public <T> void putList(String key, Collection<T> list) {
         act(db -> db.put(key, list.toArray()));
     }
 
     public <T> List<T> readList(String key, Class<T> clazz) {
         return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
                 .or(new ArrayList<>());
+    }
+
+    /**
+     * Method is intended to delete all records for given key.
+     *
+     * @param key key to be deleted.
+     */
+    public void clearAllForKey(String key) {
+        act(db -> {
+            String[] placesKeys = db.findKeys(key);
+            for (String placeKey : placesKeys) {
+                db.del(placeKey);
+            }
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -158,9 +185,9 @@ public class SnappyRepository {
 
     @NonNull
     private String getBucketKey(String type, int userId) {
-     if(userId==0){
-         throw  new IllegalStateException("userId can't be 0");
-     }
+        if (userId == 0) {
+            throw new IllegalStateException("userId can't be 0");
+        }
         String key = (BUCKET_LIST) + ":" + type;
         key += "_" + userId;
         return key.toLowerCase();
@@ -337,12 +364,16 @@ public class SnappyRepository {
     // Notifications counters
     ///////////////////////////////////////////////////////////////////////////
 
-    /** All notifications */
+    /**
+     * All notifications
+     */
     public void saveBadgeNotificationsCount(int notificationsCount) {
         act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
     }
 
-    /** All notifications */
+    /**
+     * All notifications
+     */
     public int getBadgeNotificationsCount() {
         return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
     }
@@ -371,37 +402,106 @@ public class SnappyRepository {
         return readList(CIRCLES, Circle.class);
     }
 
-    public void saveFilterCircle(Circle circle){
+    public void saveFilterCircle(Circle circle) {
         act(db -> db.put(FILTER_CIRCLE, circle));
     }
 
-    public Circle getFilterCircle(){
+    public Circle getFilterCircle() {
         return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
+    }
+
+    public Circle getFeedFriendPickedCircle() {
+        return actWithResult(db -> db.get(FILTER_FEED_FRIEND_FILTER_CIRCLE, Circle.class)).orNull();
+    }
+
+    public void saveFeedFriendPickedCircle(Circle circle) {
+        act(db -> db.put(FILTER_FEED_FRIEND_FILTER_CIRCLE, circle));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     //
     ///////////////////////////////////////////////////////////////////////////
 
-    private interface SnappyAction {
-        void call(DB db) throws SnappydbException;
+    public String getGcmRegToken() {
+        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
     }
 
-
-    private interface SnappyResult<T> {
-        T call(DB db) throws SnappydbException;
+    public void setGcmRegToken(String token) {
+        act(db -> db.put(GCM_REG_TOKEN, token));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // GCM
     ///////////////////////////////////////////////////////////////////////////
 
-    public void setGcmRegToken(String token) {
-        act(db -> db.put(GCM_REG_TOKEN, token));
+    private interface SnappyAction {
+        void call(DB db) throws SnappydbException;
     }
 
-    public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
+    private interface SnappyResult<T> {
+        T call(DB db) throws SnappydbException;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DTL
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveSelectedDtlLocation(DtlLocation location) {
+        act(db -> db.put(DTL_SELECTED_LOCATION, location));
+    }
+
+    public DtlLocation getSelectedDtlLocation() {
+        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
+    }
+
+    public void saveDtlPlaces(DtlMerchantType type, List<DtlMerchant> places) {
+        clearAllForKey(DTL_PLACES_PREFIX + type);
+        putList(DTL_PLACES_PREFIX + type, places);
+    }
+
+    public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
+        clearAllForKey(DTL_AMENITIES);
+        putList(DTL_AMENITIES, amenities);
+    }
+
+    public List<DtlMerchantAttribute> getAmenities() {
+        return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
+    }
+
+    public List<DtlMerchant> getDtlPlaces(DtlMerchantType type) {
+        return readList(DTL_PLACES_PREFIX + type, DtlMerchant.class);
+    }
+
+    public void clearMerchantData() {
+        clearAllForKey(DTL_PLACES_PREFIX);
+        clearAllForKey(DTL_AMENITIES);
+        clearAllForKey(DTL_TRANSACTION_PREFIX);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DTL Transaction
+    ///////////////////////////////////////////////////////////////////////////
+
+    public DtlTransaction getDtlTransaction(String id) {
+        return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();
+    }
+
+    public void cleanDtlTransaction(String id, DtlTransaction dtlTransaction) {
+        dtlTransaction.setUploadTask(null);
+        dtlTransaction.setBillTotal(0.0d);
+        dtlTransaction.setReceiptPhotoUrl(null);
+        dtlTransaction.setCode(null);
+        dtlTransaction.setVerified(false);
+        dtlTransaction.setDtlTransactionResult(null);
+        saveDtlTransaction(id, dtlTransaction);
+    }
+
+    public void saveDtlTransaction(String id, DtlTransaction dtlTransaction) {
+        act(db -> db.put(DTL_TRANSACTION_PREFIX + id, dtlTransaction));
+    }
+
+    public void deleteDtlTransaction(String id) {
+        act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
     }
 
 }

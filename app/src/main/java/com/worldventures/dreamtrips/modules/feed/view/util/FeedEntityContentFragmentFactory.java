@@ -10,12 +10,15 @@ import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsRouteCr
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.PhotoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class FeedEntityContentFragmentFactory {
 
@@ -31,26 +34,31 @@ public class FeedEntityContentFragmentFactory {
         Route route = null;
         Parcelable args = null;
         switch (type) {
+            case UNDEFINED:
+                //now is not used.
+                break;
             case TRIP:
-                route = Route.DETAILED_TRIP;
+                route=Route.DETAILS_TRIP_WITH_SOCIAL;
                 args = new TripDetailsBundle((TripModel) holder.getItem());
                 break;
             case PHOTO:
-                route = Route.FULLSCREEN_PHOTO_LIST;
+                route = Route.FEED_DETAILS_PHOTO;
+                args = new PhotoBundle((Photo) holder.getItem());
                 break;
             case BUCKET_LIST_ITEM:
-                route = bucketRouteCreator.createRoute(holder.getItem().getUser().getId());
+                User user = holder.getItem().getOwner();
+                int userId = user != null ? user.getId() : 0;
+                route = bucketRouteCreator.createRoute(userId);
                 BucketBundle bucketBundle = new BucketBundle();
                 BucketItem item = (BucketItem) holder.getItem();
                 bucketBundle.setType(item.getType());
                 bucketBundle.setBucketItemUid(item.getUid());
+                bucketBundle.setOwnerId(userId);
                 args = bucketBundle;
                 break;
             case POST:
                 route = Route.DETAILS_TEXTUAL_POST;
                 args = new PostBundle((TextualPost) holder.getItem());
-                break;
-            case UNDEFINED:
                 break;
         }
         return new Pair<>(route, args);

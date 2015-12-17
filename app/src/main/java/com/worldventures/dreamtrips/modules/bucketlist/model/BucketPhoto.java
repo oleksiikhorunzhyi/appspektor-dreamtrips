@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
@@ -12,7 +13,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import java.io.Serializable;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BucketPhoto implements Serializable, IFullScreenObject, android.os.Parcelable {
+public class BucketPhoto implements IFullScreenObject, Serializable, Parcelable {
 
     public static final long serialVersionUID = 14534647;
 
@@ -52,6 +53,11 @@ public class BucketPhoto implements Serializable, IFullScreenObject, android.os.
 
     public boolean isCover() {
         return isCover;
+    }
+
+    @Override
+    public String getImagePath() {
+        return url;
     }
 
     @Override

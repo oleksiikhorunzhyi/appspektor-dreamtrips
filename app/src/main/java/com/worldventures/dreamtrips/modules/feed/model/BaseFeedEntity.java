@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -9,22 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class BaseFeedEntity implements FeedEntity {
+public abstract class BaseFeedEntity implements FeedEntity {
 
     protected String uid;
+    @SerializedName("user")
+    protected User owner;
 
-    protected List<Comment> comments;
     protected int commentsCount;
+    protected List<Comment> comments;
     protected boolean liked;
     protected int likesCount;
-    protected User user;
 
-    private String firstUserLikedItem;
-
-    @Override
-    public String place() {
-        return null;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Getters & Setters
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public String getUid() {
@@ -32,8 +31,13 @@ public class BaseFeedEntity implements FeedEntity {
     }
 
     @Override
-    public void setLiked(boolean liked) {
-        this.liked = liked;
+    public User getOwner() {
+        return owner;
+    }
+
+    @Override
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -47,11 +51,6 @@ public class BaseFeedEntity implements FeedEntity {
     }
 
     @Override
-    public void setLikesCount(int likesCount) {
-        this.likesCount = likesCount;
-    }
-
-    @Override
     public List<Comment> getComments() {
         if (comments == null) {
             comments = new ArrayList<>();
@@ -60,8 +59,23 @@ public class BaseFeedEntity implements FeedEntity {
     }
 
     @Override
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    @Override
     public boolean isLiked() {
         return liked;
+    }
+
+    @Override
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    @Override
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 
     @Override
@@ -69,29 +83,30 @@ public class BaseFeedEntity implements FeedEntity {
         return likesCount;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    private String firstLikerName;
+
     @Override
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public String getFirstLikerName() {
+        return firstLikerName;
     }
 
     @Override
-    public User getUser() {
-        return user;
+    public void setFirstLikerName(String firstLikerName) {
+        this.firstLikerName = firstLikerName;
     }
 
-    @Override
-    public void setUser(User user) {
-        this.user = user;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Misc
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public String getFirstUserLikedItem() {
-        return firstUserLikedItem;
-    }
-
-    @Override
-    public void setFirstUserLikedItem(String firstUserLikedItem) {
-        this.firstUserLikedItem = firstUserLikedItem;
+    public void syncLikeState(FeedEntity feedEntity) {
+        this.setLiked(feedEntity.isLiked());
+        this.setLikesCount(feedEntity.getLikesCount());
     }
 
     @Override
@@ -107,6 +122,18 @@ public class BaseFeedEntity implements FeedEntity {
     @Override
     public int hashCode() {
         return uid.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "BaseFeedEntity{" +
+                "likesCount=" + likesCount +
+                ", liked=" + liked +
+                ", commentsCount=" + commentsCount +
+                ", comments=" + comments +
+                ", owner=" + owner +
+                ", uid='" + uid + '\'' +
+                '}';
     }
 
 }

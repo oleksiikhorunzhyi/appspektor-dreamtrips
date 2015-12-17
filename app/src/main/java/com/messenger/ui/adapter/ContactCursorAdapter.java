@@ -25,11 +25,11 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<ContactViewH
     private static final int VIEW_TYPE_CONTACT_WITH_HEADER = 2;
 
     private Context context;
-    private List<ChatUser> selectedContacts = new ArrayList<>();
+    private List<User> selectedContacts = new ArrayList<>();
     private SelectionListener selectionListener;
 
     public interface SelectionListener {
-        void onSelectionStateChanged(List<ChatUser> selectedContacts);
+        void onSelectionStateChanged(List<User> selectedContacts);
     }
 
     public ContactCursorAdapter(Context context, Cursor cursor) {
@@ -99,7 +99,7 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<ContactViewH
         return userName.charAt(0) == prevUserName.charAt(0) ? VIEW_TYPE_CONTACT : VIEW_TYPE_CONTACT_WITH_HEADER;
     }
 
-    public void setSelectedContacts(List<ChatUser> selectedContacts) {
+    public void setSelectedContacts(List<User> selectedContacts) {
         this.selectedContacts = selectedContacts;
         notifyDataSetChanged();
     }

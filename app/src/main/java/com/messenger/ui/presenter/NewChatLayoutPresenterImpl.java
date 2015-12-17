@@ -291,7 +291,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             return new CursorLoader(parentActivity, User.CONTENT_URI,
-                    null, null, null, "userName desc");
+                    null, User.COLUMN_ID + "<>?", new String[] {user.getId()}, User.COLUMN_NAME +" DESC");
         }
 
         @Override

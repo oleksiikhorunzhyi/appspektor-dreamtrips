@@ -7,6 +7,8 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 public class ChatFacadeInitializer implements AppInitializer {
@@ -21,11 +23,13 @@ public class ChatFacadeInitializer implements AppInitializer {
         messengerServerFacade.getGlobalEventEmitter().addGlobalMessageListener(new GlobalMessageListener() {
             @Override
             public void onReceiveMessage(Message message) {
+                message.setDate(new Date());
                 ContentUtils.insert(Message.CONTENT_URI, message);
             }
 
             @Override
             public void onSendMessage(Message message) {
+                message.setDate(new Date());
                 ContentUtils.insert(Message.CONTENT_URI, message);
             }
         });

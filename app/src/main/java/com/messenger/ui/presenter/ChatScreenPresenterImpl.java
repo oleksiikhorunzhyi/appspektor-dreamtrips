@@ -18,8 +18,10 @@ import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -44,6 +46,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     private Chat chat;
     protected Intent startIntent;
+    private PagePagination<Message> historyPaginationManager;
 
     public ChatScreenPresenterImpl(Intent startIntent) {
         this.startIntent = startIntent;
@@ -75,6 +78,9 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         loaderManager.initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
         ((App) view.getContext().getApplicationContext()).getObjectGraph().inject(this);
         chat = createChat(messengerServerFacade.getChatManager());
+        // TODO: 12/17/15
+        historyPaginationManager = messengerServerFacade.getPaginationManager().getConversationHistoryPagination(new Conversation(startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID), null, null));
+        historyPaginationManager.loadPage(0);
     }
 
 

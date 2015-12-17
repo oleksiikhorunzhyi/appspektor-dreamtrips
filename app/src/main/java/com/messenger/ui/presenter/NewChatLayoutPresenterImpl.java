@@ -15,6 +15,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,11 +54,18 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     private LoaderDelegate loaderDelegate;
     private final CursorLoaderCallback contactLoader = new CursorLoaderCallback();
 
+    private String textInChosenContactsEditText = "";
+
+    private Cursor cursor;
+
     public NewChatLayoutPresenterImpl(Activity activity) {
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
         loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
+
+        textInChosenContactsEditText = activity
+                .getString(R.string.new_chat_chosen_contacts_header_empty);
     }
 
     @Override
@@ -94,14 +102,14 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         }
         if (getViewState().getSelectedContacts() != null) {
             getView().setSelectedContacts(getViewState().getSelectedContacts());
-            refreshSelectedContactsHeader(getViewState().getSelectedContacts());
+            refreshSelectedContactsHeader();
         }
     }
 
     @Override
     public void onSelectedUsersStateChanged(List<ChatUser> selectedContacts) {
         getViewState().setSelectedContacts(selectedContacts);
-        refreshSelectedContactsHeader(selectedContacts);
+        refreshSelectedContactsHeader();
     }
 
     private void initialCursorLoader() {
@@ -120,7 +128,8 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.CONTACT_LOADER);
     }
 
-    private void refreshSelectedContactsHeader(List<ChatUser> selectedContacts) {
+    private void refreshSelectedContactsHeader() {
+        List<ChatUser> selectedContacts = getViewState().getSelectedContacts();
         StringBuilder sb = new StringBuilder();
         sb.append(parentActivity.getString(R.string.new_chat_chosen_contacts_header_contacts_list_start_value));
         if (!selectedContacts.isEmpty()) {
@@ -137,30 +146,55 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
             CharSequence name = user.getName();
             sb.append(name);
             userNames.add(name.toString());
-            if (i != selectedContacts.size() - 1) {
-                sb.append(", ");
-            }
+            sb.append(", ");
         }
 
         String resultString = sb.toString();
         SpannableString spannableString = new SpannableString(resultString);
-        int spannableColor = parentActivity.getResources().getColor(R.color.contact_list_header_selected_contacts);
+
         for (int i = 0; i < userNames.size(); i++) {
             String name = userNames.get(i);
             int spanBeginning = resultString.indexOf(name);
             int underlinedSpanEnding = spanBeginning + name.length();
             int coloredSpanEnding = underlinedSpanEnding;
-            // extend colored span to comma after user name
-            if (i != userNames.size() - 1) {
-                coloredSpanEnding++;
-            }
-            spannableString.setSpan(new UnderlineSpan(), spanBeginning,
-                    underlinedSpanEnding, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannableString.setSpan(new ForegroundColorSpan(spannableColor), spanBeginning,
-                    coloredSpanEnding, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            coloredSpanEnding++;
+            assignUnderlinedSpan(spannableString, spanBeginning, underlinedSpanEnding);
+            assignBlueSpan(spannableString, spanBeginning, coloredSpanEnding);
         }
 
+        textInChosenContactsEditText = resultString;
+
         getView().setSelectedUsersHeaderText(spannableString);
+    }
+
+    private void assignUnderlinedSpan(SpannableString spannableString, int start, int end) {
+        spannableString.setSpan(new UnderlineSpan(), start,
+                end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void assignBlueSpan(SpannableString spannableString, int start, int end) {
+        int spannableColor = parentActivity.getResources()
+                .getColor(R.color.contact_list_header_selected_contacts);
+        spannableString.setSpan(new ForegroundColorSpan(spannableColor), start,
+                end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    @Override
+    public void onTextChangedInChosenContactsEditText(String text) {
+        if (textInChosenContactsEditText.length() > text.length()) {
+            List<ChatUser> selectedContacts = getViewState().getSelectedContacts();
+            if (selectedContacts != null && !selectedContacts.isEmpty()) {
+                getViewState().getSelectedContacts().
+                        remove(getViewState().getSelectedContacts().size() - 1);
+                getView().setSelectedContacts(getViewState().getSelectedContacts());
+                refreshSelectedContactsHeader();
+            }
+            return;
+        }
+        String searchQuery = text.substring(textInChosenContactsEditText.length(),
+                text.length());
+        getViewState().setSearchFilter(searchQuery);
+        getView().setContacts(cursor, searchQuery, User.COLUMN_USER_NAME);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -237,7 +271,6 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     ///////////////////////////////////////////////////////////////////////////
 
     private class CursorLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
-
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             return new CursorLoader(parentActivity, User.CONTENT_URI,
@@ -260,6 +293,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
             NewChatScreen screen = getView();
             if (screen == null) return;
             screen.setContacts(cursor);
+            NewChatLayoutPresenterImpl.this.cursor = cursor;
         }
     }
 }

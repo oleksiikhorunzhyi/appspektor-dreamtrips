@@ -65,8 +65,8 @@
                 android:background="@color/list_item_divider_color"
                 />
 
-            <TextView
-                android:id="@+id/new_chat_chosen_contacts_textview"
+            <com.messenger.ui.widget.SelectionListenerEditText
+                android:id="@+id/new_chat_chosen_contacts_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/new_chat_content_header_size"
                 android:gravity="center_vertical"
@@ -75,6 +75,8 @@
                 android:text="@string/new_chat_chosen_contacts_header_empty"
                 android:textColor="@color/new_chat_header_text_color"
                 android:textSize="@dimen/new_chat_name_chosen_contacts_text_size"
+                android:background="@android:color/transparent"
+                android:inputType="textFilter|textNoSuggestions"
                 />
 
             <View

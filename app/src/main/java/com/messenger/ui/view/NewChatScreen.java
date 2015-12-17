@@ -16,6 +16,8 @@ public interface NewChatScreen extends ActivityAwareScreen {
 
     void setContacts(Cursor cursor);
 
+    void setContacts(Cursor cursor, String query, String queryColumn);
+
     void setSelectedContacts(List<ChatUser> selectedContacts);
 
     void setSelectedUsersHeaderText(CharSequence text);

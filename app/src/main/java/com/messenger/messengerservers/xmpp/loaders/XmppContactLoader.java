@@ -9,6 +9,7 @@ import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
@@ -29,10 +30,9 @@ public class XmppContactLoader extends AsyncLoader<User> {
     @Override
     protected List<User> loadEntities() {
         Roster roster = Roster.getInstanceFor(facade.getConnection());
-
         if (!roster.isLoaded()) {
             try {
-                roster.reload();
+                roster.reloadAndWait();
             } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {
                 Log.w("XmppContactLoader", "reload failed", e);
             }
@@ -44,8 +44,12 @@ public class XmppContactLoader extends AsyncLoader<User> {
             if (entry.getType() != RosterPacket.ItemType.both) {
                 continue;
             }
-            String name = entry.getName();
-            users.add(JidCreatorHelper.obtainUser(name != null ? name : entry.getUser()));
+
+            String userName = entry.getUser();
+            User user = JidCreatorHelper.obtainUser(userName);
+            boolean online = roster.getPresence(userName).getType().equals(Presence.Type.available);
+            user.setOnline(online);
+            users.add(user);
         }
 
         return users;

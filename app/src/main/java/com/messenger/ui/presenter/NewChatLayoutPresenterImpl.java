@@ -52,7 +52,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     SessionHolder<UserSession> appSessionHolder;
     @Inject
     MessengerServerFacade messengerServerFacade;
-    User user = new User("techery_user2");
+    User user = new User("techery_user6");
 
     private Activity parentActivity;
     private LoaderDelegate loaderDelegate;

@@ -4,6 +4,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public abstract class GlobalEventEmitter {
     protected List<Conversation> handledConversations = new ArrayList<>();
 
     protected List<GlobalMessageListener> globalMessageListeners = new ArrayList<>();
+    protected List<PresenceListener> presenceListeners = new ArrayList<>();
     protected List<InvitationListener> invitationListeners = new ArrayList<>();
     protected List<UnhandledMessageListener> unhandledMessageListeners = new ArrayList<>();
 
@@ -39,6 +41,20 @@ public abstract class GlobalEventEmitter {
                 listener.onReceiveMessage(message);
             else
                 listener.onSendMessage(message);
+        }
+    }
+
+    public void addPresenceListener(PresenceListener listener) {
+        presenceListeners.add(listener);
+    }
+
+    public void removePresenceListener(PresenceListener listener) {
+        presenceListeners.remove(listener);
+    }
+
+    protected void notifyUserPresenceChanged(User user) {
+        for (PresenceListener listener: presenceListeners) {
+            listener.onUserPresenceChanged(user);
         }
     }
 

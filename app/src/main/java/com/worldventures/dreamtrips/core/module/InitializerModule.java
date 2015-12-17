@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.messenger.di.ChatFacadeInitializer;
+import com.messenger.di.PresenceListenerInitializer;
 import com.messenger.di.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -29,7 +30,8 @@ import dagger.Provides;
                 SoftInputInitializer.class,
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
-                StorageInitializer.class
+                StorageInitializer.class,
+                PresenceListenerInitializer.class
 
         },
         library = true, complete = false)
@@ -95,5 +97,10 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideFacadeInitializer(){
         return new ChatFacadeInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer providePresenceListenerInitializer() {
+        return new PresenceListenerInitializer();
     }
 }

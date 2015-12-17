@@ -48,7 +48,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
-        user = new User("techery_user2");
+        user = new User("techery_user6");
         loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
     }
 

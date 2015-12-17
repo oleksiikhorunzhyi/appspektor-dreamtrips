@@ -75,6 +75,7 @@ public class XmppServerFacade implements MessengerServerFacade {
                     try {
                         connection.connect();
                         connection.login();
+                        setPresenceStatus(true);
 
                         status = AuthorizeStatus.SUCCESS;
                         for (AuthorizeListener listener : onConnectListeners) {

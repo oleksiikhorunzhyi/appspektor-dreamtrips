@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.messenger.messengerservers.entities.User;
-import com.messenger.model.ChatUser;
 import com.messenger.ui.adapter.holder.ContactWithHeaderViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.raizlabs.android.dbflow.sql.SqlUtils;

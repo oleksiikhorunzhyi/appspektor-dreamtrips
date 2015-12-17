@@ -11,6 +11,7 @@ import org.jivesoftware.smack.roster.RosterListener;
 import java.util.Collection;
 
 public class RosterManager extends ContactManager {
+
     private final XmppServerFacade facade;
     private final AuthorizeListener authListener = new AuthorizeListener() {
         @Override

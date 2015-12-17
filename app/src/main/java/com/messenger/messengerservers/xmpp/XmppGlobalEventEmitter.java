@@ -7,7 +7,10 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 
@@ -18,6 +21,8 @@ import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 
+import java.util.Collection;
+
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.isMessage;
 
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
@@ -25,6 +30,33 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     private final XmppServerFacade facade;
 
     private AbstractXMPPConnection abstractXMPPConnection;
+
+    public final RosterListener rosterListener = new RosterListener() {
+        @Override
+        public void entriesAdded(Collection<String> addresses) {
+        }
+
+        @Override
+        public void entriesUpdated(Collection<String> addresses) {
+        }
+
+        @Override
+        public void entriesDeleted(Collection<String> addresses) {
+        }
+
+        @Override
+        public void presenceChanged(Presence presence) {
+            Presence.Type presenceType = presence.getType();
+            if (presenceType != Presence.Type.available && presenceType != Presence.Type.unavailable)
+                return;
+
+            String jid = presence.getFrom();
+            User user = new User(jid.substring(0, jid.indexOf("@")));
+            user.setOnline(presenceType.equals(Presence.Type.available));
+            notifyUserPresenceChanged(user);
+        }
+    };
+
     private final AuthorizeListener authorizeListener = new AuthorizeListener() {
         @Override
         public void onSuccess() {
@@ -33,6 +65,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             abstractXMPPConnection.addPacketInterceptor(XmppGlobalEventEmitter.this::interceptOutgoingPacket, null);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPacket, null);
             MultiUserChatManager.getInstanceFor(abstractXMPPConnection).addInvitationListener(XmppGlobalEventEmitter.this::receiveInvite);
+            Roster.getInstanceFor(facade.getConnection()).addRosterListener(rosterListener);
         }
     };
     

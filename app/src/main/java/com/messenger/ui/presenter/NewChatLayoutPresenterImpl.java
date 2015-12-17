@@ -15,17 +15,20 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.messenger.app.Environment;
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.LoaderDelegate;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.model.ChatConversation;
+import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.view.NewChatScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
@@ -36,6 +39,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -48,6 +52,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     SessionHolder<UserSession> appSessionHolder;
     @Inject
     MessengerServerFacade messengerServerFacade;
+    User user = new User("techery_user2");
 
     private Activity parentActivity;
     private LoaderDelegate loaderDelegate;
@@ -99,7 +104,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     }
 
     @Override
-    public void onSelectedUsersStateChanged(List<ChatUser> selectedContacts) {
+    public void onSelectedUsersStateChanged(List<User> selectedContacts) {
         getViewState().setSelectedContacts(selectedContacts);
         refreshSelectedContactsHeader(selectedContacts);
     }
@@ -120,7 +125,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.CONTACT_LOADER);
     }
 
-    private void refreshSelectedContactsHeader(List<ChatUser> selectedContacts) {
+    private void refreshSelectedContactsHeader(List<User> selectedContacts) {
         StringBuilder sb = new StringBuilder();
         sb.append(parentActivity.getString(R.string.new_chat_chosen_contacts_header_contacts_list_start_value));
         if (!selectedContacts.isEmpty()) {
@@ -178,18 +183,31 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                if (getViewState().getSelectedContacts() == null || getViewState().getSelectedContacts().isEmpty()) {
+                List<User> selectedUsers = getViewState().getSelectedContacts();
+                if (selectedUsers == null || selectedUsers.isEmpty()) {
                     Toast.makeText(parentActivity, R.string.new_chat_toast_no_users_selected_error,
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                ChatConversation chatConversation = Environment.newChatConversation();
-                chatConversation.setConversationName(getView().getConversationName());
-                chatConversation.setConversationOwner(Environment.getCurrentUser());
-                ArrayList<ChatUser> chatUsers = new ArrayList<>();
-                chatUsers.add(Environment.getCurrentUser());
-                chatUsers.addAll(getViewState().getSelectedContacts());
-                chatConversation.setChatUsers(chatUsers);
+
+                MultiUserChat chat = messengerServerFacade.getChatManager().createMultiUserChat(user, JidCreatorHelper.obtainGroupJid(user));
+                chat.invite(selectedUsers);
+                try {
+                    chat.sendMessage(new Message.Builder()
+                                    .locale(Locale.getDefault())
+                                    .text("HELLO FROM ANDROID")
+                                    .build()
+                    );
+                } catch (ConnectionException e) {
+                    Log.e("MultiUserChat", Log.getStackTraceString(e));
+                }
+//                ChatConversation chatConversation = Environment.newChatConversation();
+//                chatConversation.setConversationName(getView().getConversationName());
+//                chatConversation.setConversationOwner(Environment.getCurrentUser());
+//                ArrayList<ChatUser> chatUsers = new ArrayList<>();
+//                chatUsers.add(Environment.getCurrentUser());
+//                chatUsers.addAll(getViewState().getSelectedContacts());
+//                chatConversation.setChatUsers(chatUsers);
 //
 //                Intent intent = new Intent(getContext(), ChatActivity.class);
 //                intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, chatConversation);
@@ -197,8 +215,8 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
 //                getActivity().finish();
 
                 // TODO: 12/15/15
-                throw new Error("Not implement");
-//                return true;
+//                throw new Error("Not implement");
+                return true;
         }
         return false;
     }

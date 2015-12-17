@@ -1,7 +1,11 @@
 package com.messenger.messengerservers.xmpp;
 
+import android.util.Log;
+
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -17,6 +21,7 @@ import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.isMessage;
 
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
+    private static final String TAG = "XmppGlobalEventEmitter";
     private final XmppServerFacade facade;
 
     private AbstractXMPPConnection abstractXMPPConnection;
@@ -65,8 +70,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     private void receiveInvite(XMPPConnection conn, MultiUserChat room, String inviter,
                                  String reason, String password, Message message){
-        User userInviter = JidCreatorHelper.obtainUser(inviter);
-        notifyReceiveInvite(userInviter, room.getRoom(), password);
+        try {
+            room.join(JidCreatorHelper.obtainUser(abstractXMPPConnection.getUser()).getUserName());
+        } catch (SmackException | XMPPException.XMPPErrorException e) {
+            Log.e("XmppGlobalEventEmitter", Log.getStackTraceString(e));
+        }
+//        User userInviter = JidCreatorHelper.obtainUser(inviter);
+//        notifyReceiveInvite(userInviter, room.getRoom(), password);
     }
 
 }

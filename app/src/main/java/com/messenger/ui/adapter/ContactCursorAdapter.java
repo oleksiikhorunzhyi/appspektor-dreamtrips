@@ -34,7 +34,7 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
     private static final int VIEW_TYPE_HEADER = 2;
 
     private Context context;
-    private List<ChatUser> selectedContacts = new ArrayList<>();
+    private List<User> selectedContacts = new ArrayList<>();
     private SelectionListener selectionListener;
 
     private AlphabetIndexer indexer;
@@ -43,7 +43,7 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
     private Map<Integer, Integer> sectionToPosition;
 
     public interface SelectionListener {
-        void onSelectionStateChanged(List<ChatUser> selectedContacts);
+        void onSelectionStateChanged(List<User> selectedContacts);
     }
 
     public ContactCursorAdapter(Context context, Cursor cursor) {
@@ -213,7 +213,7 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
         return usedSectionNumbers[i-1];
     }
 
-    public void setSelectedContacts(List<ChatUser> selectedContacts) {
+    public void setSelectedContacts(List<User> selectedContacts) {
         this.selectedContacts = selectedContacts;
         notifyDataSetChanged();
     }

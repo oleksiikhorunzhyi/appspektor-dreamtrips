@@ -170,6 +170,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         if (!chat.isJoined()){
             try {
                 chat.createOrJoin(user.getUserName());
+                detectIsOwner();
                 setListeners();
             } catch (XMPPException.XMPPErrorException | SmackException e) {
                 Log.e(TAG, "Error ", e);

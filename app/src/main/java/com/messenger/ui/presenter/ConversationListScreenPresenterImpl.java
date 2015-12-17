@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -24,7 +23,6 @@ import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatActivity;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
-import com.messenger.ui.viewstate.LceViewState;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -50,7 +48,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
-        user = new User("techery_user6");
+        user = new User("techery_user2");
         loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
     }
 

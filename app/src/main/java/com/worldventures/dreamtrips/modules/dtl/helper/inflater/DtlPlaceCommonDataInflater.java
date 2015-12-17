@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -31,20 +31,22 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
     }
 
     @Override
-    protected void onPlaceApply(DtlMerchant place) {
-        coverStub.setVisibility(place.getImages().isEmpty() ? View.VISIBLE : View.GONE);
-        if (place.getRating() != 0.0f) {
+    protected void onPlaceApply(DtlMerchant merchant) {
+        coverStub.setVisibility(merchant.getImages().isEmpty() ? View.VISIBLE : View.GONE);
+        if (merchant.getRating() != 0.0f) {
             rating.setVisibility(View.VISIBLE);
-            rating.setRating(Float.valueOf(place.getRating()).intValue());
+            rating.setRating(Float.valueOf(merchant.getRating()).intValue());
         } else {
             rating.setVisibility(View.GONE);
         }
 
-        int perkMargin = place.hasOffer(DtlOffer.TYPE_POINTS) ?
+        int perkMargin = merchant.hasOffer(DtlOffer.TYPE_POINTS) ?
                 rootView.getResources().getDimensionPixelSize(R.dimen.perks_margin) : 0;
         ((LinearLayout.LayoutParams) perks.getLayoutParams()).setMargins(perkMargin, 0, 0, 0);
         //
-        perks.setVisibility(place.hasOffer(DtlOffer.TYPE_PERK) ? View.VISIBLE : View.GONE);
-        earnPointsBadge.setVisibility(place.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
+        perks.setVisibility(merchant.hasOffer(DtlOffer.TYPE_PERK) ? View.VISIBLE : View.GONE);
+        earnPointsBadge.setVisibility(merchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
     }
+
+
 }

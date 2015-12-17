@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 public class DtlEnrollWizard {
@@ -21,22 +21,22 @@ public class DtlEnrollWizard {
         this.routeCreator = routeCreator;
     }
 
-    public void clearAndProceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, DtlMerchant DtlMerchant) {
-        showNext(fragmentManager, dtlTransaction, DtlMerchant, true);
+    public void clearAndProceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle) {
+        showNext(fragmentManager, dtlTransaction, bundle, true);
     }
 
-    public void proceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, DtlMerchant DtlMerchant) {
-        showNext(fragmentManager, dtlTransaction, DtlMerchant, false);
+    public void proceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle) {
+        showNext(fragmentManager, dtlTransaction, bundle, false);
     }
 
-    private void showNext(FragmentManager fragmentManager, DtlTransaction dtlTransaction, DtlMerchant DtlMerchant,
+    private void showNext(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle,
                           boolean clearBackStack) {
         Route route = routeCreator.createRoute(dtlTransaction);
         router.moveTo(route,
                 NavigationConfigBuilder.forFragment()
                         .containerId(R.id.container_main)
                         .backStackEnabled(true)
-                        .data(DtlMerchant)
+                        .data(bundle)
                         .clearBackStack(clearBackStack)
                         .fragmentManager(fragmentManager)
                         .build());

@@ -108,7 +108,7 @@ public class DtlTransaction {
         return verified;
     }
 
-    public Request asTransactionRequest() {
+    public Request asTransactionRequest(String currencyCode) {
         Request dtlTransactionRequest = new Request();
         dtlTransactionRequest.billTotal = billTotal;
         dtlTransactionRequest.checkinTime = DateTimeUtils.convertDateToUTCString(new Date(checkinTimestamp));
@@ -116,6 +116,7 @@ public class DtlTransaction {
         dtlTransactionRequest.receiptPhotoUrl = receiptPhotoUrl;
         dtlTransactionRequest.merchantToken = merchantToken;
         dtlTransactionRequest.location = DtlTransactionLocation.fromLatLng(lat, lng);
+        dtlTransactionRequest.currencyCode = currencyCode;
         return dtlTransactionRequest;
     }
 
@@ -126,5 +127,6 @@ public class DtlTransaction {
         String receiptPhotoUrl;
         String merchantToken;
         DtlTransactionLocation location;
+        String currencyCode;
     }
 }

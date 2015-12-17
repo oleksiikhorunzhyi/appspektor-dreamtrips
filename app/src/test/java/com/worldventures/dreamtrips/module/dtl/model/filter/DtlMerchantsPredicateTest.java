@@ -10,12 +10,15 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesF
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+@RunWith(MockitoJUnitRunner.class)
 public class DtlMerchantsPredicateTest {
 
     @Test

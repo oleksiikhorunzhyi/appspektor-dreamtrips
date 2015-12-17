@@ -13,8 +13,9 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 
@@ -26,7 +27,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_verify_amount)
-public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmountPresenter, DtlMerchant>
+public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantIdBundle>
         implements DtlVerifyAmountPresenter.View {
 
     @InjectView(R.id.dt_points)
@@ -46,7 +47,7 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
 
     @Override
     protected DtlVerifyAmountPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlVerifyAmountPresenter(getArgs());
+        return new DtlVerifyAmountPresenter(getArgs().getMerchantId());
     }
 
     @Override
@@ -92,8 +93,11 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     }
 
     @Override
-    public void attachTransaction(DtlTransaction dtlTransaction) {
-        spentAmount.setText(String.format("$ %.2f", dtlTransaction.getBillTotal()));
+    public void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency) {
+        spentAmount.setText(String.format("%s %.2f %s",
+                dtlCurrency.getPrefix(),
+                dtlTransaction.getBillTotal(),
+                dtlCurrency.getSuffix()));
         receipt.setController(
                 GraphicUtils.provideFrescoResizingController(Uri.parse(dtlTransaction.getUploadTask().getFilePath()),
                         receipt.getController()));

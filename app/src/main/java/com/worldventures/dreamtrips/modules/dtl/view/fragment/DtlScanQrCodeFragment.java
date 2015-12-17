@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -43,7 +44,7 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
 @RuntimePermissions
-public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, DtlMerchant>
+public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle>
         implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
     @InjectView(R.id.scanner_view)
@@ -72,7 +73,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     @Override
     protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlScanQrCodePresenter(getArgs());
+        return new DtlScanQrCodePresenter(getArgs().getMerchantId());
     }
 
     @Override
@@ -105,14 +106,15 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     }
 
 
-    public void setPlace(DtlMerchant place) {
-        name.setText(place.getDisplayName());
-        if (!TextUtils.isEmpty(place.getAddress1())) {
-            address.setText(String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),
-                    place.getState(), place.getZip()));
+    @Override
+    public void setPlace(DtlMerchant dtlMerchant) {
+        name.setText(dtlMerchant.getDisplayName());
+        if (!TextUtils.isEmpty(dtlMerchant.getAddress1())) {
+            address.setText(String.format("%s, %s, %s, %s", dtlMerchant.getAddress1(), dtlMerchant.getCity(),
+                    dtlMerchant.getState(), dtlMerchant.getZip()));
         }
-        if (!place.getImages().isEmpty()) {
-            placeImage.setImageURI(Uri.parse(place.getImages().get(0).getImagePath()));
+        if (!dtlMerchant.getImages().isEmpty()) {
+            placeImage.setImageURI(Uri.parse(dtlMerchant.getImages().get(0).getImagePath()));
         }
     }
 

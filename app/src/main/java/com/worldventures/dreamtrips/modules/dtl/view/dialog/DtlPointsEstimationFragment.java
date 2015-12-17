@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 
 import butterknife.InjectView;
@@ -34,6 +35,10 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     ProgressBar progressBar;
     @InjectView(R.id.info)
     TextView info;
+    @InjectView(R.id.enter_amount_hint)
+    TextView enterAmountHint;
+    @InjectView(R.id.currency)
+    TextView currency;
 
     private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
         @Override
@@ -55,6 +60,13 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         super.afterCreateView(rootView);
         pointsEstimated.setText(R.string.dtl_points_estimation_default_result);
         inputPoints.addTextChangedListener(textWatcherAdapter);
+    }
+
+    @Override
+    public void showCurrency(DtlCurrency dtlCurrency) {
+        currency.setText(dtlCurrency.getPrefix());
+        enterAmountHint.setText(getString(R.string.dtl_points_estimation_input_hint,
+                dtlCurrency.getCurrencyHint()));
     }
 
     @Override

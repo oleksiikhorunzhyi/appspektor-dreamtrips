@@ -14,7 +14,9 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.place.EstimatePointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
@@ -25,25 +27,33 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
     public static final int REQUESTER_ID = -3;
 
-    private final DtlMerchant DtlMerchant;
+    private final String merchantId;
 
     @State
     String amount;
-
     @Inject
     SnappyRepository snapper;
+    @Inject
+    DtlMerchantRepository dtlMerchantRepository;
+    private DtlMerchant dtlMerchant;
 
     private DtlTransaction dtlTransaction;
 
-    public DtlScanReceiptPresenter(DtlMerchant place) {
-        this.DtlMerchant = place;
+    public DtlScanReceiptPresenter(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlTransaction = snapper.getDtlTransaction(DtlMerchant.getId());
+        dtlTransaction = snapper.getDtlTransaction(merchantId);
 
         if (dtlTransaction.getUploadTask() != null) {
             view.hideScanButton();
@@ -56,6 +66,8 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         }
 
         checkVerification();
+
+        view.showCurrency(dtlMerchant.getDefaultCurrency());
     }
 
     public void onAmountChanged(String amount) {
@@ -76,7 +88,8 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         dtlTransaction.setBillTotal(Double.parseDouble(amount));
         TrackingHelper.dtlVerifyAmountUser(amount);
 
-        doRequest(new EstimatePointsRequest(DtlMerchant.getId(), dtlTransaction.getBillTotal()),
+        doRequest(new EstimatePointsRequest(merchantId, dtlMerchant.getDefaultCurrency().getCode(),
+                        dtlTransaction.getBillTotal()),
                 this::attachDtPoints);
     }
 
@@ -85,8 +98,8 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         //
         dtlTransaction.setPoints(points);
         //
-        snapper.saveDtlTransaction(DtlMerchant.getId(), dtlTransaction);
-        view.openVerify(DtlMerchant, dtlTransaction);
+        snapper.saveDtlTransaction(merchantId, dtlTransaction);
+        view.openVerify(dtlTransaction);
     }
 
     ////////////////////////////////////////
@@ -125,13 +138,13 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
         dtlTransaction.setUploadTask(uploadTask);
 
-        snapper.saveDtlTransaction(DtlMerchant.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(merchantId, dtlTransaction);
 
         checkVerification();
     }
 
     public interface View extends ApiErrorView {
-        void openVerify(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
+        void openVerify(DtlTransaction dtlTransaction);
 
         void hideScanButton();
 
@@ -144,5 +157,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         void showProgress();
 
         void preSetBillAmount(double amount);
+
+        void showCurrency(DtlCurrency dtlCurrency);
     }
 }

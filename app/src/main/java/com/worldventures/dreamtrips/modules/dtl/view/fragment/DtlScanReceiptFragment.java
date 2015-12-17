@@ -20,8 +20,9 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
@@ -38,7 +39,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.fragment_scan_receipt)
 @MenuResource(R.menu.menu_mock)
-public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, DtlMerchant>
+public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, MerchantIdBundle>
         implements DtlScanReceiptPresenter.View {
 
     @InjectView(R.id.verify)
@@ -104,7 +105,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
 
     @Override
     protected DtlScanReceiptPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlScanReceiptPresenter(getArgs());
+        return new DtlScanReceiptPresenter(getArgs().getMerchantId());
     }
 
     @Override
@@ -138,6 +139,11 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     }
 
     @Override
+    public void showCurrency(DtlCurrency currency) {
+        amountInput.setHint(getString(R.string.dtl_receipt_hint, currency.getCurrencyHint()));
+    }
+
+    @Override
     public void enableVerification() {
         verify.setEnabled(true);
     }
@@ -165,7 +171,8 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         progressDialog.show(getFragmentManager());
     }
 
-    public void openVerify(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction) {
+    @Override
+    public void openVerify(DtlTransaction dtlTransaction) {
         progressDialog.dismiss();
         dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
     }

@@ -23,6 +23,8 @@ import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferDeserializer;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
@@ -93,6 +95,7 @@ public class ApiModule {
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
                 .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
                 .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
+                .registerTypeAdapter(DtlOffer.class, new DtlOfferDeserializer())
                 .create();
     }
 

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.dialog;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -60,6 +61,13 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         super.afterCreateView(rootView);
         pointsEstimated.setText(R.string.dtl_points_estimation_default_result);
         inputPoints.addTextChangedListener(textWatcherAdapter);
+        inputPoints.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == getResources().getInteger(R.integer.dtl_keyboard_point_estimator_action_id)) {
+                calculateClicked();
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -72,6 +80,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     @Override
     public void onDestroyView() {
         inputPoints.removeTextChangedListener(textWatcherAdapter);
+        inputPoints.setOnEditorActionListener(null);
         super.onDestroyView();
     }
 
@@ -102,6 +111,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     @OnClick(R.id.calculateButton)
     void calculateClicked() {
         if (inputPoints.getText().length() > 0 && inputPoints.validate())
+            tryHideSoftInput();
             getPresenter().onCalculateClicked(inputPoints.getText().toString());
     }
 

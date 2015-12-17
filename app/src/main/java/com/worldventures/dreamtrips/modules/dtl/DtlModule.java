@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
@@ -92,6 +93,8 @@ import dagger.Provides;
 
                 DtlVerifyAmountFragment.class,
                 DtlVerifyAmountPresenter.class,
+
+                DtlImageFragment.class,
         },
         complete = false,
         library = true

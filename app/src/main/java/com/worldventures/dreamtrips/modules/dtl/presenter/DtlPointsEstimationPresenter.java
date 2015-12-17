@@ -15,6 +15,7 @@ import javax.inject.Inject;
 public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
     public static final String BILL_TOTAL = "billTotal";
+    private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
 
     protected final String merchantId;
 
@@ -52,7 +53,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
     }
 
     protected boolean validateInput(String pointsInput) {
-        if (pointsInput.isEmpty()) {
+        if (pointsInput.isEmpty() || !pointsInput.matches(NUMBER_REGEX)) {
             view.showError(R.string.dtl_field_validation_empty_input_error);
             return false;
         }

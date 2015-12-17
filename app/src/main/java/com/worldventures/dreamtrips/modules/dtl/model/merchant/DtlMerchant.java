@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
@@ -10,12 +13,15 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPoi
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import timber.log.Timber;
+
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class DtlMerchant {
+public class DtlMerchant implements Parcelable {
 
     String id;
     String type;
@@ -174,6 +180,17 @@ public class DtlMerchant {
         return offers == null || offers.isEmpty();
     }
 
+    public int getOffsetHours() {
+        int offset;
+        try {
+            offset = Integer.valueOf(timeZone);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "Failed to parse timezone");
+            offset = 0;
+        }
+        return offset;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -215,6 +232,86 @@ public class DtlMerchant {
             if (lhs.distance == rhs.distance) return 0;
             if (lhs.distance > rhs.distance) return 1;
             else return -1;
+        }
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.type);
+        dest.writeInt(this.partnerStatus == null ? -1 : this.partnerStatus.ordinal());
+        dest.writeString(this.displayName);
+        dest.writeString(this.address1);
+        dest.writeString(this.address2);
+        dest.writeString(this.city);
+        dest.writeString(this.state);
+        dest.writeString(this.country);
+        dest.writeString(this.zip);
+        dest.writeParcelable(this.coordinates, 0);
+        dest.writeString(this.phone);
+        dest.writeString(this.email);
+        dest.writeString(this.description);
+        dest.writeString(this.website);
+        dest.writeInt(this.budget);
+        dest.writeFloat(this.rating);
+        dest.writeString(this.timeZone);
+        dest.writeList(this.offers);
+        dest.writeList(this.categories);
+        dest.writeList(this.amenities);
+        dest.writeTypedList(images);
+        dest.writeList(this.operationDays);
+        dest.writeDouble(this.distance);
+    }
+
+    protected DtlMerchant(Parcel in) {
+        this.id = in.readString();
+        this.type = in.readString();
+        int tmpPartnerStatus = in.readInt();
+        this.partnerStatus = tmpPartnerStatus == -1 ? null : PartnerStatus.values()[tmpPartnerStatus];
+        this.displayName = in.readString();
+        this.address1 = in.readString();
+        this.address2 = in.readString();
+        this.city = in.readString();
+        this.state = in.readString();
+        this.country = in.readString();
+        this.zip = in.readString();
+        this.coordinates = in.readParcelable(Location.class.getClassLoader());
+        this.phone = in.readString();
+        this.email = in.readString();
+        this.description = in.readString();
+        this.website = in.readString();
+        this.budget = in.readInt();
+        this.rating = in.readFloat();
+        this.timeZone = in.readString();
+        this.offers = new ArrayList<DtlOffer>();
+        in.readList(this.offers, List.class.getClassLoader());
+        this.categories = new ArrayList<DtlMerchantAttribute>();
+        in.readList(this.categories, List.class.getClassLoader());
+        this.amenities = new ArrayList<DtlMerchantAttribute>();
+        in.readList(this.amenities, List.class.getClassLoader());
+        this.images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
+        this.operationDays = new ArrayList<OperationDay>();
+        in.readList(this.operationDays, List.class.getClassLoader());
+        this.distance = in.readDouble();
+    }
+
+    public static final Parcelable.Creator<DtlMerchant> CREATOR = new Parcelable.Creator<DtlMerchant>() {
+        public DtlMerchant createFromParcel(Parcel source) {
+            return new DtlMerchant(source);
+        }
+
+        public DtlMerchant[] newArray(int size) {
+            return new DtlMerchant[size];
         }
     };
 }

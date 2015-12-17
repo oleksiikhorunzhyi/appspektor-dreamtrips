@@ -42,6 +42,7 @@ public class PhotoPickerPresenter extends Presenter<PhotoPickerPresenter.View> {
 
     public void loadGallery() {
         if (photos != null) {
+            view.initPhotos(photos);
             return;
         }
 

@@ -11,10 +11,20 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class LikersPanelHelper {
 
+    private int invisibility;
+
+    public LikersPanelHelper() {
+        this(View.INVISIBLE);
+    }
+
+    public LikersPanelHelper(int invisibility) {
+        this.invisibility = invisibility;
+    }
+
     public void setup(TextView panel, FeedEntity feedEntity) {
         int likesCount = feedEntity.getLikesCount();
         if (likesCount == 0) {
-            panel.setVisibility(View.INVISIBLE);
+            panel.setVisibility(invisibility);
             return;
         }
         //

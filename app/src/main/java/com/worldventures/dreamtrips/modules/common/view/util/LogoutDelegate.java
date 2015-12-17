@@ -7,9 +7,11 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DeleteTokenGcmTask;
 import com.worldventures.dreamtrips.modules.common.api.LogoutCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import javax.inject.Inject;
 
@@ -23,7 +25,11 @@ public class LogoutDelegate {
     protected SnappyRepository snappyRepository;
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
+    @Inject
+    protected NotificationDelegate notificationDelegate;
+    @Inject
+    protected BadgeUpdater badgeUpdater;
+    //
     protected DreamSpiceManager dreamSpiceManager;
 
     private OnLogoutSuccessListener onLogoutSuccessListener;
@@ -68,6 +74,8 @@ public class LogoutDelegate {
         }
         snappyRepository.clearAll();
         appSessionHolder.destroy();
+        notificationDelegate.cancelAll();
+        badgeUpdater.updateBadge(0);
     }
 
     public void setOnLogoutSuccessListener(OnLogoutSuccessListener onLogoutSuccessListener) {

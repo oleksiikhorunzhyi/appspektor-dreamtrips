@@ -2,13 +2,16 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -33,7 +36,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-import static android.support.v7.widget.RecyclerView.LayoutManager;
 import static android.support.v7.widget.RecyclerView.OnScrollListener;
 
 @Layout(R.layout.fragment_feed_list_additional_info)
@@ -47,38 +49,21 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     TextView roviaBucks;
     @InjectView(R.id.details)
     ViewGroup details;
-    @InjectView(R.id.close_friends)
-    ViewGroup closeFriends;
+    @InjectView(R.id.friends_card)
+    ViewGroup friendsCard;
     @InjectView(R.id.lv_close_friends)
-    EmptyRecyclerView lvCloseFriends;
+    EmptyRecyclerView friendsView;
     @InjectView(R.id.circle_title)
     TextView circleTitle;
     @InjectView(R.id.feed_friend_empty_view)
     View emptyView;
+    @InjectView(R.id.swipe_container)
+    SwipeRefreshLayout refreshLayout;
 
     CirclesFilterPopupWindow filterPopupWindow;
-    boolean loading;
-    int previousTotal;
-
     BaseArrayListAdapter<User> adapter;
 
-    OnScrollListener onScrollListener = new OnScrollListener() {
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int totalItemCount = recyclerView.getLayoutManager().getItemCount();
-            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-
-            if (totalItemCount > previousTotal) {
-                loading = false;
-                previousTotal = totalItemCount;
-            }
-
-            if (!loading && lastVisibleItemPosition >= totalItemCount - 1) {
-                getPresenter().loadFriends();
-                loading = true;
-            }
-        }
-    };
+    WeakHandler handler = new WeakHandler();
 
     @Override
     protected FeedListAdditionalInfoPresenter createPresenter(Bundle savedInstanceState) {
@@ -88,21 +73,31 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        LayoutManager layoutManager = new NestedLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
+        if (friendsView == null) return;
+        //
+        refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
+        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        //
+        friendsView.setEmptyView(emptyView);
+        friendsView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int itemCount = recyclerView.getLayoutManager().getItemCount();
+                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                getPresenter().onScrolled(itemCount, lastVisibleItemPosition);
+            }
+        });
         adapter = new BaseArrayListAdapter<>(getContext(), this);
         adapter.registerCell(User.class, FeedFriendCell.class);
-
-        if (lvCloseFriends != null) {
-            lvCloseFriends.setEmptyView(emptyView);
-            lvCloseFriends.addOnScrollListener(onScrollListener);
-            lvCloseFriends.setLayoutManager(layoutManager);
-            lvCloseFriends.setAdapter(adapter);
-        }
+        friendsView.setAdapter(adapter);
+        friendsView.setLayoutManager(new NestedLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        friendsView.addItemDecoration(new SimpleListDividerDecorator(ResourcesCompat.getDrawable(getResources(), R.drawable.list_divider, null), true));
     }
 
     @Override
     public void setFriends(@NonNull List<User> friends) {
-        closeFriends.setVisibility(View.VISIBLE);
+        friendsCard.setVisibility(View.VISIBLE);
         adapter.clear();
         adapter.addItems(friends);
     }
@@ -118,6 +113,22 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     }
 
     @Override
+    public void startLoading() {
+        // timeout was set according to the issue:
+        // https://code.google.com/p/android/issues/detail?id=77712
+        handler.postDelayed(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+        }, 100);
+    }
+
+    @Override
+    public void finishLoading() {
+        handler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+        });
+    }
+
+    @Override
     public void showCirclePicker(@NonNull List<Circle> circles, Circle activeCircle) {
         if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
             filterPopupWindow = new CirclesFilterPopupWindow(circleTitle.getContext());
@@ -125,7 +136,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
             filterPopupWindow.setAnchorView(circleTitle);
             filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
                 filterPopupWindow.dismiss();
-                getPresenter().circlePicked(circles.get(position));
+                getPresenter().onCirclePicked(circles.get(position));
                 circleTitle.setText(circles.get(position).getName());
             });
             filterPopupWindow.show();
@@ -177,7 +188,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .data(new FriendGlobalSearchBundle(""))
                 .move(Route.FRIEND_SEARCH);
     }
-
 
 
     protected void showPostContainer() {

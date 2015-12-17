@@ -67,6 +67,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
             shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));
+            //don't attach media if website exist
             shareBundle.setShareUrl(place.getWebsite());
             // don't attach media is website is attached, this image will go nowhere
             if (TextUtils.isEmpty(place.getWebsite())) {

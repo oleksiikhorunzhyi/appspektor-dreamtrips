@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Pair;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
@@ -28,6 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemCommonDataHelper;
@@ -85,14 +88,7 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
 
     @Override
     protected void syncUIStateWithModel() {
-        Pair<Route, Parcelable> routeParcelablePair = fragmentFactory.create(getModelObject());
-        router.moveTo(routeParcelablePair.first,
-                NavigationConfigBuilder.forFragment()
-                        .backStackEnabled(false)
-                        .fragmentManager(getFragmentManager())
-                        .data(routeParcelablePair.second)
-                        .containerId(R.id.fragment_container)
-                        .build());
+        syncEntityDetailsFragment();
         //
         feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get().get().getUser().getId(), true);
         feedItemCommonDataHelper.setOnEditClickListener(v -> getEventBus().post(new FeedEntityEditClickEvent(getModelObject(), v)));
@@ -104,6 +100,25 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
         //
         actionView.setState(getModelObject(), isForeignItem(getModelObject()));
         feedActionHandler.init(actionView, createActionPanelNavigationWrapper());
+    }
+
+    private void syncEntityDetailsFragment() {
+        Pair<Route, Parcelable> entityData = fragmentFactory.create(getModelObject());
+        //
+        FragmentManager fm = getFragmentManager();
+        Fragment entityFragment = fm.findFragmentById(R.id.fragment_container);
+        boolean notAdded = entityFragment == null
+                || entityFragment.getView() == null || entityFragment.getView().getParent() == null
+                || !entityFragment.getClass().getName().equals(entityData.first.getClazzName());
+        if (notAdded) {
+            NavigationConfig config = NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(false)
+                    .fragmentManager(fm)
+                    .data(entityData.second)
+                    .containerId(R.id.fragment_container)
+                    .build();
+            router.moveTo(entityData.first, config);
+        }
     }
 
     @Override
@@ -135,6 +150,8 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
             return Queryable.from(fragmentCompass.getCurrentFragment().getChildFragmentManager().getFragments()).filter(element -> {
                 return ((BucketItem.BucketType) element.getArguments().getSerializable("BUNDLE_TYPE")).getName().equals(((BucketItem) getModelObject().getItem()).getType());
             }).first().getChildFragmentManager().getFragments().get(0).getChildFragmentManager();
+        } else if (fragmentCompass.getCurrentFragment() instanceof FeedItemDetailsFragment) {
+            return fragmentCompass.getCurrentFragment().getChildFragmentManager();
         }
 
         return fragmentManager;

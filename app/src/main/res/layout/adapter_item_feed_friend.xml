@@ -4,6 +4,9 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
+              android:minHeight="?attr/listPreferredItemHeight"
+              android:paddingLeft="@dimen/spacing_medium"
+              android:paddingRight="@dimen/spacing_medium"
               android:paddingBottom="@dimen/spacing_small"
               android:paddingTop="@dimen/spacing_small">
 
@@ -55,11 +58,5 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:background="@color/gray_btn_bg_color"/>
 
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import com.innahema.collections.query.functions.Action1;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -88,7 +87,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         if (userRelationship == null) return;
 
         switch (userRelationship) {
-            case REJECT:
+            case REJECTED:
             case NONE:
                 view.showAddFriendDialog(circles, this::addAsFriend);
                 break;
@@ -135,7 +134,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> {
                     view.finishLoading();
-                    user.setRelationship(User.Relationship.REJECT);
+                    user.setRelationship(User.Relationship.REJECTED);
                     view.notifyUserChanged();
                 });
     }

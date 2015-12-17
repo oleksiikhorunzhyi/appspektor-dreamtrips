@@ -83,6 +83,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
     public interface View extends Presenter.View {
 
-       <T extends IFullScreenObject> void setContent(T photo);
+        <T extends IFullScreenObject> void setContent(T photo);
     }
 }

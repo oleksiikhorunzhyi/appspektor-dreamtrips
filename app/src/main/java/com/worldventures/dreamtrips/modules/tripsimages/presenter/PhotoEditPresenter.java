@@ -8,8 +8,10 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
@@ -84,7 +86,13 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
 
         doRequest(new EditTripPhotoCommand(photo.getUid(), imageUploadTask), updatedPhoto -> {
-            eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
+            photo.setTitle(view.getTitle());
+            photo.setTags(new ArrayList<>(tags));
+            Location location = new Location(0, 0);
+            location.setName(view.getLocation());
+            photo.setCoordinates(location);
+            photo.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+            eventBus.post(new FeedEntityChangedEvent(photo));
             view.finish();
         }, spiceException -> {
             super.handleError(spiceException);

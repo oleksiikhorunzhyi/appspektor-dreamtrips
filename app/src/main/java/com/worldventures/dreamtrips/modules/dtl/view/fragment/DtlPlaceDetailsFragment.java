@@ -214,8 +214,8 @@ public class DtlPlaceDetailsFragment
             googleMap.setPadding(0, 0, 0, padding);
             LatLng pos = new LatLng(place.getCoordinates().getLat(), place.getCoordinates().getLng());
             googleMap.addMarker(new MarkerOptions()
-                            .position(pos)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))
+                    .position(pos)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))
             );
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, PLACE_MAP_ZOOM));
         });

@@ -64,6 +64,12 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         view.startLoading();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        openDetailsIfNeeded(currentItem);
+    }
+
     private void showItems() {
         view.finishLoading();
         bucketItems = bucketItemManager.getBucketItems(type);

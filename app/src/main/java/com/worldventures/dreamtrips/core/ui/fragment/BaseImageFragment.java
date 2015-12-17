@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.AbstractDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -31,6 +32,8 @@ public class BaseImageFragment<T extends ImagePathHolder>
     protected SimpleDraweeView ivImage;
     @InjectView(R.id.progressBarImage)
     protected ProgressBar progressBar;
+
+    private ControllerListener controllerListener;
 
     @Override
     protected BaseImagePresenter<T> createPresenter(Bundle savedInstanceState) {
@@ -60,7 +63,7 @@ public class BaseImageFragment<T extends ImagePathHolder>
 
     @Override
     public void setImage(Uri imageUri) {
-        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+        controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
             public void onSubmit(String id, Object callerContext) {
                 progressBar.setVisibility(View.VISIBLE);
@@ -92,7 +95,8 @@ public class BaseImageFragment<T extends ImagePathHolder>
 
     @Override
     public void onDestroyView() {
-        if (ivImage != null && ivImage.getController() != null) {
+        if (ivImage != null && ivImage.getController() != null && controllerListener != null) {
+            ((AbstractDraweeController) ivImage.getController()).removeControllerListener(controllerListener);
             ivImage.getController().onDetach();
         }
         super.onDestroyView();

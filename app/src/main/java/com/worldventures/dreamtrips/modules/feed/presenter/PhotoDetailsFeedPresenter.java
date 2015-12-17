@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class PhotoDetailsFeedPresenter extends Presenter<PhotoDetailsFeedPresenter.View> {
@@ -29,7 +30,7 @@ public class PhotoDetailsFeedPresenter extends Presenter<PhotoDetailsFeedPresent
 
     public void onDelete() {
         if (view.isVisibleOnScreen())
-            doRequest(new DeletePostCommand(photo.getUid()),
+            doRequest(new DeletePhotoCommand(photo.getUid()),
                     aVoid -> itemDeleted());
     }
 

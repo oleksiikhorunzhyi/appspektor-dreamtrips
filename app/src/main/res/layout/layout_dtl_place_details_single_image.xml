@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:showIn="@layout/adapter_item_dtl_place">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/place_details_cover"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+        fresco:actualImageScaleType="fitCenter"
+        />
 
     <include layout="@layout/include_dtl_place_details_header"/>
 </FrameLayout>

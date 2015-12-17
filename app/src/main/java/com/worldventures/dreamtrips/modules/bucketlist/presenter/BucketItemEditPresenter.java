@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -54,8 +55,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         if (event != null) onEvent(event);
     }
 
-    public void saveItem() {
-        view.showLoading();
+    public void saveItem(boolean closeView) {
+        if (closeView) view.showLoading();
         savingItem = true;
         BucketPostItem bucketPostItem = new BucketPostItem();
         bucketPostItem.setId(bucketItemId);
@@ -70,9 +71,15 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             if (savingItem) {
                 eventBus.post(new FeedEntityChangedEvent((item)));
                 savingItem = false;
-                view.done();
+                if (closeView) view.done();
             }
         }, this);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.hideLoading();
     }
 
     public Date getDate() {
@@ -144,6 +151,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
 
         view.hidePhotoPicker();
+
+        saveItem(false);
 
         Queryable.from(chosenImages).forEachR(choseImage ->
                 imageSelected(Uri.parse(choseImage.getFileThumbnail()), type));

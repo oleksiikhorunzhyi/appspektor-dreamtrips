@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -25,7 +24,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
     private PM presenter;
     private PickImageDelegate pickImageDelegate;
-    private Handler handler = new Handler();
+    private WeakHandler handler = new WeakHandler();
 
     public PM getPresentationModel() {
         return presenter;

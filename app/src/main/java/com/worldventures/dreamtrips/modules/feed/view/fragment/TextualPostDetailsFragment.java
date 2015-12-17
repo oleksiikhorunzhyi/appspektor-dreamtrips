@@ -35,11 +35,15 @@ public class TextualPostDetailsFragment extends BaseFragmentWithArgs<TextualPost
     public void showActionPopup(View anchor) {
         anchor.setEnabled(false);
         FeedItemMenuBuilder.create(getActivity(), anchor, R.menu.menu_feed_entity_edit)
-                .onDelete(this::showDeleteDialog)
                 .onEdit(() -> {
                     if (isVisibleOnScreen()) getPresenter().onEdit();
                 })
-                .dismissListener(menu -> anchor.setEnabled(true))
+                .onDelete(() -> {
+                    if (isVisibleOnScreen()) showDeleteDialog();
+                })
+                .dismissListener(menu -> {
+                    anchor.setEnabled(true);
+                })
                 .show();
     }
 

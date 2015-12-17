@@ -16,6 +16,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.fragment.FragmentUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -30,6 +31,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -167,12 +169,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setDescription(String description) {
-        if (TextUtils.isEmpty(description)) {
-            textViewDescription.setVisibility(View.GONE);
-        } else {
-            textViewDescription.setVisibility(View.VISIBLE);
-            textViewDescription.setText(description);
-        }
+        setText(textViewDescription, description);
     }
 
     @Override
@@ -213,11 +210,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     private void setForeignIntentAction() {
         diningSite.setOnClickListener(v -> {
             Intent intent = IntentUtils.browserIntent(diningSite.getText().toString());
-            startActivity(intent);
+            FragmentUtil.startSafely(this, intent);
         });
         diningPhone.setOnClickListener(v -> {
             Intent intent = IntentUtils.callIntnet(diningPhone.getText().toString());
-            startActivity(intent);
+            FragmentUtil.startSafely(this, intent);
         });
     }
 
@@ -233,21 +230,22 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void setupDiningView(DiningItem diningItem) {
-        if (diningItem != null) {
-            setText(diningName, diningItem.getName());
-            setText(diningPriceRange, diningItem.getPriceRange());
-            setText(diningAddress, diningItem.getAddress());
-            setText(diningPhone, diningItem.getPhoneNumber());
-            setText(diningSite, diningItem.getUrl());
-            if (TextUtils.isEmpty(diningItem.getUrl()) && TextUtils.isEmpty(diningItem.getPhoneNumber())) {
-                diningDivider.setVisibility(View.GONE);
-            } else {
-                diningDivider.setVisibility(View.VISIBLE);
-            }
-        } else {
+        if (diningItem == null) {
             diningContainer.setVisibility(View.GONE);
+            return;
         }
-
+        //
+        diningContainer.setVisibility(View.VISIBLE);
+        setText(diningName, diningItem.getName());
+        setText(diningPriceRange, diningItem.getPriceRange());
+        setText(diningAddress, diningItem.getAddress());
+        setText(diningPhone, diningItem.getPhoneNumber());
+        setText(diningSite, diningItem.getUrl());
+        if (TextUtils.isEmpty(diningItem.getUrl()) && TextUtils.isEmpty(diningItem.getPhoneNumber())) {
+            diningDivider.setVisibility(View.GONE);
+        } else {
+            diningDivider.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -271,7 +269,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void done() {
-        getActivity().onBackPressed();
+        if (getActivity() instanceof ComponentActivity)
+            getActivity().onBackPressed();
     }
 
     @Override
@@ -295,7 +294,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         viewPagerBucketGallery.setAdapter(adapter);
         viewPagerBucketGallery.setCurrentItem(0);
         Queryable.from(photos).forEachR(photo ->
-                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
+                adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);

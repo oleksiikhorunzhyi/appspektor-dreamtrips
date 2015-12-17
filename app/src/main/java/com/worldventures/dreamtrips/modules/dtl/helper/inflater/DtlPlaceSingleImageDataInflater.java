@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
-import android.graphics.PointF;
 import android.net.Uri;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -20,12 +19,6 @@ public class DtlPlaceSingleImageDataInflater extends DtlPlaceCommonDataInflater 
     @InjectView(R.id.place_details_cover)
     SimpleDraweeView cover;
 
-    final static PointF FOCUS_POINT;
-
-    static {
-        FOCUS_POINT = new PointF(0.5f, 0.5f);
-    }
-
     public DtlPlaceSingleImageDataInflater(DtlPlaceHelper helper) {
         super(helper);
     }
@@ -42,7 +35,6 @@ public class DtlPlaceSingleImageDataInflater extends DtlPlaceCommonDataInflater 
             return;
         }
         //
-        cover.getHierarchy().setActualImageFocusPoint(FOCUS_POINT);
         cover.setImageURI(Uri.parse(media.getImagePath()));
     }
 }

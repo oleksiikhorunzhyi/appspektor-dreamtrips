@@ -39,6 +39,8 @@ public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresen
 
         String getPhone();
 
+        String getContactEmail();
+
         boolean intervalDate();
 
         long getToTimestamp();

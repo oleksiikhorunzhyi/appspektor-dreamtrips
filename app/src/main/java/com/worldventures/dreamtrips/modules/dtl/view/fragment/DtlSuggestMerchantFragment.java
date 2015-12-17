@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
 
-@Layout(R.layout.fragment_suggest_merchant)
 @MenuResource(R.menu.menu_suggest_merchant)
 public class DtlSuggestMerchantFragment extends SuggestPlaceBaseFragment<DtlSuggestMerchantPresenter>
         implements DtlSuggestMerchantPresenter.View {

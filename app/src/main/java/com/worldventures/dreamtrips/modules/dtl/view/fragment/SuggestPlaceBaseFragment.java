@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.rengwuxian.materialedittext.validation.RegexpValidator;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
@@ -63,6 +64,8 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     protected DTEditText contactName;
     @InjectView(R.id.phoneNumber)
     protected DTEditText phoneNumber;
+    @InjectView(R.id.contactEmail)
+    protected DTEditText contactEmail;
     @InjectView(R.id.fromDate)
     protected TextView fromDate;
     @InjectView(R.id.fromTime)
@@ -115,6 +118,8 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
         contactName.addValidator(new EmptyValidator(getString(R.string.dtl_field_validation_empty_input_error)));
         phoneNumber.addValidator(new EmptyValidator(getString(R.string.dtl_field_validation_empty_input_error)));
         phoneNumber.addValidator(new DigitsValidator(getString(R.string.dtl_invalid)));
+        contactEmail.addValidator(new RegexpValidator(getString(R.string.dtl_invalid),
+                android.util.Patterns.EMAIL_ADDRESS.pattern()));
         additionalInfo.addValidator(new InputLengthValidator(120,
                 getString(R.string.suggest_merchant_additional_info_length_error)));
     }
@@ -216,7 +221,11 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
 
     protected boolean validateInput() {
         return contactName.validate() && phoneNumber.validate() && phoneNumber.validateCharactersCount()
-                && validateDateTime() && validateRating() && additionalInfo.validate();
+                && validateEmail() && validateDateTime() && validateRating() && additionalInfo.validate();
+    }
+
+    protected boolean validateEmail() {
+        return contactEmail.getText().toString().isEmpty() || contactEmail.validate();
     }
 
     protected boolean validateDateTime() {
@@ -267,6 +276,11 @@ public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresent
     @Override
     public String getPhone() {
         return phoneNumber.getText().toString().trim();
+    }
+
+    @Override
+    public String getContactEmail() {
+        return contactEmail.getText().toString();
     }
 
     @Override

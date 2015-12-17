@@ -14,12 +14,20 @@ public class DtlOffer<T extends DtlOfferDescription> {
         this.type = type;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getType() {
         return type;
     }
 
     public T getOffer() {
         return offer;
+    }
+
+    public void setOffer(T offer) {
+        this.offer = offer;
     }
 
     public static final DtlOffer TYPE_POINTS = new DtlOffer(Offer.POINT_REWARD);

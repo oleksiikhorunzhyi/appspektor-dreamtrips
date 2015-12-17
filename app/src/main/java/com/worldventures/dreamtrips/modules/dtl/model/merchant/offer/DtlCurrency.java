@@ -43,6 +43,10 @@ public class DtlCurrency {
         this.name = name;
     }
 
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
     public boolean isDefault() {
         return isDefault;
     }

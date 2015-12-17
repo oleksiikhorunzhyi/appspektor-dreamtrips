@@ -6,8 +6,7 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/chat_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/ToolBarStyle"
         />
 
     <FrameLayout
@@ -36,16 +35,30 @@
                     android:layout_height="match_parent"
                     />
 
-                <!--<com.messenger.ui.widget.ChatUsersTypingView-->
-                    <!--android:id="@+id/chat_users_typing_view"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="bottom"-->
-                    <!--android:paddingTop="@dimen/chat_typing_vertical_margin"-->
-                    <!--android:paddingBottom="@dimen/chat_typing_vertical_margin"-->
-                    <!--android:paddingLeft="@dimen/chat_list_item_horizontal_padding"-->
-                    <!--android:paddingRight="@dimen/chat_list_item_horizontal_padding"-->
-                    <!--/>-->
+                <com.messenger.ui.widget.ChatUsersTypingView
+                    android:id="@+id/chat_users_typing_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingTop="@dimen/chat_typing_vertical_margin"
+                    android:paddingBottom="@dimen/chat_typing_vertical_margin"
+                    android:paddingLeft="@dimen/chat_list_item_horizontal_padding"
+                    android:paddingRight="@dimen/chat_list_item_horizontal_padding"
+                    />
+                <TextView
+                    android:id="@+id/chat_users_unread_messages_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/chat_unread_messages_textview_margin_top"
+                    android:textSize="@dimen/chat_unread_messages_textview_text_size"
+                    android:textColor="@color/chat_unread_message_header_text_color"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/blue_bubble"
+                    android:drawableLeft="@drawable/circle_typing_1"
+                    android:drawablePadding="@dimen/chat_unread_messages_textview_drawable_padding"
+                    android:visibility="gone"
+                    />
             </FrameLayout>
 
             <View
@@ -68,20 +81,34 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_weight="0"
-                    android:src="@android:drawable/ic_menu_add"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_attachment_black_24_px"
                     />
 
                 <EditText
                     android:id="@+id/chat_message_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="bottom"
                     android:layout_weight="1"
                     android:hint="@string/chat_message_edittext_hint"
                     android:imeOptions="actionGo"
                     android:singleLine="true"
                     android:textColor="#9F9E9E"
                     android:textColorHint="#9F9E9E"
+                    android:textSize="@dimen/chat_message_edittext_text_size"
+                    />
+
+                <Button
+                    android:id="@+id/chat_message_send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:background="@null"
+                    android:textColor="@color/colorAccent"
+                    android:text="@string/chat_message_send_button_text"
+                    android:textSize="@dimen/chat_message_send_button_text_size"
+                    android:gravity="center"
                     />
             </LinearLayout>
         </LinearLayout>

@@ -13,5 +13,9 @@ public interface ConversationListScreenPresenter extends ActivityAwareViewStateM
     void loadConversationList();
 
     void onConversationSelected(Conversation conversation);
+
+    void onConversationsDropdownSelected(boolean showOnlyGroupConversations);
+
+    void onConversationsSearchFilterSelected(String searchFilter);
 }
 

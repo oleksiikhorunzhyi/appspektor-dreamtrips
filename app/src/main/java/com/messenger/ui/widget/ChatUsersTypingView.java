@@ -51,7 +51,7 @@ public class ChatUsersTypingView extends RelativeLayout {
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.widget_chat_users_typing, this, true);
         ButterKnife.inject(this, this);
-        initTypingAnimator();
+        // initTypingAnimator();
     }
 
     private void initTypingAnimator() {

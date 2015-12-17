@@ -7,8 +7,7 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/new_chat_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/ToolBarStyle"
         />
 
     <FrameLayout
@@ -35,11 +34,11 @@
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/new_chat_conversation_icon"
-                    android:layout_width="@dimen/new_chat_name_conversation_icon_size"
-                    android:layout_height="@dimen/new_chat_name_conversation_icon_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_camera"
+                    android:src="@drawable/oval_14_group"
                     app:riv_oval="true"
                     />
 
@@ -66,8 +65,8 @@
                 android:background="@color/list_item_divider_color"
                 />
 
-            <TextView
-                android:id="@+id/new_chat_chosen_contacts_textview"
+            <com.messenger.ui.widget.SelectionListenerEditText
+                android:id="@+id/new_chat_chosen_contacts_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/new_chat_content_header_size"
                 android:gravity="center_vertical"
@@ -76,6 +75,8 @@
                 android:text="@string/new_chat_chosen_contacts_header_empty"
                 android:textColor="@color/new_chat_header_text_color"
                 android:textSize="@dimen/new_chat_name_chosen_contacts_text_size"
+                android:background="@android:color/transparent"
+                android:inputType="textFilter|textNoSuggestions"
                 />
 
             <View

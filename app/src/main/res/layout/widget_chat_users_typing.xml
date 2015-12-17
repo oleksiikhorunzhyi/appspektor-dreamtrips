@@ -16,32 +16,26 @@
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/chat_typing_avatar_1"
-            android:layout_width="@dimen/chat_avatar_size"
-            android:layout_height="@dimen/chat_avatar_size"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_add"
-            android:visibility="gone"
             app:riv_oval="true"
+            app:riv_border_width="@dimen/chat_typing_avatars_border"
+            app:riv_border_color="@color/chat_typing_avatars_border"
+            style="@style/TypingAvatarImageView"
             />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/chat_typing_avatar_2"
-            android:layout_width="@dimen/chat_avatar_size"
-            android:layout_height="@dimen/chat_avatar_size"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_add"
-            android:visibility="gone"
+            style="@style/TypingAvatarImageView"
             app:riv_oval="true"
+            app:riv_border_width="@dimen/chat_typing_avatars_border"
+            app:riv_border_color="@color/chat_typing_avatars_border"
             />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/chat_typing_avatar_3"
-            android:layout_width="@dimen/chat_avatar_size"
-            android:layout_height="@dimen/chat_avatar_size"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_add"
-            android:visibility="gone"
+            style="@style/TypingAvatarImageView"
             app:riv_oval="true"
+            app:riv_border_width="@dimen/chat_typing_avatars_border"
+            app:riv_border_color="@color/chat_typing_avatars_border"
             />
 
     </com.messenger.ui.widget.OverlappingViewsLayout>

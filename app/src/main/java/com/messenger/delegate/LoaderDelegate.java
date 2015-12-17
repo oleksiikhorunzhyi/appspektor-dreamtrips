@@ -1,6 +1,7 @@
 package com.messenger.delegate;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
@@ -21,6 +22,8 @@ public class LoaderDelegate {
     public void loadConversations() {
         Loader<Conversation> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
         conversationLoader.setPersister(conversations -> {
+            for (Conversation conversation : conversations)
+                conversation.saveParticipant();
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, conversations);
         });
         conversationLoader.load();

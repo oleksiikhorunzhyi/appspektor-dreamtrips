@@ -28,8 +28,8 @@ public class MessageLoader extends BaseCursorRowLoader {
                     ", u." + User.COLUMN_AVATAR + " as " + User.COLUMN_AVATAR +
                         " FROM " + Message.TABLE_NAME + " m LEFT JOIN " + User.TABLE_NAME + " u" +
                         " ON m." + Message.COLUMN_FROM + " = u." + User.COLUMN_ID +
-                        " WHERE " + Message.COLUMN_CONVERSATION_ID + " = ?"
-
+                        " WHERE " + Message.COLUMN_CONVERSATION_ID + " = ?" +
+                        " ORDER BY " + Message.COLUMN_DATE + " DESC"
                 ;
 
         return rawQuery(request, new String[] {conversationId});

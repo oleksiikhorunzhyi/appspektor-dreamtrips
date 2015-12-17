@@ -73,7 +73,24 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         toolbarPresenter.enableUpNavigationButton();
 
         recyclerView.setSaveEnabled(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) return;
+                final int threshold = 5;
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+
+                if (firstVisibleItem <= threshold) {
+                    getPresenter().loadNextPage();
+                }
+            }
+        });
     }
 
     @Override
@@ -126,13 +143,14 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @NonNull
     @Override public ChatScreenPresenter createPresenter() {
-        Intent startIntent = ((Activity) getContext()).getIntent();
+        Context context = getContext();
+        Intent startIntent = getActivity().getIntent();
         int chatType = startIntent.getIntExtra(ChatActivity.EXTRA_CHAT_TYPE, 0);
 
         if (chatType == ChatActivity.CHAT_TYPE_GROUP) {
-            return new ChatGroupScreenPresenter(startIntent);
+            return new ChatGroupScreenPresenter(context, startIntent);
         } else if (chatType == ChatActivity.CHAT_TYPE_SINGLE) {
-            return new ChatSingleScreenPresenter(startIntent);
+            return new ChatSingleScreenPresenter(context, startIntent);
         } else {
             throw new Error("Type doesn't exist");
         }

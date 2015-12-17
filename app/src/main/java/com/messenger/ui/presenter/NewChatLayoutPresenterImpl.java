@@ -26,12 +26,16 @@ import com.messenger.delegate.LoaderDelegate;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.model.ChatUser;
+import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -207,7 +211,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = ((AppCompatActivity) parentActivity).getMenuInflater();
+        MenuInflater inflater = parentActivity.getMenuInflater();
         inflater.inflate(R.menu.new_chat, menu);
         return true;
     }
@@ -217,38 +221,30 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         switch (item.getItemId()) {
             case R.id.action_done:
                 List<User> selectedUsers = getViewState().getSelectedContacts();
+
                 if (selectedUsers == null || selectedUsers.isEmpty()) {
                     Toast.makeText(parentActivity, R.string.new_chat_toast_no_users_selected_error,
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
-                MultiUserChat chat = messengerServerFacade.getChatManager().createMultiUserChat(user, JidCreatorHelper.obtainGroupJid(user));
-                chat.invite(selectedUsers);
-                try {
-                    chat.sendMessage(new Message.Builder()
-                                    .locale(Locale.getDefault())
-                                    .text("HELLO FROM ANDROID")
-                                    .build()
-                    );
-                } catch (ConnectionException e) {
-                    Log.e("MultiUserChat", Log.getStackTraceString(e));
+                if (selectedUsers.size() > 1){
+                    Toast.makeText(parentActivity, R.string.new_multi_user_chat_not_supported,
+                            Toast.LENGTH_SHORT).show();
+                    return true;
                 }
-//                ChatConversation chatConversation = Environment.newChatConversation();
-//                chatConversation.setConversationName(getView().getConversationName());
-//                chatConversation.setConversationOwner(Environment.getCurrentUser());
-//                ArrayList<ChatUser> chatUsers = new ArrayList<>();
-//                chatUsers.add(Environment.getCurrentUser());
-//                chatUsers.addAll(getViewState().getSelectedContacts());
-//                chatConversation.setChatUsers(chatUsers);
-//
-//                Intent intent = new Intent(getContext(), ChatActivity.class);
-//                intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, chatConversation);
-//                getActivity().startActivity(intent);
-//                getActivity().finish();
 
-                // TODO: 12/15/15
-//                throw new Error("Not implement");
+                User selectedUser = selectedUsers.get(0);
+                Conversation conversation = new Conversation.Builder()
+                                            .type(Conversation.Type.CHAT)
+                                            .id(ThreadCreatorHelper.obtainThreadSingleChat(user, selectedUser))
+                                            .participants(selectedUsers)
+                                            .build();
+                conversation.saveParticipant();
+                ContentUtils.insert(Conversation.CONTENT_URI, conversation);
+
+                ChatActivity.startSingleChat(parentActivity, conversation.getId());
+
                 return true;
         }
         return false;
@@ -291,7 +287,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             return new CursorLoader(parentActivity, User.CONTENT_URI,
-                    null, null, null, "userName desc");
+                    null, User.COLUMN_ID + "<>?", new String[] {user.getId()}, User.COLUMN_NAME +" DESC");
         }
 
         @Override

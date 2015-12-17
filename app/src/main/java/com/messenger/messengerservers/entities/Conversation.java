@@ -2,6 +2,7 @@ package com.messenger.messengerservers.entities;
 
 import android.net.Uri;
 import android.support.annotation.StringDef;
+import android.util.Log;
 
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -80,6 +81,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
 //                    .where(Condition.column("p." + ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
 //                    .queryList();
         }
+        Log.d("TEST_CONV_GET", _id + " sizze " + participants.size());
         return participants;
     }
 
@@ -118,6 +120,9 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setParticipants(List<User> participants) {
         this.participants = participants;
+        if (participants != null) {
+            Log.d("TEST_CONV_SET", _id + " size " + participants.size());
+        }
     }
 
     public int getUnreadMessageCount() {
@@ -169,6 +174,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void saveParticipant() {
         if (participants == null ) return;
+        Log.d("TEST_CONV", _id + " size " + participants.size());
         for (User participant : participants) {
             new ParticipantsRelationship(_id, participant).save();
         }

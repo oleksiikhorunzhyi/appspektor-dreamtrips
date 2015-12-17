@@ -10,21 +10,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.hannesdorfmann.mosby.mvp.viewstate.ViewState;
+import com.messenger.constant.CursorLoaderIds;
+import com.messenger.delegate.PaginationDelegate;
 import com.messenger.loader.MessageLoader;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
+import com.messenger.ui.viewstate.LceViewState;
+import com.messenger.util.Utils;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
@@ -34,26 +40,36 @@ import javax.inject.Inject;
 
 public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
-//    private ChatConversation chatConversation;
-    private LoaderManager loaderManager;
-
-    public static final int CONVERSATION_LOADER_ID = 0x3311;
-
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject MessengerServerFacade messengerServerFacade;
+    User user = new User("techery_user2");
 
     private Chat chat;
     protected Intent startIntent;
 
-    public ChatScreenPresenterImpl(Intent startIntent) {
+    private LoaderManager loaderManager;
+    protected PaginationDelegate paginationDelegate;
+
+    protected Conversation conversation;
+    protected int page = 0;
+    protected boolean haveMoreElements = true;
+
+    public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.startIntent = startIntent;
+        ((Injector)context.getApplicationContext()).inject(this);
+        paginationDelegate = new PaginationDelegate(context, messengerServerFacade, 20);
+
+        String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        conversation = new Select()
+                .from(Conversation.class)
+                .byIds(conversationId)
+                .querySingle();
+        conversation.getParticipants();
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//            getView().showLoading();
-//            getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
             return new MessageLoader(getContext(), startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID));
         }
 
@@ -69,50 +85,44 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     };
 
     @Override
-    public void attachView(ChatScreen view) {
-        super.attachView(view);
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        loadNextPage();
         loaderManager = getActivity().getSupportLoaderManager();
-        loaderManager.initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
-        ((App) view.getContext().getApplicationContext()).getObjectGraph().inject(this);
-        chat = createChat(messengerServerFacade.getChatManager());
+        loaderManager.initLoader(CursorLoaderIds.CONVERSATION_LOADER, null, loaderCallback);
+        chat = createChat(messengerServerFacade.getChatManager(), conversation);
     }
 
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        loaderManager.destroyLoader(CursorLoaderIds.CONVERSATION_LOADER);
+    }
 
-    protected abstract Chat createChat(ChatManager chatManager);
+    @Override
+    public void loadNextPage() {
+        ChatLayoutViewState viewState = getViewState();
+        if (!haveMoreElements || viewState.getLoadingState() == ChatLayoutViewState.LoadingState.LOADING)
+            return;
 
-//    @Override public void loadChatConversation() {
-//        getActivity().getSupportLoaderManager()
-//                .initLoader(CONVERSATION_LOADER_ID, null, loaderCallback);
-        // create new or load existing conversation
-//        SimpleLoader<ChatConversation> loader = LoaderModule
-//                .getChatConversationLoader(getViewState().getData());
-//        loader.loadData(new SimpleLoader.LoadListener<ChatConversation>() {
-//            @Override public void onLoadSuccess(ChatConversation data) {
-//                if (isViewAttached()) {
-//                    getViewState().setData(data);
-//                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-//                    getView().setChatConversation(data);
-//                    getView().showContent();
-//                }
-//            }
-//
-//            @Override public void onError(Throwable error) {
-//                if (isViewAttached()) {
-//                    getView().showError(error);
-//                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.ERROR);
-//                }
-//            }
-//        });
-//    }
+        getView().showLoading();
+        viewState.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+        paginationDelegate.loadConversationHistoryPage(conversation, ++page, (loadedPage, haveMoreElements) -> {
+            viewState.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
+            this.haveMoreElements = haveMoreElements;
+
+            ChatScreen screen = getView();
+            if (screen == null) return;
+            screen.getActivity().runOnUiThread(()-> screen.showContent());
+        });
+    }
+
+    protected abstract Chat createChat(ChatManager chatManager, Conversation conversation);
+
 
     @Override public void onNewViewState() {
         state = new ChatLayoutViewState();
-//        getViewState().setData(chatConversation);
-//        loadChatConversation();
-    }
-
-    @Override public ChatLayoutViewState getViewState() {
-        return state;
+        state.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
     }
 
     @Override public void applyViewState() {
@@ -140,10 +150,10 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
         try {
             chat.sendMessage(new Message.Builder()
-                            .locale(Locale.getDefault())
-                            .text(message)
-                            .build()
-            );
+                    .locale(Locale.getDefault())
+                    .text(message)
+                    .from(user)
+                    .build());
         } catch (ConnectionException e) {
             e.printStackTrace();
             return false;
@@ -168,15 +178,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     @Override
     public User getUser() {
         // TODO: 12/15/15  
-        return messengerServerFacade.getOwner();
+        return user;
     }
-
-    @Override
-    public void detachView(boolean retainInstance) {
-        super.detachView(retainInstance);
-        loaderManager.destroyLoader(CONVERSATION_LOADER_ID);
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Activity related
     ///////////////////////////////////////////////////////////////////////////
@@ -185,17 +188,6 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         MenuInflater inflater = ((AppCompatActivity) getContext()).getMenuInflater();
         inflater.inflate(R.menu.chat, menu);
         return true;
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        return false;
-    }
-
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
-    @Override public void onDestroy() {
     }
 
     ///////////////////////////////////////////////////////////////////////////

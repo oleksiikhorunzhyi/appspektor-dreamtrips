@@ -27,16 +27,15 @@ public class ChatActivity extends AppCompatActivity {
     public @interface ChatType {
     }
 
-    public static void startGroup(Context context, String conversationId) {
+    public static void startGroupSingle(Context context, String conversationId) {
         Intent starter = new Intent(context, ChatActivity.class);
         starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
         starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_GROUP);
         context.startActivity(starter);
     }
 
-    public static void start(Context context, @Nullable String conversationId, @Nullable String companionId) {
+    public static void startSingleChat(Context context, @Nullable String conversationId) {
         Intent starter = new Intent(context, ChatActivity.class);
-        starter.putExtra(EXTRA_CHAT_COMPANION_ID, companionId);
         starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_SINGLE);
         starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
         context.startActivity(starter);

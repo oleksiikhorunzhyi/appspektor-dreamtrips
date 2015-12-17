@@ -10,6 +10,7 @@ import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationListPacket;
 import com.messenger.messengerservers.xmpp.providers.ConversationProvider;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
@@ -48,6 +49,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
                     (stanza) -> stanza instanceof ConversationsPacket,
                     (stanzaPacket) -> {
                         List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
+                        conversations = filterConversations(conversations);
                         loadParticipants(conversations);
                         notifyListeners(conversations);
                         ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
@@ -55,6 +57,24 @@ public class XmppConversationLoader extends Loader<Conversation> {
         } catch (SmackException.NotConnectedException e) {
             Log.i("XmppConversationLoader", "Loading error", e);
         }
+    }
+
+    private List<Conversation> filterConversations(List<Conversation> conversations ){
+        List<Conversation> filteredConversations = new ArrayList<>();
+        for (Conversation conversation: conversations) {
+            if(conversation.getType().equals(Conversation.Type.CHAT)) {
+                if (isConversationMyself(conversation)) continue;
+                filteredConversations.add(conversation);
+            } else {
+                filteredConversations.add(conversation);
+            }
+        }
+        return filteredConversations;
+    }
+
+    private boolean isConversationMyself(Conversation conversation){
+        String companion = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, facade.getConnection().getUser());
+        return companion == null;
     }
 
     private void loadParticipants(List<Conversation> conversations){
@@ -69,16 +89,8 @@ public class XmppConversationLoader extends Loader<Conversation> {
 
     private List<User> getSingleChatParticipants(Conversation conversation){
         ArrayList<User> participants = new ArrayList<>();
-        AbstractXMPPConnection connection = facade.getConnection();
-        ChatManager chatManager = ChatManager.getInstanceFor(connection);
-
-        Chat chat = chatManager.getThreadChat(conversation.getId());
-        if (chat == null) {
-            chat = chatManager.createChat(connection.getUser(), conversation.getId(), null);
-        }
-
-        String participantJid = chat.getParticipant();
-        participants.add(JidCreatorHelper.obtainUser(participantJid));
+        String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, facade.getConnection().getUser());
+        participants.add(JidCreatorHelper.obtainUser(companionJid));
         conversation.setParticipants(participants);
         return participants;
     }

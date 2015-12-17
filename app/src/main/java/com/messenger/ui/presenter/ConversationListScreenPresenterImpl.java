@@ -135,6 +135,17 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 //        getActivity().startActivity(intent);
     }
 
+    @Override public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
+//        getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
+//        applyViewState();
+    }
+
+    @Override
+    public void onConversationsSearchFilterSelected(String searchFilter) {
+//        getViewState().setConversationsSearchFilter(searchFilter);
+//        getView().setSearchFilter(searchFilter);
+    }
+
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();

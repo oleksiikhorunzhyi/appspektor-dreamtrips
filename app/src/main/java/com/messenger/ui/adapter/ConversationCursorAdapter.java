@@ -2,6 +2,7 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,6 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
                 clickListener.onConversationClick(chatConversation);
             }
         });
-
     }
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount){

@@ -152,6 +152,10 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return presenter.onOptionsItemSelected(item);
     }

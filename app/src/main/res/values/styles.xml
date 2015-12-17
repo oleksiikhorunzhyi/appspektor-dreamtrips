@@ -143,4 +143,56 @@
         <item name="colorButtonNormal">@color/white</item>
     </style>
 
+    <!--messenger-->
+    <style name="TypingAvatarImageView">
+        <item name="android:layout_width">@dimen/chat_avatar_size</item>
+        <item name="android:layout_height">@dimen/chat_avatar_size</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="ActionBarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/action_bar_title_size</item>
+    </style>
+
+    <style name="ActionBarSubtitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/action_bar_subtitle_size</item>
+    </style>
+
+    <style name="ChatMessageTextView">
+        <item name="android:textSize">@dimen/chat_list_message_text_size</item>
+    </style>
+
+    <style name="ConversationListNameTextView">
+        <item name="android:layout_marginLeft">@dimen/conversation_list_item_conversation_name_textview_left_margin</item>
+        <item name="android:layout_marginTop">@dimen/conversation_list_item_conversation_name_textview_top_margin</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/conversation_list_name</item>
+        <item name="android:textSize">@dimen/list_item_title_text_size</item>
+    </style>
+
+    <style name="ConversationListLastMessageTextView">
+        <item name="android:layout_marginRight">@dimen/conversation_list_item_conversation_last_message_textview_right_margin</item>
+        <item name="android:layout_marginTop">@dimen/conversation_list_item_conversation_last_message_textview_top_margin</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/conversation_list_message</item>
+        <item name="android:textSize">@dimen/list_item_description_text_size</item>
+    </style>
+
+    <style name="ConversationListLastMessageDateTextView">
+        <item name="android:textColor">@color/conversation_list_last_message_date</item>
+        <item name="android:textSize">@dimen/new_chat_conversation_list_last_message_textview_textsize</item>
+    </style>
+
+    <style name="ConversationListUnreadMessagesCountTextView">
+        <item name="android:layout_marginTop">@dimen/conversation_list_item_conversation_unread_messages_count_textview_top_margin</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/new_chat_conversation_list_last_message_textview_textsize</item>
+        <item name="android:background">@drawable/badge_blue_small</item>
+    </style>
+    <!--end messenger-->
 </resources>

@@ -42,7 +42,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @InjectView(R.id.chat_toolbar) Toolbar toolbar;
     @InjectView(R.id.chat_recycler_view) RecyclerView recyclerView;
-//    @InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
+    //@InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
 
     @InjectView(R.id.chat_message_edit_text) EditText messageEditText;
 
@@ -91,7 +91,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         return false;
     }
 
-    @OnClick(R.id.chat_message_add_button)
+    @OnClick(R.id.chat_message_send_button)
     protected void onSendMessage() {
         if (getPresenter().onNewMessageFromUi(messageEditText.getText().toString())) {
             messageEditText.getText().clear();
@@ -105,6 +105,11 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         return getPresenter().onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {

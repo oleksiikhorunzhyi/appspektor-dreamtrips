@@ -77,14 +77,14 @@ public class ChatConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
         this.context = context;
         rowVerticalMargin = context.getResources().getDimensionPixelSize(R.dimen.chat_list_item_vertical_padding);
 
-        this.todayDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_today_format));
-        this.yesterdayDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_yesterday_format));
-        this.fewDaysAgoDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_few_days_ago_format));
-        this.manyDaysAgoDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_many_days_ago_format));
+//        this.todayDateEntryFormatter = new SimpleDateFormat(context
+//                .getString(R.string.chat_list_date_entry_today_format));
+//        this.yesterdayDateEntryFormatter = new SimpleDateFormat(context
+//                .getString(R.string.chat_list_date_entry_yesterday_format));
+//        this.fewDaysAgoDateEntryFormatter = new SimpleDateFormat(context
+//                .getString(R.string.chat_list_date_entry_few_days_ago_format));
+//        this.manyDaysAgoDateEntryFormatter = new SimpleDateFormat(context
+//                .getString(R.string.chat_list_date_entry_many_days_ago_format));
     }
 
 

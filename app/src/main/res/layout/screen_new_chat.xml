@@ -35,11 +35,11 @@
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/new_chat_conversation_icon"
-                    android:layout_width="@dimen/new_chat_name_conversation_icon_size"
-                    android:layout_height="@dimen/new_chat_name_conversation_icon_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_camera"
+                    android:src="@drawable/oval_14_group"
                     app:riv_oval="true"
                     />
 

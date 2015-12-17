@@ -27,11 +27,11 @@ public class ContactViewHolder extends BaseViewHolder {
         return avatarView;
     }
 
-    public TextView getNameTextView() {
-        return nameTextView;
-    }
-
     public ImageView getTickImageView() {
         return tickImageView;
+    }
+
+    public TextView getNameTextView() {
+        return nameTextView;
     }
 }

@@ -484,12 +484,16 @@
     <string name="photo_limitation_message">Please choose up to %d photos</string>
     <string name="pending">Pending…</string>
 
+    <!-- messenger-->
     <!---->
     <!--Conversation List -->
     <!---->
     <string name="conversation_list_title">Conversations</string>
-    <string name="conversation_list_tab_all_chats">All</string>
-    <string name="conversation_list_tab_group_chats">Groups</string>
+    <string-array name="conversation_list_spinner_items">
+        <item>All chats</item>
+        <item>Group chats</item>
+    </string-array>
+    <string name="conversation_list_search_hint">Search conversations...</string>
     <string name="conversation_list_search_edittext_hint">Search for groups and people</string>
     <string name="conversation_list_item_last_message_format_you">You: %s</string>
     <string name="conversation_list_last_message_date_format_today">h:mm</string>
@@ -503,9 +507,9 @@
     <string name="new_chat_toast_no_users_selected_error">Please select some users first</string>
     <string name="new_chat_error_loading_contacts">Could not load contacts</string>
     <string name="new_chat_new_conversation_title_hint">Set name of conversation</string>
-    <string name="new_chat_chosen_contacts_header_empty">Add:</string>
+    <string name="new_chat_chosen_contacts_header_empty">"Add: "</string>
     <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Add</string>
-    <string name="new_chat_list_item_section_close_friends">Close friends</string>
+    <string name="new_chat_list_item_section_close_friends">CLOSE FRIENDS</string>
     <string name="menu_done">Done</string>
 
     <!---->
@@ -516,11 +520,12 @@
     <string name="chat_subtitle_format_group_chat_format">%d online</string>
     <string name="chat_subtitle_format_group_chat_offline">No users online</string>
     <string name="chat_message_edittext_hint">Your message</string>
+    <string name="chat_message_send_button_text">Send</string>
     <string name="chat_message_toast_empty_message_error">Please provide some message</string>
     <string name="chat_error_loading">Could not load chat history</string>
+    <string name="chat_unread_messages_textview_format">%d unread</string>
     <string name="chat_more_typing_users_hint_format">and %d more</string>
-    <string name="chat_list_date_entry_today_format">\'TODAY, \'h:mm</string>
-    <string name="chat_list_date_entry_yesterday_format">\'YESTERDAY, \'h:mm</string>
-    <string name="chat_list_date_entry_few_days_ago_format">EEEE, h:mm</string>
-    <string name="chat_list_date_entry_many_days_ago_format">MM.dd, h:mm</string>
+    <string name="chat_list_date_entry_today">TODAY</string>
+    <string name="chat_list_date_entry_yesterday">YESTERDAY</string>
+    <!-- messenger ends-->
 </resources>

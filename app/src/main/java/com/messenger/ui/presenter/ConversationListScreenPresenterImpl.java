@@ -79,6 +79,8 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     private void initialCursorLoader() {
         LoaderManager loaderManager = ((AppCompatActivity) parentActivity).getSupportLoaderManager();
         Loader loader = loaderManager.getLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER);
+        allConversationLoaderCallback.cursorIsLoaded = false;
+        groupConversationLoaderCallback.cursorIsLoaded = false;
         if (loader == null) {
             loaderManager.initLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER, null, allConversationLoaderCallback);
             loaderManager.initLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER, null, groupConversationLoaderCallback);
@@ -114,6 +116,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 getView().showLoading();
                 break;
             case CONTENT:
+                getView().showConversations(getViewState().getCursor());
                 getView().showContent();
                 break;
             case ERROR:
@@ -128,9 +131,44 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         } else {
             ChatActivity.start(parentActivity, conversation.getId(), null);
         }
-//        Intent intent = new Intent(getContext(), ChatActivity.class);
-       // intent.putExtra(ChatScreenPresenter.EXTRA_CHAT_CONVERSATION, conversation);
-//        getActivity().startActivity(intent);
+    }
+
+    @Override public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
+        getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
+        assignNeededCursorAndRefresh();
+    }
+
+    @Override
+    public void onConversationsSearchFilterSelected(String searchFilter) {
+        getViewState().setConversationsSearchFilter(searchFilter);
+//        getView().setSearchFilter(searchFilter);
+    }
+
+    private void assignNeededCursorAndRefresh() {
+        if (getView() == null) {
+            return;
+        }
+        Cursor cursorToAssign = null;
+        // Find corresponding all chats or only groups cursor
+        boolean neededCursorLoaded = false;
+        if (getViewState().isShowOnlyGroupConversations()) {
+            if (groupConversationLoaderCallback.cursorIsLoaded) {
+                cursorToAssign = groupConversationLoaderCallback.cursor;
+                neededCursorLoaded = true;
+            }
+        } else {
+            if (allConversationLoaderCallback.cursorIsLoaded) {
+                cursorToAssign = allConversationLoaderCallback.cursor;
+                neededCursorLoaded = true;
+            }
+        }
+        // We cannot use null check here as cursor might be null and we still need to refresh
+        // view
+        if (neededCursorLoaded) {
+            state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
+            getViewState().setCursor(cursorToAssign);
+            applyViewState();
+        }
     }
 
     @Override
@@ -168,6 +206,8 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     private class CursorLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
 
         private boolean allConversation;
+        private boolean cursorIsLoaded;
+        private Cursor cursor;
 
         public CursorLoaderCallback(boolean allConversation) {
             this.allConversation = allConversation;
@@ -183,8 +223,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             showConversation(data);
-            state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
-            getView().showContent();
         }
 
         @Override
@@ -193,14 +231,9 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
 
         private void showConversation(@NonNull Cursor cursor) {
-            ConversationListScreen screen = getView();
-            if (screen == null) return;
-
-            if (allConversation) {
-                screen.showAllConversation(cursor);
-            } else {
-                screen.showGroupConversation(cursor);
-            }
+            cursorIsLoaded = true;
+            this.cursor = cursor;
+            assignNeededCursorAndRefresh();
         }
     }
 }

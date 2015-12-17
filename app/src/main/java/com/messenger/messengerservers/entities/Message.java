@@ -22,7 +22,7 @@ import java.util.Locale;
 @TableEndpoint(name = Message.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = Message.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Message extends BaseProviderModel<Message> {
-    static final String TABLE_NAME = "Messages";
+    public static final String TABLE_NAME = "Messages";
 
     public static final String COLUMN_DATE = "date";
     public static final String COLUMN_TEXT = "text";

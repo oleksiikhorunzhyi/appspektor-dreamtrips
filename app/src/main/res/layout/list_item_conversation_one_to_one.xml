@@ -22,13 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/conversation_list_item_conversation_name_textview_left_margin"
-        android:layout_marginTop="@dimen/conversation_list_item_conversation_name_textview_top_margin"
         android:layout_toRightOf="@+id/conversation_avatar_view"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:textColor="@color/list_item_text_color"
-        android:textSize="@dimen/list_item_title_text_size"
+        style="@style/ConversationListNameTextView"
         />
 
     <TextView
@@ -37,14 +32,12 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/conversation_name_textview"
         android:layout_below="@+id/conversation_name_textview"
-        android:layout_marginTop="@dimen/conversation_list_item_conversation_last_message_textview_top_margin"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:textColor="@color/list_item_description_text_color"
-        android:textSize="@dimen/list_item_description_text_size"
+        android:layout_toLeftOf="@+id/conversation_last_messages_layout"
+        style="@style/ConversationListLastMessageTextView"
         />
 
     <RelativeLayout
+        android:id="@+id/conversation_last_messages_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -57,8 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/list_item_description_text_color"
-            android:textSize="@dimen/new_chat_conversation_list_last_message_textview_textsize"
+            style="@style/ConversationListLastMessageDateTextView"
             />
 
         <TextView
@@ -67,12 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/conversation_last_message_date_textview"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/badge_blue_small"
             android:gravity="center_horizontal"
-            android:text="44"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/new_chat_conversation_list_last_message_textview_textsize"
+            style="@style/ConversationListUnreadMessagesCountTextView"
             />
     </RelativeLayout>
 

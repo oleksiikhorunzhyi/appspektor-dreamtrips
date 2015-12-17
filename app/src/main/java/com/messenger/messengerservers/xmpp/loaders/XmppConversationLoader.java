@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.xmpp.loaders;
 
-import android.os.Looper;
 import android.util.Log;
 
 import com.messenger.messengerservers.entities.Conversation;
@@ -48,8 +47,6 @@ public class XmppConversationLoader extends Loader<Conversation> {
             facade.getConnection().sendStanzaWithResponseCallback(packet,
                     (stanza) -> stanza instanceof ConversationsPacket,
                     (stanzaPacket) -> {
-                        Log.e("isMainThread", ""+(Looper.myLooper() == Looper.getMainLooper()));
-
                         List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
                         loadParticipants(conversations);
                         notifyListeners(conversations);

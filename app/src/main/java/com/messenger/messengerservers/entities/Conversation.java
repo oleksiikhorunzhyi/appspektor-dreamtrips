@@ -16,6 +16,7 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
@@ -44,10 +45,9 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     foreignColumnName = Message._ID)},
             saveForeignKeyModel = false)
     @Column Message lastMessage;
-    List<User> participants;
     int unreadMessageCount = 0;
 
-    protected List<ParticipantsRelationship> participants;
+    protected List<User> participants;
 
     public Conversation() {
     }
@@ -68,11 +68,17 @@ public class Conversation extends BaseProviderModel<Conversation> {
     }
 
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE}, variableName = "participants")
-    public List<ParticipantsRelationship> getParticipants() {
+    public List<User> getParticipants() {
         if (participants == null) {
-            participants = new Select()
-                    .from(ParticipantsRelationship.class)
-                    .where(Condition.column(ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
+//            SELECT * FROM Users u
+//            JOIN Participants p ON p.userId = u.id
+//            WHERE p.covId = ?;
+
+            participants =
+                    new Select().from(User.class).as("u")
+                            .join(ParticipantsRelationship.class, Join.JoinType.INNER).as("p")
+                    .on(Condition.column("p." + ParticipantsRelationship.COLUMN_USER).is("u." + User.COLUMN_ID))
+                    .where(Condition.column("p." + ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
                     .queryList();
         }
         return participants;
@@ -109,10 +115,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
-    }
-
-    public List<User> getParticipants() {
-        return participants;
     }
 
     public void setParticipants(List<User> participants) {
@@ -156,6 +158,17 @@ public class Conversation extends BaseProviderModel<Conversation> {
         @Retention(RetentionPolicy.SOURCE)
         @StringDef({CHAT, GROUP, RINK, RANK})
         public @interface ConversationType {
+        }
+    }
+
+
+    @Override
+    public void save() {
+        super.save();
+
+        if (participants == null ) return;
+        for (User participant : participants) {
+            new ParticipantsRelationship(_id, participant.getId()).save();
         }
     }
 

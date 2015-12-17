@@ -2,6 +2,7 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,8 +62,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount){
         if (unreadMessageCount > 0) {
-            holder.itemView.setBackgroundColor(context.getResources()
-                    .getColor(R.color.conversation_list_unread_conversation_bg));
+            holder.itemView.setBackgroundColor(
+                    ContextCompat.getColor(context, R.color.conversation_list_unread_conversation_bg));
             holder.getUnreadMessagesCountTextView().setVisibility(View.VISIBLE);
             holder.getUnreadMessagesCountTextView().setText(String.valueOf(unreadMessageCount));
         } else {
@@ -84,6 +85,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     private void setAvatar(BaseConversationViewHolder holder, Conversation conversation){
         List<User> participants = conversation.getParticipants();
+
+
         if (participants == null || participants.size() == 0) return;
 
         if (isGroupConversation(conversation.getType())) {

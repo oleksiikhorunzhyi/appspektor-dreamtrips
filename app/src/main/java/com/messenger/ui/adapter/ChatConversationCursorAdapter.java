@@ -99,13 +99,16 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
     }
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {
-        return !cursor.moveToPrevious() || cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM)) != user.getId();
+        final int position = cursor.getPosition();
+        final boolean result = !cursor.moveToPrevious() || cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM)) != user.getId();
+        cursor.moveToPosition(position);
+        return result;
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-        // TODO: 12/14/15
-        if (true) {
+        // TODO: 12/14/15 chatConversation.isGroupConversation()
+        if (false) {
             holder.nameTextView.setVisibility(View.VISIBLE);
             holder.nameTextView.setText(message.getFrom().getName());
         } else {
@@ -134,8 +137,8 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
         Cursor cursor = getCursor();
         cursor.moveToPosition(position);
 
-        // TODO: 12/14/15
-        final int messageType = VIEW_TYPE_OWN_MESSAGE;
+        final int messageType = cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM))
+                .equals(user.getId()) ? VIEW_TYPE_OWN_MESSAGE : VIEW_TYPE_SOMEONES_MESSAGE;
 
         final int timeColumn = cursor.getColumnIndex(Message.COLUMN_DATE);
         final long currentDate = cursor.getLong(timeColumn);

@@ -22,6 +22,8 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 public class User extends BaseProviderModel<User> implements ChatUser {
     public static final String TABLE_NAME = "Users";
     public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_NAME = "userName";
+    public static final String COLUMN_AVATAR = "userAvatarUrl";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -31,7 +33,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     @Column String _id;
     @Column String userName;
     @Column boolean online;
-    private String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
+    @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
 
     public User() {
     }

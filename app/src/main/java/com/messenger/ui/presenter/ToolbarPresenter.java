@@ -23,7 +23,9 @@ public class ToolbarPresenter {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 // TODO handle nicely this
-                ((Activity) toolbar.getContext()).finish();
+                if (toolbar.getContext() instanceof Activity) {
+                    ((Activity) toolbar.getContext()).finish();
+                }
             }
         });
         toolbar.setTitleTextAppearance(appCompatActivity, R.style.ActionBarTitle);

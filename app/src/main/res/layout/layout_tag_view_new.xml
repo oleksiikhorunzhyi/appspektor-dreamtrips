@@ -3,26 +3,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/tag_common_width"
     android:layout_height="@dimen/tag_common_height"
-    android:paddingLeft="10dp">
+    android:paddingLeft="@dimen/tag_new_padding_left"
+    android:background="@drawable/background_common_tag_view"
+    android:paddingRight="10dp">
 
     <AutoCompleteTextView
         android:id="@+id/new_user_input_name"
-        android:layout_width="match_parent"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_common_tag_view"
+        android:layout_centerVertical="true"
         android:completionThreshold="1"
-        android:padding="10dp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white">
+        <requestFocus/>
+    </AutoCompleteTextView>
 
-    <Button
+    <View
         android:id="@+id/new_user_delete_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@null"
-        android:padding="0dp"
-        android:text="X"
-        android:textColor="@android:color/white"/>
+        android:background="@drawable/ic_close_tag"/>
 
 </RelativeLayout>

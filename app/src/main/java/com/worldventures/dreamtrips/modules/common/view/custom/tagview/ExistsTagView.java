@@ -7,10 +7,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;
@@ -21,8 +19,6 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
 
     private static final long HIDE_DELETE_BUTTON_DELAY = 1000;
 
-    @InjectView(R.id.tagged_user_photo)
-    public ImageView taggedUserPhoto;
     @InjectView(R.id.tagged_user_name)
     public TextView taggedUserName;
     @InjectView(R.id.tagged_user_delete_tag)
@@ -56,9 +52,7 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
         setClickable(true);
         setOnClickListener(this);
         //todo uncomment
-//        Picasso.with(getContext()).load(user.getAvatar().getMedium()).into(taggedUserPhoto);
 //        taggedUserName.setText(user.getFullName());
-        Picasso.with(getContext()).load(R.drawable.ic_dt_launcher).into(taggedUserPhoto);
         taggedUserName.setText("Tagged Userovich");
     }
 

@@ -45,15 +45,12 @@ public class NewTagView extends TagView {
     protected void initialize() {
         LayoutInflater.from(getContext()).inflate(R.layout.layout_tag_view_new, this, true);
         ButterKnife.inject(this);
-
         TagFriendAdapter adapter = new TagFriendAdapter(getContext(), userFriends);
         inputFriendName.setAdapter(adapter);
         inputFriendName.setDropDownBackgroundResource(R.drawable.background_common_tag_view);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+        inputFriendName.setDropDownWidth(getResources().getDimensionPixelSize(R.dimen.tag_common_width));
+        inputFriendName.setDropDownHorizontalOffset(-getResources().getDimensionPixelSize(R.dimen.tag_new_padding_left));
+        inputFriendName.setDropDownVerticalOffset(6);
     }
 
     @Override

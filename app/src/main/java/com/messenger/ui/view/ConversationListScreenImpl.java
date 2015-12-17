@@ -133,14 +133,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
     }
 
     @Override
-    public void showAllConversation(Cursor cursor) {
-        if (adapter != null) {
-            adapter.swapCursor(cursor);
-        }
-    }
-
-    @Override
-    public void showGroupConversation(Cursor cursor) {
+    public void showConversations(Cursor cursor) {
         if (adapter != null) {
             adapter.swapCursor(cursor);
         }

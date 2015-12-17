@@ -15,9 +15,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Join;
-import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.lang.annotation.Retention;
@@ -70,16 +68,17 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE}, variableName = "participants")
     public List<User> getParticipants() {
         if (participants == null) {
-//            SELECT * FROM Users u
-//            JOIN Participants p ON p.userId = u.id
-//            WHERE p.covId = ?;
+            String query = "SELECT * FROM Users u " +
+                    "JOIN ParticipantsRelationship p " +
+                    "ON p.userId = u._id " +
+                    "WHERE p.conversationId = ?";
+            participants = SqlUtils.queryList(User.class, query, _id);
 
-            participants =
-                    new Select().from(User.class).as("u")
-                            .join(ParticipantsRelationship.class, Join.JoinType.INNER).as("p")
-                    .on(Condition.column("p." + ParticipantsRelationship.COLUMN_USER).is("u." + User.COLUMN_ID))
-                    .where(Condition.column("p." + ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
-                    .queryList();
+//                    new Select().from(User.class).as("`u`")
+//                            .join(ParticipantsRelationship.class, Join.JoinType.INNER).as("`p`")
+//                    .on(Condition.column("p." + ParticipantsRelationship.COLUMN_USER).eq(ColumnAlias.column("u." + User.COLUMN_ID)))
+//                    .where(Condition.column("p." + ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
+//                    .queryList();
         }
         return participants;
     }
@@ -165,10 +164,13 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Override
     public void save() {
         super.save();
+        saveParticipant();
+    }
 
+    public void saveParticipant() {
         if (participants == null ) return;
         for (User participant : participants) {
-            new ParticipantsRelationship(_id, participant.getId()).save();
+            new ParticipantsRelationship(_id, participant).save();
         }
     }
 

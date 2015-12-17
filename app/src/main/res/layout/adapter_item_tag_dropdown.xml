@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
     <!--Don't try to replace it with TextView with compoundDrawable
         What I've tried and I think it is not the better solution:
@@ -21,10 +22,13 @@
         android:orientation="horizontal"
         android:padding="5dp">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/friend_photo"
             android:layout_width="@dimen/tag_common_photo_size"
-            android:layout_height="@dimen/tag_common_photo_size"/>
+            android:layout_height="@dimen/tag_common_photo_size"
+            fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+            fresco:placeholderImageScaleType="centerInside"
+            fresco:roundAsCircle="true"/>
 
         <TextView
             android:id="@+id/friend_name"

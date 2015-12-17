@@ -7,6 +7,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
@@ -39,9 +40,9 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         syncUi();
     }
 
-    private void updatePhotoInfo() {
-        doRequest(new GetPhotoInfoCommand(photo.getFSId()), photo -> {
-            this.photo = photo;
+    public void updatePhotoInfo() {
+        doRequest(new GetFeedEntityQuery(photo.getFSId()), entity -> {
+            this.photo = (Photo) entity.getItem();
             view.setupTaggingHolder(this.photo);
         });
     }

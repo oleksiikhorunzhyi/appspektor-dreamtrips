@@ -1,39 +1,50 @@
 package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
-    private static final int MAX_RESULT_COUNT = 5;
-    private int resultCount = MAX_RESULT_COUNT;
     private Context context;
-    private List<User> friendList, tempList, suggestions;
+    private List<User> friendList;
+    private TaggableImageHolder.TagListener tagListener;
 
     public TagFriendAdapter(Context context, List<User> items) {
-        this(context, items, MAX_RESULT_COUNT);
-    }
-
-    public TagFriendAdapter(Context context, List<User> items, int resultCount) {
         super(context, 0, 0, items);
         this.context = context;
         this.friendList = items;
-        this.resultCount = resultCount;
-        tempList = new ArrayList<User>(items);
-        suggestions = new ArrayList<User>();
+    }
+
+    public void setTagListener(TaggableImageHolder.TagListener tagListener) {
+        this.tagListener = tagListener;
+    }
+
+    public void setFriendList(List<User> friendList) {
+        this.friendList = friendList;
+    }
+
+    @Override
+    public User getItem(int position) {
+        return friendList.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return friendList.size();
     }
 
     @Override
@@ -46,7 +57,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
 
             holder = new FriendHolder();
             holder.friendName = (TextView) convertView.findViewById(R.id.friend_name);
-            holder.friendPhoto = (ImageView) convertView.findViewById(R.id.friend_photo);
+            holder.friendPhoto = (SimpleDraweeView) convertView.findViewById(R.id.friend_photo);
 
             convertView.setTag(holder);
         } else {
@@ -55,7 +66,8 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
 
         User user = friendList.get(position);
         holder.friendName.setText(user.getFullName());
-        Picasso.with(context).load(R.drawable.ic_dt_launcher).into(holder.friendPhoto);
+        holder.friendPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+        holder.friendPhoto.invalidate();
 
         return convertView;
     }
@@ -63,48 +75,24 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
     @Override
     public Filter getFilter() {
         return new Filter() {
-            @Override
-            public CharSequence convertResultToString(Object resultValue) {
-                return ((User) resultValue).getFullName();
-            }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                if (constraint != null) {
-                    suggestions.clear();
-                    for (User user : tempList) {
-                        if (user.getFullName().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                            suggestions.add(user);
-                            if (suggestions.size() == resultCount) {
-                                break;
-                            }
-                        }
-                    }
-                    FilterResults filterResults = new FilterResults();
-                    filterResults.values = suggestions;
-                    filterResults.count = suggestions.size();
-                    return filterResults;
-                } else {
-                    return new FilterResults();
-                }
+                return new FilterResults();
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                List<User> filterList = (ArrayList<User>) results.values;
-                if (results != null && results.count > 0) {
-                    clear();
-                    for (User user : filterList) {
-                        add(user);
-                        notifyDataSetChanged();
-                    }
-                }
+                if (constraint != null && constraint.length() > 2)
+                    tagListener.onQueryChanged(constraint.toString());
+                else
+                    setFriendList(Collections.emptyList());
             }
         };
     }
 
     static class FriendHolder{
         TextView friendName;
-        ImageView friendPhoto;
+        SimpleDraweeView friendPhoto;
     }
 }

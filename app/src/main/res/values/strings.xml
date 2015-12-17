@@ -483,6 +483,8 @@
     <string name="photo_limitation_message">Please choose up to %d photos</string>
     <string name="pending">Pending…</string>
 
+    <string name="start_typing_name">Start typing name</string>
+
     <string name="back">Back</string>
     <string name="logout_component">Logout</string>
     <string name="start_typing_name">Start typing name</string>

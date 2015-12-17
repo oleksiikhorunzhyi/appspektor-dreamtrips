@@ -16,8 +16,13 @@ public class ForeignTaggableImageHolderPresenter extends TaggableImageHolderPres
     @Override
     public void deletePhotoTag(PhotoTag tag) {
         List<Integer> userIds = new ArrayList<>();
-        userIds.add(tag.getTargetUserId());
+        userIds.add(tag.getUser().getId());
         doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds));
+    }
+
+    @Override
+    public void pushRequests() {
+        onComplete();
     }
 
     @Override

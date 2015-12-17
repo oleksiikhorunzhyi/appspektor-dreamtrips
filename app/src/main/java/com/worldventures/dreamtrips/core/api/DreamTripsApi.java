@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.api.BODY_DELETE;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
+import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -35,6 +36,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 
@@ -357,9 +359,9 @@ public interface DreamTripsApi {
     ArrayList<User> getMutualFriends(@Path("userId") int userId);
 
     @POST("/api/photos/{uid}/tags")
-    Void addPhotoTags(@Path("uid") String photoId, @Body AddPhotoTag addTag);
+    ArrayList<PhotoTag> addPhotoTags(@Path("uid") String photoId, @Body AddPhotoTag addTag);
 
-    @DELETE("/api/photos/{uid}/tags")
+    @DELETE_WITH_BODY("/api/photos/{uid}/tags")
     Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
 
     @GET("/api/photos/{uid}")

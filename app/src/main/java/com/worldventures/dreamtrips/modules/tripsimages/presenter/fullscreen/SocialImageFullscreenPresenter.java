@@ -40,13 +40,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     public void takeView(View view) {
         super.takeView(view);
         uidItemDelegate = new UidItemDelegate(this);
-        loadEntity(feedEntityHolder -> {
-            FeedEntity feedEntity = feedEntityHolder.getItem();
-            photo.syncLikeState(feedEntity);
-            photo.setCommentsCount(feedEntity.getCommentsCount());
-            photo.setComments(feedEntity.getComments());
-            setupActualViewState();
-        });
+        loadEntity();
     }
 
     @Override
@@ -55,8 +49,15 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         entityManager.setRequestingPresenter(this);
     }
 
-    private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {
-        doRequest(new GetFeedEntityQuery(photo.getUid()), successListener);
+    public void loadEntity() {
+        doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
+            FeedEntity feedEntity = feedEntityHolder.getItem();
+            photo.syncLikeState(feedEntity);
+            photo.setCommentsCount(feedEntity.getCommentsCount());
+            photo.setComments(feedEntity.getComments());
+            photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
+            setupActualViewState();
+        });
     }
 
     @Override
@@ -111,6 +112,10 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     public void onFlagAction(Flaggable flaggable) {
         view.showProgress();
         uidItemDelegate.loadFlags(flaggable);
+    }
+
+    public boolean isOwnPhoto() {
+        return photo.getOwner().getId() == getAccount().getId();
     }
 
     public void onEvent(FeedEntityChangedEvent event) {

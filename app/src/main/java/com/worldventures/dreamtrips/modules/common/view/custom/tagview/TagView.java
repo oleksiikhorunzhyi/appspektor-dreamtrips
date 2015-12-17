@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -11,38 +10,17 @@ import android.widget.RelativeLayout;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.TagableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TagView extends RelativeLayout{
-    protected User user;
     protected List<User> userFriends;
-    protected Point leftTopPoint;
-    protected Point tagCenter;
-    protected Point rightBottom;
-    protected TagableImageHolder.TagListener tagListener;
+    protected PhotoTag photoTag;
+    protected TaggableImageHolder.TagListener tagListener;
 
-    public void setTaggedUser(@Nullable User user) {
-        this.user = user;
-    }
-
-    public void setUserFriends(@Nullable List<User> userFriends) {
-        this.userFriends = (userFriends == null) ? new ArrayList<User>() : userFriends;
-    }
-
-    public void setTagCoordinates(Point leftTop, Point tagCenter, Point rightBottom) {
-        this.leftTopPoint = leftTop;
-        this.tagCenter = tagCenter;
-        this.rightBottom = rightBottom;
-    }
-
-    public void setTagListener(TagableImageHolder.TagListener tagListener) {
-        this.tagListener = tagListener;
-    }
-
-    //region Constructors
     public TagView(Context context) {
         super(context);
         initialize();
@@ -57,12 +35,23 @@ public abstract class TagView extends RelativeLayout{
         super(context, attrs, defStyleAttr);
         initialize();
     }
-    //endregion
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TagView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initialize();
+    }
+
+    public void setPhotoTag(PhotoTag photoTag) {
+        this.photoTag = photoTag;
+    }
+
+    public void setUserFriends(@Nullable List<User> userFriends) {
+        this.userFriends = (userFriends == null) ? new ArrayList<>() : userFriends;
+    }
+
+    public void setTagListener(TaggableImageHolder.TagListener tagListener) {
+        this.tagListener = tagListener;
     }
 
     public float getTagWidthInPx(){
@@ -77,5 +66,18 @@ public abstract class TagView extends RelativeLayout{
 
     protected void deleteTag(){
         ((ViewGroup) getParent()).removeView(this);
+    }
+
+    public static TagView create(Context context, PhotoTag photoTag) {
+        TagView tagView;
+        if (photoTag.getUser() == null) {
+            tagView = new NewTagView(context);
+        } else {
+            tagView = new ExistsTagView(context);
+        }
+
+        tagView.setPhotoTag(photoTag);
+
+        return tagView;
     }
 }

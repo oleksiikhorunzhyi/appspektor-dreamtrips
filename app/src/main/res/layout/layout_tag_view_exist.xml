@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
        android:layout_width="@dimen/tag_common_width"
        android:layout_height="@dimen/tag_common_height">
 
@@ -16,7 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_medium"/>
 
         <View
             android:id="@+id/tagged_user_delete_tag_divider"
@@ -37,4 +38,4 @@
             android:visibility="gone" />
     </LinearLayout>
 
-</merge>
+</RelativeLayout>

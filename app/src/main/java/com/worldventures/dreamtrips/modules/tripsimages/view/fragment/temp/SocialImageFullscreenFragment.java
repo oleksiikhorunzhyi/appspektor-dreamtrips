@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp;
 
 import android.app.Dialog;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -11,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
@@ -36,6 +40,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @InjectView(R.id.flag)
     protected FlagView flag;
+    @InjectView(R.id.taggable_holder)
+    protected TaggableImageHolder taggableImageHolder;
+    @InjectView(R.id.tag)
+    ImageView tag;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -52,6 +60,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     public void setContent(IFullScreenObject photo) {
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
+        taggableImageHolder.setup(this, (Photo) photo, getPresenter().isOwnPhoto());
     }
 
     @Override
@@ -126,6 +135,21 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     public void actionFlag() {
         eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_FLAG_IMAGE));
         getPresenter().onFlagAction(this);
+    }
+
+    @OnClick(R.id.tag)
+    public void onTag() {
+        if (!taggableImageHolder.isSetuped()) return;
+        //
+        if (taggableImageHolder.isShown()) {
+            tag.setSelected(false);
+            taggableImageHolder.hide(() -> getPresenter().loadEntity());
+        } else {
+            tag.setSelected(true);
+            RectF imageBounds = new RectF();
+            ivImage.getHierarchy().getActualImageBounds(imageBounds);
+            taggableImageHolder.show(imageBounds);
+        }
     }
 
     private void deletePhoto() {

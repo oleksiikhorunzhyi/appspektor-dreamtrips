@@ -3,13 +3,17 @@ package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.AutoCompleteTextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -20,9 +24,8 @@ public class NewTagView extends TagView {
     @InjectView(R.id.new_user_input_name)
     public AutoCompleteTextView inputFriendName;
 
-    private float dX, dY; //values for drag
+    private TagFriendAdapter adapter;
 
-    //region Constructors
     public NewTagView(Context context) {
         super(context);
     }
@@ -39,45 +42,41 @@ public class NewTagView extends TagView {
     public NewTagView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-    //endregion
+
+    @Override
+    public void setUserFriends(@Nullable List<User> userFriends) {
+        super.setUserFriends(userFriends);
+        adapter.setFriendList(userFriends);
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void initialize() {
         LayoutInflater.from(getContext()).inflate(R.layout.layout_tag_view_new, this, true);
         ButterKnife.inject(this);
-        TagFriendAdapter adapter = new TagFriendAdapter(getContext(), userFriends);
+
+        adapter = new TagFriendAdapter(getContext(), userFriends);
         inputFriendName.setAdapter(adapter);
         inputFriendName.setDropDownBackgroundResource(R.drawable.background_common_tag_view);
         inputFriendName.setDropDownWidth(getResources().getDimensionPixelSize(R.dimen.tag_common_width));
         inputFriendName.setDropDownHorizontalOffset(-getResources().getDimensionPixelSize(R.dimen.tag_new_padding_left));
         inputFriendName.setDropDownVerticalOffset(6);
+        inputFriendName.setOnItemClickListener((parent, view, position, id) -> {
+            PhotoTag.TagPosition tagPosition = photoTag.getPosition();
+            tagListener.onTagAdded(new PhotoTag(adapter.getItem(position).getId(),
+                    tagPosition, adapter.getItem(position)));
+        });
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        View parent = (View) getParent();
-        switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                bringToFront();
-                dX = getX() - event.getRawX();
-                dY = getY() - event.getRawY();
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                int x = (int) (event.getRawX() + dX);
-                int y = (int) (event.getRawY() + dY);
-                onDrag();
-                animate()
-                        .x(x < 0 ? 0 : (x + getWidth() > parent.getWidth()) ? parent.getWidth() - getWidth() : x)       //check bounds
-                        .y(y < 0 ? 0 : (y + getHeight() > parent.getHeight()) ? parent.getHeight() - getHeight() : y)   //check bounds
-                        .setDuration(0)
-                        .start();
-                return true;
-            case MotionEvent.ACTION_UP:
-                finishDrag();
-                return true;
-            default:
-                return false;
-        }
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void setTagListener(TaggableImageHolder.TagListener tagListener) {
+        super.setTagListener(tagListener);
+        adapter.setTagListener(tagListener);
     }
 
     @OnClick ({R.id.new_user_delete_tag})
@@ -85,9 +84,4 @@ public class NewTagView extends TagView {
         deleteTag();
     }
 
-    private void onDrag() {
-    }
-
-    private void finishDrag() {
-    }
 }

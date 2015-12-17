@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -22,11 +23,10 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
     @InjectView(R.id.tagged_user_name)
     public TextView taggedUserName;
     @InjectView(R.id.tagged_user_delete_tag)
-    public Button btnDeleteTag;
+    public View btnDeleteTag;
 
-    private Runnable hideDeleteBtnRunnable = () -> btnDeleteTag.setVisibility(View.INVISIBLE);
+    private Runnable hideDeleteBtnRunnable = () -> btnDeleteTag.setVisibility(View.GONE);
 
-    //region Constructors
     public ExistsTagView(Context context) {
         super(context);
     }
@@ -43,7 +43,6 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
     public ExistsTagView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-    //endregion
 
     @Override
     protected void initialize() {
@@ -51,9 +50,6 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
         ButterKnife.inject(this);
         setClickable(true);
         setOnClickListener(this);
-        //todo uncomment
-//        taggedUserName.setText(user.getFullName());
-        taggedUserName.setText("Tagged Userovich");
     }
 
     @Override
@@ -64,16 +60,23 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        showDeleteButton();
+        tagListener.onTagClicked(photoTag.getTargetUserId());
     }
 
-    private void showDeleteButton(){
+    public void showDeleteButton(){
         btnDeleteTag.setVisibility(View.VISIBLE);
         postDelayed(hideDeleteBtnRunnable, HIDE_DELETE_BUTTON_DELAY);
     }
 
+    @Override
+    public void setPhotoTag(PhotoTag photoTag) {
+        super.setPhotoTag(photoTag);
+        taggedUserName.setText(photoTag.getUser().getFullName());
+    }
+
     @OnClick({R.id.tagged_user_delete_tag})
-    public void onDeleteTag(View view) {
+    public void onDeleteTag() {
+        tagListener.onTagDeleted(photoTag);
         deleteTag();
     }
 }

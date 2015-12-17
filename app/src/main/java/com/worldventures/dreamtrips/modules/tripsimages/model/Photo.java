@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -73,6 +75,10 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
 
     public List<PhotoTag> getPhotoTags() {
         return photoTags;
+    }
+
+    public void setPhotoTags(List<PhotoTag> photoTags) {
+        this.photoTags = photoTags;
     }
 
     @Override
@@ -199,6 +205,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         parcel.writeParcelable(images, i);
         parcel.writeString(taskId);
         parcel.writeParcelable(owner, i);
+        parcel.writeTypedList(photoTags);
     }
 
     protected Photo(Parcel in) {
@@ -213,6 +220,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         images = in.readParcelable(Image.class.getClassLoader());
         taskId = in.readString();
         owner = in.readParcelable(User.class.getClassLoader());
+        photoTags = new ArrayList<>();
+        in.readTypedList(photoTags, PhotoTag.CREATOR);
     }
 
 }

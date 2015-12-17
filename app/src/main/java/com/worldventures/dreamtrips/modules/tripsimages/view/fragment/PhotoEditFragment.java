@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -17,7 +19,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-import com.worldventures.dreamtrips.modules.common.view.custom.TagableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -47,7 +49,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
     @InjectView(R.id.taggable_holder)
-    protected TagableImageHolder tagableImageHolder;
+    protected TaggableImageHolder taggableImageHolder;
     @InjectView(R.id.tag)
     protected ImageView tag;
 
@@ -106,14 +108,18 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
 
     @OnClick(R.id.tag)
     public void onTag() {
-        if (!tagableImageHolder.isSetuped()) return;
+        if (!taggableImageHolder.isSetuped()) return;
         //
-        if (tagableImageHolder.isShown()) {
+        if (taggableImageHolder.isShown()) {
             tag.setSelected(false);
-            tagableImageHolder.hide();
+            taggableImageHolder.hide(() -> getPresenter().updatePhotoInfo());
+            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
         } else {
+            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
             tag.setSelected(true);
-            tagableImageHolder.show();
+            RectF imageBounds = new RectF();
+            ivImage.getHierarchy().getActualImageBounds(imageBounds);
+            taggableImageHolder.show(imageBounds);
         }
     }
 
@@ -184,7 +190,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
 
     @Override
     public void setupTaggingHolder(Photo photo) {
-        tagableImageHolder.setup(this, photo, getPresenter().isOwnPhoto());
+        taggableImageHolder.setup(this, photo, getPresenter().isOwnPhoto());
     }
 
     @Override

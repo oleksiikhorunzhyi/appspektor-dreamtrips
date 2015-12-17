@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.messenger.app.Environment;
+import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
 
 import java.util.ArrayList;
@@ -15,13 +16,13 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
 
     }
 
-    private List<ChatUser> selectedContacts = new ArrayList<>();
+    private List<User> selectedContacts = new ArrayList<>();
 
-    public List<ChatUser> getSelectedContacts() {
+    public List<User> getSelectedContacts() {
         return selectedContacts;
     }
 
-    public void setSelectedContacts(List<ChatUser> selectedContacts) {
+    public void setSelectedContacts(List<User> selectedContacts) {
         this.selectedContacts = selectedContacts;
     }
 

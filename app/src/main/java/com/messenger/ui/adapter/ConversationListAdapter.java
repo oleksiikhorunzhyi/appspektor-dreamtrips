@@ -6,27 +6,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
-import com.messenger.app.Environment;
 import com.messenger.model.ChatConversation;
-import com.messenger.model.ChatMessage;
 import com.messenger.model.ChatUser;
-import com.messenger.ui.widget.AvatarView;
-import com.messenger.ui.widget.GroupAvatarsView;
 import com.messenger.util.ChatDateFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.InjectView;
 import butterknife.ButterKnife;
 
+@Deprecated
 public class ConversationListAdapter extends RecyclerView.Adapter<BaseConversationViewHolder> {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;

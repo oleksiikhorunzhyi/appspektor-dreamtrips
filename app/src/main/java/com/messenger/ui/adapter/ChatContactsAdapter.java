@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.InjectView;
 import butterknife.ButterKnife;
 
+@Deprecated
 public class ChatContactsAdapter extends RecyclerView.Adapter<ChatContactsAdapter.ViewHolder> {
 
     private static final int VIEW_TYPE_CONTACT = 1;

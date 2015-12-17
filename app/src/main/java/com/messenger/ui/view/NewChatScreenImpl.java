@@ -18,9 +18,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.ContactCursorAdapter;
 import com.worldventures.dreamtrips.R;
-import com.messenger.model.ChatUser;
 import com.messenger.ui.presenter.NewChatLayoutPresenter;
 import com.messenger.ui.presenter.NewChatLayoutPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -126,7 +126,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     }
 
     @Override
-    public void setSelectedContacts(List<ChatUser> selectedContacts) {
+    public void setSelectedContacts(List<User> selectedContacts) {
         adapter.setSelectedContacts(selectedContacts);
         adapter.notifyDataSetChanged();
     }

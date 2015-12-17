@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
 @SuppressWarnings("unused")
-public class DtlOffer<T extends DtlOfferDescription> {
+public class DtlOffer<T extends DtlOfferData> {
 
     @Offer.OfferType
     String type;

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
 import java.util.List;
 
-public class DtlOfferPointsDescription extends DtlOfferDescription {
+public class DtlOfferPointsData extends DtlOfferData {
 
     List<DtlCurrency> currencies;
 

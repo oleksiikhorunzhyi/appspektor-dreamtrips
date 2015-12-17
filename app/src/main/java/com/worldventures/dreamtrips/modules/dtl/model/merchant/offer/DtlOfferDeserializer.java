@@ -22,9 +22,9 @@ public class DtlOfferDeserializer implements JsonDeserializer<DtlOffer> {
     private Map<String, Type> modelByType = new HashMap<>();
 
     {
-        modelByType.put(Offer.PERKS, new TypeToken<DtlOffer<DtlOfferPerkDescription>>() {
+        modelByType.put(Offer.PERKS, new TypeToken<DtlOffer<DtlOfferPerkData>>() {
         }.getType());
-        modelByType.put(Offer.POINT_REWARD, new TypeToken<DtlOffer<DtlOfferPointsDescription>>() {
+        modelByType.put(Offer.POINT_REWARD, new TypeToken<DtlOffer<DtlOfferPointsData>>() {
         }.getType());
     }
 

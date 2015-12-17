@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
-public class DtlOfferPerkDescription extends DtlOfferDescription {
+public class DtlOfferPerkData extends DtlOfferData {
 
     private String description;
 

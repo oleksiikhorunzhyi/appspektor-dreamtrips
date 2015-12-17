@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.module.dtl.model;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsDescription;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 
 import org.junit.Test;
@@ -20,8 +20,8 @@ public class DtlMerchantCurrencyTest {
     @Test
     public void test_getDefaultCurrency() {
         DtlMerchant dtlMerchant = new DtlMerchant();
-        DtlOffer<DtlOfferPointsDescription> dtlPointsOffer = new DtlOffer<>();
-        DtlOfferPointsDescription dtlOfferPointsDescription = new DtlOfferPointsDescription();
+        DtlOffer<DtlOfferPointsData> dtlPointsOffer = new DtlOffer<>();
+        DtlOfferPointsData dtlOfferPointsDescription = new DtlOfferPointsData();
         DtlCurrency dtlCurrency = new DtlCurrency();
         dtlCurrency.setDefault(true);
         dtlCurrency.setCode("USD");

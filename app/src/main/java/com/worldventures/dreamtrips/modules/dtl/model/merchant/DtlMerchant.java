@@ -5,8 +5,8 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkDescription;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsDescription;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -158,13 +158,13 @@ public class DtlMerchant {
     }
 
     public String getPerkDescription() {
-        DtlOffer<DtlOfferPerkDescription> dtlOffer = (DtlOffer<DtlOfferPerkDescription>)
+        DtlOffer<DtlOfferPerkData> dtlOffer = (DtlOffer<DtlOfferPerkData>)
                 Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_PERK));
         return dtlOffer.getOffer().getDescription();
     }
 
     public DtlCurrency getDefaultCurrency() {
-        DtlOffer<DtlOfferPointsDescription> dtlOffer = (DtlOffer<DtlOfferPointsDescription>)
+        DtlOffer<DtlOfferPointsData> dtlOffer = (DtlOffer<DtlOfferPointsData>)
                 Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_POINTS));
 
         return Queryable.from(dtlOffer.getOffer().getCurrencies()).firstOrDefault(DtlCurrency::isDefault);

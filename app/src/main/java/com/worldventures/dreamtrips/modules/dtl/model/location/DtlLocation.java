@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -30,6 +30,10 @@ public class DtlLocation implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public DtlLocationType getType() {
@@ -111,9 +115,9 @@ public class DtlLocation implements Parcelable {
 
         @Override
         public int compare(DtlLocation lhs, DtlLocation rhs) {
-            double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
+            double distanceToLeft = DtlLocationHelper.distanceInMiles(currentLocation,
                     lhs.getCoordinates().asLatLng());
-            double distanceToRight = LocationHelper.distanceInMiles(currentLocation,
+            double distanceToRight = DtlLocationHelper.distanceInMiles(currentLocation,
                     rhs.getCoordinates().asLatLng());
             return Double.valueOf(distanceToLeft - distanceToRight).intValue();
         }

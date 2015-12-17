@@ -8,10 +8,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceCommonDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceInfoInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSingleImageDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceInfoInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.OnClick;

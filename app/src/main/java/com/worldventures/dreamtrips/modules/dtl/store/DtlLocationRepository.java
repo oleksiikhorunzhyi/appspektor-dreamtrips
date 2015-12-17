@@ -29,7 +29,6 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
     }
 
     public void loadNearbyLocations(Location userLocation) {
-        // TODO : handle failure
         checkState();
         requestingPresenter.doRequest(new GetDtlLocationsQuery(userLocation),
                 this::onLocationsLoaded, this::onLocationsLoadingFailed);

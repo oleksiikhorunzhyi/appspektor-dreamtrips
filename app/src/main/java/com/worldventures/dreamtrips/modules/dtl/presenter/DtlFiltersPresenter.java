@@ -44,7 +44,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     public void takeView(View view) {
         super.takeView(view);
         if (dtlFilterData == null)
-            dtlFilterData = new DtlFilterData();
+            dtlFilterData = DtlFilterData.createDefault();
 
         dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         attachAmenities();

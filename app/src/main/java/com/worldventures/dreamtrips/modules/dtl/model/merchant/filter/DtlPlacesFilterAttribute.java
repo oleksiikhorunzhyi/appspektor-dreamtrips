@@ -16,6 +16,11 @@ public class DtlPlacesFilterAttribute implements Parcelable, Comparable<DtlPlace
         this.attributeName = attributeName;
     }
 
+    public DtlPlacesFilterAttribute(String attributeName, Boolean checked) {
+        this.attributeName = attributeName;
+        this.checked = checked;
+    }
+
     protected DtlPlacesFilterAttribute(Parcel in) {
         attributeName = in.readString();
     }

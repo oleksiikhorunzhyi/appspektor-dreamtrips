@@ -23,8 +23,13 @@ public class DtlFilterData implements Parcelable {
 
     private List<DtlPlacesFilterAttribute> amenities;
 
-    public DtlFilterData() {
-        reset();
+    private DtlFilterData() {
+    }
+
+    public static DtlFilterData createDefault() {
+        DtlFilterData dtlFilterData = new DtlFilterData();
+        dtlFilterData.reset();
+        return dtlFilterData;
     }
 
     public void reset() {
@@ -73,6 +78,10 @@ public class DtlFilterData implements Parcelable {
 
     public int getMaxDistance() {
         return maxDistance;
+    }
+
+    public void setMaxDistance(int maxDistance) {
+        this.maxDistance = maxDistance;
     }
 
     public void setDistanceType(int maxDistance) {

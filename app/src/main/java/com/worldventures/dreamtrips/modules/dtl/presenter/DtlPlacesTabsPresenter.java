@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -26,6 +27,8 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     SnappyRepository db;
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
+    @Inject
+    DtlSearchDelegate dtlSearchDelegate;
     //
     @State
     boolean initialized;
@@ -54,6 +57,10 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
             loadPlaces();
 
         initialized = true;
+    }
+
+    public void applySearch(String query) {
+        dtlSearchDelegate.applySearch(query);
     }
 
     private void loadPlaces() {

@@ -1,10 +1,11 @@
-package com.worldventures.dreamtrips.modules.dtl.helper;
+package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.InjectView;

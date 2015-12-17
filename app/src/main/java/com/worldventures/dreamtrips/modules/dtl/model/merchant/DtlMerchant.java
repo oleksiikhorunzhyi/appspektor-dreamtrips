@@ -5,16 +5,11 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.LocationHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -59,6 +54,10 @@ public class DtlMerchant implements Parcelable {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getAddress1() {
@@ -109,6 +108,11 @@ public class DtlMerchant implements Parcelable {
         return budget;
     }
 
+    //from 1 to 5
+    public void setBudget(int budget) {
+        this.budget = budget;
+    }
+
     public float getRating() {
         return rating;
     }
@@ -117,8 +121,20 @@ public class DtlMerchant implements Parcelable {
         return offers;
     }
 
+    public void setOffers(List<DtlOffer> offers) {
+        this.offers = offers;
+    }
+
     public List<DtlMerchantAttribute> getCategories() {
         return categories;
+    }
+
+    public void setCategories(List<DtlMerchantAttribute> categories) {
+        this.categories = categories;
+    }
+
+    public void setAmenities(List<DtlMerchantAttribute> amenities) {
+        this.amenities = amenities;
     }
 
     public List<DtlMerchantAttribute> getAmenities() {
@@ -239,59 +255,29 @@ public class DtlMerchant implements Parcelable {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Filtering part
+    // Sorting part
     ///////////////////////////////////////////////////////////////////////////
 
-    public boolean containsQuery(String query) {
-        List<DtlMerchantAttribute> categories = getCategories();
+    private transient double distance;
 
-        return displayName.toLowerCase().contains(query.toLowerCase()) || (categories != null &&
-                Queryable.from(categories).firstOrDefault(element ->
-                        element.getName().toLowerCase().contains(query.toLowerCase())) != null);
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
-    public boolean applyFilter(DtlFilterData filterData, LatLng currentLocation) {
-        return checkPrice(filterData.getMinPrice(), filterData.getMaxPrice())
-                && checkDistance(filterData, currentLocation)
-                && checkAmenities(filterData);
-    }
-
-    private boolean checkPrice(int minPrice, int maxPrice) {
-        return budget >= minPrice && budget <= maxPrice;
-    }
-
-    private boolean checkDistance(DtlFilterData filterData, LatLng currentLocation) {
-        return filterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
-                || currentLocation == null
-                || LocationHelper.checkLocation(filterData.getMaxDistance(), currentLocation,
-                new LatLng(coordinates.getLat(), coordinates.getLng()), filterData.getDistanceType());
-    }
-
-    private boolean checkAmenities(DtlFilterData filterData) {
-        List<DtlPlacesFilterAttribute> selectedAmenities = filterData.getSelectedAmenities();
-        return selectedAmenities == null || getAmenities() == null ||
-                !Collections.disjoint(selectedAmenities, Queryable.from(getAmenities()).map(element ->
-                                new DtlPlacesFilterAttribute(element.getName())
-                ).toList());
-    }
-
-    private transient double distanceInMiles;
-
-    public void calculateDistance(LatLng currentLocation) {
-        distanceInMiles = LocationHelper.distanceInMiles(currentLocation,
-                getCoordinates().asLatLng());
+    public double getDistance() {
+        return distance;
     }
 
     @Override
     public String toString() {
-        return displayName + " " + distanceInMiles;
+        return displayName + " " + distance;
     }
 
     public static Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
         @Override
         public int compare(DtlMerchant lhs, DtlMerchant rhs) {
-            if (lhs.distanceInMiles == rhs.distanceInMiles) return 0;
-            if (lhs.distanceInMiles > rhs.distanceInMiles) return 1;
+            if (lhs.distance == rhs.distance) return 0;
+            if (lhs.distance > rhs.distance) return 1;
             else return -1;
         }
     };

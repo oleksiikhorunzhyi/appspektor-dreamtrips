@@ -2,12 +2,17 @@ package com.worldventures.dreamtrips.modules.dtl.location;
 
 import android.content.Context;
 import android.location.Location;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.innahema.collections.query.queriables.Queryable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
@@ -16,8 +21,33 @@ public class LocationDelegate {
 
     ReactiveLocationProvider reactiveLocationProvider;
 
+    private PermissionView permissionView;
+    private List<LocationListener> listeners = new ArrayList<>();
+
     public LocationDelegate(Context context) {
         reactiveLocationProvider = new ReactiveLocationProvider(context);
+    }
+
+    public void setPermissionView(PermissionView permissionView) {
+        this.permissionView = permissionView;
+    }
+
+    public void tryRequestLocation() {
+        if (permissionView == null) return;
+
+        permissionView.checkPermissions();
+    }
+
+    public void attachListener(LocationListener locationListener) {
+        listeners.add(locationListener);
+    }
+
+    public void detachListener(LocationListener locationListener) {
+        listeners.remove(locationListener);
+    }
+
+    public void onLocationObtained(@Nullable Location location) {
+        Queryable.from(listeners).forEachR(listener -> listener.onLocationObtained(location));
     }
 
     public Observable<Location> getLastKnownLocation() {
@@ -51,6 +81,7 @@ public class LocationDelegate {
     }
 
     public static class LocationException extends Exception {
+
         Status status;
 
         public LocationException(Status status) {
@@ -61,4 +92,9 @@ public class LocationDelegate {
             return status;
         }
     }
+
+    public interface LocationListener {
+        void onLocationObtained(Location location);
+    }
+
 }

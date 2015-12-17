@@ -98,32 +98,21 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
+                    searchView.setOnQueryTextListener(searchViewQueryListener);
                     getPresenter().searchOpened();
                     return true;
                 }
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
+                    searchView.setOnQueryTextListener(null);
                     getPresenter().searchClosed();
                     return true;
                 }
             });
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setQueryHint(getString(R.string.dtl_locations_search_caption));
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    getPresenter().search(newText.toLowerCase());
-                    return false;
-                }
-            });
         }
-
     }
 
     public void onEvent(LocationClickedEvent event) {
@@ -191,4 +180,18 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
             searchView.setIconified(false);
         }
     }
+
+    private SearchView.OnQueryTextListener searchViewQueryListener =
+            new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    getPresenter().search(newText.toLowerCase());
+                    return false;
+                }
+            };
 }

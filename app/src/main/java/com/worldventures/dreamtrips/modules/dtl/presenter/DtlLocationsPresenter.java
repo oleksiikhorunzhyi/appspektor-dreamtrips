@@ -4,32 +4,33 @@ import android.location.Location;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlLocationSearchDelegate;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.State;
-import rx.Observable;
-import timber.log.Timber;
+import retrofit.http.HEAD;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
-implements DtlLocationRepository.LocationsLoadedListener {
+        implements DtlLocationRepository.LocationsLoadedListener, LocationDelegate.LocationListener,
+        DtlLocationSearchDelegate.Listener {
 
     @Inject
     DtlLocationRepository dtlLocationRepository;
+    //
+    private DtlLocationSearchDelegate searchDelegate;
     //
     @State
     ArrayList<DtlLocation> dtlLocations;
@@ -37,11 +38,15 @@ implements DtlLocationRepository.LocationsLoadedListener {
     Status status = Status.NEARBY;
     //
     private Location userGpsLocation;
+    @Inject
+    LocationDelegate gpsLocationDelegate;
 
     @Override
     public void onInjected() {
         super.onInjected();
         dtlLocationRepository.setRequestingPresenter(this);
+        gpsLocationDelegate.attachListener(this);
+        searchDelegate = new DtlLocationSearchDelegate(this);
     }
 
     @Override
@@ -50,28 +55,26 @@ implements DtlLocationRepository.LocationsLoadedListener {
         apiErrorPresenter.setView(view);
         dtlLocationRepository.attachListener(this);
         //
-        if (dtlLocations != null || searchLocations != null) {
-            setItems();
-            return;
-        }
-        //
-        searchLocations = new ArrayList<>();
+        // TODO : handle possible state restoring with searchDelegate
         dtlLocations = new ArrayList<>();
         //
-        eventBus.post(new RequestLocationUpdateEvent());
+        gpsLocationDelegate.tryRequestLocation();
         //
         view.startLoading();
     }
 
     @Override
     public void dropView() {
-        super.dropView();
+        gpsLocationDelegate.detachListener(this);
         dtlLocationRepository.detachListener(this);
+        searchDelegate.detachListener();
+        super.dropView();
     }
 
-    public void onEvent(LocationObtainedEvent event) {
-        if (event.getLocation() != null) {
-            userGpsLocation = event.getLocation();
+    @Override
+    public void onLocationObtained(Location location) {
+        if (location != null) {
+            userGpsLocation = location;
             view.citiesLoadingStarted();
             dtlLocationRepository.loadNearbyLocations(userGpsLocation);
         } else {
@@ -86,10 +89,11 @@ implements DtlLocationRepository.LocationsLoadedListener {
         //
         dtlLocations.clear();
         dtlLocations.addAll(locations);
-        setItems();
+        view.setItems(dtlLocations);
         //
         if (dtlLocations.isEmpty()) view.showSearch();
-        else if (dtlLocationRepository.getSelectedLocation() == null) selectNearest(userGpsLocation);
+        else if (dtlLocationRepository.getSelectedLocation() == null)
+            selectNearest(userGpsLocation);
     }
 
     @Override
@@ -109,10 +113,6 @@ implements DtlLocationRepository.LocationsLoadedListener {
         view.showMerchants(new PlacesBundle(location));
     }
 
-    private void setItems() {
-        view.setItems(status == Status.NEARBY ? dtlLocations : searchLocations);
-    }
-
     /**
      * Analytic-related
      */
@@ -128,71 +128,37 @@ implements DtlLocationRepository.LocationsLoadedListener {
     // Search stuff
     ///////////////////////////////////////////////////////////////////////////
 
-    public static final int SEARCH_SYMBOL_COUNT = 3;
-
-    @State
-    String caption;
-    @State
-    ArrayList<DtlLocation> searchLocations;
-
-    private GetDtlLocationsQuery getDtlLocationsQuery;
+    public void searchOpened() {
+        status = Status.SEARCH;
+        searchDelegate.setNearbyLocations(dtlLocations);
+        searchDelegate.attachListener(this);
+        view.setItems(Collections.EMPTY_LIST);
+    }
 
     public void searchClosed() {
         status = Status.NEARBY;
-        setItems();
+        searchDelegate.dismissDelegate();
     }
 
-    public void searchOpened() {
-        status = Status.SEARCH;
-        setItems();
+    public void search(String query) {
+        searchDelegate.performSearch(query);
     }
 
-    public void search(String caption) {
-        if (view != null) {
-            int oldLength = this.caption != null ? this.caption.length() : 0;
-
-            this.caption = caption;
-
-            boolean apiSearch = oldLength < caption.length() &&
-                    caption.length() == SEARCH_SYMBOL_COUNT;
-
-            if (caption.length() < SEARCH_SYMBOL_COUNT) flushSearch();
-            else if (apiSearch) apiSearch();
-            else localSearch();
-        }
-    }
-
-    private void flushSearch() {
-        searchLocations.clear();
-        setItems();
-    }
-
-    private void apiSearch() {
+    @Override
+    public void onSearchStarted() {
         view.startLoading();
         view.citiesLoadingStarted();
-
-        if (getDtlLocationsQuery != null) dreamSpiceManager.cancel(getDtlLocationsQuery);
-
-        getDtlLocationsQuery = new GetDtlLocationsQuery(caption);
-        doRequest(getDtlLocationsQuery, this::onSearchResultLoaded);
     }
 
-    private void onSearchResultLoaded(ArrayList<DtlLocation> searchLocations) {
-        this.searchLocations = searchLocations;
+    @Override
+    public void onSearchFinished(List<DtlLocation> locations) {
         view.finishLoading();
-        localSearch();
+        view.setItems(locations);
     }
 
-    private void localSearch() {
-        if (searchLocations != null && !searchLocations.isEmpty())
-            view.bind(Observable.from(Queryable
-                                    .from(searchLocations)
-                                    .filter(dtlLocation ->
-                                            dtlLocation.getLongName().toLowerCase().contains(caption))
-                                    .sort(new DtlLocation.DtlLocationRangeComparator(caption))
-                                    .toList()
-                    ).toList().compose(new IoToMainComposer<>())
-            ).subscribe(view::setItems, e -> Timber.e(e, "Smth went wrong while search"));
+    @Override
+    public void onSearchError(SpiceException e) {
+        handleError(e);
     }
 
     public interface View extends RxView, ApiErrorView {

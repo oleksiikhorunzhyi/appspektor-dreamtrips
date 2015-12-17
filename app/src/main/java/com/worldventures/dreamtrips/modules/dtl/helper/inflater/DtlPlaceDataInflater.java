@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.helper;
+package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.view.View;
 

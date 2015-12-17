@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.helper;
+package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 

@@ -6,14 +6,15 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -43,6 +44,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucc
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -66,7 +69,7 @@ import dagger.Provides;
                 DtlScanReceiptFragment.class,
                 DtlScanReceiptPresenter.class,
                 DtlPlacesListFragment.class,
-                DtlPlacesListPresenter.class,
+                DtlMerchantListPresenter.class,
                 DtlMerchantCell.class,
                 DtlHeaderCell.class,
                 DtlPlaceDetailsPresenter.class,
@@ -107,4 +110,11 @@ public class DtlModule {
     LocationDelegate provideLocationDelegate(@ForApplication Context context) {
         return new LocationDelegate(context);
     }
+
+    @Singleton
+    @Provides
+    DtlSearchDelegate provideSearchDelegate() {
+        return new DtlSearchDelegate();
+    }
+
 }

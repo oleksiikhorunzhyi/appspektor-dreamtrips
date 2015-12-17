@@ -17,12 +17,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
+import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
@@ -65,9 +64,9 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        new DtlPlaceSearchViewDelegate(getContext()).init(searchItem, lastQuery, query -> {
+        new SearchViewHelper().init(searchItem, lastQuery, query -> {
             lastQuery = query;
-            eventBus.post(new DtlSearchPlaceRequestEvent(query));
+            getPresenter().applySearch(query);
         });
 
         toolbar.setOnMenuItemClickListener(item -> {

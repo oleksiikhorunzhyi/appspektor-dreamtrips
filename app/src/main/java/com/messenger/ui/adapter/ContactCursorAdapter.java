@@ -107,6 +107,7 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        checkDataIsValid();
         final int type = getItemViewType(position);
         if (type == VIEW_TYPE_HEADER) {
             onBindSectionNameViewHolder((ContactWithHeaderViewHolder) holder, position);

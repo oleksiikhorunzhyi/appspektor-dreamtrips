@@ -8,6 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +26,7 @@ import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.ContactCursorAdapter;
+import com.messenger.ui.widget.SelectionListenerEditText;
 import com.worldventures.dreamtrips.R;
 import com.messenger.ui.presenter.NewChatLayoutPresenter;
 import com.messenger.ui.presenter.NewChatLayoutPresenterImpl;
@@ -51,8 +58,8 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     ImageView conversationIcon;
     @InjectView(R.id.new_chat_conversation_name)
     EditText conversationNameEditText;
-    @InjectView(R.id.new_chat_chosen_contacts_textview)
-    TextView chosenContactsTextView;
+    @InjectView(R.id.new_chat_chosen_contacts_edittext)
+    SelectionListenerEditText chosenContactsEditText;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -91,7 +98,50 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new VerticalDivider(getResources().getDrawable(R.drawable.divider_list)));
+        recyclerView.addItemDecoration(new VerticalDivider(getResources()
+                .getDrawable(R.drawable.divider_list)));
+
+        final String chosenContactsEditTextStartValue
+                = getContext().getString(R.string.new_chat_chosen_contacts_header_empty);
+        resetChoseContactsEditText();
+        chosenContactsEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                if (charSequence.length() >= chosenContactsEditTextStartValue.length()) {
+                    getPresenter().onTextChangedInChosenContactsEditText(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() <= chosenContactsEditTextStartValue.length()) {
+                    if (editable.length() < chosenContactsEditTextStartValue.length()) {
+                        resetChoseContactsEditText();
+                    }
+                    return;
+                }
+                int spannableColor = getActivity()
+                        .getResources().getColor(R.color.contact_list_header_selected_contacts);
+                editable.setSpan(new UnderlineSpan(), editable.length() - 1,
+                        editable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                editable.setSpan(new ForegroundColorSpan(spannableColor),
+                        editable.length() - 1,
+                        editable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        });
+        chosenContactsEditText.setSelectionListener((s, a)
+                -> chosenContactsEditText.setSelection(chosenContactsEditText.getText().length()));
+    }
+
+    private void resetChoseContactsEditText() {
+        String chosenContactsEditTextStartValue = getContext()
+                .getString(R.string.new_chat_chosen_contacts_header_empty);
+        chosenContactsEditText.setText(chosenContactsEditTextStartValue);
+        chosenContactsEditText.setSelection(chosenContactsEditTextStartValue.length());
     }
 
     @Override
@@ -126,14 +176,21 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     }
 
     @Override
+    public void setContacts(Cursor cursor, String query, String queryColumn) {
+        adapter.swapCursor(cursor, query, queryColumn);
+    }
+
+    @Override
     public void setSelectedContacts(List<User> selectedContacts) {
+
         adapter.setSelectedContacts(selectedContacts);
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void setSelectedUsersHeaderText(CharSequence text) {
-        chosenContactsTextView.setText(text);
+        chosenContactsEditText.setText(text);
+        chosenContactsEditText.setSelection(text.length());
     }
 
     @Override

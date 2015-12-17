@@ -11,4 +11,5 @@ public interface NewChatLayoutPresenter extends ActivityAwareViewStateMvpPresent
     void loadChatContacts();
     void onSelectedUsersStateChanged(List<User> selectedUsers);
     void onHandleTakePictureIntent();
+    void onTextChangedInChosenContactsEditText(String text);
 }

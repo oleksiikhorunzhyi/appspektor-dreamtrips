@@ -507,7 +507,7 @@
     <string name="new_chat_toast_no_users_selected_error">Please select some users first</string>
     <string name="new_chat_error_loading_contacts">Could not load contacts</string>
     <string name="new_chat_new_conversation_title_hint">Set name of conversation</string>
-    <string name="new_chat_chosen_contacts_header_empty">Add:</string>
+    <string name="new_chat_chosen_contacts_header_empty">"Add: "</string>
     <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Add</string>
     <string name="new_chat_list_item_section_close_friends">CLOSE FRIENDS</string>
     <string name="menu_done">Done</string>

@@ -505,6 +505,7 @@
     <!---->
     <string name="new_chat_title">New Chat</string>
     <string name="new_chat_toast_no_users_selected_error">Please select some users first</string>
+    <string name="new_multi_user_chat_not_supported">Creating group chat is not supported</string>
     <string name="new_chat_error_loading_contacts">Could not load contacts</string>
     <string name="new_chat_new_conversation_title_hint">Set name of conversation</string>
     <string name="new_chat_chosen_contacts_header_empty">"Add: "</string>

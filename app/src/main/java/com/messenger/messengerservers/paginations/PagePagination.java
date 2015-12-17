@@ -10,6 +10,11 @@ public abstract class PagePagination<T> {
 
     protected Persister<List<T>> persister;
     protected OnLoadedListener<T> onEntityLoadedListener;
+    protected int sizePerPage;
+
+    public PagePagination(int sizePerPage) {
+        this.sizePerPage = sizePerPage;
+    }
 
     public void setPersister(Persister<List<T>> persister) {
         this.persister = persister;
@@ -20,4 +25,8 @@ public abstract class PagePagination<T> {
     }
 
     public abstract void loadPage(int page);
+
+    public int getSizePerPage(){
+        return sizePerPage;
+    }
 }

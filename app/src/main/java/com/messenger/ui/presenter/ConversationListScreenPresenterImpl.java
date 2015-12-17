@@ -127,9 +127,9 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     @Override public void onConversationSelected(Conversation conversation) {
         if (conversation.getType().equals(Conversation.Type.GROUP)) {
-            ChatActivity.startGroup(parentActivity, conversation.getId());
+            ChatActivity.startGroupSingle(parentActivity, conversation.getId());
         } else {
-            ChatActivity.start(parentActivity, conversation.getId(), null);
+            ChatActivity.startSingleChat(parentActivity, conversation.getId());
         }
     }
 

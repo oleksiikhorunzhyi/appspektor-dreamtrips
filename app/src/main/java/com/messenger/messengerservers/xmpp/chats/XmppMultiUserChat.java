@@ -79,7 +79,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         if (chat == null) return;
         try {
             for (User user : users) {
-                chat.invite(JidCreatorHelper.obtainJid(user), null);
+                chat.invite(JidCreatorHelper.obtainUserJid(user.getUserName()), null);
             }
         } catch (SmackException.NotConnectedException e) {
             Log.e(TAG, "Error ", e);
@@ -95,7 +95,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             if (this.user.getUserName().equals(user.getUserName())) continue;
 
             try {
-                chat.kickParticipant(JidCreatorHelper.obtainJid(user), null);
+                chat.kickParticipant(JidCreatorHelper.obtainUserJid(user.getUserName()), null);
             } catch (XMPPException.XMPPErrorException | SmackException e) {
                 Log.e(TAG, "Error ", e);
             }
@@ -164,7 +164,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Override
     public void setConnection(@NonNull AbstractXMPPConnection connection) {
         this.connection = connection;
-        String jid = roomId != null? roomId : JidCreatorHelper.obtainGroupJid(user);
+        String jid = roomId != null? roomId : JidCreatorHelper.obtainGroupJid(null);
         chat = MultiUserChatManager.getInstanceFor(connection).getMultiUserChat(jid);
 
         if (!chat.isJoined()){

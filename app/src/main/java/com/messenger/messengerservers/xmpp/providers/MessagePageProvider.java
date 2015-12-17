@@ -4,11 +4,13 @@ package com.messenger.messengerservers.xmpp.providers;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.xmpp.entities.MessageBody;
 import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -46,16 +48,19 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                                     .from(JidCreatorHelper.obtainUser(jid));
                             break;
                         case "body":
-                            String body = parser.nextText();
-                            MessageBody stanzaMessageBody;
+                            String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
+
+                            MessageBody stanzaMessageBody = null;
                             try {
-                                stanzaMessageBody = new Gson().fromJson(body, MessageBody.class);
-                            } catch (Exception e) {
-                                Log.d("TEST_#", "parse: ", e);
-                                continue;
+                                stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
+                            } catch (JsonSyntaxException e){}
+
+                            if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null){
+                                messageBuilder = null;
+                            } else {
+                                messageBuilder.text(stanzaMessageBody.getText())
+                                        .locale( new Locale(stanzaMessageBody.getLocale()));
                             }
-                            messageBuilder.text(stanzaMessageBody.getText())
-                                    .locale(new Locale(stanzaMessageBody.getLocale()));
 
                     }
                     break;
@@ -64,7 +69,8 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                     switch (elementName) {
                         case "to":
                         case "from":
-                            messagePagePacket.add(messageBuilder.build());
+                            if (messageBuilder != null)
+                                messagePagePacket.add(messageBuilder.build());
                             break;
                         case "chat":
                             done = true;

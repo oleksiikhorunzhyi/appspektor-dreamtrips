@@ -16,7 +16,7 @@ public class XmppPaginationManager implements PaginationManager {
     }
 
     @Override
-    public PagePagination<Message> getConversationHistoryPagination(Conversation conversation) {
-        return new XmppConversationHistoryPaginator(facade.getConnection(), conversation.getId());
+    public PagePagination<Message> getConversationHistoryPagination(Conversation conversation, int pageSize) {
+        return new XmppConversationHistoryPaginator(facade.getConnection(), conversation.getId(), pageSize);
     }
 }

@@ -9,6 +9,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
+//todo check for leak
 public class LoaderDelegate {
 
     final Context context;

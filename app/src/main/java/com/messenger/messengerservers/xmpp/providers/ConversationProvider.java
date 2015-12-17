@@ -57,8 +57,6 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
 
-                            Log.e("Parsed body", messageBody);
-
                             Message.Builder builder = new Message.Builder()
                                     .id(messageId)
                                     .conversationId(conversation.getId())

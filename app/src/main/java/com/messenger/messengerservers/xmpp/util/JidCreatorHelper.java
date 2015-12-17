@@ -13,18 +13,8 @@ public final class JidCreatorHelper {
 
     }
 
-    @Deprecated
-    public static String obtainJid(User user) {
-        return obtainUserJid(user.getUserName());
-    }
-
     public static String obtainUserJid(String userId) {
-        return userId + "@" + SERVICE_NAME;
-    }
-
-    @Deprecated
-    public static String obtainGroupJid(User user) {
-        return String.format("%s@conference.%s", UUID.randomUUID().toString(), SERVICE_NAME);
+        return userId.isEmpty() ? null : userId + "@" + SERVICE_NAME;
     }
 
     public static String obtainGroupJid(String roomName) {

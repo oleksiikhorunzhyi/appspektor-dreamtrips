@@ -1,19 +1,21 @@
 package com.messenger.ui.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.activity.ChatActivity;
 
 public class ChatGroupScreenPresenter extends ChatScreenPresenterImpl {
-    public ChatGroupScreenPresenter(Intent startIntent) {
-        super(startIntent);
+    public ChatGroupScreenPresenter(Context context, Intent startIntent) {
+        super(context, startIntent);
     }
 
     @Override
-    protected Chat createChat(ChatManager chatManager) {
-        return chatManager.createMultiUserChat(getUser(), startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID));
+    protected Chat createChat(ChatManager chatManager, Conversation conversation) {
+        return chatManager.createMultiUserChat(getUser(), conversation.getId());
     }
 
 }

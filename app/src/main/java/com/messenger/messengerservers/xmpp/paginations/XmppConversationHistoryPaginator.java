@@ -16,12 +16,11 @@ import java.util.List;
 
 
 public class XmppConversationHistoryPaginator extends PagePagination<Message> {
-    public static final int MAX_MESSAGE = 20;
-
     private AbstractXMPPConnection connection;
     private String conversationId;
 
-    public XmppConversationHistoryPaginator(AbstractXMPPConnection connection, String conversationId) {
+    public XmppConversationHistoryPaginator(AbstractXMPPConnection connection, String conversationId, int pageSize) {
+        super(pageSize);
         this.connection = connection;
         this.conversationId = conversationId;
     }
@@ -29,7 +28,7 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     @Override
     public void loadPage(int page) {
         ObtainMessageListPacket packet = new ObtainMessageListPacket();
-        packet.setMax(MAX_MESSAGE);
+        packet.setMax(getSizePerPage());
         packet.setConversationId(conversationId);
         packet.setPage(page);
         Log.i("Send XMPP Packet: ", packet.toString());
@@ -44,7 +43,13 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
                             message.setConversationId(conversationId);
                         }
 
-                        onEntityLoadedListener.onLoaded(messages);
+                        if (persister != null) {
+                            persister.save(messages);
+                        }
+
+                        if (onEntityLoadedListener != null) {
+                            onEntityLoadedListener.onLoaded(messages);
+                        }
                         ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);
                     });
         } catch (SmackException.NotConnectedException e) {

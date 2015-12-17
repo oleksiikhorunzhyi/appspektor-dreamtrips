@@ -8,5 +8,7 @@ public interface ChatScreenPresenter extends ActivityAwareViewStateMvpPresenter<
     boolean onNewMessageFromUi(String message);
 
     User getUser();
+
+    void loadNextPage();
 }
 

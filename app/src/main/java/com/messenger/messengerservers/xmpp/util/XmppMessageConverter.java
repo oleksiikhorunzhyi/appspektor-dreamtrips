@@ -20,7 +20,7 @@ public final class XmppMessageConverter {
         String bodyJson = new Gson().toJson(messageBody);
 
         org.jivesoftware.smack.packet.Message smackMessage = new org.jivesoftware.smack.packet.Message();
-//        smackMessage.setFrom(JidCreatorHelper.obtainJid(message.getFrom()));
+        smackMessage.setFrom(JidCreatorHelper.obtainUserJid(message.getFrom().getUserName()));
         smackMessage.setBody(bodyJson);
 
         return smackMessage;

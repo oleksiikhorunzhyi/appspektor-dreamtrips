@@ -15,7 +15,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
@@ -72,7 +71,6 @@ public class FullScreenPhotoActionPanelDelegate {
 
         ivImage.setSingleTapListener(this::toggleContent);
         ivImage.setDoubleTapListener(this::hideContent);
-        hideContent();
     }
 
     public void setContent(Photo photo) {

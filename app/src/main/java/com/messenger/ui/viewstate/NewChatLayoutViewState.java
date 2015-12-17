@@ -1,5 +1,4 @@
 package com.messenger.ui.viewstate;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,6 +16,7 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
     }
 
     private List<User> selectedContacts = new ArrayList<>();
+    private String searchFilter;
 
     public List<User> getSelectedContacts() {
         return selectedContacts;
@@ -24,6 +24,14 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
 
     public void setSelectedContacts(List<User> selectedContacts) {
         this.selectedContacts = selectedContacts;
+    }
+
+    public String getSearchFilter() {
+        return searchFilter;
+    }
+
+    public void setSearchFilter(String searchFilter) {
+        this.searchFilter = searchFilter;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -34,6 +42,7 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
         super.writeToParcel(parcel, flags);
         parcel.writeList(getData());
         parcel.writeList(selectedContacts);
+        parcel.writeString(searchFilter);
     }
 
     public static final Parcelable.Creator<NewChatLayoutViewState> CREATOR = new Parcelable.Creator<NewChatLayoutViewState>() {
@@ -48,5 +57,6 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
         in.readList(getData(), Environment.getChatUserClassLoader());
         selectedContacts = new ArrayList<>();
         in.readList(selectedContacts, Environment.getChatUserClassLoader());
+        searchFilter = in.readString();
     }
 }

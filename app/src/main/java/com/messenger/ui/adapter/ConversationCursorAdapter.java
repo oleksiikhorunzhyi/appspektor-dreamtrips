@@ -2,7 +2,10 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
+
 import android.support.v4.content.ContextCompat;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
@@ -57,7 +61,6 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
                 clickListener.onConversationClick(chatConversation);
             }
         });
-
     }
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount){
@@ -87,9 +90,21 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         List<User> participants = conversation.getParticipants();
 
         if (participants == null || participants.size() == 0) return;
-
         if (isGroupConversation(conversation.getType())) {
-            holder.getNameTextView().setText(conversation.getSubject());
+            String name;
+            if (TextUtils.isEmpty(conversation.getSubject())) {
+                name = conversation.getSubject();
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (Iterator<User> it = participants.iterator(); it.hasNext();) {
+                    sb.append(it.next().getName());
+                    if (!it.hasNext()) {
+                        sb.append(", ");
+                    }
+                }
+                name = sb.toString();
+            }
+            holder.getNameTextView().setText(name);
             GroupConversationViewHolder groupHolder = (GroupConversationViewHolder) holder;
             groupHolder.getGroupAvatarsView().updateAvatars(participants);
         } else {

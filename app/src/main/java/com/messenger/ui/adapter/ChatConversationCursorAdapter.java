@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +30,9 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
 
     private final User user;
     private final Context context;
-    private final SimpleDateFormat todayDateEntryFormatter;
-    private final SimpleDateFormat yesterdayDateEntryFormatter;
-    private final SimpleDateFormat fewDaysAgoDateEntryFormatter;
-    private final SimpleDateFormat manyDaysAgoDateEntryFormatter;
+    private SimpleDateFormat timeDateFormatter;
+    private SimpleDateFormat dayOfTheWeekDateFormatter;
+    private SimpleDateFormat dayOfTheMonthDateFormatter;
 
     private final int rowVerticalMargin;
 
@@ -40,17 +40,13 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
         super(cursor);
         this.context = context;
         this.user = user;
-        rowVerticalMargin = context.getResources().getDimensionPixelSize(R.dimen.chat_list_item_vertical_padding);
-        this.todayDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_today_format));
-        this.yesterdayDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_yesterday_format));
-        this.fewDaysAgoDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_few_days_ago_format));
-        this.manyDaysAgoDateEntryFormatter = new SimpleDateFormat(context
-                .getString(R.string.chat_list_date_entry_many_days_ago_format));
-    }
 
+        this.timeDateFormatter = new SimpleDateFormat("h:mm");
+        this.dayOfTheWeekDateFormatter = new SimpleDateFormat("EEEE");
+        this.dayOfTheMonthDateFormatter = new SimpleDateFormat("MMM dd");
+        rowVerticalMargin = context.getResources()
+                .getDimensionPixelSize(R.dimen.chat_list_item_vertical_padding);
+    }
 
     @Override
     public void onBindViewHolderCursor(ViewHolder holder, Cursor cursor) {
@@ -148,18 +144,39 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
         return result;
     }
 
-    private String convertTime(long currentDate, long prevDate) {
-        String dateString = null;
-        int daysSinceToday = (int) ChatDateFormatter.calendarDaysBetweenDates(currentDate, prevDate);
-        if (daysSinceToday == 0) {
-            dateString = todayDateEntryFormatter.format(new Date(currentDate));
-        } else if (daysSinceToday == 1) {
-            dateString = yesterdayDateEntryFormatter.format(new Date(currentDate));
-        } else if (daysSinceToday > 1 && daysSinceToday <= 4) {
-            dateString = fewDaysAgoDateEntryFormatter.format(new Date(currentDate));
-        } else {
-            dateString = manyDaysAgoDateEntryFormatter.format(new Date(currentDate));
+    // TODO Adapt to cursor
+    private class ChatDateEntryConstructor {
+        private Date previousMessageDate;
+
+        public String getDateEntryIfNeeded(Date messageDate) {
+            StringBuilder dateString = new StringBuilder();
+            int calendarDaysSincePreviousDate = 0;
+            if (previousMessageDate != null) {
+                calendarDaysSincePreviousDate = (int) ChatDateFormatter.calendarDaysBetweenDates(previousMessageDate, messageDate);
+            }
+            if ((previousMessageDate != null && calendarDaysSincePreviousDate > 0) || previousMessageDate == null) {
+                int daysSinceToday = (int)ChatDateFormatter.calendarDaysBetweenDates(ChatDateFormatter.getToday()
+                        .getTime(), messageDate);
+                if (daysSinceToday == 0) {
+                    dateString.append(context.getString(R.string.chat_list_date_entry_today));
+                    dateString.append(", ");
+                    dateString.append(timeDateFormatter.format(messageDate));
+                } else if (daysSinceToday == 1) {
+                    dateString.append(context.getString(R.string.chat_list_date_entry_yesterday));
+                    dateString.append(", ");
+                    dateString.append(timeDateFormatter.format(messageDate));
+                } else if (daysSinceToday > 1 && daysSinceToday <= 4) {
+                    dateString.append(dayOfTheWeekDateFormatter.format(messageDate).toUpperCase());
+                    dateString.append(", ");
+                    dateString.append(timeDateFormatter.format(messageDate));
+                } else {
+                    dateString.append(dayOfTheMonthDateFormatter.format(messageDate).toUpperCase());
+                    dateString.append(", ");
+                    dateString.append(timeDateFormatter.format(messageDate));
+                }
+            }
+            previousMessageDate = messageDate;
+            return dateString.toString();
         }
-        return dateString;
     }
 }

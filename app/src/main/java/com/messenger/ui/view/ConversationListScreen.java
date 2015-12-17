@@ -10,6 +10,6 @@ public interface ConversationListScreen extends ActivityAwareScreen {
     void showLoading();
     void showContent();
     void showError(Throwable e);
-    void showAllConversation(Cursor cursor);
-    void showGroupConversation(Cursor cursor);
+    void showConversations(Cursor cursor);
+    void setSearchFilter(String searchFilter);
 }

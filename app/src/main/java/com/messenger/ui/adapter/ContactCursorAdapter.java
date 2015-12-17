@@ -3,10 +3,12 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AlphabetIndexer;
+import android.widget.FilterQueryProvider;
 import android.widget.SectionIndexer;
 
 import com.messenger.messengerservers.entities.User;
@@ -47,12 +49,24 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
     public ContactCursorAdapter(Context context, Cursor cursor) {
         super(cursor);
         this.context = context;
-        buildHeaderSectionsData();
+        if (cursor != null) {
+            buildHeaderSectionsData();
+        }
     }
 
     @Override
-    public Cursor swapCursor(Cursor newCursor) {
-        Cursor cursorToReturn = super.swapCursor(newCursor);
+    public Cursor swapCursor(Cursor cursor) {
+        return swapCursor(cursor, null, null);
+    }
+
+    public Cursor swapCursor(Cursor cursor, String filter, String column) {
+        if (cursor != null) {
+            if (!TextUtils.isEmpty(filter)) {
+                cursor = new FilterCursorWrapper(cursor, filter,
+                        cursor.getColumnIndexOrThrow(column));
+            }
+        }
+        Cursor cursorToReturn = super.swapCursor(cursor);
         buildHeaderSectionsData();
         return cursorToReturn;
     }
@@ -64,8 +78,8 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
         indexer = new AlphabetIndexer(getCursor(), getCursor()
                 .getColumnIndexOrThrow(User.COLUMN_USER_NAME),
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        sectionToPosition = new TreeMap<Integer, Integer>();
-        sectionToOffset = new HashMap<Integer, Integer>();
+        sectionToPosition = new TreeMap<>();
+        sectionToOffset = new HashMap<>();
 
         final int count = super.getItemCount();
 

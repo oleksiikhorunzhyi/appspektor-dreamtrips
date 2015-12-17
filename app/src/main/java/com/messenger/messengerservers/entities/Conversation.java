@@ -9,11 +9,13 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
+import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.lang.annotation.Retention;
@@ -25,6 +27,7 @@ import java.util.List;
 @Table(tableName = Conversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Conversation extends BaseProviderModel<Conversation> {
     public static final String TABLE_NAME = "Conversations";
+    public static final String COLUMN_ID = "_id";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -33,7 +36,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @PrimaryKey @Column String _id;
     @Column String subject;
     @Column String type;
-
     @ForeignKey(
             references = {@ForeignKeyReference(
                     columnName = "lastMessageId",
@@ -41,8 +43,9 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     foreignColumnName = Message._ID)},
             saveForeignKeyModel = false)
     @Column Message lastMessage;
-    List<User> participants;
     int unreadMessageCount = 0;
+
+    protected List<User> participants;
 
     public Conversation() {
     }
@@ -60,6 +63,24 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setLastMessage(builder.lastMessage);
         setParticipants(builder.participants);
         setUnreadMessageCount(builder.unreadMessageCount);
+    }
+
+    @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE}, variableName = "participants")
+    public List<User> getParticipants() {
+        if (participants == null) {
+            String query = "SELECT * FROM Users u " +
+                    "JOIN ParticipantsRelationship p " +
+                    "ON p.userId = u._id " +
+                    "WHERE p.conversationId = ?";
+            participants = SqlUtils.queryList(User.class, query, _id);
+
+//                    new Select().from(User.class).as("`u`")
+//                            .join(ParticipantsRelationship.class, Join.JoinType.INNER).as("`p`")
+//                    .on(Condition.column("p." + ParticipantsRelationship.COLUMN_USER).eq(ColumnAlias.column("u." + User.COLUMN_ID)))
+//                    .where(Condition.column("p." + ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
+//                    .queryList();
+        }
+        return participants;
     }
 
     public String getId() {
@@ -93,10 +114,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
-    }
-
-    public List<User> getParticipants() {
-        return participants;
     }
 
     public void setParticipants(List<User> participants) {
@@ -140,6 +157,20 @@ public class Conversation extends BaseProviderModel<Conversation> {
         @Retention(RetentionPolicy.SOURCE)
         @StringDef({CHAT, GROUP, RINK, RANK})
         public @interface ConversationType {
+        }
+    }
+
+
+    @Override
+    public void save() {
+        super.save();
+        saveParticipant();
+    }
+
+    public void saveParticipant() {
+        if (participants == null ) return;
+        for (User participant : participants) {
+            new ParticipantsRelationship(_id, participant).save();
         }
     }
 

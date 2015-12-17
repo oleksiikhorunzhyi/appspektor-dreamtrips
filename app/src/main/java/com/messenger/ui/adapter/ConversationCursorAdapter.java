@@ -3,7 +3,9 @@ package com.messenger.ui.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
-import android.util.Log;
+
+import android.support.v4.content.ContextCompat;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,13 +65,13 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount){
         if (unreadMessageCount > 0) {
-            holder.itemView.setBackgroundColor(context.getResources()
-                    .getColor(R.color.conversation_list_unread_conversation_bg));
+            holder.itemView.setBackgroundColor(
+                    ContextCompat.getColor(context, R.color.conversation_list_unread_conversation_bg));
             holder.getUnreadMessagesCountTextView().setVisibility(View.VISIBLE);
             holder.getUnreadMessagesCountTextView().setText(String.valueOf(unreadMessageCount));
         } else {
-            holder.itemView.setBackgroundColor(context.getResources()
-                    .getColor(R.color.conversation_list_read_conversation_bg));
+            holder.itemView.setBackgroundColor(
+                    ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
             holder.getUnreadMessagesCountTextView().setVisibility(View.INVISIBLE);
         }
     }
@@ -86,6 +88,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     private void setAvatar(BaseConversationViewHolder holder, Conversation conversation){
         List<User> participants = conversation.getParticipants();
+
         if (participants == null || participants.size() == 0) return;
         if (isGroupConversation(conversation.getType())) {
             String name;
@@ -106,7 +109,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
             groupHolder.getGroupAvatarsView().updateAvatars(participants);
         } else {
             User addressee = participants.get(0);
-            holder.getNameTextView().setText(addressee.getName());
+            // TODO: 12/17/15
+            holder.getNameTextView().setText(addressee.getName() + " " + addressee.getId());
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)
                     .load(addressee.getAvatarUrl())

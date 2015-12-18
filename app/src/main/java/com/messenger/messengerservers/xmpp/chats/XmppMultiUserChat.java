@@ -64,6 +64,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         try {
             org.jivesoftware.smack.packet.Message stanzaPacket = XmppMessageConverter.convert(message);
             stanzaPacket.setStanzaId(UUID.randomUUID().toString());
+            stanzaPacket.setThread(roomId);
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {
             Log.e(TAG, "Error ", e);
@@ -163,7 +164,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Override
     public void setConnection(@NonNull AbstractXMPPConnection connection) {
         this.connection = connection;
-        String jid = roomId != null? roomId : JidCreatorHelper.obtainGroupJid(null);
+        String jid = JidCreatorHelper.obtainGroupJid(roomId);
         chat = MultiUserChatManager.getInstanceFor(connection).getMultiUserChat(jid);
 
         if (!chat.isJoined()){

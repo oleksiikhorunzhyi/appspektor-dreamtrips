@@ -2,6 +2,13 @@ package com.messenger.messengerservers.xmpp;
 
 import android.util.Log;
 
+import com.messenger.messengerservers.GlobalEventEmitter;
+import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.listeners.AuthorizeListener;
+import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
+
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -13,13 +20,6 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-
-import com.messenger.messengerservers.GlobalEventEmitter;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.listeners.AuthorizeListener;
-import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
-import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 
 import java.util.Collection;
 
@@ -85,7 +85,12 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     private void interceptIncomingPacket(Stanza packet){
         if(isMessage(packet)){
-            com.messenger.messengerservers.entities.Message message = XmppMessageConverter.convert((Message) packet);
+            Message messageXMPP = (Message) packet;
+            if (messageXMPP.getType() == Message.Type.groupchat
+                    && messageXMPP.getFrom().split("/")[1].equals(messageXMPP.getTo().split("@")[0])) {
+                return;
+            }
+            com.messenger.messengerservers.entities.Message message = XmppMessageConverter.convert(messageXMPP);
             notifyGlobalMessage(message, true);
 
             if (!isHandled(message)){

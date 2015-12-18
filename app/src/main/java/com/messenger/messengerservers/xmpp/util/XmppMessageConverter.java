@@ -32,6 +32,7 @@ public final class XmppMessageConverter {
         Message.Builder builder = new Message.Builder()
                 .text(stanzaMessageBody.getText())
                 .conversationId(message.getThread())
+                .id(message.getStanzaId())
                 .locale(new Locale(stanzaMessageBody.getLocale()));
 
         if (message.getTo() != null) {

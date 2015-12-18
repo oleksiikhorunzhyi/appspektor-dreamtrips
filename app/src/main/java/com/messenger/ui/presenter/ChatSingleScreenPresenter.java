@@ -7,7 +7,6 @@ import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.activity.ChatActivity;
 
 public class ChatSingleScreenPresenter extends ChatScreenPresenterImpl {
 
@@ -20,7 +19,8 @@ public class ChatSingleScreenPresenter extends ChatScreenPresenterImpl {
         for (User user : conversation.getParticipants()) {
             if (user.getId().equals(this.user.getId()) ) {
                 // TODO: 12/18/15 remove after testing
-                throw new Error("Ups! You cannot create chat with yourself.");
+                continue;
+                //throw new Error("Ups! You cannot create chat with yourself.");
             }
             return chatManager.createSingleUserChat(user.getId(),
                     conversation.getId());

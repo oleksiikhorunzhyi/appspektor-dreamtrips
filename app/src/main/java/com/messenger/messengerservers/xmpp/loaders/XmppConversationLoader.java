@@ -15,8 +15,6 @@ import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.muc.Affiliate;
@@ -50,7 +48,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
                     (stanzaPacket) -> {
                         List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
                         conversations = filterConversations(conversations);
-                        loadParticipants(conversations);
+                        conversations = obtainConversationsWithParticipants(conversations);
                         notifyListeners(conversations);
                         ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
                     });
@@ -62,10 +60,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
     private List<Conversation> filterConversations(List<Conversation> conversations ){
         List<Conversation> filteredConversations = new ArrayList<>();
         for (Conversation conversation: conversations) {
-            if(conversation.getType().equals(Conversation.Type.CHAT)) {
-                if (isConversationMyself(conversation)) continue;
-                filteredConversations.add(conversation);
-            } else {
+            if (!(conversation.getType().equals(Conversation.Type.CHAT)) || !isConversationMyself(conversation)){
                 filteredConversations.add(conversation);
             }
         }
@@ -77,14 +72,24 @@ public class XmppConversationLoader extends Loader<Conversation> {
         return companion == null;
     }
 
-    private void loadParticipants(List<Conversation> conversations){
+    private List<Conversation> obtainConversationsWithParticipants(List<Conversation> conversations){
+        List<Conversation> conversationsWithParticipants = new ArrayList<>(conversations.size());
+        List<User> participants;
+
         for (Conversation conversation: conversations) {
             if(conversation.getType().equals(Conversation.Type.CHAT)) {
-                conversation.setParticipants(getSingleChatParticipants(conversation));
+                participants = getSingleChatParticipants(conversation);
             } else {
-                conversation.setParticipants(getMultiUserChat(conversation));
+                participants = getMultiUserChat(conversation);
+            }
+
+            if (participants != null) {
+                conversation.setParticipants(participants);
+                conversationsWithParticipants.add(conversation);
             }
         }
+
+        return conversationsWithParticipants;
     }
 
     private List<User> getSingleChatParticipants(Conversation conversation){
@@ -115,6 +120,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
             conversation.setParticipants(participants);
         } catch (SmackException | XMPPException.XMPPErrorException e) {
             Log.i(TAG, Log.getStackTraceString(e));
+            return null;
         }
 
         return participants;

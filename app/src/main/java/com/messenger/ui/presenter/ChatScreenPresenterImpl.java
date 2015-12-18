@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.Toast;
 
-import com.hannesdorfmann.mosby.mvp.viewstate.ViewState;
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.loader.MessageLoader;
@@ -26,8 +25,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
-import com.messenger.ui.viewstate.LceViewState;
-import com.messenger.util.Utils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -107,25 +104,31 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
         getView().showLoading();
         viewState.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-        paginationDelegate.loadConversationHistoryPage(conversation, ++page, (loadedPage, haveMoreElements) -> {
-            viewState.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-            this.haveMoreElements = haveMoreElements;
+        paginationDelegate.loadConversationHistoryPage(conversation, ++page,
+                (loadedPage, haveMoreElements) -> {
+                    viewState.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
+                    this.haveMoreElements = haveMoreElements;
 
-            ChatScreen screen = getView();
-            if (screen == null) return;
-            screen.getActivity().runOnUiThread(()-> screen.showContent());
-        });
+                    showContent();
+                }, () -> showContent());
+    }
+
+    private void showContent(){
+        ChatScreen screen = getView();
+        if (screen == null) return;
+        screen.getActivity().runOnUiThread(() -> screen.showContent());
     }
 
     protected abstract Chat createChat(ChatManager chatManager, Conversation conversation);
 
-
-    @Override public void onNewViewState() {
+    @Override
+    public void onNewViewState() {
         state = new ChatLayoutViewState();
         state.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
     }
 
-    @Override public void applyViewState() {
+    @Override
+    public void applyViewState() {
         if (!isViewAttached()) {
             return;
         }
@@ -142,7 +145,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         }
     }
 
-    @Override public boolean onNewMessageFromUi(String message) {
+    @Override
+    public boolean onNewMessageFromUi(String message) {
         if (TextUtils.getTrimmedLength(message) == 0) {
             Toast.makeText(getContext(), R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -184,7 +188,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     // Activity related
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = ((AppCompatActivity) getContext()).getMenuInflater();
         inflater.inflate(R.menu.chat, menu);
         return true;

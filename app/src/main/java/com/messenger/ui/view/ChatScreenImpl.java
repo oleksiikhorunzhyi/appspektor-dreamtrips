@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.ChatConversationCursorAdapter;
 import com.messenger.ui.presenter.ChatGroupScreenPresenter;
@@ -217,7 +218,8 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 //    }
 
     @Override
-    public void onConversationCursorLoaded(Cursor cursor) {
+    public void onConversationCursorLoaded(Cursor cursor, Conversation conversation) {
+        adapter.setConversation(conversation);
         adapter.changeCursor(cursor);
     }
 }

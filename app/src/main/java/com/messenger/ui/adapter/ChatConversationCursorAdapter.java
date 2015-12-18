@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
@@ -30,6 +31,7 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
 
     private final User user;
     private final Context context;
+    private Conversation conversation;
     private SimpleDateFormat timeDateFormatter;
     private SimpleDateFormat dayOfTheWeekDateFormatter;
     private SimpleDateFormat dayOfTheMonthDateFormatter;
@@ -96,17 +98,20 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
     }
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {
-        final int position = cursor.getPosition();
-        final boolean result = cursor.moveToPrevious() &&
-                !cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM)).equals(user.getId());
-        cursor.moveToPosition(position);
-        return result;
+        String currentId = cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM));
+        boolean moveCursorToPrev = cursor.moveToPrevious();
+        if (!moveCursorToPrev) {
+            return false;
+        }
+        String prevId = cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM));
+        cursor.moveToNext();
+        return prevId.equals(currentId);
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
         // TODO: 12/14/15 chatConversation.isGroupConversation()
-        if (false) {
+        if (isGroupConversation(conversation.getType())) {
             holder.nameTextView.setVisibility(View.VISIBLE);
             holder.nameTextView.setText(message.getFrom().getName());
         } else {
@@ -144,6 +149,14 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
                 ? messageType << 1 : messageType;
         cursor.moveToPosition(position);
         return result;
+    }
+
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
+    }
+
+    private boolean isGroupConversation(String conversationType) {
+        return !conversationType.equalsIgnoreCase(Conversation.Type.CHAT);
     }
 
     // TODO Adapt to cursor

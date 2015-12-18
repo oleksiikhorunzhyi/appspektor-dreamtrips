@@ -76,7 +76,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             //noinspection all
-            getView().onConversationCursorLoaded(data);
+            getView().onConversationCursorLoaded(data, conversation);
         }
 
         @Override

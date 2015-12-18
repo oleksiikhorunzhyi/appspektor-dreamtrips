@@ -76,12 +76,21 @@ public class ContactSimpleAlphabetAdapter extends CursorRecyclerViewAdapter<Cont
     @Override
     public void onBindViewHolderCursor(ContactSimpleAlphabetAdapter.SectionUsernameHolder holder, Cursor cursor) {
         final User user = SqlUtils.convertToModel(true, User.class, cursor);
-        if (!cursor.moveToPrevious()
-                || !cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME)).substring(0, 1)
-                    .equals(user.getName().substring(0, 1))) {
+
+        String newLetter = null;
+        if (cursor.moveToPrevious()) {
+            String oldUsername = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
+            String currentUsername = user.getName();
+            if (!TextUtils.isEmpty(currentUsername)) {
+                if (TextUtils.isEmpty(oldUsername) || oldUsername.charAt(0) != currentUsername.charAt(0)) {
+                    newLetter = currentUsername.substring(0, 1);
+                }
+            }
+        }
+        if (newLetter != null) {
             holder.divider.setVisibility(View.VISIBLE);
             holder.sectionTextView.setVisibility(View.VISIBLE);
-            holder.sectionTextView.setText(user.getName().substring(0, 1));
+            holder.sectionTextView.setText(newLetter);
         } else {
             holder.divider.setVisibility(View.GONE);
             holder.sectionTextView.setVisibility(View.GONE);

@@ -58,6 +58,7 @@
     <string name="suggest_merchant_success_snack">Successfully posted!</string>
     <string name="suggest_merchant_contact_name_hint">Contact Name</string>
     <string name="suggest_merchant_phone_number_hint">Phone</string>
+    <string name="suggest_merchant_contact_email_hint">Email</string>
     <string name="suggest_merchant_best_time_contact_caption">Best time for contact</string>
     <string name="suggest_merchant_best_time_contact_switcher">Between</string>
     <string name="suggest_merchant_best_time_contact_from_caption">From:</string>

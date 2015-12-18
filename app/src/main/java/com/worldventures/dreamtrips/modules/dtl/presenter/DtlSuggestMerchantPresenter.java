@@ -39,7 +39,8 @@ public class DtlSuggestMerchantPresenter extends SuggestPlaceBasePresenter<DtlSu
         view.showProgress();
         DtlLead.Builder leadBuilder = new DtlLead.Builder()
                 .merchant(new DtlLead.Merchant(dtlMerchant.getId(), dtlMerchant.getDisplayName(), dtlMerchant.getCity()))
-                .contact(new DtlLead.Contact(view.getContactName(), view.getPhone(), obtainContactTime()))
+                .contact(new DtlLead.Contact(view.getContactName(), view.getPhone(),
+                        view.getContactEmail(), obtainContactTime()))
                 .rating(DtlLead.Rating.FOOD, view.getFoodRating())
                 .rating(DtlLead.Rating.SERVICE, view.getServiceRating())
                 .rating(DtlLead.Rating.CLEANLINESS, view.getCleanlinessRating())

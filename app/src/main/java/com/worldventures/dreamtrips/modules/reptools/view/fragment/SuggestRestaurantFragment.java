@@ -45,6 +45,7 @@ public class SuggestRestaurantFragment extends SuggestPlaceBaseFragment<SuggestR
         city.setText("");
         contactName.setText("");
         phoneNumber.setText("");
+        contactEmail.setText("");
         setDateTime();
         foodRatingBar.setRating(0);
         serviceRatingBar.setRating(0);

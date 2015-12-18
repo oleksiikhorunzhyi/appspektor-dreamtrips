@@ -40,10 +40,20 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
         android:hint="@string/suggest_merchant_phone_number_hint"
-        android:imeOptions="actionDone"
         android:inputType="phone"
+        android:maxLength="10"
         app:met_maxCharacters="10"
         app:met_minCharacters="10"
+        />
+
+    <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+        android:id="@+id/contactEmail"
+        style="@style/SuggestMerchantInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/suggest_merchant_contact_email_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textEmailAddress"
         />
 
     <FrameLayout

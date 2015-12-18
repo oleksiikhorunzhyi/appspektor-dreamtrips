@@ -77,11 +77,13 @@ public class DtlLead {
 
         private String name;
         private String phone;
+        private String email;
         private DtlLeadContactTime time;
 
-        public Contact(String name, String phone, DtlLeadContactTime time) {
+        public Contact(String name, String phone, String email, DtlLeadContactTime time) {
             this.name = name;
             this.phone = phone;
+            this.email = email;
             this.time = time;
         }
     }

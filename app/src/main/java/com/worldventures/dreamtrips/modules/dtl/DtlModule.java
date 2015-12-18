@@ -109,11 +109,6 @@ public class DtlModule {
                 DtlStartFragment.class);
     }
 
-    @Provides
-    LocationDelegate provideLocationDelegate(@ForApplication Context context) {
-        return new LocationDelegate(context);
-    }
-
     @Singleton
     @Provides
     DtlSearchDelegate provideSearchDelegate() {

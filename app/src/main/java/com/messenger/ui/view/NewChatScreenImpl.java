@@ -111,7 +111,8 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (charSequence.length() >= chosenContactsEditTextStartValue.length()) {
+                if (charSequence.length() >= chosenContactsEditTextStartValue.length()
+                        && getPresenter() != null) {
                     getPresenter().onTextChangedInChosenContactsEditText(charSequence.toString());
                 }
             }

@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
@@ -22,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
 import java.util.Calendar;
 
@@ -39,6 +39,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     FeatureManager featureManager;
     @Inject
     LocationDelegate locationDelegate;
+    @Inject
+    DtlLocationRepository locationRepository;
 
     public DtlPlaceDetailsPresenter(String id) {
         super(id);
@@ -145,9 +147,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
     public void onBackPressed() {
         eventBus.post(new TogglePlaceSelectionEvent(place));
-        //
-        DtlLocation dtlLocation = snapper.getSelectedDtlLocation();
-        view.openMap(new PlacesBundle(dtlLocation));
+        view.openMap();
     }
 
     /**
@@ -206,7 +206,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
 
-        void openMap(PlacesBundle placesBundle);
+        void openMap();
 
         void setTransaction(DtlTransaction dtlTransaction);
 

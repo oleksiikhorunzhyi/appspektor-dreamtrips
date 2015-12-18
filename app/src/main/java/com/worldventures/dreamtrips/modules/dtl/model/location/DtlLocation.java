@@ -14,8 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@DefaultSerializer(CompatibleFieldSerializer.class)
-public class DtlLocation implements Parcelable {
+public class DtlLocation {
 
     String id;
     DtlLocationType type;
@@ -64,46 +63,8 @@ public class DtlLocation implements Parcelable {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Parcelable part
+    // Filtering and stuff
     ///////////////////////////////////////////////////////////////////////////
-
-    protected DtlLocation(Parcel in) {
-        id = in.readString();
-        shortName = in.readString();
-        longName = in.readString();
-        type = (DtlLocationType) in.readSerializable();
-        coordinates = in.readParcelable(Location.class.getClassLoader());
-        merchantCount = in.readInt();
-        locatedIn = in.createTypedArrayList(DtlLocation.CREATOR);
-    }
-
-    public static final Creator<DtlLocation> CREATOR = new Creator<DtlLocation>() {
-        @Override
-        public DtlLocation createFromParcel(Parcel in) {
-            return new DtlLocation(in);
-        }
-
-        @Override
-        public DtlLocation[] newArray(int size) {
-            return new DtlLocation[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(shortName);
-        dest.writeString(longName);
-        dest.writeSerializable(type);
-        dest.writeParcelable(coordinates, flags);
-        dest.writeInt(merchantCount);
-        dest.writeTypedList(locatedIn);
-    }
 
     public static class DtlNearestComparator implements Comparator<DtlLocation> {
 

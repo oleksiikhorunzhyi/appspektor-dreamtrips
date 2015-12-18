@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 
 import javax.inject.Inject;
@@ -94,12 +93,12 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
 
     @Override
     public void openDtlLocationsScreen() {
-        router.moveTo(Route.DTL_LOCATIONS, provideNavigationConfig(null));
+        navigateTo(Route.DTL_LOCATIONS);
     }
 
     @Override
-    public void openMerchants(PlacesBundle bundle) {
-        router.moveTo(Route.DTL_MERCHANTS_HOLDER, provideNavigationConfig(bundle));
+    public void openMerchants() {
+        navigateTo(Route.DTL_MERCHANTS_HOLDER);
     }
 
     @Override
@@ -107,13 +106,12 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
         DtlStartFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    private NavigationConfig provideNavigationConfig(@Nullable Parcelable bundle) {
-        return NavigationConfigBuilder.forFragment()
+    private void navigateTo(Route route) {
+        router.moveTo(route, NavigationConfigBuilder.forFragment()
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
                 .containerId(R.id.dtl_container)
-                .data(bundle)
-                .build();
+                .build());
     }
 
     public void activityResult(int requestCode, int resultCode, Intent data) {

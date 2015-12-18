@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -39,24 +38,24 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     Toolbar toolbar;
     //
     DtlMapBundle bundle;
+    //
     @State
     LatLng selectedLocation;
-
     @State
     String lastQuery;
-
+    //
     private ClusterManager<DtlClusterItem> clusterManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cameraAnimationDuration = 400;
+        bundle = getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
     }
 
     @Override
     protected DtlMapPresenter createPresenter(Bundle savedInstanceState) {
-        bundle = getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
-        return new DtlMapPresenter(bundle);
+        return new DtlMapPresenter();
     }
 
     @Override
@@ -68,12 +67,11 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             lastQuery = query;
             getPresenter().applySearch(query);
         });
-
+        //
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:
                     router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
-                            .data(new PlacesBundle(bundle.getLocation()))
                             .fragmentManager(getFragmentManager())
                             .backStackEnabled(false)
                             .clearBackStack(true)
@@ -107,7 +105,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             getPresenter().onMarkerClick(dtlClusterItem.getId());
             return true;
         });
-
+        //
         clusterManager.setOnClusterClickListener(cluster -> {
             if (googleMap.getCameraPosition().zoom >= 17.0f) {
                 selectedLocation = cluster.getPosition();
@@ -117,7 +115,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
             return true;
         });
-
+        //
         getPresenter().onMapLoaded();
     }
 

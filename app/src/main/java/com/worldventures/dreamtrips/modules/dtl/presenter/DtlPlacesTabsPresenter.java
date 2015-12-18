@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -24,21 +25,14 @@ import icepick.State;
 public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.View> {
 
     @Inject
-    SnappyRepository db;
-    @Inject
     DtlMerchantRepository dtlMerchantRepository;
+    @Inject
+    DtlLocationRepository locationRepository;
     @Inject
     DtlSearchDelegate dtlSearchDelegate;
     //
     @State
     boolean initialized;
-
-    private DtlLocation location;
-
-    public DtlPlacesTabsPresenter(@Nullable DtlLocation location) {
-        if (location == null) location = db.getSelectedDtlLocation();
-        this.location = location;
-    }
 
     @Override
     public void onInjected() {
@@ -50,12 +44,12 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        view.initToolbar(location);
+        view.initToolbar(locationRepository.getSelectedLocation());
         setTabs();
-
+        //
         if (!initialized)
             loadPlaces();
-
+        //
         initialized = true;
     }
 
@@ -64,7 +58,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void loadPlaces() {
-        dtlMerchantRepository.loadMerchants(location);
+        dtlMerchantRepository.loadMerchants(locationRepository.getSelectedLocation());
     }
 
     @Override

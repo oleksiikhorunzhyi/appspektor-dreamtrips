@@ -60,7 +60,6 @@ public class SnappyRepository {
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
     public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
 
-    public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
@@ -443,14 +442,6 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
     // DTL
     ///////////////////////////////////////////////////////////////////////////
-
-    public void saveSelectedDtlLocation(DtlLocation location) {
-        act(db -> db.put(DTL_SELECTED_LOCATION, location));
-    }
-
-    public DtlLocation getSelectedDtlLocation() {
-        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
-    }
 
     public void saveDtlMerhants(List<DtlMerchant> merchants) {
         clearAllForKey(DTL_MERCHANTS);

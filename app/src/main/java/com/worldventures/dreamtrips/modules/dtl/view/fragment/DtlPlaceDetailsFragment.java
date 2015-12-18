@@ -35,7 +35,6 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlCategoryDataInflater;
@@ -259,12 +258,12 @@ public class DtlPlaceDetailsFragment
     }
 
     @Override
-    public void openMap(PlacesBundle placesBundle) {
+    public void openMap() {
         router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(false)
                 .fragmentManager(getFragmentManager())
-                .data(new DtlMapBundle(placesBundle.getLocation(), true))
+                .data(new DtlMapBundle(true))
                 .build());
     }
 

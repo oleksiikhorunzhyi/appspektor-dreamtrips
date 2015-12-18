@@ -67,9 +67,8 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     }
 
     private void attachAmenities() {
-        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities()).map(element ->
-                        new DtlPlacesFilterAttribute(element.getName())
-        ).toList();
+        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities())
+                .map(element -> new DtlPlacesFilterAttribute(element.getName())).toList();
 
         dtlFilterData.setAmenities(amenities);
         view.attachFilterData(dtlFilterData);

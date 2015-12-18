@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.List;
@@ -38,9 +39,10 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
     @Inject
+    DtlLocationRepository locationRepository;
+    @Inject
     DtlSearchDelegate dtlSearchDelegate;
-
-    protected DtlLocation dtlLocation;
+    //
     protected DtlMerchantType dtlMerchantType;
 
     @Override
@@ -55,6 +57,8 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         super.takeView(view);
         dtlMerchantRepository.attachListener(this);
     }
+
+    @Override
     public void dropView() {
         dtlMerchantRepository.detachListener(this);
         dtlFilterDelegate.removeListener(this);
@@ -89,7 +93,8 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     protected void performFiltering(String query) {
         view.bind(locationDelegate
                         .getLastKnownLocation()
-                        .onErrorResumeNext(Observable.just(dtlLocation.asAndroidLocation()))
+                        .onErrorResumeNext(Observable.just(locationRepository.getSelectedLocation()
+                                .asAndroidLocation()))
                         .flatMap(location -> mapToMerchantList(location, query))
                         .doOnNext(merchants -> track(merchants, query))
                         .compose(new IoToMainComposer<>())
@@ -100,7 +105,8 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         List<DtlMerchant> dtlMerchants = dtlMerchantRepository.getMerchants();
         //
         DtlLocationHelper dtlLocationHelper = new DtlLocationHelper();
-        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location, dtlLocation);
+        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location,
+                locationRepository.getSelectedLocation());
         DtlFilterData dtlFilterData = dtlFilterDelegate.getDtlFilterData();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {

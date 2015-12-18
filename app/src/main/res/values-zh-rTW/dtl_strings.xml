@@ -11,14 +11,14 @@
     <string name="dtl_place_list_empty_text">找不到所選類型的地方</string>
     <string name="dtl_points_estimation_explanation">點數計算解釋在此</string>
     <string name="dtl_points_estimation_calculate_button_caption">計算</string>
-    <string name="dtl_points_estimation_input_hint">輸入%s金額</string>
+    <string name="dtl_points_estimation_input_hint">Enter amount</string>
     <string name="dtl_header">點數估算</string>
     <string name="dtl_points_estimation_default_result">0.0</string>
     <string name="dtl_field_validation_empty_input_error">不能是空白！</string>
     <string name="dtl_points_estimation_negative_input_error">不能少於0！</string>
     <string name="dtl_price">價格 ($)</string>
     <string name="dtl_distance">距離</string>
-    <string name="dtl_receipt_hint">輸入%s金額</string>
+    <string name="dtl_receipt_hint">Enter amount</string>
     <string name="dtl_receipt_note">&lt;b&gt;備註:&lt;/b&gt; 金額應是賬單的總數，不包括小費和稅</string>
     <string name="dtl_receipt_scan">捕捉收據</string>
     <string name="dtl_receipt_rescan">再次捕捉</string>

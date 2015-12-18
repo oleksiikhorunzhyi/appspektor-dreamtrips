@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dtlReceiptHeight"
         >
-        
+
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/receipt"
             android:layout_width="match_parent"
@@ -51,18 +51,45 @@
 
     </RelativeLayout>
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-        android:id="@+id/amount_input"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
-        android:hint="@string/dtl_receipt_hint"
-        android:inputType="numberDecimal"
-        android:singleLine="true"
-        android:maxLength="10"
-        android:textColor="@color/theme_main"
-        app:met_baseColor="@color/theme_main"
-        app:met_floatingLabel="highlight"/>
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="@string/dtl_points_estimation_input_hint"
+        android:textSize="@dimen/font_small"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:textColor="#DC000000"
+            android:textSize="@dimen/font_normal"
+            tools:ignore="HardcodedText"
+            tools:text="USD"
+            />
+
+        <com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText
+            android:id="@+id/inputPoints"
+            style="@style/SuggestMerchantInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_weight="2"
+            android:hint="@string/dtl_points_estimation_default_result"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:paddingLeft="@dimen/spacing_medium"
+            android:paddingStart="@dimen/spacing_medium"
+            app:met_floatingLabel="none"
+            />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/scan_receipt_note"

@@ -17,6 +17,7 @@ public class MessengerStartActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ConversationListScreenImpl conversationListScreen = new ConversationListScreenImpl(this);
+        conversationListScreen.setId(android.R.id.primary);
         setContentView(conversationListScreen);
         this.screen = conversationListScreen;
     }

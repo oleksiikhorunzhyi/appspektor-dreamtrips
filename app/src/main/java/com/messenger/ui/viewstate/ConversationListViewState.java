@@ -54,10 +54,10 @@ public class ConversationListViewState extends LceViewState<List<ChatConversatio
         parcel.writeString(conversationsSearchFilter);
     }
 
-    public static final Parcelable.Creator<NewChatLayoutViewState> CREATOR = new Parcelable.Creator<NewChatLayoutViewState>() {
-        public NewChatLayoutViewState createFromParcel(Parcel source) {return new NewChatLayoutViewState(source);}
+    public static final Parcelable.Creator<ConversationListViewState> CREATOR = new Parcelable.Creator<ConversationListViewState>() {
+        public ConversationListViewState createFromParcel(Parcel source) {return new ConversationListViewState(source);}
 
-        public NewChatLayoutViewState[] newArray(int size) {return new NewChatLayoutViewState[size];}
+        public ConversationListViewState[] newArray(int size) {return new ConversationListViewState[size];}
     };
 
     public ConversationListViewState(Parcel in) {

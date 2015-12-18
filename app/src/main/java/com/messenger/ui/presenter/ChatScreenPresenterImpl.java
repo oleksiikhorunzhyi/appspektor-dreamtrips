@@ -49,6 +49,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     protected Conversation conversation;
     protected int page = 0;
+    protected int before = 0;
     protected boolean haveMoreElements = true;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
@@ -94,6 +95,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         loaderManager.destroyLoader(CursorLoaderIds.CONVERSATION_LOADER);
+        paginationDelegate.stopPaginate();
     }
 
     @Override
@@ -104,10 +106,14 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
         getView().showLoading();
         viewState.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-        paginationDelegate.loadConversationHistoryPage(conversation, ++page,
-                (loadedPage, haveMoreElements) -> {
+        paginationDelegate.loadConversationHistoryPage(conversation, ++page, before,
+                (loadedPage, haveMoreElements, lastMessage) -> {
                     viewState.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
                     this.haveMoreElements = haveMoreElements;
+
+                    if (lastMessage != null){
+                        ChatScreenPresenterImpl.this.before = (int)(lastMessage.getDate().getTime() / 1000);
+                    }
 
                     showContent();
                 }, () -> showContent());

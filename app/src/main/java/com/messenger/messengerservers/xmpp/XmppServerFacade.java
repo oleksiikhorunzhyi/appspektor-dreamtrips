@@ -71,6 +71,7 @@ public class XmppServerFacade implements MessengerServerFacade {
                             .setPort(ServerParameters.PORT)
                             .setSendPresence(false)
                             .build());
+                    connection.setPacketReplyTimeout(15000);
 
                     try {
                         connection.connect();

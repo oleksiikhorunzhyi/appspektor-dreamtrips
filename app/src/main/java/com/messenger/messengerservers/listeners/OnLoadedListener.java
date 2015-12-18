@@ -6,5 +6,5 @@ public interface OnLoadedListener<T> {
 
     void onLoaded(List<T> entities);
 
-    void onError();
+    void onError(Exception e);
 }

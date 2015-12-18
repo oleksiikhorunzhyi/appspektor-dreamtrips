@@ -10,11 +10,12 @@ public class ObtainMessageListPacket extends IQ {
     private String conversationId;
     private int page = 1;
     private int max = 20;
+    private int sinceSec = 0;
 
     public ObtainMessageListPacket() {
         super(ELEMENT_RETRIVE, NAMESPACE);
         setType(Type.get);
-        setPacketID("page" + page);
+        setStanzaId("page" + page);
     }
 
     public int getMax() {
@@ -34,6 +35,14 @@ public class ObtainMessageListPacket extends IQ {
         setPacketID("page" + page);
     }
 
+    public int getSinceSec() {
+        return sinceSec;
+    }
+
+    public void setSinceSec(int sinceSec) {
+        this.sinceSec = sinceSec;
+    }
+
     public String getConversationId() {
         return conversationId;
     }
@@ -48,6 +57,9 @@ public class ObtainMessageListPacket extends IQ {
         xml.rightAngleBracket();
         xml.append("<set xmlns='http://jabber.org/protocol/rsm'>");
         xml.append("<max>").append(Integer.toString(max)).append("</max>");
+        if (page != 1) {
+            xml.append("<before>").append(Integer.toString(sinceSec)).append("</before>");
+        }
         xml.append("</set>");
         return xml;
     }

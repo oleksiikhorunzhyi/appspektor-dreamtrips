@@ -19,18 +19,20 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     private AbstractXMPPConnection connection;
     private String conversationId;
 
-    public XmppConversationHistoryPaginator(AbstractXMPPConnection connection, String conversationId, int pageSize) {
+    public XmppConversationHistoryPaginator(AbstractXMPPConnection connection, String conversationId,
+                                            int pageSize) {
         super(pageSize);
         this.connection = connection;
         this.conversationId = conversationId;
     }
 
     @Override
-    public void loadPage(int page) {
+    public void loadPage(int page, int sinceSecs) {
         ObtainMessageListPacket packet = new ObtainMessageListPacket();
         packet.setMax(getSizePerPage());
         packet.setConversationId(conversationId);
         packet.setPage(page);
+        packet.setSinceSec(sinceSecs);
         Log.i("Send XMPP Packet: ", packet.toString());
 
         try {
@@ -39,8 +41,12 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
                     stanza -> stanza instanceof MessagePagePacket,
                     stanzaPacket -> {
                         notifyLoaded(((MessagePagePacket) stanzaPacket).getMessages());
-                        ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);},
-                    exception -> notifyError());
+                        ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);
+                    },
+                    exception -> {
+                        Log.e("Error!!!", Log.getStackTraceString(exception));
+                        notifyError(exception);
+                    });
         } catch (SmackException.NotConnectedException e) {
             Log.i("XmppMessagePagePaginate", "Loading error", e);
         }
@@ -60,9 +66,15 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         }
     }
 
-    private void notifyError(){
+    private void notifyError(Exception e){
         if (onEntityLoadedListener != null) {
-            onEntityLoadedListener.onError();
+            onEntityLoadedListener.onError(e);
         }
+    }
+
+    @Override
+    public void close() {
+        onEntityLoadedListener = null;
+        persister = null;
     }
 }

@@ -55,7 +55,6 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/enter_amount_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_normal"
@@ -76,13 +75,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_marginLeft="@dimen/spacing_normal"
-            android:text="$"
             android:textColor="#DC000000"
-            android:textSize="@dimen/font_large"
+            android:textSize="@dimen/font_normal"
             tools:ignore="HardcodedText"
+            tools:text="USD"
             />
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+        <com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText
             android:id="@+id/inputPoints"
             style="@style/SuggestMerchantInput"
             android:layout_width="0dp"
@@ -91,10 +90,12 @@
             android:layout_marginRight="@dimen/spacing_small"
             android:layout_weight="2"
             android:hint="@string/dtl_points_estimation_default_result"
-            android:inputType="numberDecimal"
-            android:maxLength="10"
             android:imeActionId="@integer/dtl_keyboard_point_estimator_action_id"
             android:imeActionLabel="@string/dtl_points_estimation_calculate_button_caption"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:paddingLeft="@dimen/spacing_medium"
+            android:paddingStart="@dimen/spacing_medium"
             app:met_floatingLabel="none"
             />
 

@@ -3,15 +3,14 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,14 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.messenger.ui.adapter.ConversationCursorAdapter;
-import com.worldventures.dreamtrips.R;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
+import com.worldventures.dreamtrips.R;
 
-import butterknife.InjectView;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class ConversationListScreenImpl extends BaseViewStateLinearLayout<ConversationListScreen,
         ConversationListScreenPresenter> implements ConversationListScreen {
@@ -61,7 +60,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
 
     private void initUi() {
         setOrientation(LinearLayout.VERTICAL);
-        setBackgroundColor(getResources().getColor(R.color.main_background));
+        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.main_background));
 
         LayoutInflater.from(getContext()).inflate(R.layout.screen_conversation_list, this, true);
         ButterKnife.inject(this, this);
@@ -103,11 +102,11 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
-        adapter = new ConversationCursorAdapter(getContext(), null, presenter.getUser());
+        adapter = new ConversationCursorAdapter(getContext(), recyclerView, presenter.getUser());
         adapter.setClickListener(presenter::onConversationSelected);
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.addItemDecoration(new VerticalDivider(getResources().getDrawable(R.drawable.divider_list)));
+        recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         adapter.setClickListener(conversation -> getPresenter().onConversationSelected(conversation));
         recyclerView.setAdapter(adapter);
     }

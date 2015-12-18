@@ -1,6 +1,5 @@
 package com.messenger.di;
 
-
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -40,6 +39,6 @@ public class XmppServerModule {
     @Singleton
     @Provides
     User provideUser() {
-        return new User("techery_user6");
+        return new User("techery_user2");
     }
 }

@@ -10,7 +10,6 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
-import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -46,6 +45,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column Message lastMessage;
     int unreadMessageCount = 0;
 
+    @Deprecated
     protected List<User> participants;
 
     public Conversation() {
@@ -66,7 +66,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setUnreadMessageCount(builder.unreadMessageCount);
     }
 
-    @OneToMany(methods = {OneToMany.Method.SAVE, OneToMany.Method.DELETE}, variableName = "participants")
+    @Deprecated
     public List<User> getParticipants() {
         if (participants == null) {
             String query = "SELECT * FROM Users u " +
@@ -74,14 +74,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     "ON p.userId = u._id " +
                     "WHERE p.conversationId = ?";
             participants = SqlUtils.queryList(User.class, query, _id);
-
-//                    new Select().from(User.class).as("`u`")
-//                            .join(ParticipantsRelationship.class, Join.JoinType.INNER).as("`p`")
-//                    .on(Condition.column("p." + ParticipantsRelationship.COLUMN_USER).eq(ColumnAlias.column("u." + User.COLUMN_ID)))
-//                    .where(Condition.column("p." + ParticipantsRelationship.COLUMN_CONVERSATION).is(_id))
-//                    .queryList();
         }
-        Log.d("TEST_CONV_GET", _id + " sizze " + participants.size());
         return participants;
     }
 
@@ -117,7 +110,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
     }
-
+    @Deprecated
     public void setParticipants(List<User> participants) {
         this.participants = participants;
         if (participants != null) {
@@ -172,6 +165,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         saveParticipant();
     }
 
+    @Deprecated
     public void saveParticipant() {
         if (participants == null ) return;
         Log.d("TEST_CONV", _id + " size " + participants.size());
@@ -185,6 +179,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String subject;
         private String type;
         private Message lastMessage;
+        @Deprecated
         private List<User> participants;
         private int unreadMessageCount = 0;
 
@@ -210,7 +205,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
             lastMessage = val;
             return this;
         }
-
+        @Deprecated
         public Builder participants(List<User> participants){
             this.participants = participants;
             return this;

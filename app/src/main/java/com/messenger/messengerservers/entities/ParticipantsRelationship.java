@@ -15,24 +15,17 @@ public class ParticipantsRelationship extends BaseModel {
     public static final String COLUMN_CONVERSATION = "conversationId";
     public static final String COLUMN_USER = "userId";
 
-    @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
+    @Unique(unique = true, onUniqueConflict = ConflictAction.IGNORE)
     @PrimaryKey @Column() String id;
 
     @Column String conversationId;
-
-    @ForeignKey(
-            references = {@ForeignKeyReference(
-                    columnName = COLUMN_USER,
-                    columnType = String.class,
-                    foreignColumnName = User.COLUMN_ID)},
-            saveForeignKeyModel = true)
-    @Column User user;
+    @Column String userId;
 
     public ParticipantsRelationship(String conversationId, User user) {
         id = String.format("%s_%s", conversationId, user.getId());
 
         this.conversationId = conversationId;
-        this.user = user;
+        this.userId = user.getId();
     }
 
     public ParticipantsRelationship() {

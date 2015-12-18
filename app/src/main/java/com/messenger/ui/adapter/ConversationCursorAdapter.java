@@ -3,10 +3,12 @@ package com.messenger.ui.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 
 import android.support.v4.content.ContextCompat;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +22,17 @@ import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.util.ChatDateFormatter;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
 
@@ -32,6 +41,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     private Context context;
 
+    private final RecyclerView recyclerView;
     private User currentUser;
 
     private ClickListener clickListener;
@@ -42,9 +52,10 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         void onConversationClick(Conversation conversation);
     }
 
-    public ConversationCursorAdapter(Context context, Cursor cursor, User currentUser) {
-        super(cursor);
+    public ConversationCursorAdapter(Context context, RecyclerView recyclerView, User currentUser) {
+        super(null);
         this.context = context;
+        this.recyclerView = recyclerView;
         this.currentUser = currentUser;
 
         chatDateFormatter = new ChatDateFormatter(context);
@@ -55,16 +66,17 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         Conversation chatConversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         setUnreadMessageCount(holder, chatConversation.getUnreadMessageCount());
         setLastMessage(holder, chatConversation.getLastMessage());
-        setNameAndAvatar(holder, chatConversation);
 
         holder.itemView.setOnClickListener(view -> {
             if (clickListener != null) {
                 clickListener.onConversationClick(chatConversation);
             }
         });
+
+        holder.updateParticipants(chatConversation.getId(), arg -> setNameAndAvatar(holder, chatConversation, arg));
     }
 
-    private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount){
+    private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount) {
         if (unreadMessageCount > 0) {
             holder.itemView.setBackgroundColor(
                     ContextCompat.getColor(context, R.color.conversation_list_unread_conversation_bg));
@@ -77,7 +89,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         }
     }
 
-    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage){
+    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage) {
         if (lastMessage == null) {
             holder.getLastMessageTextView().setVisibility(View.GONE);
             return;
@@ -91,11 +103,9 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage.getDate()));
     }
 
-    private void setNameAndAvatar(BaseConversationViewHolder holder, Conversation conversation){
-        List<User> participants = conversation.getParticipants();
-
+    private void setNameAndAvatar(BaseConversationViewHolder holder, Conversation conversation, List<User> participants) {
         if (isGroupConversation(conversation.getType())) {
-            String name = getGroupConversationName(conversation);
+            String name = getGroupConversationName(conversation, participants);
             holder.getNameTextView().setText(name);
             if (participants == null || participants.size() == 0) return;
             GroupConversationViewHolder groupHolder = (GroupConversationViewHolder) holder;
@@ -103,8 +113,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         } else {
             // TODO: 12/17/15
             if (participants == null || participants.size() == 0) return;
-            holder.getNameTextView().setText(getOneToOneConversationName(conversation));
-            User addressee = conversation.getParticipants().get(0);
+            holder.getNameTextView().setText(getOneToOneConversationName(conversation, participants));
+            User addressee = participants.get(0);
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)
                     .load(addressee.getAvatarUrl())
@@ -114,9 +124,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         }
     }
 
-    private String getGroupConversationName(Conversation conversation) {
+    private String getGroupConversationName(Conversation conversation, List<User> participants) {
         // TODO: Remove this debug code
-        List<User> participants = conversation.getParticipants();
         if (participants == null || participants.isEmpty()) {
             return "Group Conv " + conversation.getId();
         }
@@ -124,7 +133,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
             return conversation.getSubject();
         } else {
             StringBuilder sb = new StringBuilder();
-            for (Iterator<User> it = participants.iterator(); it.hasNext();) {
+            for (Iterator<User> it = participants.iterator(); it.hasNext(); ) {
                 sb.append(it.next().getName());
                 if (it.hasNext()) {
                     sb.append(", ");
@@ -134,8 +143,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         }
     }
 
-    private String getOneToOneConversationName(Conversation conversation) {
-        User addressee = conversation.getParticipants().get(0);
+    private String getOneToOneConversationName(Conversation conversation, List<User> participants) {
+        User addressee = participants.get(0);
         return addressee.getName() + " " + addressee.getId();
     }
 
@@ -173,11 +182,25 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         return super.swapCursor(newCursor);
     }
 
-    public Cursor swapCursor(Cursor newCursor, String filter) {
+    public void swapCursor(Cursor newCursor, String filter) {
         if (TextUtils.isEmpty(filter)) {
-            return swapCursor(newCursor);
+            swapCursor(newCursor);
+            return;
         }
-        return super.swapCursor(new FilterCursorWrapper(newCursor, filter));
+        Observable.defer(() -> {
+            String query = "SELECT * FROM Users u " +
+                    "JOIN ParticipantsRelationship p " +
+                    "ON p.userId = u._id " +
+                    "WHERE p.conversationId = ?";
+            return Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
+                    .map(c -> new Pair<>(c, SqlUtils.queryList(User.class, query, c.getId())));
+
+        }).toMap(p -> p.first, p -> p.second)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindView(recyclerView))
+                .subscribe(map -> super.swapCursor(new FilterCursorWrapper(newCursor, filter, map)))
+        ;
     }
 
     private boolean isGroupConversation(String conversationType) {
@@ -193,11 +216,11 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         private int count;
         private int pos;
 
-        public FilterCursorWrapper(Cursor cursor, String filter) {
+        public FilterCursorWrapper(Cursor cursor, String filter, Map<Conversation, List<User>> map) {
             super(cursor);
             filter = filter.toLowerCase();
 
-            if (filter != "") {
+            if (!Objects.equals(filter, "")) {
                 this.count = super.getCount();
                 this.index = new int[this.count];
                 for (int i = 0; i < this.count; i++) {
@@ -206,9 +229,9 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
                             = SqlUtils.convertToModel(true, Conversation.class, cursor);
                     String conversationName;
                     if (isGroupConversation(conversation.getType())) {
-                        conversationName = getGroupConversationName(conversation);
+                        conversationName = getGroupConversationName(conversation, map.get(conversation));
                     } else {
-                        conversationName = getOneToOneConversationName(conversation);
+                        conversationName = getOneToOneConversationName(conversation, map.get(conversation));
                     }
                     if (conversationName.toLowerCase().contains(filter)) {
                         this.index[this.pos++] = i;
@@ -220,7 +243,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
             } else {
                 this.count = super.getCount();
                 this.index = new int[this.count];
-                for (int i=0; i < this.count; i++) {
+                for (int i = 0; i < this.count; i++) {
                     this.index[i] = i;
                 }
             }
@@ -253,10 +276,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
         @Override
         public boolean moveToPosition(int position) {
-            if (position >= this.count || position < 0) {
-                return false;
-            }
-            return super.moveToPosition(this.index[position]);
+            return !(position >= this.count || position < 0) && super.moveToPosition(this.index[position]);
         }
 
         @Override

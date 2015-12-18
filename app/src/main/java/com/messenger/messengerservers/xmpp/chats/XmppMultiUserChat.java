@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient{
 
     private static final String TAG = "MultiUserChat";

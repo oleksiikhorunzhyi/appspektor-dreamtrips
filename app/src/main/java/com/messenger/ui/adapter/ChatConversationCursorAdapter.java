@@ -4,16 +4,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.adapter.holders.OwnMessageViewHolder;
-import com.messenger.ui.adapter.holders.UserMessageViewHolder;
-import com.messenger.ui.adapter.holders.ViewHolder;
+import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
+import com.messenger.ui.adapter.holder.UserMessageViewHolder;
+import com.messenger.ui.adapter.holder.ViewHolder;
 import com.messenger.util.ChatDateFormatter;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
@@ -50,6 +50,7 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
 
     @Override
     public void onBindViewHolderCursor(ViewHolder holder, Cursor cursor) {
+        Log.d("TEST_TIME", "pos: " + cursor.getPosition() + "\t time: " + cursor.getLong(4));
         switch (getItemViewType(cursor.getPosition())) {
             case VIEW_TYPE_OWN_MESSAGE_WITH_DATE:
             case VIEW_TYPE_OWN_MESSAGE:

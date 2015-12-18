@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.holders;
+package com.messenger.ui.adapter.holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

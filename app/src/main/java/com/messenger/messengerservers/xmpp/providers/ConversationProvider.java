@@ -1,7 +1,5 @@
 package com.messenger.messengerservers.xmpp.providers;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.messenger.messengerservers.entities.Conversation;
@@ -60,7 +58,8 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             Message.Builder builder = new Message.Builder()
                                     .id(messageId)
                                     .conversationId(conversation.getId())
-                                    .date(new Date(timestamp * 1000))
+                                            //// TODO: 12/18/15 today attribute secs is millisecond
+                                    .date(new Date(timestamp))
                                     .from(JidCreatorHelper.obtainUser(from));
 
                             MessageBody stanzaMessageBody = null;

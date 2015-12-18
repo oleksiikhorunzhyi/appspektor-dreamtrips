@@ -110,7 +110,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         } else {
             User addressee = participants.get(0);
             // TODO: 12/17/15
-            holder.getNameTextView().setText(addressee.getName() + " " + addressee.getId());
+            holder.getNameTextView().setText(addressee.getName());
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)
                     .load(addressee.getAvatarUrl())

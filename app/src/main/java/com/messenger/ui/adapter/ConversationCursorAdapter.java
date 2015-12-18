@@ -2,6 +2,7 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.text.TextUtils;
 
 import android.support.v4.content.ContextCompat;
@@ -54,7 +55,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         Conversation chatConversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         setUnreadMessageCount(holder, chatConversation.getUnreadMessageCount());
         setLastMessage(holder, chatConversation.getLastMessage());
-        setAvatar(holder, chatConversation);
+        setNameAndAvatar(holder, chatConversation);
 
         holder.itemView.setOnClickListener(view -> {
             if (clickListener != null) {
@@ -86,31 +87,20 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage.getDate()));
     }
 
-    private void setAvatar(BaseConversationViewHolder holder, Conversation conversation){
+    private void setNameAndAvatar(BaseConversationViewHolder holder, Conversation conversation){
         List<User> participants = conversation.getParticipants();
 
-        if (participants == null || participants.size() == 0) return;
         if (isGroupConversation(conversation.getType())) {
-            String name;
-            if (TextUtils.isEmpty(conversation.getSubject())) {
-                name = conversation.getSubject();
-            } else {
-                StringBuilder sb = new StringBuilder();
-                for (Iterator<User> it = participants.iterator(); it.hasNext();) {
-                    sb.append(it.next().getName());
-                    if (!it.hasNext()) {
-                        sb.append(", ");
-                    }
-                }
-                name = sb.toString();
-            }
+            String name = getGroupConversationName(conversation);
             holder.getNameTextView().setText(name);
+            if (participants == null || participants.size() == 0) return;
             GroupConversationViewHolder groupHolder = (GroupConversationViewHolder) holder;
             groupHolder.getGroupAvatarsView().updateAvatars(participants);
         } else {
-            User addressee = participants.get(0);
             // TODO: 12/17/15
-            holder.getNameTextView().setText(addressee.getName() + " " + addressee.getId());
+            if (participants == null || participants.size() == 0) return;
+            holder.getNameTextView().setText(getOneToOneConversationName(conversation));
+            User addressee = conversation.getParticipants().get(0);
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)
                     .load(addressee.getAvatarUrl())
@@ -118,6 +108,31 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
                     .into(oneToOneHolder.getAvatarView());
             oneToOneHolder.getAvatarView().setOnline(addressee.isOnline());
         }
+    }
+
+    private String getGroupConversationName(Conversation conversation) {
+        // TODO: Remove this debug code
+        List<User> participants = conversation.getParticipants();
+        if (participants == null || participants.isEmpty()) {
+            return "Group Conv " + conversation.getId();
+        }
+        if (!TextUtils.isEmpty(conversation.getSubject())) {
+            return conversation.getSubject();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Iterator<User> it = participants.iterator(); it.hasNext();) {
+                sb.append(it.next().getName());
+                if (it.hasNext()) {
+                    sb.append(", ");
+                }
+            }
+            return sb.toString();
+        }
+    }
+
+    private String getOneToOneConversationName(Conversation conversation) {
+        User addressee = conversation.getParticipants().get(0);
+        return addressee.getName() + " " + addressee.getId();
     }
 
     @Override
@@ -149,6 +164,18 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         return isGroupConversation(type) ? VIEW_TYPE_GROUP_CONVERSATION : VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
     }
 
+    @Override
+    public Cursor swapCursor(Cursor newCursor) {
+        return super.swapCursor(newCursor);
+    }
+
+    public Cursor swapCursor(Cursor newCursor, String filter) {
+        if (TextUtils.isEmpty(filter)) {
+            return swapCursor(newCursor);
+        }
+        return super.swapCursor(new FilterCursorWrapper(newCursor, filter));
+    }
+
     private boolean isGroupConversation(String conversationType) {
         return !conversationType.equalsIgnoreCase(Conversation.Type.CHAT);
     }
@@ -157,4 +184,85 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         this.clickListener = clickListener;
     }
 
+    public class FilterCursorWrapper extends CursorWrapper {
+        private int[] index;
+        private int count;
+        private int pos;
+
+        public FilterCursorWrapper(Cursor cursor, String filter) {
+            super(cursor);
+            filter = filter.toLowerCase();
+
+            if (filter != "") {
+                this.count = super.getCount();
+                this.index = new int[this.count];
+                for (int i = 0; i < this.count; i++) {
+                    super.moveToPosition(i);
+                    Conversation conversation
+                            = SqlUtils.convertToModel(true, Conversation.class, cursor);
+                    String conversationName;
+                    if (isGroupConversation(conversation.getType())) {
+                        conversationName = getGroupConversationName(conversation);
+                    } else {
+                        conversationName = getOneToOneConversationName(conversation);
+                    }
+                    if (conversationName.toLowerCase().contains(filter)) {
+                        this.index[this.pos++] = i;
+                    }
+                }
+                this.count = this.pos;
+                this.pos = 0;
+                super.moveToFirst();
+            } else {
+                this.count = super.getCount();
+                this.index = new int[this.count];
+                for (int i=0; i < this.count; i++) {
+                    this.index[i] = i;
+                }
+            }
+        }
+
+        @Override
+        public boolean move(int offset) {
+            return this.moveToPosition(this.pos + offset);
+        }
+
+        @Override
+        public boolean moveToNext() {
+            return this.moveToPosition(this.pos + 1);
+        }
+
+        @Override
+        public boolean moveToPrevious() {
+            return this.moveToPosition(this.pos - 1);
+        }
+
+        @Override
+        public boolean moveToFirst() {
+            return this.moveToPosition(0);
+        }
+
+        @Override
+        public boolean moveToLast() {
+            return this.moveToPosition(this.count - 1);
+        }
+
+        @Override
+        public boolean moveToPosition(int position) {
+            if (position >= this.count || position < 0) {
+                return false;
+            }
+            return super.moveToPosition(this.index[position]);
+        }
+
+        @Override
+        public int getCount() {
+            return this.count;
+        }
+
+        @Override
+        public int getPosition() {
+            return this.pos;
+        }
+    }
 }

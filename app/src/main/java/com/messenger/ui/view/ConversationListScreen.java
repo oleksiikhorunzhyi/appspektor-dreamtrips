@@ -11,5 +11,5 @@ public interface ConversationListScreen extends ActivityAwareScreen {
     void showContent();
     void showError(Throwable e);
     void showConversations(Cursor cursor);
-    void setSearchFilter(String searchFilter);
+    void showConversations(Cursor cursor, String searchFilter);
 }

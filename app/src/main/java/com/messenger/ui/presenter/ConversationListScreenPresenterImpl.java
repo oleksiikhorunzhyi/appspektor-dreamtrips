@@ -116,7 +116,8 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 getView().showLoading();
                 break;
             case CONTENT:
-                getView().showConversations(getViewState().getCursor());
+                getView().showConversations(getViewState().getCursor(),
+                        getViewState().getConversationsSearchFilter());
                 getView().showContent();
                 break;
             case ERROR:
@@ -141,7 +142,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onConversationsSearchFilterSelected(String searchFilter) {
         getViewState().setConversationsSearchFilter(searchFilter);
-//        getView().setSearchFilter(searchFilter);
+        applyViewState();
     }
 
     private void assignNeededCursorAndRefresh() {

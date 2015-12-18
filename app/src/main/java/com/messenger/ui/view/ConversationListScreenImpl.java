@@ -11,6 +11,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -140,24 +141,16 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
     }
 
     @Override
-    public ConversationListScreenPresenter createPresenter() {
-        return new ConversationListScreenPresenterImpl(getActivity());
+    public void showConversations(Cursor cursor, String searchFilter) {
+        this.savedSearchFilter = searchFilter;
+        if (adapter != null) {
+            adapter.swapCursor(cursor, searchFilter);
+        }
     }
 
     @Override
-    public void setSearchFilter(String searchFilter) {
-        this.savedSearchFilter = searchFilter;
-        applySearchFilter();
-    }
-
-    private void applySearchFilter() {
-        if (searchView != null) {
-            if (TextUtils.isEmpty(savedSearchFilter)) {
-                //adapter.resetSearchFilter();
-            } else {
-                //adapter.setSearchFilter(savedSearchFilter);
-            }
-        }
+    public ConversationListScreenPresenter createPresenter() {
+        return new ConversationListScreenPresenterImpl(getActivity());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -194,7 +187,6 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
             if (savedSearchFilter != null) {
                 searchItem.expandActionView();
                 searchView.setQuery(savedSearchFilter, false);
-                applySearchFilter();
             }
             searchView.setQueryHint(getContext().getString(R.string.conversation_list_search_hint));
             searchView.setOnCloseListener(() -> {

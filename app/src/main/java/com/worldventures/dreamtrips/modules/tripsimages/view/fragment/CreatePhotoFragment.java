@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -16,11 +19,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -45,6 +51,10 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     protected DTEditText etTime;
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
+    @InjectView(R.id.taggable_holder)
+    protected TaggableImageHolder taggableImageHolder;
+    @InjectView(R.id.tag)
+    protected ImageView tag;
 
     private Uri uri;
 
@@ -59,6 +69,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
         ivImage.setController(GraphicUtils.provideFrescoResizingController(uri, ivImage.getController()));
+        taggableImageHolder.setup(this, null, true, true);
     }
 
     @Override
@@ -72,6 +83,28 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     @OnClick(R.id.btn_save)
     public void onActionSave() {
         getPresenter().saveAction();
+    }
+
+    @OnClick(R.id.tag)
+    public void onTag() {
+        if (!taggableImageHolder.isSetuped()) return;
+        //
+        if (taggableImageHolder.isShown()) {
+            tag.setSelected(false);
+            taggableImageHolder.hide();
+            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+        } else {
+            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+            tag.setSelected(true);
+            RectF imageBounds = new RectF();
+            ivImage.getHierarchy().getActualImageBounds(imageBounds);
+            taggableImageHolder.show(imageBounds);
+        }
+    }
+
+    @Override
+    public List<PhotoTag> getTagsToUpload() {
+        return taggableImageHolder.getTagsToUpload();
     }
 
     @Override

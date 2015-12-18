@@ -60,15 +60,18 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         setuped = true;
         //
         gestureDetector = new GestureDetector(getContext(), new SingleTapConfirm());
+        presenter.restoreViewsIfNeeded();
     }
 
     public boolean isSetuped() {
         return setuped;
     }
 
-    public void hide(TaggableCompleteListener completeListener) {
+    public void setCompleteListener(TaggableCompleteListener completeListener) {
         this.completeListener = completeListener;
-        presenter.pushRequests();
+    }
+
+    public void hide() {
         removeUncompletedViews();
         //
         setVisibility(View.INVISIBLE);
@@ -80,9 +83,17 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         presenter.setupTags();
     }
 
+    public void pushRequests() {
+        presenter.pushRequests();
+    }
+
+    public List<PhotoTag> getTagsToUpload() {
+        return presenter.getTagsToUpload();
+    }
+
     @Override
     protected void onDetachedFromWindow() {
-        hide(null);
+        hide();
         if (presenter != null) {
             presenter.onStop();
             presenter.dropView();

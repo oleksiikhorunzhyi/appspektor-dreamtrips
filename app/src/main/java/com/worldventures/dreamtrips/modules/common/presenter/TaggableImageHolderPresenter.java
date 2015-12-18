@@ -33,7 +33,7 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
     }
 
     public void setupTags() {
-        if (photo.getPhotoTags() != null) view.setupTags(photo.getPhotoTags());
+        if (photo != null && photo.getPhotoTags() != null) view.setupTags(photo.getPhotoTags());
     }
 
     public boolean canAddTags() {
@@ -50,6 +50,13 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
     }
 
     public void loadFriends(String query, TagView view) {
+    }
+
+    public void restoreViewsIfNeeded() {
+    }
+
+    public List<PhotoTag> getTagsToUpload() {
+        return null;
     }
 
     public void onComplete() {

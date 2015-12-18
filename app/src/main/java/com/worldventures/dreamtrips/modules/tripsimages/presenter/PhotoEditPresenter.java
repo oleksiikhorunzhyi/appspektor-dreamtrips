@@ -11,9 +11,7 @@ import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetPhotoInfoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         doRequest(new GetFeedEntityQuery(photo.getFSId()), entity -> {
             this.photo = (Photo) entity.getItem();
             view.setupTaggingHolder(this.photo);
-        });
+        }, spiceException -> view.setupTaggingHolder(photo));
     }
 
     private void syncUi() {
@@ -101,8 +99,8 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
             location.setName(view.getLocation());
             photo.setCoordinates(location);
             photo.setShotAt(DateTimeUtils.mergeDateTime(date, time));
-            eventBus.post(new FeedEntityChangedEvent(photo));
-            view.finish();
+            eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
+            view.pushTags();
         }, spiceException -> {
             super.handleError(spiceException);
             view.setEnabledSaveButton(true);
@@ -142,5 +140,7 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         void setEnabledSaveButton(boolean enabled);
 
         void setupTaggingHolder(Photo photo);
+
+        void pushTags();
     }
 }

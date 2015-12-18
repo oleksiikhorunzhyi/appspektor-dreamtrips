@@ -61,6 +61,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
         taggableImageHolder.setup(this, (Photo) photo, getPresenter().isOwnPhoto(), false);
+        taggableImageHolder.setCompleteListener(() -> getPresenter().loadEntity());
     }
 
     @Override
@@ -143,7 +144,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         //
         if (taggableImageHolder.isShown()) {
             tag.setSelected(false);
-            taggableImageHolder.hide(() -> getPresenter().loadEntity());
+            taggableImageHolder.hide();
         } else {
             tag.setSelected(true);
             RectF imageBounds = new RectF();

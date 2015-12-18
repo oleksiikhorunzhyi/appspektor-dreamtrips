@@ -112,7 +112,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
         //
         if (taggableImageHolder.isShown()) {
             tag.setSelected(false);
-            taggableImageHolder.hide(() -> getPresenter().updatePhotoInfo());
+            taggableImageHolder.hide();
             ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
         } else {
             ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
@@ -191,6 +191,12 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     @Override
     public void setupTaggingHolder(Photo photo) {
         taggableImageHolder.setup(this, photo, getPresenter().isOwnPhoto(), true);
+        taggableImageHolder.setCompleteListener(this::finish);
+    }
+
+    @Override
+    public void pushTags() {
+        taggableImageHolder.pushRequests();
     }
 
     @Override

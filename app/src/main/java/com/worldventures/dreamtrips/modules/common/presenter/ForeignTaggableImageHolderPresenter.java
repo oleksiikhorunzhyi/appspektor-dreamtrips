@@ -10,7 +10,7 @@ import java.util.List;
 public class ForeignTaggableImageHolderPresenter extends TaggableImageHolderPresenter {
 
     public ForeignTaggableImageHolderPresenter(Photo photo) {
-        super(photo);
+        super(photo, false);
     }
 
     @Override

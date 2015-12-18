@@ -12,14 +12,16 @@ import java.util.List;
 public abstract class TaggableImageHolderPresenter extends Presenter<TaggableImageHolderPresenter.View> {
 
     protected Photo photo;
+    protected boolean canAddTags;
 
-    public TaggableImageHolderPresenter(Photo photo) {
+    public TaggableImageHolderPresenter(Photo photo, boolean canAddTags) {
         this.photo = photo;
+        this.canAddTags = canAddTags;
     }
 
-    public static TaggableImageHolderPresenter create(Photo photo, boolean isOwnPhoto) {
+    public static TaggableImageHolderPresenter create(Photo photo, boolean isOwnPhoto, boolean canAddTags) {
         if (isOwnPhoto) {
-            return new OwnTaggableImageHolderPresenter(photo);
+            return new OwnTaggableImageHolderPresenter(photo, canAddTags);
         }
 
         return new ForeignTaggableImageHolderPresenter(photo);
@@ -32,6 +34,10 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
 
     public void setupTags() {
         if (photo.getPhotoTags() != null) view.setupTags(photo.getPhotoTags());
+    }
+
+    public boolean canAddTags() {
+        return canAddTags;
     }
 
     public void addPhotoTag(PhotoTag tag) {

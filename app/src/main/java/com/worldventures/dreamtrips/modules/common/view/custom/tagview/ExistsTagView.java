@@ -60,7 +60,7 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        tagListener.onTagClicked(photoTag.getTargetUserId());
+        tagListener.onTagClicked(photoTag.getUser().getId());
     }
 
     public void showDeleteButton(){

@@ -19,8 +19,8 @@ public class OwnTaggableImageHolderPresenter extends TaggableImageHolderPresente
 
     private boolean addComplete, deleteComplete;
 
-    public OwnTaggableImageHolderPresenter(Photo photo) {
-        super(photo);
+    public OwnTaggableImageHolderPresenter(Photo photo, boolean canAddTags) {
+        super(photo, canAddTags);
         newAddedTags = new ArrayList<>();
         newDeletedTags = new ArrayList<>();
     }
@@ -79,7 +79,7 @@ public class OwnTaggableImageHolderPresenter extends TaggableImageHolderPresente
 
     @Override
     public void loadFriends(String query, TagView tagView) {
-        doRequest(new GetFriendsQuery(null, query, 1 , 5), tagView::setUserFriends);
+        doRequest(new GetFriendsQuery(null, query, 1 , 100), tagView::setUserFriends);
     }
 
     @Override

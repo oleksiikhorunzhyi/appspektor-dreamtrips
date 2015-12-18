@@ -60,7 +60,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     public void setContent(IFullScreenObject photo) {
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
-        taggableImageHolder.setup(this, (Photo) photo, getPresenter().isOwnPhoto());
+        taggableImageHolder.setup(this, (Photo) photo, getPresenter().isOwnPhoto(), false);
     }
 
     @Override

@@ -52,8 +52,8 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setup(Injector injector, Photo photo, boolean isOwnPhoto) {
-        presenter = TaggableImageHolderPresenter.create(photo, isOwnPhoto);
+    public void setup(Injector injector, Photo photo, boolean isOwnPhoto, boolean canAddTags) {
+        presenter = TaggableImageHolderPresenter.create(photo, isOwnPhoto, canAddTags);
         injector.inject(presenter);
         presenter.takeView(this);
         presenter.onStart();
@@ -69,6 +69,7 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
     public void hide(TaggableCompleteListener completeListener) {
         this.completeListener = completeListener;
         presenter.pushRequests();
+        removeUncompletedViews();
         //
         setVisibility(View.INVISIBLE);
     }
@@ -81,9 +82,12 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
 
     @Override
     protected void onDetachedFromWindow() {
+        hide(null);
+        if (presenter != null) {
+            presenter.onStop();
+            presenter.dropView();
+        }
         super.onDetachedFromWindow();
-        presenter.onStop();
-        presenter.dropView();
     }
 
     @Override
@@ -169,7 +173,8 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
 
     @Override
     public void onRequestsComplete() {
-        completeListener.onTagComplete();
+        if (completeListener != null)
+            completeListener.onTagComplete();
     }
 
     private void removeUncompletedViews() {
@@ -181,12 +186,13 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
-            boolean confirmed = imageBounds.contains(event.getX(), event.getY()) && presenter.isOwnPhoto();
+            boolean confirmed = imageBounds.contains(event.getX(), event.getY())
+                    && presenter.isOwnPhoto() && presenter.canAddTags();
             if (confirmed) {
                 removeUncompletedViews();
                 addTagView(event.getX(), event.getY());
             }
-            return imageBounds.contains(event.getX(), event.getY()) && presenter.isOwnPhoto();
+            return confirmed;
         }
     }
 

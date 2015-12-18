@@ -1,19 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 xmlns:custom="http://schemas.android.com/apk/res-auto"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/black">
 
-    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
-        android:id="@+id/iv_image"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        fresco:actualImageScaleType="fitCenter"
-        />
+        android:layout_centerHorizontal="true">
+
+        <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            fresco:actualImageScaleType="fitCenter"/>
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder
+            android:id="@+id/taggable_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_tag"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/spacing_medium"
+        android:layout_marginTop="64dp"/>
 
     <View
         android:layout_width="match_parent"
@@ -134,13 +153,13 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/content_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:adjustViewBounds="false"
-            android:background="#ff9e9e9e"
-            android:id="@+id/content_divider"/>
+            android:background="#ff9e9e9e"/>
 
         <LinearLayout
             android:layout_width="match_parent"

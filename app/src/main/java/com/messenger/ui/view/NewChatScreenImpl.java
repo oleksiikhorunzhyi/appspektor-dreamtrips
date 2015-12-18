@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
@@ -22,10 +21,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.adapter.ContactCursorAdapter;
+import com.messenger.ui.adapter.ContactSimpleAlphabetAdapter;
 import com.messenger.ui.widget.SelectionListenerEditText;
 import com.worldventures.dreamtrips.R;
 import com.messenger.ui.presenter.NewChatLayoutPresenter;
@@ -63,7 +61,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
 
     private ToolbarPresenter toolbarPresenter;
 
-    private ContactCursorAdapter adapter;
+    private ContactSimpleAlphabetAdapter adapter;
 
     public NewChatScreenImpl(Context context) {
         super(context);
@@ -89,7 +87,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         toolbarPresenter.setTitle(R.string.new_chat_title);
         toolbarPresenter.enableUpNavigationButton();
 
-        adapter = new ContactCursorAdapter(getContext(), null);
+        adapter = new ContactSimpleAlphabetAdapter(getContext(), null);
         adapter.setSelectionListener((selectedUsers) -> {
             setSelectedContacts(selectedUsers);
             getPresenter().onSelectedUsersStateChanged(selectedUsers);

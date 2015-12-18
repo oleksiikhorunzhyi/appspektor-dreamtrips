@@ -96,7 +96,8 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {
         final int position = cursor.getPosition();
-        final boolean result = !cursor.moveToPrevious() || cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM)) != user.getId();
+        final boolean result = cursor.moveToPrevious() &&
+                !cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM)).equals(user.getId());
         cursor.moveToPosition(position);
         return result;
     }

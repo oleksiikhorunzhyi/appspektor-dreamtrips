@@ -45,7 +45,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void onInjected() {
         super.onInjected();
         dtlLocationRepository.setRequestingPresenter(this);
-        gpsLocationDelegate.attachListener(this);
         searchDelegate = new DtlLocationSearchDelegate(this);
     }
 
@@ -54,6 +53,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         super.takeView(view);
         apiErrorPresenter.setView(view);
         dtlLocationRepository.attachListener(this);
+        gpsLocationDelegate.attachListener(this);
         //
         // TODO : handle possible state restoring with searchDelegate
         dtlLocations = new ArrayList<>();
@@ -68,6 +68,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         gpsLocationDelegate.detachListener(this);
         dtlLocationRepository.detachListener(this);
         searchDelegate.detachListener();
+        dtlLocationRepository.detachRequestingPresenter();
         super.dropView();
     }
 

@@ -99,6 +99,12 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         }
     }
 
+    @Override
+    public void dropView() {
+        dtlMerchantRepository.detachRequestingPresenter();
+        super.dropView();
+    }
+
     public interface View extends ApiErrorView {
 
         void setTypes(List<DtlMerchantType> types);

@@ -46,12 +46,15 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchantRepository.attachListener(this);
         dtlFilterDelegate.addListener(this);
         dtlSearchDelegate.addListener(this);
     }
 
     @Override
+    public void takeView(VT view) {
+        super.takeView(view);
+        dtlMerchantRepository.attachListener(this);
+    }
     public void dropView() {
         dtlMerchantRepository.detachListener(this);
         dtlFilterDelegate.removeListener(this);

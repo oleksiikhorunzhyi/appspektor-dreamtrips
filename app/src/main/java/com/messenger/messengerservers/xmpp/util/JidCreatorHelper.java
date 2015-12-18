@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.xmpp.util;
 
-
 import com.messenger.messengerservers.entities.User;
 
 import java.util.UUID;

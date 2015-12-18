@@ -87,6 +87,9 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
         toolbarPresenter.setTitle(R.string.new_chat_title);
         toolbarPresenter.enableUpNavigationButton();
 
+        // Use this class until sorting logic in ContactCursorAdapter is checked
+        // to be working (provided users are sorted alphabetically) or fixed if needed if
+        // it does not work when contacts sorting is fixed.
         adapter = new ContactSimpleAlphabetAdapter(getContext(), null);
         adapter.setSelectionListener((selectedUsers) -> {
             setSelectedContacts(selectedUsers);

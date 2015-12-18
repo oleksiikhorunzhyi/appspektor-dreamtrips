@@ -1,8 +1,5 @@
 package com.messenger.messengerservers.xmpp.providers;
 
-
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.messenger.messengerservers.entities.Message;
@@ -44,7 +41,8 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
-                                    .date(new Date(timestamp * 1000))
+                                    //// TODO: 12/18/15 today attribute secs is millisecond
+                                    .date(new Date(timestamp))
                                     .from(JidCreatorHelper.obtainUser(jid));
                             break;
                         case "body":
@@ -53,7 +51,7 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                             MessageBody stanzaMessageBody = null;
                             try {
                                 stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
-                            } catch (JsonSyntaxException e){}
+                            } catch (JsonSyntaxException ignore){}
 
                             if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null){
                                 messageBuilder = null;

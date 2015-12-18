@@ -42,7 +42,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         implements ChatScreenPresenter {
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject MessengerServerFacade messengerServerFacade;
-    User user = new User("techery_user2");
+    @Inject User user;
 
     private Chat chat;
     protected Intent startIntent;

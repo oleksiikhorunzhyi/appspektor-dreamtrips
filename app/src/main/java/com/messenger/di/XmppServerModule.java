@@ -2,6 +2,7 @@ package com.messenger.di;
 
 
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.presenter.ChatGroupScreenPresenter;
@@ -34,5 +35,11 @@ public class XmppServerModule {
     @Provides
     MessengerServerFacade provideXmppServerFacade() {
         return new XmppServerFacade();
+    }
+
+    @Singleton
+    @Provides
+    User provideUser() {
+        return new User("techery_user6");
     }
 }

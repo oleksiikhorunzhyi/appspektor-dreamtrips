@@ -22,7 +22,8 @@ import butterknife.InjectView;
 
 /**
  * Use this class until sorting logic in ContactCursorAdapter is checked
- * to be working (provided users are sorted alphabetically or fixed if needed)
+ * to be working (provided users are sorted alphabetically) or fixed if needed if
+ * it does not work when contacts sorting is fixed.
  */
 public class ContactSimpleAlphabetAdapter extends CursorRecyclerViewAdapter<ContactSimpleAlphabetAdapter.SectionUsernameHolder> {
 
@@ -76,16 +77,17 @@ public class ContactSimpleAlphabetAdapter extends CursorRecyclerViewAdapter<Cont
     @Override
     public void onBindViewHolderCursor(ContactSimpleAlphabetAdapter.SectionUsernameHolder holder, Cursor cursor) {
         final User user = SqlUtils.convertToModel(true, User.class, cursor);
-
+        String currentUsername = user.getName();
         String newLetter = null;
         if (cursor.moveToPrevious()) {
             String oldUsername = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
-            String currentUsername = user.getName();
             if (!TextUtils.isEmpty(currentUsername)) {
                 if (TextUtils.isEmpty(oldUsername) || oldUsername.charAt(0) != currentUsername.charAt(0)) {
                     newLetter = currentUsername.substring(0, 1);
                 }
             }
+        } else {
+            newLetter = currentUsername.substring(0, 1);
         }
         if (newLetter != null) {
             holder.divider.setVisibility(View.VISIBLE);

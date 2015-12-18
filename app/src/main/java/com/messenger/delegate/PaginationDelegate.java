@@ -2,6 +2,7 @@ package com.messenger.delegate;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
@@ -14,14 +15,14 @@ import java.util.List;
 
 public class PaginationDelegate {
 
-    final Context context;
-    final MessengerServerFacade messengerServerFacade;
+    Context context;
+    MessengerServerFacade messengerServerFacade;
     final int pageSize;
 
     PagePagination<Message> messagePagePagination;
 
     public interface PageLoadedListener {
-        void onPageLoaded(int loadedPage, boolean haveMoreElement);
+        void onPageLoaded(int loadedPage, boolean haveMoreElement, Message lastMessage);
     }
 
     public interface PageErrorListener {
@@ -34,28 +35,36 @@ public class PaginationDelegate {
         this.pageSize = pageSize;
     }
 
-    public void loadConversationHistoryPage(Conversation conversation, int page, @Nullable PageLoadedListener loadedListener,
-                                            @Nullable PageErrorListener errorListener) {
+    public void loadConversationHistoryPage(Conversation conversation, int page, int beforeSecs,
+                                            @Nullable PageLoadedListener loadedListener, @Nullable PageErrorListener errorListener) {
         if (messagePagePagination == null) {
             messagePagePagination = messengerServerFacade.getPaginationManager()
                     .getConversationHistoryPagination(conversation, pageSize);
         }
 
         messagePagePagination.setPersister(messages -> ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages));
-        messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener() {
+        messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
             @Override
-            public void onLoaded(List entities) {
+            public void onLoaded(List<Message> entities) {
                 if (loadedListener == null) return;
-                loadedListener.onPageLoaded(page, pageSize == entities.size());
+                int size = entities.size();
+                loadedListener.onPageLoaded(page, pageSize == entities.size(), size > 0 ? entities.get(size - 1) : null);
             }
 
             @Override
-            public void onError() {
+            public void onError(Exception e) {
                 if (errorListener == null) return;
                 errorListener.onPageError();
             }
         });
-        messagePagePagination.loadPage(page);
+        messagePagePagination.loadPage(page, beforeSecs);
+    }
+
+    public void stopPaginate(){
+        if (messagePagePagination != null){
+            messagePagePagination.close();
+        }
+        messagePagePagination = null;
     }
 
 }

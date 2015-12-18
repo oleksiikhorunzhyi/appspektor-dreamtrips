@@ -33,13 +33,11 @@ import javax.inject.Inject;
 public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresenter<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
 
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    MessengerServerFacade messengerServerFacade;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject MessengerServerFacade messengerServerFacade;
+    @Inject User user;
 
     private Activity parentActivity;
-    private User user;
     private LoaderDelegate loaderDelegate;
     private final CursorLoaderCallback allConversationLoaderCallback = new CursorLoaderCallback(true);
     private final CursorLoaderCallback groupConversationLoaderCallback = new CursorLoaderCallback(false);
@@ -48,7 +46,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
-        user = new User("techery_user6");
         loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
     }
 

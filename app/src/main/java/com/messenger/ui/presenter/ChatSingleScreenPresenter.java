@@ -17,11 +17,14 @@ public class ChatSingleScreenPresenter extends ChatScreenPresenterImpl {
 
     @Override
     protected Chat createChat(ChatManager chatManager, Conversation conversation) {
-        for (User user: conversation.getParticipants()) {
-            if (user.getId().equals(this.user.getId()) ) continue;
+        for (User user : conversation.getParticipants()) {
+            if (user.getId().equals(this.user.getId()) ) {
+                // TODO: 12/18/15 remove after testing
+                throw new Error("Ups! You cannot create chat with yourself.");
+            }
             return chatManager.createSingleUserChat(user.getId(),
                     conversation.getId());
         }
-        return null;
+        throw new Error("Ups! Creating chat error.");
     }
 }

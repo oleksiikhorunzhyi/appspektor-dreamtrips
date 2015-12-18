@@ -15,7 +15,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,13 +22,9 @@ import android.widget.Toast;
 
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.LoaderDelegate;
-import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.activity.ChatActivity;
@@ -43,7 +38,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -52,11 +46,9 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    MessengerServerFacade messengerServerFacade;
-    User user = new User("techery_user6");
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject MessengerServerFacade messengerServerFacade;
+    @Inject User user;
 
     private Activity parentActivity;
     private LoaderDelegate loaderDelegate;

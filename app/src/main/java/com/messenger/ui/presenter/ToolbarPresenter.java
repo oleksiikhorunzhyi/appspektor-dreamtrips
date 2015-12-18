@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import com.worldventures.dreamtrips.R;
 
 public class ToolbarPresenter {
-
     private ActionBar actionBar;
     private Toolbar toolbar;
 
@@ -19,9 +18,7 @@ public class ToolbarPresenter {
         activity.setSupportActionBar(toolbar);
         actionBar = activity.getSupportActionBar();
         toolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.theme_main));
-        toolbar.setNavigationOnClickListener(view -> {
-            activity.onBackPressed();
-        });
+        toolbar.setNavigationOnClickListener(view -> activity.onBackPressed());
         toolbar.setTitleTextAppearance(activity, R.style.ActionBarTitle);
         toolbar.setSubtitleTextAppearance(activity, R.style.ActionBarSubtitle);
     }
@@ -40,25 +37,24 @@ public class ToolbarPresenter {
 
     public void disableTitle() {
         actionBar.setDisplayShowTitleEnabled(false);
-
     }
 
     public void setSubtitle(@StringRes int name) {
-        getActionBar().setSubtitle(name);
+        actionBar.setSubtitle(name);
     }
 
     public void setSubtitle(String name) {
-        getActionBar().setSubtitle(name);
+        actionBar.setSubtitle(name);
     }
 
     public void enableUpNavigationButton() {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
     }
 
     public void enableUpNavigationButton(@DrawableRes int navigationIcon) {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
         toolbar.setNavigationIcon(navigationIcon);
     }
 }

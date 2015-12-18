@@ -73,12 +73,16 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         } else {
             holder.itemView.setBackgroundColor(
                     ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
-            holder.getUnreadMessagesCountTextView().setVisibility(View.INVISIBLE);
+            holder.getUnreadMessagesCountTextView().setVisibility(View.GONE);
         }
     }
 
     private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage){
-        if (lastMessage == null) return;
+        if (lastMessage == null) {
+            holder.getLastMessageTextView().setVisibility(View.GONE);
+            return;
+        }
+        holder.getLastMessageTextView().setVisibility(View.VISIBLE);
         String messageText = lastMessage.getText();
         if (lastMessage.getFrom().equals(currentUser)) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);

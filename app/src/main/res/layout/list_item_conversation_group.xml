@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/conversation_group_avatars_view"
+        android:layout_toLeftOf="@+id/conversation_last_messages_layout"
         style="@style/ConversationListNameTextView"
         />
 

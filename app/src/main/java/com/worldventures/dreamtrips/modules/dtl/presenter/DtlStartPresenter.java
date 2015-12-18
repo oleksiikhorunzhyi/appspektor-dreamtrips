@@ -45,6 +45,11 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     public void permissionGranted() {
         view.bind(gpsLocationDelegate.requestLocationUpdate()
                 .compose(new IoToMainComposer<>()))

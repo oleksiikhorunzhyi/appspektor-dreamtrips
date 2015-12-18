@@ -36,25 +36,33 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         try {
             ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider());
             connection.sendStanzaWithResponseCallback(packet,
-                    (stanza) -> stanza instanceof MessagePagePacket,
-                    (stanzaPacket) -> {
-                        List<Message> messages = ((MessagePagePacket) stanzaPacket).getMessages();
-                        for (Message message : messages) {
-                            message.setConversationId(conversationId);
-                        }
-
-                        if (persister != null) {
-                            persister.save(messages);
-                        }
-
-                        if (onEntityLoadedListener != null) {
-                            onEntityLoadedListener.onLoaded(messages);
-                        }
-                        ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);
-                    });
+                    stanza -> stanza instanceof MessagePagePacket,
+                    stanzaPacket -> {
+                        notifyLoaded(((MessagePagePacket) stanzaPacket).getMessages());
+                        ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);},
+                    exception -> notifyError());
         } catch (SmackException.NotConnectedException e) {
             Log.i("XmppMessagePagePaginate", "Loading error", e);
         }
     }
 
+    private void notifyLoaded(List<Message> messages){
+        for (Message message : messages) {
+            message.setConversationId(conversationId);
+        }
+
+        if (persister != null) {
+            persister.save(messages);
+        }
+
+        if (onEntityLoadedListener != null) {
+            onEntityLoadedListener.onLoaded(messages);
+        }
+    }
+
+    private void notifyError(){
+        if (onEntityLoadedListener != null) {
+            onEntityLoadedListener.onError();
+        }
+    }
 }

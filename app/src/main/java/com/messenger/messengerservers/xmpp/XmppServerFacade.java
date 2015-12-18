@@ -69,7 +69,7 @@ public class XmppServerFacade implements MessengerServerFacade {
                             .setResource(StringGanarator.getRandomString(5))
                             .setDebuggerEnabled(true)
                             .setPort(ServerParameters.PORT)
-                            .setSendPresence(true)
+                            .setSendPresence(false)
                             .build());
 
                     try {

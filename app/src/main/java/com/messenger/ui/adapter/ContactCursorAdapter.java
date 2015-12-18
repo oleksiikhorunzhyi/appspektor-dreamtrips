@@ -77,7 +77,7 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
         }
         indexer = new AlphabetIndexer(getCursor(), getCursor()
                 .getColumnIndexOrThrow(User.COLUMN_NAME),
-                "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         sectionToPosition = new TreeMap<>();
         sectionToOffset = new HashMap<>();
 

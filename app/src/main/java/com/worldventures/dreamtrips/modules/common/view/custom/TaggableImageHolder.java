@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolder
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.ExistsTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.NewTagView;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
@@ -140,8 +141,9 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         });
 
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        float tagWidth = view.getTagWidthInPx();
-        float tagHeight = view.getTagHeightInPx();
+        Size tagSize = view.getSize();
+        float tagWidth = tagSize.getWidth();
+        float tagHeight = tagSize.getHeight();
 
         int marginLeft = (int) (photoTag.getPosition().getTopLeft().getX() - tagWidth / 2);
         int marginTop = (int) (photoTag.getPosition().getTopLeft().getY());

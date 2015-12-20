@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/tag_common_width"
-    android:layout_height="@dimen/tag_new_height"
-    android:paddingLeft="@dimen/tag_new_padding_left"
-    android:background="@drawable/background_common_tag_view"
-    android:paddingRight="10dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/new_user_suggestions_popup_anchor"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/tag_common_height_with_arrow"
+                android:layout_centerInParent="true"
+                android:background="@drawable/background_tag">
 
-    <AutoCompleteTextView
-        android:id="@+id/new_user_input_name"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:completionThreshold="1"
-        android:hint="@string/start_typing_name"
-        android:textColorHint="@color/white"
-        android:textSize="@dimen/font_medium"
-        android:background="@null"
-        android:textColor="@color/white">
-        <requestFocus/>
-    </AutoCompleteTextView>
+    <RelativeLayout
+        android:layout_width="@dimen/tag_common_width"
+        android:layout_height="@dimen/tag_new_height"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
 
-    <View
-        android:id="@+id/new_user_delete_tag"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/ic_close_tag"/>
+        <AutoCompleteTextView
+            android:id="@+id/new_user_input_name"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:completionThreshold="1"
+            android:hint="@string/start_typing_name"
+            android:textColorHint="@color/white"
+            android:textSize="@dimen/font_medium"
+            android:paddingRight="5dp"
+            android:background="@null"
+            android:textColor="@color/white">
+            <requestFocus/>
+        </AutoCompleteTextView>
+
+        <View
+            android:id="@+id/new_user_delete_tag"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_close_tag"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

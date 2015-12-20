@@ -8,9 +8,9 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
@@ -54,12 +54,11 @@ public abstract class TagView extends RelativeLayout{
         this.tagListener = tagListener;
     }
 
-    public float getTagWidthInPx(){
-        return getResources().getDimension(R.dimen.tag_common_width);
-    }
-
-    public float getTagHeightInPx(){
-        return getResources().getDimension(R.dimen.tag_common_height);
+    public Size getSize(){
+        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        return new Size(width, height);
     }
 
     protected abstract void initialize();

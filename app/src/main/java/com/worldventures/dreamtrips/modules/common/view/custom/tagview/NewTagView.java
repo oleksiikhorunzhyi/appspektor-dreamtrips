@@ -58,9 +58,9 @@ public class NewTagView extends TagView {
         adapter = new TagFriendAdapter(getContext(), userFriends);
         inputFriendName.setAdapter(adapter);
         inputFriendName.setDropDownBackgroundResource(R.drawable.background_common_tag_view);
-        inputFriendName.setDropDownWidth(getResources().getDimensionPixelSize(R.dimen.tag_common_width));
-        inputFriendName.setDropDownHorizontalOffset(-getResources().getDimensionPixelSize(R.dimen.tag_new_padding_left));
-        inputFriendName.setDropDownVerticalOffset(6);
+        inputFriendName.setDropDownWidth(getSize().getWidth());
+        inputFriendName.setDropDownVerticalOffset(0);
+        inputFriendName.setDropDownAnchor(R.id.new_user_suggestions_popup_anchor);
         inputFriendName.setOnItemClickListener((parent, view, position, id) -> {
             PhotoTag.TagPosition tagPosition = photoTag.getPosition();
             tagListener.onTagAdded(new PhotoTag(adapter.getItem(position).getId(),

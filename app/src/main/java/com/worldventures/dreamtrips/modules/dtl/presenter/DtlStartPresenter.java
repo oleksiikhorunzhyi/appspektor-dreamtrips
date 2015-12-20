@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -22,7 +21,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
     @State
     boolean initialized;
-
+    //
     @Inject
     LocationDelegate gpsLocationDelegate;
     @Inject
@@ -39,7 +38,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         DtlLocation dtlLocation = dtlLocationRepository.getSelectedLocation();
         if (dtlLocation != null) {
             TrackingHelper.dtlLocationLoaded(dtlLocation.getId());
-            view.openMerchants(new PlacesBundle(dtlLocation));
+            view.openMerchants();
         } else {
             view.openDtlLocationsScreen();
         }
@@ -81,6 +80,6 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
         void openDtlLocationsScreen();
 
-        void openMerchants(PlacesBundle placesBundle);
+        void openMerchants();
     }
 }

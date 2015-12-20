@@ -21,11 +21,6 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
 
     public DtlLocationRepository(SnappyRepository db) {
         super(db);
-        currentLocation = db.getSelectedDtlLocation();
-    }
-
-    public void setRequestingPresenter(RequestingPresenter requestingPresenter) {
-        this.requestingPresenter = requestingPresenter;
     }
 
     public void loadNearbyLocations(Location userLocation) {
@@ -37,7 +32,6 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
     public void persistLocation(DtlLocation location) {
         if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
             currentLocation = location;
-            db.saveSelectedDtlLocation(location);
             db.clearMerchantData();
         }
     }

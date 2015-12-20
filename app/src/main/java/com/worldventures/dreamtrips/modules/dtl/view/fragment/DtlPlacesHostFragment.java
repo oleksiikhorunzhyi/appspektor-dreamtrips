@@ -9,17 +9,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_places_host)
-public class DtlPlacesHostFragment
-        extends BaseFragmentWithArgs<DtlPlacesHostPresenter, PlacesBundle>
+public class DtlPlacesHostFragment extends BaseFragment<DtlPlacesHostPresenter>
         implements DtlPlacesHostPresenter.View {
 
     @InjectView(R.id.dtl_landscape_slave_container)
@@ -45,7 +43,6 @@ public class DtlPlacesHostFragment
                 .containerId(R.id.dtl_master_container)
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
-                .data(getArgs())
                 .build());
     }
 
@@ -58,7 +55,7 @@ public class DtlPlacesHostFragment
                     .containerId(R.id.dtl_landscape_slave_container)
                     .backStackEnabled(false)
                     .fragmentManager(getChildFragmentManager())
-                    .data(new DtlMapBundle(getArgs().getLocation(), true))
+                    .data(new DtlMapBundle(true)) // TODO : remove this bundle in favor of fragment arg
                     .build());
             landscapeSlave.setVisibility(View.VISIBLE);
         } else {
@@ -84,6 +81,7 @@ public class DtlPlacesHostFragment
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
+                // TODO : remove 'slave' parameter in favor of navigation config param
                 .data(new DtlMerchantDetailsBundle(merchantId, true))
                 .build());
     }

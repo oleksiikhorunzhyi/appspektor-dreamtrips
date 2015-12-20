@@ -16,20 +16,16 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
-    public DtlMapPresenter(DtlMapBundle bundle) {
-        dtlLocation = bundle.getLocation();
-    }
-
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.initToolbar(dtlLocation);
+        view.initToolbar(locationRepository.getSelectedLocation());
     }
 
     public void onMapLoaded() {
         mapReady = true;
         //
-        view.centerIn(dtlLocation);
+        view.centerIn(locationRepository.getSelectedLocation());
         performFiltering();
         checkPendingMapInfo();
     }

@@ -35,19 +35,21 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     DtlFilterData dtlFilterData;
 
     @Override
-    public void onInjected() {
-        super.onInjected();
-        dtlMerchantRepository.attachListener(this);
-    }
-
-    @Override
     public void takeView(View view) {
         super.takeView(view);
+        dtlMerchantRepository.attachListener(this);
+        //
         if (dtlFilterData == null)
             dtlFilterData = DtlFilterData.createDefault();
 
         dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         attachAmenities();
+    }
+
+    @Override
+    public void dropView() {
+        dtlMerchantRepository.detachListener(this);
+        super.dropView();
     }
 
     public void onEvent(FilterAttributesSelectAllEvent event) {
@@ -65,9 +67,8 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     }
 
     private void attachAmenities() {
-        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities()).map(element ->
-                        new DtlPlacesFilterAttribute(element.getName())
-        ).toList();
+        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities())
+                .map(element -> new DtlPlacesFilterAttribute(element.getName())).toList();
 
         dtlFilterData.setAmenities(amenities);
         view.attachFilterData(dtlFilterData);

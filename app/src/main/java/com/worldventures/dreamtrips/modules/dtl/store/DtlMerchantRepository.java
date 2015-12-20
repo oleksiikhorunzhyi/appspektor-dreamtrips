@@ -34,15 +34,6 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
     }
 
     /**
-     * set RequestingPresenter in {@link Presenter#onInjected()}
-     *
-     * @param requestingPresenter {@link RequestingPresenter} presenter to execute Requests
-     */
-    public void setRequestingPresenter(RequestingPresenter requestingPresenter) {
-        this.requestingPresenter = requestingPresenter;
-    }
-
-    /**
      * loads merchants {@link DtlMerchant} for the specified location
      * @param location {@link DtlLocation} current location
      */

@@ -8,22 +8,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 /**
  * Bundle to be supplied when navigating to {@link com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment}
  */
+@Deprecated
+// TODO : remove in favor of parameter in NavigationConfigBuilder
 public class DtlMapBundle implements Parcelable {
 
-    private DtlLocation location;
     private boolean isSlave;
 
-    public DtlMapBundle(DtlLocation location, boolean isSlave) {
-        this.location = location;
+    public DtlMapBundle(boolean isSlave) {
         this.isSlave = isSlave;
-    }
-
-    public DtlLocation getLocation() {
-        return location;
-    }
-
-    public void setLocation(DtlLocation location) {
-        this.location = location;
     }
 
     public boolean isSlave() {
@@ -39,13 +31,11 @@ public class DtlMapBundle implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected DtlMapBundle(Parcel in) {
-        location = in.readParcelable(DtlLocation.class.getClassLoader());
         isSlave = in.readByte() == 1;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(location, flags);
         dest.writeByte(isSlave ? (byte) 1 : 0);
     }
 

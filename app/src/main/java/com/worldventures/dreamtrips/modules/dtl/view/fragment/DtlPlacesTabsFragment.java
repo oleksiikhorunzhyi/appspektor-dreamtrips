@@ -18,11 +18,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPag
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -35,8 +34,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
 
 @Layout(R.layout.fragment_dtl_places_tabs)
-public class DtlPlacesTabsFragment
-        extends BaseFragmentWithArgs<DtlPlacesTabsPresenter, PlacesBundle>
+public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter>
         implements DtlPlacesTabsPresenter.View {
 
     @InjectView(R.id.tabs)
@@ -45,7 +43,9 @@ public class DtlPlacesTabsFragment
     CustomViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    //
     BasePagerAdapter<DataFragmentItem> adapter;
+    //
     @State
     int currentPosition;
     @State
@@ -53,7 +53,7 @@ public class DtlPlacesTabsFragment
 
     @Override
     protected DtlPlacesTabsPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlacesTabsPresenter(getArgs().getLocation());
+        return new DtlPlacesTabsPresenter();
     }
 
     @Override
@@ -74,29 +74,29 @@ public class DtlPlacesTabsFragment
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
-
+            //
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
                 getPresenter().trackTabChange(position);
             }
-
+            //
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
+        //
         toolbar.inflateMenu(R.menu.menu_dtl_list);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         new SearchViewHelper().init(searchItem, lastQuery, query -> {
             lastQuery = query;
             getPresenter().applySearch(query);
         });
-
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_map:
                     router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment().useDefaults()
-                            .data(new DtlMapBundle(getArgs().getLocation(), false))
+                            .data(new DtlMapBundle(false))
                             .fragmentManager(getParentFragment().getFragmentManager())
                             .containerId(R.id.dtl_container)
                             .build());
@@ -107,7 +107,6 @@ public class DtlPlacesTabsFragment
             }
             return super.onOptionsItemSelected(item);
         });
-
     }
 
     @Override

@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
@@ -39,14 +38,15 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_locations)
 @MenuResource(R.menu.menu_locations)
-public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> implements DtlLocationsPresenter.View {
+public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
+        implements DtlLocationsPresenter.View {
 
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-
+    //
     BaseArrayListAdapter adapter;
-
+    //
     @InjectView(R.id.locationsList)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.empty_view)
@@ -57,7 +57,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     Toolbar toolbar;
     @InjectView(R.id.progress)
     View progress;
-
+    //
     SearchView searchView;
     MenuItem searchItem;
 
@@ -70,14 +70,14 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         initToolbar();
-
+        //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setEmptyView(emptyView);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
-
+        //
         adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
-
+        //
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
         adapter.registerCell(String.class, DtlHeaderCell.class);
         recyclerView.setAdapter(adapter);
@@ -102,7 +102,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
                     getPresenter().searchOpened();
                     return true;
                 }
-
+                //
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     searchView.setOnQueryTextListener(null);
@@ -163,13 +163,12 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter> 
     }
 
     @Override
-    public void showMerchants(PlacesBundle bundle) {
+    public void showMerchants() {
         router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_container)
                 .fragmentManager(getFragmentManager())
                 .backStackEnabled(false)
                 .clearBackStack(true)
-                .data(bundle)
                 .build());
     }
 

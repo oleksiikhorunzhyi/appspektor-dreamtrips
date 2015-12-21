@@ -37,6 +37,10 @@ public class SearchViewHelper {
         }
     }
 
+    public void dropHelper() {
+        onSearchViewClosed();
+    }
+
     private boolean onSearchViewClosed() {
         searchViewSubscription.unsubscribe();
         if (onQueryChangedListener != null) {

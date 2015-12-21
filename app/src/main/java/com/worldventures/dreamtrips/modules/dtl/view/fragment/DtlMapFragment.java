@@ -36,6 +36,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    SearchViewHelper searchViewHelper;
     //
     DtlMapBundle bundle;
     //
@@ -63,7 +64,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        new SearchViewHelper().init(searchItem, lastQuery, query -> {
+        searchViewHelper = new SearchViewHelper();
+        searchViewHelper.init(searchItem, lastQuery, query -> {
             lastQuery = query;
             getPresenter().applySearch(query);
         });
@@ -178,11 +180,14 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        searchViewHelper.dropHelper();
+        //
         if (clusterManager != null) {
             clusterManager.setOnClusterClickListener(null);
             clusterManager.setOnClusterItemClickListener(null);
         }
+        //
+        super.onDestroyView();
     }
 
     @Override

@@ -44,6 +44,7 @@ public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter>
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     //
+    SearchViewHelper searchViewHelper;
     BasePagerAdapter<DataFragmentItem> adapter;
     //
     @State
@@ -88,7 +89,8 @@ public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter>
         //
         toolbar.inflateMenu(R.menu.menu_dtl_list);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        new SearchViewHelper().init(searchItem, lastQuery, query -> {
+        searchViewHelper = new SearchViewHelper();
+        searchViewHelper.init(searchItem, lastQuery, query -> {
             lastQuery = query;
             getPresenter().applySearch(query);
         });
@@ -168,5 +170,11 @@ public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter>
     @Override
     public void onApiCallFailed() {
         //
+    }
+
+    @Override
+    public void onDestroyView() {
+        searchViewHelper.dropHelper();
+        super.onDestroyView();
     }
 }

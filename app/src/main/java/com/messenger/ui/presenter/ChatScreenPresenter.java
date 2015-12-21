@@ -9,6 +9,6 @@ public interface ChatScreenPresenter extends ActivityAwareViewStateMvpPresenter<
 
     User getUser();
 
-    void loadNextPage();
+    void onNextPageReached();
 }
 

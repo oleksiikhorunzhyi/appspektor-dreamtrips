@@ -9,6 +9,8 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.NewChatLayoutPresenterImpl;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Singleton;
 
@@ -36,9 +38,8 @@ public class XmppServerModule {
         return new XmppServerFacade();
     }
 
-    @Singleton
     @Provides
-    User provideUser() {
-        return new User("techery_user2");
+    User provideUser(SessionHolder<UserSession> appSessionHolder) {
+        return new User(appSessionHolder.get().get().getUser().getUsername());
     }
 }

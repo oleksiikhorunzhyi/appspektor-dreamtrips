@@ -16,6 +16,7 @@ import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
@@ -61,7 +62,7 @@ public class XmppServerFacade implements MessengerServerFacade {
         Log.i("Xmpp Authorize with ", String.format("userName:%s password:%s", username, password));
 
         connectionExecutor.execute(() -> {
-                    //SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
+                    SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
                     connection = new XMPPTCPConnection(XMPPTCPConnectionConfiguration.builder()
                             .setUsernameAndPassword(username, password)
                             .setServiceName(JidCreatorHelper.SERVICE_NAME)

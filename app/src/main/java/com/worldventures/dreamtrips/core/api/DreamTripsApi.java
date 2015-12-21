@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
+import com.messenger.api.ShortProfilesBody;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
@@ -79,6 +80,9 @@ public interface DreamTripsApi {
 
     @GET("/api/profiles/{id}")
     User getPublicProfile(@Path("id") int id);
+
+    @POST("/api/users/profiles/short")
+    ArrayList<User> getShortProfiles(@Body ShortProfilesBody body);
 
     @GET("/api/trips")
     List<TripModel> getTrips();

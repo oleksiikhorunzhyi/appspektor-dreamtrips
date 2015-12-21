@@ -1,6 +1,5 @@
 package com.messenger.ui.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,7 +25,6 @@ import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
-import com.messenger.ui.widget.ChatUsersTypingView;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;
@@ -37,15 +35,21 @@ import butterknife.OnEditorAction;
 public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatScreenPresenter>
         implements ChatScreen {
 
-    @InjectView(R.id.chat_content_view) View contentView;
-    @InjectView(R.id.chat_loading_view) View loadingView;
-    @InjectView(R.id.chat_error_view) View errorView;
+    @InjectView(R.id.chat_content_view)
+    View contentView;
+    @InjectView(R.id.chat_loading_view)
+    View loadingView;
+    @InjectView(R.id.chat_error_view)
+    View errorView;
 
-    @InjectView(R.id.chat_toolbar) Toolbar toolbar;
-    @InjectView(R.id.chat_recycler_view) RecyclerView recyclerView;
+    @InjectView(R.id.chat_toolbar)
+    Toolbar toolbar;
+    @InjectView(R.id.chat_recycler_view)
+    RecyclerView recyclerView;
     //@InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
 
-    @InjectView(R.id.chat_message_edit_text) EditText messageEditText;
+    @InjectView(R.id.chat_message_edit_text)
+    EditText messageEditText;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -75,20 +79,19 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
         recyclerView.setSaveEnabled(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0) return;
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) return;
                 final int threshold = 5;
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 
                 if (firstVisibleItem <= threshold) {
-                    getPresenter().loadNextPage();
+                    getPresenter().onNextPageReached();
                 }
             }
         });
@@ -117,11 +120,13 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         }
     }
 
-    @Override public AppCompatActivity getActivity() {
+    @Override
+    public AppCompatActivity getActivity() {
         return (AppCompatActivity) getContext();
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         return getPresenter().onCreateOptionsMenu(menu);
     }
 
@@ -130,20 +135,24 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         return getPresenter().onOptionsItemSelected(item);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         getPresenter().onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         getPresenter().onDestroy();
     }
 
     @NonNull
-    @Override public ChatScreenPresenter createPresenter() {
+    @Override
+    public ChatScreenPresenter createPresenter() {
         Context context = getContext();
         Intent startIntent = getActivity().getIntent();
         int chatType = startIntent.getIntExtra(ChatActivity.EXTRA_CHAT_TYPE, 0);
@@ -157,19 +166,21 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         }
     }
 
-    @Override public void showLoading() {
-        contentView.setVisibility(View.GONE);
+    @Override
+    public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         errorView.setVisibility(View.GONE);
     }
 
-    @Override public void showContent() {
+    @Override
+    public void showContent() {
         contentView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.GONE);
     }
 
-    @Override public void showError(Throwable e) {
+    @Override
+    public void showError(Throwable e) {
         contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
@@ -218,8 +229,9 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 //    }
 
     @Override
-    public void onConversationCursorLoaded(Cursor cursor, Conversation conversation) {
+    public void onConversationCursorLoaded(Cursor cursor, Conversation conversation, boolean pendingScroll) {
         adapter.setConversation(conversation);
         adapter.changeCursor(cursor);
+        if (pendingScroll) recyclerView.smoothScrollToPosition(cursor.getCount());
     }
 }

@@ -70,7 +70,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
             }
         });
 
-        holder.updateParticipants(chatConversation.getId(), arg -> setNameAndAvatar(holder, chatConversation, arg));
+        holder.updateParticipants(chatConversation.getId(), users -> setNameAndAvatar(holder, chatConversation, users));
     }
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount) {

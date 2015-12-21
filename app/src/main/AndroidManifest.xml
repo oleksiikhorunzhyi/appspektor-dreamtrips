@@ -123,6 +123,10 @@
             android:screenOrientation="sensorPortrait"
             android:name="com.messenger.ui.activity.MessengerStartActivity"/>
 
+        <activity
+            android:screenOrientation="sensorPortrait"
+            android:name="com.messenger.ui.activity.ChatSettingsActivity"/>
+
         <!--For result activities-->
 
         <activity

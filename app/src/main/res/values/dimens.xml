@@ -212,5 +212,23 @@
     <dimen name="chat_typing_avatars_border">1dp</dimen>
     <dimen name="chat_list_item_vertical_padding">6dp</dimen>
     <dimen name="chat_list_item_horizontal_padding">@dimen/list_item_horizontal_padding</dimen>
+
+    <!-- Chat settings screen -->
+    <dimen name="chat_settings_chat_info_vertical_margin">40dp</dimen>
+    <dimen name="chat_settings_chat_info_horizontal_margin">40dp</dimen>
+    <dimen name="chat_settings_chat_name_textview_text_size">22sp</dimen>
+    <dimen name="chat_settings_chat_name_textview_left_margin">24dp</dimen>
+    <dimen name="chat_settings_chat_description_textview_text_size">10sp</dimen>
+    <dimen name="chat_settings_row_text_size">16sp</dimen>
+    <dimen name="chat_settings_row_vertical_margin">15dp</dimen>
+    <dimen name="chat_settings_row_horizontal_margin">15dp</dimen>
+    <dimen name="chat_settings_row_icon_size">24dp</dimen>
+    <dimen name="chat_settings_action_buttons_width">190dp</dimen>
+    <dimen name="chat_settings_action_buttons_text_size">14sp</dimen>
+    <dimen name="chat_settings_action_buttons_layout_vertical_margin">40dp</dimen>
+    <dimen name="chat_settings_action_button_top_margin">20dp</dimen>
+    <dimen name="chat_settings_group_chat_info_top_margin">30dp</dimen>
+    <dimen name="chat_settings_group_chat_info_text_size">12sp</dimen>
+    <dimen name="chat_settings_group_chat_info_horizontal_padding">10dp</dimen>
     <!--end messenger-->
 </resources>

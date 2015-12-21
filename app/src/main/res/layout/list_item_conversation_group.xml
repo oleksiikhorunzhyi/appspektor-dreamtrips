@@ -9,11 +9,9 @@
 
     <com.messenger.ui.widget.GroupAvatarsView
         android:id="@+id/conversation_group_avatars_view"
-        android:layout_width="@dimen/list_item_avatar_image_view_size"
-        android:layout_height="@dimen/list_item_avatar_image_view_size"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        />
+        style="@style/GroupChatBigAvatarView"/>
 
     <TextView
         android:id="@+id/conversation_name_textview"

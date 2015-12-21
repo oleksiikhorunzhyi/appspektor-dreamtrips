@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.messenger.constant.CursorLoaderIds;
@@ -23,6 +24,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -209,6 +211,22 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         MenuInflater inflater = ((AppCompatActivity) getContext()).getMenuInflater();
         inflater.inflate(R.menu.chat, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                return true;
+            case R.id.action_settings:
+                if (conversation.getType().equals(Conversation.Type.CHAT)) {
+                    ChatSettingsActivity.startSingleChatSettings(getContext(), conversation.getId());
+                } else {
+                    ChatSettingsActivity.startGroupChatSettings(getContext(), conversation.getId());
+                }
+                return true;
+        }
+        return false;
     }
 
     ///////////////////////////////////////////////////////////////////////////

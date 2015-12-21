@@ -109,4 +109,12 @@ g    <color name="dtl_tab_text_normal">#B1B2B1</color>
     <color name="conversation_list_last_message_date">@color/conversation_list_message</color>
     <!--end messenger-->
 
+    <!-- Chat settings screen -->
+    <color name="chat_settings_chat_name_title_textview">#0F0F0F</color>
+    <color name="chat_settings_chat_name_description_textview">#BABABA</color>
+    <color name="chat_settings_row_text_view">#3e3d3e</color>
+    <color name="chat_settings_divider">#e1e1e1</color>
+    <color name="chat_settings_action_white_button_text_color">@color/chat_settings_row_text_view</color>
+    <color name="chat_settings_action_red_button_text_color">@color/white</color>
+    <color name="chat_settings_group_info_text_view_color">#3e3d3e</color>
 </resources>

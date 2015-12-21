@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dtl_cities_background"
     android:orientation="vertical"
     tools:layout_marginLeft="400dp"
     >
@@ -25,87 +26,100 @@
         android:showDividers="middle"
         >
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dtl_details_header_height"
+            android:divider="@drawable/list_divider_vertical"
+            android:orientation="horizontal"
+            android:showDividers="middle"
             >
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/place_details_cover_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:divider="@drawable/list_divider_vertical"
-                android:orientation="horizontal"
-                android:showDividers="middle"
-                >
+                android:orientation="vertical"
+                android:layout_weight="4">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:orientation="vertical">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dtl_details_photo_height"
+                    >
 
-                    <include
-                        layout="@layout/include_dtl_place_details_header"
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/place_details_cover_pager"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="match_parent"
                         />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include
+                            layout="@layout/include_dtl_place_details_header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+
+                    </FrameLayout>
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <include
                         layout="@layout/include_dtl_place_details_category"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
-                </LinearLayout>
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:minHeight="140dp"
+                >
 
                 <FrameLayout
-                    android:layout_width="0dp"
+                    android:id="@+id/place_details_map"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:minHeight="140dp"
-                    >
+                    />
 
-                    <FrameLayout
-                        android:id="@+id/place_details_map"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="#96c2c2c2"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_small"
+                    android:text="@string/directions"
+                    android:textAllCaps="true"
+                    android:textColor="#005e92"
+                    android:textSize="14sp"
+                    />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:background="#96c2c2c2"
-                        android:gravity="center"
-                        android:padding="@dimen/spacing_small"
-                        android:text="@string/directions"
-                        android:textAllCaps="true"
-                        android:textColor="#005e92"
-                        android:textSize="14sp"
-                        />
-
-                    <!-- Next layer is just to get clicks on map -->
-                    <FrameLayout
-                        android:id="@+id/dtl_place_details_map_click_interceptor"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
-                        />
-                </FrameLayout>
-            </LinearLayout>
-        </FrameLayout>
+                <!-- Next layer is just to get clicks on map -->
+                <FrameLayout
+                    android:id="@+id/dtl_place_details_map_click_interceptor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    />
+            </FrameLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@drawable/list_divider_vertical"
             android:background="@color/dtl_cities_background"
+            android:divider="@drawable/list_divider_vertical"
             android:orientation="horizontal"
             android:showDividers="middle">
 

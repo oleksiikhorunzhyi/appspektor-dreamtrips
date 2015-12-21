@@ -1,5 +1,7 @@
 package com.messenger.messengerservers.xmpp.util;
 
+import android.text.TextUtils;
+
 import com.messenger.messengerservers.entities.User;
 
 import java.util.UUID;
@@ -13,11 +15,11 @@ public final class JidCreatorHelper {
     }
 
     public static String obtainUserJid(String userId) {
-        return userId.isEmpty() ? null : userId + "@" + SERVICE_NAME;
+        return TextUtils.isEmpty(userId) ? null : userId + "@" + SERVICE_NAME;
     }
 
     public static String obtainGroupJid(String roomName) {
-        return String.format("%s@conference.%s", roomName != null? roomName : UUID.randomUUID().toString(), SERVICE_NAME);
+        return String.format("%s@conference.%s", roomName != null ? roomName : UUID.randomUUID().toString(), SERVICE_NAME);
     }
 
     public static User obtainUser(String jid) {

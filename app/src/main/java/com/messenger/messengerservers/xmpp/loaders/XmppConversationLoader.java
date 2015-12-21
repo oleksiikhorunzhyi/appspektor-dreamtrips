@@ -2,7 +2,6 @@ package com.messenger.messengerservers.xmpp.loaders;
 
 import android.util.Log;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ConversationWithParticipants;
 import com.messenger.messengerservers.entities.User;
@@ -11,20 +10,20 @@ import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationListPacket;
 import com.messenger.messengerservers.xmpp.providers.ConversationProvider;
-import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.util.ParticipantProvider;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smackx.muc.Affiliate;
-import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.muc.MultiUserChatManager;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 
 public class XmppConversationLoader extends Loader<ConversationWithParticipants> {
     private static final String TAG = "XMPP CONTACT LOADER";
@@ -41,84 +40,59 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
         ObtainConversationListPacket packet = new ObtainConversationListPacket();
         packet.setMax(MAX_CONVERSATIONS);
         packet.setType(IQ.Type.get);
-        Log.i("Send XMPP Packet: ", packet.toString());
 
+        ProviderManager.addIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE, new ConversationProvider());
         try {
-            ProviderManager.addIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE, new ConversationProvider());
             facade.getConnection().sendStanzaWithResponseCallback(packet,
                     (stanza) -> stanza instanceof ConversationsPacket,
                     (stanzaPacket) -> {
                         List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
-                        conversations = filterConversations(conversations);
-                        notifyListeners(obtainConversationsWithParticipants(conversations));
-                        ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
+                        obtainConversationsWithParticipants(conversations)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(conversationWithParticipants -> {
+                                    Log.e("Loaded", "size: " + conversationWithParticipants.size());
+                                    notifyListeners(conversationWithParticipants);
+                                    ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
+                                });
                     });
         } catch (SmackException.NotConnectedException e) {
-            Log.i("XmppConversationLoader", "Loading error", e);
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
 
-    private List<Conversation> filterConversations(List<Conversation> conversations ){
-        List<Conversation> filteredConversations = new ArrayList<>();
-        for (Conversation conversation: conversations) {
-            if (!(conversation.getType().equals(Conversation.Type.CHAT)) || !isConversationMyself(conversation)){
-                filteredConversations.add(conversation);
-            }
-        }
-        return filteredConversations;
+    private Observable<List<ConversationWithParticipants>> obtainConversationsWithParticipants(List<Conversation> conversations) {
+        ParticipantProvider provider = new ParticipantProvider(facade.getConnection());
+        return Observable.from(conversations)
+                .filter(c -> !hasNoOtherUsers(c))
+                .flatMap(conversation -> Observable.<ConversationWithParticipants>create(subscriber -> {
+                    if (conversation.getType().equals(CHAT)) {
+                        List<User> users = provider.getSingleChatParticipants(conversation);
+                        if (subscriber.isUnsubscribed()) return;
+                        //
+                        subscriber.onNext(new ConversationWithParticipants(conversation, users));
+                        subscriber.onCompleted();
+                    } else {
+                        provider.loadMultiUserChatParticipants(conversation, (owner, members) -> {
+                            if (subscriber.isUnsubscribed() || owner == null) return;
+                            //
+                            conversation.setOwnerId(owner.getId());
+                            members.add(0, owner);
+                            subscriber.onNext(new ConversationWithParticipants(conversation, members));
+                            subscriber.onCompleted();
+                        });
+                    }
+                }))
+                .toList();
     }
 
-    private boolean isConversationMyself(Conversation conversation){
+    private boolean hasNoOtherUsers(Conversation conversation) {
         String companion = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, facade.getConnection().getUser());
         return companion == null;
     }
 
-    private List<ConversationWithParticipants> obtainConversationsWithParticipants(List<Conversation> conversations){
-        return Queryable.from(conversations).map(c -> {
-            List<User> participants;
-            if(c.getType().equals(Conversation.Type.CHAT)) {
-                participants = getSingleChatParticipants(c);
-            } else {
-                participants = getMultiUserChat(c);
-            }
-            return new ConversationWithParticipants(c, participants);
-        }).toList();
-    }
-
-    private List<User> getSingleChatParticipants(Conversation conversation){
-        ArrayList<User> participants = new ArrayList<>();
-        String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, facade.getConnection().getUser());
-        participants.add(JidCreatorHelper.obtainUser(companionJid));
-        return participants;
-    }
-
-    private List<User> getMultiUserChat(Conversation conversation) {
-        ArrayList<User> participants = new ArrayList<>();
-        AbstractXMPPConnection connection = facade.getConnection();
-        MultiUserChatManager multiUserChatManager = MultiUserChatManager.getInstanceFor(connection);
-        MultiUserChat multiUserChat = multiUserChatManager.getMultiUserChat(JidCreatorHelper.obtainGroupJid(conversation.getId()));
-
-        try {
-            if (!multiUserChat.isJoined()){
-                multiUserChat.join(JidCreatorHelper.obtainUser(connection.getUser()).getUserName());
-            }
-
-            List<Affiliate> affiliates = multiUserChat.getOwners();
-            affiliates.addAll(multiUserChat.getMembers());
-            for (Affiliate affiliate: affiliates){
-                String participantJid = affiliate.getJid();
-                participants.add(JidCreatorHelper.obtainUser(participantJid));
-            }
-        } catch (SmackException | XMPPException.XMPPErrorException e) {
-            Log.i(TAG, Log.getStackTraceString(e));
-            return null;
-        }
-
-        return participants;
-    }
-
     public void notifyListeners(List<ConversationWithParticipants> conversations) {
-        if(persister != null){
+        if (persister != null) {
             persister.save(conversations);
         }
         if (onEntityLoadedListener != null) {

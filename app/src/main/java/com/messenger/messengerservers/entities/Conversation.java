@@ -31,6 +31,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @PrimaryKey @Column String _id;
+    @Column String ownerId;
     @Column String subject;
     @Column String type;
     @ForeignKey(
@@ -66,6 +67,14 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setId(String id) {
         this._id = id;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getSubject() {

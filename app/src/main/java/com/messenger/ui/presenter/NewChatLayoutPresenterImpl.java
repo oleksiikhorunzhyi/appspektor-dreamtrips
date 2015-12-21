@@ -24,6 +24,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
@@ -249,11 +250,18 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
                 if (selectedUsers.size() == 1) {
                     ChatActivity.startSingleChat(parentActivity, conversation.getId());
                 } else {
+                    inviteUsersToGroupChat(conversation, selectedUsers);
                     ChatActivity.startGroupChat(parentActivity, conversation.getId());
                 }
                 return true;
         }
         return false;
+    }
+
+    private void inviteUsersToGroupChat(Conversation conversation, List<User> participants){
+        MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
+                                    .createMultiUserChat(user, conversation.getId());
+        multiUserChat.invite(participants);
     }
 
     @Override

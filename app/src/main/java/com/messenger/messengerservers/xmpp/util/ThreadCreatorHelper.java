@@ -27,13 +27,12 @@ public final class ThreadCreatorHelper {
         return obtainThreadSingleChat(user1Jid, user2Jid);
     }
 
-    public static String obtainCompanionFromSingleChat(Conversation conversation, String userJid){
-        String companionJid = JidCreatorHelper
-                .obtainUserJid(conversation.getId()
-                        .replace(userJid.split("@")[0], "")
-                        .replace("_", "")
-                                //// TODO: 12/15/15  remove after implemented social graph
-                        .replace("yu", "y_u"));
-        return companionJid;
+    public static String obtainCompanionFromSingleChat(Conversation conversation, String userJid) {
+        String userId = conversation.getId()
+                .replace(userJid.split("@")[0], "")
+                .replace("_", "")
+                //// TODO: 12/15/15  remove after implemented social graph
+                .replace("yu", "y_u");
+        return JidCreatorHelper.obtainUserJid(userId);
     }
 }

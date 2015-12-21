@@ -30,14 +30,9 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column String ownerId;
     @Column String subject;
     @Column String type;
+    @Column int unreadMessageCount;
 
-    private Message lastMessage;
-
-    int unreadMessageCount = 0;
-
-
-    public Conversation() {
-    }
+    public Conversation() {}
 
     public Conversation(String id, String subject, String type) {
         setId(id);
@@ -91,14 +86,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setUnreadMessageCount(int unreadMessageCount) {
         this.unreadMessageCount = unreadMessageCount;
-    }
-
-    public Message getLastMessage() {
-        return lastMessage;
-    }
-
-    public void setLastMessage(Message lastMessage) {
-        this.lastMessage = lastMessage;
     }
 
     @Override
@@ -159,7 +146,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String id;
         private String subject;
         private String type;
-        private Message lastMessage;
         private int unreadMessageCount = 0;
 
         public Builder() {
@@ -177,11 +163,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder type(@Type.ConversationType String val) {
             type = val;
-            return this;
-        }
-
-        public Builder lastMessage(Message val) {
-            lastMessage = val;
             return this;
         }
 

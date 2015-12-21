@@ -89,20 +89,20 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         if (contactSubscription != null && !contactSubscription.isUnsubscribed()) {
             contactSubscription.unsubscribe();
         }
-        String query = "SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
+        StringBuilder query = new StringBuilder("SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
                 "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
                 "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + " " +
                 "FROM " + Conversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + Message.TABLE_NAME + " m " +
-                "ON c._id=m." + Message.COLUMN_CONVERSATION_ID + " ";
+                "ON c._id=m." + Message.COLUMN_CONVERSATION_ID + " ");
 
         if (getViewState().isShowOnlyGroupConversations()) {
-            query += "WHERE c.type not like ?";
+            query.append("WHERE c.type not like ?");
         }
-        query += "GROUP BY c._id ORDER BY m." + Message.COLUMN_DATE + " DESC";
+        query.append("GROUP BY c._id ORDER BY m." + Message.COLUMN_DATE + " DESC");
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
-                .withSelection(query);
+                .withSelection(query.toString());
         if (getViewState().isShowOnlyGroupConversations()) {
             queryBuilder.withSelectionArgs(new String[] {Conversation.Type.CHAT});
         }

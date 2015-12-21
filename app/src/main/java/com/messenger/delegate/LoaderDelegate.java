@@ -25,13 +25,10 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 
 //todo check for leak
 public class LoaderDelegate {
-
-    private final Context context;
     private final MessengerServerFacade messengerServerFacade;
     private final DreamSpiceManager requester;
 
     public LoaderDelegate(Context context, MessengerServerFacade messengerServerFacade, DreamSpiceManager requester) {
-        this.context = context;
         this.messengerServerFacade = messengerServerFacade;
         this.requester = requester;
     }
@@ -43,12 +40,12 @@ public class LoaderDelegate {
 
             // save convs
             List<Conversation> convs = from(data).map(d -> d.conversation).toList();
-            List<Message> messages = from(convs).map(c -> c.getLastMessage()).toList();
+            List<Message> messages = from(data).map(c -> c.lastMessage).toList();
 
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
             ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages);
             // save relationships
-            List<ParticipantsRelationship> relationships = data.isEmpty() ? new ArrayList<>() : from(data)
+            List<ParticipantsRelationship> relationships = from(data)
                     .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p)))
                     .toList();
             ContentUtils.bulkInsert(ParticipantsRelationship.CONTENT_URI, ParticipantsRelationship.class, relationships);

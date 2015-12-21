@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.List;
 
@@ -39,8 +39,10 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
         super.takeView(view);
         dtlMerchantRepository.attachListener(this);
         //
-        if (dtlFilterData == null)
+        if (dtlFilterData == null) {
             dtlFilterData = DtlFilterData.createDefault();
+            dtlFilterData.setDistanceType(db.getDistanceType());
+        }
 
         dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         attachAmenities();
@@ -79,7 +81,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     }
 
     public void distanceChanged(int right) {
-        dtlFilterData.setDistanceType(right);
+        dtlFilterData.setCurrentDistance(right);
     }
 
     public void apply() {
@@ -87,8 +89,10 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
         dtlFilterDelegate.performFiltering();
     }
 
-    public void distanceToggle() {
-        dtlFilterData.toggleDistance();
+    public void toggleDistance(boolean isChecked) {
+        dtlFilterData.setDistanceType(isChecked ? DtlFilterData.DistanceType.KMS :
+                DtlFilterData.DistanceType.MILES);
+        db.saveDistanceToggle(dtlFilterData.getDistanceType());
         view.attachFilterData(dtlFilterData);
     }
 

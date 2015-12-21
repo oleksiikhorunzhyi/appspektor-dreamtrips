@@ -55,7 +55,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
                 getPresenter().distanceChanged(Integer.valueOf(rightValue)));
         rangeBarPrice.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
                 getPresenter().priceChanged(Integer.valueOf(leftValue), Integer.valueOf(rightValue)));
-        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().distanceToggle());
+        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().toggleDistance(isChecked));
     }
 
     @OnClick(R.id.apply)

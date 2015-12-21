@@ -1,45 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/tag_common_height_with_arrow"
-                android:background="@drawable/background_tag">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/pointer_top"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/tag_common_height"
-        android:layout_alignParentBottom="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:adjustViewBounds="true"
+        android:src="@drawable/photo_tag_additional_part"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/photo_tag_main_part"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small">
 
         <TextView
             android:id="@+id/tagged_user_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/tag_exist_text_padding"
-            android:paddingRight="@dimen/tag_exist_text_padding"
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:singleLine="false"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/font_medium"/>
+            android:textIsSelectable="false"
+            android:textSize="@dimen/font_medium"
+            tools:text="Techery Test"/>
 
         <View
             android:id="@+id/tagged_user_delete_tag_divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@id/tagged_user_name"
-            android:layout_marginLeft="-21dp"
-            android:visibility="gone"
-            android:background="@color/tag_view_background_border" />
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:background="@color/tag_view_background_border"
+            android:visibility="gone"/>
 
-        <View
+        <ImageView
             android:id="@+id/tagged_user_delete_tag"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/tagged_user_delete_tag_divider"
-            android:layout_marginLeft="5dp"
-            android:visibility="gone"
-            android:background="@drawable/ic_close_tag" />
-    </RelativeLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_tag"
+            android:visibility="gone"/>
+    </LinearLayout>
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/pointer_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:rotation="180"
+        android:src="@drawable/photo_tag_additional_part"/>
+</LinearLayout>

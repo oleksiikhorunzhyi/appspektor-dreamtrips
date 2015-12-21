@@ -114,7 +114,16 @@ public class OwnTaggableImageHolderPresenter extends TaggableImageHolderPresente
 
     @Override
     public List<PhotoTag> getTagsToUpload() {
-        return newAddedTags.size() > 0 ? newAddedTags : null;
+        if (newAddedTags.size() > 0) {
+            Queryable.from(newAddedTags).forEachR(tag -> {
+                PhotoTag.TagPosition newTagPosition = CoordinatesTransformer
+                        .convertToProportional(tag.getPosition(), view.getImageBounds());
+                tag.setTagPosition(newTagPosition);
+            });
+            return newAddedTags;
+        }
+
+        return null;
     }
 
     @Override

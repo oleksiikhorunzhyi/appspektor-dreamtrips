@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import javax.inject.Inject;
 
 import icepick.State;
-import timber.log.Timber;
 
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
@@ -62,7 +61,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     private void onLocationError(Throwable e) {
         if (e instanceof LocationDelegate.LocationException)
             onStatusError(((LocationDelegate.LocationException) e).getStatus());
-        else Timber.e(e, "Something went wrong while location update");
+        else locationNotGranted();
     }
 
     private void onLocationObtained(Location location) {

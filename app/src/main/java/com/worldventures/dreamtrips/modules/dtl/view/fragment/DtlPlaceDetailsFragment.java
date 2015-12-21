@@ -37,7 +37,6 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlCategoryDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceManyImagesDataInflater;
@@ -65,7 +64,6 @@ public class DtlPlaceDetailsFragment
 
     DtlPlaceCommonDataInflater commonDataInflater;
     DtlPlaceInfoInflater placeInfoInflater;
-    DtlCategoryDataInflater categoryDataInflater;
     DtlPlaceHelper helper;
 
     @Inject
@@ -114,7 +112,6 @@ public class DtlPlaceDetailsFragment
         helper = new DtlPlaceHelper(activity);
         commonDataInflater = new DtlPlaceManyImagesDataInflater(helper, getChildFragmentManager());
         placeInfoInflater = new DtlPlaceInfoInflater(helper);
-        categoryDataInflater = new DtlCategoryDataInflater(helper);
     }
 
     @Override
@@ -142,7 +139,6 @@ public class DtlPlaceDetailsFragment
         }
         commonDataInflater.setView(rootView);
         placeInfoInflater.setView(rootView);
-        categoryDataInflater.setView(rootView);
 
         getPresenter().trackScreen();
     }
@@ -151,7 +147,6 @@ public class DtlPlaceDetailsFragment
     public void setPlace(DtlMerchant place) {
         commonDataInflater.apply(place);
         placeInfoInflater.apply(place);
-        categoryDataInflater.apply(place);
         setType(place);
         setDescriptions(place);
         setAdditional(place);

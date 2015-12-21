@@ -87,18 +87,18 @@ public class DtlFilterData implements Parcelable {
         this.maxDistance = maxDistance;
     }
 
-    public void setDistanceType(int maxDistance) {
+    public void setCurrentDistance(int maxDistance) {
         // monkey-patch for unusual crashes with values out of bounds for rangebar
         this.maxDistance = maxDistance > MAX_DISTANCE ? MAX_DISTANCE : maxDistance;
     }
 
-    public DistanceType getDistanceType() {
-        return distanceType;
+
+    public void setDistanceType(DistanceType distanceType) {
+        this.distanceType = distanceType;
     }
 
-    public void toggleDistance() {
-        if (distanceType == DistanceType.KMS) distanceType = DistanceType.MILES;
-        else distanceType = DistanceType.KMS;
+    public DistanceType getDistanceType() {
+        return distanceType;
     }
 
     public enum DistanceType {

@@ -19,6 +19,10 @@ public class DtlFilterDelegate {
         return dtlFilterData;
     }
 
+    public DtlFilterData.DistanceType getDistanceType() {
+        return dtlFilterData.getDistanceType();
+    }
+
     public void addListener(FilterListener filterListener) {
         listeners.add(filterListener);
     }

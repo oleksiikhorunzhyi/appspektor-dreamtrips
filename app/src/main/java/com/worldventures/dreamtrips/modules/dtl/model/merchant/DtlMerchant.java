@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
@@ -212,13 +213,22 @@ public class DtlMerchant implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     private transient double distance;
+    private transient DtlFilterData.DistanceType distanceType;
 
     public void setDistance(double distance) {
         this.distance = distance;
     }
 
+    public void setDistanceType(DtlFilterData.DistanceType distanceType) {
+        this.distanceType = distanceType;
+    }
+
     public double getDistance() {
         return distance;
+    }
+
+    public DtlFilterData.DistanceType getDistanceType() {
+        return distanceType;
     }
 
     @Override

@@ -102,4 +102,6 @@
     <string name="dtl_coming_soon_offers">Offers coming soon</string>
     <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
     <string name="rep_suggest_restaurant">Suggest Restaurant</string>
+    <string name="distance_miles" formatted="false">%.1f mi</string>
+    <string name="distance_kms" formatted="false">%.1f km</string>
 </resources>

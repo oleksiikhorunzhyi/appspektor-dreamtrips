@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
@@ -110,6 +109,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         DtlFilterData dtlFilterData = dtlFilterDelegate.getDtlFilterData();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {
+            dtlMerchant.setDistanceType(dtlFilterDelegate.getDistanceType());
             dtlMerchant.setDistance(dtlLocationHelper.calculateDistance(
                     dtlFilterData.getDistanceType(),
                     currentLatLng, dtlMerchant.getCoordinates().asLatLng()));

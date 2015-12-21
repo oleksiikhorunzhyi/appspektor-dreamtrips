@@ -90,14 +90,15 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     }
 
     protected void performFiltering(String query) {
-        view.bind(locationDelegate
-                        .getLastKnownLocation()
-                        .onErrorResumeNext(Observable.just(locationRepository.getSelectedLocation()
-                                .asAndroidLocation()))
-                        .flatMap(location -> mapToMerchantList(location, query))
-                        .doOnNext(merchants -> track(merchants, query))
-                        .compose(new IoToMainComposer<>())
-        ).subscribe(this::merchantsPrepared, this::onError);
+        if (view != null)
+            view.bind(locationDelegate
+                            .getLastKnownLocation()
+                            .onErrorResumeNext(Observable.just(locationRepository.getSelectedLocation()
+                                    .asAndroidLocation()))
+                            .flatMap(location -> mapToMerchantList(location, query))
+                            .doOnNext(merchants -> track(merchants, query))
+                            .compose(new IoToMainComposer<>())
+            ).subscribe(this::merchantsPrepared, this::onError);
     }
 
     protected Observable<List<DtlMerchant>> mapToMerchantList(Location location, String query) {

@@ -98,7 +98,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 loadConversationList();
             }
         });
-        messengerServerFacade.authorizeAsync(user.getUserName(), user.getUserName());
+        messengerServerFacade.authorizeAsync(user.getUserName(), appSessionHolder.get().get().getLegacyApiToken());
     }
 
     @Override

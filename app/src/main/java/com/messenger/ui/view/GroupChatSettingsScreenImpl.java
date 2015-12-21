@@ -25,6 +25,8 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     @InjectView(R.id.chat_settings_group_chat_info_textview)
     TextView groupChatInfoTextView;
 
+    private ChatSettingsRow membersSettingsRow;
+
     public GroupChatSettingsScreenImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -55,12 +57,14 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
                 onlineCount);
         chatDescriptionTextView.setText(chatDescription);
 
-        ChatSettingsRow notificationsRow = new ChatSettingsRow(getContext());
-        notificationsRow.setIcon(R.drawable.ic_people_black_24_px);
+        if (membersSettingsRow == null) {
+            membersSettingsRow = new ChatSettingsRow(getContext());
+            chatSettingsRows.addView(membersSettingsRow);
+            membersSettingsRow.setIcon(R.drawable.ic_people_black_24_px);
+            membersSettingsRow.setOnClickListener(v -> getPresenter().onMembersRowClicked());
+        }
         String membersFormat = getContext().getString(R.string.chat_settings_row_members_format);
-        notificationsRow.setTitle(String.format(membersFormat, participants.size()));
-        chatSettingsRows.addView(notificationsRow);
-        notificationsRow.setOnClickListener(v -> getPresenter().onMembersRowClicked());
+        membersSettingsRow.setTitle(String.format(membersFormat, participants.size()));
 
         // we decided to not add it for now
 //        groupChatInfoTextView.setVisibility(View.VISIBLE);

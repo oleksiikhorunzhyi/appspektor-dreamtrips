@@ -39,12 +39,12 @@
                     <com.messenger.ui.widget.GroupAvatarsView
                         android:id="@+id/chat_settings_group_avatars_view"
                         style="@style/GroupChatBigAvatarView"
-                        android:visibility="gone"/>
+                        android:visibility="invisible"/>
                     <com.messenger.ui.widget.AvatarView
                         android:id="@+id/chat_settings_single_chat_avatar_view"
                         app:riv_oval="true"
                         style="@style/SingleChatBigAvatarView"
-                        android:visibility="gone"/>
+                        android:visibility="invisible"/>
                 </FrameLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -6,15 +6,13 @@
         android:title="@string/chat_settings_menu_settings"
         android:icon="@drawable/ic_post_more_normal"
         app:showAsAction="always">
+        <!-- add this as overflow menu as designer suggested-->
         <menu>
         <item
             android:id="@+id/action_edit_chat_name"
             android:title="@string/chat_settings_menu_edit_chat_name"
             app:showAsAction="always"/>
-        <item
-            android:id="@+id/action_change_chat_image"
-            android:title="@string/chat_settings_menu_change_chat_image"
-            app:showAsAction="always"/>
+        <!-- change image menu item will be here later -->
         </menu>
     </item>
 </menu>

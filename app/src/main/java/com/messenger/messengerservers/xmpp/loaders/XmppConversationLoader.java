@@ -2,7 +2,9 @@ package com.messenger.messengerservers.xmpp.loaders;
 
 import android.util.Log;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.ConversationWithParticipants;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -24,7 +26,7 @@ import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XmppConversationLoader extends Loader<Conversation> {
+public class XmppConversationLoader extends Loader<ConversationWithParticipants> {
     private static final String TAG = "XMPP CONTACT LOADER";
 
     private static final int MAX_CONVERSATIONS = 30;
@@ -48,8 +50,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
                     (stanzaPacket) -> {
                         List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
                         conversations = filterConversations(conversations);
-                        conversations = obtainConversationsWithParticipants(conversations);
-                        notifyListeners(conversations);
+                        notifyListeners(obtainConversationsWithParticipants(conversations));
                         ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
                     });
         } catch (SmackException.NotConnectedException e) {
@@ -72,31 +73,22 @@ public class XmppConversationLoader extends Loader<Conversation> {
         return companion == null;
     }
 
-    private List<Conversation> obtainConversationsWithParticipants(List<Conversation> conversations){
-        List<Conversation> conversationsWithParticipants = new ArrayList<>(conversations.size());
-        List<User> participants;
-
-        for (Conversation conversation: conversations) {
-            if(conversation.getType().equals(Conversation.Type.CHAT)) {
-                participants = getSingleChatParticipants(conversation);
+    private List<ConversationWithParticipants> obtainConversationsWithParticipants(List<Conversation> conversations){
+        return Queryable.from(conversations).map(c -> {
+            List<User> participants;
+            if(c.getType().equals(Conversation.Type.CHAT)) {
+                participants = getSingleChatParticipants(c);
             } else {
-                participants = getMultiUserChat(conversation);
+                participants = getMultiUserChat(c);
             }
-
-            if (participants != null) {
-                conversation.setParticipants(participants);
-                conversationsWithParticipants.add(conversation);
-            }
-        }
-
-        return conversationsWithParticipants;
+            return new ConversationWithParticipants(c, participants);
+        }).toList();
     }
 
     private List<User> getSingleChatParticipants(Conversation conversation){
         ArrayList<User> participants = new ArrayList<>();
         String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, facade.getConnection().getUser());
         participants.add(JidCreatorHelper.obtainUser(companionJid));
-        conversation.setParticipants(participants);
         return participants;
     }
 
@@ -117,7 +109,6 @@ public class XmppConversationLoader extends Loader<Conversation> {
                 String participantJid = affiliate.getJid();
                 participants.add(JidCreatorHelper.obtainUser(participantJid));
             }
-            conversation.setParticipants(participants);
         } catch (SmackException | XMPPException.XMPPErrorException e) {
             Log.i(TAG, Log.getStackTraceString(e));
             return null;
@@ -126,7 +117,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
         return participants;
     }
 
-    public void notifyListeners(List<Conversation> conversations) {
+    public void notifyListeners(List<ConversationWithParticipants> conversations) {
         if(persister != null){
             persister.save(conversations);
         }

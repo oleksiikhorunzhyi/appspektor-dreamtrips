@@ -26,6 +26,7 @@ import com.messenger.ui.viewstate.ConversationListViewState;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject MessengerServerFacade messengerServerFacade;
     @Inject User user;
+    @Inject DreamSpiceManager dreamSpiceManager;
 
     private Activity parentActivity;
     private LoaderDelegate loaderDelegate;
@@ -46,7 +48,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
-        loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
+        loaderDelegate = new LoaderDelegate(activity, messengerServerFacade, dreamSpiceManager);
     }
 
     @Override
@@ -57,11 +59,12 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        dreamSpiceManager.start(getView().getContext());
         getView().showLoading();
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         initialCursorLoader();
 
-        if (messengerServerFacade.isAuthorized()){
+        if (messengerServerFacade.isAuthorized()) {
             loadConversationList();
         } else {
             connect();
@@ -172,6 +175,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        dreamSpiceManager.shouldStop();
         ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER);
         ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER);
     }

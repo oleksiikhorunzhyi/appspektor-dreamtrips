@@ -34,6 +34,7 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
@@ -46,9 +47,14 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject MessengerServerFacade messengerServerFacade;
-    @Inject User user;
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    MessengerServerFacade messengerServerFacade;
+    @Inject
+    User user;
+    @Inject
+    DreamSpiceManager dreamSpiceManager;
 
     private Activity parentActivity;
     private LoaderDelegate loaderDelegate;
@@ -62,8 +68,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
-        loaderDelegate = new LoaderDelegate(activity, messengerServerFacade);
-
+        loaderDelegate = new LoaderDelegate(activity, messengerServerFacade, dreamSpiceManager);
         textInChosenContactsEditText = activity
                 .getString(R.string.new_chat_chosen_contacts_header_empty);
     }
@@ -71,6 +76,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     @Override
     public void attachView(NewChatScreen view) {
         super.attachView(view);
+        dreamSpiceManager.start(view.getContext());
         initialCursorLoader();
         loadChatContacts();
     }
@@ -125,6 +131,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
     @Override
     public void detachView(boolean retainInstance) {
         super.detachView(retainInstance);
+        dreamSpiceManager.shouldStop();
         ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.CONTACT_LOADER);
     }
 

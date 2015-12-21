@@ -62,7 +62,6 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 .from(Conversation.class)
                 .byIds(conversationId)
                 .querySingle();
-        conversation.getParticipants();
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {

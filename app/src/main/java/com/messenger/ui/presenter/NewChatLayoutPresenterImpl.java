@@ -239,7 +239,8 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
                                             .id(ThreadCreatorHelper.obtainThreadSingleChat(user, selectedUser))
                                             .participants(selectedUsers)
                                             .build();
-                conversation.saveParticipant();
+                //
+                Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
 
                 ChatActivity.startSingleChat(parentActivity, conversation.getId());

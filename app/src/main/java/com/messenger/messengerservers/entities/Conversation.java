@@ -2,7 +2,6 @@ package com.messenger.messengerservers.entities;
 
 import android.net.Uri;
 import android.support.annotation.StringDef;
-import android.util.Log;
 
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -15,12 +14,10 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.List;
 
 @ModelContainer
 @TableEndpoint(name = Conversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
@@ -41,12 +38,10 @@ public class Conversation extends BaseProviderModel<Conversation> {
                     columnName = "lastMessageId",
                     columnType = String.class,
                     foreignColumnName = Message._ID)},
-            saveForeignKeyModel = false)
+            saveForeignKeyModel = true)
     @Column Message lastMessage;
     int unreadMessageCount = 0;
 
-    @Deprecated
-    protected List<User> participants;
 
     public Conversation() {
     }
@@ -62,20 +57,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setSubject(builder.subject);
         setType(builder.type);
         setLastMessage(builder.lastMessage);
-        setParticipants(builder.participants);
         setUnreadMessageCount(builder.unreadMessageCount);
-    }
-
-    @Deprecated
-    public List<User> getParticipants() {
-        if (participants == null) {
-            String query = "SELECT * FROM Users u " +
-                    "JOIN ParticipantsRelationship p " +
-                    "ON p.userId = u._id " +
-                    "WHERE p.conversationId = ?";
-            participants = SqlUtils.queryList(User.class, query, _id);
-        }
-        return participants;
     }
 
     public String getId() {
@@ -110,13 +92,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
     }
-    @Deprecated
-    public void setParticipants(List<User> participants) {
-        this.participants = participants;
-        if (participants != null) {
-            Log.d("TEST_CONV_SET", _id + " size " + participants.size());
-        }
-    }
 
     public int getUnreadMessageCount() {
         return unreadMessageCount;
@@ -124,6 +99,22 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setUnreadMessageCount(int unreadMessageCount) {
         this.unreadMessageCount = unreadMessageCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Conversation that = (Conversation) o;
+
+        return _id != null ? _id.equals(that._id) : that._id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return _id != null ? _id.hashCode() : 0;
     }
 
     @Override
@@ -162,16 +153,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Override
     public void save() {
         super.save();
-        saveParticipant();
-    }
-
-    @Deprecated
-    public void saveParticipant() {
-        if (participants == null ) return;
-        Log.d("TEST_CONV", _id + " size " + participants.size());
-        for (User participant : participants) {
-            new ParticipantsRelationship(_id, participant).save();
-        }
     }
 
     public static final class Builder {
@@ -179,8 +160,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String subject;
         private String type;
         private Message lastMessage;
-        @Deprecated
-        private List<User> participants;
         private int unreadMessageCount = 0;
 
         public Builder() {
@@ -203,11 +182,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder lastMessage(Message val) {
             lastMessage = val;
-            return this;
-        }
-        @Deprecated
-        public Builder participants(List<User> participants){
-            this.participants = participants;
             return this;
         }
 

@@ -3,16 +3,15 @@ package com.messenger.ui.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-
-import android.support.v4.content.ContextCompat;
-
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
@@ -25,10 +24,8 @@ import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -96,7 +93,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         }
         holder.getLastMessageTextView().setVisibility(View.VISIBLE);
         String messageText = lastMessage.getText();
-        if (lastMessage.getFrom().equals(currentUser)) {
+        if (lastMessage.getFrom() != null && lastMessage.getFrom().equals(currentUser)) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
         }
         holder.getLastMessageTextView().setText(messageText);
@@ -125,27 +122,15 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
     }
 
     private String getGroupConversationName(Conversation conversation, List<User> participants) {
-        // TODO: Remove this debug code
-        if (participants == null || participants.isEmpty()) {
-            return "Group Conv " + conversation.getId();
-        }
-        if (!TextUtils.isEmpty(conversation.getSubject())) {
-            return conversation.getSubject();
+        if (TextUtils.isEmpty(conversation.getSubject())) {
+            return TextUtils.join(", ", Queryable.from(participants).map(User::getName).toList());
         } else {
-            StringBuilder sb = new StringBuilder();
-            for (Iterator<User> it = participants.iterator(); it.hasNext(); ) {
-                sb.append(it.next().getName());
-                if (it.hasNext()) {
-                    sb.append(", ");
-                }
-            }
-            return sb.toString();
+            return conversation.getSubject();
         }
     }
 
     private String getOneToOneConversationName(Conversation conversation, List<User> participants) {
-        User addressee = participants.get(0);
-        return addressee.getName() + " " + addressee.getId();
+        return participants.get(0).getName();
     }
 
     @Override
@@ -220,7 +205,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
             super(cursor);
             filter = filter.toLowerCase();
 
-            if (!Objects.equals(filter, "")) {
+            if (!TextUtils.isEmpty(filter)) {
                 this.count = super.getCount();
                 this.index = new int[this.count];
                 for (int i = 0; i < this.count; i++) {

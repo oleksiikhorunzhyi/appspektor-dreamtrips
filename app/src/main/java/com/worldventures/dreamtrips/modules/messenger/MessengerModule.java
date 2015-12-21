@@ -13,6 +13,6 @@ public class MessengerModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMessengerComponent() {
-        return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_dtl, true, null);
+        return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_profile_messages_selector, true, null);
     }
 }

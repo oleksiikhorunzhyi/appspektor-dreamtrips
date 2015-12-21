@@ -111,7 +111,7 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
         // TODO: 12/14/15 chatConversation.isGroupConversation()
-        if (isGroupConversation(conversation.getType())) {
+        if (isGroupConversation(conversation.getType()) && message.getFrom() != null) {
             holder.nameTextView.setVisibility(View.VISIBLE);
             holder.nameTextView.setText(message.getFrom().getName());
         } else {
@@ -129,7 +129,7 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
             params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
             holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble_comics);
             holder.avatarImageView.setVisibility(View.VISIBLE);
-            Picasso.with(context).load(message.getFrom()
+            Picasso.with(context).load(message.getFrom() == null ? null : message.getFrom()
                     .getAvatarUrl()).placeholder(android.R.drawable.ic_menu_compass)
                     .into(holder.avatarImageView);
         }
@@ -170,7 +170,7 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
                 calendarDaysSincePreviousDate = (int) ChatDateFormatter.calendarDaysBetweenDates(previousMessageDate, messageDate);
             }
             if ((previousMessageDate != null && calendarDaysSincePreviousDate > 0) || previousMessageDate == null) {
-                int daysSinceToday = (int)ChatDateFormatter.calendarDaysBetweenDates(ChatDateFormatter.getToday()
+                int daysSinceToday = (int) ChatDateFormatter.calendarDaysBetweenDates(ChatDateFormatter.getToday()
                         .getTime(), messageDate);
                 if (daysSinceToday == 0) {
                     dateString.append(context.getString(R.string.chat_list_date_entry_today));

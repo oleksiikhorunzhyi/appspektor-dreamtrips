@@ -42,6 +42,7 @@
             android:layout_height="@dimen/list_item_small_avatar_image_size"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
             app:riv_oval="true"
             />
 

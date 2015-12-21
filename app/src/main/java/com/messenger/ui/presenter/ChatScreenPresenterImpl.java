@@ -37,6 +37,7 @@ import javax.inject.Inject;
 
 public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
+
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject MessengerServerFacade messengerServerFacade;
     @Inject User user;
@@ -51,6 +52,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     protected int page = 0;
     protected int before = 0;
     protected boolean haveMoreElements = true;
+    protected boolean isLoading;
+    protected boolean pendingScroll;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.startIntent = startIntent;
@@ -73,7 +76,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             //noinspection all
-            getView().onConversationCursorLoaded(data, conversation);
+            getView().onConversationCursorLoaded(data, conversation, pendingScroll);
+            pendingScroll = false;
         }
 
         @Override
@@ -98,7 +102,12 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     }
 
     @Override
-    public void loadNextPage() {
+    public void onNextPageReached() {
+        if (!isLoading) loadNextPage();
+    }
+
+    private void loadNextPage() {
+        isLoading = true;
         ChatLayoutViewState viewState = getViewState();
         if (!haveMoreElements || viewState.getLoadingState() == ChatLayoutViewState.LoadingState.LOADING)
             return;
@@ -115,6 +124,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                     }
 
                     showContent();
+                    isLoading = false;
                 }, () -> showContent());
     }
 
@@ -158,6 +168,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         }
 
         try {
+            pendingScroll = true;
             chat.sendMessage(new Message.Builder()
                     .locale(Locale.getDefault())
                     .text(message)

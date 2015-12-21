@@ -7,9 +7,9 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import com.messenger.messengerservers.entities.User;
+import com.messenger.model.ChatUser;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
-import com.messenger.model.ChatUser;
 
 import java.util.List;
 

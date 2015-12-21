@@ -27,7 +27,7 @@ public class ChatActivity extends AppCompatActivity {
     public @interface ChatType {
     }
 
-    public static void startGroupSingle(Context context, String conversationId) {
+    public static void startGroupChat(Context context, String conversationId) {
         Intent starter = new Intent(context, ChatActivity.class);
         starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
         starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_GROUP);

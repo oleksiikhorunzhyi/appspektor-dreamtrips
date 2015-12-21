@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 
 import android.content.Context;
 
+import com.messenger.storege.MessengerDatabase;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -68,6 +70,7 @@ public class LogoutDelegate {
         }
         snappyRepository.clearAll();
         appSessionHolder.destroy();
+        FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
     }
 
     public void setOnLogoutSuccessListener(OnLogoutSuccessListener onLogoutSuccessListener) {

@@ -126,15 +126,17 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
     }
 
-    @Override public void onConversationSelected(Conversation conversation) {
+    @Override
+    public void onConversationSelected(Conversation conversation) {
         if (conversation.getType().equals(Conversation.Type.GROUP)) {
-            ChatActivity.startGroupSingle(parentActivity, conversation.getId());
+            ChatActivity.startGroupChat(parentActivity, conversation.getId());
         } else {
             ChatActivity.startSingleChat(parentActivity, conversation.getId());
         }
     }
 
-    @Override public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
+    @Override
+    public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
         getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
         assignNeededCursorAndRefresh();
     }

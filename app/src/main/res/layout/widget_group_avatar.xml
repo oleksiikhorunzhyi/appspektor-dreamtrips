@@ -8,6 +8,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="@dimen/list_item_small_avatar_image_size"
         android:layout_height="@dimen/list_item_small_avatar_image_size"
+        android:scaleType="centerCrop"
         app:riv_oval="true"
         />
 
@@ -16,6 +17,7 @@
         android:layout_width="@dimen/list_item_small_avatar_image_size"
         android:layout_height="@dimen/list_item_small_avatar_image_size"
         android:layout_marginLeft="@dimen/list_item_small_avatar_image_spacing"
+        android:scaleType="centerCrop"
         app:riv_oval="true"
         />
 
@@ -24,6 +26,7 @@
         android:layout_width="@dimen/list_item_small_avatar_image_size"
         android:layout_height="@dimen/list_item_small_avatar_image_size"
         android:layout_marginTop="@dimen/list_item_small_avatar_image_spacing"
+        android:scaleType="centerCrop"
         app:riv_oval="true"
         />
 
@@ -33,6 +36,7 @@
         android:layout_height="@dimen/list_item_small_avatar_image_size"
         android:layout_marginLeft="@dimen/list_item_small_avatar_image_spacing"
         android:layout_marginTop="@dimen/list_item_small_avatar_image_spacing"
+        android:scaleType="centerCrop"
         app:riv_oval="true"
         />
 </merge>

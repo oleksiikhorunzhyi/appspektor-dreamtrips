@@ -20,10 +20,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.model.ChatUser;
@@ -39,6 +41,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -227,24 +230,27 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
                     return true;
                 }
 
-                if (selectedUsers.size() > 1){
-                    Toast.makeText(parentActivity, R.string.new_multi_user_chat_not_supported,
-                            Toast.LENGTH_SHORT).show();
-                    return true;
+                Conversation conversation;
+                if (selectedUsers.size() == 1) {
+                    conversation = new Conversation.Builder()
+                            .type(Conversation.Type.CHAT)
+                            .id(ThreadCreatorHelper.obtainThreadSingleChat(user, selectedUsers.get(0)))
+                            .build();
+                } else {
+                    conversation = new Conversation.Builder()
+                            .type(Conversation.Type.GROUP)
+                            .id(UUID.randomUUID().toString())
+                            .build();
                 }
-
-                User selectedUser = selectedUsers.get(0);
-                Conversation conversation = new Conversation.Builder()
-                                            .type(Conversation.Type.CHAT)
-                                            .id(ThreadCreatorHelper.obtainThreadSingleChat(user, selectedUser))
-                                            .participants(selectedUsers)
-                                            .build();
                 //
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-
-                ChatActivity.startSingleChat(parentActivity, conversation.getId());
-
+                //
+                if (selectedUsers.size() == 1) {
+                    ChatActivity.startSingleChat(parentActivity, conversation.getId());
+                } else {
+                    ChatActivity.startGroupChat(parentActivity, conversation.getId());
+                }
                 return true;
         }
         return false;
@@ -287,7 +293,7 @@ public class NewChatLayoutPresenterImpl extends BaseViewStateMvpPresenter<NewCha
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             return new CursorLoader(parentActivity, User.CONTENT_URI,
-                    null, User.COLUMN_ID + "<>?", new String[] {user.getId()},
+                    null, User.COLUMN_ID + "<>?", new String[]{user.getId()},
                     User.COLUMN_NAME + " COLLATE NOCASE ASC");
         }
 

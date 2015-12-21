@@ -24,17 +24,17 @@ import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.ContactSimpleAlphabetAdapter;
-import com.messenger.ui.widget.SelectionListenerEditText;
-import com.worldventures.dreamtrips.R;
 import com.messenger.ui.presenter.NewChatLayoutPresenter;
 import com.messenger.ui.presenter.NewChatLayoutPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
+import com.messenger.ui.widget.SelectionListenerEditText;
+import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
-import butterknife.InjectView;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, NewChatLayoutPresenter>
@@ -222,7 +222,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         NewChatLayoutPresenter presenter = getPresenter();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.onActivityResult(requestCode, resultCode, data);
         }
     }

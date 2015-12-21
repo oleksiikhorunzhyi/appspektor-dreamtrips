@@ -60,7 +60,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .conversationId(conversation.getId())
                                             //// TODO: 12/18/15 today attribute secs is millisecond
                                     .date(new Date(timestamp))
-                                    .from(JidCreatorHelper.obtainUser(from));
+                                    .from(JidCreatorHelper.obtainUserId(from));
 
                             MessageBody stanzaMessageBody = null;
                             try {

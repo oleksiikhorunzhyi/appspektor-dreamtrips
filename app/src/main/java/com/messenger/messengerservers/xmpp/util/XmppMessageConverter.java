@@ -20,7 +20,7 @@ public final class XmppMessageConverter {
         String bodyJson = new Gson().toJson(messageBody);
 
         org.jivesoftware.smack.packet.Message smackMessage = new org.jivesoftware.smack.packet.Message();
-        smackMessage.setFrom(JidCreatorHelper.obtainUserJid(message.getFrom().getUserName()));
+        smackMessage.setFrom(JidCreatorHelper.obtainUserJid(message.getFromId()));
         smackMessage.setBody(bodyJson);
 
         return smackMessage;
@@ -36,10 +36,10 @@ public final class XmppMessageConverter {
                 .locale(new Locale(stanzaMessageBody.getLocale()));
 
         if (message.getTo() != null) {
-            builder.to(JidCreatorHelper.obtainUser(message.getTo()));
+            builder.to(JidCreatorHelper.obtainUserId(message.getTo()));
         }
         if (message.getFrom() != null) {
-            builder.from(JidCreatorHelper.obtainUser(message.getFrom()));
+            builder.from(JidCreatorHelper.obtainUserId(message.getFrom()));
         }
 
         return builder.build();

@@ -5,9 +5,6 @@ import android.net.Uri;
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.ForeignKey;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -18,7 +15,6 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import java.util.Date;
 import java.util.Locale;
 
-@ModelContainer
 @TableEndpoint(name = Message.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = Message.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Message extends BaseProviderModel<Message> {
@@ -36,20 +32,8 @@ public class Message extends BaseProviderModel<Message> {
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @PrimaryKey @Column String _id;
-    @ForeignKey(
-            references = {@ForeignKeyReference(
-                    columnName = "fromId",
-                    columnType = String.class,
-                    foreignColumnName = "_id")},
-            saveForeignKeyModel = false)
-    @Column User from;
-    @ForeignKey(
-            references = {@ForeignKeyReference(
-                    columnName = "toId",
-                    columnType = String.class,
-                    foreignColumnName = "_id")},
-            saveForeignKeyModel = false)
-    @Column User to;
+    @Column String fromId;
+    @Column String toId;
     @Column String text;
     @Column Date date;
     @Column String conversationId;
@@ -59,9 +43,9 @@ public class Message extends BaseProviderModel<Message> {
     public Message() {
     }
 
-    public Message(User from, User to, String text, String id) {
-        this.from = from;
-        this.to = to;
+    public Message(String from, String to, String text, String id) {
+        this.fromId = from;
+        this.toId = to;
         this.text = text;
         this._id = id;
     }
@@ -69,8 +53,8 @@ public class Message extends BaseProviderModel<Message> {
     private Message(Builder builder) {
         _id = builder.id;
         setConversationId(builder.conversationId);
-        setFrom(builder.from);
-        setTo(builder.to);
+        setFromId(builder.from);
+        setToId(builder.to);
         setText(builder.text);
         setDate(builder.date);
         setLocale(builder.locale);
@@ -84,20 +68,20 @@ public class Message extends BaseProviderModel<Message> {
         this.conversationId = conversationId;
     }
 
-    public User getFrom() {
-        return from;
+    public String getFromId() {
+        return fromId;
     }
 
-    public void setFrom(User from) {
-        this.from = from;
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
     }
 
-    public User getTo() {
-        return to;
+    public String getToId() {
+        return toId;
     }
 
-    public void setTo(User to) {
-        this.to = to;
+    public void setToId(String toId) {
+        this.toId = toId;
     }
 
     public String getText() {
@@ -151,8 +135,8 @@ public class Message extends BaseProviderModel<Message> {
     public static final class Builder {
         private String id;
         private String conversationId;
-        private User from;
-        private User to;
+        private String from;
+        private String to;
         private String text;
         private Date date;
         private Locale locale;
@@ -170,12 +154,12 @@ public class Message extends BaseProviderModel<Message> {
             return this;
         }
 
-        public Builder from(User val) {
+        public Builder from(String val) {
             from = val;
             return this;
         }
 
-        public Builder to(User val) {
+        public Builder to(String val) {
             to = val;
             return this;
         }

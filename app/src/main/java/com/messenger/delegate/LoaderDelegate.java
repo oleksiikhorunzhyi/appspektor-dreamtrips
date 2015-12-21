@@ -14,6 +14,7 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,12 +44,12 @@ public class LoaderDelegate {
             List<Conversation> convs = from(data).map(d -> d.conversation).toList();
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
             // save relationships
-            List<ParticipantsRelationship> relationships = from(data)
+            List<ParticipantsRelationship> relationships = data.isEmpty() ? new ArrayList<>() : from(data)
                     .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p)))
                     .toList();
             ContentUtils.bulkInsert(ParticipantsRelationship.CONTENT_URI, ParticipantsRelationship.class, relationships);
             // save users
-            List<User> users = from(data).mapMany(d -> d.participants).distinct().toList();
+            List<User> users = data.isEmpty() ? new ArrayList<>() : from(data).mapMany(d -> d.participants).distinct().toList();
             updateUsersViaApi(users);
         });
         conversationLoader.load();

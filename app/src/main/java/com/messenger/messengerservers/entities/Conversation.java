@@ -30,6 +30,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column String ownerId;
     @Column String subject;
     @Column String type;
+
     private Message lastMessage;
 
     int unreadMessageCount = 0;

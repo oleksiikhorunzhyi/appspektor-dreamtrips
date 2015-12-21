@@ -1,53 +1,63 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
+import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresenter<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
 
-    @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject MessengerServerFacade messengerServerFacade;
-    @Inject User user;
-    @Inject DreamSpiceManager dreamSpiceManager;
+    private final RxContentResolver contentResolver;
+    private Subscription contactSubscription;
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    MessengerServerFacade messengerServerFacade;
+    @Inject
+    User user;
+    @Inject
+    DreamSpiceManager dreamSpiceManager;
 
     private Activity parentActivity;
     private LoaderDelegate loaderDelegate;
-    private final CursorLoaderCallback allConversationLoaderCallback = new CursorLoaderCallback(true);
-    private final CursorLoaderCallback groupConversationLoaderCallback = new CursorLoaderCallback(false);
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
         loaderDelegate = new LoaderDelegate(activity, messengerServerFacade, dreamSpiceManager);
+        contentResolver = new RxContentResolver(activity.getContentResolver(),
+                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                        .rawQuery(query.selection, query.selectionArgs));
     }
 
     @Override
@@ -76,17 +86,36 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     }
 
     private void initialCursorLoader() {
-        LoaderManager loaderManager = ((AppCompatActivity) parentActivity).getSupportLoaderManager();
-        Loader loader = loaderManager.getLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER);
-        allConversationLoaderCallback.cursorIsLoaded = false;
-        groupConversationLoaderCallback.cursorIsLoaded = false;
-        if (loader == null) {
-            loaderManager.initLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER, null, allConversationLoaderCallback);
-            loaderManager.initLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER, null, groupConversationLoaderCallback);
-        } else {
-            loaderManager.restartLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER, null, allConversationLoaderCallback);
-            loaderManager.restartLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER, null, groupConversationLoaderCallback);
+        if (contactSubscription != null && !contactSubscription.isUnsubscribed()) {
+            contactSubscription.unsubscribe();
         }
+        String query = "SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
+                "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
+                "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + " " +
+                "FROM " + Conversation.TABLE_NAME + " c " +
+                "LEFT JOIN " + Message.TABLE_NAME + " m " +
+                "ON c._id=m." + Message.COLUMN_CONVERSATION_ID + " ";
+
+        if (getViewState().isShowOnlyGroupConversations()) {
+            query += "WHERE c.type not like ?";
+        }
+        query += "GROUP BY c._id ORDER BY m." + Message.COLUMN_DATE + " DESC";
+
+        RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
+                .withSelection(query);
+        if (getViewState().isShowOnlyGroupConversations()) {
+            queryBuilder.withSelectionArgs(new String[] {Conversation.Type.CHAT});
+        }
+        contactSubscription = contentResolver
+                .query(queryBuilder.build(), User.CONTENT_URI, Conversation.CONTENT_URI, Message.CONTENT_URI)
+                .subscribeOn(Schedulers.io())
+                .compose(RxLifecycle.bindView((View) getView()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(cursor -> {
+                    state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
+                    getViewState().setCursor(cursor);
+                    applyViewState();
+                });
     }
 
     private void connect() {
@@ -137,40 +166,13 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
         getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
-        assignNeededCursorAndRefresh();
+        initialCursorLoader();
     }
 
     @Override
     public void onConversationsSearchFilterSelected(String searchFilter) {
         getViewState().setConversationsSearchFilter(searchFilter);
         applyViewState();
-    }
-
-    private void assignNeededCursorAndRefresh() {
-        if (getView() == null) {
-            return;
-        }
-        Cursor cursorToAssign = null;
-        // Find corresponding all chats or only groups cursor
-        boolean neededCursorLoaded = false;
-        if (getViewState().isShowOnlyGroupConversations()) {
-            if (groupConversationLoaderCallback.cursorIsLoaded) {
-                cursorToAssign = groupConversationLoaderCallback.cursor;
-                neededCursorLoaded = true;
-            }
-        } else {
-            if (allConversationLoaderCallback.cursorIsLoaded) {
-                cursorToAssign = allConversationLoaderCallback.cursor;
-                neededCursorLoaded = true;
-            }
-        }
-        // We cannot use null check here as cursor might be null and we still need to refresh
-        // view
-        if (neededCursorLoaded) {
-            state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
-            getViewState().setCursor(cursorToAssign);
-            applyViewState();
-        }
     }
 
     @Override
@@ -199,44 +201,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 return true;
         }
         return false;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Cursor Loader Callback
-    ///////////////////////////////////////////////////////////////////////////
-
-    private class CursorLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
-
-        private boolean allConversation;
-        private boolean cursorIsLoaded;
-        private Cursor cursor;
-
-        public CursorLoaderCallback(boolean allConversation) {
-            this.allConversation = allConversation;
-        }
-
-        @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            String select = allConversation ? "" : String.format("type not like '%s'", Conversation.Type.CHAT);
-            return new CursorLoader(parentActivity, Conversation.CONTENT_URI,
-                    null, select, null, "Messages.date desc");
-        }
-
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            showConversation(data);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-            showConversation(null);
-        }
-
-        private void showConversation(@NonNull Cursor cursor) {
-            cursorIsLoaded = true;
-            this.cursor = cursor;
-            assignNeededCursorAndRefresh();
-        }
     }
 }
 

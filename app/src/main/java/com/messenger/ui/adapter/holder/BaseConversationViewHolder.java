@@ -38,10 +38,9 @@ public class BaseConversationViewHolder extends BaseViewHolder {
 
     public BaseConversationViewHolder(View itemView) {
         super(itemView);
-        contentResolver = new RxContentResolver(itemView.getContext().getContentResolver(), query -> {
-            return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                    .rawQuery(query.selection, query.selectionArgs);
-        });
+        contentResolver = new RxContentResolver(itemView.getContext().getContentResolver(),
+                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                .rawQuery(query.selection, query.selectionArgs));
     }
 
     public TextView getNameTextView() {

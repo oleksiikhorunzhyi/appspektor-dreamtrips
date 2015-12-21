@@ -7,6 +7,7 @@ import com.messenger.api.GetShortProfilesQuery;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ConversationWithParticipants;
+import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
@@ -42,7 +43,10 @@ public class LoaderDelegate {
 
             // save convs
             List<Conversation> convs = from(data).map(d -> d.conversation).toList();
+            List<Message> messages = from(convs).map(c -> c.getLastMessage()).toList();
+
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
+            ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages);
             // save relationships
             List<ParticipantsRelationship> relationships = data.isEmpty() ? new ArrayList<>() : from(data)
                     .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p)))

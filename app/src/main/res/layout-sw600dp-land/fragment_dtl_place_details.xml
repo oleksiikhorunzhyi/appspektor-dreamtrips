@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dtl_cities_background"
     android:orientation="vertical"
     tools:layout_marginLeft="400dp"
     >
@@ -104,8 +105,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@drawable/list_divider_vertical"
             android:background="@color/dtl_cities_background"
+            android:divider="@drawable/list_divider_vertical"
             android:orientation="horizontal"
             android:showDividers="middle">
 

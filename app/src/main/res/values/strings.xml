@@ -528,5 +528,25 @@
     <string name="chat_more_typing_users_hint_format">and %d more</string>
     <string name="chat_list_date_entry_today">TODAY</string>
     <string name="chat_list_date_entry_yesterday">YESTERDAY</string>
+
+    <!---->
+    <!--Chat Settings -->
+    <!---->
+    <string name="chat_settings_single_chat">Chat Settings</string>
+    <string name="chat_settings_group_chat">Group Chat Settings</string>
+    <string name="chat_settings_error_loading">Could not load chat settings</string>
+    <string name="chat_settings_single_chat_online">Online</string>
+    <string name="chat_settings_single_chat_offline">Offline</string>
+    <string name="chat_settings_group_chat_description">%1$d members, %2$d online</string>
+    <string name="chat_settings_row_notifications">Notifications</string>
+    <string name="chat_settings_row_shared_content">Shared Content</string>
+    <string name="chat_settings_row_members_format">Members (%d)</string>
+    <string name="chat_settings_row_assign_new_admin">Assign new admin</string>
+    <string name="chat_settings_row_clear_history">Clear history</string>
+    <string name="chat_settings_row_leave_chat">Leave chat</string>
+    <string name="chat_settings_row_delete_chat">Delete chat</string>
+    <string name="chat_settings_group_chat_info_text_format">This chat was created by %1$s on %2$s</string>
+    <string name="chat_settings_menu_settings">Settings</string>
+    <string name="chat_settings_menu_edit_chat_name">Edit chat name</string>
     <!-- messenger ends-->
 </resources>

@@ -10,13 +10,10 @@
 
     <com.messenger.ui.widget.AvatarView
         android:id="@+id/conversation_avatar_view"
-        android:layout_width="@dimen/list_item_avatar_image_view_size"
-        android:layout_height="@dimen/list_item_avatar_image_view_size"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:scaleType="centerCrop"
         app:riv_oval="true"
-        />
+        style="@style/SingleChatBigAvatarView"/>
 
     <TextView
         android:id="@+id/conversation_name_textview"

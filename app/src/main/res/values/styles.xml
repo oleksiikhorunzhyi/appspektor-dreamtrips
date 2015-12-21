@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
@@ -144,6 +144,17 @@
     </style>
 
     <!--messenger-->
+    <style name="SingleChatBigAvatarView">
+        <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="GroupChatBigAvatarView">
+        <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
+    </style>
+
     <style name="TypingAvatarImageView">
         <item name="android:layout_width">@dimen/chat_avatar_size</item>
         <item name="android:layout_height">@dimen/chat_avatar_size</item>

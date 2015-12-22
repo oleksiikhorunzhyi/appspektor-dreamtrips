@@ -24,7 +24,8 @@ public class MemberImagesListFragment<P extends MemberImagesPresenter> extends T
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        photoPickerLayout.setup(this, false);
+        inject(photoPickerLayout);
+        photoPickerLayout.setup(getChildFragmentManager(), false);
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages, PickImageDelegate.REQUEST_PICK_PICTURE));
     }
 

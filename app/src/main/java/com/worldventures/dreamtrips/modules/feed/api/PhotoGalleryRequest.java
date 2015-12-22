@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 
 import java.util.ArrayList;
 

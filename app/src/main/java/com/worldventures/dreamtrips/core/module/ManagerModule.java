@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -123,5 +124,11 @@ public class ManagerModule {
     @Provides
     LogoutDelegate logoutDelegate(@ForApplication Injector injector) {
         return new LogoutDelegate(injector);
+    }
+
+    @Provides
+    @Singleton
+    PhotoPickerDelegate providePhotoPickerDelegate() {
+        return new PhotoPickerDelegate();
     }
 }

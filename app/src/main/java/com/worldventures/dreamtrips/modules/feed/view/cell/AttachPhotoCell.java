@@ -9,6 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
+import com.worldventures.dreamtrips.modules.feed.event.OpenFacebookEvent;
 import com.worldventures.dreamtrips.modules.feed.model.AttachPhotoModel;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -37,14 +38,13 @@ public class AttachPhotoCell extends AbstractCell<AttachPhotoModel> {
             switch (getModelObject().getType()) {
                 case AttachPhotoModel.CAMERA:
                     requestType = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
+                    getEventBus().post(new AttachPhotoEvent(requestType));
                     break;
 
                 case AttachPhotoModel.FACEBOOK:
-                    requestType = PickImageDelegate.REQUEST_FACEBOOK;
+                    getEventBus().post(new OpenFacebookEvent());
                     break;
             }
-
-            getEventBus().post(new AttachPhotoEvent(requestType));
         });
     }
 

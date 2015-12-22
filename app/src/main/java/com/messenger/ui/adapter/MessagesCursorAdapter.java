@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import com.worldventures.dreamtrips.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<ViewHolder> {
+public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<ViewHolder> {
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
     private static final int VIEW_TYPE_OWN_MESSAGE_WITH_DATE = VIEW_TYPE_OWN_MESSAGE << 1;
     private static final int VIEW_TYPE_SOMEONES_MESSAGE = 11;
@@ -38,7 +37,7 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
 
     private final int rowVerticalMargin;
 
-    public ChatConversationCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
+    public MessagesCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
         super(cursor);
         this.context = context;
         this.user = user;
@@ -52,7 +51,6 @@ public class ChatConversationCursorAdapter extends CursorRecyclerViewAdapter<Vie
 
     @Override
     public void onBindViewHolderCursor(ViewHolder holder, Cursor cursor) {
-        Log.d("TEST_TIME", "pos: " + cursor.getPosition() + "\t time: " + cursor.getLong(4));
         switch (getItemViewType(cursor.getPosition())) {
             case VIEW_TYPE_OWN_MESSAGE_WITH_DATE:
             case VIEW_TYPE_OWN_MESSAGE:

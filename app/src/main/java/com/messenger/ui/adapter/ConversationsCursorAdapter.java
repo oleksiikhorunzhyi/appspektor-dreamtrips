@@ -31,10 +31,11 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
+public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
+    private static final String LOG_TAG = "TEST_TIME_CONVERSATION";
 
     private Context context;
 
@@ -49,7 +50,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         void onConversationClick(Conversation conversation);
     }
 
-    public ConversationCursorAdapter(Context context, RecyclerView recyclerView, User currentUser) {
+    public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, User currentUser) {
         super(null);
         this.context = context;
         this.recyclerView = recyclerView;
@@ -62,7 +63,6 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
         Conversation chatConversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-
         setUnreadMessageCount(holder, chatConversation.getUnreadMessageCount());
 
         // TODO: 12/21/15  

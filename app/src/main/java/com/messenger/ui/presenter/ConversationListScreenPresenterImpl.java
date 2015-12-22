@@ -94,12 +94,18 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + " " +
                 "FROM " + Conversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + Message.TABLE_NAME + " m " +
-                "ON c._id=m." + Message.COLUMN_CONVERSATION_ID + " ");
+                "ON m." + Message._ID + "=(" +
+                    "SELECT " + Message._ID + " FROM " + Message.TABLE_NAME + " mm " +
+                    "WHERE mm."+ Message.COLUMN_CONVERSATION_ID + "=c." + Conversation.COLUMN_ID +
+                    " ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) "
+        );
+
+
 
         if (getViewState().isShowOnlyGroupConversations()) {
             query.append("WHERE c.type not like ?");
         }
-        query.append("GROUP BY c._id ORDER BY m." + Message.COLUMN_DATE + " DESC");
+        query.append(" ORDER BY m." + Message.COLUMN_DATE + " DESC");
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());

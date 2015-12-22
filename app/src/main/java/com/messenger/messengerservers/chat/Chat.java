@@ -3,6 +3,7 @@ package com.messenger.messengerservers.chat;
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.ChatMessageListener;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
@@ -16,6 +17,8 @@ public abstract class Chat {
     private final ArrayList<OnChatStateChangedListener> onChatStateChangedListeners = new ArrayList<>();
 
     public abstract void sendMessage(Message message) throws ConnectionException;
+
+    public abstract void changeMessageStatus(Message message, @Status.MessageStatus String status);
 
     public abstract void setCurrentState(ChatState state);
 

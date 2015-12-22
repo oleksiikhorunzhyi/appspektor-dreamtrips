@@ -1,5 +1,6 @@
 package com.messenger.ui.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,12 +40,18 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
+
+    private static final int REQUEST_CODE_ADD_USER = 33;
 
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject MessengerServerFacade messengerServerFacade;
     @Inject User user;
+
+    private Activity activity;
 
     private Chat chat;
     protected Intent startIntent;
@@ -59,15 +67,33 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     protected boolean pendingScroll;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
+        this.activity = (Activity) context;
         this.startIntent = startIntent;
         ((Injector)context.getApplicationContext()).inject(this);
-        paginationDelegate = new PaginationDelegate(context, messengerServerFacade, 20);
-
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        init(conversationId);
+    }
+
+    private void init(String conversationId) {
+        paginationDelegate = new PaginationDelegate(activity, messengerServerFacade, 20);
+
         conversation = new Select()
                 .from(Conversation.class)
                 .byIds(conversationId)
                 .querySingle();
+
+        page = 0;
+        before = 0;
+        haveMoreElements = true;
+        isLoading = false;
+        pendingScroll = false;
+    }
+
+    private void initLoadersAndCreateChat() {
+        loadNextPage();
+        loaderManager = getActivity().getSupportLoaderManager();
+        loaderManager.initLoader(CursorLoaderIds.CONVERSATION_LOADER, null, loaderCallback);
+        chat = createChat(messengerServerFacade.getChatManager(), conversation);
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -91,10 +117,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        loadNextPage();
-        loaderManager = getActivity().getSupportLoaderManager();
-        loaderManager.initLoader(CursorLoaderIds.CONVERSATION_LOADER, null, loaderCallback);
-        chat = createChat(messengerServerFacade.getChatManager(), conversation);
+        initLoadersAndCreateChat();
     }
 
     @Override
@@ -201,10 +224,24 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        // hide button for adding user for not owners of group chats
+        if (conversation.getType().equals(Conversation.Type.GROUP)) {
+            Log.d("SMACK", "user.getId(): " + user.getId() + ", get owner conv id: "
+                    + conversation.getOwnerId() + ", conv id: " + conversation.getId());
+            boolean isOwner = user.getId().equals(conversation.getOwnerId());
+            if (!isOwner) {
+                menu.findItem(R.id.action_add).setVisible(false);
+            }
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInAddMembersMode(getContext(), conversation.getId());
+                NewChatMembersActivity.startInAddMembersMode(getActivity(), conversation.getId(),
+                        REQUEST_CODE_ADD_USER);
                 return true;
             case R.id.action_settings:
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {
@@ -215,6 +252,24 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_ADD_USER:
+                if (resultCode == Activity.RESULT_OK) {
+                    String conversationId = data
+                            .getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
+                    // New group chat was created instead of single one
+                    if (!conversation.getId().equals(conversationId)) {
+                        init(conversationId);
+                        initLoadersAndCreateChat();
+                    }
+                }
+                break;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

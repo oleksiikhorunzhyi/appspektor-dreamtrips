@@ -1,6 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
@@ -16,6 +17,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -25,6 +27,7 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -86,35 +89,28 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
         switch (item.getItemId()) {
             case R.id.action_done:
                 List<User> selectedUsers = getViewState().getSelectedContacts();
-
                 if (selectedUsers == null || selectedUsers.isEmpty()) {
                     Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
-                // TODO do we need to update type in database?
-                // Check originalParticipants field if needed
-//                Conversation conversation;
-//                if (selectedUsers.size() == 1) {
-//                    conversation = new Conversation.Builder()
-//                            .type(Conversation.Type.CHAT)
-//                            .id(ThreadCreatorHelper.obtainThreadSingleChat(user, selectedUsers.get(0)))
-//                            .build();
-//                } else {
-//                    conversation = new Conversation.Builder()
-//                            .type(Conversation.Type.GROUP)
-//                            .id(UUID.randomUUID().toString())
-//                            .build();
-//                }
-
-                Queryable.from(selectedUsers).forEachR(u
-                        -> new ParticipantsRelationship(conversation.getId(), u).save());
+                // in case it was single chat we must delete old conversion first
+                // and create new one
+                if (conversation.getType().equals(Conversation.Type.CHAT)) {
+                    conversation = new Conversation.Builder()
+                            .type(Conversation.Type.GROUP)
+                            .id(UUID.randomUUID().toString())
+                            .build();
+                }
+                Queryable.from(selectedUsers).forEachR(u ->
+                        new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-
-                // TODO do we need to update type server side?
-                // Check originalParticipants field if needed
                 inviteUsersToGroupChat(conversation, selectedUsers);
+
+                Intent data = new Intent();
+                data.putExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID, conversation.getId());
+                activity.setResult(Activity.RESULT_OK, data);
                 activity.finish();
                 return true;
         }

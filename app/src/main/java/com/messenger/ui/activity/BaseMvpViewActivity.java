@@ -29,6 +29,13 @@ public abstract class BaseMvpViewActivity<T extends View & ActivityAwareScreen> 
         return screen.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        screen.onPrepareOptionsMenu(menu);
+        // TODO return the same value as screen
+        return true;
+    }
+
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         screen.onActivityResult(requestCode, resultCode, data);
     }

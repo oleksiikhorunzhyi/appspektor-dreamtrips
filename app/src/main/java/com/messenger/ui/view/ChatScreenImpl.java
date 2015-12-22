@@ -132,7 +132,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-
+        getPresenter().onPrepareOptionsMenu(menu);
     }
 
     @Override

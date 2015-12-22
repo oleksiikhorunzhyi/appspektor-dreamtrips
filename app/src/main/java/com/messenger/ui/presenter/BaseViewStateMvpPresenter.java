@@ -52,6 +52,10 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return false;
     }

@@ -149,6 +149,7 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        getPresenter().onPrepareOptionsMenu(menu);
     }
 
     @Override

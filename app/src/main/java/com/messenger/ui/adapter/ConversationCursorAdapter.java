@@ -97,7 +97,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         String messageText = lastMessage.getText();
         if (lastMessage.getFrom() != null && lastMessage.getFrom().equals(currentUser)) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
-        } else if (isGroupConversation) {
+        } else if (isGroupConversation && lastMessage.getFrom() != null) {
             messageText = lastMessage.getFrom().getName() + ": " + messageText;
         }
         holder.getLastMessageTextView().setText(messageText);

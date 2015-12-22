@@ -12,5 +12,6 @@ public interface ChatScreen extends ActivityAwareScreen {
     void showContent();
     void showError(Throwable e);
     void setTitle(Conversation conversation, List<User> users);
+    void showUnreadMessageCount(int unreadMessage);
     void onConversationCursorLoaded(Cursor cursor, Conversation conversation, boolean pendingScroll);
 }

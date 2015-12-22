@@ -55,6 +55,8 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     TextView subtitle;
     @InjectView(R.id.chat_recycler_view)
     RecyclerView recyclerView;
+    @InjectView(R.id.chat_users_unread_messages_textview)
+    TextView unreadMessageCountText;
     //@InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
 
     @InjectView(R.id.chat_message_edit_text)
@@ -203,6 +205,11 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     public void setTitle(Conversation conversation, List<User> members) {
         conversationHelper.setTitle(title, conversation, members);
         conversationHelper.setSubtitle(subtitle, conversation, members);
+    }
+
+    public void showUnreadMessageCount(int unreadMessage) {
+        unreadMessageCountText.setText(Integer.toString(unreadMessage));
+        unreadMessageCountText.setVisibility(unreadMessage == 0 ? GONE : VISIBLE );
     }
 
 //    @Override public void setChatConversation(ChatConversation chatConversation) {

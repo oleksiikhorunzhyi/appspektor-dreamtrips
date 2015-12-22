@@ -22,7 +22,7 @@ public class PaginationDelegate {
     PagePagination<Message> messagePagePagination;
 
     public interface PageLoadedListener {
-        void onPageLoaded(int loadedPage, boolean haveMoreElement, Message lastMessage);
+        void onPageLoaded(int loadedPage, List<Message> loadedMessage);
     }
 
     public interface PageErrorListener {
@@ -47,8 +47,7 @@ public class PaginationDelegate {
             @Override
             public void onLoaded(List<Message> entities) {
                 if (loadedListener == null) return;
-                int size = entities.size();
-                loadedListener.onPageLoaded(page, pageSize == entities.size(), size > 0 ? entities.get(size - 1) : null);
+                loadedListener.onPageLoaded(page, entities);
             }
 
             @Override

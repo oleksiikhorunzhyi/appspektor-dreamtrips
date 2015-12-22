@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
+import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
@@ -42,6 +44,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -53,11 +56,15 @@ import rx.schedulers.Schedulers;
 public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
 
+    private final static int MAX_MESSAGE_PER_PAGE = 20;
     private static final int REQUEST_CODE_ADD_USER = 33;
 
-    @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject MessengerServerFacade messengerServerFacade;
-    @Inject User user;
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    MessengerServerFacade messengerServerFacade;
+    @Inject
+    User user;
 
     private Activity activity;
 
@@ -66,6 +73,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     private LoaderManager loaderManager;
     protected PaginationDelegate paginationDelegate;
+    protected Handler handler;
 
     protected Conversation conversation;
     protected int page = 0;
@@ -77,6 +85,9 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
         this.startIntent = startIntent;
+        ((Injector) context.getApplicationContext()).inject(this);
+        paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
+
         ((Injector)context.getApplicationContext()).inject(this);
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
         init(conversationId);
@@ -89,6 +100,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 .from(Conversation.class)
                 .byIds(conversationId)
                 .querySingle();
+        chat = createChat(messengerServerFacade.getChatManager(), conversation);
+        handler = new Handler(activity.getMainLooper());
 
         page = 0;
         before = 0;
@@ -123,8 +136,15 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     };
 
     @Override
+    public void attachView(ChatScreen view) {
+        super.attachView(view);
+        view.showUnreadMessageCount(conversation.getUnreadMessageCount());
+    }
+
+    @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        loadNextPage();
         initLoadersAndCreateChat();
         connectMembers();
     }
@@ -171,17 +191,40 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         getView().showLoading();
         viewState.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
         paginationDelegate.loadConversationHistoryPage(conversation, ++page, before,
-                (loadedPage, haveMoreElements, lastMessage) -> {
-                    viewState.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-                    this.haveMoreElements = haveMoreElements;
+                this::paginationPageLoaded,
+                this::showContent);
+    }
 
-                    if (lastMessage != null){
-                        ChatScreenPresenterImpl.this.before = (int)(lastMessage.getDate().getTime() / 1000);
-                    }
+    private void paginationPageLoaded(int loadedPage, List<Message> loadedMessages) {
+        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
+        isLoading = false;
+        if (loadedMessages == null) {
+            haveMoreElements = false;
+            showContent();
+            return;
+        }
 
-                    showContent();
-                    isLoading = false;
-                }, () -> showContent());
+        int loadedCount = loadedMessages.size();
+        haveMoreElements = loadedCount < MAX_MESSAGE_PER_PAGE;
+        Message lastMessage = loadedMessages.get(loadedCount - 1);
+        Message firstMessage = loadedMessages.get(0);
+
+        before = (int) (lastMessage.getDate().getTime() / 1000);
+        if (loadedPage == 1) markAsReadMessages(firstMessage);
+
+        showContent();
+    }
+
+    private void markAsReadMessages(Message firstMessage) {
+        chat.changeMessageStatus(firstMessage, Status.DISPLAYED);
+        conversation.setUnreadMessageCount(0);
+        conversation.save();
+
+        handler.postDelayed(() -> {
+            ChatScreen view = getView();
+            if (view != null) view.showUnreadMessageCount(0);
+        }, 2000);
+
     }
 
     private void showContent() {

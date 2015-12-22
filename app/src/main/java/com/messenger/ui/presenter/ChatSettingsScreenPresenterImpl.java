@@ -13,7 +13,9 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.view.ChatSettingsScreen;
+import com.messenger.ui.view.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.util.RxContentResolver;
@@ -128,7 +130,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     @Override
     public void onMembersRowClicked() {
-
+        EditChatMembersActivity.start(activity, conversation.getId());
     }
 
     @Override

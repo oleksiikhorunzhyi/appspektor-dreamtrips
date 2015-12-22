@@ -554,5 +554,10 @@
     <string name="chat_add_new_members_title">Add new members</string>
     <string name="subject">Subject</string>
     <string name="change_subject">Enter chat name</string>
+    <!---->
+    <!--Edit chat members -->
+    <!---->
+    <string name="edit_chat_members_title">Members (%d)</string>
+    <string name="edit_chat_members_search_hint">Search members...</string>
     <!-- messenger ends-->
 </resources>

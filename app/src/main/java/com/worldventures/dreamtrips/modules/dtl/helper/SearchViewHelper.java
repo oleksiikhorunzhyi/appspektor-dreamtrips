@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
+import timber.log.Timber;
 
 public class SearchViewHelper {
 
@@ -26,27 +27,43 @@ public class SearchViewHelper {
     public void init(MenuItem searchItem, String defValue, QueryChangedListener listener) {
         this.onQueryChangedListener = listener;
         if (searchItem != null) {
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener(){
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    searchViewSubscription = RxSearchView.queryTextChangeEvents(searchView)
+                            .debounce(DEBOUNCE_INTERVAL_LENGTH, TimeUnit.MILLISECONDS)
+                            .subscribe(SearchViewHelper.this::onQueryTextChange, e ->
+                                    Timber.e("Fail while search", e));
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    onSearchViewClosed();
+                    return true;
+                }
+            });
+
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setQueryHint(searchView.getResources().getString(R.string.search));
-            searchView.setOnCloseListener(this::onSearchViewClosed);
             searchView.post(() -> searchView.setQuery(defValue, true));
-
-            searchViewSubscription = RxSearchView.queryTextChangeEvents(searchView)
-                    .debounce(DEBOUNCE_INTERVAL_LENGTH, TimeUnit.MILLISECONDS)
-                    .subscribe(this::onQueryTextChange);
         }
     }
 
     public void dropHelper() {
-        onSearchViewClosed();
+        unsubcribe();
+        onQueryChangedListener = null;
     }
 
-    private boolean onSearchViewClosed() {
-        searchViewSubscription.unsubscribe();
+    private void onSearchViewClosed() {
+        unsubcribe();
         if (onQueryChangedListener != null) {
             onQueryChangedListener.onQueryChanged(null);
         }
-        return false;
+    }
+
+    private void unsubcribe() {
+        if (searchViewSubscription != null) searchViewSubscription.unsubscribe();
     }
 
     public void onQueryTextChange(SearchViewQueryTextEvent event) {

@@ -1,6 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -91,13 +92,16 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
         StringBuilder query = new StringBuilder("SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
                 "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
-                "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + " " +
+                "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + ", " +
+                "u." + User.COLUMN_NAME + " as " + User.COLUMN_NAME + " " +
                 "FROM " + Conversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + Message.TABLE_NAME + " m " +
                 "ON m." + Message._ID + "=(" +
-                    "SELECT " + Message._ID + " FROM " + Message.TABLE_NAME + " mm " +
-                    "WHERE mm."+ Message.COLUMN_CONVERSATION_ID + "=c." + Conversation.COLUMN_ID +
-                    " ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) "
+                "SELECT " + Message._ID + " FROM " + Message.TABLE_NAME + " mm " +
+                "WHERE mm."+ Message.COLUMN_CONVERSATION_ID + "=c." + Conversation.COLUMN_ID +
+                " ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) " +
+                "LEFT JOIN " + User.TABLE_NAME + " u " +
+                "ON m." + Message.COLUMN_FROM + "=u." + User.COLUMN_ID
         );
 
 

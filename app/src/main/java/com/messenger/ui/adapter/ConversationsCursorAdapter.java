@@ -35,7 +35,6 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
-    private static final String LOG_TAG = "TEST_TIME_CONVERSATION";
 
     private Context context;
 
@@ -67,7 +66,7 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
 
         // TODO: 12/21/15  
         if (message.getText() != null) {
-            setLastMessage(holder, message, isGroupConversation(chatConversation.getType()));
+            setLastMessage(holder, message, cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME)), isGroupConversation(chatConversation.getType()));
         }
 
         holder.itemView.setOnClickListener(view -> {
@@ -92,8 +91,7 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
         }
     }
 
-    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage,
-                                boolean isGroupConversation) {
+    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage, String userName, boolean isGroupConversation) {
         if (lastMessage == null) {
             holder.getLastMessageTextView().setVisibility(View.GONE);
             return;
@@ -103,7 +101,7 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
         if (lastMessage.getFromId() != null && lastMessage.getFromId().equals(currentUser.getId())) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
         } else if (isGroupConversation && lastMessage.getFromId() != null) {
-//            messageText = lastMessage.getFrom().getName() + ": " + messageText;
+            messageText = userName + ": " + messageText;
         }
         holder.getLastMessageTextView().setText(messageText);
         holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage.getDate()));

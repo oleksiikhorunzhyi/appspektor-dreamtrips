@@ -36,11 +36,9 @@ public class LoaderDelegate {
     public void loadConversations() {
         Loader<ConversationWithParticipants> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
         conversationLoader.setPersister(data -> {
-            if (data == null || data.size() == 0) return;
-
             // save convs
             List<Conversation> convs = from(data).map(d -> d.conversation).toList();
-            List<Message> messages = from(data).map(c -> c.lastMessage).toList();
+            List<Message> messages = from(data).map(c -> c.lastMessage).filter(m -> m.getId() != null).toList();
 
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
             ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages);

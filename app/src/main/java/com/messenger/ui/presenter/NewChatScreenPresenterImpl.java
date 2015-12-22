@@ -78,6 +78,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                     inviteUsersToGroupChat(conversation, selectedUsers);
                     ChatActivity.startGroupChat(activity, conversation.getId());
                 }
+                activity.finish();
                 return true;
         }
         return false;

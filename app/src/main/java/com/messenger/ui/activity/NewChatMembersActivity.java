@@ -1,5 +1,6 @@
 package com.messenger.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,11 +27,12 @@ public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersSc
         context.startActivity(intent);
     }
 
-    public static void startInAddMembersMode(Context context, String conversationId) {
-        Intent intent = new Intent(context, NewChatMembersActivity.class);
+    public static void startInAddMembersMode(Activity activity, String conversationId,
+                                             int requestCode) {
+        Intent intent = new Intent(activity, NewChatMembersActivity.class);
         intent.putExtra(EXTRA_MODE, MODE_CHAT_ADD_MEMBERS);
         intent.putExtra(EXTRA_CONVERSATION_ID, conversationId);
-        context.startActivity(intent);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     public static void startInEditMembersMode(Context context, String conversationId) {

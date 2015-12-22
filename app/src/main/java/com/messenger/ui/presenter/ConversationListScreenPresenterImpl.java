@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +26,8 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -107,7 +108,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
 
         if (getViewState().isShowOnlyGroupConversations()) {
-            query.append("WHERE c.type not like ?");
+            query.append(" WHERE c.type not like ?");
         }
         query.append(" ORDER BY m." + Message.COLUMN_DATE + " DESC");
 
@@ -118,9 +119,10 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
         contactSubscription = contentResolver
                 .query(queryBuilder.build(), User.CONTENT_URI, Conversation.CONTENT_URI, Message.CONTENT_URI)
+                .throttleLast(100, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
-                .compose(RxLifecycle.bindView((View) getView()))
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindView((View) getView()))
                 .subscribe(cursor -> {
                     state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
                     getViewState().setCursor(cursor);

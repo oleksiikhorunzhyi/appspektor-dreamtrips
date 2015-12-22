@@ -11,6 +11,7 @@ public interface ActivityAwareViewStateMvpPresenter<V extends MvpView, S extends
         extends ViewStateMvpPresenter<V, S> {
     boolean onCreateOptionsMenu(Menu menu);
     boolean onOptionsItemSelected(MenuItem item);
+    void onPrepareOptionsMenu(Menu menu);
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onDestroy();
 }

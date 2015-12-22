@@ -98,7 +98,6 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 // in case it was single chat we must delete old conversion first
                 // and create new one
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {
-                    ContentUtils.delete(Conversation.CONTENT_URI, conversation);
                     conversation = new Conversation.Builder()
                             .type(Conversation.Type.GROUP)
                             .id(UUID.randomUUID().toString())

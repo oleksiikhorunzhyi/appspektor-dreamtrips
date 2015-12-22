@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,6 +39,8 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
@@ -218,6 +221,19 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         MenuInflater inflater = ((AppCompatActivity) getContext()).getMenuInflater();
         inflater.inflate(R.menu.chat, menu);
         return true;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        // hide button for adding user for not owners of group chats
+        if (conversation.getType().equals(Conversation.Type.GROUP)) {
+            Log.d("SMACK", "user.getId(): " + user.getId() + ", get owner conv id: "
+                    + conversation.getOwnerId() + ", conv id: " + conversation.getId());
+            boolean isOwner = user.getId().equals(conversation.getOwnerId());
+            if (!isOwner) {
+                menu.findItem(R.id.action_add).setVisible(false);
+            }
+        }
     }
 
     @Override

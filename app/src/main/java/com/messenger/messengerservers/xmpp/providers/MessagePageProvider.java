@@ -67,8 +67,10 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                     switch (elementName) {
                         case "to":
                         case "from":
-                            if (messageBuilder != null)
-                                messagePagePacket.add(messageBuilder.build());
+                            if (messageBuilder == null) continue;
+                            Message message = messageBuilder.build();
+                            if (message.getText() == null) continue;
+                            messagePagePacket.add(message);
                             break;
                         case "chat":
                             done = true;

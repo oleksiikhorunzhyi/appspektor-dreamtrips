@@ -1,5 +1,7 @@
 package com.messenger.messengerservers.xmpp.providers;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.messenger.messengerservers.entities.Conversation;
@@ -51,22 +53,26 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
 
                             break;
                         case "last-message":
+                            String messageId = parser.getAttributeValue("", "client_msg_id");
+                            if (TextUtils.isEmpty(messageId)) {
+                                message = null;
+                                continue;
+                            }
                             String from = parser.getAttributeValue("", "from");
                             long timestamp = ParserUtils.getLongAttribute(parser, "time");
-                            String messageId = parser.getAttributeValue("", "client_msg_id");
                             String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
 
                             Message.Builder builder = new Message.Builder()
                                     .id(messageId)
                                     .conversationId(conversation.getId())
-                                            //// TODO: 12/18/15 today attribute secs is millisecond
+                                    //// TODO: 12/18/15 today attribute secs is millisecond
                                     .date(new Date(timestamp))
                                     .from(JidCreatorHelper.obtainUserId(from));
 
                             MessageBody stanzaMessageBody = null;
                             try {
                                 stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
-                            } catch (JsonSyntaxException e){
+                            } catch (JsonSyntaxException e) {
                             }
 
                             if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null) {
@@ -74,7 +80,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                         .locale(Locale.getDefault());
                             } else {
                                 builder.text(stanzaMessageBody.getText())
-                                        .locale( new Locale(stanzaMessageBody.getLocale()));
+                                        .locale(new Locale(stanzaMessageBody.getLocale()));
                             }
 
                             message = builder.build();

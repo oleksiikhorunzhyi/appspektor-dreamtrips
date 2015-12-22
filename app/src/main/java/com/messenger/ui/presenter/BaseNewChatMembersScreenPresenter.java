@@ -225,7 +225,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
 
     protected void inviteUsersToGroupChat(Conversation conversation, List<User> participants){
         MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
-                .createMultiUserChat(user, conversation.getId());
+                .createMultiUserChat(conversation.getId(), user, true);
         multiUserChat.invite(participants);
     }
 

@@ -14,7 +14,8 @@ public class ChatGroupScreenPresenter extends ChatScreenPresenterImpl {
 
     @Override
     protected Chat createChat(ChatManager chatManager, Conversation conversation) {
-        return chatManager.createMultiUserChat(getUser(), conversation.getId());
+        boolean isOwner = conversation.getOwnerId().equals(user.getId());
+        return chatManager.createMultiUserChat(conversation.getId(), getUser(), isOwner);
     }
 
 }

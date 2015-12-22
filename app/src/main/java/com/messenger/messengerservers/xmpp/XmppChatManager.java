@@ -22,7 +22,7 @@ public class XmppChatManager implements ChatManager {
     }
 
     @Override
-    public MultiUserChat createMultiUserChat(User owner, @Nullable String roomId) {
-        return new XmppMultiUserChat(facade, owner, roomId);
+    public MultiUserChat createMultiUserChat(@Nullable String roomId, User owner, boolean isOwner) {
+        return new XmppMultiUserChat(facade, roomId, owner, isOwner);
     }
 }

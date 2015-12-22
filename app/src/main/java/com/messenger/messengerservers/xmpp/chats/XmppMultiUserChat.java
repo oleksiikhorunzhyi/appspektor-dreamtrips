@@ -37,9 +37,10 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     private SubjectUpdatedListener subjectUpdatedListener;
     private AbstractXMPPConnection connection;
 
-    public XmppMultiUserChat(XmppServerFacade facade, User user, String roomId) {
+    public XmppMultiUserChat(XmppServerFacade facade, String roomId, User user, boolean isOwner) {
         this.user = user;
         this.roomId = roomId;
+        this.isOwner = isOwner;
         facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
         if (facade.isAuthorized()) {
             setConnection(facade.getConnection());
@@ -143,11 +144,6 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         }
     }
 
-    //todo replace it with the same parameter in constructor
-    public void detectIsOwner(){
-        isOwner = true;
-    }
-
     @Override
     public void close() {
         super.close();
@@ -165,7 +161,6 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         if (!chat.isJoined()){
             try {
                 chat.createOrJoin(user.getId());
-                detectIsOwner();
                 setListeners();
             } catch (XMPPException.XMPPErrorException | SmackException e) {
                 Log.e(TAG, "Error ", e);

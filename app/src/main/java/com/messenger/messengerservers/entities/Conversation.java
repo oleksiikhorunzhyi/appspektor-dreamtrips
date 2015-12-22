@@ -6,9 +6,6 @@ import android.support.annotation.StringDef;
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.ForeignKey;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -19,7 +16,6 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@ModelContainer
 @TableEndpoint(name = Conversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = Conversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Conversation extends BaseProviderModel<Conversation> {
@@ -34,18 +30,9 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column String ownerId;
     @Column String subject;
     @Column String type;
-    @ForeignKey(
-            references = {@ForeignKeyReference(
-                    columnName = "lastMessageId",
-                    columnType = String.class,
-                    foreignColumnName = Message._ID)},
-            saveForeignKeyModel = true)
-    @Column Message lastMessage;
-    int unreadMessageCount = 0;
+    @Column int unreadMessageCount;
 
-
-    public Conversation() {
-    }
+    public Conversation() {}
 
     public Conversation(String id, String subject, String type) {
         setId(id);
@@ -57,7 +44,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setId(builder.id);
         setSubject(builder.subject);
         setType(builder.type);
-        setLastMessage(builder.lastMessage);
         setUnreadMessageCount(builder.unreadMessageCount);
     }
 
@@ -92,14 +78,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setType(@Type.ConversationType String type) {
         this.type = type;
-    }
-
-    public Message getLastMessage() {
-        return lastMessage;
-    }
-
-    public void setLastMessage(Message lastMessage) {
-        this.lastMessage = lastMessage;
     }
 
     public int getUnreadMessageCount() {
@@ -168,7 +146,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String id;
         private String subject;
         private String type;
-        private Message lastMessage;
         private int unreadMessageCount = 0;
 
         public Builder() {
@@ -186,11 +163,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder type(@Type.ConversationType String val) {
             type = val;
-            return this;
-        }
-
-        public Builder lastMessage(Message val) {
-            lastMessage = val;
             return this;
         }
 

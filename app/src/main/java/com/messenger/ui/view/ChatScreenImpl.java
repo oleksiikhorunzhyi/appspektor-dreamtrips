@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.adapter.ChatConversationCursorAdapter;
+import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
@@ -53,7 +53,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     private ToolbarPresenter toolbarPresenter;
 
-    private ChatConversationCursorAdapter adapter;
+    private MessagesCursorAdapter adapter;
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -100,7 +100,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        recyclerView.setAdapter(adapter = new ChatConversationCursorAdapter(getContext(), getPresenter().getUser(), null));
+        recyclerView.setAdapter(adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null));
     }
 
     @OnEditorAction(R.id.chat_message_edit_text)

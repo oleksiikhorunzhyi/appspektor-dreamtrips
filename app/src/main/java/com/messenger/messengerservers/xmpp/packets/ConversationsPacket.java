@@ -1,6 +1,6 @@
 package com.messenger.messengerservers.xmpp.packets;
 
-import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.xmpp.entities.ConversationWithLastMessage;
 
 import org.jivesoftware.smack.packet.IQ;
 
@@ -13,18 +13,18 @@ public class ConversationsPacket extends IQ {
     public static final String NAMESPACE = "urn:xmpp:archive";
     public static final String ELEMENT_LIST = "list";
 
-    private List<Conversation> conversations;
+    private List<ConversationWithLastMessage> conversations;
 
     public ConversationsPacket() {
         super(ELEMENT_LIST, NAMESPACE);
         conversations = new ArrayList<>();
     }
 
-    public void addConversation(Conversation conversation) {
+    public void addConversation(ConversationWithLastMessage conversation) {
         conversations.add(conversation);
     }
 
-    public List<Conversation> getConversations() {
+    public List<ConversationWithLastMessage> getConversations() {
         return conversations;
     }
 

@@ -22,10 +22,14 @@ public final class JidCreatorHelper {
         return String.format("%s@conference.%s", roomName != null ? roomName : UUID.randomUUID().toString(), SERVICE_NAME);
     }
 
+    @Deprecated
     public static User obtainUser(String jid) {
+        return new User(obtainUserId(jid));
+    }
+
+    public static String obtainUserId(String jid) {
         int pos = jid.indexOf("@");
-        String userName = jid.substring(0, pos);
-        return new User(userName);
+        return jid.substring(0, pos);
     }
 
 }

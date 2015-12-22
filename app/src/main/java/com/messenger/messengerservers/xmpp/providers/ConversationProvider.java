@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.xmpp.entities.ConversationWithLastMessage;
 import com.messenger.messengerservers.xmpp.entities.MessageBody;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -60,7 +61,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .conversationId(conversation.getId())
                                             //// TODO: 12/18/15 today attribute secs is millisecond
                                     .date(new Date(timestamp))
-                                    .from(JidCreatorHelper.obtainUser(from));
+                                    .from(JidCreatorHelper.obtainUserId(from));
 
                             MessageBody stanzaMessageBody = null;
                             try {
@@ -68,7 +69,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             } catch (JsonSyntaxException e){
                             }
 
-                            if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null){
+                            if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null) {
                                 builder.text("")
                                         .locale(Locale.getDefault());
                             } else {
@@ -83,9 +84,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                     elementName = parser.getName();
                     switch (elementName) {
                         case "chat":
-                            //noinspection all
-                            conversation.setLastMessage(message);
-                            conversationsPacket.addConversation(conversation);
+                            conversationsPacket.addConversation(new ConversationWithLastMessage(conversation, message));
                             break;
                         case "list":
                             done = true;

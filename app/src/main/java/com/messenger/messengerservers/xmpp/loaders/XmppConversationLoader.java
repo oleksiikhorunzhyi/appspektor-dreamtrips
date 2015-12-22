@@ -7,6 +7,7 @@ import com.messenger.messengerservers.entities.ConversationWithParticipants;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.entities.ConversationWithLastMessage;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationListPacket;
 import com.messenger.messengerservers.xmpp.providers.ConversationProvider;
@@ -46,7 +47,7 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
             facade.getConnection().sendStanzaWithResponseCallback(packet,
                     (stanza) -> stanza instanceof ConversationsPacket,
                     (stanzaPacket) -> {
-                        List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
+                        List<ConversationWithLastMessage> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
                         obtainConversationsWithParticipants(conversations)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -61,16 +62,17 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
         }
     }
 
-    private Observable<List<ConversationWithParticipants>> obtainConversationsWithParticipants(List<Conversation> conversations) {
+    private Observable<List<ConversationWithParticipants>> obtainConversationsWithParticipants(List<ConversationWithLastMessage> conversations) {
         ParticipantProvider provider = new ParticipantProvider(facade.getConnection());
         return Observable.from(conversations)
-                .filter(c -> !hasNoOtherUsers(c))
-                .flatMap(conversation -> Observable.<ConversationWithParticipants>create(subscriber -> {
+                .filter(c -> !hasNoOtherUsers(c.conversation))
+                .flatMap(conversationWithLastMessage -> Observable.<ConversationWithParticipants>create(subscriber -> {
+                    Conversation conversation = conversationWithLastMessage.conversation;
                     if (conversation.getType().equals(CHAT)) {
                         List<User> users = provider.getSingleChatParticipants(conversation);
                         if (subscriber.isUnsubscribed()) return;
                         //
-                        subscriber.onNext(new ConversationWithParticipants(conversation, users));
+                        subscriber.onNext(new ConversationWithParticipants(conversationWithLastMessage.lastMessage, conversation, users));
                         subscriber.onCompleted();
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members) -> {
@@ -78,7 +80,7 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
                             //
                             conversation.setOwnerId(owner.getId());
                             members.add(0, owner);
-                            subscriber.onNext(new ConversationWithParticipants(conversation, members));
+                            subscriber.onNext(new ConversationWithParticipants(conversationWithLastMessage.lastMessage, conversation, members));
                             subscriber.onCompleted();
                         });
                     }

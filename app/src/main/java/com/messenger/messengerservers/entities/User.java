@@ -8,7 +8,6 @@ import com.messenger.model.ChatUser;
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -16,7 +15,6 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
-@ModelContainer
 @TableEndpoint(name = User.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = User.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class User extends BaseProviderModel<User> implements ChatUser {

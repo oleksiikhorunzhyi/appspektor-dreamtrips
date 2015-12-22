@@ -7,6 +7,7 @@ import com.messenger.api.GetShortProfilesQuery;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ConversationWithParticipants;
+import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
@@ -14,6 +15,7 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,13 +25,10 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 
 //todo check for leak
 public class LoaderDelegate {
-
-    private final Context context;
     private final MessengerServerFacade messengerServerFacade;
     private final DreamSpiceManager requester;
 
     public LoaderDelegate(Context context, MessengerServerFacade messengerServerFacade, DreamSpiceManager requester) {
-        this.context = context;
         this.messengerServerFacade = messengerServerFacade;
         this.requester = requester;
     }
@@ -37,18 +36,19 @@ public class LoaderDelegate {
     public void loadConversations() {
         Loader<ConversationWithParticipants> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
         conversationLoader.setPersister(data -> {
-            if (data == null || data.size() == 0) return;
-
             // save convs
             List<Conversation> convs = from(data).map(d -> d.conversation).toList();
+            List<Message> messages = from(data).map(c -> c.lastMessage).filter(m -> m.getId() != null).toList();
+
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
+            ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages);
             // save relationships
             List<ParticipantsRelationship> relationships = from(data)
                     .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p)))
                     .toList();
             ContentUtils.bulkInsert(ParticipantsRelationship.CONTENT_URI, ParticipantsRelationship.class, relationships);
             // save users
-            List<User> users = from(data).mapMany(d -> d.participants).distinct().toList();
+            List<User> users = data.isEmpty() ? new ArrayList<>() : from(data).mapMany(d -> d.participants).distinct().toList();
             updateUsersViaApi(users);
         });
         conversationLoader.load();

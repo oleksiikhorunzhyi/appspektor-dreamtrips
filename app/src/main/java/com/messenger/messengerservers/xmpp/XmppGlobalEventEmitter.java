@@ -78,7 +78,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         if(isMessage(packet)){
             //// TODO: 12/17/15 add from, cause this is a bug: stanza remove FROM from packet 
             com.messenger.messengerservers.entities.Message message = XmppMessageConverter.convert((Message) packet);
-            message.setFrom(facade.getOwner());
+            message.setFromId(facade.getOwner().getId());
             notifyGlobalMessage(message, false);
         }
     }

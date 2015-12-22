@@ -31,7 +31,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
+public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
@@ -49,7 +49,7 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         void onConversationClick(Conversation conversation);
     }
 
-    public ConversationCursorAdapter(Context context, RecyclerView recyclerView, User currentUser) {
+    public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, User currentUser) {
         super(null);
         this.context = context;
         this.recyclerView = recyclerView;
@@ -60,18 +60,22 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
-        Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
-        setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
-        setLastMessage(holder, conversation.getLastMessage(),
-                isGroupConversation(conversation.getType()));
+        Conversation chatConversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
+        Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+        setUnreadMessageCount(holder, chatConversation.getUnreadMessageCount());
+
+        // TODO: 12/21/15  
+        if (message.getText() != null) {
+            setLastMessage(holder, message, cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME)), isGroupConversation(chatConversation.getType()));
+        }
 
         holder.itemView.setOnClickListener(view -> {
             if (clickListener != null) {
-                clickListener.onConversationClick(conversation);
+                clickListener.onConversationClick(chatConversation);
             }
         });
 
-        holder.updateParticipants(conversation.getId(), users -> setNameAndAvatar(holder, conversation, users));
+        holder.updateParticipants(chatConversation.getId(), users -> setNameAndAvatar(holder, chatConversation, users));
     }
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount) {
@@ -87,18 +91,17 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         }
     }
 
-    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage,
-                                boolean isGroupConversation) {
+    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage, String userName, boolean isGroupConversation) {
         if (lastMessage == null) {
             holder.getLastMessageTextView().setVisibility(View.GONE);
             return;
         }
         holder.getLastMessageTextView().setVisibility(View.VISIBLE);
         String messageText = lastMessage.getText();
-        if (lastMessage.getFrom() != null && lastMessage.getFrom().equals(currentUser)) {
+        if (lastMessage.getFromId() != null && lastMessage.getFromId().equals(currentUser.getId())) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
-        } else if (isGroupConversation && lastMessage.getFrom() != null) {
-            messageText = lastMessage.getFrom().getName() + ": " + messageText;
+        } else if (isGroupConversation && lastMessage.getFromId() != null) {
+            messageText = userName + ": " + messageText;
         }
         holder.getLastMessageTextView().setText(messageText);
         holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage.getDate()));

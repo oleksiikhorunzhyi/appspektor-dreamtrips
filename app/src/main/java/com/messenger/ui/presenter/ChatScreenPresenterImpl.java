@@ -131,7 +131,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 }, () -> showContent());
     }
 
-    private void showContent(){
+    private void showContent() {
         ChatScreen screen = getView();
         if (screen == null) return;
         screen.getActivity().runOnUiThread(() -> screen.showContent());
@@ -175,7 +175,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
             chat.sendMessage(new Message.Builder()
                     .locale(Locale.getDefault())
                     .text(message)
-                    .from(user)
+                    .from(user.getId())
                     .build());
         } catch (ConnectionException e) {
             e.printStackTrace();

@@ -20,7 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.messenger.ui.adapter.ConversationCursorAdapter;
+import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -46,7 +46,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
 
     private ToolbarPresenter toolbarPresenter;
 
-    private ConversationCursorAdapter adapter;
+    private ConversationsCursorAdapter adapter;
 
     public ConversationListScreenImpl(Context context) {
         super(context);
@@ -102,7 +102,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
-        adapter = new ConversationCursorAdapter(getContext(), recyclerView, presenter.getUser());
+        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser());
         adapter.setClickListener(presenter::onConversationSelected);
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

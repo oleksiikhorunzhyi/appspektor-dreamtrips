@@ -25,6 +25,7 @@ import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
+import com.messenger.ui.activity.NewChatActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -183,20 +184,6 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         return true;
     }
 
-//    public void onEvent(ChatMessageEvent event) {
-//        getViewState().getData().getMessages().add(event.chatMessage);
-//        applyViewState();
-//    }
-//
-//    public void onEvent(ChatUsersTypingEvent usersTypingEvent) {
-//        getViewState().getData().setTypingUsers(usersTypingEvent.typingUsers);
-//        applyViewState();
-//    }
-
-//    @Override public void setChatConversation(ChatConversation chatConversation) {
-//        this.chatConversation = chatConversation;
-//    }
-
     @Override
     public User getUser() {
         // TODO: 12/15/15  
@@ -217,6 +204,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
+                NewChatActivity.startInAddMembersMode(getContext());
                 return true;
             case R.id.action_settings:
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {

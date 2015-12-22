@@ -196,8 +196,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                Intent intent = new Intent(parentActivity, NewChatActivity.class);
-                parentActivity.startActivity(intent);
+                NewChatActivity.startInNewChatMode(parentActivity);
                 return true;
         }
         return false;

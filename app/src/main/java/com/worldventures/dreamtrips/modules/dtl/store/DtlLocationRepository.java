@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
@@ -32,7 +31,6 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
     public void persistLocation(DtlLocation location) {
         if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
             currentLocation = location;
-            db.clearMerchantData();
         }
     }
 

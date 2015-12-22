@@ -37,6 +37,8 @@ public class LoaderDelegate {
     public void loadConversations() {
         Loader<ConversationWithParticipants> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
         conversationLoader.setPersister(data -> {
+            if (data == null || data.size() == 0) return;
+
             // save convs
             List<Conversation> convs = from(data).map(d -> d.conversation).toList();
             ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
@@ -54,9 +56,7 @@ public class LoaderDelegate {
 
     public void loadContacts() {
         Loader<User> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
-        contactLoader.setPersister(users -> {
-            updateUsersViaApi(users);
-        });
+        contactLoader.setPersister(this::updateUsersViaApi);
         contactLoader.load();
     }
 

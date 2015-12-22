@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlLocationSearchDelega
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     @Inject
     DtlLocationRepository dtlLocationRepository;
+    @Inject
+    DtlMerchantRepository dtlMerchantRepository;
     //
     private DtlLocationSearchDelegate searchDelegate;
     //
@@ -110,6 +113,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void onLocationSelected(DtlLocation location) {
         trackLocationSelection(dtlLocationRepository.getSelectedLocation(), location);
         dtlLocationRepository.persistLocation(location);
+        dtlMerchantRepository.clean();
         view.showMerchants();
     }
 

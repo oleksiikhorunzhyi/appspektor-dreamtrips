@@ -4,7 +4,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.api.place.GetNearbyMerchantsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -71,6 +70,13 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
         db.saveAmenities(amenitiesSet);
     }
 
+    /**
+     * Clean all the merchant related data
+     */
+    public void clean() {
+        if (merchants != null) merchants.clear();
+        db.clearMerchantData();
+    }
 
     /**
      * should be called in {@link Presenter#handleError(SpiceException)} to notify listeners about

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp;
+package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen;
 
 import android.app.Dialog;
 import android.graphics.RectF;
@@ -59,7 +59,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     public void setContent(IFullScreenObject photo) {
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
-        taggableImageHolder.setup(this, (Photo) photo, getPresenter().isOwnPhoto(), false);
+        taggableImageHolder.setup(this, (Photo) photo, false);
         taggableImageHolder.setCompleteListener(() -> getPresenter().loadEntity());
     }
 

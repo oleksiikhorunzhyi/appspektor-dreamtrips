@@ -67,11 +67,11 @@ public abstract class TagView extends RelativeLayout {
         int width = pointerTop.getMeasuredWidth();
         space.getLayoutParams().width = (int) (tagPosition - leftMargin - (width / 2));
 
-        float y = photoTag.getPosition().getTopLeft().getY();
+        int y = (int) photoTag.getPosition().getTopLeft().getY();
         if (y > topMargin + this.getHeight()) {
             pointerTop.setVisibility(GONE);
             pointerBottom.setVisibility(VISIBLE);
-        }else{
+        } else {
             pointerTop.setVisibility(VISIBLE);
             pointerBottom.setVisibility(GONE);
         }

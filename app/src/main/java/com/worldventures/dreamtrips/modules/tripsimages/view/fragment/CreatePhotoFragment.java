@@ -69,7 +69,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
         ivImage.setController(GraphicUtils.provideFrescoResizingController(uri, ivImage.getController()));
-        taggableImageHolder.setup(this, null, true, true);
+        taggableImageHolder.setup(this, null,  true);
     }
 
     @Override

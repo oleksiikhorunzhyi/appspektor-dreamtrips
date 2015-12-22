@@ -16,7 +16,7 @@ import java.util.List;
 
 import icepick.State;
 
-public class OwnTaggableImageHolderPresenter extends TaggableImageHolderPresenter {
+public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter {
 
     @State
     ArrayList<PhotoTag> newAddedTags;
@@ -25,7 +25,7 @@ public class OwnTaggableImageHolderPresenter extends TaggableImageHolderPresente
 
     private boolean addComplete, deleteComplete, updated;
 
-    public OwnTaggableImageHolderPresenter(Photo photo, boolean canAddTags) {
+    public CreationPhotoTaggableHolderPresenter(Photo photo, boolean canAddTags) {
         super(photo, canAddTags);
         if (newAddedTags == null && newDeletedTags == null) {
             newAddedTags = new ArrayList<>();
@@ -108,8 +108,8 @@ public class OwnTaggableImageHolderPresenter extends TaggableImageHolderPresente
     @Override
     public void restoreViewsIfNeeded() {
         super.restoreViewsIfNeeded();
-        view.setupTags(newAddedTags);
-        view.setupTags(newDeletedTags);
+        view.addTags(newAddedTags);
+        view.addTags(newDeletedTags);
     }
 
     @Override
@@ -124,16 +124,6 @@ public class OwnTaggableImageHolderPresenter extends TaggableImageHolderPresente
         }
 
         return null;
-    }
-
-    @Override
-    public boolean isOwnPhoto() {
-        return true;
-    }
-
-    @Override
-    public boolean isViewCanBeDeleted(int userId) {
-        return true;
     }
 
 }

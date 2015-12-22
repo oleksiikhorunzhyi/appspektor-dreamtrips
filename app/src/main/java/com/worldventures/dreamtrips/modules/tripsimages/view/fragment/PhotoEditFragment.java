@@ -190,7 +190,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
 
     @Override
     public void setupTaggingHolder(Photo photo) {
-        taggableImageHolder.setup(this, photo, getPresenter().isOwnPhoto(), true);
+        taggableImageHolder.setup(this, photo, true);
         taggableImageHolder.setCompleteListener(this::finish);
     }
 

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.graphics.RectF;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
@@ -19,12 +18,11 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
         this.canAddTags = canAddTags;
     }
 
-    public static TaggableImageHolderPresenter create(Photo photo, boolean isOwnPhoto, boolean canAddTags) {
-        if (isOwnPhoto) {
-            return new OwnTaggableImageHolderPresenter(photo, canAddTags);
+    public static TaggableImageHolderPresenter create(Photo photo, boolean canAddTags) {
+        if (canAddTags) {
+            return new CreationPhotoTaggableHolderPresenter(photo, canAddTags);
         }
-
-        return new ForeignTaggableImageHolderPresenter(photo);
+        return new PreviewPhotoTaggableHolderPresenter(photo);
     }
 
     @Override
@@ -33,7 +31,7 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
     }
 
     public void setupTags() {
-        if (photo != null && photo.getPhotoTags() != null) view.setupTags(photo.getPhotoTags());
+        if (photo != null && photo.getPhotoTags() != null) view.addTags(photo.getPhotoTags());
     }
 
     public boolean canAddTags() {
@@ -63,13 +61,17 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
         view.onRequestsComplete();
     }
 
-    public abstract boolean isOwnPhoto();
+    public boolean isOwnPhoto() {
+        return getAccount().getId() == photo.getOwner().getId();
+    }
 
-    public abstract boolean isViewCanBeDeleted(int userId);
+    public final boolean isViewCanBeDeleted(int userId) {
+        return isOwnPhoto() || getAccount().getId() == userId;
+    }
 
     public interface View extends Presenter.View {
 
-        void setupTags(List<PhotoTag> tags);
+        void addTags(List<PhotoTag> tags);
 
         RectF getImageBounds();
 

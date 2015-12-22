@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp;
+package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen;
 
 import android.os.Build;
 import android.view.ViewTreeObserver;

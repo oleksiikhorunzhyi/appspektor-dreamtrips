@@ -53,8 +53,8 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setup(Injector injector, Photo photo, boolean isOwnPhoto, boolean canAddTags) {
-        presenter = TaggableImageHolderPresenter.create(photo, isOwnPhoto, canAddTags);
+    public void setup(Injector injector, Photo photo, boolean canAddTags) {
+        presenter = TaggableImageHolderPresenter.create(photo, canAddTags);
         injector.inject(presenter);
         presenter.takeView(this);
         presenter.onStart();
@@ -168,7 +168,7 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
     }
 
     @Override
-    public void setupTags(List<PhotoTag> tags) {
+    public void addTags(List<PhotoTag> tags) {
         Queryable.from(tags).forEachR(tag -> {
             PhotoTag cloneTag = SerializationUtils.clone(tag);
             PhotoTag.TagPosition newTagPosition = CoordinatesTransformer.convertToAbsolute(cloneTag.getPosition(), imageBounds);
@@ -197,8 +197,7 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
-            boolean confirmed = imageBounds.contains(event.getX(), event.getY())
-                    && presenter.isOwnPhoto() && presenter.canAddTags();
+            boolean confirmed = imageBounds.contains(event.getX(), event.getY()) && presenter.canAddTags();
             if (confirmed) {
                 removeUncompletedViews();
                 addTagView(event.getX(), event.getY());

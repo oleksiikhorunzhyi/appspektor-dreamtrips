@@ -25,7 +25,7 @@ import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
-import com.messenger.ui.activity.NewChatActivity;
+import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -204,7 +204,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatActivity.startInAddMembersMode(getContext(), conversation.getId());
+                NewChatMembersActivity.startInAddMembersMode(getContext(), conversation.getId());
                 return true;
             case R.id.action_settings:
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {

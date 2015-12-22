@@ -13,8 +13,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.activity.NewChatActivity;
-import com.messenger.ui.view.NewChatScreen;
+import com.messenger.ui.activity.NewChatMembersActivity;
+import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -23,9 +23,7 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +31,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AddChatMembersScreenPresenterImpl extends BaseChatMembersPresenter {
+public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
 
     private Conversation conversation;
     private List<User> originalParticipants;
@@ -44,7 +42,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseChatMembersPresenter 
     public AddChatMembersScreenPresenterImpl(Activity activity) {
         super(activity);
         String conversationId = activity.getIntent()
-                .getStringExtra(NewChatActivity.EXTRA_CONVERSATION_ID);
+                .getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
         conversation = new Select()
                 .from(Conversation.class)
                 .byIds(conversationId)
@@ -57,7 +55,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseChatMembersPresenter 
     }
 
     @Override
-    public void attachView(NewChatScreen view) {
+    public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.chat_add_new_members_title);
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)

@@ -14,16 +14,16 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.view.NewChatScreen;
+import com.messenger.ui.view.NewChatMembersScreen;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 import java.util.UUID;
 
-public class NewChatLayoutPresenterImpl extends BaseChatMembersPresenter {
+public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
 
-    public NewChatLayoutPresenterImpl(Activity activity) {
+    public NewChatScreenPresenterImpl(Activity activity) {
         super(activity);
     }
 
@@ -33,7 +33,7 @@ public class NewChatLayoutPresenterImpl extends BaseChatMembersPresenter {
 
 
     @Override
-    public void attachView(NewChatScreen view) {
+    public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.new_chat_title);
     }

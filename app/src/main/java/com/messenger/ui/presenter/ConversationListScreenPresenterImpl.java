@@ -19,7 +19,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.activity.NewChatActivity;
+import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 import com.techery.spares.module.Injector;
@@ -195,7 +195,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatActivity.startInNewChatMode(parentActivity);
+                NewChatMembersActivity.startInNewChatMode(parentActivity);
                 return true;
         }
         return false;

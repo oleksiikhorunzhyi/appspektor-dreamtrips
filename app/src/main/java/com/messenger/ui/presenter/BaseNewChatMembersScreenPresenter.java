@@ -1,14 +1,8 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -25,8 +19,8 @@ import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
-import com.messenger.ui.activity.NewChatActivity;
-import com.messenger.ui.view.NewChatScreen;
+import com.messenger.ui.activity.NewChatMembersActivity;
+import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -39,8 +33,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class BaseChatMembersPresenter extends BaseViewStateMvpPresenter<NewChatScreen, NewChatLayoutViewState>
-        implements NewChatLayoutPresenter, LoaderManager.LoaderCallbacks<Cursor> {
+public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvpPresenter<NewChatMembersScreen, NewChatLayoutViewState>
+        implements NewChatScreenPresenter, LoaderManager.LoaderCallbacks<Cursor> {
 
     private LoaderDelegate loaderDelegate;
 
@@ -59,17 +53,17 @@ public abstract class BaseChatMembersPresenter extends BaseViewStateMvpPresenter
 
     private Cursor contactsCursor;
 
-    public static NewChatLayoutPresenter createPresenter(Activity activity) {
-        int mode = activity.getIntent().getIntExtra(NewChatActivity.EXTRA_MODE, -1);
-        if (mode == NewChatActivity.MODE_NEW_CHAT) {
-            return new NewChatLayoutPresenterImpl(activity);
-        } else if (mode == NewChatActivity.MODE_CHAT_ADD_MEMBERS) {
+    public static NewChatScreenPresenter createPresenter(Activity activity) {
+        int mode = activity.getIntent().getIntExtra(NewChatMembersActivity.EXTRA_MODE, -1);
+        if (mode == NewChatMembersActivity.MODE_NEW_CHAT) {
+            return new NewChatScreenPresenterImpl(activity);
+        } else if (mode == NewChatMembersActivity.MODE_CHAT_ADD_MEMBERS) {
             return new AddChatMembersScreenPresenterImpl(activity);
         }
         throw new IllegalArgumentException("Cannot find presenter for mode provided");
     }
 
-    public BaseChatMembersPresenter(Activity activity) {
+    public BaseNewChatMembersScreenPresenter(Activity activity) {
         this.activity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
@@ -81,7 +75,7 @@ public abstract class BaseChatMembersPresenter extends BaseViewStateMvpPresenter
     }
 
     @Override
-    public void attachView(NewChatScreen view) {
+    public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(view.getContext());
         loadChatContacts();

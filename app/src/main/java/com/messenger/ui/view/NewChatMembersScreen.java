@@ -9,7 +9,7 @@ import com.messenger.model.ChatUser;
 
 import java.util.List;
 
-public interface NewChatScreen extends ActivityAwareScreen {
+public interface NewChatMembersScreen extends ActivityAwareScreen {
     void showLoading();
 
     void showContent();

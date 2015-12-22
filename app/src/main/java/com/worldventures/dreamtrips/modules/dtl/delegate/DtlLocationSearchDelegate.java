@@ -85,7 +85,8 @@ public class DtlLocationSearchDelegate {
     }
 
     private void tryUnsubscribe() {
-        if (!subscription.isUnsubscribed()) subscription.unsubscribe();
+        if (subscription != null &&
+                !subscription.isUnsubscribed()) subscription.unsubscribe();
     }
 
     private void apiSearch() {

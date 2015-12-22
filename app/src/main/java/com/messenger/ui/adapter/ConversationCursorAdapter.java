@@ -60,17 +60,18 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
 
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
-        Conversation chatConversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
-        setUnreadMessageCount(holder, chatConversation.getUnreadMessageCount());
-        setLastMessage(holder, chatConversation.getLastMessage());
+        Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
+        setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
+        setLastMessage(holder, conversation.getLastMessage(),
+                isGroupConversation(conversation.getType()));
 
         holder.itemView.setOnClickListener(view -> {
             if (clickListener != null) {
-                clickListener.onConversationClick(chatConversation);
+                clickListener.onConversationClick(conversation);
             }
         });
 
-        holder.updateParticipants(chatConversation.getId(), users -> setNameAndAvatar(holder, chatConversation, users));
+        holder.updateParticipants(conversation.getId(), users -> setNameAndAvatar(holder, conversation, users));
     }
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount) {
@@ -86,7 +87,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         }
     }
 
-    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage) {
+    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage,
+                                boolean isGroupConversation) {
         if (lastMessage == null) {
             holder.getLastMessageTextView().setVisibility(View.GONE);
             return;
@@ -95,6 +97,8 @@ public class ConversationCursorAdapter extends CursorRecyclerViewAdapter<BaseCon
         String messageText = lastMessage.getText();
         if (lastMessage.getFrom() != null && lastMessage.getFrom().equals(currentUser)) {
             messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
+        } else if (isGroupConversation && lastMessage.getFrom() != null) {
+            messageText = lastMessage.getFrom().getName() + ": " + messageText;
         }
         holder.getLastMessageTextView().setText(messageText);
         holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage.getDate()));

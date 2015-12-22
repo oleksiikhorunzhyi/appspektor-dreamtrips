@@ -117,7 +117,7 @@
 
         <activity
             android:screenOrientation="sensorPortrait"
-            android:name="com.messenger.ui.activity.NewChatActivity"/>
+            android:name="com.messenger.ui.activity.NewChatMembersActivity"/>
 
         <activity
             android:screenOrientation="sensorPortrait"

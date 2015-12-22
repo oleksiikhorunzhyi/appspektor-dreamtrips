@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +19,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.activity.NewChatActivity;
+import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 import com.techery.spares.module.Injector;
@@ -196,8 +195,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                Intent intent = new Intent(parentActivity, NewChatActivity.class);
-                parentActivity.startActivity(intent);
+                NewChatMembersActivity.startInNewChatMode(parentActivity);
                 return true;
         }
         return false;

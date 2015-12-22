@@ -12,13 +12,10 @@ import android.view.MenuItem;
 import com.messenger.ui.view.ActivityAwareScreen;
 import com.messenger.ui.view.ChatScreenImpl;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseMvpViewActivity<ChatScreenImpl> {
     public static final String EXTRA_CHAT_COMPANION_ID = "ChatActivity#EXTRA_CHAT_COMPANION_ID";
     public static final String EXTRA_CHAT_CONVERSATION_ID = "ChatActivity#EXTRA_CHAT_CONVERSATION_ID";
     public static final String EXTRA_CHAT_TYPE = "ChatActivity#EXTRA_CHAT_TYPE";
-
-    private ActivityAwareScreen screen;
-
 
     public static final int CHAT_TYPE_GROUP = 0xaa54;
     public static final int CHAT_TYPE_SINGLE = 0xaa55;
@@ -41,30 +38,8 @@ public class ChatActivity extends AppCompatActivity {
         context.startActivity(starter);
     }
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ChatScreenImpl screen = new ChatScreenImpl(this);
-        screen.setId(android.R.id.primary);
-        setContentView(screen);
-        this.screen = screen;
-    }
-
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
-        return screen.onCreateOptionsMenu(menu);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        return screen.onOptionsItemSelected(item);
-    }
-
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        screen.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override protected void onDestroy() {
-        super.onDestroy();
-        screen.onDestroy();
+    ChatScreenImpl createScreen() {
+        return new ChatScreenImpl(this);
     }
 }

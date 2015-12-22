@@ -5,22 +5,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.messenger.ui.view.ActivityAwareScreen;
-import com.messenger.ui.view.NewChatScreenImpl;
 
+public abstract class BaseMvpViewActivity<T extends View & ActivityAwareScreen> extends AppCompatActivity {
 
-public class NewChatActivity extends AppCompatActivity {
-
-    private ActivityAwareScreen screen;
+    protected T screen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NewChatScreenImpl newChatScreen = new NewChatScreenImpl(this);
-        newChatScreen.setId(android.R.id.primary);
-        setContentView(newChatScreen);
-        screen = newChatScreen;
+        screen = createScreen();
+        screen.setId(android.R.id.primary);
+        setContentView(screen);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -39,4 +37,6 @@ public class NewChatActivity extends AppCompatActivity {
         super.onDestroy();
         screen.onDestroy();
     }
+
+    abstract T createScreen();
 }

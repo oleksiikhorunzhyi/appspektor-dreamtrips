@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,8 +25,8 @@ import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.ContactSimpleAlphabetAdapter;
+import com.messenger.ui.presenter.BaseChatMembersPresenter;
 import com.messenger.ui.presenter.NewChatLayoutPresenter;
-import com.messenger.ui.presenter.NewChatLayoutPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.widget.SelectionListenerEditText;
@@ -35,7 +36,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, NewChatLayoutPresenter>
         implements NewChatScreen {
@@ -52,8 +52,6 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     @InjectView(R.id.new_chat_recycler_view)
     RecyclerView recyclerView;
 
-    @InjectView(R.id.new_chat_conversation_icon)
-    ImageView conversationIcon;
     @InjectView(R.id.new_chat_conversation_name)
     EditText conversationNameEditText;
     @InjectView(R.id.new_chat_chosen_contacts_edittext)
@@ -84,7 +82,6 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     private void initUi() {
         setBackgroundColor(getResources().getColor(R.color.main_background));
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
-        toolbarPresenter.setTitle(R.string.new_chat_title);
         toolbarPresenter.enableUpNavigationButton();
 
         // Use this class until sorting logic in ContactCursorAdapter is checked
@@ -148,7 +145,7 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
 
     @Override
     public NewChatLayoutPresenter createPresenter() {
-        return new NewChatLayoutPresenterImpl(getActivity());
+        return BaseChatMembersPresenter.createPresenter(getActivity());
     }
 
     @Override
@@ -184,7 +181,6 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
 
     @Override
     public void setSelectedContacts(List<User> selectedContacts) {
-
         adapter.setSelectedContacts(selectedContacts);
         adapter.notifyDataSetChanged();
     }
@@ -196,8 +192,13 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     }
 
     @Override
-    public void setConversationIcon(Bitmap bitmap) {
-        conversationIcon.setImageBitmap(bitmap);
+    public void setTitle(String title) {
+        toolbarPresenter.setTitle(title);
+    }
+
+    @Override
+    public void setTitle(@StringRes int title) {
+        toolbarPresenter.setTitle(title);
     }
 
     @Override
@@ -230,11 +231,6 @@ public class NewChatScreenImpl extends BaseViewStateLinearLayout<NewChatScreen, 
     @Override
     public void onDestroy() {
         getPresenter().onDestroy();
-    }
-
-    @OnClick(R.id.new_chat_conversation_icon)
-    public void onConversationItemClick() {
-        getPresenter().onHandleTakePictureIntent();
     }
 
     @Override

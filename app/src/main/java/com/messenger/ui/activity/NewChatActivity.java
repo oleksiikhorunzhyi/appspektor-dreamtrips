@@ -14,11 +14,12 @@ import com.messenger.ui.view.NewChatScreenImpl;
 
 public class NewChatActivity extends AppCompatActivity {
 
-    private static final String EXTRA_MODE = "EXTRA_MODE";
+    public static final String EXTRA_MODE = "EXTRA_MODE";
+    public static final String EXTRA_CONVERSATION_ID = "EXTRA_CONVERSATION_ID";
 
-    private static final int MODE_NEW_CHAT = 1;
-    private static final int MODE_CHAT_ADD_MEMBERS = 2;
-    private static final int MODE_CHAT_EDIT_MEMBERS = 2;
+    public static final int MODE_NEW_CHAT = 1;
+    public static final int MODE_CHAT_ADD_MEMBERS = 2;
+    public static final int MODE_CHAT_EDIT_MEMBERS = 2;
 
     private ActivityAwareScreen screen;
 
@@ -28,15 +29,17 @@ public class NewChatActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    public static void startInAddMembersMode(Context context) {
+    public static void startInAddMembersMode(Context context, String conversationId) {
         Intent intent = new Intent(context, NewChatActivity.class);
         intent.putExtra(EXTRA_MODE, MODE_CHAT_ADD_MEMBERS);
+        intent.putExtra(EXTRA_CONVERSATION_ID, conversationId);
         context.startActivity(intent);
     }
 
-    public static void startInEditMembersMode(Context context) {
+    public static void startInEditMembersMode(Context context, String conversationId) {
         Intent intent = new Intent(context, NewChatActivity.class);
         intent.putExtra(EXTRA_MODE, MODE_CHAT_EDIT_MEMBERS);
+        intent.putExtra(EXTRA_CONVERSATION_ID, conversationId);
         context.startActivity(intent);
     }
 

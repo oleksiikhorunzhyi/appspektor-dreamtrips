@@ -4,6 +4,8 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
+import com.messenger.ui.presenter.BaseChatMembersPresenter;
 import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
@@ -26,7 +28,10 @@ import dagger.Provides;
 
                 ChatFacadeInitializer.class,
 
+                BaseChatMembersPresenter.class,
                 NewChatLayoutPresenterImpl.class,
+                AddChatMembersScreenPresenterImpl.class,
+
                 ConversationListScreenPresenterImpl.class,
                 ChatActivity.class})
 

@@ -6,7 +6,6 @@ import android.content.Intent;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.ui.activity.ChatActivity;
 
 public class ChatGroupScreenPresenter extends ChatScreenPresenterImpl {
     public ChatGroupScreenPresenter(Context context, Intent startIntent) {

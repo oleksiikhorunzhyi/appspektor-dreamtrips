@@ -204,7 +204,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatActivity.startInAddMembersMode(getContext());
+                NewChatActivity.startInAddMembersMode(getContext(), conversation.getId());
                 return true;
             case R.id.action_settings:
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {

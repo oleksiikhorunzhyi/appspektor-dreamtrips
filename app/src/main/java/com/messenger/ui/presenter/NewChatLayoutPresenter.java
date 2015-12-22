@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface NewChatLayoutPresenter extends ActivityAwareViewStateMvpPresenter<NewChatScreen,
         NewChatLayoutViewState> {
-    void loadChatContacts();
     void onSelectedUsersStateChanged(List<User> selectedUsers);
-    void onHandleTakePictureIntent();
     void onTextChangedInChosenContactsEditText(String text);
 }

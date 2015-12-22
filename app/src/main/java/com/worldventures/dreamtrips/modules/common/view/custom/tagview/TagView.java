@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
@@ -16,10 +18,19 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TagView extends RelativeLayout{
+import butterknife.InjectView;
+
+public abstract class TagView extends RelativeLayout {
     protected List<User> userFriends;
     protected PhotoTag photoTag;
     protected TaggableImageHolder.TagListener tagListener;
+
+    @InjectView(R.id.pointer_top)
+    View pointerTop;
+    @InjectView(R.id.pointer_bottom)
+    View pointerBottom;
+    @InjectView(R.id.pointer_shift_x)
+    View space;
 
     public TagView(Context context) {
         super(context);
@@ -46,6 +57,26 @@ public abstract class TagView extends RelativeLayout{
         this.photoTag = photoTag;
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        int leftMargin = ((LayoutParams) this.getLayoutParams()).leftMargin;
+        int topMargin = ((LayoutParams) this.getLayoutParams()).topMargin;
+        float tagPosition = photoTag.getPosition().getTopLeft().getX();
+        pointerTop.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+        int width = pointerTop.getMeasuredWidth();
+        space.getLayoutParams().width = (int) (tagPosition - leftMargin - (width / 2));
+
+        float y = photoTag.getPosition().getTopLeft().getY();
+        if (y > topMargin + this.getHeight()) {
+            pointerTop.setVisibility(GONE);
+            pointerBottom.setVisibility(VISIBLE);
+        }else{
+            pointerTop.setVisibility(VISIBLE);
+            pointerBottom.setVisibility(GONE);
+        }
+    }
+
     public void setUserFriends(@Nullable List<User> userFriends) {
         this.userFriends = (userFriends == null) ? new ArrayList<>() : userFriends;
     }
@@ -54,7 +85,7 @@ public abstract class TagView extends RelativeLayout{
         this.tagListener = tagListener;
     }
 
-    public Size getSize(){
+    public Size getSize() {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
@@ -63,7 +94,7 @@ public abstract class TagView extends RelativeLayout{
 
     protected abstract void initialize();
 
-    protected void deleteTag(){
+    protected void deleteTag() {
         ((ViewGroup) getParent()).removeView(this);
     }
 

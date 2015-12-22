@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+    <Space
+        android:id="@+id/pointer_shift_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="12dp"/>
 
     <ImageView
         android:id="@+id/pointer_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
+        android:layout_toRightOf="@+id/pointer_shift_x"
         android:adjustViewBounds="true"
-        android:src="@drawable/photo_tag_additional_part"
-        />
+        android:src="@drawable/photo_tag_additional_part"/>
 
     <LinearLayout
+        android:id="@+id/tag_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/pointer_top"
         android:animateLayoutChanges="true"
         android:background="@drawable/photo_tag_main_part"
         android:gravity="center"
@@ -58,8 +67,8 @@
         android:id="@+id/pointer_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
+        android:layout_below="@+id/tag_container"
+        android:layout_toRightOf="@+id/pointer_shift_x"
         android:rotation="180"
         android:src="@drawable/photo_tag_additional_part"/>
-</LinearLayout>
+</RelativeLayout>

@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/new_user_suggestions_popup_anchor"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+<RelativeLayout
+    android:id="@+id/new_user_suggestions_popup_anchor"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pointer_shift_x"/>
 
     <ImageView
         android:id="@+id/pointer_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
-        android:adjustViewBounds="true"
         android:src="@drawable/photo_tag_additional_part"
-        />
+        android:layout_toRightOf="@+id/pointer_shift_x"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/pointer_top"
+        android:id="@+id/tag_container"
         android:background="@drawable/photo_tag_main_part"
         android:gravity="center"
         android:padding="@dimen/spacing_small">
@@ -51,9 +56,10 @@
         android:id="@+id/pointer_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
-        android:rotation="180"
-        android:src="@drawable/photo_tag_additional_part"/>
+        android:layout_below="@+id/tag_container"
 
-</LinearLayout>
+        android:rotation="180"
+        android:src="@drawable/photo_tag_additional_part"
+        android:layout_toRightOf="@+id/pointer_shift_x"/>
+
+</RelativeLayout>

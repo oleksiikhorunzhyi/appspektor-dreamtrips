@@ -15,11 +15,11 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.ExistsTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.NewTagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -145,26 +145,24 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         float tagWidth = tagSize.getWidth();
         float tagHeight = tagSize.getHeight();
 
-        int marginLeft = (int) (photoTag.getPosition().getTopLeft().getX() - tagWidth / 2);
-        int marginTop = (int) (photoTag.getPosition().getTopLeft().getY());
+        int photoTagXPos = (int) (photoTag.getPosition().getTopLeft().getX() - tagWidth / 2);
+        int photoTagYPos = (int) (photoTag.getPosition().getTopLeft().getY());
 
-        if (marginLeft < 0) {
-            marginLeft = 0;
+        if (photoTagXPos < 0) {
+            photoTagXPos = 0;
         }
-        if (marginLeft > getWidth() - tagWidth) {
-            marginLeft = 0;
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        if (photoTagXPos > getWidth() - tagWidth) {
+            photoTagXPos = (int) (getWidth() - tagWidth);
         }
-        if (marginTop < 0) {
-            marginTop = 0;
+        if (photoTagYPos < 0) {
+            photoTagYPos = 0;
         }
-        if (marginTop > getHeight() - tagHeight) {
-            marginTop = 0;
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if (photoTagYPos > getHeight() - tagHeight) {
+            photoTagYPos = (int) (getHeight() - tagHeight - (getHeight() - photoTagYPos));
         }
 
-        layoutParams.leftMargin = marginLeft;
-        layoutParams.topMargin = marginTop;
+        layoutParams.leftMargin = photoTagXPos;
+        layoutParams.topMargin = photoTagYPos;
 
         addView(view, layoutParams);
     }

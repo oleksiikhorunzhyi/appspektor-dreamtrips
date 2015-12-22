@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
@@ -43,7 +42,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @InjectView(R.id.taggable_holder)
     protected TaggableImageHolder taggableImageHolder;
     @InjectView(R.id.tag)
-    ImageView tag;
+    protected ImageView tag;
 
     @Override
     public void afterCreateView(View rootView) {

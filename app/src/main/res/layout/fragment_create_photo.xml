@@ -36,7 +36,9 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            style="@style/ToolBarStyle.Transient"/>
+            style="@style/ToolBarStyle.Transient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <ImageView
             android:id="@+id/tag"
@@ -44,9 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/toolbar"
-            android:src="@drawable/ic_tag"
+            android:layout_marginRight="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginRight="@dimen/spacing_medium"/>
+            android:src="@drawable/ic_tag"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_save"

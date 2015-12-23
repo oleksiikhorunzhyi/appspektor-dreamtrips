@@ -36,11 +36,14 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     private PresenceListener presenceListener;
     private SubjectUpdatedListener subjectUpdatedListener;
     private AbstractXMPPConnection connection;
+    private XmppMessageConverter messageConverter;
 
     public XmppMultiUserChat(XmppServerFacade facade, String roomId, User user, boolean isOwner) {
         this.user = user;
         this.roomId = roomId;
         this.isOwner = isOwner;
+        //
+        messageConverter = new XmppMessageConverter();
         facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
         if (facade.isAuthorized()) {
             setConnection(facade.getConnection());
@@ -63,7 +66,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             throw new IllegalStateException("Your are not authorized");
 
         try {
-            org.jivesoftware.smack.packet.Message stanzaPacket = XmppMessageConverter.convert(message);
+            org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
             stanzaPacket.setStanzaId(UUID.randomUUID().toString());
             stanzaPacket.setThread(roomId);
             chat.sendMessage(stanzaPacket);

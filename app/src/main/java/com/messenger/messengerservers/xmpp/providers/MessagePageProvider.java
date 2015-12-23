@@ -20,6 +20,12 @@ import java.util.Locale;
 
 public class MessagePageProvider extends IQProvider<MessagePagePacket> {
 
+    private Gson gson;
+
+    public MessagePageProvider() {
+        gson = new Gson();
+    }
+
     @Override
     public MessagePagePacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         MessagePagePacket messagePagePacket = new MessagePagePacket();
@@ -50,7 +56,7 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
 
                             MessageBody stanzaMessageBody = null;
                             try {
-                                stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
+                                stanzaMessageBody = gson.fromJson(messageBody, MessageBody.class);
                             } catch (JsonSyntaxException ignore){}
 
                             if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null){

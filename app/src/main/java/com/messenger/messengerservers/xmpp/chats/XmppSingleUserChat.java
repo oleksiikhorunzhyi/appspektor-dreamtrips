@@ -33,8 +33,9 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     @Nullable
     private ChatStateManager chatStateManager;
     @Nullable
-    private AbstractXMPPConnection connection;
     private Chat chat;
+    private AbstractXMPPConnection connection;
+    private XmppMessageConverter messageConverter;
 
     private final ChatStateListener messageListener = new ChatStateListener() {
         @Override
@@ -52,6 +53,8 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String thread) {
         this.companionId = companionId;
         this.thread = thread;
+        //
+        messageConverter = new XmppMessageConverter();
         facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
         if (facade.isAuthorized()) {
             setConnection(facade.getConnection());
@@ -74,7 +77,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
             throw new IllegalStateException("Your are not authorized");
 
         try {
-            Message stanzaPacket = XmppMessageConverter.convert(message);
+            Message stanzaPacket = messageConverter.convert(message);
             stanzaPacket.setStanzaId(UUID.randomUUID().toString());
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {

@@ -4,15 +4,19 @@ import com.google.gson.Gson;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.xmpp.entities.MessageBody;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.Locale;
 
 public final class XmppMessageConverter {
 
-    private XmppMessageConverter() {
+    private Gson gson;
 
+    public XmppMessageConverter() {
+        gson = new Gson();
     }
 
-    public static org.jivesoftware.smack.packet.Message convert(Message message) {
+    public org.jivesoftware.smack.packet.Message convert(Message message) {
         MessageBody messageBody = new MessageBody.Builder()
                 .locale(message.getLocale().toString())
                 .text(message.getText())
@@ -26,8 +30,9 @@ public final class XmppMessageConverter {
         return smackMessage;
     }
 
-    public static Message convert(org.jivesoftware.smack.packet.Message message) {
-        MessageBody stanzaMessageBody = new Gson().fromJson(message.getBody(), MessageBody.class);
+    public Message convert(org.jivesoftware.smack.packet.Message message) {
+        String body = StringEscapeUtils.unescapeXml(message.getBody());
+        MessageBody stanzaMessageBody = gson.fromJson(body, MessageBody.class);
 
         Message.Builder builder = new Message.Builder()
                 .text(stanzaMessageBody.getText())

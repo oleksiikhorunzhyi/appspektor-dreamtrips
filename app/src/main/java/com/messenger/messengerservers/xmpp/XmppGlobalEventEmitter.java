@@ -26,10 +26,10 @@ import java.util.Collection;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.isMessage;
 
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
-    private static final String TAG = "XmppGlobalEventEmitter";
-    private final XmppServerFacade facade;
 
+    private final XmppServerFacade facade;
     private AbstractXMPPConnection abstractXMPPConnection;
+    private final XmppMessageConverter messageConverter;
 
     public final RosterListener rosterListener = new RosterListener() {
         @Override
@@ -68,16 +68,17 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             Roster.getInstanceFor(facade.getConnection()).addRosterListener(rosterListener);
         }
     };
-    
+
     public XmppGlobalEventEmitter(XmppServerFacade facade) {
-        facade.addAuthorizationListener(authorizeListener);
         this.facade = facade;
+        this.messageConverter = new XmppMessageConverter();
+        facade.addAuthorizationListener(authorizeListener);
     }
 
     private void interceptOutgoingPacket(Stanza packet){
         if(isMessage(packet)){
             //// TODO: 12/17/15 add from, cause this is a bug: stanza remove FROM from packet 
-            com.messenger.messengerservers.entities.Message message = XmppMessageConverter.convert((Message) packet);
+            com.messenger.messengerservers.entities.Message message = messageConverter.convert((Message) packet);
             message.setFromId(facade.getOwner().getId());
             notifyGlobalMessage(message, false);
         }
@@ -90,7 +91,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                     && messageXMPP.getFrom().split("/")[1].equals(messageXMPP.getTo().split("@")[0])) {
                 return;
             }
-            com.messenger.messengerservers.entities.Message message = XmppMessageConverter.convert(messageXMPP);
+            com.messenger.messengerservers.entities.Message message = messageConverter.convert(messageXMPP);
             notifyGlobalMessage(message, true);
 
             if (!isHandled(message)){

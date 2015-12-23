@@ -13,6 +13,7 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -71,7 +72,10 @@ public class BaseConversationViewHolder extends BaseViewHolder {
                 ).withSelectionArgs(new String[]{conversationId}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
                 .throttleLast(100, TimeUnit.MILLISECONDS)
-                .map(c -> SqlUtils.convertToList(User.class, c))
+                .map(c -> {
+                    if (c.isClosed()) return Collections.<User>emptyList();
+                    return SqlUtils.convertToList(User.class, c);
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(itemView))

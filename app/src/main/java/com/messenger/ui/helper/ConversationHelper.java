@@ -32,7 +32,7 @@ public class ConversationHelper {
         } else {
             final String fInitialTitle = initialTitle;
             Runnable textSetter = () -> {
-                CharSequence truncatedSubject = TextUtils.ellipsize(fInitialTitle, target.getPaint(), target.getWidth() / 3f * 2f, TextUtils.TruncateAt.END);
+                CharSequence truncatedSubject = TextUtils.ellipsize(fInitialTitle, target.getPaint(), target.getMeasuredWidth() / 4f * 3f, TextUtils.TruncateAt.END);
                 StringBuilder titleBuilder = new StringBuilder(truncatedSubject);
                 titleBuilder.append(' ').append("(").append(usersCount).append(")");
                 target.setText(titleBuilder.toString());
@@ -43,7 +43,7 @@ public class ConversationHelper {
                     public boolean onPreDraw() {
                         target.getViewTreeObserver().removeOnPreDrawListener(this);
                         textSetter.run();
-                        return false;
+                        return true;
                     }
                 });
             } else {

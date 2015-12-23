@@ -11,6 +11,6 @@ public interface ChatScreen extends ActivityAwareScreen {
     void showLoading();
     void showContent();
     void showError(Throwable e);
-    void setSubject(Conversation conversation, List<User> users);
+    void setTitle(Conversation conversation, List<User> users);
     void onConversationCursorLoaded(Cursor cursor, Conversation conversation, boolean pendingScroll);
 }

@@ -146,7 +146,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(((View) getView())))
                 .subscribe(members -> {
-                    getView().setSubject(conversation, members);
+                    getView().setTitle(conversation, members);
                 });
     }
 

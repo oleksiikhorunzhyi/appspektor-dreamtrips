@@ -200,7 +200,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     }
 
     @Override
-    public void setSubject(Conversation conversation, List<User> members) {
+    public void setTitle(Conversation conversation, List<User> members) {
         conversationHelper.setTitle(title, conversation, members);
         conversationHelper.setSubtitle(subtitle, conversation, members);
     }

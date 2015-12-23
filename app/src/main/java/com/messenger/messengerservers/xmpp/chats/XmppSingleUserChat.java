@@ -6,8 +6,11 @@ import android.util.Log;
 
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.SingleUserChat;
+import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
@@ -23,6 +26,7 @@ import org.jivesoftware.smackx.chatstates.ChatStateManager;
 
 import java.util.UUID;
 
+import timber.log.Timber;
 
 public class XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
 
@@ -82,6 +86,17 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {
             Log.e(TAG, "Sending message error", e);
+        }
+    }
+
+    @Override
+    public void changeMessageStatus(com.messenger.messengerservers.entities.Message message, @Status.MessageStatus String status) {
+        StatusMessagePacket statusMessagePacket = new StatusMessagePacket(message.getId(), status,
+                JidCreatorHelper.obtainUserJid(companionId), Message.Type.chat);
+        try {
+            connection.sendStanza(statusMessagePacket);
+        } catch (SmackException.NotConnectedException e) {
+            Timber.e(e, TAG);
         }
     }
 

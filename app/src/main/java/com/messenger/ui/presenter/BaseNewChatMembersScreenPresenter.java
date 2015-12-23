@@ -1,6 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.database.ContentObservable;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;

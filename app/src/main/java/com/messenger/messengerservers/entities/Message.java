@@ -37,6 +37,7 @@ public class Message extends BaseProviderModel<Message> {
     @Column String text;
     @Column Date date;
     @Column String conversationId;
+    @Column boolean read;
 
     private Locale locale;
 
@@ -58,6 +59,7 @@ public class Message extends BaseProviderModel<Message> {
         setText(builder.text);
         setDate(builder.date);
         setLocale(builder.locale);
+        setRead(builder.read);
     }
 
     public String getConversationId() {
@@ -112,6 +114,14 @@ public class Message extends BaseProviderModel<Message> {
         this.locale = locale;
     }
 
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
     @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
@@ -140,6 +150,7 @@ public class Message extends BaseProviderModel<Message> {
         private String text;
         private Date date;
         private Locale locale;
+        private boolean read;
 
         public Builder() {
         }
@@ -176,6 +187,11 @@ public class Message extends BaseProviderModel<Message> {
 
         public Builder locale(Locale val) {
             locale = val;
+            return this;
+        }
+
+        public Builder read(boolean val) {
+            read = val;
             return this;
         }
 

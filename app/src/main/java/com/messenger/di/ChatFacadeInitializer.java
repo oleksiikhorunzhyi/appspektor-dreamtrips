@@ -29,12 +29,14 @@ public class ChatFacadeInitializer implements AppInitializer {
             @Override
             public void onReceiveMessage(Message message) {
                 message.setDate(new Date());
+                message.setRead(false);
                 ContentUtils.insert(Message.CONTENT_URI, message);
             }
 
             @Override
             public void onSendMessage(Message message) {
                 message.setDate(new Date());
+                message.setRead(true);
                 ContentUtils.insert(Message.CONTENT_URI, message);
             }
         });

@@ -7,8 +7,10 @@ import android.util.Log;
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 
@@ -22,6 +24,8 @@ import org.jivesoftware.smackx.muc.SubjectUpdatedListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import timber.log.Timber;
 
 public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient{
 
@@ -58,6 +62,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
 
         subjectUpdatedListener = (subject, from) -> notifySubjectUpdateListeners(subject);
         chat.addSubjectUpdatedListener(subjectUpdatedListener);
+        org.jivesoftware.smack.packet.Message packet;
     }
 
     @Override
@@ -72,6 +77,18 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {
             Log.e(TAG, "Error ", e);
+        }
+    }
+
+    @Override
+    public void changeMessageStatus(com.messenger.messengerservers.entities.Message message, @Status.MessageStatus String status) {
+        StatusMessagePacket statusMessagePacket = new StatusMessagePacket(message.getId(), status,
+                JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat);
+        try {
+            Log.e("Stanza send", statusMessagePacket.toString());
+            connection.sendStanza(statusMessagePacket);
+        } catch (SmackException.NotConnectedException e) {
+            Timber.e(e, TAG);
         }
     }
 

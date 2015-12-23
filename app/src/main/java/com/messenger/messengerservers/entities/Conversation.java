@@ -137,12 +137,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
         }
     }
 
-
-    @Override
-    public void save() {
-        super.save();
-    }
-
     public static final class Builder {
         private String id;
         private String ownerId;

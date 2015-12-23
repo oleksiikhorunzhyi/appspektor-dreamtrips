@@ -2,11 +2,13 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Menu;
@@ -225,10 +227,13 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
         contactsCursor = cursor;
     }
 
-    protected void inviteUsersToGroupChat(Conversation conversation, List<User> participants){
+    protected void saveChatModifications(Conversation conversation, List<User> participants, @Nullable String subject) {
         MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
                 .createMultiUserChat(conversation.getId(), user, true);
         multiUserChat.invite(participants);
+        if (!TextUtils.isEmpty(subject) && !(TextUtils.getTrimmedLength(subject) > 0)) {
+            multiUserChat.setSubject(subject);
+        }
     }
 
     @Override

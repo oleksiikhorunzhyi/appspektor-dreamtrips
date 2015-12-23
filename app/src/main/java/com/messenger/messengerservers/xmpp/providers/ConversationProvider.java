@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 public class ConversationProvider extends IQProvider<ConversationsPacket> {
 
     @Override
@@ -67,12 +69,13 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .conversationId(conversation.getId())
                                     //// TODO: 12/18/15 today attribute secs is millisecond
                                     .date(new Date(timestamp))
-                                    .from(JidCreatorHelper.obtainUserId(from));
+                                    .from(JidCreatorHelper.obtainId(from));
 
                             MessageBody stanzaMessageBody = null;
                             try {
                                 stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
                             } catch (JsonSyntaxException e) {
+                                Timber.e("Parce error", e);
                             }
 
                             if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null) {

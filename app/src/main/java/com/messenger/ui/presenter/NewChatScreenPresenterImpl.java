@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -88,7 +87,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 if (selectedUsers.size() == 1) {
                     ChatActivity.startSingleChat(activity, conversation.getId());
                 } else {
-                    inviteUsersToGroupChat(conversation, selectedUsers);
+                    saveChatModifications(conversation, selectedUsers, getView().getConversationName());
                     ChatActivity.startGroupChat(activity, conversation.getId());
                 }
                 activity.finish();

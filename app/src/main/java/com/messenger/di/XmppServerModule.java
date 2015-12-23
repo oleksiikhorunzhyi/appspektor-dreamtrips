@@ -8,6 +8,7 @@ import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
+import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
@@ -32,6 +33,7 @@ import dagger.Provides;
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,
 
+                ChatSettingsScreenPresenterImpl.class,
                 ConversationListScreenPresenterImpl.class,
                 ChatActivity.class})
 

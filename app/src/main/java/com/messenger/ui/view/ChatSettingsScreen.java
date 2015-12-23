@@ -11,5 +11,6 @@ public interface ChatSettingsScreen extends ActivityAwareScreen {
     void showError(Throwable e);
     void setConversation(Conversation conversation);
     void setParticipants(Conversation conversation, List<User> participants);
+    void showSubjectDialog();
     void setNotificationSettingStatus(boolean checked);
 }

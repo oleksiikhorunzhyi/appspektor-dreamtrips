@@ -15,7 +15,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
-import com.messenger.util.ChatDateFormatter;
+import com.messenger.util.ChatDateUtils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
@@ -117,12 +117,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         StringBuilder dateString = new StringBuilder();
         int calendarDaysSincePreviousDate = 0;
         if (previousDate != 0) {
-            calendarDaysSincePreviousDate = (int) ChatDateFormatter
+            calendarDaysSincePreviousDate = (int) ChatDateUtils
                     .calendarDaysBetweenDates(previousDate, currentDate);
         }
         if ((previousDate != 0 && calendarDaysSincePreviousDate > 0) || previousDate == 0) {
-            long todayMidnightTimestamp = ChatDateFormatter.getToday().getTime().getTime();
-            int daysSinceToday = (int) ChatDateFormatter
+            long todayMidnightTimestamp = ChatDateUtils.getToday().getTime().getTime();
+            int daysSinceToday = (int) ChatDateUtils
                     .calendarDaysBetweenDates(todayMidnightTimestamp, currentDate);
             if (daysSinceToday == 0) {
                 dateString.append(context.getString(R.string.chat_list_date_entry_today));

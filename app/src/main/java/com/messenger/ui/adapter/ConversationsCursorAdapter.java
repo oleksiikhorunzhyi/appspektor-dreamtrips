@@ -18,7 +18,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
-import com.messenger.util.ChatDateFormatter;
+import com.messenger.util.ChatDateUtils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -114,7 +114,7 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
     }
 
     public String formatLastConversationMessage(Date date) {
-        Calendar today = ChatDateFormatter.getToday();
+        Calendar today = ChatDateUtils.getToday();
 
         if (date.after(today.getTime())) {
             return todayDateFormat.format(date);

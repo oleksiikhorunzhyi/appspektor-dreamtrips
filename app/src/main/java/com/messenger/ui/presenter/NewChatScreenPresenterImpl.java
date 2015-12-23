@@ -39,12 +39,6 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     }
 
     @Override
-    public void loadChatContacts() {
-        super.loadChatContacts();
-        initContactsLoaders();
-    }
-
-    @Override
     public void onSelectedUsersStateChanged(List<User> selectedContacts) {
         super.onSelectedUsersStateChanged(selectedContacts);
         if (selectedContacts.size() <= 1) {
@@ -53,7 +47,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
             getView().slideInConversationNameEditText();
         }
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

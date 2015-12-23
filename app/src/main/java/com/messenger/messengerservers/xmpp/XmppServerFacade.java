@@ -2,7 +2,6 @@ package com.messenger.messengerservers.xmpp;
 
 import android.util.Log;
 
-import com.messenger.messengerservers.AuthorizeStatus;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ContactManager;
 import com.messenger.messengerservers.GlobalEventEmitter;
@@ -36,7 +35,6 @@ public class XmppServerFacade implements MessengerServerFacade {
     private static final String TAG = "XmppServerFacade";
 
     private AbstractXMPPConnection connection;
-    volatile AuthorizeStatus status;
 
     private final ExecutorService connectionExecutor = Executors.newSingleThreadExecutor();
     private final List<AuthorizeListener> onConnectListeners = new CopyOnWriteArrayList<>();
@@ -58,7 +56,6 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     @Override
     public void authorizeAsync(String username, String password) {
-        status = AuthorizeStatus.PROGRESS;
         Log.i("Xmpp Authorize with ", String.format("userName:%s password:%s", username, password));
 
         connectionExecutor.execute(() -> {
@@ -77,14 +74,11 @@ public class XmppServerFacade implements MessengerServerFacade {
                     try {
                         connection.connect();
                         connection.login();
-                        setPresenceStatus(true);
 
-                        status = AuthorizeStatus.SUCCESS;
                         for (AuthorizeListener listener : onConnectListeners) {
                             listener.onSuccess();
                         }
                     } catch (SmackException | IOException | XMPPException e) {
-                        status = AuthorizeStatus.FAILED;
                         for (AuthorizeListener listener : onConnectListeners) {
                             listener.onFailed(e);
                         }
@@ -101,7 +95,7 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     @Override
     public boolean isAuthorized() {
-        return status == AuthorizeStatus.SUCCESS;
+        return connection != null && connection.isConnected() && connection.isAuthenticated();
     }
 
     @Override

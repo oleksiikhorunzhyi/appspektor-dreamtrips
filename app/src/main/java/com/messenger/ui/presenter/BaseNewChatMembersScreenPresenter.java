@@ -1,20 +1,16 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.database.ContentObservable;
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.LoaderDelegate;
@@ -39,8 +35,6 @@ import javax.inject.Inject;
 
 public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvpPresenter<NewChatMembersScreen, NewChatLayoutViewState>
         implements NewChatScreenPresenter, LoaderManager.LoaderCallbacks<Cursor> {
-
-    private LoaderDelegate loaderDelegate;
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -72,8 +66,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
 
         ((Injector) activity.getApplicationContext()).inject(this);
 
-        loaderDelegate = new LoaderDelegate(activity, messengerServerFacade, dreamSpiceManager);
-
         textInChosenContactsEditText = activity
                 .getString(R.string.new_chat_chosen_contacts_header_empty);
     }
@@ -82,7 +74,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(view.getContext());
-        loadChatContacts();
+        initContactsLoaders();
         getView().setConversationNameEditTextVisibility(View.GONE);
     }
 
@@ -118,11 +110,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
             refreshSelectedContactsHeader();
         }
     }
-
-    public void loadChatContacts() {
-        loaderDelegate.loadContacts();
-    }
-
+    
     protected void initContactsLoaders() {
         LoaderManager loaderManager = ((AppCompatActivity) activity).getSupportLoaderManager();
         Loader loader = loaderManager.getLoader(CursorLoaderIds.CONTACT_LOADER);

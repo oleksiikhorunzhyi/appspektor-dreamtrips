@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 
 import android.content.Context;
 
+import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
@@ -39,6 +40,8 @@ public class LogoutDelegate {
     }
 
     public void logout() {
+        MessengerConnector.getInstance().disconnect();
+
         String token = snappyRepository.getGcmRegToken();
         if (token != null) {
             dreamSpiceManager.execute(new UnsubscribeDeviceCommand(token),

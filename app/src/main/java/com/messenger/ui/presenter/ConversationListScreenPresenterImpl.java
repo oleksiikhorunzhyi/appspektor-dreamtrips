@@ -2,18 +2,14 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
-import com.messenger.delegate.LoaderDelegate;
-import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ConversationListScreen;
@@ -21,11 +17,9 @@ import com.messenger.ui.viewstate.ConversationListViewState;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,23 +34,18 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     private final RxContentResolver contentResolver;
     private Subscription contactSubscription;
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    MessengerServerFacade messengerServerFacade;
+
     @Inject
     User user;
     @Inject
     DreamSpiceManager dreamSpiceManager;
 
     private Activity parentActivity;
-    private LoaderDelegate loaderDelegate;
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
-        loaderDelegate = new LoaderDelegate(activity, messengerServerFacade, dreamSpiceManager);
         contentResolver = new RxContentResolver(activity.getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
                         .rawQuery(query.selection, query.selectionArgs));
@@ -73,18 +62,8 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         dreamSpiceManager.start(getView().getContext());
         getView().showLoading();
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
+
         initialCursorLoader();
-
-        if (messengerServerFacade.isAuthorized()) {
-            loadConversationList();
-        } else {
-            connect();
-        }
-    }
-
-    @Override
-    public void loadConversationList() {
-        loaderDelegate.loadConversations();
     }
 
     private void initialCursorLoader() {
@@ -99,12 +78,11 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 "LEFT JOIN " + Message.TABLE_NAME + " m " +
                 "ON m." + Message._ID + "=(" +
                 "SELECT " + Message._ID + " FROM " + Message.TABLE_NAME + " mm " +
-                "WHERE mm."+ Message.COLUMN_CONVERSATION_ID + "=c." + Conversation.COLUMN_ID +
+                "WHERE mm." + Message.COLUMN_CONVERSATION_ID + "=c." + Conversation.COLUMN_ID +
                 " ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) " +
                 "LEFT JOIN " + User.TABLE_NAME + " u " +
                 "ON m." + Message.COLUMN_FROM + "=u." + User.COLUMN_ID
         );
-
 
 
         if (getViewState().isShowOnlyGroupConversations()) {
@@ -115,7 +93,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());
         if (getViewState().isShowOnlyGroupConversations()) {
-            queryBuilder.withSelectionArgs(new String[] {Conversation.Type.CHAT});
+            queryBuilder.withSelectionArgs(new String[]{Conversation.Type.CHAT});
         }
         contactSubscription = contentResolver
                 .query(queryBuilder.build(), User.CONTENT_URI, Conversation.CONTENT_URI, Message.CONTENT_URI)
@@ -128,17 +106,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                     getViewState().setCursor(cursor);
                     applyViewState();
                 });
-    }
-
-    private void connect() {
-        messengerServerFacade.addAuthorizationListener(new AuthorizeListener() {
-            @Override
-            public void onSuccess() {
-                Log.e("Xmpp server", "Authorized");
-                loadConversationList();
-            }
-        });
-        messengerServerFacade.authorizeAsync(user.getUserName(), appSessionHolder.get().get().getLegacyApiToken());
     }
 
     @Override

@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.messenger.di.ActivityWatcherInitializer;
 import com.messenger.di.ChatFacadeInitializer;
+import com.messenger.di.MessengerConnectorInitializer;
 import com.messenger.di.PresenceListenerInitializer;
 import com.messenger.di.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
@@ -30,7 +32,12 @@ import dagger.Provides;
                 SoftInputInitializer.class,
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
+                //
                 StorageInitializer.class,
+                //
+                MessengerConnectorInitializer.class,
+                ActivityWatcherInitializer.class,
+                //
                 PresenceListenerInitializer.class
 
         },
@@ -90,17 +97,27 @@ public class InitializerModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    public AppInitializer provideStorageInitializer(@ForApplication Context context){
+    public AppInitializer provideStorageInitializer(@ForApplication Context context) {
         return new StorageInitializer(context);
     }
 
     @Provides(type = Provides.Type.SET)
-    public AppInitializer provideFacadeInitializer(){
+    public AppInitializer provideFacadeInitializer() {
         return new ChatFacadeInitializer();
     }
 
     @Provides(type = Provides.Type.SET)
     public AppInitializer providePresenceListenerInitializer() {
         return new PresenceListenerInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideMessengerConnectorInitializer() {
+        return new MessengerConnectorInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideActivityWatcherInitializer() {
+        return new ActivityWatcherInitializer();
     }
 }

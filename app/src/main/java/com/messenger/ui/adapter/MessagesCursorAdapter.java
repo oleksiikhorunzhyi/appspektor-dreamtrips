@@ -88,19 +88,6 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         }
     }
 
-    private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
-        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message.COLUMN_TEXT)));
-
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (previousMessageIsFromSameUser(cursor)) {
-            params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
-            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble);
-        } else {
-            params.setMargins(params.leftMargin, 0, params.rightMargin, 0);
-            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble_comics);
-        }
-    }
-
     private String getDateDivider(Cursor cursor) {
         int dateColumnIndex = cursor.getColumnIndex(Message.COLUMN_DATE);
         long currentDate = cursor.getLong(dateColumnIndex);
@@ -126,21 +113,15 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
                     .calendarDaysBetweenDates(todayMidnightTimestamp, currentDate);
             if (daysSinceToday == 0) {
                 dateString.append(context.getString(R.string.chat_list_date_entry_today));
-                dateString.append(", ");
-                dateString.append(timeDateFormatter.format(currentDate));
             } else if (daysSinceToday == 1) {
                 dateString.append(context.getString(R.string.chat_list_date_entry_yesterday));
-                dateString.append(", ");
-                dateString.append(timeDateFormatter.format(currentDate));
             } else if (daysSinceToday > 1 && daysSinceToday <= 4) {
                 dateString.append(dayOfTheWeekDateFormatter.format(currentDate).toUpperCase());
-                dateString.append(", ");
-                dateString.append(timeDateFormatter.format(currentDate));
             } else {
                 dateString.append(dayOfTheMonthDateFormatter.format(currentDate).toUpperCase());
-                dateString.append(", ");
-                dateString.append(timeDateFormatter.format(currentDate));
             }
+            dateString.append(", ");
+            dateString.append(timeDateFormatter.format(currentDate));
         }
         return dateString.toString();
     }
@@ -154,6 +135,19 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         String prevId = cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM));
         cursor.moveToNext();
         return prevId.equals(currentId);
+    }
+
+    private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
+        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message.COLUMN_TEXT)));
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (previousMessageIsFromSameUser(cursor)) {
+            params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
+            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble);
+        } else {
+            params.setMargins(params.leftMargin, 0, params.rightMargin, 0);
+            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble_comics);
+        }
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {

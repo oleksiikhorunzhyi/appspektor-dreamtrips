@@ -34,12 +34,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public Conversation() {}
 
-    public Conversation(String id, String subject, String type) {
-        setId(id);
-        setSubject(subject);
-        setType(type);
-    }
-
     private Conversation(Builder builder) {
         setId(builder.id);
         setOwnerId(builder.ownerId);

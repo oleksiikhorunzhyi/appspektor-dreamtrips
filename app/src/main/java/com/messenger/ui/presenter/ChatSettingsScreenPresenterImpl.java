@@ -145,6 +145,8 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     public void applyNewChatSubject(String subject) {
         MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner(), true);
         chat.setSubject(subject);
+        conversation.setSubject(subject);
+        getView().setConversation(conversation);
     }
 
     ///////////////////////////////////////////////////////////////////////////

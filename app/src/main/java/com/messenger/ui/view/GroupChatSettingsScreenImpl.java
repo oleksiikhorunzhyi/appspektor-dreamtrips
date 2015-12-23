@@ -1,21 +1,16 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.messenger.util.UiUtils;
-import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -38,13 +33,16 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     @Override
     public void setConversation(Conversation conversation) {
         toolbarPresenter.setTitle(R.string.chat_settings_group_chat);
+        chatNameTextView.setText(conversation.getSubject());
     }
 
     @Override
     public void setParticipants(Conversation conversation, List<User> participants) {
         groupAvatarsView.setVisibility(View.VISIBLE);
         groupAvatarsView.updateAvatars(participants);
-        chatNameTextView.setText(UiUtils.getGroupConversationName(conversation, participants));
+        if (chatNameTextView.getText().length() == 0) {
+            chatNameTextView.setText(UiUtils.getGroupConversationName(conversation, participants));
+        }
         String chatDescriptionFormat = getContext()
                 .getString(R.string.chat_settings_group_chat_description);
         int onlineCount = 0;

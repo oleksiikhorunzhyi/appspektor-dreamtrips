@@ -112,14 +112,14 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 // and create new one
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {
                     conversation = new Conversation.Builder()
+                            .ownerId(user.getId())
                             .type(Conversation.Type.GROUP)
                             .id(UUID.randomUUID().toString())
                             .build();
                     // since we create new group chat
                     // make sure to invite original participant (addressee) from old single chat
-                    for (User user : originalParticipants) {
-                        newChatUsers.add(user);
-                    }
+                    newChatUsers.addAll(originalParticipants);
+                    newChatUsers.add(user);
                 }
                 Queryable.from(newChatUsers).forEachR(u ->
                         new ParticipantsRelationship(conversation.getId(), u).save());

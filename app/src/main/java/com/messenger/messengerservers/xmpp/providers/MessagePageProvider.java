@@ -45,8 +45,10 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                             long timestamp = ParserUtils.getLongAttribute(parser, "secs");
                             String jid = parser.getAttributeValue("", "jid");
                             String messageId = parser.getAttributeValue("", "client_msg_id");
+                            Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
+                                    .read(unread == null || !unread)
                                     //// TODO: 12/18/15 today attribute secs is millisecond
                                     .date(new Date(timestamp))
                                     .from(JidCreatorHelper.obtainId(jid));

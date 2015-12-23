@@ -35,7 +35,7 @@ public class PaginationDelegate {
         this.pageSize = pageSize;
     }
 
-    public void loadConversationHistoryPage(Conversation conversation, int page, int beforeSecs,
+    public void loadConversationHistoryPage(Conversation conversation, int page, long before,
                                             @Nullable PageLoadedListener loadedListener, @Nullable PageErrorListener errorListener) {
         if (messagePagePagination == null) {
             messagePagePagination = messengerServerFacade.getPaginationManager()
@@ -56,7 +56,7 @@ public class PaginationDelegate {
                 errorListener.onPageError();
             }
         });
-        messagePagePagination.loadPage(page, beforeSecs);
+        messagePagePagination.loadPage(page, before);
     }
 
     public void stopPaginate(){

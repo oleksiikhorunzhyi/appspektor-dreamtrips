@@ -24,7 +24,7 @@ public abstract class PagePagination<T> {
         this.onEntityLoadedListener = onEntityLoadedListener;
     }
 
-    public abstract void loadPage(int page, int offset);
+    public abstract void loadPage(int page, long offset);
 
     public int getSizePerPage(){
         return sizePerPage;

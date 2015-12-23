@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.loader.MessageLoader;
@@ -58,6 +58,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     private final static int MAX_MESSAGE_PER_PAGE = 20;
     private static final int REQUEST_CODE_ADD_USER = 33;
+    private static final int UNREAD_DELAY = 2000;
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -73,11 +74,11 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     private LoaderManager loaderManager;
     protected PaginationDelegate paginationDelegate;
-    protected Handler handler;
+    protected WeakHandler handler;
 
     protected Conversation conversation;
     protected int page = 0;
-    protected int before = 0;
+    protected long before = 0;
     protected boolean haveMoreElements = true;
     protected boolean isLoading;
     protected boolean pendingScroll;
@@ -85,10 +86,9 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
         this.startIntent = startIntent;
+
         ((Injector) context.getApplicationContext()).inject(this);
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
-
-        ((Injector)context.getApplicationContext()).inject(this);
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
         init(conversationId);
     }
@@ -101,7 +101,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 .byIds(conversationId)
                 .querySingle();
         chat = createChat(messengerServerFacade.getChatManager(), conversation);
-        handler = new Handler(activity.getMainLooper());
+        handler = new WeakHandler();
 
         page = 0;
         before = 0;
@@ -178,6 +178,15 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     }
 
     @Override
+    public void firstVisibleMessageChanged(Message firstVisibleMessage) {
+        if (firstVisibleMessage.isRead()) return;
+
+        chat.changeMessageStatus(firstVisibleMessage, Status.DISPLAYED);
+        firstVisibleMessage.setRead(true);
+        firstVisibleMessage.save();
+    }
+
+    @Override
     public void onNextPageReached() {
         if (!isLoading) loadNextPage();
     }
@@ -198,7 +207,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     private void paginationPageLoaded(int loadedPage, List<Message> loadedMessages) {
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
         isLoading = false;
-        if (loadedMessages == null) {
+        if (loadedMessages == null || loadedMessages.size() == 0) {
             haveMoreElements = false;
             showContent();
             return;
@@ -209,22 +218,35 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         Message lastMessage = loadedMessages.get(loadedCount - 1);
         Message firstMessage = loadedMessages.get(0);
 
-        before = (int) (lastMessage.getDate().getTime() / 1000);
-        if (loadedPage == 1) markAsReadMessages(firstMessage);
+        before = lastMessage.getDate().getTime();
+        if (loadedPage == 1) markAsReadConversationHistory(firstMessage);
 
         showContent();
     }
 
-    private void markAsReadMessages(Message firstMessage) {
+    private void markAsReadConversationHistory(Message firstMessage) {
         chat.changeMessageStatus(firstMessage, Status.DISPLAYED);
-        conversation.setUnreadMessageCount(0);
-        conversation.save();
 
         handler.postDelayed(() -> {
             ChatScreen view = getView();
             if (view != null) view.showUnreadMessageCount(0);
-        }, 2000);
+        }, UNREAD_DELAY);
 
+        conversation.setUnreadMessageCount(0);
+        conversation.save();
+
+        Cursor cursor = new Select()
+                .from(Message.class)
+                .where(String.format("%s <= %s and read == %s", Message.COLUMN_DATE,
+                        firstMessage.getDate().getTime(), 1))
+                .query();
+
+        if (!cursor.moveToFirst()) return;
+        do {
+            Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+            message.setRead(true);
+            message.save();
+        } while (cursor.moveToNext());
     }
 
     private void showContent() {

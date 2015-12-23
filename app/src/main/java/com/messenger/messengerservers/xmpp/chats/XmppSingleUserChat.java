@@ -91,7 +91,8 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
 
     @Override
     public void changeMessageStatus(com.messenger.messengerservers.entities.Message message, @Status.MessageStatus String status) {
-        StatusMessagePacket statusMessagePacket = new StatusMessagePacket(message.getId(), status, thread, Message.Type.chat);
+        StatusMessagePacket statusMessagePacket = new StatusMessagePacket(message.getId(), status,
+                JidCreatorHelper.obtainUserJid(companionId), Message.Type.chat);
         try {
             connection.sendStanza(statusMessagePacket);
         } catch (SmackException.NotConnectedException e) {

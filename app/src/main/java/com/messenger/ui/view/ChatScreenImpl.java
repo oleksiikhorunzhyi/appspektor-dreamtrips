@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
@@ -28,17 +29,26 @@ import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatScreenPresenter>
         implements ChatScreen {
+
+    private static final int THRESHOLD = 5;
+    private static final int POST_DELAY_TIME = 2;
 
     @InjectView(R.id.chat_content_view)
     View contentView;
@@ -95,20 +105,45 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        setPostDelayObservable(linearLayoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) return;
-                final int threshold = 5;
-                int visibleItemCount = linearLayoutManager.getChildCount();
-                int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 
-                if (firstVisibleItem <= threshold) {
+                if (firstVisibleItem <= THRESHOLD) {
                     getPresenter().onNextPageReached();
                 }
             }
         });
+    }
+
+    private void setPostDelayObservable(LinearLayoutManager linearLayoutManager) {
+        Observable.<Integer>create(subscriber ->
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        int visibleItemCount = linearLayoutManager.getChildCount();
+                        int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                        subscriber.onNext(firstVisibleItem + visibleItemCount - 1); //cause first visible item is included to visibleItemCount
+                    }
+                })).throttleWithTimeout(POST_DELAY_TIME, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(position -> {
+                    Cursor cursor = adapter.getCursor();
+                    if (cursor.isClosed()) return;
+
+                    int prevPos = cursor.getPosition();
+                    cursor.moveToPosition(position);
+                    Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+                    cursor.moveToPosition(prevPos);
+
+                    getPresenter().firstVisibleMessageChanged(message);
+                });
     }
 
     @Override
@@ -209,7 +244,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     public void showUnreadMessageCount(int unreadMessage) {
         unreadMessageCountText.setText(Integer.toString(unreadMessage));
-        unreadMessageCountText.setVisibility(unreadMessage == 0 ? GONE : VISIBLE );
+        unreadMessageCountText.setVisibility(unreadMessage == 0 ? GONE : VISIBLE);
     }
 
 //    @Override public void setChatConversation(ChatConversation chatConversation) {

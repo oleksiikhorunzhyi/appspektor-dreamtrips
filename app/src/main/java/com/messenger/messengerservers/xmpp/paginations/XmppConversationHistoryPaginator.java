@@ -27,7 +27,7 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     }
 
     @Override
-    public void loadPage(int page, int sinceSecs) {
+    public void loadPage(int page, long sinceSecs) {
         ObtainMessageListPacket packet = new ObtainMessageListPacket();
         packet.setMax(getSizePerPage());
         packet.setConversationId(conversationId);

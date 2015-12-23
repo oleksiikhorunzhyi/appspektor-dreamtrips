@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
-import com.worldventures.dreamtrips.modules.common.api.BODY_DELETE;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
@@ -314,7 +313,7 @@ public interface DreamTripsApi {
     Void addToGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
     @FormUrlEncoded
-    @BODY_DELETE("/api/social/circles/{circle_id}/users")
+    @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
     Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
     @POST("/api/{uid}/likes")

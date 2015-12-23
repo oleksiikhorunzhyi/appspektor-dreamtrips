@@ -76,9 +76,8 @@ public class NavigationDrawerFragment
         setHeaderIfNeeded();
 
         try {
-            if (BuildConfig.FLAVOR.equals("stage"))
-                version.setText(getActivity().getPackageManager()
-                        .getPackageInfo(getActivity().getPackageName(), 0).versionName);
+            version.setText(getActivity().getPackageManager()
+                    .getPackageInfo(getActivity().getPackageName(), 0).versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

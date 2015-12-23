@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -42,6 +43,16 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     public void loadChatContacts() {
         super.loadChatContacts();
         initContactsLoaders();
+    }
+
+    @Override
+    public void onSelectedUsersStateChanged(List<User> selectedContacts) {
+        super.onSelectedUsersStateChanged(selectedContacts);
+        if (selectedContacts.size() <= 1) {
+            getView().slideOutConversationNameEditText();
+        } else {
+            getView().slideInConversationNameEditText();
+        }
     }
 
     @Override

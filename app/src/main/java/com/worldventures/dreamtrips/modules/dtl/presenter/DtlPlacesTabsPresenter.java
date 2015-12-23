@@ -44,7 +44,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        view.initToolbar(locationRepository.getSelectedLocation());
+        view.initToolbar(locationRepository.getCachedSelectedLocation());
         setTabs();
         //
         if (!initialized)
@@ -58,7 +58,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     }
 
     private void loadPlaces() {
-        dtlMerchantRepository.loadMerchants(locationRepository.getSelectedLocation());
+        dtlMerchantRepository.loadMerchants(locationRepository.getCachedSelectedLocation());
     }
 
     @Override

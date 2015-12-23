@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.store;
 
 import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -31,6 +32,7 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
     public void persistLocation(DtlLocation location) {
         if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
             currentLocation = location;
+            db.saveDtlLocation(location);
         }
     }
 
@@ -46,6 +48,12 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
 
     @Nullable
     public DtlLocation getSelectedLocation() {
+        return currentLocation;
+    }
+
+    @NonNull
+    public DtlLocation getCachedSelectedLocation() {
+        if (currentLocation == null) currentLocation = db.getDtlLocation();
         return currentLocation;
     }
 

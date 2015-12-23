@@ -88,7 +88,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         if (view != null)
             view.bind(locationDelegate
                             .getLastKnownLocation()
-                            .onErrorResumeNext(Observable.just(locationRepository.getSelectedLocation()
+                            .onErrorResumeNext(Observable.just(locationRepository.getCachedSelectedLocation()
                                     .asAndroidLocation()))
                             .flatMap(location -> mapToMerchantList(location, query))
                             .doOnNext(merchants -> track(merchants, query))
@@ -101,7 +101,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         //
         DtlLocationHelper dtlLocationHelper = new DtlLocationHelper();
         LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location,
-                locationRepository.getSelectedLocation());
+                locationRepository.getCachedSelectedLocation());
         DtlFilterData dtlFilterData = dtlFilterDelegate.getDtlFilterData();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {

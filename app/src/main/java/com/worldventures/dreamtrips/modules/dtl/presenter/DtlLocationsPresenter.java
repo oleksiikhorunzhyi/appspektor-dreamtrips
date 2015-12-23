@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
+import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -33,7 +35,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     //
     private DtlLocationSearchDelegate searchDelegate;
     //
-    ArrayList<DtlLocation> dtlLocations;
+    @State
+    ArrayList<DtlLocation> dtlLocations = new ArrayList<>();
     @State
     Status status = Status.NEARBY;
     //
@@ -45,7 +48,20 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void onInjected() {
         super.onInjected();
         dtlLocationRepository.setRequestingPresenter(this);
-        searchDelegate = new DtlLocationSearchDelegate(this);
+        searchDelegate = new DtlLocationSearchDelegate();
+        searchDelegate.setRequestingPresenter(this);
+    }
+
+    @Override
+    public void saveInstanceState(Bundle outState) {
+        super.saveInstanceState(outState);
+        searchDelegate.saveInstanceState(outState);
+    }
+
+    @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
+        searchDelegate.restoreInstanceState(savedState);
     }
 
     @Override
@@ -54,13 +70,20 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         apiErrorPresenter.setView(view);
         dtlLocationRepository.attachListener(this);
         gpsLocationDelegate.attachListener(this);
+        searchDelegate.attachListener(this);
         //
-        // TODO : handle possible state restoring with searchDelegate
-        dtlLocations = new ArrayList<>();
-        //
-        gpsLocationDelegate.tryRequestLocation();
-        //
-        view.startLoading();
+        if (status.equals(Status.NEARBY)) {
+            if (dtlLocations.isEmpty()) {
+                gpsLocationDelegate.tryRequestLocation();
+                view.showGpsObtainingProgress();
+            } else {
+                view.hideProgress();
+                setItems(dtlLocations);
+            }
+        } else {
+            view.hideProgress();
+            searchDelegate.requestSavedSearchResults();
+        }
     }
 
     @Override
@@ -68,6 +91,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         gpsLocationDelegate.detachListener(this);
         dtlLocationRepository.detachListener(this);
         searchDelegate.detachListener();
+        searchDelegate.unsetRequestingPresenter();
         dtlLocationRepository.detachRequestingPresenter();
         super.dropView();
     }
@@ -76,25 +100,31 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     public void onLocationObtained(Location location) {
         if (location != null) {
             userGpsLocation = location;
-            view.citiesLoadingStarted();
+            view.showLocationsObtainingProgress();
             dtlLocationRepository.loadNearbyLocations(userGpsLocation);
         } else {
-            view.finishLoading();
+            view.hideProgress();
             view.showSearch();
         }
     }
 
     @Override
     public void onLocationsLoaded(List<DtlLocation> locations) {
-        view.finishLoading();
-        //
+        if (locations.isEmpty()) {
+            view.showSearch();
+            return;
+        } else if (dtlLocationRepository.getSelectedLocation() == null) {
+            selectNearest(locations, userGpsLocation);
+        } else {
+            showLoadedLocations(locations);
+        }
+    }
+
+    private void showLoadedLocations(List<DtlLocation> locations) {
+        view.hideProgress();
         dtlLocations.clear();
         dtlLocations.addAll(locations);
-        view.setItems(dtlLocations);
-        //
-        if (dtlLocations.isEmpty()) view.showSearch();
-        else if (dtlLocationRepository.getSelectedLocation() == null)
-            selectNearest(userGpsLocation);
+        setItems(dtlLocations);
     }
 
     @Override
@@ -102,9 +132,9 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         handleError(exception);
     }
 
-    private void selectNearest(Location currentLocation) {
+    private void selectNearest(List<DtlLocation> dtlLocations, Location currentGpsLocation) {
         DtlLocation dtlLocation = Queryable.from(dtlLocations)
-                .min(new DtlLocation.DtlNearestComparator(currentLocation));
+                .min(new DtlLocation.DtlNearestComparator(currentGpsLocation));
         onLocationSelected(dtlLocation);
     }
 
@@ -112,7 +142,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         trackLocationSelection(dtlLocationRepository.getSelectedLocation(), location);
         dtlLocationRepository.persistLocation(location);
         dtlMerchantRepository.clean();
-        view.showMerchants();
+        view.navigateToMerchants();
     }
 
     /**
@@ -132,14 +162,14 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void searchOpened() {
         status = Status.SEARCH;
-        searchDelegate.setNearbyLocations(dtlLocations);
-        searchDelegate.attachListener(this);
-        view.setItems(Collections.EMPTY_LIST);
+        setItems(Collections.EMPTY_LIST);
     }
 
     public void searchClosed() {
         status = Status.NEARBY;
         searchDelegate.dismissDelegate();
+        view.hideProgress();
+        setItems(dtlLocations);
     }
 
     public void search(String query) {
@@ -148,14 +178,13 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     @Override
     public void onSearchStarted() {
-        view.startLoading();
-        view.citiesLoadingStarted();
+        view.showEmptyProgress();
     }
 
     @Override
     public void onSearchFinished(List<DtlLocation> locations) {
-        view.finishLoading();
-        view.setItems(locations);
+        view.hideProgress();
+        setItems(locations);
     }
 
     @Override
@@ -163,19 +192,33 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         handleError(e);
     }
 
+    private void setItems(List<DtlLocation> locations) {
+        if (status == Status.NEARBY)
+            view.setEmptyViewVisibility(locations.isEmpty());
+        else if (TextUtils.isEmpty(searchDelegate.getQuery()))
+            view.setEmptyViewVisibility(dtlLocations.isEmpty());
+        else view.setEmptyViewVisibility(false);
+        //
+        view.setItems(locations);
+    }
+
     public interface View extends RxView, ApiErrorView {
 
         void setItems(List<DtlLocation> dtlLocations);
 
-        void startLoading();
+        void showGpsObtainingProgress();
 
-        void finishLoading();
+        void showLocationsObtainingProgress();
 
-        void citiesLoadingStarted();
+        void showEmptyProgress();
 
-        void showMerchants();
+        void hideProgress();
 
         void showSearch();
+
+        void navigateToMerchants();
+
+        void setEmptyViewVisibility(boolean visible);
     }
 
     public enum Status {

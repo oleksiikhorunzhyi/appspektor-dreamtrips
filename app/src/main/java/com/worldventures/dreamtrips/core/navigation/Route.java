@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
@@ -41,7 +42,6 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.GalleryFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoDetailsFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
@@ -177,7 +177,7 @@ public enum Route {
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
 
-    GALLERY(GalleryFragment.class),
+    GALLERY(DtGalleryFragment.class),
 
     MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 

@@ -39,7 +39,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.GalleryFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoDetailsFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
@@ -99,7 +99,7 @@ import de.greenrobot.event.EventBus;
                 EditCommentFragment.class,
                 EditCommentPresenter.class,
 
-                GalleryFragment.class,
+                DtGalleryFragment.class,
                 GalleryPresenter.class,
 
         },

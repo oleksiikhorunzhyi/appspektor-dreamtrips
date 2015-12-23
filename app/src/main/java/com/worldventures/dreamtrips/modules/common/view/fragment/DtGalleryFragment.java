@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public class GalleryFragment extends BasePickerFragment<GalleryPresenter> implements GalleryPresenter.View {
+public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> implements GalleryPresenter.View {
 
     @Override
     protected void registerCells() {

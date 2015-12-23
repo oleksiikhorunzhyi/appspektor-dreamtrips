@@ -20,8 +20,8 @@ public class ChatSingleScreenPresenter extends ChatScreenPresenterImpl {
         String query = "SELECT * FROM Users u " +
                 "JOIN ParticipantsRelationship p " +
                 "ON p.userId = u._id " +
-                "WHERE p.conversationId = ?";
-        User mate = SqlUtils.querySingle(User.class, query, new String[]{conversation.getId()});
+                "WHERE p.conversationId = ? AND u._id<>?";
+        User mate = SqlUtils.querySingle(User.class, query, conversation.getId(), getUser().getId());
         return chatManager.createSingleUserChat(mate.getId(), conversation.getId());
     }
 }

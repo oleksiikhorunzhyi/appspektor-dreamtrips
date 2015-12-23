@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +33,7 @@ import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.messenger.ui.widget.ChatUsersTypingView;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -67,7 +70,8 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     RecyclerView recyclerView;
     @InjectView(R.id.chat_users_unread_messages_textview)
     TextView unreadMessageCountText;
-    //@InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
+    @InjectView(R.id.chat_users_typing_view)
+    ChatUsersTypingView chatUsersTypingView;
 
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
@@ -76,6 +80,21 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     private MessagesCursorAdapter adapter;
     private ConversationHelper conversationHelper;
+
+    private final TextWatcher messageWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            getPresenter().messageTextChanged(s.length());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -151,6 +170,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         conversationHelper = new ConversationHelper();
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null));
+        messageEditText.addTextChangedListener(messageWatcher);
     }
 
     @OnEditorAction(R.id.chat_message_edit_text)
@@ -247,47 +267,26 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         unreadMessageCountText.setVisibility(unreadMessage == 0 ? GONE : VISIBLE);
     }
 
-//    @Override public void setChatConversation(ChatConversation chatConversation) {
-//        this.chatConversation = chatConversation;
-//        adapter.setChatConversation(chatConversation);
-//        adapter.notifyDataSetChanged();
-//
-//        if (chatConversation.isGroupConversation()) {
-//            toolbarPresenter.setTitle(TextUtils.isEmpty(chatConversation.getConversationName()) ? "" :
-//                    chatConversation.getConversationName());
-//        } else {
-//            toolbarPresenter.setTitle(chatConversation.getChatUsers().get(1).getName());
-//        }
-//
-//        int onlineUserCount = 0;
-//        for (ChatUser user : chatConversation.getChatUsers()) {
-//            if (user.isOnline()) {
-//                onlineUserCount++;
-//            }
-//        }
-//        if (chatConversation.isGroupConversation()) {
-//            if (onlineUserCount > 0) {
-//                toolbarPresenter.setSubtitle(String.format(getContext()
-//                                .getString(R.string.chat_subtitle_format_group_chat_format),
-//                                chatConversation.getOnlineUsers().size()));
-//            } else {
-//                toolbarPresenter.setSubtitle(getContext().getString(R.string.chat_subtitle_format_group_chat_offline));
-//            }
-//        } else {
-//            if (onlineUserCount > 0) {
-//                toolbarPresenter.setSubtitle(getContext().getString(R.string.chat_subtitle_format_single_chat_online));
-//            } else {
-//                toolbarPresenter.setSubtitle(getContext().getString(R.string.chat_subtitle_format_single_chat_offline));
-//            }
-//        }
-//
-//        chatUsersTypingView.updateUsersTyping(chatConversation.getTypingUsers());
-//    }
+    @Override
+    public void addTypingUser(User user) {
+        chatUsersTypingView.addTypingUser(user);
+    }
+
+    @Override
+    public void removeTypingUser(User user) {
+        chatUsersTypingView.removeTypingUser(user);
+    }
 
     @Override
     public void onConversationCursorLoaded(Cursor cursor, Conversation conversation, boolean pendingScroll) {
         adapter.setConversation(conversation);
         adapter.changeCursor(cursor);
         if (pendingScroll) recyclerView.smoothScrollToPosition(cursor.getCount());
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        messageEditText.removeTextChangedListener(messageWatcher);
     }
 }

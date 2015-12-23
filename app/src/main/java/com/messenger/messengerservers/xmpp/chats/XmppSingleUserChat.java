@@ -2,11 +2,9 @@ package com.messenger.messengerservers.xmpp.chats;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.SingleUserChat;
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -44,7 +42,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     private final ChatStateListener messageListener = new ChatStateListener() {
         @Override
         public void stateChanged(Chat chat, org.jivesoftware.smackx.chatstates.ChatState state) {
-            handleChangeState(XmppUtils.convertState(state));
+            handleChangeState(XmppUtils.convertState(state), companionId);
         }
 
         @Override
@@ -71,7 +69,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         try {
             chatStateManager.setCurrentState(XmppUtils.convertState(state), chat);
         } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, "Error ", e);
+            Timber.e(TAG, e);
         }
     }
 
@@ -85,7 +83,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
             stanzaPacket.setStanzaId(UUID.randomUUID().toString());
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, "Sending message error", e);
+            Timber.e(TAG, e);
         }
     }
 
@@ -133,7 +131,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
                                 thread
                                         .replace(userJid.split("@")[0], "")
                                         .replace("_", "")
-                                                //// TODO: 12/15/15  remove after implemented social graph
+                                        //// TODO: 12/15/15  remove after implemented social graph
                                         .replace("yu", "y_u"));
             }
             chat = chatManager.createChat(companionJid, thread, null);

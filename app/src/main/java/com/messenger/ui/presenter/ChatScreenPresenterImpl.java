@@ -21,6 +21,7 @@ import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.loader.MessageLoader;
 import com.messenger.messengerservers.ChatManager;
+import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
@@ -124,6 +125,32 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     private void initLoaders() {
         loaderManager = getActivity().getSupportLoaderManager();
         loaderManager.initLoader(CursorLoaderIds.CONVERSATION_LOADER, null, loaderCallback);
+        chat = createChat(messengerServerFacade.getChatManager(), conversation);
+
+        chat.addOnChatStateListener((state1, userId) -> {
+            ChatScreen view = getView();
+            if (view == null) return;
+            switch (state1) {
+                case Composing:
+                    handler.post(()-> view.addTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
+                    break;
+                case Paused:
+                    handler.post(()-> view.removeTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
+                    break;
+            }
+        });
+    }
+
+    boolean typing;
+    @Override
+    public void messageTextChanged(int length) {
+        if (!typing && length > 0) {
+            typing = true;
+            chat.setCurrentState(ChatState.Composing);
+        } else if (length == 0){
+            typing = false;
+            chat.setCurrentState(ChatState.Paused);
+        }
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {

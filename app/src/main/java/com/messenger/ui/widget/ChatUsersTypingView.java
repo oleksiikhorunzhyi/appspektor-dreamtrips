@@ -51,7 +51,7 @@ public class ChatUsersTypingView extends RelativeLayout {
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.widget_chat_users_typing, this, true);
         ButterKnife.inject(this, this);
-        // initTypingAnimator();
+        initTypingAnimator();
     }
 
     private void initTypingAnimator() {
@@ -60,7 +60,8 @@ public class ChatUsersTypingView extends RelativeLayout {
         ObjectAnimator secondDotAnimator = getFadeInAnimator(1, TYPING_ANIM_NEXT_ANIM_DELAY_MS);
         ObjectAnimator thirdDotAnimator = getFadeInAnimator(2, TYPING_ANIM_NEXT_ANIM_DELAY_MS);
         typingAnimatorSet.addListener(new SimpleAnimationListener() {
-            @Override public void onAnimationEnd(Animator animator) {
+            @Override
+            public void onAnimationEnd(Animator animator) {
                 if (cancelTypingAnimation) {
                     return;
                 }
@@ -68,8 +69,7 @@ public class ChatUsersTypingView extends RelativeLayout {
                     view.setVisibility(View.INVISIBLE);
                 }
                 // Update UI along with animation loop
-                updateUI();
-                typingAnimatorSet.start();
+                post(typingAnimatorSet::start);
             }
         });
         typingAnimatorSet.playSequentially(firstDotAnimator, secondDotAnimator, thirdDotAnimator);
@@ -92,7 +92,8 @@ public class ChatUsersTypingView extends RelativeLayout {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
         animator.setDuration(TYPING_ANIM_FADE_IN_MS);
         animator.addListener(new SimpleAnimationListener() {
-            @Override public void onAnimationStart(Animator animator) {
+            @Override
+            public void onAnimationStart(Animator animator) {
                 view.setVisibility(View.VISIBLE);
             }
         });
@@ -100,13 +101,20 @@ public class ChatUsersTypingView extends RelativeLayout {
         return animator;
     }
 
-    public void updateUsersTyping(List<ChatUser> typingUsers) {
-        this.typingUsers = typingUsers;
+    public void addTypingUser(ChatUser typingUser) {
+        this.typingUsers.add(typingUser);
+        updateUI();
+        // update UI later along with animation loop
+    }
+
+    public void removeTypingUser(ChatUser typingUser) {
+        this.typingUsers.remove(typingUser);
+        updateUI();
         // update UI later along with animation loop
     }
 
     private void updateUI() {
-        if (typingUsers == null || typingUsers.isEmpty()) {
+        if (typingUsers.isEmpty()) {
             setVisibility(GONE);
             typingAnimatorSet.cancel();
             return;

@@ -19,13 +19,13 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.initToolbar(locationRepository.getSelectedLocation());
+        view.initToolbar(locationRepository.getCachedSelectedLocation());
     }
 
     public void onMapLoaded() {
         mapReady = true;
         //
-        view.centerIn(locationRepository.getSelectedLocation());
+        view.centerIn(locationRepository.getCachedSelectedLocation());
         performFiltering();
         checkPendingMapInfo();
     }

@@ -42,6 +42,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     private Conversation(Builder builder) {
         setId(builder.id);
+        setOwnerId(builder.ownerId);
         setSubject(builder.subject);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
@@ -144,6 +145,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public static final class Builder {
         private String id;
+        private String ownerId;
         private String subject;
         private String type;
         private int unreadMessageCount = 0;
@@ -153,6 +155,11 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder id(String val) {
             id = val;
+            return this;
+        }
+
+        public Builder ownerId(String id) {
+            ownerId = id;
             return this;
         }
 

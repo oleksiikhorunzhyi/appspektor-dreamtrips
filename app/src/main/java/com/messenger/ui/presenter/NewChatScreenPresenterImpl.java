@@ -61,11 +61,13 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                     conversation = new Conversation.Builder()
                             .type(Conversation.Type.CHAT)
                             .id(ThreadCreatorHelper.obtainThreadSingleChat(user, selectedUsers.get(0)))
+                            .ownerId(user.getUserName())
                             .build();
                 } else {
                     conversation = new Conversation.Builder()
                             .type(Conversation.Type.GROUP)
                             .id(UUID.randomUUID().toString())
+                            .ownerId(user.getUserName())
                             .build();
                 }
                 //

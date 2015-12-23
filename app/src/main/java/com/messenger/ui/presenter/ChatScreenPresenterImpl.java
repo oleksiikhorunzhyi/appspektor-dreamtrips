@@ -44,6 +44,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -82,26 +83,25 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     protected boolean haveMoreElements = true;
     protected boolean isLoading;
     protected boolean pendingScroll;
+    private List<User> participants;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
         this.startIntent = startIntent;
+        handler = new WeakHandler();
 
         ((Injector) context.getApplicationContext()).inject(this);
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        participants = Collections.emptyList();
         init(conversationId);
     }
 
     private void init(String conversationId) {
         paginationDelegate = new PaginationDelegate(activity, messengerServerFacade, 20);
 
-        conversation = new Select()
-                .from(Conversation.class)
-                .byIds(conversationId)
-                .querySingle();
+        loadConversation(conversationId);
         chat = createChat(messengerServerFacade.getChatManager(), conversation);
-        handler = new WeakHandler();
 
         page = 0;
         before = 0;
@@ -110,11 +110,20 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         pendingScroll = false;
     }
 
-    private void initLoadersAndCreateChat() {
-        loadNextPage();
+    private void loadConversation(String conversationId) {
+        conversation = new Select()
+                .from(Conversation.class)
+                .byIds(conversationId)
+                .querySingle();
+    }
+
+    private void reloadConversation() {
+        if (conversation != null) loadConversation(conversation.getId());
+    }
+
+    private void initLoaders() {
         loaderManager = getActivity().getSupportLoaderManager();
         loaderManager.initLoader(CursorLoaderIds.CONVERSATION_LOADER, null, loaderCallback);
-        chat = createChat(messengerServerFacade.getChatManager(), conversation);
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -138,6 +147,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     @Override
     public void attachView(ChatScreen view) {
         super.attachView(view);
+        view.setTitle(conversation, Collections.emptyList());
         view.showUnreadMessageCount(conversation.getUnreadMessageCount());
     }
 
@@ -145,8 +155,17 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         loadNextPage();
-        initLoadersAndCreateChat();
+        initLoaders();
         connectMembers();
+    }
+
+    @Override
+    public void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        if (visibility == View.VISIBLE) {
+            reloadConversation();
+            getView().setTitle(conversation, participants);
+        }
     }
 
     protected void connectMembers() {
@@ -166,7 +185,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(((View) getView())))
                 .subscribe(members -> {
-                    getView().setTitle(conversation, members);
+                    participants = members;
+                    getView().setTitle(conversation, participants);
                 });
     }
 
@@ -360,7 +380,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                     // New group chat was created instead of single one
                     if (!conversation.getId().equals(conversationId)) {
                         init(conversationId);
-                        initLoadersAndCreateChat();
+                        initLoaders();
                     }
                 }
                 break;

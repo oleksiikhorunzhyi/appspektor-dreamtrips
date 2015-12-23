@@ -11,6 +11,7 @@ public interface ViewStateMvpPresenter<V extends MvpView, S extends Parcelable> 
     void onRestoreInstanceState(Bundle instanceState);
     void onAttachedToWindow();
     void onDetachedFromWindow();
+    void onVisibilityChanged(int visibility);
     S getViewState();
     void onNewViewState();
     void applyViewState();

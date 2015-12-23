@@ -37,6 +37,11 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     }
 
     @Override
+    public void onVisibilityChanged(int visibility) {
+
+    }
+
+    @Override
     public void onDestroy() {
 
     }

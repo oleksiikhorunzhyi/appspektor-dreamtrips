@@ -40,6 +40,12 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
        presenter.onDetachedFromWindow();
     }
 
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        presenter.onVisibilityChanged(visibility);
+    }
+
     @Override protected Parcelable onSaveInstanceState() {
         // TODO extract to delegate for reuse in other views
         Bundle bundle = new Bundle();

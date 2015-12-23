@@ -88,8 +88,8 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                List<User> selectedUsers = getViewState().getSelectedContacts();
-                if (selectedUsers == null || selectedUsers.isEmpty()) {
+                List<User> newChatUsers = getViewState().getSelectedContacts();
+                if (newChatUsers == null || newChatUsers.isEmpty()) {
                     Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
                             Toast.LENGTH_SHORT).show();
                     return true;
@@ -102,11 +102,16 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                             .type(Conversation.Type.GROUP)
                             .id(UUID.randomUUID().toString())
                             .build();
+                    // since we create new group chat
+                    // make sure to invite original participant (addressee) from old single chat
+                    for (User user : originalParticipants) {
+                        newChatUsers.add(user);
+                    }
                 }
-                Queryable.from(selectedUsers).forEachR(u ->
+                Queryable.from(newChatUsers).forEachR(u ->
                         new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                inviteUsersToGroupChat(conversation, selectedUsers);
+                inviteUsersToGroupChat(conversation, newChatUsers);
 
                 Intent data = new Intent();
                 data.putExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID, conversation.getId());

@@ -11,6 +11,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.LoaderDelegate;
@@ -79,6 +80,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
         super.attachView(view);
         dreamSpiceManager.start(view.getContext());
         loadChatContacts();
+        getView().setConversationNameEditTextVisibility(View.GONE);
     }
 
     @Override
@@ -203,7 +205,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
                 getViewState().getSelectedContacts().
                         remove(getViewState().getSelectedContacts().size() - 1);
                 getView().setSelectedContacts(getViewState().getSelectedContacts());
-                refreshSelectedContactsHeader();
+                onSelectedUsersStateChanged(getViewState().getSelectedContacts());
             }
             return;
         }

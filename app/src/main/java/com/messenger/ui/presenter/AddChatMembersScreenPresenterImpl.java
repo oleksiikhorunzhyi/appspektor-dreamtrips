@@ -80,6 +80,20 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 });
     }
 
+    @Override
+    public void onSelectedUsersStateChanged(List<User> selectedContacts) {
+        super.onSelectedUsersStateChanged(selectedContacts);
+        // show conversation name edit text only for single chats that will turn to become
+        // group chats
+        if (conversation.getType().equals(Conversation.Type.CHAT)) {
+            if (selectedContacts.size() < 1) {
+                getView().slideOutConversationNameEditText();
+            } else {
+                getView().slideInConversationNameEditText();
+            }
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Activity related
     ///////////////////////////////////////////////////////////////////////////

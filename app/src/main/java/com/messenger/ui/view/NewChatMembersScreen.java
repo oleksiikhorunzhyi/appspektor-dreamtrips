@@ -28,5 +28,11 @@ public interface NewChatMembersScreen extends ActivityAwareScreen {
 
     void setSelectedUsersHeaderText(CharSequence text);
 
+    void setConversationNameEditTextVisibility(int visibility);
+
+    void slideInConversationNameEditText();
+
+    void slideOutConversationNameEditText();
+
     String getConversationName();
 }

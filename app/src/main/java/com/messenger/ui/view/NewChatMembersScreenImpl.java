@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.ContactSimpleAlphabetAdapter;
+import com.messenger.ui.anim.WeightSlideAnimator;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -50,6 +51,8 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
     @InjectView(R.id.new_chat_recycler_view)
     RecyclerView recyclerView;
 
+    @InjectView(R.id.new_chat_conversation_name_layout)
+    View conversationNameEditTextLayout;
     @InjectView(R.id.new_chat_conversation_name)
     EditText conversationNameEditText;
     @InjectView(R.id.new_chat_chosen_contacts_edittext)
@@ -58,6 +61,8 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
     private ToolbarPresenter toolbarPresenter;
 
     private ContactSimpleAlphabetAdapter adapter;
+
+    private WeightSlideAnimator conversationNameAnimator;
 
     public NewChatMembersScreenImpl(Context context) {
         super(context);
@@ -132,6 +137,23 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
         });
         chosenContactsEditText.setSelectionListener((s, a)
                 -> chosenContactsEditText.setSelection(chosenContactsEditText.getText().length()));
+        conversationNameAnimator =
+                new WeightSlideAnimator(conversationNameEditTextLayout);
+    }
+
+    @Override
+    public void setConversationNameEditTextVisibility(int visibility) {
+        conversationNameEditTextLayout.setVisibility(visibility);
+    }
+
+    @Override
+    public void slideInConversationNameEditText() {
+        conversationNameAnimator.slideIn();
+    }
+
+    @Override
+    public void slideOutConversationNameEditText() {
+        conversationNameAnimator.slideOut();
     }
 
     private void resetChoseContactsEditText() {

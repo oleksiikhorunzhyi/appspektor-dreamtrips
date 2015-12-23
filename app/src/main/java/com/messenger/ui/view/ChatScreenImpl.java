@@ -17,15 +17,20 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.worldventures.dreamtrips.R;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -44,6 +49,10 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @InjectView(R.id.chat_toolbar)
     Toolbar toolbar;
+    @InjectView(R.id.chat_toolbar_title)
+    TextView title;
+    @InjectView(R.id.chat_toolbar_subtitle)
+    TextView subtitle;
     @InjectView(R.id.chat_recycler_view)
     RecyclerView recyclerView;
     //@InjectView(R.id.chat_users_typing_view) ChatUsersTypingView chatUsersTypingView;
@@ -54,6 +63,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     private ToolbarPresenter toolbarPresenter;
 
     private MessagesCursorAdapter adapter;
+    private ConversationHelper conversationHelper;
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -76,6 +86,8 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.main_background));
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
         toolbarPresenter.enableUpNavigationButton();
+        toolbarPresenter.setTitle("");
+        toolbarPresenter.setSubtitle("");
 
         recyclerView.setSaveEnabled(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -99,6 +111,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @Override
     protected void onAttachedToWindow() {
+        conversationHelper = new ConversationHelper();
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null));
     }
@@ -187,8 +200,9 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     }
 
     @Override
-    public void setSubject(String subject) {
-        toolbarPresenter.setTitle(subject);
+    public void setSubject(Conversation conversation, List<User> members) {
+        conversationHelper.setTitle(title, conversation, members);
+        conversationHelper.setSubtitle(subtitle, conversation, members);
     }
 
 //    @Override public void setChatConversation(ChatConversation chatConversation) {

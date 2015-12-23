@@ -18,6 +18,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateFormatter;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
@@ -44,6 +45,7 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
     private ClickListener clickListener;
 
     private ChatDateFormatter chatDateFormatter;
+    private ConversationHelper conversationHelper;
 
     public interface ClickListener {
         void onConversationClick(Conversation conversation);
@@ -56,26 +58,28 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
         this.currentUser = currentUser;
 
         chatDateFormatter = new ChatDateFormatter(context);
+        conversationHelper = new ConversationHelper();
     }
 
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
-        Conversation chatConversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
+        Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-        setUnreadMessageCount(holder, chatConversation.getUnreadMessageCount());
+        setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
 
         // TODO: 12/21/15  
         if (message.getText() != null) {
-            setLastMessage(holder, message, cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME)), isGroupConversation(chatConversation.getType()));
+            String userName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
+            setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));
         }
 
         holder.itemView.setOnClickListener(view -> {
             if (clickListener != null) {
-                clickListener.onConversationClick(chatConversation);
+                clickListener.onConversationClick(conversation);
             }
         });
 
-        holder.updateParticipants(chatConversation.getId(), users -> setNameAndAvatar(holder, chatConversation, users));
+        holder.updateParticipants(conversation.getId(), users -> setNameAndAvatar(holder, conversation, users));
     }
 
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount) {
@@ -108,16 +112,13 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
     }
 
     private void setNameAndAvatar(BaseConversationViewHolder holder, Conversation conversation, List<User> participants) {
+        if (participants == null || participants.size() == 0) return;
+        //
+        conversationHelper.setTitle(holder.getNameTextView(), conversation, participants);
         if (isGroupConversation(conversation.getType())) {
-            String name = getGroupConversationName(conversation, participants);
-            holder.getNameTextView().setText(name);
-            if (participants == null || participants.size() == 0) return;
             GroupConversationViewHolder groupHolder = (GroupConversationViewHolder) holder;
             groupHolder.getGroupAvatarsView().updateAvatars(participants);
         } else {
-            // TODO: 12/17/15
-            if (participants == null || participants.size() == 0) return;
-            holder.getNameTextView().setText(getOneToOneConversationName(conversation, participants));
             User addressee = participants.get(0);
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)
@@ -126,18 +127,6 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
                     .into(oneToOneHolder.getAvatarView());
             oneToOneHolder.getAvatarView().setOnline(addressee.isOnline());
         }
-    }
-
-    private String getGroupConversationName(Conversation conversation, List<User> participants) {
-        if (TextUtils.isEmpty(conversation.getSubject())) {
-            return TextUtils.join(", ", Queryable.from(participants).map(User::getName).toList());
-        } else {
-            return conversation.getSubject();
-        }
-    }
-
-    private String getOneToOneConversationName(Conversation conversation, List<User> participants) {
-        return participants.get(0).getName();
     }
 
     @Override
@@ -239,6 +228,18 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
                     this.index[i] = i;
                 }
             }
+        }
+
+        private String getGroupConversationName(Conversation conversation, List<User> participants) {
+            if (TextUtils.isEmpty(conversation.getSubject())) {
+                return TextUtils.join(", ", Queryable.from(participants).map(User::getName).toList());
+            } else {
+                return conversation.getSubject();
+            }
+        }
+
+        private String getOneToOneConversationName(Conversation conversation, List<User> participants) {
+            return participants.get(0).getName();
         }
 
         @Override

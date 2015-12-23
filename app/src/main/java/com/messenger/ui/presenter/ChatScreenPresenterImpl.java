@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.messenger.constant.CursorLoaderIds;
@@ -24,23 +25,30 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
+import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
@@ -118,6 +126,28 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         initLoadersAndCreateChat();
+        connectMembers();
+    }
+
+    protected void connectMembers() {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM Users u " +
+                        "JOIN ParticipantsRelationship p " +
+                        "ON p.userId = u._id " +
+                        "WHERE p.conversationId = ?"
+                ).withSelectionArgs(new String[]{conversation.getId()}).build();
+        new RxContentResolver(getContext().getContentResolver(), query -> {
+            return FlowManager.getDatabaseForTable(User.class).getWritableDatabase().rawQuery(query.selection, query.selectionArgs);
+        })
+                .query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .throttleLast(500, TimeUnit.MILLISECONDS)
+                .map(c -> SqlUtils.convertToList(User.class, c))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindView(((View) getView())))
+                .subscribe(members -> {
+                    getView().setSubject(conversation, members);
+                });
     }
 
     @Override

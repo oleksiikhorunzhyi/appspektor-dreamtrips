@@ -33,6 +33,12 @@ public class DtlMerchantListPresenter extends DtlMerchantsPresenter<DtlMerchantL
     }
 
     @Override
+    public void onMerchantsUploaded() {
+        super.onMerchantsUploaded();
+        view.hideProgress();
+    }
+
+    @Override
     public void onMerchantsFailed(SpiceException spiceException) {
         view.hideProgress();
     }

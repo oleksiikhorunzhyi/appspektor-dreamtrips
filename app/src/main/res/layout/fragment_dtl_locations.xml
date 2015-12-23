@@ -16,7 +16,6 @@
             android:id="@+id/toolbar_actionbar"
             style="@style/ToolBarStyle"
             />
-
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
@@ -32,7 +31,6 @@
             android:fadingEdgeLength="0dp"
             android:overScrollMode="never"
             android:padding="@dimen/spacing_tiniest"
-            android:visibility="visible"
             />
 
         <LinearLayout
@@ -54,7 +52,6 @@
                 android:textColor="@color/dtl_cities_text_color"
                 android:textSize="@dimen/font_normal"
                 />
-
         </LinearLayout>
 
         <LinearLayout
@@ -63,22 +60,29 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            >
 
             <TextView
-                android:id="@+id/progress_text"
+                android:id="@+id/obtaining_gps_location_progress_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_normal"
-                android:text="@string/dtl_wait_for_location"/>
+                android:text="@string/dtl_wait_for_location"
+                />
+
+            <TextView
+                android:id="@+id/obtaining_locations_progress_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:text="@string/dtl_wait_for_cities"
+                />
 
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 />
-
         </LinearLayout>
     </FrameLayout>
-
 </RelativeLayout>

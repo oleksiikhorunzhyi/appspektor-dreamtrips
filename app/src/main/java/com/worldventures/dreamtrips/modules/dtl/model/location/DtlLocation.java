@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class DtlLocation {
+public class DtlLocation implements Parcelable {
 
     String id;
     DtlLocationType type;
@@ -61,6 +61,48 @@ public class DtlLocation {
         location.setLongitude(coordinates.getLng());
         return location;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable
+    ///////////////////////////////////////////////////////////////////////////
+
+    protected DtlLocation(Parcel in) {
+        id = in.readString();
+        type = (DtlLocationType) in.readSerializable();
+        shortName = in.readString();
+        longName = in.readString();
+        coordinates = in.readParcelable(Location.class.getClassLoader());
+        merchantCount = in.readInt();
+        locatedIn = in.createTypedArrayList(DtlLocation.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeSerializable(type);
+        dest.writeString(shortName);
+        dest.writeString(longName);
+        dest.writeParcelable(coordinates, flags);
+        dest.writeInt(merchantCount);
+        dest.writeTypedList(locatedIn);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DtlLocation> CREATOR = new Creator<DtlLocation>() {
+        @Override
+        public DtlLocation createFromParcel(Parcel in) {
+            return new DtlLocation(in);
+        }
+
+        @Override
+        public DtlLocation[] newArray(int size) {
+            return new DtlLocation[size];
+        }
+    };
 
     ///////////////////////////////////////////////////////////////////////////
     // Filtering and stuff

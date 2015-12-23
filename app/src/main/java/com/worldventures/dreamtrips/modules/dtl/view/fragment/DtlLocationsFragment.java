@@ -5,7 +5,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -51,12 +50,14 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.empty_view)
     View emptyView;
-    @InjectView(R.id.progress_text)
-    TextView progressText;
+    @InjectView(R.id.obtaining_gps_location_progress_caption)
+    TextView gpsProgressCaption;
+    @InjectView(R.id.obtaining_locations_progress_caption)
+    TextView locationsProgressCaption;
+    @InjectView(R.id.progress)
+    View progressView;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
-    @InjectView(R.id.progress)
-    View progress;
     //
     SearchView searchView;
     MenuItem searchItem;
@@ -89,51 +90,34 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         if (!tabletAnalytic.isTabletLandscape())
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
-        configureSearch(toolbar.getMenu());
     }
 
-    private void configureSearch(Menu menu) {
-        searchItem = menu.findItem(R.id.action_search);
+    private void configureSearch() {
+        searchItem = toolbar.getMenu().findItem(R.id.action_search);
         if (searchItem != null) {
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    searchView.setOnQueryTextListener(searchViewQueryListener);
-                    getPresenter().searchOpened();
-                    return true;
-                }
-                //
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    searchView.setOnQueryTextListener(null);
-                    getPresenter().searchClosed();
-                    return true;
-                }
-            });
+            MenuItemCompat.setOnActionExpandListener(searchItem, searchViewExpandListener);
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setQueryHint(getString(R.string.dtl_locations_search_caption));
+            searchView.setOnQueryTextListener(searchViewQueryListener);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        configureSearch();
+    }
+
+    @Override
+    public void onPause() {
+        MenuItemCompat.setOnActionExpandListener(searchItem, null);
+        searchView.setOnQueryTextListener(null);
+        super.onPause();
     }
 
     public void onEvent(LocationClickedEvent event) {
         tryHideSoftInput();
         getPresenter().onLocationSelected(event.getLocation());
-    }
-
-    @Override
-    public void startLoading() {
-        progress.setVisibility(View.VISIBLE);
-        emptyView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void finishLoading() {
-        progress.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void citiesLoadingStarted() {
-        progressText.setText(R.string.dtl_wait_for_cities);
     }
 
     @Override
@@ -143,13 +127,42 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
     }
 
     @Override
+    public void showGpsObtainingProgress() {
+        progressView.setVisibility(View.VISIBLE);
+        gpsProgressCaption.setVisibility(View.VISIBLE);
+        locationsProgressCaption.setVisibility(View.GONE);
+        emptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLocationsObtainingProgress() {
+        progressView.setVisibility(View.VISIBLE);
+        gpsProgressCaption.setVisibility(View.GONE);
+        locationsProgressCaption.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEmptyProgress() {
+        progressView.setVisibility(View.VISIBLE);
+        gpsProgressCaption.setVisibility(View.GONE);
+        locationsProgressCaption.setVisibility(View.GONE);
+        emptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressView.setVisibility(View.GONE);
+    }
+
+    @Override
     public boolean onApiError(ErrorResponse errorResponse) {
         return false;
     }
 
     @Override
     public void onApiCallFailed() {
-        progress.setVisibility(View.GONE);
+        progressView.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
     }
 
@@ -163,7 +176,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
     }
 
     @Override
-    public void showMerchants() {
+    public void navigateToMerchants() {
         router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_container)
                 .fragmentManager(getFragmentManager())
@@ -177,8 +190,24 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         if (searchItem != null) {
             MenuItemCompat.expandActionView(searchItem);
             searchView.setIconified(false);
+            hideProgress();
         }
     }
+
+    private MenuItemCompat.OnActionExpandListener searchViewExpandListener =
+            new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    getPresenter().searchOpened();
+                    return true;
+                }
+                //
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    getPresenter().searchClosed();
+                    return true;
+                }
+            };
 
     private SearchView.OnQueryTextListener searchViewQueryListener =
             new SearchView.OnQueryTextListener() {
@@ -186,7 +215,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
                 public boolean onQueryTextSubmit(String query) {
                     return false;
                 }
-
+                //
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     getPresenter().search(newText.toLowerCase());

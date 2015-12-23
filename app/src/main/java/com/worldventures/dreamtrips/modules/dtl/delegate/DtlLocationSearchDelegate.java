@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.delegate;
 
+import android.os.Bundle;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
@@ -10,6 +12,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.Icepick;
+import icepick.State;
 import rx.Observable;
 import rx.Subscription;
 import timber.log.Timber;
@@ -20,24 +24,47 @@ public class DtlLocationSearchDelegate {
 
     private Listener listener;
     private RequestingPresenter requestingPresenter;
-
-    private String query;
-    private List<DtlLocation> searchLocations;
-    private List<DtlLocation> nearbyLocations;
-
+    //
+    @State
+    String query;
+    @State
+    ArrayList<DtlLocation> searchLocations;
+    @State
+    ArrayList<DtlLocation> nearbyLocations;
+    //
     private GetDtlLocationsQuery getDtlLocationsQuery;
-
     private Subscription subscription;
 
-    public DtlLocationSearchDelegate(RequestingPresenter requestingPresenter) {
+    public DtlLocationSearchDelegate() {
         this.requestingPresenter = requestingPresenter;
         searchLocations = new ArrayList<>();
         nearbyLocations = new ArrayList<>();
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // State saving/restoring
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveInstanceState(Bundle outState) {
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    public void restoreInstanceState(Bundle savedState) {
+        Icepick.restoreInstanceState(this, savedState);
+    }
+
+    public void requestSavedSearchResults() {
+        if (searchLocations.isEmpty()) provideResults(searchLocations);
+        else localSearch();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Search public
     ///////////////////////////////////////////////////////////////////////////
+
+    public void setRequestingPresenter(RequestingPresenter requestingPresenter) {
+        this.requestingPresenter = requestingPresenter;
+    }
 
     public void setNearbyLocations(List<DtlLocation> locations) {
         this.nearbyLocations.addAll(locations);
@@ -65,10 +92,13 @@ public class DtlLocationSearchDelegate {
         tryDismissQuery();
         tryUnsubscribe();
         provideResults(nearbyLocations);
-        detachListener();
         searchLocations.clear();
         nearbyLocations.clear();
         query = "";
+    }
+
+    public void unsetRequestingPresenter() {
+        requestingPresenter = null;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -90,7 +120,7 @@ public class DtlLocationSearchDelegate {
     }
 
     private void apiSearch() {
-        listener.onSearchStarted();
+        if (listener != null) listener.onSearchStarted();
 
         tryDismissQuery();
         getDtlLocationsQuery = new GetDtlLocationsQuery(query);
@@ -105,7 +135,7 @@ public class DtlLocationSearchDelegate {
     }
 
     private void localSearch() {
-        if (searchLocations != null && !searchLocations.isEmpty())
+        if (!searchLocations.isEmpty())
             subscription = Observable.from(Queryable
                     .from(searchLocations)
                     .filter(dtlLocation ->
@@ -121,7 +151,7 @@ public class DtlLocationSearchDelegate {
     }
 
     private void provideResults(List<DtlLocation> locations) {
-        listener.onSearchFinished(locations);
+        if (listener != null) listener.onSearchFinished(locations);
     }
 
     ///////////////////////////////////////////////////////////////////////////

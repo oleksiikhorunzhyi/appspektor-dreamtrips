@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_gallery)
+@Layout(R.layout.fragment_dt_gallery)
 public abstract class BasePickerFragment<T extends BasePickerPresenter> extends BaseFragmentWithArgs<T, Bundle>
         implements BasePickerPresenter.View {
 

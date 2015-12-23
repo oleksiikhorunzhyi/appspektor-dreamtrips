@@ -17,4 +17,12 @@
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
         fresco:placeholderImageScaleType="fitXY"/>
 
+    <ImageView
+        android:id="@+id/pick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_margin="@dimen/spacing_tiny"
+        android:src="@drawable/add_photo_icon"/>
+
 </custom:com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>

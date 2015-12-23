@@ -21,8 +21,8 @@ public final class ThreadCreatorHelper {
     }
 
     public static String obtainThreadSingleChat(User user1, User user2) {
-        String user1Jid = JidCreatorHelper.obtainUserJid(user1.getUserName());
-        String user2Jid = JidCreatorHelper.obtainUserJid(user2.getUserName());
+        String user1Jid = JidCreatorHelper.obtainUserJid(user1.getId());
+        String user2Jid = JidCreatorHelper.obtainUserJid(user2.getId());
 
         return obtainThreadSingleChat(user1Jid, user2Jid);
     }

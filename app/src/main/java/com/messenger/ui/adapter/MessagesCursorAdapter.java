@@ -27,9 +27,7 @@ import java.util.Date;
 
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
-    private static final int VIEW_TYPE_OWN_MESSAGE_WITH_DATE = VIEW_TYPE_OWN_MESSAGE << 1;
-    private static final int VIEW_TYPE_SOMEONES_MESSAGE = 11;
-    private static final int VIEW_TYPE_SOMEONES_MESSAGE_WITH_DATE = VIEW_TYPE_SOMEONES_MESSAGE << 1;
+    private static final int VIEW_TYPE_SOMEONES_MESSAGE = 2;
 
     private final User user;
     private final Context context;
@@ -55,13 +53,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     @Override
     public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VIEW_TYPE_OWN_MESSAGE_WITH_DATE:
             case VIEW_TYPE_OWN_MESSAGE: {
                 View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_own_messsage,
                         parent, false);
                 return new OwnMessageViewHolder(itemRow);
             }
-            case VIEW_TYPE_SOMEONES_MESSAGE_WITH_DATE:
             case VIEW_TYPE_SOMEONES_MESSAGE: {
                 View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_someones_message,
                         parent, false);
@@ -74,12 +70,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     @Override
     public void onBindViewHolderCursor(MessageHolder holder, Cursor cursor) {
         switch (getItemViewType(cursor.getPosition())) {
-            case VIEW_TYPE_OWN_MESSAGE_WITH_DATE:
             case VIEW_TYPE_OWN_MESSAGE:
                 bindMessageHolder(holder, cursor);
                 bindOwnMessageHolder((OwnMessageViewHolder) holder, cursor);
                 break;
-            case VIEW_TYPE_SOMEONES_MESSAGE_WITH_DATE:
             case VIEW_TYPE_SOMEONES_MESSAGE:
                 bindMessageHolder(holder, cursor);
                 bindUserMessageHolder((UserMessageViewHolder) holder, cursor);
@@ -200,16 +194,8 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public int getItemViewType(int position) {
         Cursor cursor = getCursor();
         cursor.moveToPosition(position);
-
-        final int messageType = cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM))
+        return cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM))
                 .equals(user.getId()) ? VIEW_TYPE_OWN_MESSAGE : VIEW_TYPE_SOMEONES_MESSAGE;
-
-        final int timeColumn = cursor.getColumnIndex(Message.COLUMN_DATE);
-        final long currentDate = cursor.getLong(timeColumn);
-        int result = (!cursor.moveToPrevious() || ChatDateFormatter.calendarDaysBetweenDates(currentDate, cursor.getLong(timeColumn)) > 0)
-                ? messageType << 1 : messageType;
-        cursor.moveToPosition(position);
-        return result;
     }
 
     public void setConversation(Conversation conversation) {

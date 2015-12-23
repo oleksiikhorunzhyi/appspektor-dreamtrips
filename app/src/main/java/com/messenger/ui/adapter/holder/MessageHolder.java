@@ -13,6 +13,8 @@ public abstract class MessageHolder extends ViewHolder {
 
     @InjectView(R.id.chat_message)
     public TextView messageTextView;
+    @InjectView(R.id.chat_date)
+    public TextView dateTextView;
 
     // Use this variable as margins that determine free space left in row after message and avatar took up
     // the space needed.

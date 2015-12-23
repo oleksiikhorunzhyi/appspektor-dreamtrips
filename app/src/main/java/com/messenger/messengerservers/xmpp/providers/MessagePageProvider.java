@@ -49,7 +49,7 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                                     .id(messageId)
                                     //// TODO: 12/18/15 today attribute secs is millisecond
                                     .date(new Date(timestamp))
-                                    .from(JidCreatorHelper.obtainUserId(jid));
+                                    .from(JidCreatorHelper.obtainId(jid));
                             break;
                         case "body":
                             String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());

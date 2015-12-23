@@ -24,10 +24,10 @@ public final class JidCreatorHelper {
 
     @Deprecated
     public static User obtainUser(String jid) {
-        return new User(obtainUserId(jid));
+        return new User(obtainId(jid));
     }
 
-    public static String obtainUserId(String jid) {
+    public static String obtainId(String jid) {
         int pos = jid.indexOf("@");
         return jid.substring(0, pos);
     }

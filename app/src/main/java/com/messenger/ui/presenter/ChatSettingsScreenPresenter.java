@@ -9,5 +9,7 @@ public interface ChatSettingsScreenPresenter extends ActivityAwareViewStateMvpPr
     void onLeaveChatClicked();
     void onNotificationsSwitchClicked(boolean isChecked);
     void onMembersRowClicked();
+    String getCurrentSubject();
+    void applyNewChatSubject(String subject);
 }
 

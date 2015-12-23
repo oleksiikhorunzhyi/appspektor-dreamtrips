@@ -1,7 +1,5 @@
 package com.messenger.messengerservers.xmpp;
 
-import android.util.Log;
-
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
@@ -23,7 +21,12 @@ import org.jivesoftware.smackx.muc.MultiUserChatManager;
 
 import java.util.Collection;
 
+import timber.log.Timber;
+
+import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
+import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.isMessage;
+import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
 
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
@@ -75,8 +78,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         facade.addAuthorizationListener(authorizeListener);
     }
 
-    private void interceptOutgoingPacket(Stanza packet){
-        if(isMessage(packet)){
+    private void interceptOutgoingPacket(Stanza packet) {
+        if (isMessage(packet)) {
             //// TODO: 12/17/15 add from, cause this is a bug: stanza remove FROM from packet 
             com.messenger.messengerservers.entities.Message message = messageConverter.convert((Message) packet);
             message.setFromId(facade.getOwner().getId());
@@ -84,24 +87,30 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         }
     }
 
-    private void interceptIncomingPacket(Stanza packet){
-        if(isMessage(packet)){
-            Message messageXMPP = (Message) packet;
-            if (messageXMPP.getType() == Message.Type.groupchat
-                    && messageXMPP.getFrom().split("/")[1].equals(messageXMPP.getTo().split("@")[0])) {
-                return;
-            }
-            com.messenger.messengerservers.entities.Message message = messageConverter.convert(messageXMPP);
-            notifyGlobalMessage(message, true);
+    private void interceptIncomingPacket(Stanza packet) {
+        switch (stanzaType(packet)) {
+            case MESSAGE: {
+                Message messageXMPP = (Message) packet;
+                if (messageXMPP.getType() == Message.Type.groupchat
+                        && messageXMPP.getFrom().split("/")[1].equals(messageXMPP.getTo().split("@")[0])) {
+                    return;
+                }
+                com.messenger.messengerservers.entities.Message message = messageConverter.convert(messageXMPP);
+                notifyGlobalMessage(message, true);
 
-            if (!isHandled(message)){
-                notifyNewUnhandledMessage(message);
+                if (!isHandled(message)) {
+                    notifyNewUnhandledMessage(message);
+                }
+                break;
             }
+            case SUBJECT:
+                notifyOnSubjectChanges(JidCreatorHelper.obtainId(packet.getFrom()), ((Message) packet).getSubject());
+                break;
         }
     }
 
-    private boolean isHandled(com.messenger.messengerservers.entities.Message message){
-        for (Conversation conversation: handledConversations){
+    private boolean isHandled(com.messenger.messengerservers.entities.Message message) {
+        for (Conversation conversation : handledConversations) {
             if (conversation.getId().equals(message.getConversationId())) {
                 return true;
             }
@@ -111,14 +120,12 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     }
 
     private void receiveInvite(XMPPConnection conn, MultiUserChat room, String inviter,
-                                 String reason, String password, Message message){
+                               String reason, String password, Message message) {
         try {
-            room.join(JidCreatorHelper.obtainUser(abstractXMPPConnection.getUser()).getUserName());
+            room.join(JidCreatorHelper.obtainId(abstractXMPPConnection.getUser()));
         } catch (SmackException | XMPPException.XMPPErrorException e) {
-            Log.e("XmppGlobalEventEmitter", Log.getStackTraceString(e));
+            Timber.e(e, "Can't join :(");
         }
-//        User userInviter = JidCreatorHelper.obtainUser(inviter);
-//        notifyReceiveInvite(userInviter, room.getRoom(), password);
     }
 
 }

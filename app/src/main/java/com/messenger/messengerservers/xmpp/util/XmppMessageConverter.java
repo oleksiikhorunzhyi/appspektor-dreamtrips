@@ -41,10 +41,10 @@ public final class XmppMessageConverter {
                 .locale(new Locale(stanzaMessageBody.getLocale()));
 
         if (message.getTo() != null) {
-            builder.to(JidCreatorHelper.obtainUserId(message.getTo()));
+            builder.to(JidCreatorHelper.obtainId(message.getTo()));
         }
         if (message.getFrom() != null) {
-            builder.from(JidCreatorHelper.obtainUserId(message.getFrom()));
+            builder.from(JidCreatorHelper.obtainId(message.getFrom()));
         }
 
         return builder.build();

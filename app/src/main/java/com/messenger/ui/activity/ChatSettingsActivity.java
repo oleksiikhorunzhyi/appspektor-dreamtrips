@@ -1,15 +1,9 @@
 package com.messenger.ui.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.messenger.ui.view.ActivityAwareScreen;
 import com.messenger.ui.view.ChatSettingsScreenImpl;
 import com.messenger.ui.view.GroupChatSettingsScreenImpl;
 import com.messenger.ui.view.SingleChatSettingsScreenImpl;

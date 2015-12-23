@@ -7,6 +7,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
@@ -18,10 +20,13 @@ import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,14 +42,17 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     private RxContentResolver contentResolver;
     private Subscription participantsSubscriber;
 
+    @Inject
+    MessengerServerFacade facade;
+
     public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
         this.activity = activity;
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        ((Injector) activity.getApplication()).inject(this);
 
-        contentResolver = new RxContentResolver(activity.getContentResolver(), query -> {
-            return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                    .rawQuery(query.selection, query.selectionArgs);
-        });
+        contentResolver = new RxContentResolver(activity.getContentResolver(),
+                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                .rawQuery(query.selection, query.selectionArgs));
 
         conversation = new Select()
                 .from(Conversation.class)
@@ -123,7 +131,20 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     }
 
+    @Override
+    public String getCurrentSubject() {
+        return conversation.getSubject();
+    }
+
     public void onEditChatName() {
+        //noinspection all
+        getView().showSubjectDialog();
+    }
+
+    @Override
+    public void applyNewChatSubject(String subject) {
+        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner(), true);
+        chat.setSubject(subject);
     }
 
     ///////////////////////////////////////////////////////////////////////////

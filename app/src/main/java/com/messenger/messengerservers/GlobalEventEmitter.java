@@ -4,11 +4,13 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class GlobalEventEmitter {
 
@@ -18,6 +20,7 @@ public abstract class GlobalEventEmitter {
     protected List<PresenceListener> presenceListeners = new ArrayList<>();
     protected List<InvitationListener> invitationListeners = new ArrayList<>();
     protected List<UnhandledMessageListener> unhandledMessageListeners = new ArrayList<>();
+    protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
 
     public void addHandledConversation(Conversation conversation) {
         handledConversations.add(conversation);
@@ -83,6 +86,20 @@ public abstract class GlobalEventEmitter {
     protected void notifyReceiveInvite(User userInviter, String roomId, String password) {
         for (InvitationListener listener : invitationListeners) {
             listener.receiveInvite(userInviter, roomId, password);
+        }
+    }
+
+    public void addOnSubjectChangesListener(OnSubjectChangedListener listener) {
+        onSubjectChangedListeners.add(listener);
+    }
+
+    public void removeOnSubjectChangesListener(OnSubjectChangedListener listener) {
+        onSubjectChangedListeners.remove(listener);
+    }
+
+    protected void notifyOnSubjectChanges(String conversationId, String subject) {
+        for (OnSubjectChangedListener listener : onSubjectChangedListeners) {
+            listener.onSubjectChanged(conversationId, subject);
         }
     }
 }

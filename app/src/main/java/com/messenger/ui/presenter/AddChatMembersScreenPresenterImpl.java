@@ -17,7 +17,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -125,7 +124,8 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 Queryable.from(newChatUsers).forEachR(u ->
                         new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                inviteUsersToGroupChat(conversation, newChatUsers);
+                //noinspection all
+                saveChatModifications(conversation, newChatUsers, getView().getConversationName());
 
                 Intent data = new Intent();
                 data.putExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID, conversation.getId());

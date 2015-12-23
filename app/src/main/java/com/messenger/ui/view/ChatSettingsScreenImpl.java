@@ -2,8 +2,9 @@ package com.messenger.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.DimenRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -13,12 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -26,8 +25,6 @@ import com.messenger.ui.widget.AvatarView;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -162,10 +159,37 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
         getPresenter().onDestroy();
     }
 
+    @NonNull
     @Override
     public ChatSettingsScreenPresenter createPresenter() {
         return new ChatSettingsScreenPresenterImpl(getActivity(), getActivity().getIntent());
     }
 
-    protected abstract @StringRes int getLeaveChatButtonStringRes();
+    protected abstract
+    @StringRes
+    int getLeaveChatButtonStringRes();
+
+    @Override
+    public void showSubjectDialog() {
+        Context context = getContext();
+        final View dialogView = inflate(context, R.layout.dialog_change_subject, null);
+        EditText etSubject = (EditText) dialogView.findViewById(R.id.et_subject);
+        String currentSubject = getPresenter().getCurrentSubject();
+        etSubject.setText(currentSubject);
+        etSubject.setSelection(currentSubject.length());
+        new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                })
+                .setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
+                    onSubjectEntered(etSubject.getText().toString());
+                })
+                .setTitle(R.string.change_subject)
+                .create()
+                .show();
+    }
+
+    private void onSubjectEntered(String subject) {
+        getPresenter().applyNewChatSubject(subject);
+    }
 }

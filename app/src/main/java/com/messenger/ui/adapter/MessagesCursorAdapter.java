@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +15,12 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
-import com.messenger.ui.adapter.holder.ViewHolder;
 import com.messenger.util.ChatDateFormatter;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
@@ -108,27 +105,25 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         int dateColumnIndex = cursor.getColumnIndex(Message.COLUMN_DATE);
         long currentDate = cursor.getLong(dateColumnIndex);
         long previousDate = 0;
-        Log.d("NewChat", "Current pos " + cursor.getPosition());
         boolean moveCursorToPrev = cursor.moveToPrevious();
-        Log.d("NewChat", "Pos after move " + cursor.getPosition() + " " + moveCursorToPrev);
         if (moveCursorToPrev) {
             previousDate = cursor.getLong(dateColumnIndex);
-            Log.d("NewChat", "Pos after restore " + cursor.getPosition());
         }
         cursor.moveToNext();
-        Log.d("NewChat", "Final pos " + cursor.getPosition());
-        return getDateEntryIfNeeded(previousDate, currentDate);
+        return getDateChatEntryIfNeeded(previousDate, currentDate);
     }
 
-    public String getDateEntryIfNeeded(long previousDate, long currentDate) {
+    public String getDateChatEntryIfNeeded(long previousDate, long currentDate) {
         StringBuilder dateString = new StringBuilder();
         int calendarDaysSincePreviousDate = 0;
         if (previousDate != 0) {
-            calendarDaysSincePreviousDate = (int) ChatDateFormatter.calendarDaysBetweenDates(previousDate, currentDate);
+            calendarDaysSincePreviousDate = (int) ChatDateFormatter
+                    .calendarDaysBetweenDates(previousDate, currentDate);
         }
         if ((previousDate != 0 && calendarDaysSincePreviousDate > 0) || previousDate == 0) {
-            int daysSinceToday = (int) ChatDateFormatter.calendarDaysBetweenDates(ChatDateFormatter.getToday()
-                    .getTime().getTime(), currentDate);
+            long todayMidnightTimestamp = ChatDateFormatter.getToday().getTime().getTime();
+            int daysSinceToday = (int) ChatDateFormatter
+                    .calendarDaysBetweenDates(todayMidnightTimestamp, currentDate);
             if (daysSinceToday == 0) {
                 dateString.append(context.getString(R.string.chat_list_date_entry_today));
                 dateString.append(", ");

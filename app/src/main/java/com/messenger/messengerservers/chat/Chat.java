@@ -44,9 +44,9 @@ public abstract class Chat {
         }
     }
 
-    protected void handleChangeState(ChatState state) {
+    protected void handleChangeState(ChatState state, String userId) {
         for (OnChatStateChangedListener l : onChatStateChangedListeners) {
-            l.onChatStateChanged(state);
+            l.onChatStateChanged(state, userId);
         }
     }
 

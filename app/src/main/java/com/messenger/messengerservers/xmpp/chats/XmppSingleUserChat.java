@@ -23,6 +23,8 @@ import org.jivesoftware.smackx.chatstates.ChatStateManager;
 
 import java.util.UUID;
 
+import timber.log.Timber;
+
 
 public class XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
 
@@ -40,7 +42,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     private final ChatStateListener messageListener = new ChatStateListener() {
         @Override
         public void stateChanged(Chat chat, org.jivesoftware.smackx.chatstates.ChatState state) {
-            handleChangeState(XmppUtils.convertState(state));
+            handleChangeState(XmppUtils.convertState(state), companionId);
         }
 
         @Override
@@ -67,7 +69,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         try {
             chatStateManager.setCurrentState(XmppUtils.convertState(state), chat);
         } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, "Error ", e);
+            Timber.e(TAG, e);
         }
     }
 
@@ -81,7 +83,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
             stanzaPacket.setStanzaId(UUID.randomUUID().toString());
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, "Sending message error", e);
+            Timber.e(TAG, e);
         }
     }
 

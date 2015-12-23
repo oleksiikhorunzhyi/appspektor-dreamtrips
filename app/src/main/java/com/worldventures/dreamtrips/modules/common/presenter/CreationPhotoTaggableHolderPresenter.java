@@ -16,7 +16,7 @@ import java.util.List;
 
 import icepick.State;
 
-public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter {
+public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter<CreationPhotoTaggableHolderPresenter.View> {
 
     @State
     ArrayList<PhotoTag> newAddedTags;
@@ -25,15 +25,14 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
 
     private boolean addComplete, deleteComplete, updated;
 
-    public CreationPhotoTaggableHolderPresenter(Photo photo, boolean canAddTags) {
-        super(photo, canAddTags);
+    public CreationPhotoTaggableHolderPresenter(Photo photo) {
+        super(photo);
         if (newAddedTags == null && newDeletedTags == null) {
             newAddedTags = new ArrayList<>();
             newDeletedTags = new ArrayList<>();
         }
     }
 
-    @Override
     public void addPhotoTag(PhotoTag tag) {
         newAddedTags.add(tag);
     }
@@ -48,7 +47,6 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         newDeletedTags.add(tag);
     }
 
-    @Override
     public void pushRequests() {
         if (newAddedTags.size() > 0) {
             Queryable.from(newAddedTags).forEachR(tag -> {
@@ -79,7 +77,6 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         onComplete();
     }
 
-    @Override
     public void onComplete() {
         if (!addComplete || !deleteComplete) return;
 
@@ -89,7 +86,7 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         }
 
         eventBus.post(new FeedEntityChangedEvent(photo));
-        super.onComplete();
+        view.onRequestsComplete();
     }
 
     private void updatePhoto() {
@@ -100,19 +97,15 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         });
     }
 
-    @Override
     public void loadFriends(String query, TagView tagView) {
-        doRequest(new GetFriendsQuery(null, query, 1 , 100), tagView::setUserFriends);
+        doRequest(new GetFriendsQuery(null, query, 1, 100), tagView::setUserFriends);
     }
 
-    @Override
     public void restoreViewsIfNeeded() {
-        super.restoreViewsIfNeeded();
         view.addTags(newAddedTags);
         view.addTags(newDeletedTags);
     }
 
-    @Override
     public List<PhotoTag> getTagsToUpload() {
         if (newAddedTags.size() > 0) {
             Queryable.from(newAddedTags).forEachR(tag -> {
@@ -124,6 +117,10 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         }
 
         return null;
+    }
+
+    public interface View extends TaggableImageHolderPresenter.View {
+        void onRequestsComplete();
     }
 
 }

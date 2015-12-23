@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
-import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.PreviewPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
@@ -40,7 +40,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @InjectView(R.id.flag)
     protected FlagView flag;
     @InjectView(R.id.taggable_holder)
-    protected TaggableImageHolder taggableImageHolder;
+    protected PreviewPhotoTaggableHolderViewGroup taggableImageHolder;
     @InjectView(R.id.tag)
     protected ImageView tag;
 
@@ -59,8 +59,8 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     public void setContent(IFullScreenObject photo) {
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
-        taggableImageHolder.setup(this, (Photo) photo, false);
-        taggableImageHolder.setCompleteListener(() -> getPresenter().loadEntity());
+        taggableImageHolder.setup(this, (Photo) photo);
+        taggableImageHolder.setOnTagDeletedAction(() -> getPresenter().loadEntity());
     }
 
     @Override

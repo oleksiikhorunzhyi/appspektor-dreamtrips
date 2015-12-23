@@ -8,25 +8,16 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.List;
 
-public abstract class TaggableImageHolderPresenter extends Presenter<TaggableImageHolderPresenter.View> {
+public abstract class TaggableImageHolderPresenter<VIEW extends TaggableImageHolderPresenter.View> extends Presenter<VIEW> {
 
     protected Photo photo;
-    protected boolean canAddTags;
 
-    public TaggableImageHolderPresenter(Photo photo, boolean canAddTags) {
+    public TaggableImageHolderPresenter(Photo photo) {
         this.photo = photo;
-        this.canAddTags = canAddTags;
-    }
-
-    public static TaggableImageHolderPresenter create(Photo photo, boolean canAddTags) {
-        if (canAddTags) {
-            return new CreationPhotoTaggableHolderPresenter(photo, canAddTags);
-        }
-        return new PreviewPhotoTaggableHolderPresenter(photo);
     }
 
     @Override
-    public void takeView(View view) {
+    public void takeView(VIEW view) {
         super.takeView(view);
     }
 
@@ -34,32 +25,7 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
         if (photo != null && photo.getPhotoTags() != null) view.addTags(photo.getPhotoTags());
     }
 
-    public boolean canAddTags() {
-        return canAddTags;
-    }
-
-    public void addPhotoTag(PhotoTag tag) {
-    }
-
-    public void deletePhotoTag(PhotoTag tag) {
-    }
-
-    public void pushRequests() {
-    }
-
-    public void loadFriends(String query, TagView view) {
-    }
-
-    public void restoreViewsIfNeeded() {
-    }
-
-    public List<PhotoTag> getTagsToUpload() {
-        return null;
-    }
-
-    public void onComplete() {
-        view.onRequestsComplete();
-    }
+    public abstract void deletePhotoTag(PhotoTag tag);
 
     public boolean isOwnPhoto() {
         return getAccount().getId() == photo.getOwner().getId();
@@ -69,12 +35,19 @@ public abstract class TaggableImageHolderPresenter extends Presenter<TaggableIma
         return isOwnPhoto() || getAccount().getId() == userId;
     }
 
+    public void addPhotoTag(PhotoTag tag) {
+
+    }
+
+    public void loadFriends(String query, TagView view) {
+
+    }
+
     public interface View extends Presenter.View {
 
         void addTags(List<PhotoTag> tags);
 
         RectF getImageBounds();
 
-        void onRequestsComplete();
     }
 }

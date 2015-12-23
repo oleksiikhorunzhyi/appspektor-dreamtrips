@@ -1,12 +1,9 @@
-package com.worldventures.dreamtrips.modules.common.view.custom;
+package com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.RectF;
-import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -25,52 +22,42 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.List;
 
-public class TaggableImageHolder extends RelativeLayout implements TaggableImageHolderPresenter.View {
+public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresenter> extends RelativeLayout implements TaggableImageHolderPresenter.View {
 
-    private TaggableImageHolderPresenter presenter;
+    protected P presenter;
     private boolean setuped;
 
-    private TaggableCompleteListener completeListener;
 
-    private GestureDetector gestureDetector;
+    protected RectF imageBounds;
 
-    private RectF imageBounds;
-
-    public TaggableImageHolder(Context context) {
+    public TaggableImageViewGroup(Context context) {
         super(context);
     }
 
-    public TaggableImageHolder(Context context, AttributeSet attrs) {
+    public TaggableImageViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TaggableImageHolder(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TaggableImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public TaggableImageHolder(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    public void setup(Injector injector, Photo photo, boolean canAddTags) {
-        presenter = TaggableImageHolderPresenter.create(photo, canAddTags);
+    public void setup(Injector injector, Photo photo) {
+        presenter = getPresenter(photo);
         injector.inject(presenter);
         presenter.takeView(this);
         presenter.onStart();
         setuped = true;
         //
-        gestureDetector = new GestureDetector(getContext(), new SingleTapConfirm());
-        presenter.restoreViewsIfNeeded();
     }
+
+    @NonNull
+    protected abstract P getPresenter(Photo photo);
 
     public boolean isSetuped() {
         return setuped;
     }
 
-    public void setCompleteListener(TaggableCompleteListener completeListener) {
-        this.completeListener = completeListener;
-    }
 
     public void hide() {
         removeUncompletedViews();
@@ -84,14 +71,6 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         presenter.setupTags();
     }
 
-    public void pushRequests() {
-        presenter.pushRequests();
-    }
-
-    public List<PhotoTag> getTagsToUpload() {
-        return presenter.getTagsToUpload();
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         hide();
@@ -102,20 +81,9 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         super.onDetachedFromWindow();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        gestureDetector.onTouchEvent(event);
-
-        return true;
-    }
-
-    private void addTagView(float x, float y) {
-        addTagView(new PhotoTag(-1, new PhotoTag.TagPosition(x, y, x, y)));
-    }
-
-    private void addTagView(PhotoTag photoTag) {
+    protected void addTagView(PhotoTag photoTag) {
         TagView view = TagView.create(getContext(), photoTag);
-        view.setTagListener(new TagListener() {
+        view.setTagListener(new TagView.TagListener() {
 
             @Override
             public void onQueryChanged(String query) {
@@ -140,6 +108,12 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
             }
         });
 
+        LayoutParams layoutParams = calculatePosition(photoTag, view);
+        addView(view, layoutParams);
+    }
+
+    @NonNull
+    private LayoutParams calculatePosition(PhotoTag photoTag, TagView view) {
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         Size tagSize = view.getSize();
         float tagWidth = tagSize.getWidth();
@@ -163,8 +137,7 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
 
         layoutParams.leftMargin = photoTagXPos;
         layoutParams.topMargin = photoTagYPos;
-
-        addView(view, layoutParams);
+        return layoutParams;
     }
 
     @Override
@@ -182,45 +155,13 @@ public class TaggableImageHolder extends RelativeLayout implements TaggableImage
         return imageBounds;
     }
 
-    @Override
-    public void onRequestsComplete() {
-        if (completeListener != null)
-            completeListener.onTagComplete();
-    }
 
-    private void removeUncompletedViews() {
+    protected void removeUncompletedViews() {
         View view = getChildAt(getChildCount() - 1);
         if (view instanceof NewTagView) removeView(view);
     }
 
-    private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener {
 
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent event) {
-            boolean confirmed = imageBounds.contains(event.getX(), event.getY()) && presenter.canAddTags();
-            if (confirmed) {
-                removeUncompletedViews();
-                addTagView(event.getX(), event.getY());
-            }
-            return confirmed;
-        }
-    }
-
-    public interface TagListener {
-
-        void onQueryChanged(String query);
-
-        void onTagClicked(int userId);
-
-        void onTagAdded(PhotoTag tag);
-
-        void onTagDeleted(PhotoTag tag);
-    }
-
-    public interface TaggableCompleteListener {
-
-        void onTagComplete();
-    }
 
     @Override
     public void informUser(int stringId) {

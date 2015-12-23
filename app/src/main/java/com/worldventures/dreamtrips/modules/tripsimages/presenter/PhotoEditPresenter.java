@@ -107,10 +107,6 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         });
     }
 
-    public boolean isOwnPhoto() {
-        return photo.getOwner().getId() == getAccount().getId();
-    }
-
     public interface View extends Presenter.View {
 
         void finish();

@@ -7,10 +7,10 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PreviewPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter {
+public class PreviewPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter<PreviewPhotoTaggableHolderPresenter.View> {
 
     public PreviewPhotoTaggableHolderPresenter(Photo photo) {
-        super(photo, false);
+        super(photo);
     }
 
     @Override
@@ -19,12 +19,12 @@ public class PreviewPhotoTaggableHolderPresenter extends TaggableImageHolderPres
         userIds.add(tag.getUser().getId());
         doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
             photo.getPhotoTags().remove(tag);
-            onComplete();
+            view.onTagDeleted();
         });
     }
 
-    @Override
-    public void pushRequests() {
-        onComplete();
+    public interface View extends TaggableImageHolderPresenter.View {
+        void onTagDeleted();
     }
+
 }

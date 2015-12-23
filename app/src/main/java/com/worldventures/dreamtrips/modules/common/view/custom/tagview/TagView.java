@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.TaggableImageViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
@@ -23,7 +23,7 @@ import butterknife.InjectView;
 public abstract class TagView extends RelativeLayout {
     protected List<User> userFriends;
     protected PhotoTag photoTag;
-    protected TaggableImageHolder.TagListener tagListener;
+    protected TagListener tagListener;
 
     @InjectView(R.id.pointer_top)
     View pointerTop;
@@ -81,7 +81,7 @@ public abstract class TagView extends RelativeLayout {
         this.userFriends = (userFriends == null) ? new ArrayList<>() : userFriends;
     }
 
-    public void setTagListener(TaggableImageHolder.TagListener tagListener) {
+    public void setTagListener(TagListener tagListener) {
         this.tagListener = tagListener;
     }
 
@@ -109,5 +109,17 @@ public abstract class TagView extends RelativeLayout {
         tagView.setPhotoTag(photoTag);
 
         return tagView;
+    }
+
+
+    public interface TagListener {
+
+        void onQueryChanged(String query);
+
+        void onTagClicked(int userId);
+
+        void onTagAdded(PhotoTag tag);
+
+        void onTagDeleted(PhotoTag tag);
     }
 }

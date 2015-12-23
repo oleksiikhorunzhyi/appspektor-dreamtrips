@@ -19,7 +19,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -49,7 +49,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
     @InjectView(R.id.taggable_holder)
-    protected TaggableImageHolder taggableImageHolder;
+    protected CreationPhotoTaggableHolderViewGroup taggableImageHolder;
     @InjectView(R.id.tag)
     protected ImageView tag;
 
@@ -190,7 +190,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
 
     @Override
     public void setupTaggingHolder(Photo photo) {
-        taggableImageHolder.setup(this, photo, true);
+        taggableImageHolder.setup(this, photo);
         taggableImageHolder.setCompleteListener(this::finish);
     }
 

@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,7 +8,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.TaggableImageViewGroup;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.List;
@@ -36,11 +34,6 @@ public class NewTagView extends TagView {
 
     public NewTagView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public NewTagView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
@@ -74,13 +67,13 @@ public class NewTagView extends TagView {
     }
 
     @Override
-    public void setTagListener(TaggableImageHolder.TagListener tagListener) {
+    public void setTagListener(TagListener tagListener) {
         super.setTagListener(tagListener);
         adapter.setTagListener(tagListener);
     }
 
-    @OnClick ({R.id.new_user_delete_tag})
-    public void onClick(){
+    @OnClick({R.id.new_user_delete_tag})
+    public void onClick() {
         deleteTag();
     }
 

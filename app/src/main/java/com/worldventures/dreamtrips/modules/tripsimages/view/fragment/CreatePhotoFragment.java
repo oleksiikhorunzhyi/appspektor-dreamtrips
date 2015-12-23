@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
@@ -52,7 +52,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
     @InjectView(R.id.taggable_holder)
-    protected TaggableImageHolder taggableImageHolder;
+    protected CreationPhotoTaggableHolderViewGroup taggableImageHolder;
     @InjectView(R.id.tag)
     protected ImageView tag;
 
@@ -69,7 +69,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
         ivImage.setController(GraphicUtils.provideFrescoResizingController(uri, ivImage.getController()));
-        taggableImageHolder.setup(this, null,  true);
+        taggableImageHolder.setup(this, null);
     }
 
     @Override

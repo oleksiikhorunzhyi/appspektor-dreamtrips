@@ -12,16 +12,18 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.TaggableImageHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.TaggableImageViewGroup;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView.*;
 
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
     private Context context;
     private List<User> friendList;
-    private TaggableImageHolder.TagListener tagListener;
+    private TagListener tagListener;
 
     public TagFriendAdapter(Context context, List<User> items) {
         super(context, 0, 0, items);
@@ -29,7 +31,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
         this.friendList = items;
     }
 
-    public void setTagListener(TaggableImageHolder.TagListener tagListener) {
+    public void setTagListener(TagListener tagListener) {
         this.tagListener = tagListener;
     }
 
@@ -49,7 +51,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        FriendHolder holder = null;
+        FriendHolder holder;
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

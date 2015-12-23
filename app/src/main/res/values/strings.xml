@@ -484,5 +484,6 @@
     <string name="pending">Pending…</string>
 
     <string name="back">Back</string>
+    <string name="logout_component">Logout</string>
 
 </resources>

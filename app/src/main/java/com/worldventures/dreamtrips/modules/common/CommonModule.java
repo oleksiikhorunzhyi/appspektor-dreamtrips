@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -86,9 +87,17 @@ import dagger.Provides;
 )
 public class CommonModule {
 
+    public static final String LOGOUT = "Logout";
+
     @Provides
     RootComponentsProvider provideRootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig config) {
         return new RootComponentsProvider(descriptions, config);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideLogoutComponent() {
+        return new ComponentDescription(LOGOUT, 0,
+                R.string.logout_component, R.drawable.ic_logout, null);
     }
 
     @Provides
@@ -113,6 +122,8 @@ public class CommonModule {
         activeComponents.add(InfoModule.TERMS);
 
         activeComponents.add(TripsModule.MAP_TRIPS);
+
+        activeComponents.add(LOGOUT);
 
         return new ComponentsConfig(activeComponents);
     }

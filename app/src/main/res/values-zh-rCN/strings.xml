@@ -483,4 +483,7 @@
     <string name="photo_limitation_message">请最多选择%d张照片</string>
     <string name="pending">朋友</string>
 
+    <string name="back">Back</string>
+    <string name="logout_component">退出</string>
+
 </resources>

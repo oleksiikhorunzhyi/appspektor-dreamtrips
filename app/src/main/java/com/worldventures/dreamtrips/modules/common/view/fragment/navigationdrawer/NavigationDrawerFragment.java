@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -20,6 +21,8 @@ import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -115,6 +118,11 @@ public class NavigationDrawerFragment
     @Override
     public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
         if (this.targetDrawerListener != null) {
+            if (newComponent.getKey().equals(CommonModule.LOGOUT)) {
+                showLogoutDialog();
+                return;
+            }
+
             boolean updateComponentSelection = currentComponent == null ||
                     !newComponent.getKey().equalsIgnoreCase(currentComponent.getKey());
 
@@ -124,6 +132,23 @@ public class NavigationDrawerFragment
                 this.targetDrawerListener.onNavigationDrawerItemReselected(newComponent);
             }
         }
+    }
+
+    private void showLogoutDialog() {
+        new MaterialDialog.Builder(getActivity())
+                .title(getString(R.string.logout_dialog_title))
+                .content(getString(R.string.logout_dialog_message))
+                .positiveText(getString(R.string.logout_dialog_positive_btn))
+                .negativeText(getString(R.string.logout_dialog_negative_btn))
+                .positiveColorRes(R.color.theme_main_darker)
+                .negativeColorRes(R.color.theme_main_darker)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        TrackingHelper.logout();
+                        getPresenter().logout();
+                    }
+                }).show();
     }
 
     @Override

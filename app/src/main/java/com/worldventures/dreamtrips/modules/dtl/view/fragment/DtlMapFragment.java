@@ -60,6 +60,17 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        // monkey patch to prevent opening this over proper landscape layout
+        // after rotating from portrait
+        if (!bundle.isSlave() && isTabletLandscape()) {
+            navigateBack();
+            return;
+        }
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
@@ -73,12 +84,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:
-                    router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
-                            .fragmentManager(getFragmentManager())
-                            .backStackEnabled(false)
-                            .clearBackStack(true)
-                            .containerId(R.id.dtl_container)
-                            .build());
+                    navigateBack();
                     return true;
                 case R.id.action_dtl_filter:
                     ((MainActivity) getActivity()).openRightDrawer();
@@ -151,6 +157,15 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
                 .data(new DtlMerchantDetailsBundle(merchantId, bundle.isSlave()))
+                .build());
+    }
+
+    private void navigateBack() {
+        router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
+                .fragmentManager(getFragmentManager())
+                .backStackEnabled(false)
+                .clearBackStack(true)
+                .containerId(R.id.dtl_container)
                 .build());
     }
 

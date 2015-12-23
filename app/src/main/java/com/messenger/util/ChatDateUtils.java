@@ -1,46 +1,11 @@
 package com.messenger.util;
 
-import android.content.Context;
-
-import com.messenger.model.ChatMessage;
-import com.worldventures.dreamtrips.R;
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-public class ChatDateFormatter {
-
-    private SimpleDateFormat todayDateFormat;
-    private SimpleDateFormat moreThanTwoDaysAgoFormat;
-
-    private Context context;
-
-    public ChatDateFormatter(Context context) {
-        this.context = context;
-        todayDateFormat = new SimpleDateFormat(context
-                .getString(R.string.conversation_list_last_message_date_format_today));
-        moreThanTwoDaysAgoFormat = new SimpleDateFormat(context
-            .getString(R.string.conversation_list_last_message_date_format_more_than_one_day_ago));
-    }
-
-    public String formatLastConversationMessage(Date date) {
-        Calendar today = getToday();
-
-        if (date.after(today.getTime())) {
-            return todayDateFormat.format(date);
-        } else {
-            Calendar yesterday = today;
-            yesterday.roll(Calendar.DAY_OF_YEAR, false);
-            if (date.after(yesterday.getTime())) {
-                return context.getString(R.string.conversation_list_last_message_date_format_yesterday);
-            } else {
-                return moreThanTwoDaysAgoFormat.format(date);
-            }
-        }
-    }
+public class ChatDateUtils {
 
     public static Calendar getToday() {
         Calendar today = Calendar.getInstance();
@@ -50,7 +15,6 @@ public class ChatDateFormatter {
         return today;
     }
 
-    @Deprecated
     public static long calendarDaysBetweenDates(Date startDate, Date dateEnd) {
         return calendarDaysBetweenDates(startDate.getTime(), dateEnd.getTime());
     }

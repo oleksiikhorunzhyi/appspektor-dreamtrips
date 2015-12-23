@@ -19,12 +19,15 @@ import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.util.ChatDateFormatter;
+import com.messenger.util.ChatDateUtils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +47,9 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
 
     private ClickListener clickListener;
 
-    private ChatDateFormatter chatDateFormatter;
     private ConversationHelper conversationHelper;
+    private SimpleDateFormat todayDateFormat;
+    private SimpleDateFormat moreThanTwoDaysAgoFormat;
 
     public interface ClickListener {
         void onConversationClick(Conversation conversation);
@@ -56,9 +60,12 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
         this.context = context;
         this.recyclerView = recyclerView;
         this.currentUser = currentUser;
-
-        chatDateFormatter = new ChatDateFormatter(context);
+        //
         conversationHelper = new ConversationHelper();
+        todayDateFormat = new SimpleDateFormat(context
+                .getString(R.string.conversation_list_last_message_date_format_today));
+        moreThanTwoDaysAgoFormat = new SimpleDateFormat(context
+                .getString(R.string.conversation_list_last_message_date_format_more_than_one_day_ago));
     }
 
     @Override
@@ -108,7 +115,23 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
             messageText = userName + ": " + messageText;
         }
         holder.getLastMessageTextView().setText(messageText);
-        holder.getLastMessageDateTextView().setText(chatDateFormatter.formatLastConversationMessage(lastMessage.getDate()));
+        holder.getLastMessageDateTextView().setText(formatLastConversationMessage(lastMessage.getDate()));
+    }
+
+    public String formatLastConversationMessage(Date date) {
+        Calendar today = ChatDateUtils.getToday();
+
+        if (date.after(today.getTime())) {
+            return todayDateFormat.format(date);
+        } else {
+            Calendar yesterday = today;
+            yesterday.roll(Calendar.DAY_OF_YEAR, false);
+            if (date.after(yesterday.getTime())) {
+                return context.getString(R.string.conversation_list_last_message_date_format_yesterday);
+            } else {
+                return moreThanTwoDaysAgoFormat.format(date);
+            }
+        }
     }
 
     private void setNameAndAvatar(BaseConversationViewHolder holder, Conversation conversation, List<User> participants) {

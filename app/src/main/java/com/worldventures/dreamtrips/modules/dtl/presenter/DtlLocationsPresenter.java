@@ -21,7 +21,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
-import retrofit.http.HEAD;
 
 public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         implements DtlLocationRepository.LocationsLoadedListener, LocationDelegate.LocationListener,
@@ -34,7 +33,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     //
     private DtlLocationSearchDelegate searchDelegate;
     //
-    @State
     ArrayList<DtlLocation> dtlLocations;
     @State
     Status status = Status.NEARBY;

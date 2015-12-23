@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -21,7 +22,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
@@ -47,7 +47,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
     BaseArrayListAdapter adapter;
     //
     @InjectView(R.id.locationsList)
-    EmptyRecyclerView recyclerView;
+    RecyclerView recyclerView;
     @InjectView(R.id.empty_view)
     View emptyView;
     @InjectView(R.id.obtaining_gps_location_progress_caption)
@@ -73,7 +73,6 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         initToolbar();
         //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setEmptyView(emptyView);
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
         //
@@ -122,6 +121,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
 
     @Override
     public void setItems(List<DtlLocation> dtlLocations) {
+        emptyView.setVisibility(View.GONE);
         adapter.clear();
         adapter.addItems(dtlLocations);
     }
@@ -191,6 +191,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
             MenuItemCompat.expandActionView(searchItem);
             searchView.setIconified(false);
             hideProgress();
+            emptyView.setVisibility(View.VISIBLE);
         }
     }
 

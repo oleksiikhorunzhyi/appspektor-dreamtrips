@@ -28,17 +28,17 @@ public class DtlLocationSearchDelegate {
     @State
     String query;
     @State
-    ArrayList<DtlLocation> searchLocations;
-    @State
-    ArrayList<DtlLocation> nearbyLocations;
+    ArrayList<DtlLocation> searchLocations = new ArrayList<>();
     //
     private GetDtlLocationsQuery getDtlLocationsQuery;
     private Subscription subscription;
 
-    public DtlLocationSearchDelegate() {
+    public void setRequestingPresenter(RequestingPresenter requestingPresenter) {
         this.requestingPresenter = requestingPresenter;
-        searchLocations = new ArrayList<>();
-        nearbyLocations = new ArrayList<>();
+    }
+
+    public void unsetRequestingPresenter() {
+        requestingPresenter = null;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -62,14 +62,6 @@ public class DtlLocationSearchDelegate {
     // Search public
     ///////////////////////////////////////////////////////////////////////////
 
-    public void setRequestingPresenter(RequestingPresenter requestingPresenter) {
-        this.requestingPresenter = requestingPresenter;
-    }
-
-    public void setNearbyLocations(List<DtlLocation> locations) {
-        this.nearbyLocations.addAll(locations);
-    }
-
     public void performSearch(String query) {
         if (query.length() < SEARCH_SYMBOL_COUNT) {
             this.query = query;
@@ -91,14 +83,8 @@ public class DtlLocationSearchDelegate {
     public void dismissDelegate() {
         tryDismissQuery();
         tryUnsubscribe();
-        provideResults(nearbyLocations);
         searchLocations.clear();
-        nearbyLocations.clear();
         query = "";
-    }
-
-    public void unsetRequestingPresenter() {
-        requestingPresenter = null;
     }
 
     ///////////////////////////////////////////////////////////////////////////

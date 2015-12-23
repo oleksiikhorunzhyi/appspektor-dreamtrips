@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/appbar">
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/locationsList"
             style="@style/myRecyclerViewStyle"
             android:layout_width="match_parent"

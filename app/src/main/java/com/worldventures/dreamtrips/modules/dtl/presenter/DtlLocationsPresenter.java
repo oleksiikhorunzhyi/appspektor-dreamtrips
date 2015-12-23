@@ -162,14 +162,14 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void searchOpened() {
         status = Status.SEARCH;
-        searchDelegate.setNearbyLocations(dtlLocations);
-        dtlLocations.clear();
         view.setItems(Collections.EMPTY_LIST);
     }
 
     public void searchClosed() {
         status = Status.NEARBY;
         searchDelegate.dismissDelegate();
+        view.hideProgress();
+        view.setItems(dtlLocations);
     }
 
     public void search(String query) {
@@ -184,7 +184,6 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     @Override
     public void onSearchFinished(List<DtlLocation> locations) {
         view.hideProgress();
-        dtlLocations.addAll(locations);
         view.setItems(locations);
     }
 

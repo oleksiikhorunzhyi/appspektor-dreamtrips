@@ -97,9 +97,11 @@
     <string name="directions">路線</string>
     <string name="checked_in">您成功簽到</string>
     <string name="point_estimator">點數估算</string>
-    <string name="km">英里</string>
-    <string name="mi">公里</string>
-    <string name="dtl_coming_soon_offers">優惠即將推出</string>
+    <string name="km">公里</string>
+    <string name="mi">英里</string>
+    <string name="dtl_coming_soon_offers">更多優惠即將到來</string>
     <string name="dtl_details_share_title_without_points">我發現%s在使用DreamTrips app</string>
     <string name="rep_suggest_restaurant">推薦餐廳</string>
+    <string name="distance_miles" formatted="false">%.1f 英里</string>
+    <string name="distance_kms" formatted="false">%.1f 公里</string>
 </resources>

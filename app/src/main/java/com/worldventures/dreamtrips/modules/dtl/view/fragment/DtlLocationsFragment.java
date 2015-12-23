@@ -121,7 +121,8 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
 
     @Override
     public void setItems(List<DtlLocation> dtlLocations) {
-        emptyView.setVisibility(View.GONE);
+        progressView.setVisibility(View.GONE);
+        //
         adapter.clear();
         adapter.addItems(dtlLocations);
     }
@@ -195,6 +196,11 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         }
     }
 
+    @Override
+    public void setEmptyViewVisibility(boolean visible) {
+        emptyView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
     private MenuItemCompat.OnActionExpandListener searchViewExpandListener =
             new MenuItemCompat.OnActionExpandListener() {
                 @Override
@@ -202,6 +208,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
                     getPresenter().searchOpened();
                     return true;
                 }
+
                 //
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -216,6 +223,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
                 public boolean onQueryTextSubmit(String query) {
                     return false;
                 }
+
                 //
                 @Override
                 public boolean onQueryTextChange(String newText) {

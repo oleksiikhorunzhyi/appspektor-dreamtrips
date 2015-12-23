@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -75,10 +76,9 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
             if (dtlLocations.isEmpty()) {
                 gpsLocationDelegate.tryRequestLocation();
                 view.showGpsObtainingProgress();
-            }
-            else {
+            } else {
                 view.hideProgress();
-                view.setItems(dtlLocations);
+                setItems(dtlLocations);
             }
         } else {
             view.hideProgress();
@@ -124,7 +124,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         view.hideProgress();
         dtlLocations.clear();
         dtlLocations.addAll(locations);
-        view.setItems(dtlLocations);
+        setItems(dtlLocations);
     }
 
     @Override
@@ -162,14 +162,14 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void searchOpened() {
         status = Status.SEARCH;
-        view.setItems(Collections.EMPTY_LIST);
+        setItems(Collections.EMPTY_LIST);
     }
 
     public void searchClosed() {
         status = Status.NEARBY;
         searchDelegate.dismissDelegate();
         view.hideProgress();
-        view.setItems(dtlLocations);
+        setItems(dtlLocations);
     }
 
     public void search(String query) {
@@ -184,12 +184,22 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     @Override
     public void onSearchFinished(List<DtlLocation> locations) {
         view.hideProgress();
-        view.setItems(locations);
+        setItems(locations);
     }
 
     @Override
     public void onSearchError(SpiceException e) {
         handleError(e);
+    }
+
+    private void setItems(List<DtlLocation> locations) {
+        if (status == Status.NEARBY)
+            view.setEmptyViewVisibility(locations.isEmpty());
+        else if (TextUtils.isEmpty(searchDelegate.getQuery()))
+            view.setEmptyViewVisibility(dtlLocations.isEmpty());
+        else view.setEmptyViewVisibility(false);
+        //
+        view.setItems(locations);
     }
 
     public interface View extends RxView, ApiErrorView {
@@ -207,6 +217,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         void showSearch();
 
         void navigateToMerchants();
+
+        void setEmptyViewVisibility(boolean visible);
     }
 
     public enum Status {

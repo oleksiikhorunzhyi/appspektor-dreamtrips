@@ -487,4 +487,6 @@
     <string name="back">回到</string>
     <string name="start_typing_name">開始輸入名稱</string>
 
+    <string name="multiple_dates">Multiple Dates, %s ...</string>
+
 </resources>

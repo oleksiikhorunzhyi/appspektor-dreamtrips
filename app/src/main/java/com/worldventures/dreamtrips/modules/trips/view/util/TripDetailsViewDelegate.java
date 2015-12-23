@@ -124,7 +124,12 @@ public class TripDetailsViewDelegate {
 
         textViewPlace.setText(tripModel.getGeoLocation().getName());
         textViewPrice.setText(tripModel.getPrice().toString());
-        textViewDate.setText(tripModel.getAvailabilityDates().toString());
+        if (tripModel.isHasMultipleDates()) {
+            textViewDate.setText(String.format(textViewDate.getResources().getString(R.string.multiple_dates),
+                    tripModel.getAvailabilityDates().getStartDateString()));
+        } else {
+            textViewDate.setText(tripModel.getAvailabilityDates().toString());
+        }
         textViewDescription.setText(tripModel.getDescription());
     }
 

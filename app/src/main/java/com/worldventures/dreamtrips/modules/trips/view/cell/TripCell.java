@@ -74,7 +74,12 @@ public class TripCell extends AbstractCell<TripModel> {
         textViewName.setText(getModelObject().getName());
         textViewPlace.setText(getModelObject().getGeoLocation().getName());
         textViewPrice.setText(getModelObject().getPrice().toString());
-        textViewDate.setText(getModelObject().getAvailabilityDates().toString());
+        if (getModelObject().isHasMultipleDates()) {
+            textViewDate.setText(String.format(itemView.getContext().getResources().getString(R.string.multiple_dates),
+                    getModelObject().getAvailabilityDates().getStartDateString()));
+        } else {
+            textViewDate.setText(getModelObject().getAvailabilityDates().toString());
+        }
 
         if (getModelObject().isFeatured()) {
             textViewFeatured.setVisibility(View.VISIBLE);

@@ -32,6 +32,7 @@ import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
+import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -402,12 +403,12 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         switch (requestCode) {
             case REQUEST_CODE_ADD_USER:
                 if (resultCode == Activity.RESULT_OK) {
-                    String conversationId = data
-                            .getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
-                    // New group chat was created instead of single one
-                    if (!conversation.getId().equals(conversationId)) {
-                        init(conversationId);
-                        initLoaders();
+                    // chat type has changed from single to group
+                    String conversationType = data
+                            .getStringExtra(MessengerStartActivity.EXTRA_CONVERSATION_TYPE);
+                    if (!conversationType.equals(conversation.getType())) {
+                        activity.setResult(resultCode, data);
+                        activity.finish();
                     }
                 }
                 break;

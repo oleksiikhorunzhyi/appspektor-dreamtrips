@@ -1,6 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
@@ -14,6 +15,7 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
@@ -77,13 +79,14 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 //
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                //
-                if (selectedUsers.size() == 1) {
-                    ChatActivity.startSingleChat(activity, conversation.getId());
-                } else {
+                if (selectedUsers.size() > 1) {
                     saveChatModifications(conversation, selectedUsers, getView().getConversationName());
-                    ChatActivity.startGroupChat(activity, conversation.getId());
                 }
+
+                Intent data = new Intent();
+                data.putExtra(Extra.CONVERSATION_ID, conversation.getId());
+                data.putExtra(Extra.CONVERSATION_TYPE, conversation.getType());
+                activity.setResult(Activity.RESULT_OK, data);
                 activity.finish();
                 return true;
         }

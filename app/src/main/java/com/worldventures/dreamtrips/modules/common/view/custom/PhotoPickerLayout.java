@@ -186,7 +186,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @OnClick(R.id.button_cancel)
     void onCancel() {
         if (fragmentManager.getBackStackEntryCount() > 1) {
-            fragmentManager.popBackStack();
+            fragmentManager.popBackStackImmediate();
             updatePickedItemsCount(0);
             updateCancelButtonState();
             return;

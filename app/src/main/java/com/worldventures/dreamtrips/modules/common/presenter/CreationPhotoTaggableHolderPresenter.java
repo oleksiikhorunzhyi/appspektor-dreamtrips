@@ -39,11 +39,6 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
 
 
     @Override
-    public boolean isAccountPhoto() {
-        return true;
-    }
-
-    @Override
     public void deletePhotoTag(PhotoTag tag) {
         if (newAddedTags.contains(tag)) {
             newAddedTags.remove(tag);

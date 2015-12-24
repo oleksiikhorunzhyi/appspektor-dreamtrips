@@ -12,12 +12,11 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.TaggableImageViewGroup;
 
 import java.util.Collections;
 import java.util.List;
 
-import static com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView.*;
+import static com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView.TagListener;
 
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
@@ -85,7 +84,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (constraint != null && constraint.length() > 2)
+                if (constraint != null && constraint.toString().trim().length() > 2)
                     tagListener.onQueryChanged(constraint.toString());
                 else
                     setFriendList(Collections.emptyList());
@@ -93,7 +92,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
         };
     }
 
-    static class FriendHolder{
+    static class FriendHolder {
         TextView friendName;
         SimpleDraweeView friendPhoto;
     }

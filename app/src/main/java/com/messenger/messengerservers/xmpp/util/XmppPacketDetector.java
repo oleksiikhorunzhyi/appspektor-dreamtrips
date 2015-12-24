@@ -1,5 +1,6 @@
 package com.messenger.messengerservers.xmpp.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
@@ -23,9 +24,9 @@ public final class XmppPacketDetector {
             return UNKNOW;
 
         // TODO: 12/23/15 refactoring this
-        if (message.getBody() != null) {
+        if (!StringUtils.isEmpty(message.getBody())) {
             return MESSAGE;
-        } if (message.getSubject() != null) {
+        } if (!StringUtils.isEmpty(message.getSubject())) {
             return SUBJECT;
         }
         return UNKNOW;

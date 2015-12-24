@@ -44,10 +44,20 @@ public final class XmppMessageConverter {
             builder.to(JidCreatorHelper.obtainId(message.getTo()));
         }
         if (message.getFrom() != null) {
-            builder.from(JidCreatorHelper.obtainId(message.getFrom()));
+            builder.from(parseUserId(message));
         }
 
         return builder.build();
+    }
+
+    private String parseUserId(org.jivesoftware.smack.packet.Message message){
+        switch (message.getType()){
+            case chat:
+                return JidCreatorHelper.obtainId(message.getFrom());
+            case groupchat:
+                return JidCreatorHelper.obtainUserIdFromGroupJid(message.getFrom());
+        }
+        return null;
     }
 
 }

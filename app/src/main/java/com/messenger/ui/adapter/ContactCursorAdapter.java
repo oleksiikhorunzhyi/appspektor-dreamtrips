@@ -8,27 +8,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AlphabetIndexer;
-import android.widget.FilterQueryProvider;
 import android.widget.SectionIndexer;
 
 import com.messenger.messengerservers.entities.User;
-import com.messenger.model.ChatUser;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
-import com.messenger.ui.adapter.holder.ContactWithHeaderViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
+import com.messenger.ui.adapter.holder.ContactWithHeaderViewHolder;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 
 public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHolder>
-    implements SectionIndexer {
+        implements SectionIndexer {
 
     private static final int VIEW_TYPE_CONTACT = 1;
     private static final int VIEW_TYPE_HEADER = 2;
@@ -78,20 +74,20 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
         final int count = super.getItemCount();
 
         int i;
-        for (i = count - 1 ; i >= 0; i--){
+        for (i = count - 1; i >= 0; i--) {
             sectionToPosition.put(indexer.getSectionForPosition(i), i);
         }
 
         i = 0;
         usedSectionNumbers = new int[sectionToPosition.keySet().size()];
 
-        for (Integer section : sectionToPosition.keySet()){
+        for (Integer section : sectionToPosition.keySet()) {
             sectionToOffset.put(section, i);
             usedSectionNumbers[i] = section;
             i++;
         }
 
-        for(Integer section: sectionToPosition.keySet()){
+        for (Integer section : sectionToPosition.keySet()) {
             sectionToPosition.put(section, sectionToPosition.get(section) + sectionToOffset.get(section));
         }
         return false;
@@ -105,9 +101,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
                         .inflate(R.layout.list_item_contact_section_header, parent, false);
                 return new ContactWithHeaderViewHolder(sectionRow);
             case VIEW_TYPE_CONTACT:
-                View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_contact,
-                        parent, false);
-                return new ContactViewHolder(itemRow);
+                return createContactViewHolder(parent, viewType);
             default:
                 throw new IllegalArgumentException("There is no such view type in adapter");
         }
@@ -129,7 +123,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
     }
 
     public void onBindSectionNameViewHolder(ContactWithHeaderViewHolder holder, int position) {
-        String sectionName = (String)getSections()[getSectionForPosition(position)];
+        String sectionName = (String) getSections()[getSectionForPosition(position)];
         holder.getSectionNameTextView().setText(sectionName);
     }
 
@@ -151,7 +145,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
 
     @Override
     public int getItemCount() {
-        if (super.getItemCount() != 0){
+        if (super.getItemCount() != 0) {
             return super.getItemCount() + usedSectionNumbers.length;
         }
         return 0;
@@ -159,7 +153,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
 
     @Override
     public int getItemViewType(int position) {
-        if (position == getPositionForSection(getSectionForPosition(position))){
+        if (position == getPositionForSection(getSectionForPosition(position))) {
             return VIEW_TYPE_HEADER;
         }
         return VIEW_TYPE_CONTACT;
@@ -172,11 +166,11 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
 
     @Override
     public int getPositionForSection(int section) {
-        if (!sectionToOffset.containsKey(section)){
+        if (!sectionToOffset.containsKey(section)) {
             int i = 0;
             int maxLength = usedSectionNumbers.length;
 
-            while (i < maxLength && section > usedSectionNumbers[i]){
+            while (i < maxLength && section > usedSectionNumbers[i]) {
                 i++;
             }
             if (i == maxLength) return super.getItemCount();
@@ -193,9 +187,11 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
         int i = 0;
         int maxLength = usedSectionNumbers.length;
 
-        while (i < maxLength && position >= sectionToPosition.get(usedSectionNumbers[i])){
+        while (i < maxLength && position >= sectionToPosition.get(usedSectionNumbers[i])) {
             i++;
         }
-        return usedSectionNumbers[i-1];
+        return usedSectionNumbers[i - 1];
     }
+
+    public abstract BaseViewHolder createContactViewHolder(ViewGroup parent, int viewType);
 }

@@ -21,4 +21,6 @@ public interface EditChatMembersScreen extends ActivityAwareScreen {
     void setMembers(Cursor cursor);
 
     void setMembers(Cursor cursor, String query, String queryColumn);
+
+    void showDeletionConfirmationDialog(User user);
 }

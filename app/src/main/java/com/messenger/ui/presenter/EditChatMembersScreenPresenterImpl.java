@@ -10,6 +10,7 @@ import android.support.v4.content.Loader;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
@@ -133,6 +134,11 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
     @Override
     public void onDeleteUserFromChat(User user) {
+        getView().showDeletionConfirmationDialog(user);
+    }
 
+    @Override
+    public void onDeleteUserFromChatConfirmed(User user) {
+        Toast.makeText(activity, "Not implemented", Toast.LENGTH_SHORT).show();
     }
 }

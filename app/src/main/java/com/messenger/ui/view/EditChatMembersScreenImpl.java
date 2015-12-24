@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.StringRes;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.messenger.ui.adapter.ContactCursorAdapter;
-import com.messenger.ui.adapter.SwipableContactsCursorAdapter;
+import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -48,7 +49,7 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
     private SearchView searchView;
     private String savedSearchFilter;
 
-    private SwipableContactsCursorAdapter adapter;
+    private ActionButtonsContactsCursorAdapter adapter;
 
     public EditChatMembersScreenImpl(Context context) {
         super(context);
@@ -74,7 +75,8 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
         // Use this class until sorting logic in ContactCursorAdapter is checked
         // to be working (provided users are sorted alphabetically) or fixed if needed if
         // it does not work when contacts sorting is fixed.
-        adapter = new SwipableContactsCursorAdapter(getContext(), null);
+        adapter = new ActionButtonsContactsCursorAdapter(getContext(), null);
+        adapter.setRowButtonsActionListener(user -> getPresenter().onDeleteUserFromChat(user));
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -123,6 +125,18 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
     public void setMembers(Cursor cursor, String query, String queryColumn) {
         this.savedSearchFilter = query;
         adapter.swapCursor(cursor, query, queryColumn);
+    }
+
+    @Override
+    public void showDeletionConfirmationDialog(User user) {
+        new AlertDialog.Builder(getContext())
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.edit_chat_dialog_confirm_user_deletion_button_delete, (dialog1, which1) -> {
+                    getPresenter().onDeleteUserFromChatConfirmed(user);
+                })
+                .setMessage(R.string.edit_chat_dialog_confirm_user_deletion_message)
+                .create()
+                .show();
     }
 
     @Override

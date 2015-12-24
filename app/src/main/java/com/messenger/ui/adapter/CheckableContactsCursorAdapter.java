@@ -2,11 +2,15 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
+import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,5 +52,12 @@ public class CheckableContactsCursorAdapter extends ContactCursorAdapter {
                 selectionListener.onSelectionStateChanged(selectedContacts);
             }
         });
+    }
+
+    @Override
+    public BaseViewHolder createContactViewHolder(ViewGroup parent, int viewType) {
+        View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_contact,
+                parent, false);
+        return new ContactViewHolder(itemRow);
     }
 }

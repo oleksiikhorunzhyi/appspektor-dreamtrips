@@ -33,7 +33,7 @@ import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
 
-@Layout(R.layout.fragment_dtl_places_tabs)
+@Layout(R.layout.fragment_dtl_merchants_tabs)
 public class DtlMerchantsTabsFragment extends BaseFragment<DtlMerchantsTabsPresenter>
         implements DtlMerchantsTabsPresenter.View {
 

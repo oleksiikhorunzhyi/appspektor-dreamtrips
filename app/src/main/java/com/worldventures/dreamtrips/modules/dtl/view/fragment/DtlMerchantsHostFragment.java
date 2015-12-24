@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsHostPresen
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_dtl_places_host)
+@Layout(R.layout.fragment_dtl_merchants_host)
 public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPresenter>
         implements DtlMerchantsHostPresenter.View {
 

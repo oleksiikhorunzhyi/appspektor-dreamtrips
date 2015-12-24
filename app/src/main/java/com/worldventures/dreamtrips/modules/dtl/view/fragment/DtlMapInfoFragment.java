@@ -70,7 +70,7 @@ public class DtlMapInfoFragment
         categoryDataInflater.apply(merchant);
     }
 
-    @OnClick(R.id.place_details_root)
+    @OnClick(R.id.merchant_details_root)
     void merchantClicked() {
         getPresenter().onMerchantClick();
     }

@@ -54,7 +54,7 @@ import butterknife.OnClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
 
-@Layout(R.layout.fragment_dtl_place_details)
+@Layout(R.layout.fragment_dtl_merchant_details)
 public class DtlMerchantDetailsFragment
         extends RxBaseFragmentWithArgs<DtlMerchantDetailsPresenter, DtlMerchantDetailsBundle>
         implements DtlMerchantDetailsPresenter.View {
@@ -74,29 +74,29 @@ public class DtlMerchantDetailsFragment
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
-    @InjectView(R.id.place_details_earn_wrapper)
+    @InjectView(R.id.merchant_details_earn_wrapper)
     ViewGroup earnWrapper;
     @InjectView(R.id.checked_in)
     TextView checkedIn;
-    @InjectView(R.id.place_details_earn)
+    @InjectView(R.id.merchant_details_earn)
     Button earn;
-    @InjectView(R.id.place_details_estimate_points)
+    @InjectView(R.id.merchant_details_estimate_points)
     Button estimatePoints;
-    @InjectView(R.id.place_details_merchant_wrapper)
+    @InjectView(R.id.merchant_details_merchant_wrapper)
     ViewGroup merchantWrapper;
-    @InjectView(R.id.place_details_suggest_merchant)
+    @InjectView(R.id.merchant_details_suggest_merchant)
     Button merchant;
-    @InjectView(R.id.place_details_description)
+    @InjectView(R.id.merchant_details_description)
     TextView description;
-    @InjectView(R.id.place_details_perks_description)
+    @InjectView(R.id.merchant_details_perks_description)
     TextView perksDescription;
     @InjectView(R.id.perks_description_header)
     ViewGroup perksDescriptionHeader;
     @InjectView(R.id.description_header)
     ViewGroup descriptionHeader;
-    @InjectView(R.id.place_details_additional)
+    @InjectView(R.id.merchant_details_additional)
     ViewGroup additionalContainer;
-    @InjectView(R.id.place_details_share)
+    @InjectView(R.id.merchant_details_share)
     View share;
     //
     SupportMapFragment destinationMap;
@@ -174,7 +174,8 @@ public class DtlMerchantDetailsFragment
 
     private void setAdditional(DtlMerchant merchant) {
         Queryable.from(helper.getContactsData(merchant)).forEachR(contact -> {
-            TextView contactView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.list_item_dtl_place_contact, additionalContainer, false);
+            TextView contactView = (TextView) LayoutInflater.from(getActivity())
+                    .inflate(R.layout.list_item_dtl_merchant_contact, additionalContainer, false);
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
             contactView.setText(contact.text);
             if (contact.intent != null && contact.intent
@@ -199,7 +200,7 @@ public class DtlMerchantDetailsFragment
         destinationMap = SupportMapFragment.newInstance(mapOptions);
         getChildFragmentManager()
                 .beginTransaction()
-                .replace(R.id.place_details_map, destinationMap)
+                .replace(R.id.merchant_details_map, destinationMap)
                 .commit();
         //
         destinationMap.getMapAsync(googleMap -> {
@@ -286,28 +287,28 @@ public class DtlMerchantDetailsFragment
         }).show();
     }
 
-    @OnTouch(R.id.dtl_place_details_map_click_interceptor)
+    @OnTouch(R.id.dtl_merchant_details_map_click_interceptor)
     boolean onMapTouched() {
         getPresenter().routeToMerchantRequested(null);
         return false;
     }
 
-    @OnClick(R.id.place_details_earn)
+    @OnClick(R.id.merchant_details_earn)
     void onCheckInClicked() {
         getPresenter().onCheckInClicked();
     }
 
-    @OnClick(R.id.place_details_estimate_points)
+    @OnClick(R.id.merchant_details_estimate_points)
     void onEstimatorClick() {
         getPresenter().onEstimationClick();
     }
 
-    @OnClick(R.id.place_details_suggest_merchant)
+    @OnClick(R.id.merchant_details_suggest_merchant)
     void suggestMerchantClick() {
         getPresenter().onMerchantClick();
     }
 
-    @OnClick(R.id.place_details_share)
+    @OnClick(R.id.merchant_details_share)
     void shareClick() {
         getPresenter().onShareClick();
     }

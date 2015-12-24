@@ -46,7 +46,7 @@
                     >
 
                     <android.support.v4.view.ViewPager
-                        android:id="@+id/place_details_cover_pager"
+                        android:id="@+id/merchant_details_cover_pager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         />
@@ -87,7 +87,7 @@
                 >
 
                 <FrameLayout
-                    android:id="@+id/place_details_map"
+                    android:id="@+id/merchant_details_map"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     />
@@ -107,7 +107,7 @@
 
                 <!-- Next layer is just to get clicks on map -->
                 <FrameLayout
-                    android:id="@+id/dtl_place_details_map_click_interceptor"
+                    android:id="@+id/dtl_merchant_details_map_click_interceptor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
@@ -133,7 +133,7 @@
                 >
 
                 <LinearLayout
-                    android:id="@+id/place_details_earn_wrapper"
+                    android:id="@+id/merchant_details_earn_wrapper"
                     style="@style/Widget.AppCompat.ButtonBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -149,7 +149,7 @@
                         >
 
                         <Button
-                            android:id="@+id/place_details_earn"
+                            android:id="@+id/merchant_details_earn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -164,7 +164,7 @@
                             android:layout_weight="1"/>
 
                         <Button
-                            android:id="@+id/place_details_estimate_points"
+                            android:id="@+id/merchant_details_estimate_points"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -186,7 +186,7 @@
                 </LinearLayout>
 
                 <FrameLayout
-                    android:id="@+id/place_details_merchant_wrapper"
+                    android:id="@+id/merchant_details_merchant_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#eeeeee"
@@ -196,7 +196,7 @@
                     >
 
                     <Button
-                        android:id="@+id/place_details_suggest_merchant"
+                        android:id="@+id/merchant_details_suggest_merchant"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -241,7 +241,7 @@
                                 />
 
                             <TextView
-                                android:id="@+id/place_details_perks_description"
+                                android:id="@+id/merchant_details_perks_description"
                                 style="@style/TextAppearance.AppCompat.Body1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -273,7 +273,7 @@
                                 />
 
                             <TextView
-                                android:id="@+id/place_details_description"
+                                android:id="@+id/merchant_details_description"
                                 style="@style/TextAppearance.AppCompat.Body1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -292,7 +292,7 @@
                     android:background="@color/dtl_cities_background">
 
                     <LinearLayout
-                        android:id="@+id/place_details_share"
+                        android:id="@+id/merchant_details_share"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center_horizontal"
@@ -339,7 +339,7 @@
                     >
 
                     <LinearLayout
-                        android:id="@+id/place_details_additional"
+                        android:id="@+id/merchant_details_additional"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.75"

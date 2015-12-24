@@ -15,7 +15,7 @@ import butterknife.InjectView;
 
 public class DtlMerchantSingleImageDataInflater extends DtlMerchantCommonDataInflater {
 
-    @InjectView(R.id.place_details_cover)
+    @InjectView(R.id.merchant_details_cover)
     SimpleDraweeView cover;
 
     public DtlMerchantSingleImageDataInflater(DtlMerchantHelper helper) {

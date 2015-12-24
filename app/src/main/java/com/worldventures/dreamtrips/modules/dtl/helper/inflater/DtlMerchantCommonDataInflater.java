@@ -17,11 +17,11 @@ public class DtlMerchantCommonDataInflater extends DtlMerchantDataInflater {
 
     protected DtlMerchantHelper helper;
     //
-    @InjectView(R.id.place_details_cover_stub)
+    @InjectView(R.id.merchant_details_cover_stub)
     View coverStub;
-    @InjectView(R.id.place_details_rating)
+    @InjectView(R.id.merchant_details_rating)
     ProperRatingBar rating;
-    @InjectView(R.id.place_details_points_badge)
+    @InjectView(R.id.merchant_details_points_badge)
     ImageView earnPointsBadge;
     @InjectView(R.id.perks)
     TextView perks;

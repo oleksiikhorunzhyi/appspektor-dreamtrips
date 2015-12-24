@@ -17,11 +17,11 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
 
     protected DtlMerchantHelper helper;
     //
-    @InjectView(R.id.place_title)
+    @InjectView(R.id.merchant_title)
     TextView title;
     @InjectView(R.id.operational_time)
     TextView operationalTime;
-    @InjectView(R.id.place_details_pricing)
+    @InjectView(R.id.merchant_details_pricing)
     ProperRatingBar pricing;
     @InjectView(R.id.categories)
     TextView categories;

@@ -31,7 +31,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.fragment_dtl_places_list)
+@Layout(R.layout.fragment_dtl_merchants_list)
 public class DtlMerchantsListFragment
         extends RxBaseFragment<DtlMerchantListPresenter>
         implements DtlMerchantListPresenter.View {
@@ -48,7 +48,7 @@ public class DtlMerchantsListFragment
     protected SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView)
     protected View emptyView;
-    @InjectView(R.id.place_holder_offers)
+    @InjectView(R.id.merchant_holder_offers)
     protected TextView emptyTextView;
     //
     BaseArrayListAdapter<DtlMerchant> adapter;

@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import butterknife.InjectView;
 import icepick.State;
 
-@Layout(R.layout.fragment_dtl_places_map)
+@Layout(R.layout.fragment_dtl_merchant_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
     @InjectView(R.id.toolbar_actionbar)

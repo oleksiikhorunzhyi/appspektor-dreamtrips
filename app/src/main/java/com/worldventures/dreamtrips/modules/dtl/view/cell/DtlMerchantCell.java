@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_item_dtl_place)
+@Layout(R.layout.adapter_item_dtl_merchant)
 public class DtlMerchantCell extends AbstractCell<DtlMerchant> implements SelectableCell {
 
     DtlMerchantCommonDataInflater commonDataInflater;
@@ -40,7 +40,7 @@ public class DtlMerchantCell extends AbstractCell<DtlMerchant> implements Select
         itemView.setSelected(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
-    @OnClick(R.id.place_details_root)
+    @OnClick(R.id.merchant_details_root)
     void merchantClicked() {
         if (!selectableDelegate.isSelected(getAdapterPosition()))
             selectableDelegate.toggleSelection(getAdapterPosition());

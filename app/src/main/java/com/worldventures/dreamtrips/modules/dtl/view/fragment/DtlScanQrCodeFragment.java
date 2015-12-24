@@ -58,7 +58,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     TextView name;
     @InjectView(R.id.address)
     TextView address;
-    @InjectView(R.id.place_image)
+    @InjectView(R.id.merchant_image)
     SimpleDraweeView merchantImage;
 
     DtlMerchantHelper helper;

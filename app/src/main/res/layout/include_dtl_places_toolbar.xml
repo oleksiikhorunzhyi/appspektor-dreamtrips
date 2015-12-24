@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar_actionbar"
     style="@style/ToolBarStyle"
-    tools:showIn="@layout/fragment_dtl_places_tabs"
+    tools:showIn="@layout/fragment_dtl_merchants_tabs"
     >
 
     <TextView

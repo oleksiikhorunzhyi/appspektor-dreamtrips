@@ -116,15 +116,14 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        int count = 0;
-        if (mDataValid && mCursor != null) {
+        if (mDataValid && mCursor != null && !mCursor.isClosed()) {
             try {
                 return mCursor.getCount();
             } catch (IllegalStateException e) { // if connection pool has been closed
                 Timber.i(e, "DB Flow");
             }
         }
-        return count;
+        return 0;
     }
 
     /**
@@ -132,7 +131,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
      */
     @Override
     public long getItemId(int position) {
-        if (mDataValid && mCursor != null) {
+        if (mDataValid && mCursor != null && !mCursor.isClosed()) {
             if (mCursor.moveToPosition(position)) {
                 return mCursor.getLong(mRowIDColumn);
             } else {
@@ -343,7 +342,7 @@ class CursorFilter extends Filter {
         Cursor cursor = mClient.runQueryOnBackgroundThread(constraint);
 
         FilterResults results = new FilterResults();
-        if (cursor != null) {
+        if (cursor != null && !cursor.isClosed()) {
             results.count = cursor.getCount();
             results.values = cursor;
         } else {

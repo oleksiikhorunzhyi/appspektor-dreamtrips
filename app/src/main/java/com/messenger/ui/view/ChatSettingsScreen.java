@@ -12,5 +12,6 @@ public interface ChatSettingsScreen extends ActivityAwareScreen {
     void setConversation(Conversation conversation);
     void setParticipants(Conversation conversation, List<User> participants);
     void showSubjectDialog();
+    void prepareViewForOwner(boolean isOwner);
     void setNotificationSettingStatus(boolean checked);
 }

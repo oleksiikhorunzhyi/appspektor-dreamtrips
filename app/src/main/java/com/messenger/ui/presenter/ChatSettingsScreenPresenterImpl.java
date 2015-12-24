@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
@@ -47,6 +48,9 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     @Inject
     MessengerServerFacade facade;
 
+    @Inject
+    User user;
+
     public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
         this.activity = activity;
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
@@ -54,7 +58,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
         contentResolver = new RxContentResolver(activity.getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                .rawQuery(query.selection, query.selectionArgs));
+                        .rawQuery(query.selection, query.selectionArgs));
 
         conversation = new Select()
                 .from(Conversation.class)
@@ -70,9 +74,18 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
         getView().showContent();
     }
 
+    private boolean isUserOwner() {
+        Timber.d("TESTT Conv: " + conversation.getId());
+        Timber.d("TESTT user: " + user.getId());
+        boolean result = conversation.getOwnerId().equals(user.getId());
+        Timber.d("TESTT isOwner: " + result);
+        return result;
+    }
+
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        getView().prepareViewForOwner(isUserOwner());
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
                                 "JOIN ParticipantsRelationship p " +
@@ -92,6 +105,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
         // getView().setNotificationSettingStatus();
     }
 
+    @Override
     public void applyViewState() {
         if (!isViewAttached()) {
             return;
@@ -115,12 +129,13 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     @Override
     public void onClearChatHistoryClicked() {
-
     }
 
     @Override
     public void onLeaveChatClicked() {
-
+        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner(), isUserOwner());
+        chat.leave();
+        activity.finish();
     }
 
     @Override
@@ -139,8 +154,10 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     }
 
     public void onEditChatName() {
-        //noinspection all
-        getView().showSubjectDialog();
+        if (conversation.getOwnerId().equals(user.getId())) {
+            //noinspection all
+            getView().showSubjectDialog();
+        }
     }
 
     @Override

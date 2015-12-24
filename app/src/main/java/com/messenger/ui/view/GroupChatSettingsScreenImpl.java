@@ -32,6 +32,7 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
 
     @Override
     public void setConversation(Conversation conversation) {
+        super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_group_chat);
         chatNameTextView.setText(conversation.getSubject());
     }

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -120,14 +121,20 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
     }
 
     @OnClick(R.id.chat_settings_clear_history_button)
-    void onClearHistoryButtonClicked(View v) {
+    void onClearHistoryButtonClicked() {
         getPresenter().onClearChatHistoryClicked();
     }
 
     @OnClick(R.id.chat_settings_leave_chat_button)
-    void onLeaveChatButtonClicked(View v) {
-        getPresenter().onLeaveChatClicked();
+    void onLeaveChatButtonClicked() {
+        new AlertDialog.Builder(getContext())
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> getPresenter().onLeaveChatClicked())
+                .setNegativeButton(android.R.string.cancel, null)
+                .setMessage(R.string.chat_settings_leave_group_chat)
+                .create()
+                .show();
     }
+
 
     @Override
     public AppCompatActivity getActivity() {
@@ -181,8 +188,7 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
         }
         new AlertDialog.Builder(context)
                 .setView(dialogView)
-                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                })
+                .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
                     onSubjectEntered(etSubject.getText().toString());
                 })
@@ -193,5 +199,15 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
 
     private void onSubjectEntered(String subject) {
         getPresenter().applyNewChatSubject(subject);
+    }
+
+    @Override
+    public void setConversation(Conversation conversation) {
+    }
+
+    @Override
+    public void prepareViewForOwner(boolean isOwner) {
+        if (!isOwner) return;
+        leaveChatButton.setEnabled(false);
     }
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,11 +13,15 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.List;
 
@@ -26,6 +31,8 @@ import butterknife.ButterKnife;
 @MenuResource(R.menu.menu_empty)
 public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
+
+    private DrawableUtil drawableUtil;
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
@@ -37,6 +44,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         super.afterCreateView(rootView);
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+        drawableUtil = new DrawableUtil(getContext());
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
@@ -49,20 +57,23 @@ public class UserFragment extends ProfileFragment<UserPresenter>
                         })
                 .negativeText(R.string.cancel)
                 .show();
-
     }
 
     @Override
     public void showFriendDialog(User user) {
         ImageView userPhoto = ButterKnife.findById(feedView, R.id.user_photo);
         if (userPhoto != null) {
-            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user, userPhoto.getDrawable());
+            userPhoto.setDrawingCacheEnabled(true);
+            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user,
+                    drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
         }
     }
 
     @Override
     public void openFriendPrefs(UserBundle userBundle) {
-        NavigationBuilder.create().with(activityRouter).data(userBundle).move(Route.FRIEND_PREFERENCES);
+        router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
+                .data(userBundle)
+                .build());
     }
 
     @Override

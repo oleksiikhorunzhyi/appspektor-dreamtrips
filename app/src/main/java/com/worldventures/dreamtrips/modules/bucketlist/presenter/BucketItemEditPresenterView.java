@@ -33,4 +33,6 @@ public interface BucketItemEditPresenterView extends BucketDetailsBasePresenter.
 
     void showLoading();
 
+    void hideLoading();
+
 }

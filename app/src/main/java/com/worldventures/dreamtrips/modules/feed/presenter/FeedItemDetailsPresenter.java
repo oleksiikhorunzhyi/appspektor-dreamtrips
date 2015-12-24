@@ -67,9 +67,9 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
             feedEntity = feedEntityHolder.getItem();
             feedItem.setItem(feedEntity);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
+            checkCommentsAndLikesToLoad();
             //
-            if (view.isTabletLandscape())
-                view.showAdditionalInfo(feedEntity.getOwner());
+            if (view.isTabletLandscape()) view.showAdditionalInfo(feedEntity.getOwner());
         }, spiceException -> Timber.e(spiceException, TAG));
     }
 
@@ -86,6 +86,8 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
 
     public void onEvent(FeedEntityChangedEvent event) {
         if (event.getFeedEntity().equals(feedItem.getItem())) {
+            feedItem.setItem(event.getFeedEntity());
+            feedEntity = event.getFeedEntity();
             view.updateFeedItem(feedItem);
         }
     }

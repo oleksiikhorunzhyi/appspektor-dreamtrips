@@ -9,14 +9,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.LocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import timber.log.Timber;
 
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -150,6 +152,17 @@ public class DtlMerchant implements Parcelable {
         return offers == null || offers.isEmpty();
     }
 
+    public int getOffsetHours() {
+        int offset;
+        try {
+            offset = Integer.valueOf(timeZone);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "Failed to parse timezone");
+            offset = 0;
+        }
+        return offset;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -193,6 +206,7 @@ public class DtlMerchant implements Parcelable {
         amenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
         images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
         operationDays = in.createTypedArrayList(OperationDay.CREATOR);
+        timeZone = in.readString();
     }
 
     @Override
@@ -219,6 +233,7 @@ public class DtlMerchant implements Parcelable {
         dest.writeTypedList(amenities);
         dest.writeTypedList(images);
         dest.writeTypedList(operationDays);
+        dest.writeString(timeZone);
     }
 
     public static final Creator<DtlMerchant> CREATOR = new Creator<DtlMerchant>() {

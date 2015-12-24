@@ -4,9 +4,10 @@ import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -65,7 +66,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     protected void loadProfile() {
         view.startLoading();
-        doRequest(new GetProfileQuery(), this::onProfileLoaded);
+        doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
     }
 
     @Override
@@ -81,7 +82,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onInjected() {
         super.onInjected();
         user = getAccount();
-        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     private void onAvatarUploadSuccess(User obj) {
@@ -115,9 +115,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     protected void onProfileLoaded(User user) {
         super.onProfileLoaded(user);
-        UserSession userSession = appSessionHolder.get().get();
-        userSession.setUser(user);
-        appSessionHolder.put(userSession);
     }
 
     public void logout() {
@@ -133,16 +130,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Override
     public void openBucketList() {
         shouldReload = true;
-        NavigationBuilder.create().with(activityRouter).move(Route.BUCKET_LIST);
+        view.openBucketList(Route.BUCKET_LIST, null);
     }
 
     @Override
     public void openTripImages() {
-        NavigationBuilder
-                .create()
-                .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES))
-                .move(Route.ACCOUNT_IMAGES);
+        view.openTripImages(Route.ACCOUNT_IMAGES,
+                new TripsImagesBundle(TripImagesListFragment.Type.MY_IMAGES, getAccount().getId()));
     }
 
     public void photoClicked() {
@@ -223,7 +217,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == REQUESTER_ID) {
+        if (view.isVisibleOnScreen() && event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(ImagePickedEvent.class);
             imageSelected(event.getImages()[0]);

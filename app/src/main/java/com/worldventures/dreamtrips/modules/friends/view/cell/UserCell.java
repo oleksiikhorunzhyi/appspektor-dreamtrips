@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
@@ -47,10 +46,10 @@ public class UserCell extends BaseUserCell {
                     setStatusParameters(R.drawable.ic_profile_friend, v -> openFriendActionDialog());
                     break;
                 case OUTGOING_REQUEST:
-                case REJECT:
                     setStatusParameters(R.drawable.ic_profile_friend_respond, null);
                     break;
                 case INCOMING_REQUEST:
+                case REJECTED:
                     setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> acceptRequest());
                     break;
                 default:

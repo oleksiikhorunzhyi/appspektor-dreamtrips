@@ -28,14 +28,17 @@ public class BaseDialogFragment extends InjectingDialogFragment {
 
     /**
      * Method that detaches fragment by tag if already present.
+     * Note: two simultaneous calls want dismiss each other, as fragment want get to manager yet.
      * @param fragmentManager FragmentManager to operate on during transaction
      * @param tag
      */
     protected void dismissIfShown(FragmentManager fragmentManager, String tag) {
         Fragment frag = fragmentManager.findFragmentByTag(tag);
         if (frag != null) {
-            ((DialogFragment) frag).dismiss();
-            fragmentManager.beginTransaction().remove(frag).commit();
+            if (frag instanceof DialogFragment) {
+                ((DialogFragment) frag).dismiss();
+                fragmentManager.beginTransaction().remove(frag).commit();
+            }
         }
     }
 }

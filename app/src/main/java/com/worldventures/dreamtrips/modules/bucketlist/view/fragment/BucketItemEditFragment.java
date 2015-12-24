@@ -77,6 +77,8 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (isTabletLandscape()) return;
+        //
         if (menu != null) {
             menu.clear();
         }
@@ -111,7 +113,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
-            getPresenter().saveItem();
+            getPresenter().saveItem(true);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -119,7 +121,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Optional
     @OnClick(R.id.done)
     void onDone() {
-        getPresenter().saveItem();
+        getPresenter().saveItem(true);
     }
 
     private void openDatePicker() {
@@ -287,6 +289,11 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        loadingView.setVisibility(View.GONE);
     }
 
     @Override

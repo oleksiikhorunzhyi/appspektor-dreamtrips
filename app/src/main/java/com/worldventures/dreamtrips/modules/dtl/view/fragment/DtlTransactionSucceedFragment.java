@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -65,6 +66,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
             shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));
+            //don't attach media if website exist
             shareBundle.setShareUrl(place.getWebsite());
             DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());

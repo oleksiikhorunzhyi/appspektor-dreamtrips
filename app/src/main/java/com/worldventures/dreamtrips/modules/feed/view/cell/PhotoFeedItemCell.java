@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
@@ -84,8 +85,8 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
 
     private void loadPhoto(Photo photoObj) {
         int size = itemView.getResources().getDimensionPixelSize(R.dimen.feed_item_height);
-        photo.setImageURI(Uri.parse(photoObj.getImages()
-                .getUrl(size, size)));
+        photo.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(photoObj.getImages()
+                .getUrl(size, size)), photo.getController()));
     }
 
     @Override

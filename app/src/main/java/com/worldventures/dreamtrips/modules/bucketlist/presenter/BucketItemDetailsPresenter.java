@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 
 import java.util.List;
 
@@ -52,8 +53,9 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         getBucketItemManager().deleteBucketItem(bucketItem, type,
                 jsonObject -> {
                     view.dismissProgressDialog();
-                    if (!view.isTabletLandscape()) view.done();
+                    view.done();
                     eventBus.post(new BucketItemUpdatedEvent(bucketItem));
+                    eventBus.post(new FeedEntityDeletedEvent(bucketItem));
                 },
                 spiceException -> {
                     BucketItemDetailsPresenter.super.handleError(spiceException);

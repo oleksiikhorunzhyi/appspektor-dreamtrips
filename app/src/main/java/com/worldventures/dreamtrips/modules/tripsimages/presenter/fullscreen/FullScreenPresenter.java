@@ -66,7 +66,6 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject> extends P
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        setupActualViewState();
         view.setSocial(featureManager.available(Feature.SOCIAL));
         TrackingHelper.view(type, String.valueOf(photo.getFsId()), getAccountUserId());
     }

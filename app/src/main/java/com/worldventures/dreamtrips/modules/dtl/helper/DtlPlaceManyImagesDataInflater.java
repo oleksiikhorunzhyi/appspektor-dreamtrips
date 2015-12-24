@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePager
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class DtlPlaceManyImagesDataInflater extends DtlPlaceCommonDataInflater {
             }
         };
         Queryable.from(mediaList).forEachR(image -> {
-            adapter.add(new FragmentItem(BaseImageFragment.class, ""));
+            adapter.add(new FragmentItem(DtlImageFragment.class, ""));
         });
         coverPager.setAdapter(adapter);
         if (mediaList.size() > 1) coverPagerIndicator.setViewPager(coverPager);

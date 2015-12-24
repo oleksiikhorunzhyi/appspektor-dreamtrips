@@ -88,7 +88,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         if (userRelationship == null) return;
 
         switch (userRelationship){
-            case REJECT:
+            case REJECTED:
             case NONE:
                 view.showAddFriendDialog(circles, this::addAsFriend);
                 break;
@@ -135,7 +135,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                         ActOnRequestCommand.Action.REJECT.name()),
                 object -> {
                     view.finishLoading();
-                    user.setRelationship(User.Relationship.REJECT);
+                    user.setRelationship(User.Relationship.REJECTED);
                     view.notifyUserChanged();
                 });
     }
@@ -151,15 +151,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 });
     }
 
-
     public void onEvent(UnfriendEvent event) {
         unfriend();
     }
 
     public void onEvent(OpenFriendPrefsEvent event) {
-        view.openFriendPrefs(new UserBundle(user));
+        if (view.isVisibleOnScreen()) view.openFriendPrefs(new UserBundle(user));
     }
-
 
     public void onEvent(FriendGroupRelationChangedEvent event) {
         if (user.getId() == event.getFriend().getId()) {
@@ -175,23 +173,15 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         }
     }
 
-
     @Override
     public void openBucketList() {
-        NavigationBuilder
-                .create()
-                .data(new ForeignBucketTabsBundle(user))
-                .with(activityRouter)
-                .move(Route.FOREIGN_BUCKET_LIST);
+        view.openBucketList(Route.FOREIGN_BUCKET_LIST, new ForeignBucketTabsBundle(user));
     }
 
     @Override
     public void openTripImages() {
-        NavigationBuilder
-                .create()
-                .with(activityRouter)
-                .data(new TripsImagesBundle(TripImagesListFragment.Type.FOREIGN_IMAGES, user.getId()))
-                .move(Route.FOREIGN_TRIP_IMAGES);
+        view.openTripImages(Route.FOREIGN_TRIP_IMAGES,
+                new TripsImagesBundle(TripImagesListFragment.Type.FOREIGN_IMAGES, user.getId()));
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

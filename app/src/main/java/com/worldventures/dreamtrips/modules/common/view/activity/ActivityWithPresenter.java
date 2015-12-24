@@ -24,6 +24,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
     private PM presenter;
     private PickImageDelegate pickImageDelegate;
+    private WeakHandler handler = new WeakHandler();
 
     public PM getPresentationModel() {
         return presenter;
@@ -153,14 +154,11 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
     }
 
     private void imagePicked(ChosenImage... chosenImages) {
-        runOnUiThread(() -> {
-            new WeakHandler().postDelayed(() -> {
-                eventBus.removeStickyEvent(ImagePickedEvent.class);
-                eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
-                        pickImageDelegate.getRequesterId(),
-                        chosenImages));
-            }, 400);
-        });
+        handler.postDelayed(() -> {
+            eventBus.removeStickyEvent(ImagePickedEvent.class);
+            eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(),
+                    pickImageDelegate.getRequesterId(),
+                    chosenImages));
+        }, 400);
     }
-
 }

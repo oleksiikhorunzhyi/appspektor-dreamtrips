@@ -98,6 +98,7 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     private void setItems() {
+        view.setSearchHintVisibility(!(status == Status.SEARCH && !dtlLocations.isEmpty()));
         view.setItems(status == Status.NEARBY ? dtlLocations : searchLocations);
     }
 
@@ -196,6 +197,8 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
         void showMerchants(PlacesBundle bundle);
 
         void showSearch();
+
+        void setSearchHintVisibility(boolean visibile);
     }
 
     public enum Status {

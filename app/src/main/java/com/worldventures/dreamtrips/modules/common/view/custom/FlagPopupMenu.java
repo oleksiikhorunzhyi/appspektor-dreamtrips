@@ -40,7 +40,7 @@ public class FlagPopupMenu extends PopupMenu {
             if (flag.isRequireDescription()) {
                 showFlagDescription(flag);
             } else {
-                showFlagConfirmDialog(flag, "");
+                showFlagConfirmDialog(flag, flag.getName());
             }
 
             return true;

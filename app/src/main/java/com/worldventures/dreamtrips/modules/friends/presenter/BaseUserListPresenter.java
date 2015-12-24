@@ -33,14 +33,14 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
     private int previousTotal = 0;
     private boolean loading = true;
-
+    private int nextPage = 1;
     protected List<User> users = new ArrayList<>();
     protected List<Circle> circles;
 
     @Inject
     SnappyRepository snappyRepository;
 
-    private boolean deleteRequestLocked;
+    private boolean loadUsersRequestLocked;
 
     @Override
     public void onInjected() {
@@ -69,12 +69,16 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void reload() {
+        loadUsersRequestLocked = true;
+        nextPage = 1;
         resetLazyLoadFields();
         view.startLoading();
-        doRequest(getUserListQuery(1), this::onUsersLoaded);
+        doRequest(getUserListQuery(nextPage), this::onUsersLoaded);
     }
 
     protected void onUsersLoaded(ArrayList<User> freshUsers) {
+        loadUsersRequestLocked = false;
+        nextPage++;
         users.clear();
         users.addAll(freshUsers);
         view.refreshUsers(users);
@@ -82,6 +86,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     protected void onUsersAdded(ArrayList<User> freshUsers) {
+        loadUsersRequestLocked = false;
+        nextPage++;
         users.addAll(freshUsers);
         view.refreshUsers(users);
         view.finishLoading();
@@ -91,7 +97,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     public void handleError(SpiceException error) {
         super.handleError(error);
         if (view != null) view.finishLoading();
-        deleteRequestLocked = false;
+        loadUsersRequestLocked = false;
     }
 
     protected abstract Query<ArrayList<User>> getUserListQuery(int page);
@@ -101,11 +107,11 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             loading = false;
             previousTotal = totalItemCount;
         }
-        if (!loading
-                && lastVisible >= totalItemCount - 1) {
+        if (!loading && !loadUsersRequestLocked && lastVisible >= totalItemCount - 1) {
             view.startLoading();
-            doRequest(getUserListQuery((int) (Math.ceil((double) users.size() / getPerPageCount()) + 1)), this::onUsersAdded);
             loading = true;
+            loadUsersRequestLocked = true;
+            doRequest(getUserListQuery(nextPage), this::onUsersAdded);
         }
     }
 
@@ -144,16 +150,12 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     private void deleteRequest(User user) {
-        if (deleteRequestLocked) return;
-        //
         if (view.isVisibleOnScreen()) {
-            deleteRequestLocked = true;
             view.startLoading();
             doRequest(new DeleteRequestCommand(user.getId()),
                     object -> {
                         user.setRelationship(User.Relationship.NONE);
                         userActionSucceed(user);
-                        deleteRequestLocked = false;
                     });
         }
     }
@@ -238,7 +240,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
 
     protected int getPerPageCount() {
-        return 30;
+        return 100;
     }
 
     public interface View extends Presenter.View {

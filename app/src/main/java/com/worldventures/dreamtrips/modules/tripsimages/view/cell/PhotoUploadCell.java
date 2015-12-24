@@ -9,6 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import javax.inject.Inject;
@@ -41,7 +42,7 @@ public class PhotoUploadCell extends AbstractCell<UploadTask> {
     @Override
     protected void syncUIStateWithModel() {
         imageView.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
-        imageView.setImageURI(Uri.parse(getModelObject().getFilePath()));
+        imageView.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject().getFilePath()), imageView.getController()));
         ring.setProgressColor(itemView.getResources().getColor(R.color.white));
 
         if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {

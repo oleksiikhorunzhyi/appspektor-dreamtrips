@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.adapter.CheckableContactsCursorAdapter;
 import com.messenger.ui.adapter.ContactCursorAdapter;
 import com.messenger.ui.anim.WeightSlideAnimator;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
@@ -60,7 +61,7 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
 
     private ToolbarPresenter toolbarPresenter;
 
-    private ContactCursorAdapter adapter;
+    private CheckableContactsCursorAdapter adapter;
 
     private WeightSlideAnimator conversationNameAnimator;
 
@@ -87,7 +88,7 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
         toolbarPresenter.enableUpNavigationButton();
 
-        adapter = new ContactCursorAdapter(getContext(), null);
+        adapter = new CheckableContactsCursorAdapter(getContext(), null);
         adapter.setSelectionListener((selectedUsers) -> {
             setSelectedContacts(selectedUsers);
             getPresenter().onSelectedUsersStateChanged(selectedUsers);

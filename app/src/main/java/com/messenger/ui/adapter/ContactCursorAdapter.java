@@ -27,24 +27,18 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
-public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHolder>
+public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHolder>
     implements SectionIndexer {
 
     private static final int VIEW_TYPE_CONTACT = 1;
     private static final int VIEW_TYPE_HEADER = 2;
 
-    private Context context;
-    private List<User> selectedContacts = new ArrayList<>();
-    private SelectionListener selectionListener;
+    protected Context context;
 
     private AlphabetIndexer indexer;
     private int[] usedSectionNumbers;
     private Map<Integer, Integer> sectionToOffset;
     private Map<Integer, Integer> sectionToPosition;
-
-    public interface SelectionListener {
-        void onSelectionStateChanged(List<User> selectedContacts);
-    }
 
     public ContactCursorAdapter(Context context, Cursor cursor) {
         super(cursor);
@@ -143,24 +137,16 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
     public void onBindViewHolderCursor(BaseViewHolder h, Cursor cursor) {
         ContactViewHolder holder = (ContactViewHolder) h;
         final User user = SqlUtils.convertToModel(true, User.class, cursor);
+        onBindUserHolder(holder, cursor, user);
+    }
+
+    protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, User user) {
         holder.getNameTextView().setText(user.getName());
         holder.getAvatarView().setOnline(user.isOnline());
-        holder.getTickImageView().setSelected(selectedContacts.contains(user));
         Picasso.with(context)
                 .load(user.getAvatarUrl())
                 .placeholder(android.R.drawable.ic_menu_compass)
                 .into(holder.getAvatarView());
-
-        holder.itemView.setOnClickListener((v) -> {
-            if (!selectedContacts.contains(user)) {
-                selectedContacts.add(user);
-            } else {
-                selectedContacts.remove(user);
-            }
-            if (selectionListener != null) {
-                selectionListener.onSelectionStateChanged(selectedContacts);
-            }
-        });
     }
 
     @Override
@@ -211,14 +197,5 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
             i++;
         }
         return usedSectionNumbers[i-1];
-    }
-
-    public void setSelectedContacts(List<User> selectedContacts) {
-        this.selectedContacts = selectedContacts;
-        notifyDataSetChanged();
-    }
-
-    public void setSelectionListener(SelectionListener selectionListener) {
-        this.selectionListener = selectionListener;
     }
 }

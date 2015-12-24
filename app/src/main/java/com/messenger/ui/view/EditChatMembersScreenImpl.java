@@ -17,7 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.messenger.ui.adapter.ContactSimpleAlphabetAdapter;
+import com.messenger.ui.adapter.ContactCursorAdapter;
+import com.messenger.ui.adapter.SwipableContactsCursorAdapter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -47,7 +48,7 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
     private SearchView searchView;
     private String savedSearchFilter;
 
-    private ContactSimpleAlphabetAdapter adapter;
+    private SwipableContactsCursorAdapter adapter;
 
     public EditChatMembersScreenImpl(Context context) {
         super(context);
@@ -73,7 +74,7 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
         // Use this class until sorting logic in ContactCursorAdapter is checked
         // to be working (provided users are sorted alphabetically) or fixed if needed if
         // it does not work when contacts sorting is fixed.
-        adapter = new ContactSimpleAlphabetAdapter(getContext(), null);
+        adapter = new SwipableContactsCursorAdapter(getContext(), null);
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

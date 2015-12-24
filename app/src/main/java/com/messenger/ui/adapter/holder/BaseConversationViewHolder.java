@@ -71,11 +71,9 @@ public class BaseConversationViewHolder extends BaseViewHolder {
                         "WHERE p.conversationId = ?"
                 ).withSelectionArgs(new String[]{conversationId}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
-                .map(c -> {
-                    if (c.isClosed()) return Collections.<User>emptyList();
-                    return SqlUtils.convertToList(User.class, c);
-                })
+                .throttleLast(500, TimeUnit.MILLISECONDS)
+                .map(c -> SqlUtils.convertToList(User.class, c))
+                .onErrorReturn(throwable -> Collections.<User>emptyList())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(itemView))

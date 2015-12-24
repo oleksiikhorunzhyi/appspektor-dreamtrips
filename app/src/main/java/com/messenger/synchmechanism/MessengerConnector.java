@@ -50,7 +50,7 @@ public class MessengerConnector {
         messengerServerFacade.addAuthorizationListener(new AuthorizeListener() {
             @Override
             public void onSuccess() {
-                spiceManager.start(applicationContext);
+                if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
                 cacheSynchronizer.updateCache(messengerServerFacade::setPresenceStatus);
             }
         });

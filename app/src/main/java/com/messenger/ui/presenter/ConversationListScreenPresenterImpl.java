@@ -97,7 +97,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
         contactSubscription = contentResolver
                 .query(queryBuilder.build(), User.CONTENT_URI, Conversation.CONTENT_URI, Message.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .throttleLast(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView((View) getView()))

@@ -68,7 +68,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 ).withSelectionArgs(new String[]{conversation.getId()}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .throttleLast(500, TimeUnit.MILLISECONDS)
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -2,18 +2,20 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
-import com.messenger.delegate.LoaderDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;

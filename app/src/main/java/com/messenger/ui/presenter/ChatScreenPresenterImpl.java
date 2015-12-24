@@ -397,9 +397,9 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 return true;
             case R.id.action_settings:
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {
-                    ChatSettingsActivity.startSingleChatSettings(getContext(), conversation.getId());
+                    ChatSettingsActivity.startSingleChatSettings(getActivity(), conversation.getId());
                 } else {
-                    ChatSettingsActivity.startGroupChatSettings(getContext(), conversation.getId());
+                    ChatSettingsActivity.startGroupChatSettings(getActivity(), conversation.getId());
                 }
                 return true;
         }

@@ -15,7 +15,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.view.ChatSettingsScreen;
-import com.messenger.ui.view.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.util.RxContentResolver;
@@ -135,6 +134,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     public void onLeaveChatClicked() {
         MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner(), isUserOwner());
         chat.leave();
+        activity.setResult(Activity.RESULT_OK);
         activity.finish();
     }
 

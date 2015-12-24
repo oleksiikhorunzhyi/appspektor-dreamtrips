@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -26,6 +27,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.State;
 
 public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
@@ -42,6 +45,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     Router router;
     @Inject
     PhotoPickerDelegate photoPickerDelegate;
+
+    @State
+    boolean isShown;
 
     private WeakHandler handler = new WeakHandler();
 
@@ -68,6 +74,18 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         draggableView = inflate(getContext(), R.layout.gallery_view, null);
 
         inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+        if (isShown)
+            showPanel();
     }
 
     @Override
@@ -185,23 +203,25 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void showPanel() {
-        boolean isHidden = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
+        isShown = true;
+        boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
         if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
         updateCancelButtonState();
         int panelHeight = (int) container.getResources().getDimension(R.dimen.picker_panel_height);
-        if (isHidden)
+        if (isKeyboardClosed)
             handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
         else
             setPanelHeight(panelHeight);
     }
 
     public void hidePanel() {
-        if (!ViewCompat.isAttachedToWindow(this)) return;
-        //
+        isShown = false;
         updatePickedItemsCount(0);
-        clearAllBackStack();
         setPanelHeight(0);
+        //
+        if (!ViewCompat.isAttachedToWindow(this)) return;
+        clearAllBackStack();
     }
 
     public boolean isPanelVisible() {

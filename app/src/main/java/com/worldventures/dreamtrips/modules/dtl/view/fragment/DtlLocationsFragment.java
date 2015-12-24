@@ -12,10 +12,13 @@ import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -38,13 +41,13 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_dtl_locations)
 @MenuResource(R.menu.menu_locations)
 public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
-        implements DtlLocationsPresenter.View {
+        implements DtlLocationsPresenter.View, CellDelegate<DtlLocation> {
 
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
     //
-    BaseArrayListAdapter adapter;
+    BaseDelegateAdapter adapter;
     //
     @InjectView(R.id.locationsList)
     RecyclerView recyclerView;
@@ -76,10 +79,10 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
         //
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
-        //
+        adapter = new BaseDelegateAdapter<DtlLocation>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
-        adapter.registerCell(String.class, DtlHeaderCell.class);
+        adapter.registerDelegate(DtlLocation.class, this);
+        //
         recyclerView.setAdapter(adapter);
     }
 
@@ -114,9 +117,10 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         super.onPause();
     }
 
-    public void onEvent(LocationClickedEvent event) {
+    @Override
+    public void onCellClicked(DtlLocation model) {
         tryHideSoftInput();
-        getPresenter().onLocationSelected(event.getLocation());
+        getPresenter().onLocationSelected(model);
     }
 
     @Override

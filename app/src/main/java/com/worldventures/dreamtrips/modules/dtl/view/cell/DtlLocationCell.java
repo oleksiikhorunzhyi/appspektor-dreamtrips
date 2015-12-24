@@ -7,6 +7,8 @@ import android.widget.TextView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.event.LocationClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -16,7 +18,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_location)
-public class DtlLocationCell extends AbstractCell<DtlLocation> {
+public class DtlLocationCell extends AbstractDelegateCell<DtlLocation, CellDelegate<DtlLocation>> {
 
     @InjectView(R.id.city_state)
     TextView city;
@@ -44,7 +46,7 @@ public class DtlLocationCell extends AbstractCell<DtlLocation> {
 
     @OnClick(R.id.dtlLocationCellRoot)
     void cellClicked() {
-        getEventBus().post(new LocationClickedEvent(getModelObject()));
+        cellDelegate.onCellClicked(getModelObject());
     }
 
     @Override

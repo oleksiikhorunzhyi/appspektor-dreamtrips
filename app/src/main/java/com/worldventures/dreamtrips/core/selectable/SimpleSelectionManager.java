@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 public class SimpleSelectionManager implements SelectionManager {
 
     protected SelectableWrapperAdapter selectableWrapperAdapter;
-    protected boolean enabled;
+    protected boolean enabled = true;
 
     protected RecyclerView recyclerView;
 

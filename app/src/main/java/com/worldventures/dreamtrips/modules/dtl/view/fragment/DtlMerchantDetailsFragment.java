@@ -209,11 +209,18 @@ public class DtlMerchantDetailsFragment
             googleMap.setPadding(0, 0, 0, padding);
             LatLng pos = new LatLng(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
             googleMap.addMarker(new MarkerOptions()
-                    .position(pos)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))
+                            .position(pos)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))
             );
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, MERCHANT_MAP_ZOOM));
         });
+    }
+
+    @OnClick(R.id.distance_holder)
+    public void onDistanceClicked() {
+        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
+                .fragmentManager(getChildFragmentManager())
+                .build());
     }
 
     @Override

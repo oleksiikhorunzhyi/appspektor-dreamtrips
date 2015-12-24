@@ -13,8 +13,8 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -44,6 +44,13 @@ public class DtlMapInfoFragment
         commonDataInflater.setView(rootView);
         categoryDataInflater.setView(rootView);
         observeSize(rootView);
+    }
+
+    @OnClick(R.id.distance_holder)
+    public void onDistanceClicked() {
+        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
+                .fragmentManager(getChildFragmentManager())
+                .build());
     }
 
     private void observeSize(final View rootView) {

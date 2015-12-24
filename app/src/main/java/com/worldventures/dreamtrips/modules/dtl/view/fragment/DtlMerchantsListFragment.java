@@ -9,12 +9,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
@@ -23,6 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
+import com.worldventures.dreamtrips.modules.dtl.view.custom.MerchantCellDelegate;
 
 import java.util.List;
 
@@ -34,7 +37,7 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_dtl_merchants_list)
 public class DtlMerchantsListFragment
         extends RxBaseFragment<DtlMerchantListPresenter>
-        implements DtlMerchantListPresenter.View {
+        implements DtlMerchantListPresenter.View, MerchantCellDelegate {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
 
@@ -51,7 +54,7 @@ public class DtlMerchantsListFragment
     @InjectView(R.id.merchant_holder_offers)
     protected TextView emptyTextView;
     //
-    BaseArrayListAdapter<DtlMerchant> adapter;
+    BaseDelegateAdapter<DtlMerchant> adapter;
     RecyclerView.Adapter wrappedAdapter;
     //
     RecyclerViewStateDelegate stateDelegate;
@@ -84,8 +87,9 @@ public class DtlMerchantsListFragment
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new BaseArrayListAdapter<>(getActivity(), injectorProvider.get());
+        adapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlMerchant.class, DtlMerchantCell.class);
+        adapter.registerDelegate(DtlMerchant.class, this);
 
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
@@ -97,6 +101,16 @@ public class DtlMerchantsListFragment
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
         refreshLayout.setEnabled(false);
+    }
+
+    @Override
+    public void onDistanceClicked() {
+        showDistanceSettings();
+    }
+
+    @Override
+    public void onCellClicked(DtlMerchant model) {
+        //TODO
     }
 
     @Override
@@ -119,6 +133,12 @@ public class DtlMerchantsListFragment
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
         });
+    }
+
+    public void showDistanceSettings() {
+        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
+                .fragmentManager(getChildFragmentManager())
+                .build());
     }
 
     @Override

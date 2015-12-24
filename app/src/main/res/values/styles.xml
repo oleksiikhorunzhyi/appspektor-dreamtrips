@@ -144,6 +144,12 @@
     </style>
 
     <!--messenger-->
+    <style name="SmallSingleChatAvatarView">
+        <item name="android:layout_width">@dimen/list_item_small_avatar_image_size</item>
+        <item name="android:layout_height">@dimen/list_item_small_avatar_image_size</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
     <style name="SingleChatBigAvatarView">
         <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
         <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>

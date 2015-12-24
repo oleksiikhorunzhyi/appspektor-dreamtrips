@@ -5,38 +5,29 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/conversation_avatar_1"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="@dimen/list_item_small_avatar_image_size"
-        android:layout_height="@dimen/list_item_small_avatar_image_size"
-        android:scaleType="centerCrop"
+        style="@style/SmallSingleChatAvatarView"
         app:riv_oval="true"
         />
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/conversation_avatar_2"
-        android:layout_width="@dimen/list_item_small_avatar_image_size"
-        android:layout_height="@dimen/list_item_small_avatar_image_size"
+        style="@style/SmallSingleChatAvatarView"
         android:layout_marginLeft="@dimen/list_item_small_avatar_image_spacing"
-        android:scaleType="centerCrop"
         app:riv_oval="true"
         />
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/conversation_avatar_3"
-        android:layout_width="@dimen/list_item_small_avatar_image_size"
-        android:layout_height="@dimen/list_item_small_avatar_image_size"
         android:layout_marginTop="@dimen/list_item_small_avatar_image_spacing"
-        android:scaleType="centerCrop"
+        style="@style/SmallSingleChatAvatarView"
         app:riv_oval="true"
         />
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/conversation_avatar_4"
-        android:layout_width="@dimen/list_item_small_avatar_image_size"
-        android:layout_height="@dimen/list_item_small_avatar_image_size"
+        style="@style/SmallSingleChatAvatarView"
         android:layout_marginLeft="@dimen/list_item_small_avatar_image_spacing"
         android:layout_marginTop="@dimen/list_item_small_avatar_image_spacing"
-        android:scaleType="centerCrop"
         app:riv_oval="true"
         />
 </merge>

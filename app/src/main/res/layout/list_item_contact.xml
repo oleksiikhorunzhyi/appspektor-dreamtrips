@@ -12,10 +12,9 @@
 
     <com.messenger.ui.widget.AvatarView
         android:id="@+id/contact_icon"
-        android:layout_width="@dimen/list_item_small_avatar_image_size"
-        android:layout_height="@dimen/list_item_small_avatar_image_size"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        style="@style/SmallSingleChatAvatarView"
         app:riv_oval="true"
         />
 

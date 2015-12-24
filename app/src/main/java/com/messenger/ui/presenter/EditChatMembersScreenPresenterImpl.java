@@ -52,7 +52,7 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
         contentResolver = new RxContentResolver(activity.getContentResolver(), query -> {
             return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                    .rawQuery(query.selection, query.selectionArgs);
+                    .rawQuery(query.selection + " " + query.sortOrder, query.selectionArgs);
         });
 
         conversation = new Select()
@@ -72,8 +72,9 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
                 .withSelection("SELECT * FROM Users u " +
                                 "JOIN ParticipantsRelationship p " +
                                 "ON p.userId = u._id " +
-                                "WHERE p.conversationId = ?"
-                ).withSelectionArgs(new String[]{conversation.getId()}).build();
+                                "WHERE p.conversationId = ?")
+                .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC")
+                .withSelectionArgs(new String[]{conversation.getId()}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
                 .throttleLast(100, TimeUnit.MILLISECONDS)

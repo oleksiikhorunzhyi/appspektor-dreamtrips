@@ -9,8 +9,6 @@ public interface ConversationListScreenPresenter extends ActivityAwareViewStateM
         ConversationListViewState> {
     User getUser();
 
-    void loadConversationList();
-
     void onConversationSelected(Conversation conversation);
 
     void onConversationsDropdownSelected(boolean showOnlyGroupConversations);

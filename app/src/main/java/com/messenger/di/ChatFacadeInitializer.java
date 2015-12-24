@@ -9,7 +9,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 
 import java.util.Date;
 
@@ -43,6 +42,7 @@ public class ChatFacadeInitializer implements AppInitializer {
 
         emiter.addOnSubjectChangesListener((conversationId, subject) -> {
             final Conversation conversation = new Select().from(Conversation.class).byIds(conversationId).querySingle();
+            if (conversation == null) return; // TODO there should be no such situation, but sync init state is broken
             conversation.setSubject(subject);
             conversation.save();
         });

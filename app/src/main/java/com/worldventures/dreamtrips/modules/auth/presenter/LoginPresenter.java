@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.auth.presenter;
 
 import android.text.TextUtils;
 
+import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -57,6 +58,7 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                     staticPageHolder.put(staticPageConfig);
                     view.showLoginSuccess();
                     if (appSessionHolder.get().get().getGlobalConfig() != null) {
+                        MessengerConnector.getInstance().connect();
                         activityRouter.openMain();
                         activityRouter.finish();
                     } else {

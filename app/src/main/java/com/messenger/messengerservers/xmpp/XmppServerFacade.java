@@ -33,6 +33,8 @@ import java.util.concurrent.Executors;
 public class XmppServerFacade implements MessengerServerFacade {
 
     private static final String TAG = "XmppServerFacade";
+    private static final int PACKET_REPLAY_TIMEOUT = 15000;
+    private static final int TIME_PING_INTERVAL = 45;
 
     private AbstractXMPPConnection connection;
 
@@ -46,7 +48,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final RosterManager rosterManager;
 
     public XmppServerFacade() {
-        PingManager.setDefaultPingInterval(45);
+        PingManager.setDefaultPingInterval(TIME_PING_INTERVAL);
         loaderManager = new XmppLoaderManager(this);
         paginationManager = new XmppPaginationManager(this);
         globalEventEmitter = new XmppGlobalEventEmitter(this);
@@ -69,7 +71,7 @@ public class XmppServerFacade implements MessengerServerFacade {
                             .setPort(ServerParameters.PORT)
                             .setSendPresence(false)
                             .build());
-                    connection.setPacketReplyTimeout(15000);
+                    connection.setPacketReplyTimeout(PACKET_REPLAY_TIMEOUT);
 
                     try {
                         connection.connect();

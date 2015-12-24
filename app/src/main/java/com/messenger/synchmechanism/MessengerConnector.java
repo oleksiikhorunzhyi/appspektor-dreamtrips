@@ -26,6 +26,8 @@ public class MessengerConnector {
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
         this.cacheSynchronizer = new CacheSynchronizer(messengerServerFacade, spiceManager);
+
+        messengerServerFacade.addAuthorizationListener(authListener);
     }
 
     public static MessengerConnector getInstance() {
@@ -47,13 +49,6 @@ public class MessengerConnector {
         }
 
         UserSession userSession = appSessionHolder.get().get();
-        messengerServerFacade.addAuthorizationListener(new AuthorizeListener() {
-            @Override
-            public void onSuccess() {
-                if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
-                cacheSynchronizer.updateCache(messengerServerFacade::setPresenceStatus);
-            }
-        });
         messengerServerFacade.authorizeAsync(userSession.getUsername(), userSession.getLegacyApiToken());
     }
 
@@ -64,5 +59,18 @@ public class MessengerConnector {
             cacheSynchronizer.clearCache();
         }
     }
+
+    private AuthorizeListener authListener = new AuthorizeListener() {
+        @Override
+        public void onSuccess() {
+            if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
+            cacheSynchronizer.updateCache(messengerServerFacade::setPresenceStatus);
+        }
+
+        @Override
+        public void onFailed(Exception exeption) {
+            super.onFailed(exeption);
+        }
+    };
 
 }

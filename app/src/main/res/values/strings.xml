@@ -489,4 +489,6 @@
 
     <string name="multiple_dates">Multiple Dates, %s ...</string>
 
+    <string name="tag_photo">tagged you on</string>
+
 </resources>

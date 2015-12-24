@@ -13,8 +13,8 @@ public class ConversationParticipants extends IQ {
     public static final String NAMESPACE = "http://jabber.org/protocol/muc#admin";
     public static final String ELEMENT_QUERY = "query";
 
-    private String conversationId;
     private List<User> participants;
+    // TODO: 12/24/15 remove user
     private User owner;
 
     public ConversationParticipants() {
@@ -28,14 +28,6 @@ public class ConversationParticipants extends IQ {
 
     public void setOwner(User owner) {
         this.owner = owner;
-    }
-
-    public String getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(String conversationId) {
-        this.conversationId = conversationId;
     }
 
     public void addParticipant(User user){

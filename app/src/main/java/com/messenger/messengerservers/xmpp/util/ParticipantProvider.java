@@ -17,6 +17,8 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class ParticipantProvider {
 
     private AbstractXMPPConnection connection;
@@ -45,13 +47,15 @@ public class ParticipantProvider {
 
         try {
             connection.sendStanzaWithResponseCallback(participantsPacket,
-                    stanza -> stanza instanceof ConversationParticipants,
+                    stanza -> stanza instanceof ConversationParticipants
+                            && conversation.getId().equals(JidCreatorHelper.obtainId(stanza.getFrom())),
                     packet -> {
                         if (packet == null) {
                             // TODO should we throw exception?
                             listener.onLoaded(null, null);
                             return;
                         }
+                        Timber.d("HANDLE PACKAGE + " + packet.hashCode());
                         ConversationParticipants conversationParticipants = (ConversationParticipants) packet;
                         listener.onLoaded(conversationParticipants.getOwner(), conversationParticipants.getParticipants());
                     });

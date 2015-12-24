@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
-    private static final int TIMER_FOR_DISCONNECT = 10000;
+    private static final int TIMER_FOR_DISCONNECT = 2000;
 
     MessengerConnector connector;
     Handler handler;

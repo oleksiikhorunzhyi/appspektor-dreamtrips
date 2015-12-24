@@ -37,6 +37,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     @Override
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
+        initContactsLoaders();
         getView().setTitle(R.string.new_chat_title);
     }
 

@@ -76,7 +76,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(view.getContext());
-        initContactsLoaders();
         getView().setConversationNameEditTextVisibility(View.GONE);
     }
 

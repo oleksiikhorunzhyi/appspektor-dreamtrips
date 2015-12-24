@@ -23,7 +23,7 @@ public class ParticipantProvider {
 
     private AbstractXMPPConnection connection;
 
-    public interface OnGroupChatParticipantsLoaded{
+    public interface OnGroupChatParticipantsLoaded {
         void onLoaded(User user, List<User> participants);
     }
 
@@ -31,7 +31,7 @@ public class ParticipantProvider {
         this.connection = connection;
     }
 
-    public List<User> getSingleChatParticipants(Conversation conversation){
+    public List<User> getSingleChatParticipants(Conversation conversation) {
         ArrayList<User> participants = new ArrayList<>();
         String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, connection.getUser());
         participants.add(JidCreatorHelper.obtainUser(companionJid));
@@ -58,7 +58,9 @@ public class ParticipantProvider {
                         Timber.d("HANDLE PACKAGE + " + packet.hashCode());
                         ConversationParticipants conversationParticipants = (ConversationParticipants) packet;
                         listener.onLoaded(conversationParticipants.getOwner(), conversationParticipants.getParticipants());
-                    });
+                    }
+                    , exception -> listener.onLoaded(null, null)
+            );
         } catch (SmackException.NotConnectedException e) {
             Log.e("Xmpp", "Exception", e);
         }

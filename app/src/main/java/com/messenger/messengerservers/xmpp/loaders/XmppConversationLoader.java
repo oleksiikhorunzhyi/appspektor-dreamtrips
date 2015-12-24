@@ -76,7 +76,11 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
                         subscriber.onCompleted();
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members) -> {
-                            if (subscriber.isUnsubscribed() || owner == null) return;
+                            if (subscriber.isUnsubscribed()) return;
+                            if (owner == null) {
+                                subscriber.onCompleted();
+                                return;
+                            }
                             //
                             conversation.setOwnerId(owner.getId());
                             members.add(0, owner);

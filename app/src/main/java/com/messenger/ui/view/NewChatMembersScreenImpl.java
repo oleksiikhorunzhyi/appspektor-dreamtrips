@@ -88,6 +88,7 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
         toolbarPresenter.enableUpNavigationButton();
 
         adapter = new ContactCursorAdapter(getContext(), null);
+        adapter.setAvatarClickListener(user -> getPresenter().openUserProfile(user));
         adapter.setSelectionListener((selectedUsers) -> {
             setSelectedContacts(selectedUsers);
             getPresenter().onSelectedUsersStateChanged(selectedUsers);

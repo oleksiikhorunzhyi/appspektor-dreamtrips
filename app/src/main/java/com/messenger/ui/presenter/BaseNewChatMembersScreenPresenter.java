@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
+import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
@@ -28,6 +29,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
     protected Activity activity;
 
     private Cursor contactsCursor;
+    private ProfileCrosser profileCrosser;
 
     protected final RxContentResolver contentResolver;
     protected Subscription contactSubscription;
@@ -85,7 +88,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
                     return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
                             .rawQuery(selection, query.selectionArgs);
                 });
-
+        profileCrosser = new ProfileCrosser(activity, new ProfileRouteCreator(appSessionHolder));
     }
 
     @Override
@@ -107,6 +110,11 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
         state = new NewChatLayoutViewState();
         getView().showLoading();
         getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
+    }
+
+    @Override
+    public void openUserProfile(User user) {
+        profileCrosser.crossToProfile(user);
     }
 
     @Override

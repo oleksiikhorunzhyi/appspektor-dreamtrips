@@ -101,6 +101,7 @@ public class LoaderDelegate {
             Collections.sort(users, (lhs, rhs) -> lhs.getId().compareTo(rhs.getId()));
             Collections.sort(userz, (lhs, rhs) -> lhs.getUsername().compareTo(rhs.getUsername()));
             from(users).zip(userz, (u, z) -> {
+                u.setSocialId(z.getId());
                 u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));
                 u.setAvatarUrl(z.getAvatar() == null ? null : z.getAvatar().getThumb());
                 u.save();

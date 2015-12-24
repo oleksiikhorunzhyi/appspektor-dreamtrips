@@ -9,5 +9,8 @@ import java.util.List;
 public interface NewChatScreenPresenter extends ActivityAwareViewStateMvpPresenter<NewChatMembersScreen,
         NewChatLayoutViewState> {
     void onSelectedUsersStateChanged(List<User> selectedUsers);
+
     void onTextChangedInChosenContactsEditText(String text);
+
+    void openUserProfile(User user);
 }

@@ -29,11 +29,18 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private final User user;
     private final Context context;
     private Conversation conversation;
+
+    private OnAvatarClickListener avatarClickListener;
+
     private SimpleDateFormat timeDateFormatter;
     private SimpleDateFormat dayOfTheWeekDateFormatter;
     private SimpleDateFormat dayOfTheMonthDateFormatter;
 
     private final int rowVerticalMargin;
+
+    public interface OnAvatarClickListener {
+        void onAvatarClick(User user);
+    }
 
     public MessagesCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
         super(cursor);
@@ -176,6 +183,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
                     .load(userFrom == null ? null : userFrom.getAvatarUrl())
                     .placeholder(android.R.drawable.ic_menu_compass)
                     .into(holder.avatarImageView);
+
+            holder.avatarImageView.setOnClickListener(v -> {
+                if (avatarClickListener != null) {
+                    avatarClickListener.onAvatarClick(userFrom);
+                }
+            });
         }
     }
 
@@ -189,6 +202,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public void setConversation(Conversation conversation) {
         this.conversation = conversation;
+    }
+
+    public void setAvatarClickListener(@Nullable OnAvatarClickListener avatarClickListener) {
+        this.avatarClickListener = avatarClickListener;
     }
 
     private boolean isGroupConversation(String conversationType) {

@@ -26,6 +26,8 @@ public class MessageLoader extends BaseCursorRowLoader {
         final String request =
                 "SELECT m.*, u." + User.COLUMN_NAME + " as " + User.COLUMN_NAME +
                     ", u." + User.COLUMN_AVATAR + " as " + User.COLUMN_AVATAR +
+                    ", u." + User.COLUMN_SOCIAL_ID + " as " + User.COLUMN_SOCIAL_ID +
+
                         " FROM " + Message.TABLE_NAME + " m LEFT JOIN " + User.TABLE_NAME + " u" +
                         " ON m." + Message.COLUMN_FROM + " = u." + User.COLUMN_ID +
                         " WHERE " + Message.COLUMN_CONVERSATION_ID + " = ?" +

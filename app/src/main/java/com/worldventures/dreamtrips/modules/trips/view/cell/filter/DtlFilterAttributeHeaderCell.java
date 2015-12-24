@@ -8,13 +8,13 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_header)
-public class DtlFilterAttributeHeaderCell extends AbstractCell<DtlPlacesFilterAttribute> {
+public class DtlFilterAttributeHeaderCell extends AbstractCell<DtlMerchantsFilterAttribute> {
 
     @InjectView(R.id.checkBoxSelectAll)
     protected CheckBox checkBoxSelectAll;

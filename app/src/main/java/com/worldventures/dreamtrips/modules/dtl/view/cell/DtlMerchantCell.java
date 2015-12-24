@@ -7,28 +7,28 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
-import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceInfoInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceSingleImageDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommonDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_item_dtl_place)
+@Layout(R.layout.adapter_item_dtl_merchant)
 public class DtlMerchantCell extends AbstractCell<DtlMerchant> implements SelectableCell {
 
-    DtlPlaceCommonDataInflater commonDataInflater;
-    DtlPlaceInfoInflater categoryDataInflater;
+    DtlMerchantCommonDataInflater commonDataInflater;
+    DtlMerchantInfoInflater categoryDataInflater;
 
     private SelectableDelegate selectableDelegate;
 
     public DtlMerchantCell(View view) {
         super(view);
-        DtlPlaceHelper helper = new DtlPlaceHelper(view.getContext());
-        commonDataInflater = new DtlPlaceSingleImageDataInflater(helper);
-        categoryDataInflater = new DtlPlaceInfoInflater(helper);
+        DtlMerchantHelper helper = new DtlMerchantHelper(view.getContext());
+        commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
+        categoryDataInflater = new DtlMerchantInfoInflater(helper);
         commonDataInflater.setView(view);
         categoryDataInflater.setView(view);
     }
@@ -40,12 +40,12 @@ public class DtlMerchantCell extends AbstractCell<DtlMerchant> implements Select
         itemView.setSelected(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
-    @OnClick(R.id.place_details_root)
-    void placeClicked() {
+    @OnClick(R.id.merchant_details_root)
+    void merchantClicked() {
         if (!selectableDelegate.isSelected(getAdapterPosition()))
             selectableDelegate.toggleSelection(getAdapterPosition());
         //
-        getEventBus().post(new PlaceClickedEvent(getModelObject().getId()));
+        getEventBus().post(new MerchantClickedEvent(getModelObject().getId()));
     }
 
     @Override

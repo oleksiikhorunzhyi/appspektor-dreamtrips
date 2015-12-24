@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
@@ -54,7 +53,7 @@ public class DtlMerchantListPresenter extends DtlMerchantsPresenter<DtlMerchantL
         view.setItems(dtlMerchants);
     }
 
-    public void onEventMainThread(TogglePlaceSelectionEvent event) {
+    public void onEventMainThread(ToggleMerchantSelectionEvent event) {
         view.toggleSelection(event.getDtlMerchant());
     }
 

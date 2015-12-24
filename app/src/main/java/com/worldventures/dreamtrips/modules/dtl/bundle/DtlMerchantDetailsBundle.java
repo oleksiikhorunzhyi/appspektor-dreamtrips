@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantDetailsFragment;
 
 /**
- * Bundle to be supplied when navigating to {@link DtlPlaceDetailsFragment}
+ * Bundle to be supplied when navigating to {@link DtlMerchantDetailsFragment}
  */
 public class DtlMerchantDetailsBundle implements Parcelable {
 

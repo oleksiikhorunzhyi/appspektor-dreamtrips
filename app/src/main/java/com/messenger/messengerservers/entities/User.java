@@ -22,6 +22,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "userName";
     public static final String COLUMN_AVATAR = "userAvatarUrl";
+    public static final String COLUMN_SOCIAL_ID = "socialId";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -29,6 +30,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     @PrimaryKey
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @Column String _id;
+    @Column int socialId;
     @Column String userName;
     @Column boolean online;
     @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
@@ -44,6 +46,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     public User(Parcel in) {
         this.userName = in.readString();
         this._id = this.userName;
+        this.socialId = in.readInt();
         this.userAvatarUrl = in.readString();
         this.online = in.readInt() == 1;
     }
@@ -55,6 +58,14 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     @Override
     public String getId() {
         return _id;
+    }
+
+    public int getSocialId() {
+        return socialId;
+    }
+
+    public void setSocialId(int socialId) {
+        this.socialId = socialId;
     }
 
     @Override
@@ -120,6 +131,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.userName);
+        dest.writeInt(this.socialId);
         dest.writeString(this.userAvatarUrl);
         dest.writeInt(online ? 1 : 0);
     }

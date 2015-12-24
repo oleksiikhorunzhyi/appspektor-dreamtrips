@@ -11,43 +11,32 @@ import android.widget.AlphabetIndexer;
 import android.widget.SectionIndexer;
 
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.adapter.MessagesCursorAdapter.OnAvatarClickListener;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
-import com.messenger.ui.adapter.holder.ContactWithHeaderViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
+import com.messenger.ui.adapter.holder.ContactWithHeaderViewHolder;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 
-public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHolder>
+public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHolder>
         implements SectionIndexer {
 
     private static final int VIEW_TYPE_CONTACT = 1;
     private static final int VIEW_TYPE_HEADER = 2;
 
     private Context context;
-    private List<User> selectedContacts = new ArrayList<>();
-    private SelectionListener selectionListener;
     private OnAvatarClickListener avatarClickListener;
 
     private AlphabetIndexer indexer;
     private int[] usedSectionNumbers;
     private Map<Integer, Integer> sectionToOffset;
     private Map<Integer, Integer> sectionToPosition;
-
-    public interface SelectionListener {
-        void onSelectionStateChanged(List<User> selectedContacts);
-    }
-
-    public interface OnAvatarClickListener {
-        void onAvatarClick(User user);
-    }
 
     public ContactCursorAdapter(Context context, Cursor cursor) {
         super(cursor);
@@ -114,9 +103,7 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
                         .inflate(R.layout.list_item_contact_section_header, parent, false);
                 return new ContactWithHeaderViewHolder(sectionRow);
             case VIEW_TYPE_CONTACT:
-                View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_contact,
-                        parent, false);
-                return new ContactViewHolder(itemRow);
+                return createContactViewHolder(parent, viewType);
             default:
                 throw new IllegalArgumentException("There is no such view type in adapter");
         }
@@ -146,24 +133,16 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
     public void onBindViewHolderCursor(BaseViewHolder h, Cursor cursor) {
         ContactViewHolder holder = (ContactViewHolder) h;
         final User user = SqlUtils.convertToModel(true, User.class, cursor);
+        onBindUserHolder(holder, cursor, user);
+    }
+
+    protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, User user) {
         holder.getNameTextView().setText(user.getName());
         holder.getAvatarView().setOnline(user.isOnline());
-        holder.getTickImageView().setSelected(selectedContacts.contains(user));
         Picasso.with(context)
                 .load(user.getAvatarUrl())
                 .placeholder(android.R.drawable.ic_menu_compass)
                 .into(holder.getAvatarView());
-
-        holder.itemView.setOnClickListener((v) -> {
-            if (!selectedContacts.contains(user)) {
-                selectedContacts.add(user);
-            } else {
-                selectedContacts.remove(user);
-            }
-            if (selectionListener != null) {
-                selectionListener.onSelectionStateChanged(selectedContacts);
-            }
-        });
 
         holder.getAvatarView().setOnClickListener(v -> {
             if (avatarClickListener != null) {
@@ -222,16 +201,9 @@ public class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHold
         return usedSectionNumbers[i - 1];
     }
 
-    public void setSelectedContacts(List<User> selectedContacts) {
-        this.selectedContacts = selectedContacts;
-        notifyDataSetChanged();
-    }
-
-    public void setSelectionListener(SelectionListener selectionListener) {
-        this.selectionListener = selectionListener;
-    }
-
     public void setAvatarClickListener(OnAvatarClickListener avatarClickListener) {
         this.avatarClickListener = avatarClickListener;
     }
+
+    public abstract BaseViewHolder createContactViewHolder(ViewGroup parent, int viewType);
 }

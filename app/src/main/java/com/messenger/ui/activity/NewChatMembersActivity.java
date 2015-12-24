@@ -19,7 +19,6 @@ public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersSc
 
     public static final int MODE_NEW_CHAT = 1;
     public static final int MODE_CHAT_ADD_MEMBERS = 2;
-    public static final int MODE_CHAT_EDIT_MEMBERS = 2;
 
     public static void startInNewChatMode(Context context, int requestCode) {
         Intent intent = new Intent(context, NewChatMembersActivity.class);
@@ -33,13 +32,6 @@ public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersSc
         intent.putExtra(EXTRA_MODE, MODE_CHAT_ADD_MEMBERS);
         intent.putExtra(EXTRA_CONVERSATION_ID, conversationId);
         activity.startActivityForResult(intent, requestCode);
-    }
-
-    public static void startInEditMembersMode(Context context, String conversationId) {
-        Intent intent = new Intent(context, NewChatMembersActivity.class);
-        intent.putExtra(EXTRA_MODE, MODE_CHAT_EDIT_MEMBERS);
-        intent.putExtra(EXTRA_CONVERSATION_ID, conversationId);
-        context.startActivity(intent);
     }
 
     @Override

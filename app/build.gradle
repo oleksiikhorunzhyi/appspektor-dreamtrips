@@ -260,7 +260,7 @@ dependencies {
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
     compile 'me.relex:circleindicator:1.1.5@aar'
     compile 'com.ms-square:expandableTextView:0.1.4'
-    compile 'com.github.daimajia:AndroidSwipeLayout:f66ac6942b066c46a6f2a3db951f3e99740160e7'
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
     compile 'mbanje.kurt:fabbutton:1.2.1'
     compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'

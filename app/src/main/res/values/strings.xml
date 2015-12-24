@@ -552,7 +552,21 @@
     <!--Add new members -->
     <!---->
     <string name="chat_add_new_members_title">Add new members</string>
+    <!---->
+    <!--Edit chat members -->
+    <!---->
+    <string name="edit_chat_members_title">Members (%d)</string>
+    <string name="edit_chat_members_search_hint">Search members...</string>
+    <string name="edit_chat_members_row_button_delete">Delete</string>
+    <!-- TODO Approve this dialog text -->
+    <string name="edit_chat_dialog_confirm_user_deletion_message">Do you want to delete this user from chat?</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Delete</string>
+
+    <!---->
+    <!--Messenger misc -->
+    <!---->
     <string name="subject">Subject</string>
     <string name="change_subject">Enter chat name</string>
+
     <!-- messenger ends-->
 </resources>

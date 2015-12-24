@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.ExistsTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.NewTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
@@ -82,17 +81,12 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     }
 
     protected void addTagView(PhotoTag photoTag) {
-        TagView view = TagView.create(getContext(), photoTag);
+        TagView view = TagView.create(getContext(), photoTag, presenter.getAccount(), presenter.getPhoto());
         view.setTagListener(new TagView.TagListener() {
 
             @Override
             public void onQueryChanged(String query) {
                 presenter.loadFriends(query, view);
-            }
-
-            @Override
-            public void onTagClicked(int userId) {
-                if (presenter.isViewCanBeDeleted(userId)) ((ExistsTagView) view).showDeleteButton();
             }
 
             @Override
@@ -160,7 +154,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         View view = getChildAt(getChildCount() - 1);
         if (view instanceof NewTagView) removeView(view);
     }
-
 
 
     @Override

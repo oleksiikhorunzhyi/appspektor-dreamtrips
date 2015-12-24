@@ -68,7 +68,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     }
 
     protected void addTagView(float x, float y) {
-        addTagView(new PhotoTag(-1, new PhotoTag.TagPosition(x, y, x, y)));
+        addTagView(new PhotoTag(new PhotoTag.TagPosition(x, y, x, y), null));
     }
 
     @Override

@@ -8,7 +8,6 @@ import android.widget.AutoCompleteTextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.TaggableImageViewGroup;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.List;
@@ -56,7 +55,7 @@ public class NewTagView extends TagView {
         inputFriendName.setDropDownAnchor(R.id.new_user_suggestions_popup_anchor);
         inputFriendName.setOnItemClickListener((parent, view, position, id) -> {
             PhotoTag.TagPosition tagPosition = photoTag.getPosition();
-            tagListener.onTagAdded(new PhotoTag(adapter.getItem(position).getId(),
+            tagListener.onTagAdded(new PhotoTag(
                     tagPosition, adapter.getItem(position)));
         });
     }

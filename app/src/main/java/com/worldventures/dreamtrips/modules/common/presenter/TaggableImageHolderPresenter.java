@@ -27,20 +27,16 @@ public abstract class TaggableImageHolderPresenter<VIEW extends TaggableImageHol
 
     public abstract void deletePhotoTag(PhotoTag tag);
 
-    public boolean isOwnPhoto() {
-        return getAccount().getId() == photo.getOwner().getId();
-    }
-
-    public final boolean isViewCanBeDeleted(int userId) {
-        return isOwnPhoto() || getAccount().getId() == userId;
-    }
-
     public void addPhotoTag(PhotoTag tag) {
 
     }
 
     public void loadFriends(String query, TagView view) {
 
+    }
+
+    public Photo getPhoto() {
+        return photo;
     }
 
     public interface View extends Presenter.View {

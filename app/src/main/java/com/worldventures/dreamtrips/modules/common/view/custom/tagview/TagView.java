@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,8 +9,8 @@ import android.widget.RelativeLayout;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.TaggableImageViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
@@ -24,6 +22,8 @@ public abstract class TagView extends RelativeLayout {
     protected List<User> userFriends;
     protected PhotoTag photoTag;
     protected TagListener tagListener;
+    protected User account;
+    protected Photo photo;
 
     @InjectView(R.id.pointer_top)
     View pointerTop;
@@ -31,6 +31,7 @@ public abstract class TagView extends RelativeLayout {
     View pointerBottom;
     @InjectView(R.id.pointer_shift_x)
     View space;
+
 
     public TagView(Context context) {
         super(context);
@@ -47,14 +48,16 @@ public abstract class TagView extends RelativeLayout {
         initialize();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public TagView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initialize();
-    }
-
     public void setPhotoTag(PhotoTag photoTag) {
         this.photoTag = photoTag;
+    }
+
+    public void setAccount(User user) {
+        this.account = user;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     @Override
@@ -98,7 +101,7 @@ public abstract class TagView extends RelativeLayout {
         ((ViewGroup) getParent()).removeView(this);
     }
 
-    public static TagView create(Context context, PhotoTag photoTag) {
+    public static TagView create(Context context, PhotoTag photoTag, User account, Photo photo) {
         TagView tagView;
         if (photoTag.getUser() == null) {
             tagView = new NewTagView(context);
@@ -107,16 +110,14 @@ public abstract class TagView extends RelativeLayout {
         }
 
         tagView.setPhotoTag(photoTag);
-
+        tagView.setAccount(account);
+        tagView.setPhoto(photo);
         return tagView;
     }
-
 
     public interface TagListener {
 
         void onQueryChanged(String query);
-
-        void onTagClicked(int userId);
 
         void onTagAdded(PhotoTag tag);
 

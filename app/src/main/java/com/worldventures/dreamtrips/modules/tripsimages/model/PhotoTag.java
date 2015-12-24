@@ -13,40 +13,12 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
     private TagPosition position;
     private User user;
 
-    public PhotoTag() {
-
-    }
-
-    public PhotoTag(int targetUserId, TagPosition position) {
-        this.targetUserId = targetUserId;
+    public PhotoTag(TagPosition position, User user) {
         this.position = position;
-    }
-
-    public PhotoTag(int targetUserId, TagPosition position, User user) {
-        this(targetUserId, position);
         this.user = user;
-    }
-
-    protected PhotoTag(Parcel in) {
-        targetUserId = in.readInt();
-        position = in.readParcelable(TagPosition.class.getClassLoader());
-        user = in.readParcelable(User.class.getClassLoader());
-    }
-
-    public static final Creator<PhotoTag> CREATOR = new Creator<PhotoTag>() {
-        @Override
-        public PhotoTag createFromParcel(Parcel in) {
-            return new PhotoTag(in);
+        if (user != null) {
+            this.targetUserId = user.getId();
         }
-
-        @Override
-        public PhotoTag[] newArray(int size) {
-            return new PhotoTag[size];
-        }
-    };
-
-    public int getTargetUserId() {
-        return targetUserId;
     }
 
     public TagPosition getPosition() {
@@ -61,26 +33,11 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
         this.position = position;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(targetUserId);
-        dest.writeParcelable(position, flags);
-        dest.writeParcelable(user, flags);
-    }
 
     public static class TagPosition implements Parcelable, Serializable {
 
         private Position topLeft;
         private Position bottomRight;
-
-        public TagPosition() {
-
-        }
 
         public TagPosition(Position topLeft, Position bottomRight) {
             this.topLeft = topLeft;
@@ -179,4 +136,32 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
             dest.writeFloat(y);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.targetUserId);
+        dest.writeParcelable(this.position, 0);
+        dest.writeParcelable(this.user, 0);
+    }
+
+    protected PhotoTag(Parcel in) {
+        this.targetUserId = in.readInt();
+        this.position = in.readParcelable(TagPosition.class.getClassLoader());
+        this.user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Creator<PhotoTag> CREATOR = new Creator<PhotoTag>() {
+        public PhotoTag createFromParcel(Parcel source) {
+            return new PhotoTag(source);
+        }
+
+        public PhotoTag[] newArray(int size) {
+            return new PhotoTag[size];
+        }
+    };
 }

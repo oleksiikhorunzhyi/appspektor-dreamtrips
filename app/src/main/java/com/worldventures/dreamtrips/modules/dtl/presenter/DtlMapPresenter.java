@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -36,7 +35,7 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
     }
 
     public void onMarkerClick(String merchantId) {
-        view.showPlaceInfo(merchantId);
+        view.showMerchantInfo(merchantId);
     }
 
     public void applySearch(String query) {
@@ -46,9 +45,9 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
     private void showPins(List<DtlMerchant> filtered) {
         if (view != null) {
             view.clearMap();
-            Queryable.from(filtered).forEachR(dtlPlace ->
-                    view.addPin(dtlPlace.getId(), new LatLng(dtlPlace.getCoordinates().getLat(),
-                            dtlPlace.getCoordinates().getLng()), dtlPlace.getMerchantType()));
+            Queryable.from(filtered).forEachR(dtlMerchant ->
+                    view.addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
+                            dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
             view.renderPins();
         }
     }
@@ -79,7 +78,7 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
 
         void clearMap();
 
-        void showPlaceInfo(String merchantId);
+        void showMerchantInfo(String merchantId);
 
         void prepareInfoWindow(int height);
 

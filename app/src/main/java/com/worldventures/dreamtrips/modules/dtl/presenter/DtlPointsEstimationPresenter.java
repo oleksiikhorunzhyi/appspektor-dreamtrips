@@ -5,7 +5,7 @@ import android.support.annotation.StringRes;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.place.EstimatePointsRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.EstimatePointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;

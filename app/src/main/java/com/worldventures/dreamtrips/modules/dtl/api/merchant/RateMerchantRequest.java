@@ -1,14 +1,14 @@
-package com.worldventures.dreamtrips.modules.dtl.api.place;
+package com.worldventures.dreamtrips.modules.dtl.api.merchant;
 
 import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
 
-public class RatePlaceRequest extends DtlRequest<Void> {
+public class RateMerchantRequest extends DtlRequest<Void> {
 
     private String merchantId;
     private String transactionId;
     private int stars;
 
-    public RatePlaceRequest(String merchantId, int stars, String transactionId) {
+    public RateMerchantRequest(String merchantId, int stars, String transactionId) {
         super(Void.class);
         this.merchantId = merchantId;
         this.transactionId = transactionId;

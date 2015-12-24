@@ -1,20 +1,18 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
-import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFragment;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.View> {
+public class DtlMerchantsTabsPresenter extends Presenter<DtlMerchantsTabsPresenter.View> {
 
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
@@ -48,7 +46,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         setTabs();
         //
         if (!initialized)
-            loadPlaces();
+            loadMerchants();
         //
         initialized = true;
     }
@@ -57,7 +55,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
         dtlSearchDelegate.applySearch(query);
     }
 
-    private void loadPlaces() {
+    private void loadMerchants() {
         dtlMerchantRepository.loadMerchants(locationRepository.getCachedSelectedLocation());
     }
 
@@ -74,7 +72,7 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
 
     public Bundle prepareArgsForTab(int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DtlPlacesListFragment.EXTRA_TYPE, dtlMerchantRepository.getDtlMerchantTypes().get(position));
+        bundle.putSerializable(DtlMerchantsListFragment.EXTRA_TYPE, dtlMerchantRepository.getDtlMerchantTypes().get(position));
         return bundle;
     }
 
@@ -84,10 +82,10 @@ public class DtlPlacesTabsPresenter extends Presenter<DtlPlacesTabsPresenter.Vie
     public void trackTabChange(int newPosition) {
         String newTabName = dtlMerchantRepository.getDtlMerchantTypes().get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
-        TrackingHelper.dtlPlacesTab(newTabName);
+        TrackingHelper.dtlMerchantsTab(newTabName);
     }
 
-    public void onEventMainThread(final PlaceClickedEvent event) {
+    public void onEventMainThread(final MerchantClickedEvent event) {
         if (!view.isTabletLandscape()) {
             view.openDetails(event.getMerchantId());
         }

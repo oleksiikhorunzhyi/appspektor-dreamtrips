@@ -4,24 +4,24 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-public class DtlPlacesFilterAttribute implements Parcelable, Comparable<DtlPlacesFilterAttribute> {
+public class DtlMerchantsFilterAttribute implements Parcelable, Comparable<DtlMerchantsFilterAttribute> {
 
     private String attributeName;
     private Boolean checked;
 
-    public DtlPlacesFilterAttribute() {
+    public DtlMerchantsFilterAttribute() {
     }
 
-    public DtlPlacesFilterAttribute(String attributeName) {
+    public DtlMerchantsFilterAttribute(String attributeName) {
         this.attributeName = attributeName;
     }
 
-    public DtlPlacesFilterAttribute(String attributeName, Boolean checked) {
+    public DtlMerchantsFilterAttribute(String attributeName, Boolean checked) {
         this.attributeName = attributeName;
         this.checked = checked;
     }
 
-    protected DtlPlacesFilterAttribute(Parcel in) {
+    protected DtlMerchantsFilterAttribute(Parcel in) {
         attributeName = in.readString();
     }
 
@@ -47,7 +47,7 @@ public class DtlPlacesFilterAttribute implements Parcelable, Comparable<DtlPlace
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DtlPlacesFilterAttribute that = (DtlPlacesFilterAttribute) o;
+        DtlMerchantsFilterAttribute that = (DtlMerchantsFilterAttribute) o;
 
         return !(attributeName != null ? !attributeName.equals(that.attributeName) : that.attributeName != null);
     }
@@ -58,7 +58,7 @@ public class DtlPlacesFilterAttribute implements Parcelable, Comparable<DtlPlace
     }
 
     @Override
-    public int compareTo(@NonNull DtlPlacesFilterAttribute another) {
+    public int compareTo(@NonNull DtlMerchantsFilterAttribute another) {
         return attributeName.compareToIgnoreCase(another.attributeName);
     }
 
@@ -66,15 +66,15 @@ public class DtlPlacesFilterAttribute implements Parcelable, Comparable<DtlPlace
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
 
-    public static final Creator<DtlPlacesFilterAttribute> CREATOR = new Creator<DtlPlacesFilterAttribute>() {
+    public static final Creator<DtlMerchantsFilterAttribute> CREATOR = new Creator<DtlMerchantsFilterAttribute>() {
         @Override
-        public DtlPlacesFilterAttribute createFromParcel(Parcel in) {
-            return new DtlPlacesFilterAttribute(in);
+        public DtlMerchantsFilterAttribute createFromParcel(Parcel in) {
+            return new DtlMerchantsFilterAttribute(in);
         }
 
         @Override
-        public DtlPlacesFilterAttribute[] newArray(int size) {
-            return new DtlPlacesFilterAttribute[size];
+        public DtlMerchantsFilterAttribute[] newArray(int size) {
+            return new DtlMerchantsFilterAttribute[size];
         }
     };
 

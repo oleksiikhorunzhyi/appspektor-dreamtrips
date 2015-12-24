@@ -30,33 +30,33 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class DtlPlaceHelper {
+public class DtlMerchantHelper {
 
     private Context context;
 
     public static final DateTimeFormatter OPERATION_TIME_FORMATTER = DateTimeFormat.forPattern("hh:mm a");
 
-    public DtlPlaceHelper(Context context) {
+    public DtlMerchantHelper(Context context) {
         this.context = context;
     }
 
-    public String getCategories(DtlMerchant place) {
-        List<DtlMerchantAttribute> categories = place.getCategories();
+    public String getCategories(DtlMerchant merchant) {
+        List<DtlMerchantAttribute> categories = merchant.getCategories();
         return categories == null ? null : TextUtils.join(", ", categories);
     }
 
-    public List<ImageTextItem> getContactsData(DtlMerchant place) {
+    public List<ImageTextItem> getContactsData(DtlMerchant merchant) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
-        addContactIfNotEmpty(items, String.format("%s, %s, %s, %s", place.getAddress1(), place.getCity(),
-                        place.getState(), place.getZip()),
+        addContactIfNotEmpty(items, String.format("%s, %s, %s, %s", merchant.getAddress1(), merchant.getCity(),
+                        merchant.getState(), merchant.getZip()),
                 R.drawable.address_icon,
-                IntentUtils.newMapIntent(place.getCoordinates().getLat(), place.getCoordinates().getLng()),
+                IntentUtils.newMapIntent(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng()),
                 ImageTextItem.Type.ADDRESS);
-        addContactIfNotEmpty(items, place.getPhone(), R.drawable.phone_icon,
-                IntentUtils.newDialerIntent(place.getPhone()),
+        addContactIfNotEmpty(items, merchant.getPhone(), R.drawable.phone_icon,
+                IntentUtils.newDialerIntent(merchant.getPhone()),
                 ImageTextItem.Type.PHONE_NUMBER);
-        addContactIfNotEmpty(items, place.getWebsite(), R.drawable.website_icon,
-                IntentUtils.browserIntent(place.getWebsite()),
+        addContactIfNotEmpty(items, merchant.getWebsite(), R.drawable.website_icon,
+                IntentUtils.browserIntent(merchant.getWebsite()),
                 ImageTextItem.Type.WEBSITE_URL);
         return items;
     }

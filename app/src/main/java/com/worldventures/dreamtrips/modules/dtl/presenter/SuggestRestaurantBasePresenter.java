@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLeadContactTime;
 
-public abstract class SuggestPlaceBasePresenter<T extends SuggestPlaceBasePresenter.View> extends Presenter<T> {
+public abstract class SuggestRestaurantBasePresenter<T extends SuggestRestaurantBasePresenter.View> extends Presenter<T> {
 
     public static final String PROMO_VIDEO = "http://assets.wvholdings.com/1/ASSETS/DTL-1500400_MerchantToMerchant_Phase2_11102015.mp4";
     public static final String PDF = "http://assets.wvholdings.com/1/ASSETS/DT_1500159_06_DTL_Merchant_Flyer_Oct_Update_LR.pdf";

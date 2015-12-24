@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
-import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestRestaurantBasePresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.DigitsValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.EmptyValidator;
 import com.worldventures.dreamtrips.modules.dtl.validator.InputLengthValidator;
@@ -42,9 +42,9 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_suggest_merchant)
-public abstract class SuggestPlaceBaseFragment<T extends SuggestPlaceBasePresenter>
+public abstract class SuggestRestaurantBaseFragment<T extends SuggestRestaurantBasePresenter>
         extends BaseFragmentWithArgs<T, MerchantIdBundle>
-        implements SuggestPlaceBasePresenter.View, DatePickerDialog.OnDateSetListener,
+        implements SuggestRestaurantBasePresenter.View, DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
 
     protected final String PICKER_FROM_TAG = "PICKER_FROM";

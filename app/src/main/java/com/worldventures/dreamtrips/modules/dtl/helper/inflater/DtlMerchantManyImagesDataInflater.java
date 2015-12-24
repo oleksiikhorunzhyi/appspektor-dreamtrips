@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 
@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.InjectView;
 import me.relex.circleindicator.CircleIndicator;
 
-public class DtlPlaceManyImagesDataInflater extends DtlPlaceCommonDataInflater {
+public class DtlMerchantManyImagesDataInflater extends DtlMerchantCommonDataInflater {
 
     private final FragmentManager fragmentManager;
     //
@@ -29,15 +29,15 @@ public class DtlPlaceManyImagesDataInflater extends DtlPlaceCommonDataInflater {
     @InjectView(R.id.place_details_cover_pager_indicator)
     CircleIndicator coverPagerIndicator;
 
-    public DtlPlaceManyImagesDataInflater(DtlPlaceHelper helper, FragmentManager fragmentManager) {
+    public DtlMerchantManyImagesDataInflater(DtlMerchantHelper helper, FragmentManager fragmentManager) {
         super(helper);
         this.fragmentManager = fragmentManager;
     }
 
     @Override
-    protected void onPlaceApply(DtlMerchant place) {
-        super.onPlaceApply(place);
-        setImages(place.getImages());
+    protected void onMerchantApply(DtlMerchant merchant) {
+        super.onMerchantApply(merchant);
+        setImages(merchant.getImages());
     }
 
     private void setImages(List<DtlMerchantMedia> mediaList) {

@@ -12,20 +12,20 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsHostPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_places_host)
-public class DtlPlacesHostFragment extends BaseFragment<DtlPlacesHostPresenter>
-        implements DtlPlacesHostPresenter.View {
+public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPresenter>
+        implements DtlMerchantsHostPresenter.View {
 
     @InjectView(R.id.dtl_landscape_slave_container)
     View landscapeSlave;
 
     @Override
-    protected DtlPlacesHostPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlacesHostPresenter();
+    protected DtlMerchantsHostPresenter createPresenter(Bundle savedInstanceState) {
+        return new DtlMerchantsHostPresenter();
     }
 
     @Override
@@ -36,8 +36,8 @@ public class DtlPlacesHostFragment extends BaseFragment<DtlPlacesHostPresenter>
     }
 
     private void showMaster() {
-        Fragment placesTabsFragment = getChildFragmentManager().findFragmentById(R.id.dtl_master_container);
-        if (placesTabsFragment != null && placesTabsFragment.getClass().getName()
+        Fragment merchantsTabsFragment = getChildFragmentManager().findFragmentById(R.id.dtl_master_container);
+        if (merchantsTabsFragment != null && merchantsTabsFragment.getClass().getName()
                 .equals(Route.DTL_MERCHANTS_TABS.getClazzName())) return;
         router.moveTo(Route.DTL_MERCHANTS_TABS, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_master_container)

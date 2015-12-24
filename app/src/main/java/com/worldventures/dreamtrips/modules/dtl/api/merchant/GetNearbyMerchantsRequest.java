@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.api.place;
+package com.worldventures.dreamtrips.modules.dtl.api.merchant;
 
 import com.worldventures.dreamtrips.modules.dtl.api.DtlRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -18,6 +18,6 @@ public class GetNearbyMerchantsRequest extends DtlRequest<ArrayList<DtlMerchant>
 
     @Override
     public ArrayList<DtlMerchant> loadDataFromNetwork() throws Exception {
-        return getService().getNearbyDtlPlaces(ll);
+        return getService().getNearbyDtlMerchants(ll);
     }
 }

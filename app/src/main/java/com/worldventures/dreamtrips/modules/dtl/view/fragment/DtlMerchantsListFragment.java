@@ -32,7 +32,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_places_list)
-public class DtlPlacesListFragment
+public class DtlMerchantsListFragment
         extends RxBaseFragment<DtlMerchantListPresenter>
         implements DtlMerchantListPresenter.View {
 
@@ -100,10 +100,10 @@ public class DtlPlacesListFragment
     }
 
     @Override
-    public void setItems(List<DtlMerchant> places) {
-        if (places != null && !places.isEmpty()) hideProgress();
+    public void setItems(List<DtlMerchant> merchants) {
+        if (merchants != null && !merchants.isEmpty()) hideProgress();
         //
-        adapter.setItems(places);
+        adapter.setItems(merchants);
         stateDelegate.restoreStateIfNeeded();
     }
 

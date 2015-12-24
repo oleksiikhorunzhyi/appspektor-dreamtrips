@@ -16,10 +16,9 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
@@ -29,7 +28,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<DtlPlaceDetailsPresenter.View> {
+public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View> {
 
     private DtlTransaction dtlTransaction;
 
@@ -42,7 +41,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Inject
     DtlLocationRepository locationRepository;
 
-    public DtlPlaceDetailsPresenter(String id) {
+    public DtlMerchantDetailsPresenter(String id) {
         super(id);
     }
 
@@ -55,13 +54,13 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        if (place.hasNoOffers())
+        if (merchant.hasNoOffers())
             featureManager.with(Feature.REP_SUGGEST_MERCHANT, () -> view.setSuggestMerchantButtonAvailable(true),
                     () -> view.setSuggestMerchantButtonAvailable(false));
     }
 
     private void processTransaction() {
-        dtlTransaction = snapper.getDtlTransaction(place.getId());
+        dtlTransaction = snapper.getDtlTransaction(merchant.getId());
 
         if (dtlTransaction != null) {
             checkSucceedEvent();
@@ -75,13 +74,13 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         DtlTransactionSucceedEvent event = eventBus.getStickyEvent(DtlTransactionSucceedEvent.class);
         if (event != null) {
             eventBus.removeStickyEvent(event);
-            view.showSucceed(place, dtlTransaction);
+            view.showSucceed(merchant, dtlTransaction);
         }
     }
 
     private void checkTransactionOutOfDate() {
         if (dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
-            snapper.deleteDtlTransaction(place.getId());
+            snapper.deleteDtlTransaction(merchant.getId());
             dtlTransaction = null;
         }
     }
@@ -92,8 +91,8 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
             // in the enrollment wizard(maybe needed in future)
             if (dtlTransaction.getUploadTask() != null)
                 photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-            snapper.cleanDtlTransaction(place.getId(), dtlTransaction);
-            view.openTransaction(place, dtlTransaction);
+            snapper.cleanDtlTransaction(merchant.getId(), dtlTransaction);
+            view.openTransaction(merchant, dtlTransaction);
         } else {
             view.disableCheckinButton();
             view.bind(locationDelegate
@@ -128,25 +127,25 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         dtlTransaction.setLat(location.getLatitude());
         dtlTransaction.setLng(location.getLongitude());
 
-        snapper.saveDtlTransaction(place.getId(), dtlTransaction);
+        snapper.saveDtlTransaction(merchant.getId(), dtlTransaction);
         view.setTransaction(dtlTransaction);
-        TrackingHelper.dtlCheckin(place.getId());
+        TrackingHelper.dtlCheckin(merchant.getId());
     }
 
     public void onEstimationClick() {
-        view.showEstimationDialog(new PointsEstimationDialogBundle(place.getId()));
+        view.showEstimationDialog(new PointsEstimationDialogBundle(merchant.getId()));
     }
 
     public void onMerchantClick() {
-        view.openSuggestMerchant(new MerchantIdBundle(place.getId()));
+        view.openSuggestMerchant(new MerchantIdBundle(merchant.getId()));
     }
 
     public void onShareClick() {
-        view.share(place);
+        view.share(merchant);
     }
 
     public void onBackPressed() {
-        eventBus.post(new TogglePlaceSelectionEvent(place));
+        eventBus.post(new ToggleMerchantSelectionEvent(merchant));
         view.openMap();
     }
 
@@ -154,9 +153,9 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
      * Analytic-related
      */
     public void trackScreen() {
-        String placeTypeAction = place.hasNoOffers() ?
+        String merchantTypeAction = merchant.hasNoOffers() ?
                 TrackingHelper.DTL_ACTION_DINING_VIEW : TrackingHelper.DTL_ACTION_OFFER_VIEW;
-        TrackingHelper.dtlPlaceView(placeTypeAction, place.getId());
+        TrackingHelper.dtlMerchantView(merchantTypeAction, merchant.getId());
     }
 
     /**
@@ -180,23 +179,23 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
         TrackingHelper.dtlEarnView();
     }
 
-    public void routeToPlaceRequested(@Nullable final Intent intent) {
+    public void routeToMerchantRequested(@Nullable final Intent intent) {
         view.bind(locationDelegate.getLastKnownLocation().compose(new IoToMainComposer<>()))
                 .subscribe(location -> {
                     TrackingHelper.dtlMapDestination(location.getLatitude(), location.getLongitude(),
-                            place.getCoordinates().getLat(), place.getCoordinates().getLng());
+                            merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
                     TrackingHelper.dtlDirectionsView();
                     view.showMerchantMap(intent);
                 }, e -> {
                     TrackingHelper.dtlMapDestination(null, null,
-                            place.getCoordinates().getLat(), place.getCoordinates().getLng());
+                            merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
                     TrackingHelper.dtlDirectionsView();
                     view.showMerchantMap(intent);
                     Timber.e(e, "Something went wrong while location update for analytics. Possibly GPS is off");
                 });
     }
 
-    public interface View extends DtlPlaceCommonDetailsPresenter.View, RxView {
+    public interface View extends DtlMerchantCommonDetailsPresenter.View, RxView {
 
         void showEstimationDialog(PointsEstimationDialogBundle data);
 
@@ -212,7 +211,7 @@ public class DtlPlaceDetailsPresenter extends DtlPlaceCommonDetailsPresenter<Dtl
 
         void setSuggestMerchantButtonAvailable(boolean available);
 
-        void share(DtlMerchant place);
+        void share(DtlMerchant merchant);
 
         void resolutionRequired(Status status);
 

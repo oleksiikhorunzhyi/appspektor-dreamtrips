@@ -5,14 +5,14 @@ import android.os.Parcelable;
 
 public class PointsEstimationDialogBundle implements Parcelable {
 
-    private String placeId;
+    private String merchantId;
 
-    public PointsEstimationDialogBundle(String placeId) {
-        this.placeId = placeId;
+    public PointsEstimationDialogBundle(String merchantId) {
+        this.merchantId = merchantId;
     }
 
-    public String getPlaceId() {
-        return placeId;
+    public String getMerchantId() {
+        return merchantId;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -20,12 +20,12 @@ public class PointsEstimationDialogBundle implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected PointsEstimationDialogBundle(Parcel in) {
-        placeId = in.readString();
+        merchantId = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(placeId);
+        dest.writeString(merchantId);
     }
 
     public static final Creator<PointsEstimationDialogBundle> CREATOR = new Creator<PointsEstimationDialogBundle>() {

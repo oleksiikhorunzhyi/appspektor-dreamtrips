@@ -151,7 +151,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void showPlaceInfo(String merchantId) {
+    public void showMerchantInfo(String merchantId) {
         router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())

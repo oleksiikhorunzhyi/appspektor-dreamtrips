@@ -32,7 +32,7 @@ import timber.log.Timber;
 
 /**
  * Transitional fragment that determines further navigation.<br />
- * Depending on DtlLocation being previously selected it opens Dtl Places List screen (if location was selected) <br />
+ * Depending on DtlLocation being previously selected it opens Dtl Merchants List screen (if location was selected) <br />
  * or Dtl Locations screen (if not).
  */
 @Layout(R.layout.fragment_dtl_start_empty)

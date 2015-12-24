@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.event;
 
-public class PlaceClickedEvent {
+public class MerchantClickedEvent {
 
     private final String merchantId;
 
-    public PlaceClickedEvent(String merchantId) {
+    public MerchantClickedEvent(String merchantId) {
         this.merchantId = merchantId;
     }
 

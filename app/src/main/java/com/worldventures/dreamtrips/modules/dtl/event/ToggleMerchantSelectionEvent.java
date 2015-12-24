@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.event;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-public class TogglePlaceSelectionEvent {
+public class ToggleMerchantSelectionEvent {
     private DtlMerchant DtlMerchant;
 
-    public TogglePlaceSelectionEvent(DtlMerchant DtlMerchant) {
+    public ToggleMerchantSelectionEvent(DtlMerchant DtlMerchant) {
         this.DtlMerchant = DtlMerchant;
     }
 

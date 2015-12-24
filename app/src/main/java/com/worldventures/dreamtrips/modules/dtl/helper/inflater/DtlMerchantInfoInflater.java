@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
@@ -13,9 +13,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
 
-public class DtlPlaceInfoInflater extends DtlPlaceDataInflater {
+public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
 
-    protected DtlPlaceHelper helper;
+    protected DtlMerchantHelper helper;
     //
     @InjectView(R.id.place_title)
     TextView title;
@@ -28,33 +28,33 @@ public class DtlPlaceInfoInflater extends DtlPlaceDataInflater {
     @InjectView(R.id.distance)
     TextView distance;
 
-    public DtlPlaceInfoInflater(DtlPlaceHelper helper) {
+    public DtlMerchantInfoInflater(DtlMerchantHelper helper) {
         this.helper = helper;
     }
 
     @Override
-    protected void onPlaceApply(DtlMerchant place) {
-        title.setText(place.getDisplayName());
-        pricing.setRating(place.getBudget());
+    protected void onMerchantApply(DtlMerchant merchant) {
+        title.setText(merchant.getDisplayName());
+        pricing.setRating(merchant.getBudget());
 
-        if (place.getDistance() != 0.0d) {
+        if (merchant.getDistance() != 0.0d) {
             distance.setVisibility(View.VISIBLE);
             distance.setText(distance.getResources().getString(
-                    place.getDistanceType() == DtlFilterData.DistanceType.MILES ?
+                    merchant.getDistanceType() == DtlFilterData.DistanceType.MILES ?
                             R.string.distance_miles : R.string.distance_kms,
-                    place.getDistance()));
+                    merchant.getDistance()));
         } else distance.setVisibility(View.GONE);
 
-        String categoriesString = helper.getCategories(place);
+        String categoriesString = helper.getCategories(merchant);
         if (!TextUtils.isEmpty(categoriesString)) {
             categories.setVisibility(View.VISIBLE);
             categories.setText(categoriesString);
         } else categories.setVisibility(View.GONE);
 
-        if (place.hasOffer(DtlOffer.TYPE_POINTS) &&
-                place.getOperationDays() != null && !place.getOperationDays().isEmpty()) {
+        if (merchant.hasOffer(DtlOffer.TYPE_POINTS) &&
+                merchant.getOperationDays() != null && !merchant.getOperationDays().isEmpty()) {
             operationalTime.setVisibility(View.VISIBLE);
-            operationalTime.setText(helper.getOperationalTime(place));
+            operationalTime.setText(helper.getOperationalTime(merchant));
         } else operationalTime.setVisibility(View.GONE);
     }
 }

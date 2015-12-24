@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import butterknife.ButterKnife;
 
-public abstract class DtlPlaceDataInflater {
+public abstract class DtlMerchantDataInflater {
 
     View rootView;
 
@@ -15,12 +15,12 @@ public abstract class DtlPlaceDataInflater {
         ButterKnife.inject(this, rootView);
     }
 
-    public void apply(DtlMerchant place) {
+    public void apply(DtlMerchant merchant) {
         if (rootView == null) {
             throw new IllegalStateException("Root view is not set, call setView() method first");
         }
-        onPlaceApply(place);
+        onMerchantApply(merchant);
     }
 
-    protected abstract void onPlaceApply(DtlMerchant place);
+    protected abstract void onMerchantApply(DtlMerchant merchant);
 }

@@ -61,17 +61,17 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
     }
 
     @Override
-    public void showShareDialog(int amount, DtlMerchant place) {
+    public void showShareDialog(int amount, DtlMerchant merchant) {
         new ShareDialog(activityRouter.getContext(), type -> {
             getPresenter().trackSharing(type);
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));
+            shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, merchant.getDisplayName()));
             //don't attach media if website exist
-            shareBundle.setShareUrl(place.getWebsite());
+            shareBundle.setShareUrl(merchant.getWebsite());
             // don't attach media is website is attached, this image will go nowhere
-            if (TextUtils.isEmpty(place.getWebsite())) {
-                DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
+            if (TextUtils.isEmpty(merchant.getWebsite())) {
+                DtlMerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
                 if (media != null) shareBundle.setImageUrl(media.getImagePath());
             }
             router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()

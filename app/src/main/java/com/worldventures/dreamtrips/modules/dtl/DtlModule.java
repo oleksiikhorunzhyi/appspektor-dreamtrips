@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantListPresenter;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlaceDetailsPresenter;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesHostPresenter;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsHostPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantDetailsPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsTabsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
@@ -28,10 +28,10 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesHostFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantDetailsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsHostFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
@@ -47,8 +47,8 @@ import dagger.Provides;
         injects = {
                 DtlStartFragment.class,
                 DtlStartPresenter.class,
-                DtlPlacesHostFragment.class,
-                DtlPlacesHostPresenter.class,
+                DtlMerchantsHostFragment.class,
+                DtlMerchantsHostPresenter.class,
                 DtlLocationsPresenter.class,
                 DtlLocationsFragment.class,
                 DtlLocationCell.class,
@@ -58,23 +58,23 @@ import dagger.Provides;
                 DtlMapPresenter.class,
                 DtlMapInfoFragment.class,
                 DtlMapInfoPresenter.class,
-                DtlPlacesTabsFragment.class,
-                DtlPlacesTabsPresenter.class,
+                DtlMerchantsTabsFragment.class,
+                DtlMerchantsTabsPresenter.class,
                 DtlScanReceiptFragment.class,
                 DtlScanReceiptPresenter.class,
-                DtlPlacesListFragment.class,
+                DtlMerchantsListFragment.class,
                 DtlMerchantListPresenter.class,
                 DtlMerchantCell.class,
                 DtlHeaderCell.class,
-                DtlPlaceDetailsPresenter.class,
-                DtlPlaceDetailsFragment.class,
+                DtlMerchantDetailsPresenter.class,
+                DtlMerchantDetailsFragment.class,
                 DtlPointsEstimationFragment.class,
                 DtlPointsEstimationPresenter.class,
                 DtlFiltersFragment.class,
                 DtlFiltersPresenter.class,
 
-                DtlPlaceDetailsPresenter.class,
-                DtlPlaceDetailsFragment.class,
+                DtlMerchantDetailsPresenter.class,
+                DtlMerchantDetailsFragment.class,
 
                 DtlScanQrCodeFragment.class,
                 DtlScanQrCodePresenter.class,

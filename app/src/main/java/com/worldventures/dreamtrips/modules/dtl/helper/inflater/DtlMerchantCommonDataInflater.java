@@ -6,16 +6,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
 
-public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
+public class DtlMerchantCommonDataInflater extends DtlMerchantDataInflater {
 
-    protected DtlPlaceHelper helper;
+    protected DtlMerchantHelper helper;
     //
     @InjectView(R.id.place_details_cover_stub)
     View coverStub;
@@ -26,12 +26,12 @@ public class DtlPlaceCommonDataInflater extends DtlPlaceDataInflater {
     @InjectView(R.id.perks)
     TextView perks;
 
-    public DtlPlaceCommonDataInflater(DtlPlaceHelper helper) {
+    public DtlMerchantCommonDataInflater(DtlMerchantHelper helper) {
         this.helper = helper;
     }
 
     @Override
-    protected void onPlaceApply(DtlMerchant merchant) {
+    protected void onMerchantApply(DtlMerchant merchant) {
         coverStub.setVisibility(merchant.getImages().isEmpty() ? View.VISIBLE : View.GONE);
         if (merchant.getRating() != 0.0f) {
             rating.setVisibility(View.VISIBLE);

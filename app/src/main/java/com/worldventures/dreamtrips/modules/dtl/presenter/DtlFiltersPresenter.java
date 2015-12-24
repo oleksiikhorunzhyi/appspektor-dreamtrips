@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.List;
@@ -69,8 +69,8 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     }
 
     private void attachAmenities() {
-        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities())
-                .map(element -> new DtlPlacesFilterAttribute(element.getName())).toList();
+        List<DtlMerchantsFilterAttribute> amenities = Queryable.from(db.getAmenities())
+                .map(element -> new DtlMerchantsFilterAttribute(element.getName())).toList();
 
         dtlFilterData.setAmenities(amenities);
         view.attachFilterData(dtlFilterData);

@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPlacesTabsPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsTabsPresenter;
 
 import java.util.List;
 
@@ -34,8 +34,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
 
 @Layout(R.layout.fragment_dtl_places_tabs)
-public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter>
-        implements DtlPlacesTabsPresenter.View {
+public class DtlMerchantsTabsFragment extends BaseFragment<DtlMerchantsTabsPresenter>
+        implements DtlMerchantsTabsPresenter.View {
 
     @InjectView(R.id.tabs)
     BadgedTabLayout tabStrip;
@@ -53,8 +53,8 @@ public class DtlPlacesTabsFragment extends BaseFragment<DtlPlacesTabsPresenter>
     String lastQuery;
 
     @Override
-    protected DtlPlacesTabsPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPlacesTabsPresenter();
+    protected DtlMerchantsTabsPresenter createPresenter(Bundle savedInstanceState) {
+        return new DtlMerchantsTabsPresenter();
     }
 
     @Override

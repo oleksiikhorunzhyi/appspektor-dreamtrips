@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.TogglePlaceSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 
-public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapInfoPresenter.View> {
+public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMapInfoPresenter.View> {
 
     public DtlMapInfoPresenter(String id) {
         super(id);
@@ -20,16 +20,16 @@ public class DtlMapInfoPresenter extends DtlPlaceCommonDetailsPresenter<DtlMapIn
         view.showLayout();
     }
 
-    public void onPlaceClick() {
-        eventBus.post(new TogglePlaceSelectionEvent(place));
-        view.showDetails(place.getId());
+    public void onMerchantClick() {
+        eventBus.post(new ToggleMerchantSelectionEvent(merchant));
+        view.showDetails(merchant.getId());
     }
 
     public void onSizeReady(int height) {
         eventBus.post(new DtlMapInfoReadyEvent(height));
     }
 
-    public interface View extends DtlPlaceCommonDetailsPresenter.View {
+    public interface View extends DtlMerchantCommonDetailsPresenter.View {
         void hideLayout();
         void showLayout();
         void showDetails(String id);

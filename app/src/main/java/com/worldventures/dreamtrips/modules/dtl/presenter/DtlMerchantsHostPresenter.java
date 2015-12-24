@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 
-public class DtlPlacesHostPresenter extends Presenter<DtlPlacesHostPresenter.View> {
+public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresenter.View> {
 
-    public void onEventMainThread(final PlaceClickedEvent event) {
+    public void onEventMainThread(final MerchantClickedEvent event) {
         if (view.isTabletLandscape()) view.showDetails(event.getMerchantId());
     }
 

@@ -10,6 +10,7 @@ import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
@@ -141,7 +142,10 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
 
         if (chat == null) return;
         try {
-            chat.leave();
+//            chat.leave();
+            LeavePresence leavePresence = new LeavePresence();
+            leavePresence.setTo(chat.getRoom() + "/" + chat.getNickname());
+            connection.sendStanza(leavePresence);
         } catch (SmackException.NotConnectedException e) {
             Log.e(TAG, "Error ", e);
         }

@@ -3,8 +3,6 @@ package com.messenger.ui.presenter;
 import android.app.Activity;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -24,6 +22,8 @@ import com.messenger.model.ChatUser;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
+import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -35,8 +35,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvpPresenter<NewChatMembersScreen, NewChatLayoutViewState>
-        implements NewChatScreenPresenter, LoaderManager.LoaderCallbacks<Cursor> {
+        implements NewChatScreenPresenter {
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -52,6 +54,9 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
     protected Activity activity;
 
     private Cursor contactsCursor;
+
+    protected final RxContentResolver contentResolver;
+    protected Subscription contactSubscription;
 
     public static NewChatScreenPresenter createPresenter(Activity activity) {
         int mode = activity.getIntent().getIntExtra(NewChatMembersActivity.EXTRA_MODE, -1);
@@ -70,13 +75,23 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
 
         textInChosenContactsEditText = activity
                 .getString(R.string.new_chat_chosen_contacts_header_empty);
+
+        contentResolver = new RxContentResolver(activity.getContentResolver(),
+                query -> {
+                    String selection = query.selection;
+                    if (!TextUtils.isEmpty(query.sortOrder)) {
+                        selection = selection + " " + query.sortOrder;
+                    }
+                    return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                            .rawQuery(selection, query.selectionArgs);
+                });
+
     }
 
     @Override
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(view.getContext());
-        initContactsLoaders();
         getView().setConversationNameEditTextVisibility(View.GONE);
     }
 
@@ -111,26 +126,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
             getView().setSelectedContacts(getViewState().getSelectedContacts());
             refreshSelectedContactsHeader();
         }
-    }
-    
-    protected void initContactsLoaders() {
-        LoaderManager loaderManager = ((AppCompatActivity) activity).getSupportLoaderManager();
-        Loader loader = loaderManager.getLoader(CursorLoaderIds.CONTACT_LOADER);
-        if (loader == null) {
-            loaderManager.initLoader(CursorLoaderIds.CONTACT_LOADER, null, this);
-        } else {
-            loaderManager.restartLoader(CursorLoaderIds.CONTACT_LOADER, null, this);
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        showContacts(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        showContacts(null);
     }
 
     @Override

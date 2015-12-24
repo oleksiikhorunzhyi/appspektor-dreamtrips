@@ -176,7 +176,9 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
         EditText etSubject = (EditText) dialogView.findViewById(R.id.et_subject);
         String currentSubject = getPresenter().getCurrentSubject();
         etSubject.setText(currentSubject);
-        etSubject.setSelection(currentSubject.length());
+        if (currentSubject != null) {
+            etSubject.setSelection(currentSubject.length());
+        }
         new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .setNegativeButton(android.R.string.cancel, (dialog, which) -> {

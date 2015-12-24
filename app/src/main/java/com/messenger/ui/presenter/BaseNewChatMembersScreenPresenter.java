@@ -222,7 +222,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
         MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
                 .createMultiUserChat(conversation.getId(), user, true);
         multiUserChat.invite(participants);
-        if (!TextUtils.isEmpty(subject) && !(TextUtils.getTrimmedLength(subject) > 0)) {
+        if (!TextUtils.isEmpty(subject) && TextUtils.getTrimmedLength(subject) > 0) {
             multiUserChat.setSubject(subject);
         }
     }

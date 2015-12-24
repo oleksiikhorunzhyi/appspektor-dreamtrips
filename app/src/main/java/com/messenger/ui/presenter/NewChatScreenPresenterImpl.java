@@ -1,11 +1,8 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -15,11 +12,17 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
+import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
 
@@ -36,6 +39,17 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.new_chat_title);
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM Users WHERE " + User.COLUMN_ID + "<>?")
+                .withSelectionArgs(new String[]{user.getId()})
+                .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC").build();
+        contactSubscription = contentResolver.query(q, User.CONTENT_URI,
+                ParticipantsRelationship.CONTENT_URI)
+                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindView((View) getView()))
+                .subscribe(users -> showContacts(users));
     }
 
     @Override
@@ -88,12 +102,5 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 return true;
         }
         return false;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(activity, User.CONTENT_URI,
-                null, User.COLUMN_ID + "<>?", new String[]{user.getId()},
-                User.COLUMN_NAME + " COLLATE NOCASE ASC");
     }
 }

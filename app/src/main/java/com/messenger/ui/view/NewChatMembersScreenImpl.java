@@ -22,7 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.adapter.ContactSimpleAlphabetAdapter;
+import com.messenger.ui.adapter.ContactCursorAdapter;
 import com.messenger.ui.anim.WeightSlideAnimator;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenter;
@@ -60,7 +60,7 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
 
     private ToolbarPresenter toolbarPresenter;
 
-    private ContactSimpleAlphabetAdapter adapter;
+    private ContactCursorAdapter adapter;
 
     private WeightSlideAnimator conversationNameAnimator;
 
@@ -87,10 +87,7 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
         toolbarPresenter.enableUpNavigationButton();
 
-        // Use this class until sorting logic in ContactCursorAdapter is checked
-        // to be working (provided users are sorted alphabetically) or fixed if needed if
-        // it does not work when contacts sorting is fixed.
-        adapter = new ContactSimpleAlphabetAdapter(getContext(), null);
+        adapter = new ContactCursorAdapter(getContext(), null);
         adapter.setSelectionListener((selectedUsers) -> {
             setSelectedContacts(selectedUsers);
             getPresenter().onSelectedUsersStateChanged(selectedUsers);

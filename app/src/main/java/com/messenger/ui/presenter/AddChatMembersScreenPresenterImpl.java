@@ -2,10 +2,6 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -17,7 +13,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
@@ -38,7 +33,6 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     private Conversation conversation;
     private List<User> originalParticipants;
 
-    private RxContentResolver contentResolver;
     private Subscription participantsSubscriber;
 
     public AddChatMembersScreenPresenterImpl(Activity activity) {
@@ -49,17 +43,17 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .from(Conversation.class)
                 .byIds(conversationId)
                 .querySingle();
-
-        contentResolver = new RxContentResolver(activity.getContentResolver(), query -> {
-            return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                    .rawQuery(query.selection, query.selectionArgs);
-        });
     }
 
     @Override
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.chat_add_new_members_title);
+        // obtain list of existing participants first
+        initExistingMembersSubscription();
+    }
+
+    private void initExistingMembersSubscription() {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
                                 "JOIN ParticipantsRelationship p " +
@@ -75,8 +69,38 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .compose(RxLifecycle.bindView((View) getView()))
                 .subscribe(users -> {
                     originalParticipants = users;
-                    initContactsLoaders();
+                    // init contacts subscription excluding existing participants
+                    // and refresh UI
+                    initPotentialMembersSubscription();
                 });
+    }
+
+    private void initPotentialMembersSubscription() {
+        HashSet<String> idsToExclude = new HashSet<>();
+        idsToExclude.add(user.getId());
+        for (User user : originalParticipants) {
+            idsToExclude.add(user.getId());
+        }
+        StringBuilder where = new StringBuilder();
+        for (int i = 0; i < idsToExclude.size(); i++) {
+            where.append(User.COLUMN_ID + "<>?");
+            if (i != idsToExclude.size() - 1) {
+                where.append(" AND ");
+            }
+        }
+        String[] selectionArgs = idsToExclude.toArray(new String[idsToExclude.size()]);
+
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM Users WHERE " + where.toString())
+                .withSelectionArgs(selectionArgs)
+                .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC").build();
+        contactSubscription = contentResolver.query(q, User.CONTENT_URI,
+                ParticipantsRelationship.CONTENT_URI)
+                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindView((View) getView()))
+                .subscribe(users -> showContacts(users));
     }
 
     @Override
@@ -134,27 +158,5 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 return true;
         }
         return false;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // Filter current user from contacts list and all participants
-        // Since currentuser is missing currently in single chat participants and not missing
-        // in group chat participants apply workoaround.
-        HashSet<String> idsToExclude = new HashSet<>();
-        idsToExclude.add(user.getId());
-        for (User user : originalParticipants) {
-            idsToExclude.add(user.getId());
-        }
-        StringBuilder where = new StringBuilder();
-        for (int i = 0; i < idsToExclude.size(); i++) {
-            where.append(User.COLUMN_ID + "<>?");
-            if (i != idsToExclude.size() - 1) {
-                where.append(" AND ");
-            }
-        }
-        return new CursorLoader(activity, User.CONTENT_URI,
-                null, where.toString(), idsToExclude.toArray(new String[idsToExclude.size()]),
-                User.COLUMN_NAME + " COLLATE NOCASE ASC");
     }
 }

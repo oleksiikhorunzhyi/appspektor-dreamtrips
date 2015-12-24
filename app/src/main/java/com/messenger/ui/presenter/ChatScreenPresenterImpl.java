@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.badoo.mobile.util.WeakHandler;
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.PaginationDelegate;
+import com.messenger.delegate.ProfileCrosser;
 import com.messenger.loader.MessageLoader;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ChatState;
@@ -44,6 +45,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Collections;
@@ -77,6 +79,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     private LoaderManager loaderManager;
     protected PaginationDelegate paginationDelegate;
+    protected ProfileCrosser profileCrosser;
     protected WeakHandler handler;
 
     protected Conversation conversation;
@@ -93,10 +96,12 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         handler = new WeakHandler();
 
         ((Injector) context.getApplicationContext()).inject(this);
-        paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
         participants = Collections.emptyList();
         init(conversationId);
+
+        paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
+        profileCrosser = new ProfileCrosser(context,  new ProfileRouteCreator(appSessionHolder));
     }
 
     private void init(String conversationId) {
@@ -232,6 +237,11 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         chat.changeMessageStatus(firstVisibleMessage, Status.DISPLAYED);
         firstVisibleMessage.setRead(true);
         firstVisibleMessage.save();
+    }
+
+    @Override
+    public void openUserProfile(User user) {
+        profileCrosser.crossToProfile(user);
     }
 
     @Override

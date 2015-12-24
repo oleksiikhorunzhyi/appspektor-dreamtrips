@@ -170,6 +170,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         conversationHelper = new ConversationHelper();
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null));
+        adapter.setAvatarClickListener(getPresenter()::openUserProfile);
         messageEditText.addTextChangedListener(messageWatcher);
     }
 

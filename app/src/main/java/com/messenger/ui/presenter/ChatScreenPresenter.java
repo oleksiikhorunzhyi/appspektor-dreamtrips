@@ -15,5 +15,7 @@ public interface ChatScreenPresenter extends ActivityAwareViewStateMvpPresenter<
     void firstVisibleMessageChanged(Message firstVisibleMessage);
 
     void messageTextChanged(int length);
+
+    void openUserProfile(User user);
 }
 

@@ -10,6 +10,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
@@ -152,7 +153,8 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 saveChatModifications(conversation, newChatUsers, getView().getConversationName());
 
                 Intent data = new Intent();
-                data.putExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID, conversation.getId());
+                data.putExtra(Extra.CONVERSATION_ID, conversation.getId());
+                data.putExtra(Extra.CONVERSATION_TYPE, conversation.getType());
                 activity.setResult(Activity.RESULT_OK, data);
                 activity.finish();
                 return true;

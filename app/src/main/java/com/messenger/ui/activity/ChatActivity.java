@@ -1,5 +1,6 @@
 package com.messenger.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,18 +25,18 @@ public class ChatActivity extends BaseMvpViewActivity<ChatScreenImpl> {
     public @interface ChatType {
     }
 
-    public static void startGroupChat(Context context, String conversationId) {
+    public static void startGroupChat(Context context, String conversationId, int requestCode) {
         Intent starter = new Intent(context, ChatActivity.class);
         starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
         starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_GROUP);
-        context.startActivity(starter);
+        ((Activity) context).startActivityForResult(starter, requestCode);
     }
 
-    public static void startSingleChat(Context context, @Nullable String conversationId) {
+    public static void startSingleChat(Context context, @Nullable String conversationId, int requestCode) {
         Intent starter = new Intent(context, ChatActivity.class);
         starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_SINGLE);
         starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
-        context.startActivity(starter);
+        ((Activity) context).startActivityForResult(starter, requestCode);
     }
 
     @Override

@@ -21,10 +21,10 @@ public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersSc
     public static final int MODE_CHAT_ADD_MEMBERS = 2;
     public static final int MODE_CHAT_EDIT_MEMBERS = 2;
 
-    public static void startInNewChatMode(Context context) {
+    public static void startInNewChatMode(Context context, int requestCode) {
         Intent intent = new Intent(context, NewChatMembersActivity.class);
         intent.putExtra(EXTRA_MODE, MODE_NEW_CHAT);
-        context.startActivity(intent);
+        ((Activity)context).startActivityForResult(intent, requestCode);
     }
 
     public static void startInAddMembersMode(Activity activity, String conversationId,

@@ -14,6 +14,9 @@ import java.util.List;
 public class ConversationHelper {
 
     public void setTitle(final TextView target, Conversation conversation, List<User> members) {
+        if (members == null || members.isEmpty()) {
+            return;
+        }
         String initialTitle = null;
         switch (conversation.getType()) {
             case Conversation.Type.CHAT:
@@ -53,6 +56,9 @@ public class ConversationHelper {
     }
 
     public void setSubtitle(TextView target, Conversation conversation, List<User> members) {
+        if (members == null || members.isEmpty()) {
+            return;
+        }
         CharSequence subtitle = null;
         switch (conversation.getType()) {
             case Conversation.Type.CHAT:

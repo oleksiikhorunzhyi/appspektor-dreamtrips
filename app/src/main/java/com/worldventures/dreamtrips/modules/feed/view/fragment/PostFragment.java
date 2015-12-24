@@ -117,6 +117,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         post.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && photoPickerLayout.isPanelVisible())
                 handler.postDelayed(photoPickerLayout::hidePanel, 250);
+            else if (!hasFocus)
+                name.requestFocus();
         });
         backStackDelegate.setListener(this::onBackPressed);
         if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
@@ -130,6 +132,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         super.onPause();
         post.removeTextChangedListener(textWatcher);
         backStackDelegate.setListener(null);
+        post.setOnFocusChangeListener(null);
     }
 
     @Override

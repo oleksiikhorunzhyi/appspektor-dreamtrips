@@ -68,6 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_tiny"
                         android:focusable="true"
+                        android:focusableInTouchMode="true"
                         android:textColor="@color/black"
                         tools:text="Jason Gordon"/>
 

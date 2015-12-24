@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.worldventures.dreamtrips.R;
@@ -41,6 +42,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     Router router;
     @Inject
     PhotoPickerDelegate photoPickerDelegate;
+
+    private WeakHandler handler = new WeakHandler();
 
     private InputMethodManager inputMethodManager;
 
@@ -182,11 +185,15 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void showPanel() {
-        inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
+        boolean isHidden = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
         if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
         updateCancelButtonState();
-        setPanelHeight((int) container.getResources().getDimension(R.dimen.picker_panel_height));
+        int panelHeight = (int) container.getResources().getDimension(R.dimen.picker_panel_height);
+        if (isHidden)
+            handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
+        else
+            setPanelHeight(panelHeight);
     }
 
     public void hidePanel() {

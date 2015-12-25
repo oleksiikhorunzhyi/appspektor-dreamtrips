@@ -1,13 +1,11 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.messenger.constant.CursorLoaderIds;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
@@ -67,10 +65,17 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         initialCursorLoader();
     }
 
-    private void initialCursorLoader() {
-        if (contactSubscription != null && !contactSubscription.isUnsubscribed()) {
+    @Override
+    public void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        if (visibility == View.VISIBLE){
+            initialCursorLoader();
+        } else {
             contactSubscription.unsubscribe();
         }
+    }
+
+    private void initialCursorLoader() {
         StringBuilder query = new StringBuilder("SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
                 "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
                 "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + ", " +
@@ -183,8 +188,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         dreamSpiceManager.shouldStop();
-        ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.ALL_CONVERSATION_LOADER);
-        ((AppCompatActivity) parentActivity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.GROUP_CONVERSATION_LOADER);
     }
 
     ///////////////////////////////////////////////////////////////////////////

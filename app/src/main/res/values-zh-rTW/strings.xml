@@ -268,6 +268,8 @@
     </string-array>
 
     <string name="profile_update_info">資料更新</string>
+    <string name="profile_zero_trip_images">旅行圖片</string>
+    <string name="profile_zero_bucket_list">願望清單</string>
     <string name="profile_trip_images">%d旅行圖片</string>
     <string name="profile_bucket_list">%d願望清單</string>
     <string name="profile_post">發佈</string>

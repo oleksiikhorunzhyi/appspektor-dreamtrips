@@ -24,6 +24,7 @@
             android:layout_gravity="right"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/chat_color_message_own"
+            android:textIsSelectable="true"
             />
     </FrameLayout>
 </LinearLayout>

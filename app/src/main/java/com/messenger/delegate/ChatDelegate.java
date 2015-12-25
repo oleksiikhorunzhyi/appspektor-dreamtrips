@@ -8,6 +8,7 @@ import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +62,16 @@ public class ChatDelegate {
         return setMultiUserChatData(conversation, newChatUsers, subject);
     }
 
+    public Conversation getExistingSingleConverastion(User participant) {
+        String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(currentUser, participant);
+        Conversation existingConversation = new Select()
+                .from(Conversation.class)
+                .byIds(conversationId)
+                .querySingle();
+
+        return existingConversation;
+    }
+
     public Conversation setMultiUserChatData(Conversation conversation, List<User> newParticipants, @Nullable String subject) {
         MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
                 .createMultiUserChat(conversation.getId(), currentUser, true);
@@ -73,6 +84,4 @@ public class ChatDelegate {
 
         return conversation;
     }
-
-
 }

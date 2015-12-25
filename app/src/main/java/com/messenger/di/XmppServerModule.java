@@ -1,5 +1,6 @@
 package com.messenger.di;
 
+import com.messenger.delegate.ChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -48,5 +49,10 @@ public class XmppServerModule {
     @Provides
     User provideUser(SessionHolder<UserSession> appSessionHolder) {
         return new User(appSessionHolder.get().get().getUser().getUsername());
+    }
+
+    @Provides
+    ChatDelegate provideChatDelegate(User user, MessengerServerFacade messengerServerFacade){
+        return new ChatDelegate(user, messengerServerFacade);
     }
 }

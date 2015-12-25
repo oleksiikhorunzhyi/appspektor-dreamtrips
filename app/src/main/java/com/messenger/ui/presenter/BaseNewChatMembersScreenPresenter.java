@@ -16,8 +16,6 @@ import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
 import com.messenger.ui.activity.NewChatMembersActivity;
@@ -50,6 +48,8 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
     DreamSpiceManager dreamSpiceManager;
     @Inject
     User user;
+    @Inject
+    ChatDelegate chatDelegate;
 
     private String textInChosenContactsEditText = "";
 
@@ -57,7 +57,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
 
     private Cursor contactsCursor;
     private ProfileCrosser profileCrosser;
-    protected ChatDelegate chatDelegate;
 
     protected final RxContentResolver contentResolver;
     protected Subscription contactSubscription;
@@ -91,7 +90,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
                 });
 
         profileCrosser = new ProfileCrosser(activity, new ProfileRouteCreator(appSessionHolder));
-        chatDelegate = new ChatDelegate(user, messengerServerFacade);
     }
 
     @Override

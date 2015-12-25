@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import com.innahema.collections.query.functions.Action1;
+import com.messenger.delegate.ChatDelegate;
+import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.ParticipantsRelationship;
+import com.messenger.ui.activity.ChatActivity;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -27,6 +31,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +44,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Inject
     NotificationDelegate notificationDelegate;
+    @Inject
+    ChatDelegate chatDelegate;
 
     public UserPresenter(UserBundle userBundle) {
         super(userBundle.getUser());
@@ -81,6 +88,20 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
         return new GetUserTimelineQuery(user.getId(), date);
+    }
+
+    public void onStartChatClicked() {
+        com.messenger.messengerservers.entities.User participant =
+                new com.messenger.messengerservers.entities.User(user.getUsername());
+
+        Conversation conversation = chatDelegate.getExistingSingleConverastion(participant);
+        if(conversation == null){
+            conversation = chatDelegate.createNewConversation(Arrays.asList(participant), "");
+            new ParticipantsRelationship(conversation.getId(), participant).save();
+            ContentUtils.insert(Conversation.CONTENT_URI, conversation);
+        }
+
+        //ChatActivity.startSingleChat(context, conversation.getId(), 0);
     }
 
     public void addFriendClicked() {

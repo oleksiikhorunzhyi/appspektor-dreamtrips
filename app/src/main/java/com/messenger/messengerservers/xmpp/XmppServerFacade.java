@@ -19,7 +19,6 @@ import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.PingManager;
 
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 
 public class XmppServerFacade implements MessengerServerFacade {
 
@@ -62,7 +60,7 @@ public class XmppServerFacade implements MessengerServerFacade {
 
         connectionExecutor.execute(() -> {
                     SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
-                    connection = new XMPPTCPConnection(XMPPTCPConnectionConfiguration.builder()
+                    connection = new MessengerConnection(XMPPTCPConnectionConfiguration.builder()
                             .setUsernameAndPassword(username, password)
                             .setServiceName(JidCreatorHelper.SERVICE_NAME)
                             .setHost(ServerParameters.URL)

@@ -4,6 +4,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.listeners.OnLeftChatListener;
 import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
@@ -21,6 +22,7 @@ public abstract class GlobalEventEmitter {
     protected List<InvitationListener> invitationListeners = new ArrayList<>();
     protected List<UnhandledMessageListener> unhandledMessageListeners = new ArrayList<>();
     protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
+    protected List<OnLeftChatListener> onLeftChatListeners = new CopyOnWriteArrayList<>();
 
     public void addHandledConversation(Conversation conversation) {
         handledConversations.add(conversation);
@@ -55,9 +57,9 @@ public abstract class GlobalEventEmitter {
         presenceListeners.remove(listener);
     }
 
-    protected void notifyUserPresenceChanged(User user) {
+    protected void notifyUserPresenceChanged(String userId, boolean isOnline) {
         for (PresenceListener listener: presenceListeners) {
-            listener.onUserPresenceChanged(user);
+            listener.onUserPresenceChanged(userId, isOnline);
         }
     }
 
@@ -100,6 +102,20 @@ public abstract class GlobalEventEmitter {
     protected void notifyOnSubjectChanges(String conversationId, String subject) {
         for (OnSubjectChangedListener listener : onSubjectChangedListeners) {
             listener.onSubjectChanged(conversationId, subject);
+        }
+    }
+
+    public void addOnLeftChatListener(OnLeftChatListener listener) {
+        onLeftChatListeners.add(listener);
+    }
+
+    public void removeOnLeftChatListener(OnLeftChatListener listener) {
+        onLeftChatListeners.remove(listener);
+    }
+
+    protected void notifyOnLeftChatListener(String conversationId, String userId) {
+        for (OnLeftChatListener listener : onLeftChatListeners) {
+            listener.onLeftChatListener(conversationId, userId);
         }
     }
 }

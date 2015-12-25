@@ -37,7 +37,7 @@ public class LeavePresence extends Stanza {
 
         buf.halfOpenElement("x");
         buf.attribute("xmlns", "http://jabber.org/protocol/muc");
-        buf.rightAngleBracket();
+        buf.closeEmptyElement();
 
         buf.closeElement(ELEMENT);
         return buf;

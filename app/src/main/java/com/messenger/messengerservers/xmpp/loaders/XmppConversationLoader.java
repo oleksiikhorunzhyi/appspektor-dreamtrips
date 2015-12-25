@@ -29,7 +29,7 @@ import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 public class XmppConversationLoader extends Loader<ConversationWithParticipants> {
     private static final String TAG = "XMPP CONTACT LOADER";
 
-    private static final int MAX_CONVERSATIONS = 30;
+    private static final int MAX_CONVERSATIONS = 512;
     private final XmppServerFacade facade;
 
     public XmppConversationLoader(XmppServerFacade facade) {

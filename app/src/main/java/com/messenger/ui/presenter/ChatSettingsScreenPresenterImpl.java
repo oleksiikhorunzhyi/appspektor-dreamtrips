@@ -7,13 +7,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.listeners.OnLeftChatListener;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.EditChatMembersActivity;
+import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.view.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
@@ -50,11 +53,23 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     @Inject
     User user;
 
+    private final GlobalEventEmitter emitter;
+    private final OnLeftChatListener onLeftChatListener = new OnLeftChatListener() {
+        @Override
+        public void onLeftChatListener(String conversationId, String userId) {
+            if (userId.equals(user.getId())) {
+                Intent intent = new Intent(activity, MessengerStartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activity.startActivity(intent);
+            }
+        }
+    };
+
     public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
         this.activity = activity;
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
         ((Injector) activity.getApplication()).inject(this);
-
+        emitter = facade.getGlobalEventEmitter();
         contentResolver = new RxContentResolver(activity.getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
                         .rawQuery(query.selection, query.selectionArgs));
@@ -74,11 +89,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     }
 
     private boolean isUserOwner() {
-        Timber.d("TESTT Conv: " + conversation.getId());
-        Timber.d("TESTT user: " + user.getId());
-        boolean result = conversation.getOwnerId().equals(user.getId());
-        Timber.d("TESTT isOwner: " + result);
-        return result;
+        return conversation.getOwnerId().equals(user.getId());
     }
 
     @Override
@@ -131,11 +142,21 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     }
 
     @Override
+    public void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        if (visibility == View.VISIBLE) {
+            Timber.d("TEST VISIBLE == View.VISIBLE");
+            emitter.addOnLeftChatListener(onLeftChatListener);
+        } else {
+            Timber.d("TEST VISIBLE != View.VISIBLE");
+            emitter.removeOnLeftChatListener(onLeftChatListener);
+        }
+    }
+
+    @Override
     public void onLeaveChatClicked() {
         MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner(), isUserOwner());
         chat.leave();
-        activity.setResult(Activity.RESULT_OK);
-        activity.finish();
     }
 
     @Override

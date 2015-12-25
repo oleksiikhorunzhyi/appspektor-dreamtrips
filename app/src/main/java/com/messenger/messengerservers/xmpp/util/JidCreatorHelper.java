@@ -9,6 +9,7 @@ import java.util.UUID;
 public final class JidCreatorHelper {
 
     public static final String SERVICE_NAME = "worldventures.com";
+    public static final String GROUP_SERVICE_NAME = "conference.worldventures.com";
 
     private JidCreatorHelper() {
 
@@ -19,7 +20,7 @@ public final class JidCreatorHelper {
     }
 
     public static String obtainGroupJid(String roomName) {
-        return String.format("%s@conference.%s", roomName != null ? roomName : UUID.randomUUID().toString(), SERVICE_NAME);
+        return (roomName != null ? roomName : UUID.randomUUID().toString()) + "@" + GROUP_SERVICE_NAME;
     }
 
     @Deprecated
@@ -35,6 +36,11 @@ public final class JidCreatorHelper {
     public static String obtainUserIdFromGroupJid(String roomJidWithResource){
         int pos = roomJidWithResource.lastIndexOf("/");
         return pos == -1 ? null : roomJidWithResource.substring(pos+1);
+    }
+
+
+    public static boolean isGroupJid(String jid) {
+        return !TextUtils.isEmpty(jid) && jid.contains(GROUP_SERVICE_NAME);
     }
 
 }

@@ -130,7 +130,7 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
         new AlertDialog.Builder(getContext())
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> getPresenter().onLeaveChatClicked())
                 .setNegativeButton(android.R.string.cancel, null)
-                .setMessage(R.string.chat_settings_leave_group_chat)
+                .setMessage(getResources().getString(R.string.chat_settings_leave_group_chat, getPresenter().getCurrentSubject()))
                 .create()
                 .show();
     }

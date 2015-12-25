@@ -33,7 +33,6 @@ import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
-import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -88,6 +87,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     protected boolean isLoading;
     protected boolean pendingScroll;
     private List<User> participants;
+    boolean typing;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
@@ -145,8 +145,6 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
             }
         });
     }
-
-    boolean typing;
 
     @Override
     public void messageTextChanged(int length) {
@@ -362,7 +360,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     @Override
     public User getUser() {
-        // TODO: 12/15/15  
+        // TODO: 12/15/15
         return user;
     }
     ///////////////////////////////////////////////////////////////////////////

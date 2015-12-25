@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
+import com.messenger.util.Constants;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
@@ -52,7 +53,7 @@ public class GroupAvatarsView extends GridLayout {
                 avatarImageView.setVisibility(VISIBLE);
                 ChatUser chatUser = chatUsers.get(i);
                 Picasso.with(getContext()).load(chatUser.getAvatarUrl())
-                        .placeholder(android.R.drawable.ic_menu_compass)
+                        .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
                         .into(avatarImageView);
             }
         }

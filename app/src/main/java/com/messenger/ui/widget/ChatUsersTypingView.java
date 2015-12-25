@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.messenger.util.Constants;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 import com.messenger.model.ChatUser;
@@ -136,7 +137,7 @@ public class ChatUsersTypingView extends RelativeLayout {
                 }
                 ChatUser user = typingUsers.get(i);
                 Picasso.with(getContext()).load(user.getAvatarUrl())
-                        .placeholder(android.R.drawable.ic_menu_compass)
+                        .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
                         .into(imageView);
             } else {
                 ObjectAnimator fadeOut = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 0f);

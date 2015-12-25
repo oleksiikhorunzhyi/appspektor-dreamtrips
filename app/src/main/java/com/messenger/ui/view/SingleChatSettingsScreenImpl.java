@@ -1,13 +1,12 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.util.Constants;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
@@ -34,7 +33,7 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl {
         User addressee = participants.get(0);
         Picasso.with(getContext())
                 .load(addressee.getAvatarUrl())
-                .placeholder(android.R.drawable.ic_menu_compass)
+                .placeholder(Constants.PLACEHOLDER_USER_AVATAR_BIG)
                 .into(singleChatAvatarView);
         chatNameTextView.setText(addressee.getName());
         chatDescriptionTextView.setText(addressee.isOnline()

@@ -101,7 +101,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             ContentUtils.insert(Conversation.CONTENT_URI, conversation);
         }
 
-        //ChatActivity.startSingleChat(context, conversation.getId(), 0);
+        ChatActivity.startChat(activityRouter.getContext(), conversation);
     }
 
     public void addFriendClicked() {

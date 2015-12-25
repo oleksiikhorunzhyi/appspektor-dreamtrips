@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -10,23 +9,23 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
 
@@ -49,8 +48,6 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.chat_add_new_members_title);
-        // obtain list of existing participants first
-        initExistingMembersSubscription();
     }
 
     private void initExistingMembersSubscription() {
@@ -66,13 +63,12 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
                 .subscribe(users -> {
                     originalParticipants = users;
                     // init contacts subscription excluding existing participants
                     // and refresh UI
                     initPotentialMembersSubscription();
-                });
+                }, throwable -> Timber.i(throwable, "DbFlow"));
     }
 
     private void initPotentialMembersSubscription() {
@@ -99,7 +95,6 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .throttleLast(100, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
                 .subscribe(users -> showContacts(users));
     }
 
@@ -114,6 +109,17 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
             } else {
                 getView().slideInConversationNameEditText();
             }
+        }
+    }
+
+    @Override
+    public void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        if (visibility == View.VISIBLE) {
+            initExistingMembersSubscription();
+        } else {
+            contactSubscription.unsubscribe();
+            participantsSubscriber.unsubscribe();
         }
     }
 
@@ -139,11 +145,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                         new ParticipantsRelationship(newConversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
 
-                Intent data = new Intent();
-                data.putExtra(Extra.CONVERSATION_ID, conversation.getId());
-                data.putExtra(Extra.CONVERSATION_TYPE, conversation.getType());
-                activity.setResult(Activity.RESULT_OK, data);
-                activity.finish();
+                ChatActivity.startChat(activity, newConversation);
                 return true;
         }
         return false;

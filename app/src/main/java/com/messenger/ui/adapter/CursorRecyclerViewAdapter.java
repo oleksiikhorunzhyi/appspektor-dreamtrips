@@ -33,6 +33,8 @@ import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
 
+import timber.log.Timber;
+
 /**
  * Provide a {@link android.support.v7.widget.RecyclerView.Adapter} implementation with cursor
  * support.
@@ -114,11 +116,15 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
+        int count = 0;
         if (mDataValid && mCursor != null) {
-            return mCursor.getCount();
-        } else {
-            return 0;
+            try {
+                return mCursor.getCount();
+            } catch (IllegalStateException e) { // if connection pool has been closed
+                Timber.i(e, "DB Flow");
+            }
         }
+        return count;
     }
 
     /**

@@ -1,20 +1,13 @@
 package com.messenger.ui.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.messenger.ui.view.ActivityAwareScreen;
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.view.ChatScreenImpl;
 
 public class ChatActivity extends BaseMvpViewActivity<ChatScreenImpl> {
-    public static final String EXTRA_CHAT_COMPANION_ID = "ChatActivity#EXTRA_CHAT_COMPANION_ID";
     public static final String EXTRA_CHAT_CONVERSATION_ID = "ChatActivity#EXTRA_CHAT_CONVERSATION_ID";
     public static final String EXTRA_CHAT_TYPE = "ChatActivity#EXTRA_CHAT_TYPE";
 
@@ -25,18 +18,14 @@ public class ChatActivity extends BaseMvpViewActivity<ChatScreenImpl> {
     public @interface ChatType {
     }
 
-    public static void startGroupChat(Context context, String conversationId, int requestCode) {
-        Intent starter = new Intent(context, ChatActivity.class);
-        starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
-        starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_GROUP);
-        ((Activity) context).startActivityForResult(starter, requestCode);
-    }
+    public static void startChat(Context context, Conversation conversation) {
+        int type = conversation.getType().equals(Conversation.Type.CHAT) ? CHAT_TYPE_SINGLE : CHAT_TYPE_GROUP;
 
-    public static void startSingleChat(Context context, @Nullable String conversationId, int requestCode) {
         Intent starter = new Intent(context, ChatActivity.class);
-        starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_SINGLE);
-        starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
-        ((Activity) context).startActivityForResult(starter, requestCode);
+        starter.putExtra(EXTRA_CHAT_TYPE, type);
+        starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversation.getId());
+        starter.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(starter);
     }
 
     @Override

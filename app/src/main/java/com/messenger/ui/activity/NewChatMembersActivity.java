@@ -1,14 +1,8 @@
 package com.messenger.ui.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.messenger.ui.view.ActivityAwareScreen;
 import com.messenger.ui.view.NewChatMembersScreenImpl;
 
 
@@ -20,18 +14,17 @@ public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersSc
     public static final int MODE_NEW_CHAT = 1;
     public static final int MODE_CHAT_ADD_MEMBERS = 2;
 
-    public static void startInNewChatMode(Context context, int requestCode) {
+    public static void startInNewChatMode(Context context) {
         Intent intent = new Intent(context, NewChatMembersActivity.class);
         intent.putExtra(EXTRA_MODE, MODE_NEW_CHAT);
-        ((Activity)context).startActivityForResult(intent, requestCode);
+        context.startActivity(intent);
     }
 
-    public static void startInAddMembersMode(Activity activity, String conversationId,
-                                             int requestCode) {
-        Intent intent = new Intent(activity, NewChatMembersActivity.class);
+    public static void startInAddMembersMode(Context context, String conversationId) {
+        Intent intent = new Intent(context, NewChatMembersActivity.class);
         intent.putExtra(EXTRA_MODE, MODE_CHAT_ADD_MEMBERS);
         intent.putExtra(EXTRA_CONVERSATION_ID, conversationId);
-        activity.startActivityForResult(intent, requestCode);
+        context.startActivity(intent);
     }
 
     @Override

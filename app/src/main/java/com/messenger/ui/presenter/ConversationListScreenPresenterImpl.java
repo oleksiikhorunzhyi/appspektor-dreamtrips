@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,9 +32,6 @@ import rx.schedulers.Schedulers;
 
 public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresenter<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
-
-    private static final int REQUEST_CODE_OPEN_CHAT = 33;
-    private static final int REQUEST_CODE_CREATE_CHAT = 34;
 
     private final RxContentResolver contentResolver;
     private Subscription contactSubscription;
@@ -140,11 +136,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        if (conversation.getType().equals(Conversation.Type.GROUP)) {
-            ChatActivity.startGroupChat(parentActivity, conversation.getId(), REQUEST_CODE_OPEN_CHAT);
-        } else {
-            ChatActivity.startSingleChat(parentActivity, conversation.getId(), REQUEST_CODE_OPEN_CHAT);
-        }
+        ChatActivity.startChat(parentActivity, conversation);
     }
 
     @Override
@@ -199,27 +191,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     // Activity related
     ///////////////////////////////////////////////////////////////////////////
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_OPEN_CHAT:
-            case REQUEST_CODE_CREATE_CHAT:
-                if (resultCode == Activity.RESULT_OK) {
-                    String conversationId = data.getStringExtra(Extra.CONVERSATION_ID);
-                    String conversationType = data.getStringExtra(Extra.CONVERSATION_TYPE);
-                    if (conversationType.equals(Conversation.Type.GROUP)) {
-                        ChatActivity.startGroupChat(parentActivity,
-                                conversationId, REQUEST_CODE_OPEN_CHAT);
-                    } else {
-                        ChatActivity.startSingleChat(parentActivity,
-                                conversationId, REQUEST_CODE_OPEN_CHAT);
-                    }
-                }
-                break;
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         parentActivity.getMenuInflater().inflate(R.menu.conversation_list, menu);
@@ -230,7 +201,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInNewChatMode(parentActivity, REQUEST_CODE_CREATE_CHAT);
+                NewChatMembersActivity.startInNewChatMode(parentActivity);
                 return true;
         }
         return false;

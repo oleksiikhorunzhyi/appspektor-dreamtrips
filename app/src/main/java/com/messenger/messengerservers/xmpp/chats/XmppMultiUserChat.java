@@ -27,7 +27,7 @@ import java.util.UUID;
 
 import timber.log.Timber;
 
-public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient{
+public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient {
 
     private static final String TAG = "MultiUserChat";
 
@@ -55,7 +55,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @SuppressWarnings("all")
-    private void setListeners(){
+    private void setListeners() {
         // TODO: 12/11/15 add future implementation
         presenceListener = presence -> notifyParticipantsChanged(new ArrayList<>());
         chat.addParticipantListener(presenceListener);
@@ -179,9 +179,14 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         String jid = JidCreatorHelper.obtainGroupJid(roomId);
         chat = MultiUserChatManager.getInstanceFor(connection).getMultiUserChat(jid);
 
-        if (!chat.isJoined()){
+        if (!chat.isJoined()) {
             try {
-                chat.createOrJoin(user.getId());
+                try {
+                    Log.e("MUC Create ", jid);
+                    chat.createOrJoin(user.getId());
+                } catch (IllegalStateException e) {
+                } // cause the method is synchronized var in library not volatile
+
                 setListeners();
             } catch (XMPPException.XMPPErrorException | SmackException e) {
                 Log.e(TAG, "Error ", e);

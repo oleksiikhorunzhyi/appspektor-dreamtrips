@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -10,7 +9,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
+import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
@@ -18,7 +17,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
-import java.util.UUID;
+
 import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -79,11 +78,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
 
-                Intent data = new Intent();
-                data.putExtra(Extra.CONVERSATION_ID, conversation.getId());
-                data.putExtra(Extra.CONVERSATION_TYPE, conversation.getType());
-                activity.setResult(Activity.RESULT_OK, data);
-                activity.finish();
+                ChatActivity.startChat(activity, conversation);
                 return true;
         }
         return false;

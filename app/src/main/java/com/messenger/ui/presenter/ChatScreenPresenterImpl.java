@@ -62,7 +62,6 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         implements ChatScreenPresenter {
 
     private final static int MAX_MESSAGE_PER_PAGE = 20;
-    private static final int REQUEST_CODE_ADD_USER = 33;
     private static final int UNREAD_DELAY = 2000;
 
     @Inject
@@ -101,7 +100,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         init(conversationId);
 
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
-        profileCrosser = new ProfileCrosser(context,  new ProfileRouteCreator(appSessionHolder));
+        profileCrosser = new ProfileCrosser(context, new ProfileRouteCreator(appSessionHolder));
     }
 
     private void init(String conversationId) {
@@ -138,22 +137,23 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
             if (view == null) return;
             switch (state1) {
                 case Composing:
-                    handler.post(()-> view.addTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
+                    handler.post(() -> view.addTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
                     break;
                 case Paused:
-                    handler.post(()-> view.removeTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
+                    handler.post(() -> view.removeTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
                     break;
             }
         });
     }
 
     boolean typing;
+
     @Override
     public void messageTextChanged(int length) {
         if (!typing && length > 0) {
             typing = true;
             chat.setCurrentState(ChatState.Composing);
-        } else if (length == 0){
+        } else if (length == 0) {
             typing = false;
             chat.setCurrentState(ChatState.Paused);
         }
@@ -204,9 +204,9 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     protected void connectMembers() {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
-                        "ON p.userId = u._id " +
-                        "WHERE p.conversationId = ?"
+                                "JOIN ParticipantsRelationship p " +
+                                "ON p.userId = u._id " +
+                                "WHERE p.conversationId = ?"
                 ).withSelectionArgs(new String[]{conversation.getId()}).build();
         new RxContentResolver(getContext().getContentResolver(), query -> {
             return FlowManager.getDatabaseForTable(User.class).getWritableDatabase().rawQuery(query.selection, query.selectionArgs);
@@ -393,8 +393,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInAddMembersMode(getActivity(), conversation.getId(),
-                        REQUEST_CODE_ADD_USER);
+                NewChatMembersActivity.startInAddMembersMode(getActivity(), conversation.getId());
                 return true;
             case R.id.action_settings:
                 if (conversation.getType().equals(Conversation.Type.CHAT)) {
@@ -405,24 +404,6 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 return true;
         }
         return false;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_ADD_USER:
-                if (resultCode == Activity.RESULT_OK) {
-                    // chat type has changed from single to group
-                    String conversationType = data
-                            .getStringExtra(MessengerStartActivity.EXTRA_CONVERSATION_TYPE);
-                    if (!conversationType.equals(conversation.getType())) {
-                        activity.setResult(resultCode, data);
-                        activity.finish();
-                    }
-                }
-                break;
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

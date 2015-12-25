@@ -143,7 +143,8 @@ public abstract class BaseActivity extends InjectingActivity {
         args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, ToolbarConfig.Builder.create().visible(false).build());
         router.finish(); // for sure if activity start finishing
         router.openComponentActivity(Route.LOGIN, args,
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);    }
+                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

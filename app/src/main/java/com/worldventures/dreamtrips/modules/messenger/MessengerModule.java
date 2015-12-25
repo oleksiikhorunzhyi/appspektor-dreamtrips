@@ -6,8 +6,10 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(complete = false,
-        library = true)
+@Module(
+        complete = false,
+        library = true
+)
 public class MessengerModule {
     public static final String MESSENGER = "Messenger";
 

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.messenger.di.ActivityWatcherInitializer;
 import com.messenger.di.ChatFacadeInitializer;
-import com.messenger.di.MessengerConnectorInitializer;
+import com.messenger.di.MessengerInitializer;
 import com.messenger.di.PresenceListenerInitializer;
 import com.messenger.di.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
+import com.worldventures.dreamtrips.modules.messenger.MessengerInitializerModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,13 +36,17 @@ import dagger.Provides;
                 //
                 StorageInitializer.class,
                 //
-                MessengerConnectorInitializer.class,
+                MessengerInitializer.class,
                 ActivityWatcherInitializer.class,
                 //
                 PresenceListenerInitializer.class
 
         },
-        library = true, complete = false)
+        includes = {
+                MessengerInitializerModule.class
+        },
+        library = true, complete = false
+)
 public class InitializerModule {
 
     @Provides(type = Provides.Type.SET)
@@ -111,13 +116,4 @@ public class InitializerModule {
         return new PresenceListenerInitializer();
     }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideMessengerConnectorInitializer() {
-        return new MessengerConnectorInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideActivityWatcherInitializer() {
-        return new ActivityWatcherInitializer();
-    }
 }

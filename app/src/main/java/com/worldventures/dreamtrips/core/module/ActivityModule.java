@@ -44,8 +44,8 @@ public class ActivityModule {
     }
 
     @Provides
-    public FragmentManager provideFragmentManager(){
-        return  baseActivity.getSupportFragmentManager();
+    public FragmentManager provideFragmentManager() {
+        return baseActivity.getSupportFragmentManager();
     }
 
     @Provides

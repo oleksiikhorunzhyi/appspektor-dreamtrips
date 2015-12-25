@@ -220,4 +220,39 @@
     </style>
 
     <!--end messenger-->
+
+    <!--in app notifications-->
+    <style name="InAppNotificationSingleChatAvatarView">
+        <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="InAppNotificationGroupChatAvatarView">
+        <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
+    </style>
+
+    <style name="InAppNotificationTitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="InAppNotificationText" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="InAppNotificationCloseButton">
+        <item name="android:layout_width">@dimen/in_app_notification_close_button</item>
+        <item name="android:layout_height">@dimen/in_app_notification_close_button</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@null</item>
+        <item name="android:text">X</item>
+    </style>
+    <!--end in app notifications-->
 </resources>

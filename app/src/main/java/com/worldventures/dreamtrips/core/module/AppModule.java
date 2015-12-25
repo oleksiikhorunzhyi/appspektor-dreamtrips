@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
+import com.worldventures.dreamtrips.modules.messenger.MessengerModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,7 +48,8 @@ import dagger.Provides;
                 //
                 LocaleModule.class,
                 //
-                XmppServerModule.class
+                XmppServerModule.class,
+                MessengerModule.class
         },
         library = true,
         complete = false,

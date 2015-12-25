@@ -1,5 +1,7 @@
 package com.messenger.di;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -8,12 +10,13 @@ import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.utils.SimpleActivityLifecycleCallbacks;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 
-public class MessengerConnectorInitializer implements AppInitializer {
+public class MessengerInitializer implements AppInitializer {
 
     @Inject
     @ForApplication
@@ -24,10 +27,29 @@ public class MessengerConnectorInitializer implements AppInitializer {
     MessengerServerFacade messengerServerFacade;
     @Inject
     DreamSpiceManager spiceManager;
+    //
+    @Inject
+    Application app;
+    @Inject
+    UnhandledMessageWatcher unhandledMessageWatcher;
 
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
+        //
         MessengerConnector.init(context, appSessionHolder, messengerServerFacade, spiceManager);
+        //
+        app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                unhandledMessageWatcher.start(activity);
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                unhandledMessageWatcher.stop();
+            }
+        });
     }
 }

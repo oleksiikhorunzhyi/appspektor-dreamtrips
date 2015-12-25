@@ -69,6 +69,8 @@
     <color name="share_photo_bg_color">#EEEEEE</color>
     <color name="picker_panel_blue">#005E92</color>
 
+    <color name="in_app_notif_background">#2F2F2F</color>
+    <drawable name="in_app_notification_drawable_bg">@color/in_app_notif_background</drawable>
 
     <!--messenger-->
     <!-- General -->

@@ -40,6 +40,9 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
         getObjectGraph().inject(target);
     }
 
+    protected void afterInject() {
+    }
+
     protected void setupObjectGraph() {
         objectGraph = getApplicationInjector().getObjectGraph().plus(getModules().toArray());
     }
@@ -54,6 +57,7 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
 
         setupObjectGraph();
         inject(this);
+        afterInject();
 
         beforeCreateView(savedInstanceState);
 

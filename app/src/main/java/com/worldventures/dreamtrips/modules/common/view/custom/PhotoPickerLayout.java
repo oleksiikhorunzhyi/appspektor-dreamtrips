@@ -115,10 +115,18 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void setup(FragmentManager fragmentManager, boolean multiPickEnabled) {
+        this.setup(fragmentManager, multiPickEnabled, true);
+    }
+
+    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, int pickLimit) {
+        this.setup(fragmentManager, multiPickEnabled);
+        this.pickLimit = pickLimit;
+    }
+
+    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, boolean isVisible) {
         this.fragmentManager = fragmentManager;
         this.multiPickEnabled = multiPickEnabled;
-        photoPickerDelegate.setupPhotoPickerLayout(this);
-        hidePanel();
+        if (isVisible) photoPickerDelegate.setupPhotoPickerLayout(this);
     }
 
     /**
@@ -154,12 +162,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
                 .build());
     }
 
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, int pickLimit) {
-        this.setup(fragmentManager, multiPickEnabled);
-        this.pickLimit = pickLimit;
-    }
-
     public void updatePickedItemsCount(int pickedCount) {
+        if (selectedCount == null) return;
+        //
         if (pickedCount == 0) {
             selectedCount.setText(null);
         } else {
@@ -226,6 +231,10 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
     public boolean isPanelVisible() {
         return getPanelHeight() != 0;
+    }
+
+    public boolean isShown() {
+        return isShown;
     }
 
     public void setOnDoneClickListener(OnDoneClickListener onDoneClickListener) {

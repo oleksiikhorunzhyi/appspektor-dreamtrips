@@ -158,6 +158,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
 
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), true, 5);
+        photoPickerLayout.hidePanel();
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages, PickImageDelegate.REQUEST_MULTI_SELECT));
     }
 

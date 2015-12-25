@@ -86,6 +86,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         handler = new WeakHandler();
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), false);
+        photoPickerLayout.hidePanel();
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages));
     }
 

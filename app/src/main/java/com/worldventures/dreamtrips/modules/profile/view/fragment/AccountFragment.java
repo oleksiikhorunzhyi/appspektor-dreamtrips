@@ -46,6 +46,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), false);
+        photoPickerLayout.hidePanel();
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
 
         profileToolbar.setOnMenuItemClickListener(item -> {

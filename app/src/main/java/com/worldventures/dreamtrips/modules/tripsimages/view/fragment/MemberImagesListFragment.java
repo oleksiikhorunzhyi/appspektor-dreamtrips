@@ -21,23 +21,42 @@ public class MemberImagesListFragment<P extends MemberImagesPresenter> extends T
     @InjectView(R.id.photo_picker)
     PhotoPickerLayout photoPickerLayout;
 
+    private boolean isVisible;
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         inject(photoPickerLayout);
-        photoPickerLayout.setup(getChildFragmentManager(), false);
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages, PickImageDelegate.REQUEST_PICK_PICTURE));
+        setupPicker();
     }
 
     @OnClick(R.id.fab_photo)
     public void actionPhoto() {
         photoPickerLayout.showPanel();
 
-        if (this instanceof AccountImagesListFragment){
+        if (this instanceof AccountImagesListFragment) {
             TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
         } else {
             TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        isVisible = isVisibleToUser;
+
+        setupPicker();
+
+        super.setUserVisibleHint(isVisibleToUser);
+    }
+
+    private void setupPicker() {
+        if (photoPickerLayout == null) return;
+        //
+        photoPickerLayout.setup(getChildFragmentManager(), false, isVisible);
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter()
+                .attachImages(chosenImages, PickImageDelegate.REQUEST_PICK_PICTURE));
+        hidePhotoPicker();
     }
 
     @Override

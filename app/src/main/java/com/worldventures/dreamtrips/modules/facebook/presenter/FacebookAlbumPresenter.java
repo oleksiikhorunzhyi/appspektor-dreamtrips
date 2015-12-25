@@ -13,7 +13,8 @@ public class FacebookAlbumPresenter extends Presenter<FacebookAlbumPresenter.Vie
 
     private Request.Callback callback = response -> {
         requestForPagedResults = response.getRequestForPagedResults(Response.PagingDirection.NEXT);
-        view.handleResponse(response);
+        if (view != null)
+            view.handleResponse(response);
     };
 
     public void requestAlbums(boolean fromScroll) {

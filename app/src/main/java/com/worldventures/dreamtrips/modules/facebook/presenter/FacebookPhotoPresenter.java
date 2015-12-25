@@ -28,7 +28,8 @@ public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPre
 
     Request.Callback callback = response -> {
         requestForPagedResults = response.getRequestForPagedResults(Response.PagingDirection.NEXT);
-        handleResponse(response);
+        if (view != null)
+            handleResponse(response);
     };
 
     private void handleResponse(Response response) {

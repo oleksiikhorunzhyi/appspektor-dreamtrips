@@ -48,7 +48,7 @@ public class MessengerInitializer implements AppInitializer {
 
             @Override
             public void onActivityStopped(Activity activity) {
-                unhandledMessageWatcher.stop();
+                unhandledMessageWatcher.stop(activity);
             }
         });
     }

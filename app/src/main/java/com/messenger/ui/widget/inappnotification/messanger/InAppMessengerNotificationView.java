@@ -36,6 +36,7 @@ public abstract class InAppMessengerNotificationView extends BaseInAppNotificati
 
     @Override
     protected void initialize() {
+        super.initialize();
         setBackgroundResource(R.drawable.in_app_notification_drawable_bg);
     }
 }

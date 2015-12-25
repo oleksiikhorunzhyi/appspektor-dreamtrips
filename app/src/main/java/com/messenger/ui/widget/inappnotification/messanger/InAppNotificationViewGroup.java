@@ -28,7 +28,7 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
 
     private List<User> chatParticipantsList;
 
-    public void setChatParticipantsList(List<User> chatParticipantsList){
+    public void setChatParticipantsList(List<User> chatParticipantsList) {
         this.chatParticipantsList = chatParticipantsList;
         avatarViewGroup.updateAvatars(chatParticipantsList);
     }
@@ -63,9 +63,9 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
     }
 
     @Override
-    protected void initialize(){
+    protected void initialize() {
         ButterKnife.inject(this,
-                LayoutInflater.from(getContext()).inflate(R.layout.layout_in_app_notification_chat,
+                LayoutInflater.from(getContext()).inflate(R.layout.layout_in_app_notification_group,
                         this, true));
         super.initialize();
     }

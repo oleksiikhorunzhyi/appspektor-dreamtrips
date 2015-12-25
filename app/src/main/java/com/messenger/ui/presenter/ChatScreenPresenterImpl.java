@@ -272,7 +272,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         }
 
         int loadedCount = loadedMessages.size();
-        haveMoreElements = loadedCount < MAX_MESSAGE_PER_PAGE;
+        haveMoreElements = loadedCount == MAX_MESSAGE_PER_PAGE;
         Message lastMessage = loadedMessages.get(loadedCount - 1);
         Message firstMessage = loadedMessages.get(0);
 

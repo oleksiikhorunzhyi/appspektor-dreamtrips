@@ -16,6 +16,7 @@ import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
 import com.messenger.util.ChatDateUtils;
+import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
@@ -181,7 +182,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             holder.avatarImageView.setVisibility(View.VISIBLE);
             Picasso.with(context)
                     .load(userFrom == null ? null : userFrom.getAvatarUrl())
-                    .placeholder(android.R.drawable.ic_menu_compass)
+                    .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
                     .into(holder.avatarImageView);
 
             holder.avatarImageView.setOnClickListener(v -> {

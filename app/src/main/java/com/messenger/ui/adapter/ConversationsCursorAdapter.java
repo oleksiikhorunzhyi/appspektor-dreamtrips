@@ -20,6 +20,7 @@ import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
+import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -146,7 +147,7 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
             OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
             Picasso.with(context)
                     .load(addressee.getAvatarUrl())
-                    .placeholder(android.R.drawable.ic_menu_compass)
+                    .placeholder(Constants.PLACEHOLDER_USER_AVATAR_BIG)
                     .into(oneToOneHolder.getAvatarView());
             oneToOneHolder.getAvatarView().setOnline(addressee.isOnline());
         }

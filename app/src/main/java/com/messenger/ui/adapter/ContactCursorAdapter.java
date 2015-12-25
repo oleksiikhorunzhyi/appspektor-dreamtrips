@@ -15,6 +15,7 @@ import com.messenger.ui.adapter.MessagesCursorAdapter.OnAvatarClickListener;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.messenger.ui.adapter.holder.ContactWithHeaderViewHolder;
+import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
@@ -141,7 +142,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
         holder.getAvatarView().setOnline(user.isOnline());
         Picasso.with(context)
                 .load(user.getAvatarUrl())
-                .placeholder(android.R.drawable.ic_menu_compass)
+                .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
                 .into(holder.getAvatarView());
 
         holder.getAvatarView().setOnClickListener(v -> {

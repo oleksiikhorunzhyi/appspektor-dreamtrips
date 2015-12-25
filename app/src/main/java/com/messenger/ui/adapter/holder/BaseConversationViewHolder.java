@@ -3,6 +3,7 @@ package com.messenger.ui.adapter.holder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.util.RxContentResolver;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,6 +35,13 @@ public class BaseConversationViewHolder extends BaseViewHolder {
     TextView lastMessageDateTextView;
     @InjectView(R.id.conversation_unread_messages_count_textview)
     TextView unreadMessagesCountTextView;
+    //
+    @InjectView(R.id.swipe)
+    SwipeLayout swipeLayout;
+    @InjectView(R.id.swipe_layout_button_delete)
+    View deleteButton;
+    @InjectView(R.id.swipe_layout_button_more)
+    View moreButton;
     //
     private final RxContentResolver contentResolver;
     private Subscription participantsSubscriber;
@@ -58,6 +67,18 @@ public class BaseConversationViewHolder extends BaseViewHolder {
 
     public TextView getUnreadMessagesCountTextView() {
         return unreadMessagesCountTextView;
+    }
+
+    public SwipeLayout getSwipeLayout() {
+        return swipeLayout;
+    }
+
+    public View getDeleteButton() {
+        return deleteButton;
+    }
+
+    public View getMoreButton() {
+        return moreButton;
     }
 
     public void updateParticipants(String conversationId, Action1<List<User>> listener) {

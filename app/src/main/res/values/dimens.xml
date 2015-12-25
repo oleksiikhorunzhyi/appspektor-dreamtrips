@@ -231,10 +231,10 @@
     <dimen name="chat_settings_group_chat_info_text_size">12sp</dimen>
     <dimen name="chat_settings_group_chat_info_horizontal_padding">10dp</dimen>
 
-    <!-- Chat members screen -->
-    <dimen name="chat_edit_members_row_action_button_text_size">13sp</dimen>
-    <dimen name="chat_edit_members_row_action_button_pading">16dp</dimen>
-    <dimen name="chat_edit_members_row_action_button_drawable_padding">4dp</dimen>
+    <!-- Messenger misc -->
+    <dimen name="messenger_swappable_action_button_text_size">13sp</dimen>
+    <dimen name="messenger_swappable_action_button_padding">16dp</dimen>
+    <dimen name="messenger_swappable_action_button_drawable_padding">4dp</dimen>
 
     <!--end messenger-->
 </resources>

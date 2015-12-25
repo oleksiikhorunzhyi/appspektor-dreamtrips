@@ -9,6 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
@@ -26,8 +27,11 @@ public class UserCell extends BaseUserCell {
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
 
+    private DrawableUtil drawableUtil;
+
     public UserCell(View view) {
         super(view);
+        drawableUtil = new DrawableUtil(view.getContext());
     }
 
     @Override
@@ -75,7 +79,8 @@ public class UserCell extends BaseUserCell {
     }
 
     private void openFriendActionDialog() {
+        sdvAvatar.setDrawingCacheEnabled(true);
         new FriendActionDialogDelegate(itemView.getContext(), getEventBus())
-                .showFriendDialog(getModelObject(), sdvAvatar.getDrawable());
+                .showFriendDialog(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
     }
 }

@@ -243,6 +243,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Override
     public void onError(int id, Exception ex) {
+        if (view == null) return;
+        //
         UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(String.valueOf(id));
         if (bucketPhotoUploadTask != null)
             photoUploadError(bucketPhotoUploadTask);

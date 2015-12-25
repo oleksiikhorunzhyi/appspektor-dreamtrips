@@ -11,6 +11,16 @@ public interface ConversationListScreenPresenter extends ActivityAwareViewStateM
 
     void onConversationSelected(Conversation conversation);
 
+    void onDeleteButtonPressed(Conversation conversation);
+
+    void onDeletionConfirmed(Conversation conversation);
+
+    void onMoreOptionsButtonPressed(Conversation conversation);
+
+    void onMarkAsUnreadButtonPressed(Conversation conversation);
+
+    void onTurnOffNotificationsButtonPressed(Conversation conversation);
+
     void onConversationsDropdownSelected(boolean showOnlyGroupConversations);
 
     void onConversationsSearchFilterSelected(String searchFilter);

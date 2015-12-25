@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
@@ -31,7 +33,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class ConversationListScreenImpl extends BaseViewStateLinearLayout<ConversationListScreen,
-        ConversationListScreenPresenter> implements ConversationListScreen {
+        ConversationListScreenPresenter> implements ConversationListScreen,
+        ConversationsCursorAdapter.SwipeButtonsListener {
 
     @InjectView(R.id.conversation_list_recycler_view) RecyclerView recyclerView;
     @InjectView(R.id.conversation_list_loading_view) View loadingView;
@@ -104,6 +107,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
 
         adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser());
         adapter.setClickListener(presenter::onConversationSelected);
+        adapter.setSwipeButtonsListener(this);
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
@@ -150,6 +154,46 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
     @Override
     public ConversationListScreenPresenter createPresenter() {
         return new ConversationListScreenPresenterImpl(getActivity());
+    }
+
+    @Override
+    public void onDeleteButtonPressed(Conversation conversation) {
+        getPresenter().onDeleteButtonPressed(conversation);
+    }
+
+    @Override
+    public void showConversationDeletionConfirmationDialog(Conversation conversation) {
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.conversation_list_delete_dialog_message)
+                .setPositiveButton(R.string.conversation_list_delete_dialog_pos_button,
+                        (d, i) -> {
+                    presenter.onDeletionConfirmed(conversation);
+                    adapter.closeAllItems();
+                })
+                .setNeutralButton(R.string.cancel, (d, i) -> adapter.closeAllItems())
+                .show();
+    }
+
+    @Override
+    public void onMoreOptionsButtonPressed(Conversation conversation) {
+        getPresenter().onMoreOptionsButtonPressed(conversation);
+    }
+
+    @Override
+    public void showConversationMoreActionsDialog(Conversation conversation) {
+        new AlertDialog.Builder(getContext())
+                .setItems(R.array.conversation_list_more_actions, (dialogInterface, i) -> {
+                    switch (i) {
+                        case 0:
+                            getPresenter().onMarkAsUnreadButtonPressed(conversation);
+                            break;
+                        case 1:
+                            getPresenter().onTurnOffNotificationsButtonPressed(conversation);
+                            break;
+                    }
+                    adapter.closeAllItems();
+                })
+                .show();
     }
 
     ///////////////////////////////////////////////////////////////////////////

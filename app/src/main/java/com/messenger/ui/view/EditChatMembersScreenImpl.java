@@ -130,9 +130,11 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
     @Override
     public void showDeletionConfirmationDialog(User user) {
         new AlertDialog.Builder(getContext())
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(android.R.string.cancel, (dialogInterface, i)
+                        -> adapter.closeAllItems())
                 .setPositiveButton(R.string.edit_chat_dialog_confirm_user_deletion_button_delete, (dialog1, which1) -> {
                     getPresenter().onDeleteUserFromChatConfirmed(user);
+                    adapter.closeAllItems();
                 })
                 .setMessage(R.string.edit_chat_dialog_confirm_user_deletion_message)
                 .create()

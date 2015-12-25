@@ -8,12 +8,9 @@
         android:id="@+id/swipe_layout_button_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/chat_edit_members_delete_button_text_color"
+        style="@style/MessengerSwappableActionButton"
         android:background="@color/chat_edit_members_delete_button_bg"
         android:text="@string/edit_chat_members_row_button_delete"
-        android:textSize="@dimen/chat_edit_members_row_action_button_text_size"
-        android:padding="@dimen/chat_edit_members_row_action_button_pading"
-        android:drawablePadding="@dimen/chat_edit_members_row_action_button_drawable_padding"
         android:drawableLeft="@drawable/ic_delete_member"/>
 
     <include layout="@layout/list_item_contact"/>

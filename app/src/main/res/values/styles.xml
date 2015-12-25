@@ -211,5 +211,13 @@
         <item name="android:textSize">@dimen/new_chat_conversation_list_last_message_textview_textsize</item>
         <item name="android:background">@drawable/badge_blue_small</item>
     </style>
+
+    <style name="MessengerSwappableActionButton">
+        <item name="android:textSize">@dimen/messenger_swappable_action_button_text_size</item>
+        <item name="android:textColor">@color/chat_edit_members_delete_button_text_color</item>
+        <item name="android:padding">@dimen/messenger_swappable_action_button_padding</item>
+        <item name="android:drawablePadding">@dimen/messenger_swappable_action_button_drawable_padding</item>
+    </style>
+
     <!--end messenger-->
 </resources>

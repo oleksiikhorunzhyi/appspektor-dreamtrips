@@ -11,6 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
+import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
+import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
+import com.daimajia.swipe.util.Attributes;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
@@ -35,7 +40,9 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseConversationViewHolder> {
+public class ConversationsCursorAdapter
+        extends CursorRecyclerViewAdapter<BaseConversationViewHolder>
+        implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
@@ -47,12 +54,20 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
 
     private ClickListener clickListener;
 
+    public SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
+    private SwipeButtonsListener swipeButtonsListener;
+
     private ConversationHelper conversationHelper;
     private SimpleDateFormat todayDateFormat;
     private SimpleDateFormat moreThanTwoDaysAgoFormat;
 
     public interface ClickListener {
         void onConversationClick(Conversation conversation);
+    }
+
+    public interface SwipeButtonsListener {
+        void onDeleteButtonPressed(Conversation conversation);
+        void onMoreOptionsButtonPressed(Conversation conversation);
     }
 
     public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, User currentUser) {
@@ -80,9 +95,25 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
             setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));
         }
 
-        holder.itemView.setOnClickListener(view -> {
+        final View.OnClickListener itemViewListener = v -> {
             if (clickListener != null) {
                 clickListener.onConversationClick(conversation);
+            }
+        };
+        holder.itemView.setOnClickListener(itemViewListener);
+
+        // init swipe layout
+        swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
+        holder.getSwipeLayout().addSwipeListener(new ItemViewSwipeListener(holder.itemView,
+                itemViewListener));
+        holder.getDeleteButton().setOnClickListener(view -> {
+            if (swipeButtonsListener != null) {
+                swipeButtonsListener.onDeleteButtonPressed(conversation);
+            }
+        });
+        holder.getMoreButton().setOnClickListener(view -> {
+            if (swipeButtonsListener != null) {
+                swipeButtonsListener.onMoreOptionsButtonPressed(conversation);
             }
         });
 
@@ -214,6 +245,113 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Swipe layout
+    ///////////////////////////////////////////////////////////////////////////
+
+    private static class ItemViewSwipeListener implements SwipeLayout.SwipeListener {
+        private View itemView;
+        private View.OnClickListener itemViewClickListener;
+
+        public ItemViewSwipeListener(View itemView, View.OnClickListener itemViewClickListener) {
+            this.itemView = itemView;
+            this.itemViewClickListener = itemViewClickListener;
+        }
+
+        @Override
+        public void onStartOpen(SwipeLayout layout) {
+            itemView.setOnClickListener(null);
+        }
+
+        @Override
+        public void onOpen(SwipeLayout layout) {
+
+        }
+
+        @Override
+        public void onStartClose(SwipeLayout layout) {
+
+        }
+
+        @Override
+        public void onClose(SwipeLayout layout) {
+            itemView.setOnClickListener(itemViewClickListener);
+        }
+
+        @Override
+        public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+
+        }
+
+        @Override
+        public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+
+        }
+    }
+
+    public void setSwipeButtonsListener(SwipeButtonsListener swipeButtonsListener) {
+        this.swipeButtonsListener = swipeButtonsListener;
+    }
+
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
+    }
+
+    @Override
+    public void openItem(int position) {
+        swipeButtonsManger.openItem(position);
+    }
+
+    @Override
+    public void closeItem(int position) {
+        swipeButtonsManger.closeItem(position);
+    }
+
+    @Override
+    public void closeAllExcept(SwipeLayout layout) {
+        swipeButtonsManger.closeAllExcept(layout);
+    }
+
+    @Override
+    public void closeAllItems() {
+        swipeButtonsManger.closeAllItems();
+    }
+
+    @Override
+    public List<Integer> getOpenItems() {
+        return swipeButtonsManger.getOpenItems();
+    }
+
+    @Override
+    public List<SwipeLayout> getOpenLayouts() {
+        return swipeButtonsManger.getOpenLayouts();
+    }
+
+    @Override
+    public void removeShownLayouts(SwipeLayout layout) {
+        swipeButtonsManger.removeShownLayouts(layout);
+    }
+
+    @Override
+    public boolean isOpen(int position) {
+        return swipeButtonsManger.isOpen(position);
+    }
+
+    @Override
+    public Attributes.Mode getMode() {
+        return swipeButtonsManger.getMode();
+    }
+
+    @Override
+    public void setMode(Attributes.Mode mode) {
+        swipeButtonsManger.setMode(mode);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Search related
+    ///////////////////////////////////////////////////////////////////////////
 
     public class FilterCursorWrapper extends CursorWrapper {
         private int[] index;

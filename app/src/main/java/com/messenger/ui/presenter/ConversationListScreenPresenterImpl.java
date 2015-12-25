@@ -6,13 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.messenger.constant.CursorLoaderIds;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
@@ -145,6 +145,34 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         } else {
             ChatActivity.startSingleChat(parentActivity, conversation.getId(), REQUEST_CODE_OPEN_CHAT);
         }
+    }
+
+    @Override
+    public void onDeleteButtonPressed(Conversation conversation) {
+        getView().showConversationDeletionConfirmationDialog(conversation);
+    }
+
+    @Override
+    public void onDeletionConfirmed(Conversation conversation) {
+        Toast.makeText(parentActivity, "Delete not yet implemented",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMoreOptionsButtonPressed(Conversation conversation) {
+        getView().showConversationMoreActionsDialog(conversation);
+    }
+
+    @Override
+    public void onMarkAsUnreadButtonPressed(Conversation conversation) {
+        Toast.makeText(parentActivity, "Mark as unread not yet implemented",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTurnOffNotificationsButtonPressed(Conversation conversation) {
+        Toast.makeText(parentActivity, "Turn of notifications not yet implemented",
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

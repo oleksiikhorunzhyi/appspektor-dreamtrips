@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlDistanceFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
@@ -77,11 +78,11 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDe
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.BucketPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.InspirePhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.SocialImageFullscreenFragment;
@@ -167,6 +168,7 @@ public enum Route {
     DTL_MERCHANTS_LIST(DtlMerchantsListFragment.class),
     DTL_IMAGE(DtlImageFragment.class),
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
+    DTL_DISTANCE_SETTINGS(DtlDistanceFragment.class),
     DTL_FILTERS(DtlFiltersFragment.class),
     DTL_MAP(DtlMapFragment.class),
     DTL_MAP_INFO(DtlMapInfoFragment.class),

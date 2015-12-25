@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import icepick.State;
 
 public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
-        DtlMerchantRepository.MerchantUpdatedListener {
+        DtlMerchantRepository.MerchantUpdatedListener, DtlFilterDelegate.FilterChangedListener {
 
     @Inject
     LocationDelegate locationDelegate;
@@ -44,14 +44,21 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
             dtlFilterData.setDistanceType(db.getDistanceType());
         }
 
+        dtlFilterDelegate.addDataChangedListener(this);
         dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         attachAmenities();
     }
 
     @Override
     public void dropView() {
+        dtlFilterDelegate.removeDataChangedListener(this);
         dtlMerchantRepository.detachListener(this);
         super.dropView();
+    }
+
+    @Override
+    public void onFilterDataChanged() {
+        view.attachFilterData(dtlFilterData);
     }
 
     public void onEvent(FilterAttributesSelectAllEvent event) {

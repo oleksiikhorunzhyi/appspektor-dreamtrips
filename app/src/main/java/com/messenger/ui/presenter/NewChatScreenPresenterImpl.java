@@ -74,26 +74,10 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                     return true;
                 }
 
-                Conversation conversation;
-                if (selectedUsers.size() == 1) {
-                    conversation = new Conversation.Builder()
-                            .type(Conversation.Type.CHAT)
-                            .id(ThreadCreatorHelper.obtainThreadSingleChat(user, selectedUsers.get(0)))
-                            .ownerId(user.getUserName())
-                            .build();
-                } else {
-                    conversation = new Conversation.Builder()
-                            .type(Conversation.Type.GROUP)
-                            .id(UUID.randomUUID().toString())
-                            .ownerId(user.getUserName())
-                            .build();
-                }
+                Conversation conversation = chatDelegate.createNewConversation(selectedUsers, getView().getConversationName());
                 //
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                if (selectedUsers.size() > 1) {
-                    saveChatModifications(conversation, selectedUsers, getView().getConversationName());
-                }
 
                 Intent data = new Intent();
                 data.putExtra(Extra.CONVERSATION_ID, conversation.getId());

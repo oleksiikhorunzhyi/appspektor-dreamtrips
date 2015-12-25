@@ -105,7 +105,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     }
 
     private void init(String conversationId) {
-        paginationDelegate = new PaginationDelegate(activity, messengerServerFacade, 20);
+        paginationDelegate = new PaginationDelegate(activity, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
 
         loadConversation(conversationId);
         chat = createChat(messengerServerFacade.getChatManager(), conversation);

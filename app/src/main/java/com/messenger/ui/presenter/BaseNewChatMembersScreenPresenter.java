@@ -2,7 +2,6 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -14,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
+import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
@@ -57,6 +57,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
 
     private Cursor contactsCursor;
     private ProfileCrosser profileCrosser;
+    protected ChatDelegate chatDelegate;
 
     protected final RxContentResolver contentResolver;
     protected Subscription contactSubscription;
@@ -88,7 +89,9 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
                     return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
                             .rawQuery(selection, query.selectionArgs);
                 });
+
         profileCrosser = new ProfileCrosser(activity, new ProfileRouteCreator(appSessionHolder));
+        chatDelegate = new ChatDelegate(user, messengerServerFacade);
     }
 
     @Override
@@ -219,15 +222,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
         getView().setContacts(cursor);
         getView().showContent();
         contactsCursor = cursor;
-    }
-
-    protected void saveChatModifications(Conversation conversation, List<User> participants, @Nullable String subject) {
-        MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
-                .createMultiUserChat(conversation.getId(), user, true);
-        multiUserChat.invite(participants);
-        if (!TextUtils.isEmpty(subject) && TextUtils.getTrimmedLength(subject) > 0) {
-            multiUserChat.setSubject(subject);
-        }
     }
 
     @Override

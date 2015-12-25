@@ -10,7 +10,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
@@ -133,24 +132,12 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                     return true;
                 }
 
-                // in case it was single chat we must delete old conversion first
-                // and create new one
-                if (conversation.getType().equals(Conversation.Type.CHAT)) {
-                    conversation = new Conversation.Builder()
-                            .ownerId(user.getId())
-                            .type(Conversation.Type.GROUP)
-                            .id(UUID.randomUUID().toString())
-                            .build();
-                    // since we create new group chat
-                    // make sure to invite original participant (addressee) from old single chat
-                    newChatUsers.addAll(originalParticipants);
-                    newChatUsers.add(user);
-                }
+                Conversation newConversation = chatDelegate.modifyConversation(conversation, originalParticipants,
+                        newChatUsers, getView().getConversationName());
+
                 Queryable.from(newChatUsers).forEachR(u ->
-                        new ParticipantsRelationship(conversation.getId(), u).save());
-                ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                //noinspection all
-                saveChatModifications(conversation, newChatUsers, getView().getConversationName());
+                        new ParticipantsRelationship(newConversation.getId(), u).save());
+                ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
 
                 Intent data = new Intent();
                 data.putExtra(Extra.CONVERSATION_ID, conversation.getId());

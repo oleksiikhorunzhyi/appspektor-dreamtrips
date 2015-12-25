@@ -74,6 +74,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
             stanzaPacket.setStanzaId(UUID.randomUUID().toString());
             stanzaPacket.setThread(roomId);
+            stanzaPacket.setFrom(JidCreatorHelper.obtainUserJid(user.getId()));
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {
             Log.e(TAG, "Error ", e);

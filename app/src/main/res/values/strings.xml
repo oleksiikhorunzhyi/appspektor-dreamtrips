@@ -489,7 +489,7 @@
     <string name="logout_component">Logout</string>
     <string name="start_typing_name">Start typing name</string>
 
-    <string name="multiple_dates">Multiple Dates, %s ...</string>
+    <string name="multiple_dates">Multiple Dates, %s...</string>
 
     <string name="tag_photo">tagged you on</string>
 

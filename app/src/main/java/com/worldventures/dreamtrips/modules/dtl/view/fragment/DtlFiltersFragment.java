@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterHeaderAttribute;
@@ -26,7 +27,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_filters)
-public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> implements DtlFiltersPresenter.View {
+public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
+        implements DtlFiltersPresenter.View, DrawerListener {
 
     @InjectView(R.id.range_bar_distance)
     protected RangeBar rangeBarDistance;
@@ -56,6 +58,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
         rangeBarPrice.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
                 getPresenter().priceChanged(Integer.valueOf(leftValue), Integer.valueOf(rightValue)));
         switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().toggleDistance(isChecked));
+        ((MainActivity) getActivity()).attachRightDrawerListener(this);
     }
 
     @OnClick(R.id.apply)
@@ -95,5 +98,20 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
         Collections.sort(filterData.getAmenities());
         filtersAdapter.clearAndUpdateItems(filterData.getAmenities());
         filtersAdapter.addItem(0, new DtlMerchantsFilterHeaderAttribute(getString(R.string.dtl_amenities)));
+    }
+
+    @Override
+    public void onDestroyView() {
+        ((MainActivity) getActivity()).detachRightDrawerListener(this);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDrawerOpened() {
+    }
+
+    @Override
+    public void onDrawerClosed() {
+        // do nothing?
     }
 }

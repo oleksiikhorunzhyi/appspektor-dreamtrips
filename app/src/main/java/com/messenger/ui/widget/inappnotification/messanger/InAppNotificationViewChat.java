@@ -26,6 +26,23 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
 
     private String avatarUrl;
 
+    public InAppNotificationViewChat(Context context) {
+        super(context);
+    }
+
+    public InAppNotificationViewChat(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public InAppNotificationViewChat(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public InAppNotificationViewChat(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
     public void setAvatarUrl(String avatarUrl){
         this.avatarUrl = avatarUrl;
         Picasso.with(getContext())
@@ -44,23 +61,6 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
     public void setText(String text) {
         this.text = text;
         textTextView.setText(text);
-    }
-
-    public InAppNotificationViewChat(Context context) {
-        super(context);
-    }
-
-    public InAppNotificationViewChat(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public InAppNotificationViewChat(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public InAppNotificationViewChat(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override

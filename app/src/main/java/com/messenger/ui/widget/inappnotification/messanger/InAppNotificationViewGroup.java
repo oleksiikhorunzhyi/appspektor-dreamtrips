@@ -26,24 +26,7 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
     @InjectView(R.id.in_app_notif_text)
     TextView textTextView;
 
-    private List<User> chatParticipantsList;
-
-    public void setChatParticipantsList(List<User> chatParticipantsList) {
-        this.chatParticipantsList = chatParticipantsList;
-        avatarViewGroup.updateAvatars(chatParticipantsList);
-    }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
-        titleTextView.setText(title);
-    }
-
-    @Override
-    public void setText(String text) {
-        this.text = text;
-        textTextView.setText(text);
-    }
+    private List<User> chatParticipants;
 
     public InAppNotificationViewGroup(Context context) {
         super(context);
@@ -60,6 +43,23 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public InAppNotificationViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    public void setChatParticipants(List<User> chatParticipants) {
+        this.chatParticipants = chatParticipants;
+        avatarViewGroup.updateAvatars(chatParticipants);
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+        titleTextView.setText(title);
+    }
+
+    @Override
+    public void setText(String text) {
+        this.text = text;
+        textTextView.setText(text);
     }
 
     @Override

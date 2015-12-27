@@ -20,7 +20,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -98,26 +97,29 @@ public class UnhandledMessageWatcher {
                                     "WHERE p.conversationId = ?"
                     ).withSelectionArgs(new String[]{conversation.getId()}).build();
 
-            contentResolver.query(q, User.CONTENT_URI,
-                    ParticipantsRelationship.CONTENT_URI)
+            contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
                     .map(c -> SqlUtils.convertToList(User.class, c))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .first()
                     .subscribe(users -> {
+                        String lastName = "";
+                        String lastMessage = "";
+
                         User fromUser = new Select()
                                 .from(User.class)
                                 .byIds(message.getFromId())
                                 .querySingle();
-                        String lastName = fromUser.getName();
-                        String lastMessage = message.getText();
+                        if (fromUser != null){
+                             lastName = fromUser.getName();
+                             lastMessage = message.getText();
+                        }
 
-                        final List<User> participantsList = new ArrayList<>();
                         String groupName = TextUtils.isEmpty(conversation.getSubject()) ?
-                                TextUtils.join(", ", Queryable.from(participantsList).map(User::getName).toList()) :
+                                TextUtils.join(", ", Queryable.from(users).map(User::getName).toList()) :
                                 conversation.getSubject();
 
-                        showGroupChatCrouton(conversation, activity, participantsList, groupName, lastName + ": " + lastMessage);
+                        showGroupChatCrouton(conversation, activity, users, groupName, lastName + ": " + lastMessage);
                     }, throwable -> Timber.e(throwable, "Error"));
         }
     }
@@ -142,7 +144,7 @@ public class UnhandledMessageWatcher {
         appNotification.show(activity, view, notificationEventListener);
     }
 
-    private void showGroupChatCrouton(Conversation conversation, Activity activity, List<User> participantsList, String title, String text) {
+    private void showGroupChatCrouton(Conversation conversation, Activity activity, List<User> chatParticipants, String title, String text) {
         notificationEventListener = new MessengerInAppNotificationListener(conversation.getId()) {
             @Override
             public void openConversation(String conversationId) {
@@ -150,7 +152,7 @@ public class UnhandledMessageWatcher {
             }
         };
         InAppNotificationViewGroup view = new InAppNotificationViewGroup(activity);
-        view.setChatParticipantsList(participantsList);
+        view.setChatParticipants(chatParticipants);
         view.setTitle(title);
         view.setText(text);
         appNotification.show(activity, view, notificationEventListener);

@@ -151,8 +151,15 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     @Override
     public void onDeletionConfirmed(Conversation conversation) {
-        Toast.makeText(parentActivity, "Delete not yet implemented",
-                Toast.LENGTH_SHORT).show();
+        if (conversation.getType().equals(Conversation.Type.GROUP)) {
+            if (conversation.getOwnerId().equals(user.getId())) {
+                Toast.makeText(parentActivity, "Owner cannot leave from chat",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(parentActivity, "Delete not yet implemented",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

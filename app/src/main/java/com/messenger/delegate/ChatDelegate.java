@@ -74,7 +74,7 @@ public class ChatDelegate {
 
     public Conversation setMultiUserChatData(Conversation conversation, List<User> newParticipants, @Nullable String subject) {
         MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
-                .createMultiUserChat(conversation.getId(), currentUser, true);
+                .createMultiUserChat(conversation.getId(), currentUser.getId(), true);
 
         multiUserChat.invite(newParticipants);
         if (!TextUtils.isEmpty(subject) && TextUtils.getTrimmedLength(subject) > 0) {

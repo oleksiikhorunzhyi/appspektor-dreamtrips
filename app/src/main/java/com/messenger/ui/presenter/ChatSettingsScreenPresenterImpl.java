@@ -155,7 +155,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     @Override
     public void onLeaveChatClicked() {
-        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner(), isUserOwner());
+        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner().getId(), isUserOwner());
         chat.leave();
     }
 
@@ -183,7 +183,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     @Override
     public void applyNewChatSubject(String subject) {
-        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner(), true);
+        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner().getId(), true);
         chat.setSubject(subject);
         conversation.setSubject(subject);
         getView().setConversation(conversation);

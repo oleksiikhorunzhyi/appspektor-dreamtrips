@@ -1,11 +1,11 @@
 package com.messenger.messengerservers.xmpp;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.chat.SingleUserChat;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.chats.XmppMultiUserChat;
 import com.messenger.messengerservers.xmpp.chats.XmppSingleUserChat;
 
@@ -22,7 +22,12 @@ public class XmppChatManager implements ChatManager {
     }
 
     @Override
-    public MultiUserChat createMultiUserChat(@Nullable String roomId, User owner, boolean isOwner) {
-        return new XmppMultiUserChat(facade, roomId, owner, isOwner);
+    public MultiUserChat createMultiUserChat(@Nullable String roomId, @NonNull String ownerId, boolean isOwner) {
+        return new XmppMultiUserChat(facade, roomId, ownerId, isOwner);
+    }
+
+    @Override
+    public MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId) {
+        return createMultiUserChat(roomId, ownerId, ownerId.equals(facade.getOwner().getId()));
     }
 }

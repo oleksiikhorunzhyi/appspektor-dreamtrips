@@ -1,17 +1,12 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
-import android.widget.Toast;
 
+import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
@@ -23,10 +18,14 @@ import com.messenger.ui.viewstate.LceViewState;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,6 +34,7 @@ import rx.schedulers.Schedulers;
 public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresenter<EditChatMembersScreen,
         EditChatMembersViewState> implements EditChatMembersScreenPresenter {
 
+    private final MultiUserChat chat;
     private Activity activity;
 
     private Conversation conversation;
@@ -43,22 +43,30 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
     private RxContentResolver contentResolver;
     private Subscription participantsSubscriber;
 
+    @Inject
+    MessengerServerFacade messengerServerFacade;
+
+    @Inject
+    User user;
+
     public EditChatMembersScreenPresenterImpl(Activity activity) {
         this.activity = activity;
+        ((Injector) activity.getApplication()).inject(this);
 
-        this.activity = activity;
         String conversationId = activity.getIntent()
                 .getStringExtra(EditChatMembersActivity.EXTRA_CONVERSATION_ID);
 
-        contentResolver = new RxContentResolver(activity.getContentResolver(), query -> {
-            return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                    .rawQuery(query.selection + " " + query.sortOrder, query.selectionArgs);
-        });
+        contentResolver = new RxContentResolver(activity.getContentResolver(),
+                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                .rawQuery(query.selection + " " + query.sortOrder, query.selectionArgs));
 
-        conversation = new Select()
+        Conversation conversation = new Select()
                 .from(Conversation.class)
                 .byIds(conversationId)
                 .querySingle();
+        this.conversation = conversation;
+        chat = messengerServerFacade.getChatManager()
+                .createMultiUserChat(conversation.getId(), conversation.getOwnerId());
     }
 
     @Override
@@ -140,6 +148,16 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
     @Override
     public void onDeleteUserFromChatConfirmed(User user) {
-        Toast.makeText(activity, "Not implemented", Toast.LENGTH_SHORT).show();
+        chat.kick(Collections.singletonList(user));
+    }
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public boolean isOwner() {
+        return user.getId().equals(conversation.getOwnerId());
     }
 }

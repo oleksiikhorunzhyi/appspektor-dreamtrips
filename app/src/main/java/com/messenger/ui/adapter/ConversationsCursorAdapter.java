@@ -90,12 +90,18 @@ public class ConversationsCursorAdapter
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
         setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
 
+        if (conversation.getType().equals(Conversation.Type.GROUP)) {
+            holder.getDeleteButton()
+                    .setVisibility(currentUser.getId().equals(conversation.getOwnerId()) ? View.GONE : View.VISIBLE);
+        }
+
         // TODO: 12/21/15  
         if (message.getText() != null) {
             String userName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
             setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));
         }
 
+        ////// TODO: 12/28/15 attach listeners in holder  !!!!!!!
         final View.OnClickListener itemViewListener = v -> {
             if (clickListener != null) {
                 clickListener.onConversationClick(conversation);

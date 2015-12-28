@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
        android:layout_width="match_parent"
-       android:layout_height="82dp"
-       android:padding="16dp">
+       android:layout_height="wrap_content"
+       android:padding="@dimen/in_app_notification_view_padding">
 
     <com.messenger.ui.widget.GroupAvatarsView
         android:id="@+id/in_app_notif_avatar_group"
-        android:layout_centerVertical="true"
         style="@style/InAppNotificationGroupChatAvatarView"/>
 
     <TextView
         android:id="@+id/in_app_notif_title"
         style="@style/InAppNotificationTitle"
         android:layout_toRightOf="@id/in_app_notif_avatar_group"
-        android:layout_marginLeft="16dp"/>
+        android:layout_marginLeft="8dp"/>
 
     <TextView
         android:id="@+id/in_app_notif_text"
         style="@style/InAppNotificationText"
         android:layout_toRightOf="@id/in_app_notif_avatar_group"
         android:layout_below="@id/in_app_notif_title"
-        android:layout_marginLeft="16dp"/>
+        android:layout_marginLeft="8dp"/>
 
     <Button
         android:id="@+id/in_app_notif_close_btn"
         style="@style/InAppNotificationCloseButton"/>
 
-</merge>
+</RelativeLayout>

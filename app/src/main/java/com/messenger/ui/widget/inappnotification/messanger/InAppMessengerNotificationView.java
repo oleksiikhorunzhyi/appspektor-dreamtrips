@@ -10,9 +10,6 @@ import com.worldventures.dreamtrips.R;
 
 public abstract class InAppMessengerNotificationView extends BaseInAppNotificationView {
 
-    protected String title;
-    protected String text;
-
     public abstract void setTitle(String title);
 
     public abstract void setText(String text);

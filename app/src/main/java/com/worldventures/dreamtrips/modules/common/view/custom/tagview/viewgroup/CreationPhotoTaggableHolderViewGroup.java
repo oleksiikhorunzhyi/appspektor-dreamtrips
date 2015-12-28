@@ -8,16 +8,25 @@ import android.view.MotionEvent;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
+import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup<CreationPhotoTaggableHolderPresenter> implements CreationPhotoTaggableHolderPresenter.View {
+import icepick.State;
+
+public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup<CreationPhotoTaggableHolderPresenter>
+        implements CreationPhotoTaggableHolderPresenter.View {
+
+    @State
+    ArrayList<PhotoTag> locallyAddedTags = new ArrayList<>();
+    @State
+    ArrayList<PhotoTag> locallyDeletedTags = new ArrayList<>();
 
     private GestureDetector gestureDetector;
     private TaggableCompleteListener completeListener;
-
 
     public CreationPhotoTaggableHolderViewGroup(Context context) {
         super(context);
@@ -41,11 +50,24 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     public void setup(Injector injector, Photo photo) {
         super.setup(injector, photo);
         gestureDetector = new GestureDetector(getContext(), new SingleTapConfirm());
-        presenter.restoreViewsIfNeeded();
     }
 
     public List<PhotoTag> getTagsToUpload() {
-        return presenter.getTagsToUpload();
+        if (locallyAddedTags.size() > 0) {
+           /* Queryable.from(locallyAddedTags).forEachR(tag -> { todo
+                PhotoTag.TagPosition newTagPosition = CoordinatesTransformer
+                        .convertToProportional(tag.getPosition(), getImageBounds());
+                tag.setTagPosition(newTagPosition);
+            });*/
+            return locallyAddedTags;
+        }
+
+        return null;
+    }
+
+    public void restoreState() {
+        addTags(locallyAddedTags);
+        addTags(locallyDeletedTags);
     }
 
     private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener {
@@ -68,13 +90,37 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     }
 
     protected void addTagView(float x, float y) {
-        addTagView(new PhotoTag(new PhotoTag.TagPosition(x, y, x, y), null));
+        addTagView(new PhotoTag(CoordinatesTransformer.convertToProportional(new PhotoTag.TagPosition(x, y, x, y), getImageBounds()), null));
     }
 
     @Override
     public void onRequestsComplete() {
         if (completeListener != null)
             completeListener.onTagRequestsComplete();
+    }
+
+    @Override
+    public void addTag(PhotoTag tag) {
+        locallyAddedTags.add(tag);
+    }
+
+    @Override
+    public void deleteTag(PhotoTag tag) {
+        if (locallyAddedTags.contains(tag)) {
+            locallyAddedTags.remove(tag);
+            return;
+        }
+        locallyDeletedTags.add(tag);
+    }
+
+    @Override
+    public ArrayList<PhotoTag> getLocallyAddedTags() {
+        return locallyAddedTags;
+    }
+
+    @Override
+    public ArrayList<PhotoTag> getLocallyDeletedTags() {
+        return locallyDeletedTags;
     }
 
     public void setCompleteListener(TaggableCompleteListener completeListener) {

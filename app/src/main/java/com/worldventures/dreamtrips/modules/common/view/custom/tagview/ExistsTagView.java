@@ -46,7 +46,8 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         boolean isAccountOnPhoto = account.getId() == photoTag.getUser().getId();
-        if (isAccountOnPhoto || account.getId() == photo.getOwner().getId()) {
+        boolean isCreationState = photo == null || photo.getOwner() == null;
+        if (isCreationState || isAccountOnPhoto || account.getId() == photo.getOwner().getId()) {
             if (btnDeleteTag.getVisibility() == VISIBLE) {
                 hideDeleteButton();
             } else {

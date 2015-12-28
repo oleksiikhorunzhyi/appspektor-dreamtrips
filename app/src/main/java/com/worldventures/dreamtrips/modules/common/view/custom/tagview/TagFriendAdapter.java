@@ -16,13 +16,11 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import java.util.Collections;
 import java.util.List;
 
-import static com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView.TagListener;
-
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
     private Context context;
     private List<User> friendList;
-    private TagListener tagListener;
+    private TagCreationActionsListener tagListener;
 
     public TagFriendAdapter(Context context, List<User> items) {
         super(context, 0, 0, items);
@@ -30,7 +28,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
         this.friendList = items;
     }
 
-    public void setTagListener(TagListener tagListener) {
+    public void setTagListener(TagCreationActionsListener tagListener) {
         this.tagListener = tagListener;
     }
 

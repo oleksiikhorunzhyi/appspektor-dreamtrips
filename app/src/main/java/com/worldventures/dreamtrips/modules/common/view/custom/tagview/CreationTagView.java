@@ -16,22 +16,22 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class NewTagView extends TagView {
+public class CreationTagView extends TagView<TagCreationActionsListener> {
 
     @InjectView(R.id.new_user_input_name)
     public AutoCompleteTextView inputFriendName;
 
     private TagFriendAdapter adapter;
 
-    public NewTagView(Context context) {
+    public CreationTagView(Context context) {
         super(context);
     }
 
-    public NewTagView(Context context, AttributeSet attrs) {
+    public CreationTagView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public NewTagView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CreationTagView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -55,8 +55,7 @@ public class NewTagView extends TagView {
         inputFriendName.setDropDownAnchor(R.id.new_user_suggestions_popup_anchor);
         inputFriendName.setOnItemClickListener((parent, view, position, id) -> {
             PhotoTag.TagPosition tagPosition = photoTag.getPosition();
-            tagListener.onTagAdded(new PhotoTag(
-                    tagPosition, adapter.getItem(position)));
+            tagListener.onTagCreated(this, new PhotoTag(tagPosition, adapter.getItem(position)));
         });
     }
 
@@ -66,7 +65,7 @@ public class NewTagView extends TagView {
     }
 
     @Override
-    public void setTagListener(TagListener tagListener) {
+    public void setTagListener(TagCreationActionsListener tagListener) {
         super.setTagListener(tagListener);
         adapter.setTagListener(tagListener);
     }
@@ -75,5 +74,6 @@ public class NewTagView extends TagView {
     public void onClick() {
         deleteTag();
     }
+
 
 }

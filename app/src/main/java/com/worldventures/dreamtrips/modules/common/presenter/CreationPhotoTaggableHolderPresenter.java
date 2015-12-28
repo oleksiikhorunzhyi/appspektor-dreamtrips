@@ -14,47 +14,34 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import java.util.ArrayList;
 import java.util.List;
 
-import icepick.State;
-
 public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter<CreationPhotoTaggableHolderPresenter.View> {
-
-    @State
-    ArrayList<PhotoTag> newAddedTags;
-    @State
-    ArrayList<PhotoTag> newDeletedTags;
 
     private boolean addComplete, deleteComplete, updated;
 
     public CreationPhotoTaggableHolderPresenter(Photo photo) {
         super(photo);
-        if (newAddedTags == null && newDeletedTags == null) {
-            newAddedTags = new ArrayList<>();
-            newDeletedTags = new ArrayList<>();
-        }
     }
 
     public void addPhotoTag(PhotoTag tag) {
-        newAddedTags.add(tag);
+       view.addTag(tag);
     }
 
 
     @Override
     public void deletePhotoTag(PhotoTag tag) {
-        if (newAddedTags.contains(tag)) {
-            newAddedTags.remove(tag);
-            return;
-        }
-
-        newDeletedTags.add(tag);
+        view.deleteTag(tag);
     }
 
     public void pushRequests() {
+        ArrayList<PhotoTag> newAddedTags = view.getLocallyAddedTags();
+        ArrayList<PhotoTag> newDeletedTags = view.getLocallyDeletedTags();
+
         if (newAddedTags.size() > 0) {
-            Queryable.from(newAddedTags).forEachR(tag -> {
+          /*  todo Queryable.from(newAddedTags).forEachR(tag -> {
                 PhotoTag.TagPosition newTagPosition = CoordinatesTransformer
                         .convertToProportional(tag.getPosition(), view.getImageBounds());
                 tag.setTagPosition(newTagPosition);
-            });
+            });*/
             doRequest(new AddPhotoTagsCommand(photo.getFSId(), newAddedTags), aVoid -> {
                 newAddedTags.clear();
                 addComplete = true;
@@ -102,26 +89,16 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         doRequest(new GetFriendsQuery(null, query, 1, 100), tagView::setUserFriends);
     }
 
-    public void restoreViewsIfNeeded() {
-        view.addTags(newAddedTags);
-        view.addTags(newDeletedTags);
-    }
-
-    public List<PhotoTag> getTagsToUpload() {
-        if (newAddedTags.size() > 0) {
-            Queryable.from(newAddedTags).forEachR(tag -> {
-                PhotoTag.TagPosition newTagPosition = CoordinatesTransformer
-                        .convertToProportional(tag.getPosition(), view.getImageBounds());
-                tag.setTagPosition(newTagPosition);
-            });
-            return newAddedTags;
-        }
-
-        return null;
-    }
-
     public interface View extends TaggableImageHolderPresenter.View {
         void onRequestsComplete();
+
+        void addTag(PhotoTag tag);
+
+        void deleteTag(PhotoTag tag);
+
+        ArrayList<PhotoTag> getLocallyAddedTags();
+
+        ArrayList<PhotoTag> getLocallyDeletedTags();
     }
 
 }

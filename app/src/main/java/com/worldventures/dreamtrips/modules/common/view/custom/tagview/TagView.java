@@ -18,10 +18,10 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-public abstract class TagView extends RelativeLayout {
+public abstract class TagView<T extends TagActionListener> extends RelativeLayout {
     protected List<User> userFriends;
     protected PhotoTag photoTag;
-    protected TagListener tagListener;
+    protected T tagListener;
     protected User account;
     protected Photo photo;
 
@@ -32,6 +32,7 @@ public abstract class TagView extends RelativeLayout {
     @InjectView(R.id.pointer_shift_x)
     View space;
 
+    PhotoTag.TagPosition absoluteTagPosition;
 
     public TagView(Context context) {
         super(context);
@@ -65,12 +66,12 @@ public abstract class TagView extends RelativeLayout {
         super.onAttachedToWindow();
         int leftMargin = ((LayoutParams) this.getLayoutParams()).leftMargin;
         int topMargin = ((LayoutParams) this.getLayoutParams()).topMargin;
-        float tagPosition = photoTag.getPosition().getTopLeft().getX();
+        float tagPosition = absoluteTagPosition.getTopLeft().getX();
         pointerTop.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int width = pointerTop.getMeasuredWidth();
         space.getLayoutParams().width = (int) (tagPosition - leftMargin - (width / 2));
 
-        int y = (int) photoTag.getPosition().getTopLeft().getY();
+        int y = (int) absoluteTagPosition.getTopLeft().getY();
         if (y > topMargin + this.getHeight()) {
             pointerTop.setVisibility(GONE);
             pointerBottom.setVisibility(VISIBLE);
@@ -84,7 +85,7 @@ public abstract class TagView extends RelativeLayout {
         this.userFriends = (userFriends == null) ? new ArrayList<>() : userFriends;
     }
 
-    public void setTagListener(TagListener tagListener) {
+    public void setTagListener(T tagListener) {
         this.tagListener = tagListener;
     }
 
@@ -104,7 +105,7 @@ public abstract class TagView extends RelativeLayout {
     public static TagView create(Context context, PhotoTag photoTag, User account, Photo photo) {
         TagView tagView;
         if (photoTag.getUser() == null) {
-            tagView = new NewTagView(context);
+            tagView = new CreationTagView(context);
         } else {
             tagView = new ExistsTagView(context);
         }
@@ -115,12 +116,11 @@ public abstract class TagView extends RelativeLayout {
         return tagView;
     }
 
-    public interface TagListener {
+    public PhotoTag.TagPosition getAbsoluteTagPosition() {
+        return absoluteTagPosition;
+    }
 
-        void onQueryChanged(String query);
-
-        void onTagAdded(PhotoTag tag);
-
-        void onTagDeleted(PhotoTag tag);
+    public void setAbsoluteTagPosition(PhotoTag.TagPosition absoluteTagPosition) {
+        this.absoluteTagPosition = absoluteTagPosition;
     }
 }

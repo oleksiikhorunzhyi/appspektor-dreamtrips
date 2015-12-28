@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.app.Activity;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -73,12 +74,39 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected CreatePhotoPresenter createPresenter(Bundle savedInstanceState) {
         uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
         String type = getArguments().getString(BUNDLE_TYPE);
         return new CreatePhotoPresenter(type);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        taggableImageHolder.post(() -> {
+            if (taggableImageHolder.isShown()) {
+                showTagViewGroup();
+            } else {
+                hideTagViewGroup();
+            }
+            taggableImageHolder.restoreState();
+        });
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @OnClick(R.id.btn_save)
     public void onActionSave() {
@@ -90,16 +118,24 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         if (!taggableImageHolder.isSetuped()) return;
         //
         if (taggableImageHolder.isShown()) {
-            tag.setSelected(false);
-            taggableImageHolder.hide();
-            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+            hideTagViewGroup();
         } else {
-            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
-            tag.setSelected(true);
-            RectF imageBounds = new RectF();
-            ivImage.getHierarchy().getActualImageBounds(imageBounds);
-            taggableImageHolder.show(imageBounds);
+            showTagViewGroup();
         }
+    }
+
+    protected void showTagViewGroup() {
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+        tag.setSelected(true);
+        RectF imageBounds = new RectF();
+        ivImage.getHierarchy().getActualImageBounds(imageBounds);
+        taggableImageHolder.show(imageBounds);
+    }
+
+    protected void hideTagViewGroup() {
+        tag.setSelected(false);
+        taggableImageHolder.hide();
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
     }
 
     @Override

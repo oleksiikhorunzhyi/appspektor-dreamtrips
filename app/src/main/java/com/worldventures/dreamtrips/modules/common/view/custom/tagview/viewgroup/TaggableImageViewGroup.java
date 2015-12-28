@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgrou
 
 import android.content.Context;
 import android.graphics.RectF;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,7 +11,8 @@ import android.widget.RelativeLayout;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.NewTagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagCreationActionsListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
@@ -21,11 +23,16 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.List;
 
+import icepick.Icepick;
+import icepick.State;
+
 public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresenter> extends RelativeLayout implements TaggableImageHolderPresenter.View {
 
     protected P presenter;
     private boolean setuped;
 
+    @State
+    boolean isShown;
 
     protected RectF imageBounds;
 
@@ -50,6 +57,17 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         //
     }
 
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable parcelable = super.onSaveInstanceState();
+        return Icepick.saveInstanceState(this, parcelable);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+    }
+
     @NonNull
     protected abstract P getPresenter(Photo photo);
 
@@ -62,12 +80,19 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         removeUncompletedViews();
         //
         setVisibility(View.INVISIBLE);
+        isShown = false;
     }
 
     public void show(RectF imageBounds) {
         this.imageBounds = imageBounds;
         setVisibility(View.VISIBLE);
         presenter.setupTags();
+        isShown = true;
+    }
+
+    @Override
+    public boolean isShown() {
+        return isShown;
     }
 
     @Override
@@ -82,18 +107,20 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
 
     protected void addTagView(PhotoTag photoTag) {
         TagView view = TagView.create(getContext(), photoTag, presenter.getAccount(), presenter.getPhoto());
-        view.setTagListener(new TagView.TagListener() {
-
+        PhotoTag.TagPosition tagPosition = CoordinatesTransformer.convertToAbsolute(photoTag.getPosition(), getImageBounds());
+        view.setAbsoluteTagPosition(tagPosition);
+        view.setTagListener(new TagCreationActionsListener() {
             @Override
             public void onQueryChanged(String query) {
                 presenter.loadFriends(query, view);
             }
 
             @Override
-            public void onTagAdded(PhotoTag tag) {
-                presenter.addPhotoTag(tag);
-                addTagView(tag);
-                removeView(view);
+            public void onTagCreated(CreationTagView newTagView, PhotoTag tag) {
+                PhotoTag cloneTag = SerializationUtils.clone(tag);
+                presenter.addPhotoTag(cloneTag);
+                addTagView(cloneTag);
+                removeView(newTagView);
             }
 
             @Override
@@ -101,20 +128,18 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
                 presenter.deletePhotoTag(tag);
             }
         });
-
-        LayoutParams layoutParams = calculatePosition(photoTag, view);
+        LayoutParams layoutParams = calculatePosition(view);
         addView(view, layoutParams);
     }
 
     @NonNull
-    private LayoutParams calculatePosition(PhotoTag photoTag, TagView view) {
+    private LayoutParams calculatePosition(TagView view) {
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         Size tagSize = view.getSize();
         float tagWidth = tagSize.getWidth();
         float tagHeight = tagSize.getHeight();
-
-        int photoTagXPos = (int) (photoTag.getPosition().getTopLeft().getX() - tagWidth / 2);
-        int photoTagYPos = (int) (photoTag.getPosition().getTopLeft().getY());
+        int photoTagXPos = (int) (view.getAbsoluteTagPosition().getTopLeft().getX() - tagWidth / 2);
+        int photoTagYPos = (int) (view.getAbsoluteTagPosition().getTopLeft().getY());
 
         if (photoTagXPos < 0) {
             photoTagXPos = 0;
@@ -136,12 +161,7 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
 
     @Override
     public void addTags(List<PhotoTag> tags) {
-        Queryable.from(tags).forEachR(tag -> {
-            PhotoTag cloneTag = SerializationUtils.clone(tag);
-            PhotoTag.TagPosition newTagPosition = CoordinatesTransformer.convertToAbsolute(cloneTag.getPosition(), imageBounds);
-            cloneTag.setTagPosition(newTagPosition);
-            addTagView(cloneTag);
-        });
+        Queryable.from(tags).forEachR(this::addTagView);
     }
 
     @Override
@@ -152,7 +172,7 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
 
     protected void removeUncompletedViews() {
         View view = getChildAt(getChildCount() - 1);
-        if (view instanceof NewTagView) removeView(view);
+        if (view instanceof CreationTagView) removeView(view);
     }
 
 
@@ -180,4 +200,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     public boolean isTabletLandscape() {
         return false;
     }
+
+
 }

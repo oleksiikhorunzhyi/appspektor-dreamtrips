@@ -36,6 +36,7 @@ public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
         super.takeView(view);
         updatePhotoInfo();
         syncUi();
+        view.setupTaggingHolder(this.photo);
     }
 
     public void updatePhotoInfo() {

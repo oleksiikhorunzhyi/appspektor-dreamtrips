@@ -111,16 +111,37 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
         if (!taggableImageHolder.isSetuped()) return;
         //
         if (taggableImageHolder.isShown()) {
-            tag.setSelected(false);
-            taggableImageHolder.hide();
-            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+            hideTagViewGroup();
         } else {
-            ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
-            tag.setSelected(true);
-            RectF imageBounds = new RectF();
-            ivImage.getHierarchy().getActualImageBounds(imageBounds);
-            taggableImageHolder.show(imageBounds);
+            showTagViewGroup();
         }
+    }
+
+    protected void showTagViewGroup() {
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+        tag.setSelected(true);
+        RectF imageBounds = new RectF();
+        ivImage.getHierarchy().getActualImageBounds(imageBounds);
+        taggableImageHolder.show(imageBounds);
+    }
+
+    protected void hideTagViewGroup() {
+        tag.setSelected(false);
+        taggableImageHolder.hide();
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        taggableImageHolder.post(() -> {
+            if (taggableImageHolder.isShown()) {
+                showTagViewGroup();
+            } else {
+                hideTagViewGroup();
+            }
+            taggableImageHolder.restoreState();
+        });
     }
 
     @Override

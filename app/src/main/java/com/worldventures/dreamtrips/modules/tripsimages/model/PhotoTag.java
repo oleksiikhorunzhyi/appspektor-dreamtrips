@@ -164,4 +164,20 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
             return new PhotoTag[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PhotoTag photoTag = (PhotoTag) o;
+
+        return user.equals(photoTag.user);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return user.hashCode();
+    }
 }

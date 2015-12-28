@@ -54,7 +54,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         presenter.takeView(this);
         presenter.onStart();
         setuped = true;
-        //
     }
 
     @Override
@@ -169,12 +168,10 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         return imageBounds;
     }
 
-
     protected void removeUncompletedViews() {
         View view = getChildAt(getChildCount() - 1);
         if (view instanceof CreationTagView) removeView(view);
     }
-
 
     @Override
     public void informUser(int stringId) {
@@ -182,7 +179,7 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     }
 
     @Override
-    public void informUser(String string) {
+    public void informUser(String message) {
 
     }
 

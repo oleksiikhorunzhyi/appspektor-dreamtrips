@@ -493,4 +493,6 @@
 
     <string name="tag_photo">tagged you on</string>
 
+    <string name="user_already_exists">%s already exists</string>
+
 </resources>

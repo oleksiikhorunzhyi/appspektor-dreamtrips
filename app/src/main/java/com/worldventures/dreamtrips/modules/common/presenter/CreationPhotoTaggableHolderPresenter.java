@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
-import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
@@ -22,10 +22,10 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         super(photo);
     }
 
+    @Override
     public void addPhotoTag(PhotoTag tag) {
        view.addTag(tag);
     }
-
 
     @Override
     public void deletePhotoTag(PhotoTag tag) {
@@ -80,8 +80,20 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         });
     }
 
+    @Override
     public void loadFriends(String query, TagView tagView) {
-        doRequest(new GetFriendsQuery(null, query, 1, 100), tagView::setUserFriends);
+        doRequest(new GetFriendsQuery(null, query, 1, 100),
+                friends -> tagView.setUserFriends(Queryable.from(friends).filter(user -> !isUserExists(user)).toList()));
+    }
+
+    private boolean isUserExists(User user) {
+        return isContainUser(view.getLocallyAddedTags(), user) ||
+                (isContainUser(photo.getPhotoTags(), user)
+                        && !isContainUser(view.getLocallyDeletedTags(), user));
+    }
+
+    private boolean isContainUser(List<PhotoTag> tagList, User user) {
+        return Queryable.from(tagList).map(tag -> tag.getUser()).contains(user);
     }
 
     public interface View extends TaggableImageHolderPresenter.View {

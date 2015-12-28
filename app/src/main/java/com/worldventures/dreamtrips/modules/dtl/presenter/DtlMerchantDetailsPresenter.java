@@ -13,12 +13,15 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
@@ -28,7 +31,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View> {
+public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View>
+        implements DtlFilterDelegate.FilterListener {
 
     private DtlTransaction dtlTransaction;
 
@@ -40,6 +44,8 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     LocationDelegate locationDelegate;
     @Inject
     DtlLocationRepository locationRepository;
+    @Inject
+    DtlFilterDelegate dtlFilterDelegate;
 
     public DtlMerchantDetailsPresenter(String id) {
         super(id);
@@ -54,9 +60,27 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        dtlFilterDelegate.addListener(this);
         if (merchant.hasNoOffers())
             featureManager.with(Feature.REP_SUGGEST_MERCHANT, () -> view.setSuggestMerchantButtonAvailable(true),
                     () -> view.setSuggestMerchantButtonAvailable(false));
+    }
+
+    @Override
+    public void dropView() {
+        dtlFilterDelegate.removeListener(this);
+        super.dropView();
+    }
+
+    @Override
+    public void onFilter() {
+        if (view != null) {
+            merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
+            merchant.setDistance(dtlFilterDelegate.getDistanceType() == DtlFilterData.DistanceType.MILES ?
+                    DtlLocationHelper.kmsToMiles(merchant.getDistance()) :
+                    DtlLocationHelper.milesToKms(merchant.getDistance()));
+            view.distanceTypeChanged(merchant);
+        }
     }
 
     private void processTransaction() {

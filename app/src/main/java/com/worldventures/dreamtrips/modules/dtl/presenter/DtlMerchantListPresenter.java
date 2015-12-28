@@ -26,9 +26,14 @@ public class DtlMerchantListPresenter extends DtlMerchantsPresenter<DtlMerchantL
         super.takeView(view);
         view.showProgress();
         //
-        performFiltering();
-        //
         if (dtlMerchantType == DtlMerchantType.OFFER) view.setComingSoon();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //
+        performFiltering();
     }
 
     @Override

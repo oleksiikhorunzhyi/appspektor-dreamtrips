@@ -50,6 +50,14 @@ public class DtlLocationHelper {
         return 0.001d * distance(currentLocation, targetLocation);
     }
 
+    public static double milesToKms(double miles) {
+        return 1.60934d * miles;
+    }
+
+    public static double kmsToMiles(double kms) {
+        return 0.621371d * kms;
+    }
+
 
     public static double distance(LatLng currentLocation, LatLng targetLocation) {
         float[] distance = new float[1];

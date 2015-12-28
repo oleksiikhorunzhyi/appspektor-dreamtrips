@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.Buc
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_bucket_photo)
@@ -49,6 +51,11 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
         progressDialog.show();
     }
 
+    @OnClick(R.id.delete)
+    public void onDelete() {
+        deletePhoto();
+    }
+
     @Override
     public void hideCoverProgress() {
         if (progressDialog != null && progressDialog.isShowing())
@@ -80,6 +87,19 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
             checkBox.setClickable(!b);
             getPresenter().onCheckboxPressed(b);
         });
+    }
+
+    private void deletePhoto() {
+        Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(R.string.photo_delete))
+                .setContentText(getResources().getString(R.string.photo_delete_caption))
+                .setConfirmText(getResources().getString(R.string.post_delete_confirm))
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    getPresenter().onDeleteAction();
+                });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
 }

@@ -30,6 +30,7 @@ import java.util.List;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import icepick.Icepick;
 
 
 @Layout(R.layout.fragment_fullscreen_photo)
@@ -55,6 +56,19 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         return new SocialImageFullscreenPresenter((Photo) getArgs().getPhoto(), getArgs().getType());
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(viewDelegate, outState);
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(viewDelegate, savedInstanceState);
+    }
 
     @Override
     public void onStart() {

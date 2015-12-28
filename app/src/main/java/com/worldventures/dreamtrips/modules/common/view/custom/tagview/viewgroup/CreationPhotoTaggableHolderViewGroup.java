@@ -54,11 +54,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
     public List<PhotoTag> getTagsToUpload() {
         if (locallyAddedTags.size() > 0) {
-           /* Queryable.from(locallyAddedTags).forEachR(tag -> { todo
-                PhotoTag.TagPosition newTagPosition = CoordinatesTransformer
-                        .convertToProportional(tag.getPosition(), getImageBounds());
-                tag.setTagPosition(newTagPosition);
-            });*/
             return locallyAddedTags;
         }
 

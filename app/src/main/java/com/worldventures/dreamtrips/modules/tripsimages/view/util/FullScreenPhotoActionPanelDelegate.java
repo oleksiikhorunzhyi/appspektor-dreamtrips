@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageVi
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 
 public class FullScreenPhotoActionPanelDelegate {
 
@@ -64,6 +65,9 @@ public class FullScreenPhotoActionPanelDelegate {
     Context context;
     User account;
 
+    @State
+    boolean isContentWrapperVisible = true;
+
     public void setup(Activity activity, View rootView, User account) {
         ButterKnife.inject(this, rootView);
         this.context = activity;
@@ -71,6 +75,11 @@ public class FullScreenPhotoActionPanelDelegate {
 
         ivImage.setSingleTapListener(this::toggleContent);
         ivImage.setDoubleTapListener(this::hideContent);
+        if (isContentWrapperVisible) {
+            showContent();
+        } else {
+            hideContent();
+        }
     }
 
     public void setContent(Photo photo) {
@@ -177,10 +186,12 @@ public class FullScreenPhotoActionPanelDelegate {
 
     private void hideContent() {
         llContentWrapper.setVisibility(View.GONE);
+        isContentWrapperVisible = false;
     }
 
     private void showContent() {
         llContentWrapper.setVisibility(View.VISIBLE);
+        isContentWrapperVisible = true;
     }
 
     public void toggleContent() {

@@ -30,6 +30,16 @@ public class ChatFacadeInitializer implements AppInitializer {
                 message.setDate(new Date());
                 message.setRead(false);
                 ContentUtils.insert(Message.CONTENT_URI, message);
+
+                Conversation conversation = new Select()
+                        .from(Conversation.class)
+                        .byIds(message.getConversationId())
+                        .querySingle();
+
+                if (conversation == null) return;
+
+                conversation.setUnreadMessageCount(conversation.getUnreadMessageCount() + 1);
+                conversation.save();
             }
 
             @Override

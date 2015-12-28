@@ -7,6 +7,7 @@
     <include layout="@layout/list_item_chat_date_entry"/>
 
     <FrameLayout
+        android:id="@+id/chat_message_container"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

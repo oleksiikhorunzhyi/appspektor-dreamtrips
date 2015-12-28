@@ -77,6 +77,11 @@ public class DtlMapInfoFragment
         categoryDataInflater.apply(merchant);
     }
 
+    @Override
+    public void distanceTypeChanged(DtlMerchant merchant) {
+        categoryDataInflater.apply(merchant);
+    }
+
     @OnClick(R.id.merchant_details_root)
     void merchantClicked() {
         getPresenter().onMerchantClick();

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import javax.inject.Inject;
 
@@ -31,5 +31,7 @@ public class DtlMerchantCommonDetailsPresenter<T extends DtlMerchantCommonDetail
 
     public interface View extends Presenter.View {
         void setMerchant(DtlMerchant merchant);
+
+        void distanceTypeChanged(DtlMerchant merchant);
     }
 }

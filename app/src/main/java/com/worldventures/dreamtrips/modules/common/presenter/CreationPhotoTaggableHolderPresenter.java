@@ -37,11 +37,6 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         ArrayList<PhotoTag> newDeletedTags = view.getLocallyDeletedTags();
 
         if (newAddedTags.size() > 0) {
-          /*  todo Queryable.from(newAddedTags).forEachR(tag -> {
-                PhotoTag.TagPosition newTagPosition = CoordinatesTransformer
-                        .convertToProportional(tag.getPosition(), view.getImageBounds());
-                tag.setTagPosition(newTagPosition);
-            });*/
             doRequest(new AddPhotoTagsCommand(photo.getFSId(), newAddedTags), aVoid -> {
                 newAddedTags.clear();
                 addComplete = true;

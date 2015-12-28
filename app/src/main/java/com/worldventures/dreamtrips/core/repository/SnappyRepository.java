@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
@@ -60,6 +61,7 @@ public class SnappyRepository {
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
     public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
+    public static final String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
 
     public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
@@ -428,6 +430,14 @@ public class SnappyRepository {
 
     public void setGcmRegToken(String token) {
         act(db -> db.put(GCM_REG_TOKEN, token));
+    }
+
+    public void saveSocialViewPagerState(SocialViewPagerState state) {
+        act(db -> db.put(SOCIAL_VIEW_PAGER_STATE, state));
+    }
+
+    public SocialViewPagerState getSocialViewPagerState() {
+        return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////

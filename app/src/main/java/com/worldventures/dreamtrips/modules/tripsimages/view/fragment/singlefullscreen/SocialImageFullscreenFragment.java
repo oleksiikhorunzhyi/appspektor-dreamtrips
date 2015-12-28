@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.PreviewPhotoTaggableHolderViewGroup;
@@ -19,13 +20,17 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.events.SocialViewPagerStateChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SocialImageFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.FullScreenPhotoActionPanelDelegate;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -34,7 +39,7 @@ import icepick.Icepick;
 
 
 @Layout(R.layout.fragment_fullscreen_photo)
-public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo> implements SocialImageFullscreenPresenter.View, Flaggable {
+public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo> implements SocialImageFullscreenPresenter.View, Flaggable, FullScreenPhotoActionPanelDelegate.ContentVisibilityListener {
 
     FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
 
@@ -45,10 +50,14 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @InjectView(R.id.tag)
     protected ImageView tag;
 
+    @Inject
+    SnappyRepository db;
+
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount());
+        viewDelegate.setContentVisibilityListener(this);
     }
 
     @Override
@@ -56,12 +65,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         return new SocialImageFullscreenPresenter((Photo) getArgs().getPhoto(), getArgs().getType());
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(viewDelegate, outState);
-
     }
 
     @Override
@@ -73,6 +80,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @Override
     public void onStart() {
         super.onStart();
+        syncContentWrapperViewGroupWithGlobalState();
         taggableImageHolder.post(() -> {
             if (taggableImageHolder.isShown()) {
                 showTagViewGroup();
@@ -173,6 +181,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         } else {
             showTagViewGroup();
         }
+        notifyGlobalPagerStateChanged();
     }
 
     protected void hideTagViewGroup() {
@@ -201,4 +210,54 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         dialog.show();
     }
 
+
+    private void notifyGlobalPagerStateChanged() {
+        if (taggableImageHolder != null && viewDelegate != null && db != null) {
+            SocialViewPagerState state = new SocialViewPagerState();
+            state.setContentWrapperVisible(viewDelegate.isContentWrapperShown());
+            state.setTagHolderVisible(taggableImageHolder.isShown());
+            db.saveSocialViewPagerState(state);
+            eventBus.post(new SocialViewPagerStateChangedEvent());
+        }
+    }
+
+    public void onEvent(SocialViewPagerStateChangedEvent event) {
+        if (isResumed()) {
+            syncContentWrapperViewGroupWithGlobalState();
+            syncTagViewGroupWithGlobalState();
+        }
+    }
+
+
+    @Override
+    protected void onImageGlobalLayout() {
+        syncTagViewGroupWithGlobalState();
+    }
+
+    protected void syncContentWrapperViewGroupWithGlobalState() {
+        SocialViewPagerState socialViewPagerState = db.getSocialViewPagerState();
+        if (socialViewPagerState != null) {
+            if (socialViewPagerState.isContentWrapperVisible()) {
+                viewDelegate.showContent();
+            } else {
+                viewDelegate.hideContent();
+            }
+        }
+    }
+
+    protected void syncTagViewGroupWithGlobalState() {
+        SocialViewPagerState socialViewPagerState = db.getSocialViewPagerState();
+        if (socialViewPagerState != null) {
+            if (socialViewPagerState.isTagHolderVisible()) {
+                showTagViewGroup();
+            } else {
+                hideTagViewGroup();
+            }
+        }
+    }
+
+    @Override
+    public void onVisibilityChange() {
+        notifyGlobalPagerStateChanged();
+    }
 }

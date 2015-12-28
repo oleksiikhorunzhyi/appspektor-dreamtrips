@@ -119,7 +119,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
 
             try {
                 if (chat != null) {
-                    chat.kickParticipant(JidCreatorHelper.obtainUserJid(user.getId()), null);
+                    chat.kickParticipant(user.getId(), null);
                 }
             } catch (XMPPException.XMPPErrorException | SmackException e) {
                 Log.e(TAG, "Error ", e);

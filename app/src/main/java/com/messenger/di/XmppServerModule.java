@@ -1,6 +1,7 @@
 package com.messenger.di;
 
 import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -35,6 +36,8 @@ import dagger.Provides;
                 BaseNewChatMembersScreenPresenter.class,
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,
+
+                LeaveChatDelegate.class,
 
                 ChatSettingsScreenPresenterImpl.class,
                 ConversationListScreenPresenterImpl.class,

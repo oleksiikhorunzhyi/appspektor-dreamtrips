@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
@@ -40,10 +41,11 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     DreamSpiceManager dreamSpiceManager;
 
     private Activity parentActivity;
+    private final LeaveChatDelegate leaveChatDelegate;
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
-
+        leaveChatDelegate  = new LeaveChatDelegate((Injector) activity.getApplication(), (conversationId, userId) -> {});
         ((Injector) activity.getApplicationContext()).inject(this);
         contentResolver = new RxContentResolver(activity.getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
@@ -70,8 +72,10 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         super.onVisibilityChanged(visibility);
         if (visibility == View.VISIBLE){
             initialCursorLoader();
+            leaveChatDelegate.register();
         } else {
             contactSubscription.unsubscribe();
+            leaveChatDelegate.unregister();
         }
     }
 
@@ -152,13 +156,9 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onDeletionConfirmed(Conversation conversation) {
         if (conversation.getType().equals(Conversation.Type.GROUP)) {
-            if (conversation.getOwnerId().equals(user.getId())) {
-                Toast.makeText(parentActivity, "Owner cannot leave from chat",
-                        Toast.LENGTH_SHORT).show();
-            }
+            leaveChatDelegate.leave(conversation);
         } else {
-            Toast.makeText(parentActivity, "Delete not yet implemented",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(parentActivity, "Delete not yet implemented", Toast.LENGTH_SHORT).show();
         }
     }
 

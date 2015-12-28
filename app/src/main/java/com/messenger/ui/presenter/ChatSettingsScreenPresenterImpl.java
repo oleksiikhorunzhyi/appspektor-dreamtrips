@@ -7,7 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.messenger.messengerservers.GlobalEventEmitter;
+import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
@@ -35,7 +35,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
@@ -44,16 +43,16 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     private Conversation conversation;
 
-    private RxContentResolver contentResolver;
+    private final LeaveChatDelegate leaveChatDelegate;
+    private final RxContentResolver contentResolver;
     private Subscription participantsSubscriber;
-
-    @Inject
-    MessengerServerFacade facade;
 
     @Inject
     User user;
 
-    private final GlobalEventEmitter emitter;
+    @Inject
+    MessengerServerFacade facade;
+
     private final OnLeftChatListener onLeftChatListener = new OnLeftChatListener() {
         @Override
         public void onLeftChatListener(String conversationId, String userId) {
@@ -68,8 +67,8 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
         this.activity = activity;
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
-        ((Injector) activity.getApplication()).inject(this);
-        emitter = facade.getGlobalEventEmitter();
+        Injector injector = (Injector) activity.getApplication();
+        injector.inject(this);
         contentResolver = new RxContentResolver(activity.getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
                         .rawQuery(query.selection, query.selectionArgs));
@@ -78,6 +77,8 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
                 .from(Conversation.class)
                 .byIds(conversationId)
                 .querySingle();
+
+        leaveChatDelegate = new LeaveChatDelegate(injector, onLeftChatListener);
     }
 
     @Override
@@ -145,18 +146,15 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
         if (visibility == View.VISIBLE) {
-            Timber.d("TEST VISIBLE == View.VISIBLE");
-            emitter.addOnLeftChatListener(onLeftChatListener);
+            leaveChatDelegate.register();
         } else {
-            Timber.d("TEST VISIBLE != View.VISIBLE");
-            emitter.removeOnLeftChatListener(onLeftChatListener);
+            leaveChatDelegate.unregister();
         }
     }
 
     @Override
     public void onLeaveChatClicked() {
-        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner().getId(), isUserOwner());
-        chat.leave();
+        leaveChatDelegate.leave(conversation);
     }
 
     @Override

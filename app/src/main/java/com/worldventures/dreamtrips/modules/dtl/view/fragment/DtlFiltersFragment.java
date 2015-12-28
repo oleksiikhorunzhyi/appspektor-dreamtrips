@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import butterknife.InjectView;
@@ -35,7 +36,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     @InjectView(R.id.range_bar_price)
     protected RangeBar rangeBarPrice;
     @InjectView(R.id.switchView)
-    protected SwitchCompat switchCompat;
+    protected SwitchCompat distanceTypeSwitch;
     @InjectView(R.id.recyclerViewFilters)
     protected RecyclerView recyclerViewFilters;
 
@@ -45,19 +46,13 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        this.recyclerViewFilters.setLayoutManager(layoutManager);
-
-        this.filtersAdapter = new BaseArrayListAdapter<>(getActivity(), this);
-        this.filtersAdapter.registerCell(DtlMerchantsFilterHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
-        this.filtersAdapter.registerCell(DtlMerchantsFilterAttribute.class, DtlFilterAttributeCell.class);
-
+        recyclerViewFilters.setLayoutManager(layoutManager);
+        //
+        filtersAdapter = new BaseArrayListAdapter<>(getActivity(), this);
+        filtersAdapter.registerCell(DtlMerchantsFilterHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
+        filtersAdapter.registerCell(DtlMerchantsFilterAttribute.class, DtlFilterAttributeCell.class);
         recyclerViewFilters.setAdapter(filtersAdapter);
-
-        rangeBarDistance.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
-                getPresenter().distanceChanged(Integer.valueOf(rightValue)));
-        rangeBarPrice.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
-                getPresenter().priceChanged(Integer.valueOf(leftValue), Integer.valueOf(rightValue)));
-        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().toggleDistance(isChecked));
+        //
         ((MainActivity) getActivity()).attachRightDrawerListener(this);
     }
 
@@ -65,7 +60,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     void onApply() {
         //TODO Think about drawers without dependency of MainActivity
         ((MainActivity) getActivity()).closeRightDrawer();
-        getPresenter().apply();
+        getPresenter().apply(composeFilterData());
     }
 
     @OnClick(R.id.reset)
@@ -80,11 +75,25 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         return new DtlFiltersPresenter();
     }
 
+    /**
+     * Compose new filter data from current views' state
+     * @return actual filter data
+     */
+    private DtlFilterData composeFilterData() {
+        DtlFilterData data = DtlFilterData.createDefault();
+        data.setPrice(Integer.valueOf(rangeBarPrice.getLeftValue()), Integer.valueOf(rangeBarPrice.getRightValue()));
+        data.setDistanceType(distanceTypeSwitch.isChecked() ? DtlFilterData.DistanceType.KMS :
+                DtlFilterData.DistanceType.MILES);
+        data.setCurrentDistance(Integer.valueOf(rangeBarDistance.getRightValue()));
+        data.setAmenities(new ArrayList<>(filtersAdapter.getItems()));
+        return data;
+    }
+
     @Override
     public void attachFilterData(DtlFilterData filterData) {
-        rangeBarDistance.setRangePinsByValue(10.0f, filterData.getMaxDistance());
+        rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
-        switchCompat.setChecked(filterData.getDistanceType() == DtlFilterData.DistanceType.KMS);
+        distanceTypeSwitch.setChecked(filterData.getDistanceType() == DtlFilterData.DistanceType.KMS);
         if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())
             setupAttributesHeader(filterData);
     }
@@ -108,6 +117,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
 
     @Override
     public void onDrawerOpened() {
+        getPresenter().requestActualFilterData();
     }
 
     @Override

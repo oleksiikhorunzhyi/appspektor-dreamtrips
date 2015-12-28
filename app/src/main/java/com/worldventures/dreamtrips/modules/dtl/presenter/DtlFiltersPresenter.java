@@ -75,6 +75,13 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
         //nothing to do here
     }
 
+    /**
+     * Request filter parameters that are currently applied. To use in view to update itself
+     */
+    public void requestActualFilterData() {
+        view.attachFilterData(dtlFilterData);
+    }
+
     private void attachAmenities() {
         List<DtlMerchantsFilterAttribute> amenities = Queryable.from(db.getAmenities())
                 .map(element -> new DtlMerchantsFilterAttribute(element.getName())).toList();
@@ -83,33 +90,31 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
         view.attachFilterData(dtlFilterData);
     }
 
-    public void priceChanged(int left, int right) {
-        dtlFilterData.setPrice(left, right);
-    }
-
-    public void distanceChanged(int right) {
-        dtlFilterData.setCurrentDistance(right);
-    }
-
-    public void apply() {
-        TrackingHelper.dtlMerchantFilter(dtlFilterData);
+    /**
+     * Apply selected filter parameters
+     * @param data new filter parameters
+     */
+    public void apply(DtlFilterData data) {
+        TrackingHelper.dtlMerchantFilter(data);
+        db.saveDistanceToggle(data.getDistanceType());
+        this.dtlFilterData = data;
+        dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         dtlFilterDelegate.performFiltering();
     }
 
-    public void toggleDistance(boolean isChecked) {
-        dtlFilterData.setDistanceType(isChecked ? DtlFilterData.DistanceType.KMS :
-                DtlFilterData.DistanceType.MILES);
-        db.saveDistanceToggle(dtlFilterData.getDistanceType());
-        view.attachFilterData(dtlFilterData);
-        dtlFilterDelegate.performFiltering();
-    }
-
+    /**
+     * Reset filter parameters to default and update view
+     */
     public void resetAll() {
         dtlFilterData.reset();
         dtlFilterDelegate.performFiltering();
         view.attachFilterData(dtlFilterData);
     }
 
+    /**
+     * Batch toggle all amenities
+     * @param selected select all
+     */
     private void toggleAmenitiesSelection(boolean selected) {
         dtlFilterData.toggleAmenitiesSelection(selected);
         view.dataSetChanged();
@@ -117,6 +122,10 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
 
     public interface View extends RxView {
 
+        /**
+         * Update UI state with given filter parameters
+         * @param filterData dataSet to map to UI
+         */
         void attachFilterData(DtlFilterData filterData);
 
         void dataSetChanged();

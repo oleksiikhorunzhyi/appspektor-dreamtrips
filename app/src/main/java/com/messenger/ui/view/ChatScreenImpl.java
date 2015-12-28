@@ -3,15 +3,19 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +30,7 @@ import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
+import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
@@ -79,6 +84,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     private ToolbarPresenter toolbarPresenter;
 
     private MessagesCursorAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
 
     private final TextWatcher messageWatcher = new TextWatcher() {
@@ -121,7 +127,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         toolbarPresenter.setSubtitle("");
 
         recyclerView.setSaveEnabled(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -281,8 +287,35 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     @Override
     public void onConversationCursorLoaded(Cursor cursor, Conversation conversation, boolean pendingScroll) {
         adapter.setConversation(conversation);
+
+        int firstVisibleViewTop = 0;
+        int cursorCountDiff = 0;
+        View firstItemView = null;
+        if (cursor != null && adapter.getCursor() != null) {
+            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
+            firstItemView = linearLayoutManager.findViewByPosition(firstItem);
+            if (firstItemView != null) {
+                firstVisibleViewTop = firstItemView.getTop();
+            }
+            cursorCountDiff = Math.max(0, cursor.getCount() - adapter.getCursor().getCount());
+        }
+
         adapter.changeCursor(cursor);
-        if (pendingScroll) recyclerView.smoothScrollToPosition(cursor.getCount());
+
+        if (firstItemView != null && cursorCountDiff > 0) {
+            int position = linearLayoutManager.findFirstVisibleItemPosition() + cursorCountDiff;
+
+            // to calculate proper offset measure if first visible view will be different in height
+            // (e.g. because of the missing date divider) when new cursor will is assigned
+            MessageHolder messageHolder = adapter.onCreateViewHolder(recyclerView,
+                    adapter.getItemViewType(position));
+            adapter.onBindViewHolderCursor(messageHolder, cursor);
+            messageHolder.itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+            int diffHeight = firstItemView.getHeight() - messageHolder.itemView.getMeasuredHeight();
+            int offset = firstVisibleViewTop + diffHeight;
+
+            linearLayoutManager.scrollToPositionWithOffset(position, offset);
+        }
     }
 
     @Override

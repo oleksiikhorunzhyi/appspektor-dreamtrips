@@ -74,6 +74,21 @@ android {
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
             resValue "string", "facebook_app_id", "761062457321921"
         }
+        dtl {
+            applicationIdSuffix ".dtl"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
+
+            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
+                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
+
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            resValue "string", "facebook_app_id", "761062457321921"
+        }
         stage {
             applicationIdSuffix ".stage"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"

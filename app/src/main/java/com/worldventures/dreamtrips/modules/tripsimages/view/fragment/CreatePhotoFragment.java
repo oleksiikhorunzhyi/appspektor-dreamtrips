@@ -16,6 +16,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -76,6 +77,13 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     @Override
     public void onResume() {
         super.onResume();
+        OrientationUtil.lockOrientation(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Override

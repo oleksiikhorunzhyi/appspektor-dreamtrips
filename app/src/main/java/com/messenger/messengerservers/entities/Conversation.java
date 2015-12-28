@@ -21,6 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 public class Conversation extends BaseProviderModel<Conversation> {
     public static final String TABLE_NAME = "Conversations";
     public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_UNREAD_COUNT = "unreadMessageCount";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);

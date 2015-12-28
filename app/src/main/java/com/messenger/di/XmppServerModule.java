@@ -1,5 +1,7 @@
 package com.messenger.di;
 
+import android.content.Context;
+
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
@@ -13,6 +15,7 @@ import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
+import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
@@ -52,7 +55,13 @@ public class XmppServerModule {
     }
 
     @Provides
-    ChatDelegate provideChatDelegate(User user, MessengerServerFacade messengerServerFacade){
+    ChatDelegate provideChatDelegate(User user, MessengerServerFacade messengerServerFacade) {
         return new ChatDelegate(user, messengerServerFacade);
+    }
+
+    @Singleton
+    @Provides
+    UnreadConversationObservable provideUnreadConversationObservable(Context context) {
+        return new UnreadConversationObservable(context);
     }
 }

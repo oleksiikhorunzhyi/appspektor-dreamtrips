@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -43,6 +42,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     RouteCreator<Integer> routeCreator;
 
     BadgeImageView friendsBadge;
+    BadgeImageView unreadConversationBadge;
 
     private CirclesFilterPopupWindow filterPopupWindow;
 
@@ -80,16 +80,22 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Override
     protected void onMenuInflated(Menu menu) {
         super.onMenuInflated(menu);
-        MenuItem item = menu.findItem(R.id.action_friend_requests);
-        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(item);
-        friendsBadge.setOnClickListener(v -> {
-            NavigationBuilder.create()
-                    .with(activityRouter)
-                    .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                    .attach(Route.FRIENDS);
-            TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
-        });
+        MenuItem friendsItem = menu.findItem(R.id.action_friend_requests);
+        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(friendsItem);
         setRequestsCount(getPresenter().getFriendsRequestsCount());
+        friendsBadge.setOnClickListener(v -> {
+                    NavigationBuilder.create()
+                            .with(activityRouter)
+                            .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+                            .attach(Route.FRIENDS);
+                    TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
+                });
+
+        MenuItem conversationItem = menu.findItem(R.id.action_unread_conversation);
+        unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
+        unreadConversationBadge.setImage(R.drawable.ic_profile_bio);
+        unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
+        unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
     }
 
     @Override
@@ -163,6 +169,13 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     public void setRequestsCount(int count) {
         if (friendsBadge != null) {
             friendsBadge.setBadgeValue(count);
+        }
+    }
+
+    @Override
+    public void setUnreadConversationCount(int count) {
+        if (unreadConversationBadge != null) {
+            unreadConversationBadge.setBadgeValue(count);
         }
     }
 

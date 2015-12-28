@@ -579,5 +579,7 @@
     <string name="subject">Subject</string>
     <string name="change_subject">Enter chat name</string>
 
+    <string name="unread_conversation">Conversations</string>
+
     <!-- messenger ends-->
 </resources>

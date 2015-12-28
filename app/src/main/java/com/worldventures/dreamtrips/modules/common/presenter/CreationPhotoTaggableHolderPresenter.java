@@ -24,7 +24,7 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
 
     @Override
     public void addPhotoTag(PhotoTag tag) {
-       view.addTag(tag);
+        view.addTag(tag);
     }
 
     @Override
@@ -87,9 +87,10 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
     }
 
     private boolean isUserExists(User user) {
-        return isContainUser(view.getLocallyAddedTags(), user) ||
-                (isContainUser(photo.getPhotoTags(), user)
-                        && !isContainUser(view.getLocallyDeletedTags(), user));
+        boolean containsOnServer = photo != null && isContainUser(photo.getPhotoTags(), user);
+        boolean containsUserInLocallyAdded = isContainUser(view.getLocallyAddedTags(), user);
+        boolean containUserInDeleted = isContainUser(view.getLocallyDeletedTags(), user);
+        return containsUserInLocallyAdded || (containsOnServer && !containUserInDeleted);
     }
 
     private boolean isContainUser(List<PhotoTag> tagList, User user) {

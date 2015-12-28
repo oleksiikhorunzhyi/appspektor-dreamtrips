@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public abstract class TaggableImageHolderPresenter<VIEW extends TaggableImageHolderPresenter.View> extends Presenter<VIEW> {
 
+    @Nullable
     protected Photo photo;
 
     public TaggableImageHolderPresenter(Photo photo) {

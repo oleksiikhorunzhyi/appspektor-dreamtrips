@@ -37,7 +37,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     @InjectView(R.id.switchView)
     protected SwitchCompat switchCompat;
     @InjectView(R.id.recyclerViewFilters)
-    protected EmptyRecyclerView recyclerViewFilters;
+    protected RecyclerView recyclerViewFilters;
 
     protected BaseArrayListAdapter<DtlMerchantsFilterAttribute> filtersAdapter;
 

@@ -101,6 +101,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
                 DtlFilterData.DistanceType.MILES);
         db.saveDistanceToggle(dtlFilterData.getDistanceType());
         view.attachFilterData(dtlFilterData);
+        dtlFilterDelegate.performFiltering();
     }
 
     public void resetAll() {

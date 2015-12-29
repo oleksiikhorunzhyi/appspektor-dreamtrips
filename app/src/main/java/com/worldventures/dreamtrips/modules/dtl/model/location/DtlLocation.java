@@ -122,7 +122,10 @@ public class DtlLocation implements Parcelable {
                     lhs.getCoordinates().asLatLng());
             double distanceToRight = DtlLocationHelper.distanceInMiles(currentLocation,
                     rhs.getCoordinates().asLatLng());
-            return Double.valueOf(distanceToLeft - distanceToRight).intValue();
+            //
+            if (distanceToLeft == distanceToRight) return 0;
+            if (distanceToLeft > distanceToRight) return 1;
+            else return -1;
         }
     }
 

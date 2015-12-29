@@ -78,7 +78,7 @@
     <string name="suggest_merchant_contact_time_past_error_format">\'%s\' field cannot be in the past!</string>
     <string name="suggest_merchant_rating_error_format">\'%s\' rating must be set!</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
-    <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>
+    <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %s DreamTrips points in %s</string>
     <string name="dtl_wait_for_location">Wait… Obtaining current location</string>
     <string name="dtl_wait_for_cities">Wait… Obtaining nearest cities</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>

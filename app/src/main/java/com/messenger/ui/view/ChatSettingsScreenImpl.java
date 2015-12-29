@@ -52,6 +52,8 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
 
     @InjectView(R.id.char_settings_rows_parent)
     ViewGroup chatSettingsRows;
+    @InjectView(R.id.chat_settings_clear_history_button)
+    Button clearHistoryButton;
     @InjectView(R.id.chat_settings_leave_chat_button)
     Button leaveChatButton;
 
@@ -97,6 +99,8 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
     protected void initUi() {
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
         toolbarPresenter.enableUpNavigationButton();
+        // hide the button until we have user story
+        clearHistoryButton.setVisibility(View.GONE);
         leaveChatButton.setText(getLeaveChatButtonStringRes());
     }
 

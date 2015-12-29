@@ -269,7 +269,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void done() {
-        if (getActivity() instanceof ComponentActivity)
+        if (getActivity() instanceof ComponentActivity
+                && !ViewUtils.isLandscapeOrientation(getActivity()))
             getActivity().onBackPressed();
     }
 

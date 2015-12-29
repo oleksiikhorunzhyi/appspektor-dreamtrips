@@ -75,7 +75,6 @@ public class MessengerConnector {
         if (messengerServerFacade.isAuthorized()) {
             spiceManager.shouldStop();
             messengerServerFacade.disconnectAsync();
-            cacheSynchronizer.clearCache();
             connectionObservable.onNext(Status.DISCONNECTED);
         }
 
@@ -86,7 +85,7 @@ public class MessengerConnector {
         @Override
         public void onSuccess() {
             if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
-            cacheSynchronizer.updateCache(result -> {
+            messengerCacheSynchronizer.updateCache(result -> {
                 messengerServerFacade.setPresenceStatus(result);
                 connectionObservable.onNext(Status.CONNECTED);
             });

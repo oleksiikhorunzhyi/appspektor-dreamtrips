@@ -7,6 +7,7 @@ import android.database.Cursor;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 
+@Deprecated
 public class MessageLoader extends BaseCursorRowLoader {
     private final ForceLoadContentObserver observer = new ForceLoadContentObserver();
     private final ContentResolver contentResolver;

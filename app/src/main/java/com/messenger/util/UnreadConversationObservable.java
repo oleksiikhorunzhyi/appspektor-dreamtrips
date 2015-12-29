@@ -5,8 +5,6 @@ import android.content.Context;
 import com.messenger.messengerservers.entities.Conversation;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,7 +31,7 @@ public class UnreadConversationObservable {
 
         observable = contentResolver
                 .query(queryBuilder.build())
-                .throttleLast(TIMEOUT, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .map(cursor -> cursor.moveToFirst() ? cursor.getInt(0) : 0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

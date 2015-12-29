@@ -35,7 +35,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Nullable
     private org.jivesoftware.smackx.muc.MultiUserChat chat;
 
-    private final User user;
+    private final String userId;
     private boolean isOwner;
     private final String roomId;
     private PresenceListener presenceListener;
@@ -43,8 +43,8 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     private AbstractXMPPConnection connection;
     private XmppMessageConverter messageConverter;
 
-    public XmppMultiUserChat(XmppServerFacade facade, String roomId, User user, boolean isOwner) {
-        this.user = user;
+    public XmppMultiUserChat(XmppServerFacade facade, String roomId, String userId, boolean isOwner) {
+        this.userId = userId;
         this.roomId = roomId;
         this.isOwner = isOwner;
         //
@@ -75,7 +75,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
             stanzaPacket.setStanzaId(UUID.randomUUID().toString());
             stanzaPacket.setThread(roomId);
-            stanzaPacket.setFrom(JidCreatorHelper.obtainUserJid(user.getId()));
+            stanzaPacket.setFrom(JidCreatorHelper.obtainUserJid(userId));
             chat.sendMessage(stanzaPacket);
         } catch (SmackException.NotConnectedException e) {
             Log.e(TAG, "Error ", e);
@@ -115,10 +115,12 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             throw new IllegalAccessError("You are not owner of chat. You cannot kick someone");
 
         for (User user : users) {
-            if (this.user.getId().equals(user.getId())) continue;
+            if (userId.equals(user.getId())) continue;
 
             try {
-                chat.kickParticipant(JidCreatorHelper.obtainUserJid(user.getId()), null);
+                if (chat != null) {
+                    chat.kickParticipant(user.getId(), null);
+                }
             } catch (XMPPException.XMPPErrorException | SmackException e) {
                 Log.e(TAG, "Error ", e);
             }
@@ -187,8 +189,9 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             try {
                 try {
                     Log.e("MUC Create ", jid);
-                    chat.createOrJoin(user.getId());
+                    chat.createOrJoin(userId);
                 } catch (IllegalStateException e) {
+                    Timber.e(e, "SetConnection");
                 } // cause the method is synchronized var in library not volatile
 
                 setListeners();

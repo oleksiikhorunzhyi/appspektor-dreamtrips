@@ -11,5 +11,7 @@ public interface ChatManager {
 
     SingleUserChat createSingleUserChat(@Nullable String companionId, @Nullable String conversationId);
 
-    MultiUserChat createMultiUserChat(@Nullable String roomId, User owner, boolean isOwner);
+    MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId, boolean isOwner);
+
+    MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId);
 }

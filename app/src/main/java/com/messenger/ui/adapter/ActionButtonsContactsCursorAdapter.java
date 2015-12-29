@@ -21,34 +21,21 @@ import butterknife.InjectView;
 
 public class ActionButtonsContactsCursorAdapter
         extends ContactCursorAdapter implements SwipeItemMangerInterface, SwipeAdapterInterface {
-
-    public interface RowButtonsActionListener {
-        void onDeleteUserButtonPressed(User user);
-    }
-
-    public static class ActionButtonsViewHolder extends ContactViewHolder {
-        @InjectView(R.id.swipe)
-        SwipeLayout swipeLayout;
-        @InjectView(R.id.swipe_layout_button_delete)
-        View deleteButton;
-
-        public ActionButtonsViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
-
+    public final SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
+    public final String userId;
+    private final boolean owner;
     private RowButtonsActionListener rowButtonsActionListener;
 
-    public ActionButtonsContactsCursorAdapter(Context context, Cursor cursor) {
-        super(context, cursor);
+    public ActionButtonsContactsCursorAdapter(Context context, User user, boolean owner) {
+        super(context, null);
+        this.userId = user.getId();
+        this.owner = owner;
     }
 
     @Override
     public BaseViewHolder createContactViewHolder(ViewGroup parent, int viewType) {
-        View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_contact_swipe,
-                parent, false);
+        View itemRow = LayoutInflater
+                .from(parent.getContext()).inflate(R.layout.list_item_contact_swipe, parent, false);
         return new ActionButtonsViewHolder(itemRow);
     }
 
@@ -57,6 +44,8 @@ public class ActionButtonsContactsCursorAdapter
         super.onBindUserHolder(h, cursor, user);
         ActionButtonsViewHolder holder = (ActionButtonsViewHolder)h;
         holder.getTickImageView().setVisibility(View.GONE);
+        holder.swipeLayout.setSwipeEnabled(owner && !userId.equals(cursor.getString(cursor.getColumnIndex(User.COLUMN_ID))));
+
         mItemManger.bindView(holder.itemView, cursor.getPosition());
         holder.deleteButton.setOnClickListener(view -> {
             if (rowButtonsActionListener != null) {
@@ -122,5 +111,20 @@ public class ActionButtonsContactsCursorAdapter
     @Override
     public void setMode(Attributes.Mode mode) {
         mItemManger.setMode(mode);
+    }
+
+    public interface RowButtonsActionListener {
+        void onDeleteUserButtonPressed(User user);
+    }
+
+    public static class ActionButtonsViewHolder extends ContactViewHolder {
+        @InjectView(R.id.swipe)
+        SwipeLayout swipeLayout;
+        @InjectView(R.id.swipe_layout_button_delete)
+        View deleteButton;
+
+        public ActionButtonsViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }

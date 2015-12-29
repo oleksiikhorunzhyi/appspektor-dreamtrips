@@ -3,6 +3,7 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -32,15 +33,20 @@ import com.worldventures.dreamtrips.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.messenger.ui.adapter.ConversationsCursorAdapter.*;
+
 public class ConversationListScreenImpl extends BaseViewStateLinearLayout<ConversationListScreen,
-        ConversationListScreenPresenter> implements ConversationListScreen,
-        ConversationsCursorAdapter.SwipeButtonsListener {
+        ConversationListScreenPresenter> implements ConversationListScreen, SwipeButtonsListener {
 
-    @InjectView(R.id.conversation_list_recycler_view) RecyclerView recyclerView;
-    @InjectView(R.id.conversation_list_loading_view) View loadingView;
-    @InjectView(R.id.conversation_list_error_view) View errorView;
+    @InjectView(R.id.conversation_list_recycler_view)
+    RecyclerView recyclerView;
+    @InjectView(R.id.conversation_list_loading_view)
+    View loadingView;
+    @InjectView(R.id.conversation_list_error_view)
+    View errorView;
 
-    @InjectView(R.id.conversation_list_toolbar) Toolbar toolbar;
+    @InjectView(R.id.conversation_list_toolbar)
+    Toolbar toolbar;
     @InjectView(R.id.conversation_conversation_type_spinner)
     Spinner conversationsDropDownSpinner;
 
@@ -151,6 +157,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
         }
     }
 
+    @NonNull
     @Override
     public ConversationListScreenPresenter createPresenter() {
         return new ConversationListScreenPresenterImpl(getActivity());
@@ -167,9 +174,9 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
                 .setMessage(R.string.conversation_list_delete_dialog_message)
                 .setPositiveButton(R.string.conversation_list_delete_dialog_pos_button,
                         (d, i) -> {
-                    presenter.onDeletionConfirmed(conversation);
-                    adapter.closeAllItems();
-                })
+                            presenter.onDeletionConfirmed(conversation);
+                            adapter.closeAllItems();
+                        })
                 .setNeutralButton(R.string.cancel, (d, i) -> adapter.closeAllItems())
                 .show();
     }
@@ -210,7 +217,8 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
         return presenter.onCreateOptionsMenu(menu);
     }
 
-    @Override public void onPrepareOptionsMenu(Menu menu) {
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
@@ -236,11 +244,13 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
                 return false;
             });
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override public boolean onQueryTextSubmit(String query) {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
                     return false;
                 }
 
-                @Override public boolean onQueryTextChange(String newText) {
+                @Override
+                public boolean onQueryTextChange(String newText) {
                     getPresenter().onConversationsSearchFilterSelected(newText);
                     return false;
                 }

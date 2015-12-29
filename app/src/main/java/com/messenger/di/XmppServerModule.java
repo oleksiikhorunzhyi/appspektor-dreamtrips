@@ -1,6 +1,7 @@
 package com.messenger.di;
 
 import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -12,7 +13,9 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
+import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
+import com.messenger.ui.view.EditChatMembersScreenImpl;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
@@ -34,8 +37,12 @@ import dagger.Provides;
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,
 
+                LeaveChatDelegate.class,
+
                 ChatSettingsScreenPresenterImpl.class,
                 ConversationListScreenPresenterImpl.class,
+                EditChatMembersScreenPresenterImpl.class,
+                EditChatMembersScreenImpl.class,
                 ChatActivity.class})
 
 public class XmppServerModule {

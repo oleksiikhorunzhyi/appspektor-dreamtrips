@@ -3,7 +3,9 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +26,10 @@ import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -63,26 +68,31 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
 
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
+        ((Injector) context.getApplicationContext()).inject(this);
         LayoutInflater.from(context).inflate(R.layout.screen_edit_chat_members, this, true);
         ButterKnife.inject(this, this);
         initUi();
     }
 
-    private void initUi() {
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
-        toolbarPresenter.enableUpNavigationButton();
-
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         // Use this class until sorting logic in ContactCursorAdapter is checked
         // to be working (provided users are sorted alphabetically) or fixed if needed if
         // it does not work when contacts sorting is fixed.
-        adapter = new ActionButtonsContactsCursorAdapter(getContext(), null);
+        adapter = new ActionButtonsContactsCursorAdapter(getContext(), presenter.getUser(), presenter.isOwner());
         adapter.setRowButtonsActionListener(user -> getPresenter().onDeleteUserFromChat(user));
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new VerticalDivider(getResources()
-                .getDrawable(R.drawable.divider_list)));
+        recyclerView.addItemDecoration(new VerticalDivider(
+                ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
+    }
+
+    private void initUi() {
+        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter.enableUpNavigationButton();
     }
 
     @Override
@@ -196,14 +206,13 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
     }
 
     @Override
     public void onDestroy() {
-
     }
 
+    @NonNull
     @Override
     public EditChatMembersScreenPresenter createPresenter() {
         return new EditChatMembersScreenPresenterImpl(getActivity());

@@ -83,7 +83,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
         String fromJid = stanza.getFrom();
         if (JidCreatorHelper.isGroupJid(fromJid)) {
-            notifyOnLeftChatListener(JidCreatorHelper.obtainGroupJid(fromJid),
+            notifyOnLeftChatListener(JidCreatorHelper.obtainId(fromJid),
                     JidCreatorHelper.obtainUserIdFromGroupJid(fromJid));
         } else {
             if (Type.available == presenceType && Type.unavailable == presenceType) {

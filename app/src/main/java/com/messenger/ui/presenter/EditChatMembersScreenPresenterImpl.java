@@ -26,8 +26,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -77,7 +75,7 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
                 .withSelectionArgs(new String[]{conversation.getId()}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView((View) getView()))

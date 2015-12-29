@@ -28,8 +28,6 @@ import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -104,7 +102,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
                 ).withSelectionArgs(new String[]{conversation.getId()}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(500, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

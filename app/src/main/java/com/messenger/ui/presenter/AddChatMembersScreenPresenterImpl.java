@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,7 +58,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 ).withSelectionArgs(new String[]{conversation.getId()}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(500, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -92,7 +91,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC").build();
         contactSubscription = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(users -> showContacts(users));

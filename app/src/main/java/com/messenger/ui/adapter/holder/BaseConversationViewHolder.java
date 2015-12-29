@@ -16,9 +16,7 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -92,7 +90,7 @@ public class BaseConversationViewHolder extends BaseViewHolder {
                         "WHERE p.conversationId = ?"
                 ).withSelectionArgs(new String[]{conversationId}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(500, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .onErrorReturn(throwable -> Collections.<User>emptyList())
                 .subscribeOn(Schedulers.io())

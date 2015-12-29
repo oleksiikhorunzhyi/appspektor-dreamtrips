@@ -18,8 +18,6 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -44,7 +42,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC").build();
         contactSubscription = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView((View) getView()))

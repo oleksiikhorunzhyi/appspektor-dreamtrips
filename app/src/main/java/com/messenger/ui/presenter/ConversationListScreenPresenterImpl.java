@@ -58,19 +58,18 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         dreamSpiceManager.start(getView().getContext());
-        getView().showLoading();
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
-
+        getView().showLoading();
         connectCursor();
     }
 
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        getViewState().setCursor(null);
-        contactSubscription.unsubscribe();
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
+        contactSubscription.unsubscribe();
+        getViewState().setCursor(null);
     }
 
     @Override
@@ -79,7 +78,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         if (visibility == View.VISIBLE) {
             leaveChatDelegate.register();
         } else {
-            contactSubscription.unsubscribe();
             leaveChatDelegate.unregister();
         }
     }
@@ -115,7 +113,6 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindVisibility())
                 .subscribe(cursor -> {
                     state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
                     state.setCursor(cursor);

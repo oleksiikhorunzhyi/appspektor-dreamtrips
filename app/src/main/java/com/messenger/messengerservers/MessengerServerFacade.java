@@ -14,6 +14,8 @@ public interface MessengerServerFacade {
 
     void setPresenceStatus(boolean active);
 
+    boolean isActive();
+
     void addAuthorizationListener(AuthorizeListener listener);
 
     void removeAuthorizationListener(AuthorizeListener listener);

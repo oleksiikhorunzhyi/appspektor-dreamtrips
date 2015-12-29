@@ -10,11 +10,11 @@ import com.messenger.messengerservers.entities.User;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
-public class CacheSynchronizer {
+public class MessengerCacheSynchronizer {
 
     private LoaderDelegate loaderDelegate;
 
-    public CacheSynchronizer(MessengerServerFacade messengerServerFacade, DreamSpiceManager spiceManager) {
+    public MessengerCacheSynchronizer(MessengerServerFacade messengerServerFacade, DreamSpiceManager spiceManager) {
         this.loaderDelegate = new LoaderDelegate(messengerServerFacade, spiceManager);
     }
 

@@ -1,6 +1,6 @@
 package com.messenger.ui.activity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
@@ -15,18 +15,18 @@ public class ChatSettingsActivity extends BaseMvpViewActivity<ChatSettingsScreen
     public static final int CHAT_TYPE_GROUP = 0xaa54;
     public static final int CHAT_TYPE_SINGLE = 0xaa55;
 
-    public static void startGroupChatSettings(Activity activity, String conversationId) {
-        Intent starter = new Intent(activity, ChatSettingsActivity.class);
+    public static void startGroupChatSettings(Context context, String conversationId) {
+        Intent starter = new Intent(context, ChatSettingsActivity.class);
         starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
         starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_GROUP);
-        activity.startActivity(starter);
+        context.startActivity(starter);
     }
 
-    public static void startSingleChatSettings(Activity activity, @Nullable String conversationId) {
-        Intent starter = new Intent(activity, ChatSettingsActivity.class);
+    public static void startSingleChatSettings(Context context, @Nullable String conversationId) {
+        Intent starter = new Intent(context, ChatSettingsActivity.class);
         starter.putExtra(EXTRA_CHAT_TYPE, CHAT_TYPE_SINGLE);
         starter.putExtra(EXTRA_CHAT_CONVERSATION_ID, conversationId);
-        activity.startActivity(starter);
+        context.startActivity(starter);
     }
 
     @Override

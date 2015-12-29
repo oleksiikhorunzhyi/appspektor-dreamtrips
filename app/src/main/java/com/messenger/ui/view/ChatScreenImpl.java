@@ -3,19 +3,15 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,9 +32,9 @@ import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.widget.ChatUsersTypingView;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
-import com.messenger.ui.widget.ChatUsersTypingView;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -158,10 +154,9 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(this))
+                .filter(pos -> !adapter.getCursor().isClosed())
                 .subscribe(position -> {
                     Cursor cursor = adapter.getCursor();
-                    if (cursor.isClosed()) return;
-
                     int prevPos = cursor.getPosition();
                     cursor.moveToPosition(position);
                     Message message = SqlUtils.convertToModel(true, Message.class, cursor);
@@ -285,7 +280,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     }
 
     @Override
-    public void onConversationCursorLoaded(Cursor cursor, Conversation conversation, boolean pendingScroll) {
+    public void showMessages(Cursor cursor, Conversation conversation, boolean pendingScroll) {
         adapter.setConversation(conversation);
 
         int firstVisibleViewTop = 0;

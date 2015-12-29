@@ -21,7 +21,7 @@ public class MessengerConnector {
     private SessionHolder<UserSession> appSessionHolder;
     private MessengerServerFacade messengerServerFacade;
     private DreamSpiceManager spiceManager;
-    private CacheSynchronizer cacheSynchronizer;
+    private MessengerCacheSynchronizer messengerCacheSynchronizer;
 
     private PublishSubject<Integer> connectionObservable;
 
@@ -33,7 +33,7 @@ public class MessengerConnector {
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
-        this.cacheSynchronizer = new CacheSynchronizer(messengerServerFacade, spiceManager);
+        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, spiceManager);
 
         activityWatcher.addOnStartStopListener(startStopAppListener);
 
@@ -75,7 +75,6 @@ public class MessengerConnector {
         if (messengerServerFacade.isAuthorized()) {
             spiceManager.shouldStop();
             messengerServerFacade.disconnectAsync();
-            cacheSynchronizer.clearCache();
             connectionObservable.onNext(Status.DISCONNECTED);
         }
 
@@ -86,7 +85,7 @@ public class MessengerConnector {
         @Override
         public void onSuccess() {
             if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
-            cacheSynchronizer.updateCache(result -> {
+            messengerCacheSynchronizer.updateCache(result -> {
                 messengerServerFacade.setPresenceStatus(result);
                 connectionObservable.onNext(Status.CONNECTED);
             });

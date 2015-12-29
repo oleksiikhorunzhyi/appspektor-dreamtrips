@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
+import com.trello.rxlifecycle.RxLifecycle;
 
 import icepick.Icepick;
 import icepick.State;
@@ -48,6 +49,10 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
 
     protected <T> Observable.Transformer<T, T> bindVisibility() {
         return input -> input.takeUntil(visibilityStopper);
+    }
+
+    protected <T> Observable.Transformer<T, T> bindView() {
+        return input -> input.compose(RxLifecycle.bindView(((View) getView())));
     }
 
     @Override

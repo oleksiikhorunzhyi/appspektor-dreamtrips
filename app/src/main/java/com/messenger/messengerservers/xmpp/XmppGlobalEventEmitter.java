@@ -24,7 +24,14 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     private AbstractXMPPConnection abstractXMPPConnection;
     private final XmppMessageConverter messageConverter;
 
-    private final AuthorizeListener authorizeListener = new AuthorizeListener() {
+
+    public XmppGlobalEventEmitter(XmppServerFacade facade) {
+        this.facade = facade;
+        this.messageConverter = new XmppMessageConverter();
+        facade.addAuthorizationListener(authorizeListener);
+    }
+
+    AuthorizeListener authorizeListener = new AuthorizeListener() {
         @Override
         public void onSuccess() {
             super.onSuccess();
@@ -34,12 +41,6 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
         }
     };
-
-    public XmppGlobalEventEmitter(XmppServerFacade facade) {
-        this.facade = facade;
-        this.messageConverter = new XmppMessageConverter();
-        facade.addAuthorizationListener(authorizeListener);
-    }
 
     private void interceptOutgoingPacket(Stanza packet) {
         if (isMessage(packet)) {
@@ -51,6 +52,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     }
 
     private void interceptIncomingPacket(Stanza packet) {
+        if (!facade.isActive()) return;
+        //
         switch (stanzaType(packet)) {
             case MESSAGE: {
                 Message messageXMPP = (Message) packet;

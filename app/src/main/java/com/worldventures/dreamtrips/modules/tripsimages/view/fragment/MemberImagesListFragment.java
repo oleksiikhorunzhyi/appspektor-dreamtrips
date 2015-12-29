@@ -21,8 +21,6 @@ public class MemberImagesListFragment<P extends MemberImagesPresenter> extends T
     @InjectView(R.id.photo_picker)
     PhotoPickerLayout photoPickerLayout;
 
-    private boolean isVisible;
-
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
@@ -43,17 +41,15 @@ public class MemberImagesListFragment<P extends MemberImagesPresenter> extends T
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        isVisible = isVisibleToUser;
+        super.setUserVisibleHint(isVisibleToUser);
 
         setupPicker();
-
-        super.setUserVisibleHint(isVisibleToUser);
     }
 
     private void setupPicker() {
         if (photoPickerLayout == null) return;
         //
-        photoPickerLayout.setup(getChildFragmentManager(), false, isVisible);
+        photoPickerLayout.setup(getChildFragmentManager(), false, getUserVisibleHint());
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter()
                 .attachImages(chosenImages, PickImageDelegate.REQUEST_PICK_PICTURE));
         hidePhotoPicker();

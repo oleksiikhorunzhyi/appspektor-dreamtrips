@@ -224,6 +224,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         isShown = false;
         updatePickedItemsCount(0);
         setPanelHeight(0);
+        setScrollableView(null);
         //
         if (!ViewCompat.isAttachedToWindow(this)) return;
         clearAllBackStack();

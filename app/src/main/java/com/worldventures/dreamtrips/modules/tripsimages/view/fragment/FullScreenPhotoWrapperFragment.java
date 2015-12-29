@@ -14,17 +14,21 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -37,6 +41,8 @@ public class FullScreenPhotoWrapperFragment
     protected ViewPager pager;
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
+    @Inject
+    SnappyRepository db;
 
     protected BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>> adapter;
     protected Route route;
@@ -83,6 +89,13 @@ public class FullScreenPhotoWrapperFragment
         toolbar.getBackground().setAlpha(0);
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setDefaultSocialPagerState();
+    }
+
     private void setupAdapter() {
         adapter = new BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>>(getActivity().getSupportFragmentManager()) {
             @Override
@@ -98,10 +111,10 @@ public class FullScreenPhotoWrapperFragment
         };
     }
 
-
     @Override
     public void startLoading() {
     }
+
 
     @Override
     public void finishLoading() {
@@ -159,6 +172,13 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     public void replace(int position, IFullScreenObject item) {
+    }
+
+    protected void setDefaultSocialPagerState() {
+        SocialViewPagerState state = new SocialViewPagerState();
+        state.setTagHolderVisible(false);
+        state.setContentWrapperVisible(true);
+        db.saveSocialViewPagerState(state);
     }
 
     @Override

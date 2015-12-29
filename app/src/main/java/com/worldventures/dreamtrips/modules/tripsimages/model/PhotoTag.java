@@ -13,6 +13,12 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
     private TagPosition position;
     private User user;
 
+    /**
+     * For serialization
+     */
+    public PhotoTag() {
+    }
+
     public PhotoTag(TagPosition position, User user) {
         this.position = position;
         this.user = user;
@@ -38,6 +44,12 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
 
         private Position topLeft;
         private Position bottomRight;
+
+        /**
+         * For serialization
+         */
+        public TagPosition() {
+        }
 
         public TagPosition(Position topLeft, Position bottomRight) {
             this.topLeft = topLeft;

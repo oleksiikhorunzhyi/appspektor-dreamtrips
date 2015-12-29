@@ -74,6 +74,8 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     public void onStart() {
         super.onStart();
         taggableImageHolder.post(() -> {
+            if (taggableImageHolder == null) return;
+            //
             if (taggableImageHolder.isShown()) {
                 showTagViewGroup();
             } else {

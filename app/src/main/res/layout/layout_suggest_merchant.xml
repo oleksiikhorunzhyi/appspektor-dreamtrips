@@ -41,9 +41,8 @@
         android:layout_marginBottom="0dp"
         android:hint="@string/suggest_merchant_phone_number_hint"
         android:inputType="phone"
-        android:maxLength="10"
-        app:met_maxCharacters="10"
-        app:met_minCharacters="10"
+        android:maxLength="20"
+        app:met_maxCharacters="20"
         />
 
     <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText

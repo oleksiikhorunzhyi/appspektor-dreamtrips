@@ -20,8 +20,6 @@ import java.lang.annotation.RetentionPolicy;
 @Table(tableName = Conversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class Conversation extends BaseProviderModel<Conversation> {
     public static final String TABLE_NAME = "Conversations";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_UNREAD_COUNT = "unreadMessageCount";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -32,6 +30,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column String subject;
     @Column String type;
     @Column int unreadMessageCount;
+    @Column boolean abandoned;
 
     public Conversation() {}
 
@@ -41,6 +40,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setSubject(builder.subject);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
+        setAbandoned(builder.abandoned);
     }
 
     public String getId() {
@@ -82,6 +82,14 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setUnreadMessageCount(int unreadMessageCount) {
         this.unreadMessageCount = unreadMessageCount;
+    }
+
+    public boolean isAbandoned() {
+        return abandoned;
+    }
+
+    public void setAbandoned(boolean abandoned) {
+        this.abandoned = abandoned;
     }
 
     @Override
@@ -138,6 +146,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String subject;
         private String type;
         private int unreadMessageCount = 0;
+        private boolean abandoned;
 
         public Builder() {
         }
@@ -149,6 +158,11 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder ownerId(String id) {
             ownerId = id;
+            return this;
+        }
+
+        public Builder abandoned(boolean val) {
+            abandoned = val;
             return this;
         }
 

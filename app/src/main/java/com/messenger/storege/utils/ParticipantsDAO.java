@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
+import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.util.RxContentResolver;
 
@@ -15,8 +16,8 @@ public class ParticipantsDAO {
 
     public static void delete(ContentResolver resolver, String conversationId, String userId) {
         resolver.delete(ParticipantsRelationship.CONTENT_URI,
-                ParticipantsRelationship.COLUMN_CONVERSATION_ID + "=? AND " +
-                        ParticipantsRelationship.COLUMN_USER_ID + "=?", new String[] {conversationId, userId});
+                ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
+                        ParticipantsRelationship$Table.USERID + "=?", new String[] {conversationId, userId});
     }
 
     public static Observable<Cursor> selectParticipants(RxContentResolver contentResolver, String conversationId, Uri... observeUris) {

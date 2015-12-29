@@ -66,12 +66,13 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
                     Conversation conversation = conversationWithLastMessage.conversation;
                     if (conversation.getType().equals(CHAT)) {
                         List<User> users = provider.getSingleChatParticipants(conversation);
+                        conversation.setAbandoned(true);
                         if (subscriber.isUnsubscribed()) return;
                         //
                         subscriber.onNext(new ConversationWithParticipants(conversationWithLastMessage.lastMessage, conversation, users));
                         subscriber.onCompleted();
                     } else {
-                        provider.loadMultiUserChatParticipants(conversation, (owner, members) -> {
+                        provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
                             if (subscriber.isUnsubscribed()) return;
                             if (owner == null) {
                                 subscriber.onCompleted();
@@ -79,6 +80,7 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
                             }
                             //
                             conversation.setOwnerId(owner.getId());
+                            conversation.setAbandoned(abandoned);
                             members.add(0, owner);
                             subscriber.onNext(new ConversationWithParticipants(conversationWithLastMessage.lastMessage, conversation, members));
                             subscriber.onCompleted();

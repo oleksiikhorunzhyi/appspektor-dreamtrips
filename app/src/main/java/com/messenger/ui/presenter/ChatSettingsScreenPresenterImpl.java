@@ -1,6 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +15,8 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnLeftChatListener;
+import com.messenger.storege.utils.ConversationsDAO;
+import com.messenger.storege.utils.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
@@ -53,7 +56,10 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     private final OnLeftChatListener onLeftChatListener = new OnLeftChatListener() {
         @Override
         public void onLeftChatListener(String conversationId, String userId) {
+            ContentResolver resolver = activity.getContentResolver();
+            ParticipantsDAO.delete(resolver, conversationId, userId);
             if (userId.equals(user.getId())) {
+                ConversationsDAO.leaveConversation(resolver, conversationId);
                 Intent intent = new Intent(activity, MessengerStartActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 activity.startActivity(intent);
@@ -94,14 +100,8 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         getView().prepareViewForOwner(isUserOwner());
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
-                        "ON p.userId = u._id " +
-                        "WHERE p.conversationId = ?"
-                ).withSelectionArgs(new String[]{conversation.getId()}).build();
-        participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
-                ParticipantsRelationship.CONTENT_URI)
+        participantsSubscriber = ParticipantsDAO.selectParticipants(contentResolver, conversation.getId(),
+                User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
                 .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())

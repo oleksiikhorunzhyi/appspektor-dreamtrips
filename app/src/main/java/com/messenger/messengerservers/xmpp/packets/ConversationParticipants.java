@@ -16,6 +16,7 @@ public class ConversationParticipants extends IQ {
     private List<User> participants;
     // TODO: 12/24/15 remove user
     private User owner;
+    private boolean abandoned;
 
     public ConversationParticipants() {
         super(ELEMENT_QUERY, NAMESPACE);
@@ -28,6 +29,14 @@ public class ConversationParticipants extends IQ {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public boolean isAbandoned() {
+        return abandoned;
+    }
+
+    public void setAbandoned(boolean abandoned) {
+        this.abandoned = abandoned;
     }
 
     public void addParticipant(User user){

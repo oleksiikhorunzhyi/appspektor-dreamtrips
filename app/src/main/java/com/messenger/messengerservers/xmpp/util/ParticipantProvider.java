@@ -24,7 +24,7 @@ public class ParticipantProvider {
     private AbstractXMPPConnection connection;
 
     public interface OnGroupChatParticipantsLoaded {
-        void onLoaded(User user, List<User> participants);
+        void onLoaded(User user, List<User> participants, boolean abandoned);
     }
 
     public ParticipantProvider(AbstractXMPPConnection connection) {
@@ -43,7 +43,7 @@ public class ParticipantProvider {
         participantsPacket.setTo(JidCreatorHelper.obtainGroupJid(conversation.getId()));
         participantsPacket.setFrom(connection.getUser());
         ProviderManager.addIQProvider(ConversationParticipants.ELEMENT_QUERY, ConversationParticipants.NAMESPACE,
-                new ConversationParticipantsProvider());
+                new ConversationParticipantsProvider(connection.getUser()));
 
         try {
             connection.sendStanzaWithResponseCallback(participantsPacket,
@@ -52,14 +52,14 @@ public class ParticipantProvider {
                     packet -> {
                         if (packet == null) {
                             // TODO should we throw exception?
-                            listener.onLoaded(null, null);
+                            listener.onLoaded(null, null, false);
                             return;
                         }
                         Timber.d("HANDLE PACKAGE + " + packet.hashCode());
                         ConversationParticipants conversationParticipants = (ConversationParticipants) packet;
-                        listener.onLoaded(conversationParticipants.getOwner(), conversationParticipants.getParticipants());
+                        listener.onLoaded(conversationParticipants.getOwner(), conversationParticipants.getParticipants(), conversationParticipants.isAbandoned());
                     }
-                    , exception -> listener.onLoaded(null, null)
+                    , exception -> listener.onLoaded(null, null, false)
             );
         } catch (SmackException.NotConnectedException e) {
             Log.e("Xmpp", "Exception", e);

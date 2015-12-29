@@ -68,6 +68,7 @@ public class ConversationsCursorAdapter
 
     public interface SwipeButtonsListener {
         void onDeleteButtonPressed(Conversation conversation);
+
         void onMoreOptionsButtonPressed(Conversation conversation);
     }
 
@@ -213,14 +214,9 @@ public class ConversationsCursorAdapter
         return isGroupConversation(type) ? VIEW_TYPE_GROUP_CONVERSATION : VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
     }
 
-    @Override
-    public Cursor swapCursor(Cursor newCursor) {
-        return super.swapCursor(newCursor);
-    }
-
-    public void swapCursor(Cursor newCursor, String filter) {
+    public void changeCursor(Cursor newCursor, String filter) {
         if (TextUtils.isEmpty(filter)) {
-            swapCursor(newCursor);
+            super.swapCursor(newCursor);
             return;
         }
         Observable.defer(() -> {
@@ -235,8 +231,7 @@ public class ConversationsCursorAdapter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(recyclerView))
-                .subscribe(map -> super.swapCursor(new FilterCursorWrapper(newCursor, filter, map)))
-        ;
+                .subscribe(map -> super.swapCursor(new FilterCursorWrapper(newCursor, filter, map)));
     }
 
     private boolean isGroupConversation(String conversationType) {

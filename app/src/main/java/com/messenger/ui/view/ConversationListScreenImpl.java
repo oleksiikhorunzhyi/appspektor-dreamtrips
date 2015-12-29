@@ -139,7 +139,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
     @Override
     public void showConversations(Cursor cursor) {
         if (adapter != null) {
-            adapter.swapCursor(cursor);
+            adapter.changeCursor(cursor);
         }
     }
 
@@ -147,7 +147,7 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
     public void showConversations(Cursor cursor, String searchFilter) {
         this.savedSearchFilter = searchFilter;
         if (adapter != null) {
-            adapter.swapCursor(cursor, searchFilter);
+            adapter.changeCursor(cursor, searchFilter);
         }
     }
 

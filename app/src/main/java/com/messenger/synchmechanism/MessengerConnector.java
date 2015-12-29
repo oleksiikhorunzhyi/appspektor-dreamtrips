@@ -21,7 +21,7 @@ public class MessengerConnector {
     private SessionHolder<UserSession> appSessionHolder;
     private MessengerServerFacade messengerServerFacade;
     private DreamSpiceManager spiceManager;
-    private CacheSynchronizer cacheSynchronizer;
+    private MessengerCacheSynchronizer messengerCacheSynchronizer;
 
     private PublishSubject<Integer> connectionObservable;
 
@@ -33,7 +33,7 @@ public class MessengerConnector {
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
-        this.cacheSynchronizer = new CacheSynchronizer(messengerServerFacade, spiceManager);
+        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, spiceManager);
 
         activityWatcher.addOnStartStopListener(startStopAppListener);
 

@@ -35,6 +35,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     private static final int TIME_PING_INTERVAL = 45;
 
     private AbstractXMPPConnection connection;
+    private volatile boolean isActive;
 
     private final ExecutorService connectionExecutor = Executors.newSingleThreadExecutor();
     private final List<AuthorizeListener> onConnectListeners = new CopyOnWriteArrayList<>();
@@ -91,6 +92,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     @Override
     public void disconnectAsync() {
         connectionExecutor.execute(connection::disconnect);
+        isActive = false;
     }
 
     @Override
@@ -112,9 +114,15 @@ public class XmppServerFacade implements MessengerServerFacade {
     public void setPresenceStatus(boolean active) {
         try {
             connection.sendStanza(new Presence(active ? Presence.Type.available : Presence.Type.unavailable));
+            isActive = true;
         } catch (SmackException.NotConnectedException e) {
             Log.w(TAG, "setPresenceStatus", e);
         }
+    }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
     }
 
     @Override

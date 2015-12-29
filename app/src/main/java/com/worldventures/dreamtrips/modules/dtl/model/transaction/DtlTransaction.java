@@ -112,7 +112,6 @@ public class DtlTransaction {
         Request dtlTransactionRequest = new Request();
         dtlTransactionRequest.billTotal = billTotal;
         dtlTransactionRequest.checkinTime = DateTimeUtils.convertDateToUTCString(new Date(checkinTimestamp));
-        dtlTransactionRequest.points = points;
         dtlTransactionRequest.receiptPhotoUrl = receiptPhotoUrl;
         dtlTransactionRequest.merchantToken = merchantToken;
         dtlTransactionRequest.location = DtlTransactionLocation.fromLatLng(lat, lng);
@@ -123,7 +122,6 @@ public class DtlTransaction {
     public static class Request {
         String checkinTime;
         double billTotal;
-        double points;
         String receiptPhotoUrl;
         String merchantToken;
         DtlTransactionLocation location;

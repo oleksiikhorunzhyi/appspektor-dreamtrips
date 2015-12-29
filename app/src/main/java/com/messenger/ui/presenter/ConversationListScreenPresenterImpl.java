@@ -58,20 +58,20 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         getView().showLoading();
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
 
-        initialCursorLoader();
+        connectCursor();
     }
 
     @Override
-    public void onVisibilityChanged(int visibility) {
-        super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE){
-            initialCursorLoader();
-        } else {
-            contactSubscription.unsubscribe();
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        getViewState().setCursor(null);
+        contactSubscription.unsubscribe();
+        if (dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.shouldStop();
         }
     }
 
-    private void initialCursorLoader() {
+    private void connectCursor() {
         StringBuilder query = new StringBuilder("SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
                 "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
                 "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + ", " +
@@ -105,7 +105,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 .compose(bindVisibility())
                 .subscribe(cursor -> {
                     state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
-                    getViewState().setCursor(cursor);
+                    state.setCursor(cursor);
                     applyViewState();
                 });
     }
@@ -125,8 +125,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 getView().showLoading();
                 break;
             case CONTENT:
-                getView().showConversations(getViewState().getCursor(),
-                        getViewState().getConversationsSearchFilter());
+                getView().showConversations(getViewState().getCursor(), getViewState().getConversationsSearchFilter());
                 getView().showContent();
                 break;
             case ERROR:
@@ -171,19 +170,13 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
         getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
-        initialCursorLoader();
+        connectCursor();
     }
 
     @Override
     public void onConversationsSearchFilterSelected(String searchFilter) {
         getViewState().setConversationsSearchFilter(searchFilter);
         applyViewState();
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        dreamSpiceManager.shouldStop();
     }
 
     ///////////////////////////////////////////////////////////////////////////

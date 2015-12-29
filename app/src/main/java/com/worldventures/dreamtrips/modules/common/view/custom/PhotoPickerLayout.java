@@ -247,6 +247,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     private void clearAllBackStack() {
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

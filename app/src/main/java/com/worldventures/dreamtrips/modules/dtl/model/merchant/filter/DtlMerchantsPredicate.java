@@ -47,17 +47,32 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
                         element.getName().toLowerCase().contains(query.toLowerCase())) != null);
     }
 
+    /**
+     * Apply filter on merchant
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     public boolean applyFilter(DtlMerchant dtlMerchant) {
         return checkPrice(dtlMerchant)
                 && checkDistance(dtlMerchant)
                 && checkAmenities(dtlMerchant);
     }
 
+    /**
+     * Filtering criteria for merchant that checks price criteria
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     public boolean checkPrice(DtlMerchant dtlMerchant) {
         return dtlMerchant.getBudget() >= dtlFilterData.getMinPrice() &&
                 dtlMerchant.getBudget() <= dtlFilterData.getMaxPrice();
     }
 
+    /**
+     * Filtering criteria for merchant that checks distance criteria
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     public boolean checkDistance(DtlMerchant dtlMerchant) {
         return dtlFilterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
                 || currentLatLng == null
@@ -70,6 +85,11 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
                 !Collections.disjoint(selectedAmenities, Queryable.from(dtlMerchant.getAmenities()).map(element ->
                                 new DtlMerchantsFilterAttribute(element.getName())
                 ).toList());
+    /**
+     * Filtering criteria for merchant that checks amenities criteria
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     }
 
     public static class Builder {

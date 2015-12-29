@@ -73,7 +73,7 @@ public class MessengerConnector {
 
     public void disconnect() {
         if (messengerServerFacade.isAuthorized()) {
-            spiceManager.shouldStop();
+            if (spiceManager.isStarted()) spiceManager.shouldStop();
             messengerServerFacade.disconnectAsync();
             connectionObservable.onNext(Status.DISCONNECTED);
         }

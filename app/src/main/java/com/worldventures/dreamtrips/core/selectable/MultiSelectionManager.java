@@ -28,6 +28,7 @@ public class MultiSelectionManager extends SimpleSelectionManager {
     }
 
     public void setSelectedPositions(List<Integer> selectionPositions) {
+        selectableWrapperAdapter.clearSelections();
         for (Integer position : selectionPositions) {
             toggle(position);
         }

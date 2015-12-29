@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.messenger.di.ActivityWatcherInitializer;
 import com.messenger.di.ChatFacadeInitializer;
 import com.messenger.di.MessengerInitializer;
 import com.messenger.di.PresenceListenerInitializer;
@@ -37,7 +36,6 @@ import dagger.Provides;
                 StorageInitializer.class,
                 //
                 MessengerInitializer.class,
-                ActivityWatcherInitializer.class,
                 //
                 PresenceListenerInitializer.class
 

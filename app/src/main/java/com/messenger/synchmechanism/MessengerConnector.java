@@ -8,6 +8,10 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.subjects.PublishSubject;
+
 public class MessengerConnector {
 
     private static MessengerConnector object;
@@ -19,15 +23,21 @@ public class MessengerConnector {
     private DreamSpiceManager spiceManager;
     private CacheSynchronizer cacheSynchronizer;
 
-    private MessengerConnector(Context applicationContext, SessionHolder<UserSession> appSessionHolder,
-                               MessengerServerFacade messengerServerFacade, DreamSpiceManager spiceManager) {
+    private PublishSubject<Integer> connectionObservable;
+
+    private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
+                               SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
+                               DreamSpiceManager spiceManager) {
+
         this.applicationContext = applicationContext;
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
         this.cacheSynchronizer = new CacheSynchronizer(messengerServerFacade, spiceManager);
 
-        messengerServerFacade.addAuthorizationListener(authListener);
+        activityWatcher.addOnStartStopListener(startStopAppListener);
+
+        connectionObservable = PublishSubject.create();
     }
 
     public static MessengerConnector getInstance() {
@@ -37,9 +47,16 @@ public class MessengerConnector {
         return object;
     }
 
-    public static void init(Context applicationContext, SessionHolder<UserSession> appSessionHolder,
-                            MessengerServerFacade messengerServerFacade, DreamSpiceManager spiceManager) {
-        object = new MessengerConnector(applicationContext, appSessionHolder, messengerServerFacade, spiceManager);
+    public static void init(Context applicationContext, ActivityWatcher activityWatcher,
+                            SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
+                            DreamSpiceManager spiceManager) {
+
+        object = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
+                spiceManager);
+    }
+
+    public Subscription subscribe(Action1<? super Integer> onNext) {
+        return connectionObservable.subscribe(onNext);
     }
 
     public void connect() {
@@ -48,6 +65,8 @@ public class MessengerConnector {
             return;
         }
 
+        connectionObservable.onNext(Status.CONNECTING);
+        messengerServerFacade.addAuthorizationListener(authListener);
         UserSession userSession = appSessionHolder.get().get();
         messengerServerFacade.authorizeAsync(userSession.getUsername(), userSession.getLegacyApiToken());
     }
@@ -56,19 +75,39 @@ public class MessengerConnector {
         if (messengerServerFacade.isAuthorized()) {
             spiceManager.shouldStop();
             messengerServerFacade.disconnectAsync();
+            cacheSynchronizer.clearCache();
+            connectionObservable.onNext(Status.DISCONNECTED);
         }
+
+        messengerServerFacade.removeAuthorizationListener(authListener);
     }
 
-    private AuthorizeListener authListener = new AuthorizeListener() {
+    final private AuthorizeListener authListener = new AuthorizeListener() {
         @Override
         public void onSuccess() {
             if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
-            cacheSynchronizer.updateCache(messengerServerFacade::setPresenceStatus);
+            cacheSynchronizer.updateCache(result -> {
+                messengerServerFacade.setPresenceStatus(result);
+                connectionObservable.onNext(Status.CONNECTED);
+            });
         }
 
         @Override
-        public void onFailed(Exception exeption) {
-            super.onFailed(exeption);
+        public void onFailed(Exception exception) {
+            super.onFailed(exception);
+            connectionObservable.onNext(Status.ERROR);
+        }
+    };
+
+    final private ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
+        @Override
+        public void onStartApplication() {
+            connect();
+        }
+
+        @Override
+        public void onStopApplication() {
+            disconnect();
         }
     };
 

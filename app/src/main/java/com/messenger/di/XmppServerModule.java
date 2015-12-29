@@ -7,6 +7,7 @@ import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.synchmechanism.ActivityWatcher;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
@@ -17,6 +18,7 @@ import com.messenger.ui.presenter.ChatSingleScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.messenger.ui.view.EditChatMembersScreenImpl;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.session.SessionHolder;
@@ -71,4 +73,11 @@ public class XmppServerModule {
     UnreadConversationObservable provideUnreadConversationObservable(Context context) {
         return new UnreadConversationObservable(context);
     }
+
+    @Singleton
+    @Provides
+    ActivityWatcher provideActivityWatcher (@ForApplication Context context){
+        return new ActivityWatcher(context);
+    }
+
 }

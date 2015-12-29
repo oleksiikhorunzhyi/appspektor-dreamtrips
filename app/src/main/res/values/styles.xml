@@ -233,22 +233,22 @@
         <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
     </style>
 
-    <style name="InAppNotificationTitle" parent="TextAppearance.AppCompat.Title">
+    <style name="InAppNotificationTitle" parent="TextAppearance.AppCompat.Medium">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:layout_marginRight">56dp</item>
+        <item name="android:layout_marginRight">44dp</item>
     </style>
 
-    <style name="InAppNotificationText" parent="TextAppearance.AppCompat.Medium">
+    <style name="InAppNotificationText" parent="TextAppearance.AppCompat.Small">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:layout_marginRight">56dp</item>
+        <item name="android:layout_marginRight">44dp</item>
     </style>
 
     <style name="InAppNotificationCloseButton">

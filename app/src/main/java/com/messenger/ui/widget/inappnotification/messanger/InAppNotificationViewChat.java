@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-
 public class InAppNotificationViewChat extends InAppMessengerNotificationView {
 
     @InjectView(R.id.in_app_notif_avatar)
@@ -23,8 +22,6 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
     TextView titleTextView;
     @InjectView(R.id.in_app_notif_text)
     TextView textTextView;
-
-    private String avatarUrl;
 
     public InAppNotificationViewChat(Context context) {
         super(context);
@@ -44,7 +41,6 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
     }
 
     public void setAvatarUrl(String avatarUrl){
-        this.avatarUrl = avatarUrl;
         Picasso.with(getContext())
                 .load(avatarUrl)
                 .placeholder(android.R.drawable.ic_menu_compass)
@@ -53,13 +49,11 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
 
     @Override
     public void setTitle(String title) {
-        this.title = title;
         titleTextView.setText(title);
     }
 
     @Override
     public void setText(String text) {
-        this.text = text;
         textTextView.setText(text);
     }
 
@@ -68,9 +62,6 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
         ButterKnife.inject(this,
                 LayoutInflater.from(getContext()).inflate(R.layout.layout_in_app_notification_chat,
                         this, true));
-
-        titleTextView.setText(title);
-        textTextView.setText(text);
 
         super.initialize();
     }

@@ -19,6 +19,7 @@ import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
 import java.util.List;
 
@@ -38,12 +39,17 @@ public class UnhandledMessageWatcher {
     private Activity currentActivity;
     private MessengerServerFacade messengerServerFacade;
     private AppNotification appNotification;
+    private DreamSpiceManager spiceManager;
 
     private UnhandledMessageListener currentUnhandledMessageListener;
+    private MessengerInAppNotificationListener notificationEventListener;
 
-    public UnhandledMessageWatcher(MessengerServerFacade messengerServerFacade, AppNotification appNotification) {
+    public UnhandledMessageWatcher(MessengerServerFacade messengerServerFacade,
+                                   AppNotification appNotification,
+                                   DreamSpiceManager spiceManager) {
         this.messengerServerFacade = messengerServerFacade;
         this.appNotification = appNotification;
+        this.spiceManager = spiceManager;
     }
 
     public void start(Activity activity) {
@@ -51,7 +57,7 @@ public class UnhandledMessageWatcher {
 
         messengerServerFacade.getGlobalEventEmitter().removeUnhandledMessageListener(currentUnhandledMessageListener);
         this.currentActivity = activity;
-        currentUnhandledMessageListener = message -> showInAppNotification(UnhandledMessageWatcher.this.currentActivity, message);
+        currentUnhandledMessageListener = message -> onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, message);
         messengerServerFacade.getGlobalEventEmitter().addUnhandledMessageListener(currentUnhandledMessageListener);
     }
 
@@ -65,62 +71,17 @@ public class UnhandledMessageWatcher {
         }
     }
 
-    private void showInAppNotification(final Activity activity, Message message) {
+    private void onUnhandledMessage(final Activity activity, Message message) {
         Conversation conversation = new Select()
                 .from(Conversation.class)
                 .byIds(message.getConversationId())
                 .querySingle();
-        //isGroup
+
         boolean isSingleChat = isSingleChat(conversation);
         if (isSingleChat) {
-            //single ava + sender name + sender text
-            User fromUser = new Select()
-                    .from(User.class)
-                    .byIds(message.getFromId())
-                    .querySingle();
-
-            String avatarUrl = fromUser.getAvatarUrl();
-            String title = fromUser.getName();
-            String text = message.getText();
-
-            activity.runOnUiThread(() -> showSingleChatCrouton(conversation, activity, avatarUrl, title, text));
+            composeSingleChatNotification(activity, conversation, message);
         } else {
-            //group 4 avas + group name/user names + last name : last message
-            RxContentResolver contentResolver = new RxContentResolver(activity.getContentResolver(),
-                    query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                            .rawQuery(query.selection, query.selectionArgs));
-
-            RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                    .withSelection("SELECT * FROM Users u " +
-                                    "JOIN ParticipantsRelationship p " +
-                                    "ON p.userId = u._id " +
-                                    "WHERE p.conversationId = ?"
-                    ).withSelectionArgs(new String[]{conversation.getId()}).build();
-
-            contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                    .map(c -> SqlUtils.convertToList(User.class, c))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .first()
-                    .subscribe(users -> {
-                        String lastName = "";
-                        String lastMessage = "";
-
-                        User fromUser = new Select()
-                                .from(User.class)
-                                .byIds(message.getFromId())
-                                .querySingle();
-                        if (fromUser != null){
-                             lastName = fromUser.getName();
-                             lastMessage = message.getText();
-                        }
-
-                        String groupName = TextUtils.isEmpty(conversation.getSubject()) ?
-                                TextUtils.join(", ", Queryable.from(users).map(User::getName).toList()) :
-                                conversation.getSubject();
-
-                        showGroupChatCrouton(conversation, activity, users, groupName, lastName + ": " + lastMessage);
-                    }, throwable -> Timber.e(throwable, "Error"));
+            composeGroupChatNotification(activity, conversation, message);
         }
     }
 
@@ -128,9 +89,62 @@ public class UnhandledMessageWatcher {
         return conversation.getType().equalsIgnoreCase(Conversation.Type.CHAT);
     }
 
-    private MessengerInAppNotificationListener notificationEventListener;
+    //single ava + sender name + sender text
+    private void composeSingleChatNotification(Activity activity, Conversation conversation, Message message) {
+        User fromUser = new Select()
+                .from(User.class)
+                .byIds(message.getFromId())
+                .querySingle();
 
-    private void showSingleChatCrouton(Conversation conversation, Activity activity, String avaUrl, String title, String text) {
+        String avatarUrl = fromUser.getAvatarUrl();
+        String title = fromUser.getName();
+        String text = message.getText();
+
+        activity.runOnUiThread(() -> showSingleChatCrouton(activity, conversation, avatarUrl, title, text));
+    }
+
+    //group 4 avas + group name/user names + last name : last message
+    private void composeGroupChatNotification(Activity activity, Conversation conversation, Message message) {
+        RxContentResolver contentResolver = new RxContentResolver(activity.getContentResolver(),
+                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                        .rawQuery(query.selection, query.selectionArgs));
+
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM Users u " +
+                                "JOIN ParticipantsRelationship p " +
+                                "ON p.userId = u._id " +
+                                "WHERE p.conversationId = ?"
+                ).withSelectionArgs(new String[]{conversation.getId()}).build();
+
+        contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .map(c -> SqlUtils.convertToList(User.class, c))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .first()
+                .subscribe(users -> {
+                    String lastName = "";
+                    String lastMessage = "";
+
+                    User fromUser = new Select()
+                            .from(User.class)
+                            .byIds(message.getFromId())
+                            .querySingle();
+                    if (fromUser != null) {
+                        lastName = fromUser.getName();
+                        lastMessage = message.getText();
+                    } else {
+                        //download non friend user using spiceManager
+                    }
+
+                    String groupName = TextUtils.isEmpty(conversation.getSubject()) ?
+                            TextUtils.join(", ", Queryable.from(users).map(User::getName).toList()) :
+                            conversation.getSubject();
+
+                    showGroupChatCrouton(activity, conversation, users, groupName, lastName + ": " + lastMessage);
+                }, throwable -> Timber.e(throwable, "Error"));
+    }
+
+    private void showSingleChatCrouton(Activity activity, Conversation conversation, String avaUrl, String title, String text) {
         notificationEventListener = new MessengerInAppNotificationListener(conversation.getId()) {
             @Override
             public void openConversation(String conversationId) {
@@ -144,7 +158,7 @@ public class UnhandledMessageWatcher {
         appNotification.show(activity, view, notificationEventListener);
     }
 
-    private void showGroupChatCrouton(Conversation conversation, Activity activity, List<User> chatParticipants, String title, String text) {
+    private void showGroupChatCrouton(Activity activity, Conversation conversation, List<User> chatParticipants, String title, String text) {
         notificationEventListener = new MessengerInAppNotificationListener(conversation.getId()) {
             @Override
             public void openConversation(String conversationId) {

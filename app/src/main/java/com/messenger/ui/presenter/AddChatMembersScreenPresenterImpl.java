@@ -62,6 +62,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindVisibility())
                 .subscribe(users -> {
                     originalParticipants = users;
                     // init contacts subscription excluding existing participants
@@ -94,6 +95,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindVisibility())
                 .subscribe(users -> showContacts(users));
     }
 

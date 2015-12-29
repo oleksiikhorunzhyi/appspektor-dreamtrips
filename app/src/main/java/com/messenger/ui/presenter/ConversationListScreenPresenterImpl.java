@@ -3,7 +3,6 @@ package com.messenger.ui.presenter;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.messenger.messengerservers.entities.Conversation;
@@ -16,11 +15,8 @@ import com.messenger.ui.viewstate.ConversationListViewState;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -106,7 +102,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
+                .compose(bindVisibility())
                 .subscribe(cursor -> {
                     state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
                     getViewState().setCursor(cursor);

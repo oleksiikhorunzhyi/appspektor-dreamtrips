@@ -38,7 +38,13 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
 
     @Override
     public void onVisibilityChanged(int visibility) {
+        if (visibility == View.GONE) visibilityStopper.onNext(null);
+    }
 
+    PublishSubject<Void> visibilityStopper = PublishSubject.create();
+
+    protected <T> Observable.Transformer<T, T> bindVisibility() {
+        return input -> input.takeUntil(visibilityStopper);
     }
 
     @Override

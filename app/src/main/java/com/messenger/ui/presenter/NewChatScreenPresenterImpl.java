@@ -2,7 +2,6 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -13,7 +12,6 @@ import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -45,7 +43,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
+                .compose(bindVisibility())
                 .subscribe(users -> showContacts(users));
     }
 

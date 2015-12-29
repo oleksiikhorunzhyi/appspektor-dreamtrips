@@ -25,7 +25,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import javax.inject.Inject;
@@ -106,7 +105,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
+                .compose(bindVisibility())
                 .subscribe(users -> getView().setParticipants(conversation, users));
 
         // TODO Implement this

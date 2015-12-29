@@ -42,7 +42,6 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -213,7 +212,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView(((View) getView())))
+                .compose(bindVisibility())
                 .subscribe(members -> {
                     participants = members;
                     getView().setTitle(conversation, participants);

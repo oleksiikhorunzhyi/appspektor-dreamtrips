@@ -252,40 +252,6 @@ public class DtlMerchant implements Parcelable {
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.type);
-        dest.writeInt(this.partnerStatus == null ? -1 : this.partnerStatus.ordinal());
-        dest.writeString(this.displayName);
-        dest.writeString(this.address1);
-        dest.writeString(this.address2);
-        dest.writeString(this.city);
-        dest.writeString(this.state);
-        dest.writeString(this.country);
-        dest.writeString(this.zip);
-        dest.writeParcelable(this.coordinates, 0);
-        dest.writeString(this.phone);
-        dest.writeString(this.email);
-        dest.writeString(this.description);
-        dest.writeString(this.website);
-        dest.writeInt(this.budget);
-        dest.writeFloat(this.rating);
-        dest.writeString(this.timeZone);
-        dest.writeList(this.offers);
-        dest.writeList(this.categories);
-        dest.writeList(this.amenities);
-        dest.writeTypedList(images);
-        dest.writeList(this.operationDays);
-        dest.writeDouble(this.distance);
-    }
-
     protected DtlMerchant(Parcel in) {
         this.id = in.readString();
         this.type = in.readString();
@@ -318,6 +284,34 @@ public class DtlMerchant implements Parcelable {
         this.distance = in.readDouble();
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.type);
+        dest.writeInt(this.partnerStatus == null ? -1 : this.partnerStatus.ordinal());
+        dest.writeString(this.displayName);
+        dest.writeString(this.address1);
+        dest.writeString(this.address2);
+        dest.writeString(this.city);
+        dest.writeString(this.state);
+        dest.writeString(this.country);
+        dest.writeString(this.zip);
+        dest.writeParcelable(this.coordinates, 0);
+        dest.writeString(this.phone);
+        dest.writeString(this.email);
+        dest.writeString(this.description);
+        dest.writeString(this.website);
+        dest.writeInt(this.budget);
+        dest.writeFloat(this.rating);
+        dest.writeString(this.timeZone);
+        dest.writeList(this.offers);
+        dest.writeList(this.categories);
+        dest.writeList(this.amenities);
+        dest.writeTypedList(images);
+        dest.writeList(this.operationDays);
+        dest.writeDouble(this.distance);
+    }
+
     public static final Parcelable.Creator<DtlMerchant> CREATOR = new Parcelable.Creator<DtlMerchant>() {
         public DtlMerchant createFromParcel(Parcel source) {
             return new DtlMerchant(source);
@@ -327,4 +321,9 @@ public class DtlMerchant implements Parcelable {
             return new DtlMerchant[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

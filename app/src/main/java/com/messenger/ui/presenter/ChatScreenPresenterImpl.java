@@ -36,6 +36,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +48,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 
-public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
+public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
 
     private final static int MAX_MESSAGE_PER_PAGE = 20;
@@ -55,6 +56,8 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    NotificationDelegate notificationDelegate;
     @Inject
     MessengerServerFacade messengerServerFacade;
     @Inject
@@ -90,7 +93,25 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
     }
 
-    protected abstract Chat createChat(ChatManager chatManager, Conversation conversation);
+    private Chat createChat(ChatManager chatManager, Conversation conversation) {
+        Chat chat;
+        switch (conversation.getType()) {
+            case Conversation.Type.CHAT:
+                String query = "SELECT * FROM Users u " +
+                        "JOIN ParticipantsRelationship p " +
+                        "ON p.userId = u._id " +
+                        "WHERE p.conversationId = ? AND u._id<>?";
+                User mate = SqlUtils.querySingle(User.class, query, conversation.getId(), getUser().getId());
+                chat = chatManager.createSingleUserChat(mate.getId(), conversation.getId());
+                break;
+            case Conversation.Type.GROUP:
+            default:
+                boolean isOwner = conversation.getOwnerId().equals(user.getId());
+                chat = chatManager.createMultiUserChat(conversation.getId(), getUser().getId(), isOwner);
+                break;
+        }
+        return chat;
+    }
 
     @Override
     public void onAttachedToWindow() {
@@ -122,22 +143,28 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
                 .publish();
         source
                 .first()
-                .subscribe(initialConv -> {
-                    this.conversation = initialConv;
-                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-                    getView().getActivity().supportInvalidateOptionsMenu();
-                    initializeChat();
-                    connectMembers();
-                    connectMessages();
-                    loadNextPage();
-                });
+                .subscribe(this::onConversationLoadedFirstTime);
         source
-                .subscribe(updatedConv -> {
-                    this.conversation = updatedConv;
-                    updateConversationInfo();
-                });
+                .subscribe(this::onConversationUpdated);
         source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
+    }
+
+    private void onConversationLoadedFirstTime(Conversation conversation) {
+        this.conversation = conversation;
+        notificationDelegate.cancel(conversation.getId().hashCode());
+        getView().getActivity().supportInvalidateOptionsMenu();
+        //
+        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
+        initializeChat();
+        connectMembers();
+        connectMessages();
+        loadNextPage();
+    }
+
+    private void onConversationUpdated(Conversation conversation) {
+        this.conversation = conversation;
+        updateConversationInfo();
     }
 
     private void updateConversationInfo() {

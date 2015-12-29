@@ -24,13 +24,11 @@ import android.widget.TextView;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.presenter.ChatGroupScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenter;
-import com.messenger.ui.presenter.ChatSingleScreenPresenter;
+import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -225,17 +223,7 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     @NonNull
     @Override
     public ChatScreenPresenter createPresenter() {
-        Context context = getContext();
-        Intent startIntent = getActivity().getIntent();
-        int chatType = startIntent.getIntExtra(ChatActivity.EXTRA_CHAT_TYPE, 0);
-
-        if (chatType == ChatActivity.CHAT_TYPE_GROUP) {
-            return new ChatGroupScreenPresenter(context, startIntent);
-        } else if (chatType == ChatActivity.CHAT_TYPE_SINGLE) {
-            return new ChatSingleScreenPresenter(context, startIntent);
-        } else {
-            throw new Error("Type doesn't exist");
-        }
+        return new ChatScreenPresenterImpl(getContext(), getActivity().getIntent());
     }
 
     @Override

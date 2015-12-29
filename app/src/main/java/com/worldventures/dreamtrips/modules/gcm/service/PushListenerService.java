@@ -6,6 +6,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 
@@ -37,6 +38,9 @@ public class PushListenerService extends GcmListenerService {
                 break;
             case SEND_REQUEST:
                 delegate.notifyFriendRequestReceived(parser.parseMessage(data, UserPushMessage.class));
+                break;
+            case NEW_MESSAGE:
+                delegate.notifyNewMessageReceived(parser.parseMessage(data, NewMessagePushMessage.class));
                 break;
             case BADGE_UPDATE:
                 break;

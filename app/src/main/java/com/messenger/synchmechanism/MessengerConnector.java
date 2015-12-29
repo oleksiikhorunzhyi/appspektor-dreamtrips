@@ -56,7 +56,6 @@ public class MessengerConnector {
         if (messengerServerFacade.isAuthorized()) {
             spiceManager.shouldStop();
             messengerServerFacade.disconnectAsync();
-            cacheSynchronizer.clearCache();
         }
     }
 

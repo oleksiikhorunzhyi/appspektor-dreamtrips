@@ -2,7 +2,6 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -13,12 +12,9 @@ import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
-
-import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,10 +40,10 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC").build();
         contactSubscription = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
+                .compose(bindVisibility())
                 .subscribe(users -> showContacts(users));
     }
 

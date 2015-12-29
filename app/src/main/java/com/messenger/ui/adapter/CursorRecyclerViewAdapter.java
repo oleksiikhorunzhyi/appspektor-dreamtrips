@@ -70,6 +70,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         mCursor = c;
         mDataValid = cursorPresent;
         mRowIDColumn = cursorPresent ? c.getColumnIndexOrThrow("_id") : -1;
+        if (mRowIDColumn != -1) setHasStableIds(true);
 
         mChangeObserver = new ChangeObserver();
         mDataSetObserver = new MyDataSetObserver();
@@ -311,7 +312,11 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         public void onInvalidated() {
             mDataValid = false;
             // notifyDataSetInvalidated();
-            notifyItemRangeRemoved(0, getItemCount());
+            if (getItemCount() == 0) {
+                notifyDataSetChanged();
+            } else {
+                notifyItemRangeRemoved(0, getItemCount());
+            }
         }
     }
 

@@ -4,10 +4,8 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.app.Environment;
 import com.messenger.model.ChatConversation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConversationListViewState extends LceViewState<List<ChatConversation>> {
@@ -49,7 +47,6 @@ public class ConversationListViewState extends LceViewState<List<ChatConversatio
 
     @Override public void writeToParcel(Parcel parcel, int flags) {
         super.writeToParcel(parcel, flags);
-        parcel.writeList(getData());
         parcel.writeInt(showOnlyGroupConversations ? 1 : 0);
         parcel.writeString(conversationsSearchFilter);
     }
@@ -61,8 +58,7 @@ public class ConversationListViewState extends LceViewState<List<ChatConversatio
     };
 
     public ConversationListViewState(Parcel in) {
-        setData(new ArrayList<>());
-        in.readList(getData(), Environment.getChatUserClassLoader());
+        super(in);
         showOnlyGroupConversations = in.readInt() == 1 ? true : false;
         this.conversationsSearchFilter = in.readString();
     }

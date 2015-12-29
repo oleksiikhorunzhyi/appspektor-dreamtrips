@@ -16,6 +16,7 @@ public class ChatLayoutViewState extends LceViewState<ChatConversation> {
     ///////////////////////////////////////////////////////////////////////////
 
     @Override public void writeToParcel(Parcel parcel, int flags) {
+        super.writeToParcel(parcel, flags);
         parcel.writeParcelable(getData(), flags);
     }
 

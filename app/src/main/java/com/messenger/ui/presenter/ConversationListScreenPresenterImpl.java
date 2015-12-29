@@ -17,11 +17,8 @@ import com.messenger.ui.viewstate.ConversationListViewState;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -64,14 +61,22 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         getView().showLoading();
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
 
-        initialCursorLoader();
+        connectCursor();
+    }
+
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        getViewState().setCursor(null);
+        contactSubscription.unsubscribe();
+        if (dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.shouldStop();
+        }
     }
 
     @Override
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE){
-            initialCursorLoader();
+        if (visibility == View.VISIBLE) {
             leaveChatDelegate.register();
         } else {
             contactSubscription.unsubscribe();
@@ -79,7 +84,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         }
     }
 
-    private void initialCursorLoader() {
+    private void connectCursor() {
         StringBuilder query = new StringBuilder("SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
                 "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
                 "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + ", " +
@@ -106,14 +111,14 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
             queryBuilder.withSelectionArgs(new String[]{Conversation.Type.CHAT});
         }
         contactSubscription = contentResolver
-                .query(queryBuilder.build(), User.CONTENT_URI, Conversation.CONTENT_URI, Message.CONTENT_URI)
-                .throttleLast(500, TimeUnit.MILLISECONDS)
+                .query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI)
+                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
+                .compose(bindVisibility())
                 .subscribe(cursor -> {
                     state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
-                    getViewState().setCursor(cursor);
+                    state.setCursor(cursor);
                     applyViewState();
                 });
     }
@@ -133,8 +138,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
                 getView().showLoading();
                 break;
             case CONTENT:
-                getView().showConversations(getViewState().getCursor(),
-                        getViewState().getConversationsSearchFilter());
+                getView().showConversations(getViewState().getCursor(), getViewState().getConversationsSearchFilter());
                 getView().showContent();
                 break;
             case ERROR:
@@ -182,19 +186,13 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     @Override
     public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
         getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
-        initialCursorLoader();
+        connectCursor();
     }
 
     @Override
     public void onConversationsSearchFilterSelected(String searchFilter) {
         getViewState().setConversationsSearchFilter(searchFilter);
         applyViewState();
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        dreamSpiceManager.shouldStop();
     }
 
     ///////////////////////////////////////////////////////////////////////////

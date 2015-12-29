@@ -21,8 +21,6 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 
@@ -49,8 +47,6 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
                     (stanzaPacket) -> {
                         List<ConversationWithLastMessage> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
                         obtainConversationsWithParticipants(conversations)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(conversationWithParticipants -> {
                                     Log.e("Loaded", "size: " + conversationWithParticipants.size());
                                     notifyListeners(conversationWithParticipants);

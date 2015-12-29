@@ -23,7 +23,6 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -58,7 +57,7 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
         contentResolver = new RxContentResolver(activity.getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                .rawQuery(query.selection + " " + query.sortOrder, query.selectionArgs));
+                        .rawQuery(query.selection + " " + query.sortOrder, query.selectionArgs));
 
         Conversation conversation = new Select()
                 .from(Conversation.class)
@@ -78,14 +77,14 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
-                                "JOIN ParticipantsRelationship p " +
-                                "ON p.userId = u._id " +
-                                "WHERE p.conversationId = ?")
+                        "JOIN ParticipantsRelationship p " +
+                        "ON p.userId = u._id " +
+                        "WHERE p.conversationId = ?")
                 .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC")
                 .withSelectionArgs(new String[]{conversation.getId()}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView((View) getView()))

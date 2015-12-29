@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 import icepick.Icepick;
 import icepick.State;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
         implements ActivityAwareViewStateMvpPresenter<V, S> {
@@ -38,7 +41,13 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
 
     @Override
     public void onVisibilityChanged(int visibility) {
+        if (visibility == View.GONE) visibilityStopper.onNext(null);
+    }
 
+    PublishSubject<Void> visibilityStopper = PublishSubject.create();
+
+    protected <T> Observable.Transformer<T, T> bindVisibility() {
+        return input -> input.takeUntil(visibilityStopper);
     }
 
     @Override

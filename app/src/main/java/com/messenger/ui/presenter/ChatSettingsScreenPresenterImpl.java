@@ -96,9 +96,9 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
         getView().prepareViewForOwner(isUserOwner());
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
-                                "JOIN ParticipantsRelationship p " +
-                                "ON p.userId = u._id " +
-                                "WHERE p.conversationId = ?"
+                        "JOIN ParticipantsRelationship p " +
+                        "ON p.userId = u._id " +
+                        "WHERE p.conversationId = ?"
                 ).withSelectionArgs(new String[]{conversation.getId()}).build();
         participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
                 ParticipantsRelationship.CONTENT_URI)
@@ -170,10 +170,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     }
 
     public void onEditChatName() {
-        if (conversation.getOwnerId().equals(user.getId())) {
-            //noinspection all
-            getView().showSubjectDialog();
-        }
+        getView().showSubjectDialog();
     }
 
     @Override
@@ -194,6 +191,12 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
         MenuInflater inflater = activity.getMenuInflater();
         inflater.inflate(R.menu.menu_chat_settings, menu);
         return true;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        boolean editVisible = conversation.getOwnerId().equals(user.getId());
+        menu.findItem(R.id.action_overflow).setVisible(editVisible);
     }
 
     @Override

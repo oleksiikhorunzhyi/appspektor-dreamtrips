@@ -3,6 +3,7 @@ package com.messenger.util;
 import android.content.Context;
 
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Conversation$Table;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import rx.Observable;
@@ -12,11 +13,8 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class UnreadConversationObservable {
-
-    private static final int TIMEOUT = 1000;
-
-    RxContentResolver contentResolver;
-    Observable<Integer> observable;
+    private RxContentResolver contentResolver;
+    private Observable<Integer> observable;
 
     public UnreadConversationObservable(Context context) {
         contentResolver = new RxContentResolver(context.getContentResolver(),
@@ -24,7 +22,7 @@ public class UnreadConversationObservable {
                         .rawQuery(query.selection, query.selectionArgs));
 
         String query = "SELECT COUNT(*) AS UNREAD_CONV FROM " + Conversation.TABLE_NAME
-                + " WHERE " + Conversation.COLUMN_UNREAD_COUNT + " > 0 ";
+                + " WHERE " + Conversation$Table.UNREADMESSAGECOUNT + ">0 ";
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(Conversation.CONTENT_URI)
                 .withSelection(query);

@@ -1,6 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +11,9 @@ import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.listeners.OnLeftChatListener;
+import com.messenger.storege.utils.ConversationsDAO;
+import com.messenger.storege.utils.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.ConversationListScreen;
@@ -42,7 +46,15 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
-        leaveChatDelegate  = new LeaveChatDelegate((Injector) activity.getApplication(), (conversationId, userId) -> {});
+        OnLeftChatListener leaveListener = (conversationId, userId) -> {
+            ContentResolver resolver = parentActivity.getContentResolver();
+            ParticipantsDAO.delete(resolver, conversationId, userId);
+            if (user.getId().equals(userId)) {
+                ConversationsDAO.leaveConversation(resolver, conversationId);
+            }
+        };
+
+        leaveChatDelegate  = new LeaveChatDelegate((Injector) activity.getApplication(), leaveListener);
         ((Injector) activity.getApplicationContext()).inject(this);
         contentResolver = new RxContentResolver(activity.getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
@@ -83,33 +95,9 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     }
 
     private void connectCursor() {
-        StringBuilder query = new StringBuilder("SELECT c.*, m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
-                "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
-                "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + ", " +
-                "u." + User.COLUMN_NAME + " as " + User.COLUMN_NAME + " " +
-                "FROM " + Conversation.TABLE_NAME + " c " +
-                "LEFT JOIN " + Message.TABLE_NAME + " m " +
-                "ON m." + Message._ID + "=(" +
-                "SELECT " + Message._ID + " FROM " + Message.TABLE_NAME + " mm " +
-                "WHERE mm." + Message.COLUMN_CONVERSATION_ID + "=c." + Conversation.COLUMN_ID +
-                " ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) " +
-                "LEFT JOIN " + User.TABLE_NAME + " u " +
-                "ON m." + Message.COLUMN_FROM + "=u." + User.COLUMN_ID
-        );
-
-
-        if (getViewState().isShowOnlyGroupConversations()) {
-            query.append(" WHERE c.type not like ?");
-        }
-        query.append(" ORDER BY m." + Message.COLUMN_DATE + " DESC");
-
-        RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
-                .withSelection(query.toString());
-        if (getViewState().isShowOnlyGroupConversations()) {
-            queryBuilder.withSelectionArgs(new String[]{Conversation.Type.CHAT});
-        }
-        contactSubscription = contentResolver
-                .query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI)
+        contactSubscription = ConversationsDAO.selectConversationsList(contentResolver,
+                getViewState().isShowOnlyGroupConversations() ? Conversation.Type.GROUP : null,
+                User.CONTENT_URI, Conversation.CONTENT_URI, Message.CONTENT_URI)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

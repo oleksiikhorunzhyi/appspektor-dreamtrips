@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Message;
@@ -14,6 +15,7 @@ import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
+import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.PresenceListener;
@@ -26,6 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Func0;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient {
@@ -60,7 +66,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         // TODO: 12/11/15 add future implementation
         presenceListener = presence -> notifyParticipantsChanged(new ArrayList<>());
         chat.addParticipantListener(presenceListener);
-
+//        chat.addParticipantStatusListener()
         subjectUpdatedListener = (subject, from) -> notifySubjectUpdateListeners(subject);
         chat.addSubjectUpdatedListener(subjectUpdatedListener);
         org.jivesoftware.smack.packet.Message packet;
@@ -110,21 +116,28 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @Override
-    public void kick(List<User> users) {
+    public Observable<List<User>> kick(List<User> users) {
         if (!isOwner)
             throw new IllegalAccessError("You are not owner of chat. You cannot kick someone");
-
-        for (User user : users) {
-            if (userId.equals(user.getId())) continue;
+        return Observable.<List<User>>create(subscriber -> {
+            subscriber.onStart();
 
             try {
                 if (chat != null) {
-                    chat.kickParticipant(user.getId(), null);
+                    chat.revokeMembership(Queryable
+                            .from(users)
+                            .map(element -> JidCreatorHelper.obtainUserJid(element.getId()))
+                            .toList());
+
+                    subscriber.onNext(users);
                 }
-            } catch (XMPPException.XMPPErrorException | SmackException e) {
+                subscriber.onCompleted();
+            } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException | SmackException.NotConnectedException e) {
                 Log.e(TAG, "Error ", e);
+                subscriber.onError(e);
             }
-        }
+
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override

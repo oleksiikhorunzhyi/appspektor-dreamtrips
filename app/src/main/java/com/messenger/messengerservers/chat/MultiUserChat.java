@@ -7,6 +7,9 @@ import com.messenger.messengerservers.entities.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.functions.Action0;
+
 
 public abstract class MultiUserChat extends Chat {
 
@@ -16,7 +19,7 @@ public abstract class MultiUserChat extends Chat {
 
     public abstract void invite(List<User> users);
 
-    public abstract void kick(List<User> users);
+    public abstract Observable<List<User>> kick(List<User> users);
 
     public abstract void join(User user);
 

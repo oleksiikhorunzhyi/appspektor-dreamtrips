@@ -10,6 +10,7 @@ import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.storege.utils.ParticipantsDAO;
 import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.view.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresenter<EditChatMembersScreen,
         EditChatMembersViewState> implements EditChatMembersScreenPresenter {
@@ -40,7 +42,6 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
     private Cursor membersCursor;
 
     private RxContentResolver contentResolver;
-    private Subscription participantsSubscriber;
 
     @Inject
     MessengerServerFacade messengerServerFacade;
@@ -74,18 +75,8 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
         getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
         getView().showLoading();
-
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
-                        "ON p.userId = u._id " +
-                        "WHERE p.conversationId = ?")
-                .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC")
-                .withSelectionArgs(new String[]{conversation.getId()}).build();
-        participantsSubscriber = contentResolver.query(q, User.CONTENT_URI,
-                ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io())
+        ParticipantsDAO.selectParticipants(contentResolver, conversation.getId(), User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .onBackpressureLatest()                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView((View) getView()))
                 .subscribe(cursor -> {
@@ -116,20 +107,19 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
     @Override
     public void applyViewState() {
+        EditChatMembersScreen view = getView();
+        assert view != null;
         switch (getViewState().getLoadingState()) {
             case LOADING:
-                getView().showLoading();
+                view.showLoading();
                 break;
             case CONTENT:
-                getView().showContent();
-                getView().setMembers(membersCursor, getViewState().getSearchFilter(),
-                        User.COLUMN_NAME);
-                String title = String.format(activity.getString(R.string.edit_chat_members_title),
-                        membersCursor.getCount());
-                getView().setTitle(title);
+                view.showContent();
+                view.setMembers(membersCursor, getViewState().getSearchFilter(), User.COLUMN_NAME);
+                view.setTitle(String.format(activity.getString(R.string.edit_chat_members_title), membersCursor.getCount()));
                 break;
             case ERROR:
-                getView().showError(getViewState().getError());
+                view.showError(getViewState().getError());
                 break;
         }
     }
@@ -147,7 +137,11 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
     @Override
     public void onDeleteUserFromChatConfirmed(User user) {
-        chat.kick(Collections.singletonList(user));
+        chat.kick(Collections.singletonList(user))
+                .map(users -> users.get(0))
+                .doOnNext(user1 -> ParticipantsDAO.delete(activity.getContentResolver(), conversation.getId(), user1.getId()))
+                .doOnError(e -> Timber.e(e, ""))
+                .subscribe();
     }
 
     @Override

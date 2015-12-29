@@ -15,8 +15,9 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 @Table(databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 @TableEndpoint(name = ParticipantsRelationship.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRelationship> {
-
     public static final String TABLE_NAME = "ParticipantsRelationship";
+    public static final String COLUMN_USER_ID = "userId";
+    public static final String COLUMN_CONVERSATION_ID = "conversationId";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);

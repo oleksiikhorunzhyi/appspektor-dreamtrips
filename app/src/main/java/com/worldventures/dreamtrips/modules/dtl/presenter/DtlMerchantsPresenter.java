@@ -107,7 +107,6 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         for (DtlMerchant dtlMerchant : dtlMerchants) {
             dtlMerchant.setDistanceType(dtlFilterDelegate.getDistanceType());
             dtlMerchant.setDistance(dtlLocationHelper.calculateDistance(
-                    dtlFilterData.getDistanceType(),
                     currentLatLng, dtlMerchant.getCoordinates().asLatLng()));
         }
         //

@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 
 import javax.inject.Inject;
 
@@ -36,9 +34,6 @@ public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMa
     public void onFilter() {
         if (view != null) {
             merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-            merchant.setDistance(dtlFilterDelegate.getDistanceType() == DtlFilterData.DistanceType.MILES ?
-                    DtlLocationHelper.kmsToMiles(merchant.getDistance()) :
-                    DtlLocationHelper.milesToKms(merchant.getDistance()));
             view.distanceTypeChanged(merchant);
         }
     }

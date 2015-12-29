@@ -29,6 +29,10 @@ public class DtlLocationRepository extends RequestingCachingBaseStore {
                 this::onLocationsLoaded, this::onLocationsLoadingFailed);
     }
 
+    public void cleanLocation() {
+        currentLocation = null;
+        db.cleanDtlLocation();
+    }
     public void persistLocation(DtlLocation location) {
         if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
             currentLocation = location;

@@ -35,29 +35,26 @@ public class DtlLocationHelper {
         return distance < maxDistance;
     }
 
-    public double calculateDistance(DtlFilterData.DistanceType distanceType, LatLng currentLatLng,
+    public double calculateDistance(LatLng currentLatLng,
                                     LatLng targetLatLng) {
-        return distanceType == DtlFilterData.DistanceType.KMS ?
-                distanceInKms(currentLatLng, targetLatLng) :
-                distanceInMiles(currentLatLng, targetLatLng);
+        return distance(currentLatLng, targetLatLng);
     }
 
     public static double distanceInMiles(LatLng currentLocation, LatLng targetLocation) {
-        return 0.000621371d * distance(currentLocation, targetLocation);
+        return metresToMiles(distance(currentLocation, targetLocation));
     }
 
     public static double distanceInKms(LatLng currentLocation, LatLng targetLocation) {
-        return 0.001d * distance(currentLocation, targetLocation);
+        return metresToKilometers(distance(currentLocation, targetLocation));
     }
 
-    public static double milesToKms(double miles) {
-        return 1.60934d * miles;
+    public static double metresToMiles(double distance) {
+        return 0.000621371d * distance;
     }
 
-    public static double kmsToMiles(double kms) {
-        return 0.621371d * kms;
+    public static double metresToKilometers(double distance) {
+        return 0.001d * distance;
     }
-
 
     public static double distance(LatLng currentLocation, LatLng targetLocation) {
         float[] distance = new float[1];
@@ -65,6 +62,5 @@ public class DtlLocationHelper {
                 currentLocation.latitude, currentLocation.longitude, distance);
         return distance[0];
     }
-
 
 }

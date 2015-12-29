@@ -18,10 +18,8 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBun
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
@@ -76,9 +74,6 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     public void onFilter() {
         if (view != null) {
             merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-            merchant.setDistance(dtlFilterDelegate.getDistanceType() == DtlFilterData.DistanceType.MILES ?
-                    DtlLocationHelper.kmsToMiles(merchant.getDistance()) :
-                    DtlLocationHelper.milesToKms(merchant.getDistance()));
             view.distanceTypeChanged(merchant);
         }
     }

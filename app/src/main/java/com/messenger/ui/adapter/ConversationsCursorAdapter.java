@@ -102,6 +102,8 @@ public class ConversationsCursorAdapter
             setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));
         }
 
+        holder.getAbandonedView().setVisibility(conversation.isAbandoned() ? View.VISIBLE : View.GONE);
+
         ////// TODO: 12/28/15 attach listeners in holder  !!!!!!!
         final View.OnClickListener itemViewListener = v -> {
             if (clickListener != null) {

@@ -33,6 +33,8 @@ public class BaseConversationViewHolder extends BaseViewHolder {
     TextView lastMessageDateTextView;
     @InjectView(R.id.conversation_unread_messages_count_textview)
     TextView unreadMessagesCountTextView;
+    @InjectView(R.id.conversation_abandoned_status)
+    View abandonedView;
     //
     @InjectView(R.id.swipe)
     SwipeLayout swipeLayout;
@@ -77,6 +79,10 @@ public class BaseConversationViewHolder extends BaseViewHolder {
 
     public View getMoreButton() {
         return moreButton;
+    }
+
+    public View getAbandonedView() {
+        return abandonedView;
     }
 
     public void updateParticipants(String conversationId, Action1<List<User>> listener) {

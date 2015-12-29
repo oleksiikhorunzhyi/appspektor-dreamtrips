@@ -28,7 +28,6 @@ public class StatusMessagePacket extends Stanza {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf);
-        buf.optAttribute("xml:lang", "hu-HU");
         buf.optAttribute("type", type);
         buf.rightAngleBracket();
 

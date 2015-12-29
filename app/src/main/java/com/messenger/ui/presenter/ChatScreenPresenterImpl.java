@@ -232,9 +232,7 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
     public void firstVisibleMessageChanged(Message firstVisibleMessage) {
         if (firstVisibleMessage.isRead()) return;
 
-        chat.changeMessageStatus(firstVisibleMessage, Status.DISPLAYED);
-        firstVisibleMessage.setRead(true);
-        firstVisibleMessage.save();
+        sendAndMarkChatEntities(firstVisibleMessage);
     }
 
     @Override
@@ -272,37 +270,60 @@ public abstract class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<
         int loadedCount = loadedMessages.size();
         haveMoreElements = loadedCount == MAX_MESSAGE_PER_PAGE;
         Message lastMessage = loadedMessages.get(loadedCount - 1);
-        Message firstMessage = loadedMessages.get(0);
 
         before = lastMessage.getDate().getTime();
-        if (loadedPage == 1) markAsReadConversationHistory(firstMessage);
-
         showContent();
     }
 
-    private void markAsReadConversationHistory(Message firstMessage) {
+    private void sendAndMarkChatEntities(Message firstMessage) {
         chat.changeMessageStatus(firstMessage, Status.DISPLAYED);
 
-        handler.postDelayed(() -> {
-            ChatScreen view = getView();
-            if (view != null) view.showUnreadMessageCount(0);
-        }, UNREAD_DELAY);
+        markMessagesAsRead(firstMessage);
+        updateUnreadMessageCount(firstMessage);
+        showUnreadMessageCount();
+    }
 
-        conversation.setUnreadMessageCount(0);
-        conversation.save();
-
+    private void markMessagesAsRead(Message firstMessage){
+        String clause = Message.COLUMN_CONVERSATION_ID + " = ? "
+                + "AND " + Message.COLUMN_DATE + " <= ? "
+                + "AND " + Message.COLUMN_READ + " = ? ";
         Cursor cursor = new Select()
                 .from(Message.class)
-                .where(String.format("%s <= %s and read == %s", Message.COLUMN_DATE,
-                        firstMessage.getDate().getTime(), 1))
+                .where(clause, conversation.getId(), firstMessage.getDate().getTime(), 0)
                 .query();
 
         if (!cursor.moveToFirst()) return;
+
         do {
             Message message = SqlUtils.convertToModel(true, Message.class, cursor);
             message.setRead(true);
             message.save();
         } while (cursor.moveToNext());
+
+        cursor.close();
+    }
+
+    private void updateUnreadMessageCount(Message firstMessage) {
+        String clause = Message.COLUMN_CONVERSATION_ID + " = ? "
+                + "AND " + Message.COLUMN_DATE + " > ? "
+                + "AND " + Message.COLUMN_READ + " = ? ";
+        Cursor cursor = new Select()
+                .count()
+                .from(Message.class)
+                .where(clause, conversation.getId(), firstMessage.getDate().getTime(), 0).query();
+
+        int unreadCount = cursor.moveToFirst()? cursor.getInt(0) : 0;
+        cursor.close();
+
+        conversation.setUnreadMessageCount(unreadCount);
+        conversation.save();
+    }
+
+    private void showUnreadMessageCount() {
+        handler.postDelayed(() -> {
+            ChatScreen view = getView();
+            if (view != null) view.showUnreadMessageCount(conversation.getUnreadMessageCount());
+        }, UNREAD_DELAY);
     }
 
     private void showContent() {

@@ -6,7 +6,7 @@ public abstract class AuthorizeListener {
 
     }
 
-    public void onFailed(Exception exeption) {
+    public void onFailed(Exception exception) {
 
     }
 

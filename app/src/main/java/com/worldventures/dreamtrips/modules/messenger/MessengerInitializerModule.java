@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.messenger;
 
-import com.messenger.di.ActivityWatcherInitializer;
 import com.messenger.di.MessengerInitializer;
 import com.messenger.di.UnhandledMessageWatcher;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -21,11 +20,6 @@ public class MessengerInitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideMessengerConnectorInitializer() {
         return new MessengerInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideActivityWatcherInitializer() {
-        return new ActivityWatcherInitializer();
     }
 
     @Provides

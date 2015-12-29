@@ -6,20 +6,32 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
     private static final int TIMER_FOR_DISCONNECT = 2000;
 
-    MessengerConnector connector;
     Handler handler;
 
+    List<OnStartStopAppListener> listeners;
     int visibleActivityCount;
 
-    public ActivityWatcher(Context context, MessengerConnector connector) {
-        this.connector = connector;
+    public ActivityWatcher(Context context) {
         this.handler = new Handler();
         this.visibleActivityCount = 0;
+        this.listeners = new ArrayList<>();
 
         ((Application) context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
+    }
+
+    public void addOnStartStopListener(OnStartStopAppListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeOnStartStopListener(OnStartStopAppListener listener) {
+        listeners.remove(listener);
     }
 
     @Override
@@ -31,7 +43,12 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
     public void onActivityStarted(Activity activity) {
         visibleActivityCount++;
         if (visibleActivityCount != 1) return;
-        handler.post(connector::connect);
+
+        handler.post(() -> {
+            for (OnStartStopAppListener listener : listeners) {
+                listener.onStartApplication();
+            }
+        });
     }
 
     @Override
@@ -49,8 +66,10 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
         visibleActivityCount--;
 
         handler.postDelayed(() -> {
-            if (visibleActivityCount == 0) {
-                connector.disconnect();
+            if (visibleActivityCount != 0) return;
+
+            for (OnStartStopAppListener listener : listeners) {
+                listener.onStopApplication();
             }
         }, TIMER_FOR_DISCONNECT);
     }
@@ -62,5 +81,13 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+    }
+
+    public interface OnStartStopAppListener {
+
+        void onStartApplication();
+
+        void onStopApplication();
+
     }
 }

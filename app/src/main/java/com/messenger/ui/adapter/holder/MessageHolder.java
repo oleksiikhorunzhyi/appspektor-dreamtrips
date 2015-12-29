@@ -11,6 +11,8 @@ import butterknife.InjectView;
 public abstract class MessageHolder extends ViewHolder {
     private static final float MESSAGE_SCREEN_WIDTH_SHARE = 0.6f;
 
+    @InjectView(R.id.chat_message_container)
+    public View chatMessageContainer;
     @InjectView(R.id.chat_message)
     public TextView messageTextView;
     @InjectView(R.id.chat_date)

@@ -148,12 +148,13 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
         holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message.COLUMN_TEXT)));
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
+                .chatMessageContainer.getLayoutParams();
         if (previousMessageIsFromSameUser(cursor)) {
-            params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
+            params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
             holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble);
         } else {
-            params.setMargins(params.leftMargin, 0, params.rightMargin, 0);
+            params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
             holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble_comics);
         }
     }
@@ -162,7 +163,9 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
         User userFrom = SqlUtils.convertToModel(true, User.class, cursor);
 
-        if (isGroupConversation(conversation.getType()) && userFrom != null) {
+        boolean isPreviousMessageFromTheSameUser = previousMessageIsFromSameUser(cursor);
+        if (isGroupConversation(conversation.getType()) && userFrom != null
+                && !isPreviousMessageFromTheSameUser) {
             holder.nameTextView.setVisibility(View.VISIBLE);
             holder.nameTextView.setText(userFrom.getName());
         } else {
@@ -171,9 +174,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
         holder.messageTextView.setText(message.getText());
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (previousMessageIsFromSameUser(cursor)) {
-            params.setMargins(params.leftMargin, 0, params.rightMargin, 0);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
+                .chatMessageContainer.getLayoutParams();
+        if (isPreviousMessageFromTheSameUser) {
+            params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
             holder.avatarImageView.setVisibility(View.INVISIBLE);
             holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble);
         } else {

@@ -48,7 +48,7 @@ public class ConversationsDAO {
             query.append(" WHERE c.type not like ?");
         }
 
-        query.append(" ORDER BY m." + Message.COLUMN_DATE + " DESC, c." + Conversation$Table.OWNERID);
+        query.append(" ORDER BY c." + Conversation$Table.ABANDONED + ", m." + Message.COLUMN_DATE + " DESC");
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());

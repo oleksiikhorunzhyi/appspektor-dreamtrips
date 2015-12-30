@@ -177,7 +177,7 @@ public class FullScreenPhotoWrapperFragment
 
     protected void setDefaultSocialPagerState() {
         SocialViewPagerState state = new SocialViewPagerState();
-        state.setTagHolderVisible(false);
+        state.setTagHolderVisible(getArgs().getNotificationId() == FullScreenImagesBundle.NO_NOTIFICATION ? false : true);
         state.setContentWrapperVisible(getArgs().getNotificationId() == FullScreenImagesBundle.NO_NOTIFICATION ? true : false);
         db.saveSocialViewPagerState(state);
     }

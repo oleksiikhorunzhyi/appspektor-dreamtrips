@@ -52,9 +52,10 @@ public class FullScreenPhotoWrapperFragment
         TripImagesType type = getArgs().getType();
         int userId = getArgs().getUserId();
         int position = getArgs().getPosition();
+        int notificationId = getArgs().getNotificationId();
         this.route = getArgs().getRoute();
         ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-        return TripImagesListPresenter.create(type, userId, fixedList, true, position);
+        return TripImagesListPresenter.create(type, userId, fixedList, true, position, notificationId);
     }
 
     @Override
@@ -177,7 +178,7 @@ public class FullScreenPhotoWrapperFragment
     protected void setDefaultSocialPagerState() {
         SocialViewPagerState state = new SocialViewPagerState();
         state.setTagHolderVisible(false);
-        state.setContentWrapperVisible(true);
+        state.setContentWrapperVisible(getArgs().getNotificationId() == FullScreenImagesBundle.NO_NOTIFICATION ? true : false);
         db.saveSocialViewPagerState(state);
     }
 

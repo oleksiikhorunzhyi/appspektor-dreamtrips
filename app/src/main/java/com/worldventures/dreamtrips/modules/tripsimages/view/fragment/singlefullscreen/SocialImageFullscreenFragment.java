@@ -94,6 +94,8 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     public void setContent(IFullScreenObject photo) {
+        if(photo.getUser() == null) return;
+        //
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
         taggableImageHolder.setup(this, (Photo) photo);
@@ -123,6 +125,11 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @Override
     public void hideProgress() {
         flag.hideProgress();
+    }
+
+    @Override
+    public void showContentWrapper() {
+        if (!viewDelegate.isContentWrapperShown()) viewDelegate.showContent();
     }
 
     @OnClick(R.id.iv_share)

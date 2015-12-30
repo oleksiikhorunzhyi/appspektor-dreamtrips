@@ -427,6 +427,7 @@
     <string name="no_notifications">您还没有任何通知</string>
     <string name="notification_message_friend_accepted">%s接受了您的好友请求</string>
     <string name="notification_message_friend_request">%s向您发送了好友请求</string>
+    <string name="notification_message_tagged_on_photo">%s tagged you on photo</string>
 
     <string name="error_webview_no_internet">无网络链接，请检查并重新加载页面。</string>
     <string name="error_webview_default">网络连接有问题。尝试重新加载页面。</string>

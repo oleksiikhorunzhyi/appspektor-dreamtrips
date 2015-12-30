@@ -1,15 +1,16 @@
-package com.messenger.messengerservers.xmpp.entities;
+package com.messenger.messengerservers.entities;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
+import java.util.List;
 
-public class ConversationWithLastMessage {
+public class ConversationData {
     public final Conversation conversation;
+    public final List<User> participants;
     public final Message lastMessage;
 
-    public ConversationWithLastMessage(Conversation conversation, Message lastMessage) {
-        this.conversation = conversation;
+    public ConversationData(Conversation conversation, List<User> participants, Message lastMessage) {
         this.lastMessage = lastMessage;
+        this.conversation = conversation;
+        this.participants = participants;
     }
 
     @Override
@@ -17,7 +18,7 @@ public class ConversationWithLastMessage {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ConversationWithLastMessage that = (ConversationWithLastMessage) o;
+        ConversationData that = (ConversationData) o;
 
         return conversation != null ? conversation.equals(that.conversation) : that.conversation == null;
 
@@ -30,8 +31,9 @@ public class ConversationWithLastMessage {
 
     @Override
     public String toString() {
-        return "ConversationWithLastMessage{" +
+        return "ConversationData{" +
                 "conversation=" + conversation +
+                ", participants=" + participants +
                 ", lastMessage=" + lastMessage +
                 '}';
     }

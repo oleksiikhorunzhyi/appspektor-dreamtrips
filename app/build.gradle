@@ -108,7 +108,7 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
 
             buildConfigField 'String', 'MESSENGER_API_URL', '"ejabberd-dev-1245504791.us-east-1.elb.amazonaws.com"'
-            // buildConfigField 'String', 'MESSENGER_API_URL', '"support2.sonrisa.hu"' // tmp test server
+            //buildConfigField 'String', 'MESSENGER_API_URL', '"support2.sonrisa.hu"' // tmp test server
             buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
         }
         perf {

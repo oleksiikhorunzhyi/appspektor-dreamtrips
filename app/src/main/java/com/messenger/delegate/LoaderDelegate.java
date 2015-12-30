@@ -6,7 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.api.GetShortProfilesQuery;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.ConversationWithParticipants;
+import com.messenger.messengerservers.entities.ConversationData;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
@@ -68,7 +68,7 @@ public class LoaderDelegate {
     }
 
     public void loadConversations(@Nullable OnLoadedListener listener) {
-        Loader<ConversationWithParticipants> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
+        Loader<ConversationData> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
         conversationLoader.setPersister(data -> {
             // save convs
             List<Conversation> convs = from(data).map(d -> d.conversation).toList();

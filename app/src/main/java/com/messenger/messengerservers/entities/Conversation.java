@@ -104,6 +104,18 @@ public class Conversation extends BaseProviderModel<Conversation> {
     }
 
     @Override
+    public String toString() {
+        return "Conversation{" +
+                "_id='" + _id + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", subject='" + subject + '\'' +
+                ", type='" + type + '\'' +
+                ", unreadMessageCount=" + unreadMessageCount +
+                ", abandoned=" + abandoned +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return _id != null ? _id.hashCode() : 0;
     }

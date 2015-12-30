@@ -58,8 +58,8 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
         public void onLeftChatListener(String conversationId, String userId) {
             ContentResolver resolver = activity.getContentResolver();
             ParticipantsDAO.delete(resolver, conversationId, userId);
+            ConversationsDAO.leaveConversation(resolver, conversationId, user.getId().equals(userId));
             if (userId.equals(user.getId())) {
-                ConversationsDAO.leaveConversation(resolver, conversationId);
                 Intent intent = new Intent(activity, MessengerStartActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 activity.startActivity(intent);
@@ -93,7 +93,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     }
 
     private boolean isUserOwner() {
-        return conversation.getOwnerId().equals(user.getId());
+        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 
     @Override
@@ -195,8 +195,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        boolean editVisible = conversation.getOwnerId().equals(user.getId());
-        menu.findItem(R.id.action_overflow).setVisible(editVisible);
+        menu.findItem(R.id.action_overflow).setVisible(isUserOwner());
     }
 
     @Override

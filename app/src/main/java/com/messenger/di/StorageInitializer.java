@@ -18,6 +18,6 @@ public class StorageInitializer implements AppInitializer {
     @Override
     public void initialize(Injector injector) {
         FlowManager.init(context);
-        FlowLog.isEnabled(FlowLog.Level.D);
+        FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
     }
 }

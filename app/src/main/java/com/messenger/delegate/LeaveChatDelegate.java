@@ -31,6 +31,10 @@ public class LeaveChatDelegate {
         emitter.addOnLeftChatListener(onLeftChatListener);
     }
 
+    public void unregister() {
+        emitter.removeOnLeftChatListener(onLeftChatListener);
+    }
+
     public void leave(Conversation conversation) {
         MultiUserChat chat = facade.getChatManager()
                 .createMultiUserChat(conversation.getId(), facade.getOwner().getId(), isUserOwner(conversation.getOwnerId()));
@@ -39,10 +43,6 @@ public class LeaveChatDelegate {
 
     private boolean isUserOwner(String ownerId) {
         return ownerId.equals(user.getId());
-    }
-
-    public void unregister() {
-        emitter.removeOnLeftChatListener(onLeftChatListener);
     }
 }
 

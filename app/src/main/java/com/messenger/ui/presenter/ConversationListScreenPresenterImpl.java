@@ -49,9 +49,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         OnLeftChatListener leaveListener = (conversationId, userId) -> {
             ContentResolver resolver = parentActivity.getContentResolver();
             ParticipantsDAO.delete(resolver, conversationId, userId);
-            if (user.getId().equals(userId)) {
-                ConversationsDAO.leaveConversation(resolver, conversationId);
-            }
+            ConversationsDAO.leaveConversation(resolver, conversationId, user.getId().equals(userId));
         };
 
         leaveChatDelegate  = new LeaveChatDelegate((Injector) activity.getApplication(), leaveListener);
@@ -97,7 +95,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     private void connectCursor() {
         contactSubscription = ConversationsDAO.selectConversationsList(contentResolver,
                 getViewState().isShowOnlyGroupConversations() ? Conversation.Type.GROUP : null,
-                User.CONTENT_URI, Conversation.CONTENT_URI, Message.CONTENT_URI)
+                Conversation.CONTENT_URI, Message.CONTENT_URI)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

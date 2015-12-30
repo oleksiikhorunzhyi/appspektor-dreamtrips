@@ -17,9 +17,9 @@ import rx.schedulers.Schedulers;
 
 public class ConversationsDAO {
 
-    public static void leaveConversation(ContentResolver contentResolver, String conversationId) {
+    public static void leaveConversation(ContentResolver contentResolver, String conversationId, boolean isOwner) {
         ContentValues contentValues = new ContentValues(1);
-        contentValues.put(Conversation$Table.ABANDONED, true);
+        contentValues.put(Conversation$Table.ABANDONED, isOwner);
         contentResolver.update(Conversation.CONTENT_URI, contentValues, Conversation$Table._ID + "=?",
                 new String[] {conversationId});
     }

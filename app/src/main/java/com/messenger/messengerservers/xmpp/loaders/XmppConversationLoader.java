@@ -1,9 +1,7 @@
 package com.messenger.messengerservers.xmpp.loaders;
 
-import android.util.Log;
-
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.ConversationWithParticipants;
+import com.messenger.messengerservers.entities.ConversationData;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -21,10 +19,11 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 
-public class XmppConversationLoader extends Loader<ConversationWithParticipants> {
+public class XmppConversationLoader extends Loader<ConversationData> {
     private static final String TAG = "XMPP CONTACT LOADER";
 
     private static final int MAX_CONVERSATIONS = 512;
@@ -48,28 +47,27 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
                         List<ConversationWithLastMessage> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
                         obtainConversationsWithParticipants(conversations)
                                 .subscribe(conversationWithParticipants -> {
-                                    Log.e("Loaded", "size: " + conversationWithParticipants.size());
+                                    Timber.i("Conversations loaded: %s", conversations);
                                     notifyListeners(conversationWithParticipants);
                                     ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
                                 });
                     });
         } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, Log.getStackTraceString(e));
+            Timber.e(e, "Can't load conversations");
         }
     }
 
-    private Observable<List<ConversationWithParticipants>> obtainConversationsWithParticipants(List<ConversationWithLastMessage> conversations) {
+    private Observable<List<ConversationData>> obtainConversationsWithParticipants(List<ConversationWithLastMessage> conversations) {
         ParticipantProvider provider = new ParticipantProvider(facade.getConnection());
         return Observable.from(conversations)
                 .filter(c -> !hasNoOtherUsers(c.conversation))
-                .flatMap(conversationWithLastMessage -> Observable.<ConversationWithParticipants>create(subscriber -> {
+                .flatMap(conversationWithLastMessage -> Observable.<ConversationData>create(subscriber -> {
                     Conversation conversation = conversationWithLastMessage.conversation;
                     if (conversation.getType().equals(CHAT)) {
                         List<User> users = provider.getSingleChatParticipants(conversation);
-                        conversation.setAbandoned(true);
                         if (subscriber.isUnsubscribed()) return;
                         //
-                        subscriber.onNext(new ConversationWithParticipants(conversationWithLastMessage.lastMessage, conversation, users));
+                        subscriber.onNext(new ConversationData(conversation, users, conversationWithLastMessage.lastMessage));
                         subscriber.onCompleted();
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
@@ -82,7 +80,7 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
                             conversation.setOwnerId(owner.getId());
                             conversation.setAbandoned(abandoned);
                             members.add(0, owner);
-                            subscriber.onNext(new ConversationWithParticipants(conversationWithLastMessage.lastMessage, conversation, members));
+                            subscriber.onNext(new ConversationData(conversation, members, conversationWithLastMessage.lastMessage));
                             subscriber.onCompleted();
                         });
                     }
@@ -95,7 +93,7 @@ public class XmppConversationLoader extends Loader<ConversationWithParticipants>
         return companion == null;
     }
 
-    public void notifyListeners(List<ConversationWithParticipants> conversations) {
+    public void notifyListeners(List<ConversationData> conversations) {
         if (persister != null) {
             persister.save(conversations);
         }

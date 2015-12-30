@@ -34,6 +34,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     @Column String userName;
     @Column boolean online;
     @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
+    @Column boolean isFriend;
 
     public User() {
     }
@@ -91,6 +92,14 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setIsFriend(boolean isFriend) {
+        this.isFriend = isFriend;
     }
 
     @Override

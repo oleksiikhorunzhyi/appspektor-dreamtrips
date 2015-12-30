@@ -8,9 +8,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.storege.utils.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
-import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
@@ -20,9 +20,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
+    private final UsersDAO usersDAO;
 
     public NewChatScreenPresenterImpl(Activity activity) {
         super(activity);
+        usersDAO = new UsersDAO(activity.getApplication());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -34,17 +36,12 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.new_chat_title);
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users WHERE " + User.COLUMN_ID + "<>?")
-                .withSelectionArgs(new String[]{user.getId()})
-                .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC").build();
-        contactSubscription = contentResolver.query(q, User.CONTENT_URI,
-                ParticipantsRelationship.CONTENT_URI)
+        usersDAO.getFriends()
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindVisibility())
-                .subscribe(users -> showContacts(users));
+                .subscribe(this::showContacts);
     }
 
     @Override

@@ -49,6 +49,7 @@ public class XmppContactLoader extends AsyncLoader<User> {
             User user = JidCreatorHelper.obtainUser(userName);
             boolean online = roster.getPresence(userName).getType().equals(Presence.Type.available);
             user.setOnline(online);
+            user.setIsFriend(true);
             users.add(user);
         }
 

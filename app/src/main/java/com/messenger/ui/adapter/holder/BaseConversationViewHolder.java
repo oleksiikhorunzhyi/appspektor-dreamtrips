@@ -1,6 +1,7 @@
 package com.messenger.ui.adapter.holder;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
@@ -25,6 +26,8 @@ import rx.schedulers.Schedulers;
 
 public class BaseConversationViewHolder extends BaseViewHolder {
 
+    @InjectView(R.id.conversation_item_view)
+    ViewGroup contentLayout;
     @InjectView(R.id.conversation_name_textview)
     TextView nameTextView;
     @InjectView(R.id.conversation_last_message_textview)
@@ -33,8 +36,6 @@ public class BaseConversationViewHolder extends BaseViewHolder {
     TextView lastMessageDateTextView;
     @InjectView(R.id.conversation_unread_messages_count_textview)
     TextView unreadMessagesCountTextView;
-    @InjectView(R.id.conversation_abandoned_status)
-    View abandonedView;
     //
     @InjectView(R.id.swipe)
     SwipeLayout swipeLayout;
@@ -51,6 +52,10 @@ public class BaseConversationViewHolder extends BaseViewHolder {
         contentResolver = new RxContentResolver(itemView.getContext().getContentResolver(),
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
                 .rawQuery(query.selection, query.selectionArgs));
+    }
+
+    public ViewGroup getContentLayout() {
+        return contentLayout;
     }
 
     public TextView getNameTextView() {
@@ -79,10 +84,6 @@ public class BaseConversationViewHolder extends BaseViewHolder {
 
     public View getMoreButton() {
         return moreButton;
-    }
-
-    public View getAbandonedView() {
-        return abandonedView;
     }
 
     public void updateParticipants(String conversationId, Action1<List<User>> listener) {

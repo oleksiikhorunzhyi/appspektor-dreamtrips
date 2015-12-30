@@ -48,6 +48,8 @@ public class ConversationsCursorAdapter
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
 
+    private static final float CLOSED_CONVERSATION_ALPHA = 0.3f;
+
     private Context context;
 
     private final RecyclerView recyclerView;
@@ -96,13 +98,17 @@ public class ConversationsCursorAdapter
                     .setVisibility(currentUser.getId().equals(conversation.getOwnerId()) ? View.GONE : View.VISIBLE);
         }
 
-        // TODO: 12/21/15  
-        if (message.getText() != null) {
-            String userName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
-            setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));
-        }
+        String userName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
+        setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));
 
-        holder.getAbandonedView().setVisibility(conversation.isAbandoned() ? View.VISIBLE : View.GONE);
+        if (conversation.isAbandoned()) {
+            setClosedConversationUi(holder);
+        } else {
+            for (int i = 0; i < holder.getContentLayout().getChildCount(); i++) {
+                holder.getContentLayout().getChildAt(i).setAlpha(1f);
+            }
+            setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
+        }
 
         ////// TODO: 12/28/15 attach listeners in holder  !!!!!!!
         final View.OnClickListener itemViewListener = v -> {
@@ -130,6 +136,22 @@ public class ConversationsCursorAdapter
         holder.updateParticipants(conversation.getId(), users -> setNameAndAvatar(holder, conversation, users));
     }
 
+    private void setClosedConversationUi(BaseConversationViewHolder holder) {
+        holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
+        for (int i = 0; i < holder.getContentLayout().getChildCount(); i++) {
+            View child = holder.getContentLayout().getChildAt(i);
+            if (child.getId() != R.id.conversation_last_messages_layout) {
+                child.setAlpha(CLOSED_CONVERSATION_ALPHA);
+            }
+        }
+        holder.getLastMessageDateTextView().setVisibility(View.VISIBLE);
+        holder.getLastMessageDateTextView().setTextColor(ContextCompat.getColor(context,
+                R.color.conversation_list_closed_conversation));
+        holder.getLastMessageDateTextView().setText(R.string.conversation_list_abandoned);
+        holder.getUnreadMessagesCountTextView().setVisibility(View.GONE);
+    }
+
     private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount) {
         if (unreadMessageCount > 0) {
             holder.itemView.setBackgroundColor(
@@ -146,6 +168,7 @@ public class ConversationsCursorAdapter
     private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage, String userName, boolean isGroupConversation) {
         if (lastMessage == null) {
             holder.getLastMessageTextView().setVisibility(View.GONE);
+            holder.getLastMessageDateTextView().setVisibility(View.INVISIBLE);
             return;
         }
         holder.getLastMessageTextView().setVisibility(View.VISIBLE);
@@ -156,7 +179,14 @@ public class ConversationsCursorAdapter
             messageText = userName + ": " + messageText;
         }
         holder.getLastMessageTextView().setText(messageText);
-        holder.getLastMessageDateTextView().setText(formatLastConversationMessage(lastMessage.getDate()));
+        if (lastMessage.getDate() != null) {
+            holder.getLastMessageDateTextView().setVisibility(View.VISIBLE);
+            holder.getLastMessageDateTextView().setTextColor(ContextCompat
+                    .getColor(context, R.color.conversation_list_last_message_date));
+            holder.getLastMessageDateTextView().setText(formatLastConversationMessage(lastMessage.getDate()));
+        } else {
+            holder.getLastMessageDateTextView().setVisibility(View.INVISIBLE);
+        }
     }
 
     public String formatLastConversationMessage(Date date) {

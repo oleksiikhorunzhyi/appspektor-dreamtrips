@@ -52,21 +52,10 @@
             >
 
             <TextView
-                android:id="@+id/conversation_abandoned_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/conversation_list_abandoned"
-                android:layout_marginRight="@dimen/spacing_small"
-                android:visibility="gone"
-                />
-
-            <TextView
-                android:layout_alignBaseline="@+id/conversation_abandoned_status"
                 android:id="@+id/conversation_last_message_date_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_toRightOf="@+id/conversation_abandoned_status"
                 style="@style/ConversationListLastMessageDateTextView"
                 tools:text="yesterday"
                 />
@@ -77,7 +66,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/conversation_last_message_date_textview"
                 android:gravity="center_horizontal"
-                android:layout_alignRight="@+id/conversation_last_message_date_textview"
                 style="@style/ConversationListUnreadMessagesCountTextView"
                 />
         </RelativeLayout>

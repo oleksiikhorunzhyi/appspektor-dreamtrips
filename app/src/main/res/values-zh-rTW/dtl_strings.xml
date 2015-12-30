@@ -104,4 +104,7 @@
     <string name="rep_suggest_restaurant">推薦餐廳</string>
     <string name="distance_miles" formatted="false">%.1f 英里</string>
     <string name="distance_kms" formatted="false">%.1f 公里</string>
+    <string name="distance_dialog_miles">英里</string>
+    <string name="distance_dialog_kms">公里</string>
+    <string name="distance_header">顯示距離以：</string>
 </resources>

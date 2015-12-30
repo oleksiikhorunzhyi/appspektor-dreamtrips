@@ -162,6 +162,10 @@ android {
         }
     }
     buildTypes {
+        d {
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".dev"
+        }
         debug {
             signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
@@ -289,7 +293,7 @@ dependencies {
     compile 'com.badoo.mobile:android-weak-handler:1.1'
     compile 'frankiesardo:icepick:3.1.0'
     apt 'frankiesardo:icepick-processor:3.1.0'
-    devDebugCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+    dCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     debugCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     compile 'com.github.pwittchen:networkevents:2.1.2'

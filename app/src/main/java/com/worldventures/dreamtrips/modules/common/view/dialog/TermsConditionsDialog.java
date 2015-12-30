@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.dialog;
 
 import android.app.Dialog;
+import android.net.MailTo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -13,6 +14,7 @@ import android.widget.CheckBox;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
 
@@ -49,6 +51,16 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
 
                 termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" +
                         "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith(MailTo.MAILTO_SCHEME) && getActivity() != null) {
+                    String mailTo = url.substring(MailTo.MAILTO_SCHEME.length());
+                    getActivity().startActivity(IntentUtils.newEmailIntent("", "", mailTo));
+                    return true;
+                }
+                return false;
             }
         });
 

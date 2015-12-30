@@ -7,6 +7,7 @@ import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.XmppServerParams;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.synchmechanism.ActivityWatcher;
 import com.messenger.ui.activity.ChatActivity;
@@ -21,6 +22,7 @@ import com.messenger.ui.view.EditChatMembersScreenImpl;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Singleton;
@@ -55,7 +57,9 @@ public class XmppServerModule {
     @Singleton
     @Provides
     MessengerServerFacade provideXmppServerFacade() {
-        return new XmppServerFacade();
+        return new XmppServerFacade(new XmppServerParams(
+                BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT
+        ));
     }
 
     @Provides

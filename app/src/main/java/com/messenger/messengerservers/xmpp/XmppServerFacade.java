@@ -10,7 +10,6 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
-import com.messenger.messengerservers.parameters.ServerParameters;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
 
@@ -34,6 +33,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     private static final int PACKET_REPLAY_TIMEOUT = 15000;
     private static final int TIME_PING_INTERVAL = 45;
 
+    private XmppServerParams serverParams;
     private AbstractXMPPConnection connection;
     private volatile boolean isActive;
 
@@ -46,7 +46,8 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final ChatManager chatManager;
     private final RosterManager rosterManager;
 
-    public XmppServerFacade() {
+    public XmppServerFacade(XmppServerParams serverParams) {
+        this.serverParams = serverParams;
         PingManager.setDefaultPingInterval(TIME_PING_INTERVAL);
         loaderManager = new XmppLoaderManager(this);
         paginationManager = new XmppPaginationManager(this);
@@ -64,10 +65,10 @@ public class XmppServerFacade implements MessengerServerFacade {
                     connection = new MessengerConnection(XMPPTCPConnectionConfiguration.builder()
                             .setUsernameAndPassword(username, password)
                             .setServiceName(JidCreatorHelper.SERVICE_NAME)
-                            .setHost(ServerParameters.URL)
+                            .setHost(serverParams.host)
                             .setResource(StringGanarator.getRandomString(5))
                             .setDebuggerEnabled(true)
-                            .setPort(ServerParameters.PORT)
+                            .setPort(serverParams.port)
                             .setSendPresence(false)
                             .build());
                     connection.setPacketReplyTimeout(PACKET_REPLAY_TIMEOUT);
@@ -158,4 +159,5 @@ public class XmppServerFacade implements MessengerServerFacade {
     public AbstractXMPPConnection getConnection() {
         return connection;
     }
+
 }

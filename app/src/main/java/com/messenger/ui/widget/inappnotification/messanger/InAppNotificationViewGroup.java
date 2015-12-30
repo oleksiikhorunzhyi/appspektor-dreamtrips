@@ -38,11 +38,6 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public InAppNotificationViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     public void setChatParticipants(List<User> chatParticipants) {
         avatarViewGroup.updateAvatars(chatParticipants);
     }

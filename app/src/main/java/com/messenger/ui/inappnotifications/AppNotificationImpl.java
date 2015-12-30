@@ -11,8 +11,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class AppNotificationImpl implements AppNotification {
 
-    private static final int HIDE_DELAY = 1000;
     private Crouton crouton;
+    private static final int SHOWING_DURATION = 3000;
 
     public AppNotificationImpl(App app) {
     }
@@ -47,7 +47,7 @@ public class AppNotificationImpl implements AppNotification {
 
         crouton = Crouton.make(activity, view);
         crouton.setConfiguration(new Configuration.Builder()
-                        .setDuration(HIDE_DELAY)
+                        .setDuration(SHOWING_DURATION)
                         .setOutAnimation(0)
                         .build()
         );

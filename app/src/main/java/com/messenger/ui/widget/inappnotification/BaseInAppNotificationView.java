@@ -1,16 +1,15 @@
 package com.messenger.ui.widget.inappnotification;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.messenger.ui.widget.OnSwipeGestureListener;
+import com.daimajia.swipe.SwipeLayout;
 import com.worldventures.dreamtrips.R;
 
-public abstract class BaseInAppNotificationView extends RelativeLayout {
+public abstract class BaseInAppNotificationView extends SwipeLayout
+        implements SwipeLayout.SwipeListener {
 
     protected InAppNotificationViewListener listener;
 
@@ -33,26 +32,15 @@ public abstract class BaseInAppNotificationView extends RelativeLayout {
         initialize();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public BaseInAppNotificationView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initialize();
-    }
-
     protected void initialize(){
-        setOnTouchListener(new OnSwipeGestureListener(getContext()){
-            @Override
-            public void onSwipeTop() {
-                if (listener != null){
-                    listener.onCloseSwipe();
-                }
-            }
+        addSwipeListener(this);
+        View dummySwipeBottom = findViewById(R.id.in_app_notif_dummy_bottom);
+        addDrag(SwipeLayout.DragEdge.Left, dummySwipeBottom);
+        addDrag(SwipeLayout.DragEdge.Right, dummySwipeBottom);
 
-            @Override
-            public void onSingleTap(){
-                if (listener!=null){
-                    listener.onClick();
-                }
+        findViewById(R.id.in_app_notif_content).setOnClickListener((v) -> {
+            if (listener != null) {
+                listener.onClick();
             }
         });
 
@@ -65,4 +53,36 @@ public abstract class BaseInAppNotificationView extends RelativeLayout {
             });
         }
     };
+
+    @Override
+    public void onStartOpen(SwipeLayout layout) {
+    }
+
+    @Override
+    public void onOpen(SwipeLayout layout) {
+        // Callback is called is open since we are supposed to have some buttons
+        // beneath content view which is being swiped. Instead in our scenario
+        // this means that the notification view was swiped away and dismissed.
+        if (listener != null){
+            listener.onCloseSwipe();
+        }
+    }
+
+    @Override
+    public void onStartClose(SwipeLayout layout) {
+    }
+
+    @Override
+    public void onClose(SwipeLayout layout) {
+    }
+
+    @Override
+    public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+
+    }
+
+    @Override
+    public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+
+    }
 }

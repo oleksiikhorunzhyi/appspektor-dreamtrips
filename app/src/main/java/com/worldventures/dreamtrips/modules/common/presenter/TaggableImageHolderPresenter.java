@@ -29,14 +29,6 @@ public abstract class TaggableImageHolderPresenter<VIEW extends TaggableImageHol
 
     public abstract void deletePhotoTag(PhotoTag tag);
 
-    public void addPhotoTag(PhotoTag tag) {
-
-    }
-
-    public void loadFriends(String query, TagView view) {
-
-    }
-
     public Photo getPhoto() {
         return photo;
     }

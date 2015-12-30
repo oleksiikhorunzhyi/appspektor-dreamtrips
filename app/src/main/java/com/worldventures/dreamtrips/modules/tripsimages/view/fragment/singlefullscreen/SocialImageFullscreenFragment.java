@@ -195,6 +195,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         tag.setSelected(true);
         RectF imageBounds = new RectF();
         ivImage.getHierarchy().getActualImageBounds(imageBounds);
+        taggableImageHolder.removeAllViews();
         taggableImageHolder.show(imageBounds);
     }
 

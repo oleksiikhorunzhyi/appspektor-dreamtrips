@@ -302,8 +302,13 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     }
 
     private boolean onBackPressed() {
-        getPresenter().cancelClicked();
-        return true;
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
+            return true;
+        } else {
+            getPresenter().cancelClicked();
+            return true;
+        }
     }
 
     @Override

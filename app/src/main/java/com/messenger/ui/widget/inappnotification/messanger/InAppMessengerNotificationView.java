@@ -25,9 +25,4 @@ public abstract class InAppMessengerNotificationView extends BaseInAppNotificati
     public InAppMessengerNotificationView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public InAppMessengerNotificationView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
 }

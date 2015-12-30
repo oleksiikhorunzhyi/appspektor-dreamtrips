@@ -35,11 +35,6 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public InAppNotificationViewChat(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     public void setAvatarUrl(String avatarUrl){
         Picasso.with(getContext())
                 .load(avatarUrl)

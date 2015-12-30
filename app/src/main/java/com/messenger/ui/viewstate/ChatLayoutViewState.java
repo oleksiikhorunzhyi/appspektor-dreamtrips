@@ -3,10 +3,9 @@ package com.messenger.ui.viewstate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.app.Environment;
-import com.messenger.model.ChatConversation;
+import com.messenger.messengerservers.entities.Conversation;
 
-public class ChatLayoutViewState extends LceViewState<ChatConversation> {
+public class ChatLayoutViewState extends LceViewState<Conversation> {
 
     public ChatLayoutViewState() {
     }
@@ -17,7 +16,6 @@ public class ChatLayoutViewState extends LceViewState<ChatConversation> {
 
     @Override public void writeToParcel(Parcel parcel, int flags) {
         super.writeToParcel(parcel, flags);
-        parcel.writeParcelable(getData(), flags);
     }
 
     public static final Parcelable.Creator<ChatLayoutViewState> CREATOR = new Parcelable.Creator<ChatLayoutViewState>() {
@@ -28,6 +26,5 @@ public class ChatLayoutViewState extends LceViewState<ChatConversation> {
 
     public ChatLayoutViewState(Parcel in) {
         super(in);
-        setData(in.readParcelable(Environment.getChatConversationClassLoader()));
     }
 }

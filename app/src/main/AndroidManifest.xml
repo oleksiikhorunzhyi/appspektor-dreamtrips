@@ -118,7 +118,6 @@
             android:label="@string/trips"/>
         <activity
             android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
-            android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:label="@string/trips"/>
 
         <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>

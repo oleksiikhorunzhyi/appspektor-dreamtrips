@@ -22,10 +22,12 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.api.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
 
@@ -54,6 +56,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
     private TripImagesRoboSpiceController roboSpiceAdapterController;
     protected List<IFullScreenObject> photos = new ArrayList<>();
+    private List<PhotoTag> photoTags;
 
     protected int userId;
 
@@ -63,7 +66,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         this.userId = userId;
     }
 
-    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition) {
+    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
         TripImagesListPresenter presenter;
         switch (type) {
             case MEMBERS_IMAGES:
@@ -79,7 +82,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 presenter = new InspireMePresenter(userId);
                 break;
             case FIXED:
-                presenter = new FixedListPhotosFullScreenPresenter(photos, userId);
+                presenter = new FixedListPhotosFullScreenPresenter(photos, userId, notificationId);
                 break;
             default:
                 throw new RuntimeException("Trip image type is not found");
@@ -227,9 +230,15 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         doRequest(new AddTripPhotoCommand(task), photo -> {
             processPhoto(photos.indexOf(task), photo);
             db.removeUploadTask(task);
+            uploadTags(photo.getFSId());
         }, spiceException -> {
             photoError(getCurrentTask(task.getAmazonTaskId()));
         });
+    }
+
+    private void uploadTags(String id) {
+        if (photoTags == null) return;
+        doRequest(new AddPhotoTagsCommand(id, photoTags));
     }
 
     private void photoError(UploadTask uploadTask) {
@@ -364,6 +373,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
+        this.photoTags = event.getPhotoTags();
         if (type != TripImagesType.ACCOUNT_IMAGES) {
             getAdapterController().reload();
         } else {

@@ -15,7 +15,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.adapter_item_photo)
+@Layout(R.layout.adapter_item_photo_facebook)
 public class FacebookPhotoCell extends AbstractCell<FacebookPhoto> {
 
     @InjectView(R.id.imageViewPhoto)

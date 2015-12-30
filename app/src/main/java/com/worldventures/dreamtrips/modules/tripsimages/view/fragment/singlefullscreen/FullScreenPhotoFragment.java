@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp;
+package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen;
 
 import android.os.Build;
 import android.view.ViewTreeObserver;
@@ -46,6 +46,7 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
                             .setImageRequest(ImageRequest.fromUri(image.getUrl(size, size)))
                             .build();
                     ivImage.setController(draweeController);
+                    onImageGlobalLayout();
 
                     ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -57,6 +58,10 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
             }
         });
     }
+
+    protected void onImageGlobalLayout() {
+    }
+
 
     @Override
     public void onDestroyView() {

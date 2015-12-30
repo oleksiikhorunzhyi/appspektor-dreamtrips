@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageVi
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 
 public class FullScreenPhotoActionPanelDelegate {
 
@@ -63,14 +64,27 @@ public class FullScreenPhotoActionPanelDelegate {
 
     Context context;
     User account;
+    ContentVisibilityListener contentVisibilityListener;
+    @State
+    boolean isContentWrapperVisible = true;
 
     public void setup(Activity activity, View rootView, User account) {
         ButterKnife.inject(this, rootView);
         this.context = activity;
         this.account = account;
 
-        ivImage.setSingleTapListener(this::toggleContent);
+        ivImage.setSingleTapListener(() -> {
+            toggleContent();
+            if (contentVisibilityListener != null) {
+                contentVisibilityListener.onVisibilityChange();
+            }
+        });
         ivImage.setDoubleTapListener(this::hideContent);
+        if (isContentWrapperVisible) {
+            showContent();
+        } else {
+            hideContent();
+        }
     }
 
     public void setContent(Photo photo) {
@@ -175,12 +189,14 @@ public class FullScreenPhotoActionPanelDelegate {
     }
 
 
-    private void hideContent() {
+    public void hideContent() {
         llContentWrapper.setVisibility(View.GONE);
+        isContentWrapperVisible = false;
     }
 
-    private void showContent() {
+    public void showContent() {
         llContentWrapper.setVisibility(View.VISIBLE);
+        isContentWrapperVisible = true;
     }
 
     public void toggleContent() {
@@ -191,4 +207,15 @@ public class FullScreenPhotoActionPanelDelegate {
         }
     }
 
+    public boolean isContentWrapperShown() {
+        return isContentWrapperVisible;
+    }
+
+    public void setContentVisibilityListener(ContentVisibilityListener contentVisibilityListener) {
+        this.contentVisibilityListener = contentVisibilityListener;
+    }
+
+    public interface ContentVisibilityListener {
+        void onVisibilityChange();
+    }
 }

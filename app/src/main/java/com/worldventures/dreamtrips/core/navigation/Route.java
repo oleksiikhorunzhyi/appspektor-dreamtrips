@@ -83,11 +83,11 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditF
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.BucketPhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.InspirePhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.SocialImageFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.TripPhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.temp.YSBHPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.BucketPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.InspirePhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.SocialImageFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.TripPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.YSBHPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 

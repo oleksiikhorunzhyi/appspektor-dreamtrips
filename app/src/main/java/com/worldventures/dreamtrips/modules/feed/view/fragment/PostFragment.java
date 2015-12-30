@@ -86,6 +86,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         handler = new WeakHandler();
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), false);
+        photoPickerLayout.hidePanel();
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages));
     }
 
@@ -117,6 +118,8 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         post.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && photoPickerLayout.isPanelVisible())
                 handler.postDelayed(photoPickerLayout::hidePanel, 250);
+            else if (!hasFocus)
+                name.requestFocus();
         });
         backStackDelegate.setListener(this::onBackPressed);
         if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
@@ -130,6 +133,7 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         super.onPause();
         post.removeTextChangedListener(textWatcher);
         backStackDelegate.setListener(null);
+        post.setOnFocusChangeListener(null);
     }
 
     @Override
@@ -298,8 +302,13 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
     }
 
     private boolean onBackPressed() {
-        getPresenter().cancelClicked();
-        return true;
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
+            return true;
+        } else {
+            getPresenter().cancelClicked();
+            return true;
+        }
     }
 
     @Override

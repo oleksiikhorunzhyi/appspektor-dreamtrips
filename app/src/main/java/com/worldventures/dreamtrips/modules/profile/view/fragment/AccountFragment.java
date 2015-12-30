@@ -158,6 +158,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     private boolean onBackPressed() {
         if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();
+            return true;
         }
 
         return false;

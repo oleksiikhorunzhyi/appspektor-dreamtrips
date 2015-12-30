@@ -20,6 +20,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.storege.utils.ParticipantsDAO;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
@@ -70,6 +71,7 @@ public class ConversationsCursorAdapter
     private ConversationHelper conversationHelper;
     private SimpleDateFormat todayDateFormat;
     private SimpleDateFormat moreThanTwoDaysAgoFormat;
+    private ParticipantsDAO participantsDAO;
 
     public interface ClickListener {
         void onConversationClick(Conversation conversation);
@@ -86,6 +88,7 @@ public class ConversationsCursorAdapter
         this.context = context;
         this.recyclerView = recyclerView;
         this.currentUser = currentUser;
+        participantsDAO = new ParticipantsDAO(context);
         //
         conversationHelper = new ConversationHelper();
         todayDateFormat = new SimpleDateFormat(context
@@ -280,15 +283,11 @@ public class ConversationsCursorAdapter
             super.swapCursor(newCursor);
             return;
         }
-        Observable.defer(() -> {
-            String query = "SELECT * FROM Users u " +
-                    "JOIN ParticipantsRelationship p " +
-                    "ON p.userId = u._id " +
-                    "WHERE p.conversationId = ?";
-            return Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
-                    .map(c -> new Pair<>(c, SqlUtils.queryList(User.class, query, c.getId())));
-
-        }).toMap(p -> p.first, p -> p.second)
+        Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
+                .flatMap(c -> participantsDAO.getParticipants(c.getId())
+                        .map(cursor -> SqlUtils.convertToList(User.class, cursor))
+                        .map(users -> new Pair<>(c, users)))
+                .toMap(p -> p.first, p -> p.second)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(recyclerView))

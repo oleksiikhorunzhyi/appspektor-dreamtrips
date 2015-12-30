@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.R;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
     private final UsersDAO usersDAO;
@@ -37,8 +36,6 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
         super.attachView(view);
         getView().setTitle(R.string.new_chat_title);
         usersDAO.getFriends()
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindVisibility())
                 .subscribe(this::showContacts);

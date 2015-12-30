@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.util.RxContentResolver;
@@ -22,8 +23,14 @@ class BaseDAO {
         this.contentResolver = context.getContentResolver();
 
         this.rxContentResolver = new RxContentResolver(contentResolver,
-                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                    .rawQuery(query.selection, query.selectionArgs));
+                query -> {
+                    StringBuilder builder = new StringBuilder(query.selection);
+                    if (!TextUtils.isEmpty(query.sortOrder)) {
+                        builder.append(" ").append(query.sortOrder);
+                    }
+                    return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                            .rawQuery(builder.toString(), query.selectionArgs);
+                });
     }
 
     protected Observable<Cursor> query(Query rxQuery, Uri... uris) {

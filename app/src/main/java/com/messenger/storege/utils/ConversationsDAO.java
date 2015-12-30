@@ -2,8 +2,8 @@ package com.messenger.storege.utils;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.entities.Conversation;
@@ -11,22 +11,34 @@ import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class ConversationsDAO {
+public class ConversationsDAO extends BaseDAO {
 
+    public ConversationsDAO(Context context) {
+        super(context);
+    }
+
+    public static Conversation getConversationById(String conversationId) {
+        return new Select()
+                .from(Conversation.class)
+                .byIds(conversationId)
+                .querySingle();
+    }
+
+    @Deprecated
     public static void leaveConversation(ContentResolver contentResolver, String conversationId, boolean isOwner) {
         ContentValues contentValues = new ContentValues(1);
         contentValues.put(Conversation$Table.ABANDONED, isOwner);
         contentResolver.update(Conversation.CONTENT_URI, contentValues, Conversation$Table._ID + "=?",
-                new String[] {conversationId});
+                new String[]{conversationId});
     }
 
-    public static Observable<Cursor> selectConversationsList(RxContentResolver resolver,
-                                                             @Nullable @Conversation.Type.ConversationType String type,
-                                                             Uri... observeUris) {
+    public Observable<Cursor> selectConversationsList(@Nullable @Conversation.Type.ConversationType String type) {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
                 "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
@@ -57,8 +69,17 @@ public class ConversationsDAO {
             queryBuilder.withSelectionArgs(new String[]{Conversation.Type.CHAT});
         }
 
-        return resolver
-                .query(queryBuilder.build(), observeUris)
-                .subscribeOn(Schedulers.io());
+        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI);
+    }
+
+
+    public Observable<Conversation> getConversation(String conversationId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection(new Select().from(Conversation.class).byIds(conversationId).toString())
+                .build();
+        return query(q, Conversation.CONTENT_URI)
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io())
+                .map(cursor -> SqlUtils.convertToModel(false, Conversation.class, cursor));
     }
 }

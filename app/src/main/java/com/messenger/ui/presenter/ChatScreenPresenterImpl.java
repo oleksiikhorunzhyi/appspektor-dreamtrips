@@ -3,7 +3,7 @@ package com.messenger.ui.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +19,12 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.storege.utils.ConversationsDAO;
+import com.messenger.storege.utils.MessageDAO;
+import com.messenger.storege.utils.ParticipantsDAO;
+import com.messenger.storege.utils.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
@@ -29,10 +32,7 @@ import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
-import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -45,9 +45,9 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
-import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
@@ -79,6 +79,10 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     protected Conversation conversation;
     private Chat chat;
 
+    private final ConversationsDAO conversationDAO;
+    private final ParticipantsDAO participantsDAO;
+    private final MessageDAO messageDAO;
+
     protected int page = 0;
     protected long before = 0;
     protected boolean haveMoreElements = true;
@@ -94,6 +98,10 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         participants = Collections.emptyList();
 
         ((Injector) context.getApplicationContext()).inject(this);
+        conversationDAO = new ConversationsDAO(context.getApplicationContext());
+        participantsDAO = new ParticipantsDAO(context.getApplicationContext());
+        messageDAO = new MessageDAO(context.getApplicationContext());
+
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
@@ -101,25 +109,28 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
     }
 
-    private Chat createChat(ChatManager chatManager, Conversation conversation) {
-        Chat chat;
-        switch (conversation.getType()) {
-            case Conversation.Type.CHAT:
-                String query = "SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
-                        "ON p.userId = u._id " +
-                        "WHERE p.conversationId = ? AND u._id<>?";
-                User mate = SqlUtils.querySingle(User.class, query, conversation.getId(), getUser().getId());
-                chat = chatManager.createSingleUserChat(mate.getId(), conversation.getId());
-                break;
-            case Conversation.Type.GROUP:
-            default:
-                String ownerId = conversation.getOwnerId();
-                boolean isOwner = ownerId != null && ownerId.equals(user.getId());
-                chat = chatManager.createMultiUserChat(conversation.getId(), getUser().getId(), isOwner);
-                break;
-        }
-        return chat;
+    private Observable<Chat> createChat(ChatManager chatManager, Conversation conversation) {
+        return Observable.<Chat>create(subscriber -> {
+            switch (conversation.getType()) {
+                case Conversation.Type.CHAT:
+                    try {
+                        participantsDAO.getMate(conversationId, user.getId())
+                                .subscribe(mate -> subscriber
+                                                .onNext(chatManager.createSingleUserChat(mate.getId(), conversationId))
+                                );
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }
+                    break;
+                case Conversation.Type.GROUP:
+                default:
+                    String ownerId = conversation.getOwnerId();
+                    boolean isOwner = ownerId != null && ownerId.equals(user.getId());
+                    subscriber.onNext(chatManager.createMultiUserChat(conversation.getId(), getUser().getId(), isOwner));
+                    break;
+            }
+            subscriber.onCompleted();
+        });
     }
 
     @Override
@@ -137,18 +148,8 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     protected void connectConversation() {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Conversations WHERE _id = ?")
-                .withSelectionArgs(new String[]{conversationId}).build();
-        //
-        ConnectableObservable<Conversation> source = new RxContentResolver(activity.getContentResolver(), query -> {
-            return FlowManager.getDatabaseForTable(Conversation.class).getWritableDatabase().rawQuery(query.selection, query.selectionArgs);
-        })
-                .query(q, Conversation.CONTENT_URI)
-                .onBackpressureLatest()
-                .map(c -> SqlUtils.convertToModel(false, Conversation.class, c))
-                .filter(conv -> conv != null)
-                .subscribeOn(Schedulers.io())
+        ConnectableObservable<Conversation> source = conversationDAO.getConversation(conversationId)
+                .filter(conversation -> conversation != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .publish();
@@ -157,6 +158,12 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
                 .subscribe(this::onConversationLoadedFirstTime);
         source
                 .subscribe(this::onConversationUpdated);
+
+        source
+                .flatMap(conversation1 -> createChat(messengerServerFacade.getChatManager(), conversation))
+                .doOnNext(this::onChatLoaded)
+                .subscribe(chat -> this.chat = chat);
+
         source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
     }
@@ -164,10 +171,9 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     private void onConversationLoadedFirstTime(Conversation conversation) {
         this.conversation = conversation;
         notificationDelegate.cancel(conversation.getId().hashCode());
-        getView().getActivity().supportInvalidateOptionsMenu();
+        ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
         //
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-        initializeChat();
         connectMembers();
         connectMessages();
         loadNextPage();
@@ -183,36 +189,25 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
     }
 
-    private void initializeChat() {
-        chat = createChat(messengerServerFacade.getChatManager(), conversation);
+    private void onChatLoaded(Chat chat) {
         chat.addOnChatStateListener((state, userId) -> {
             ChatScreen view = getView();
             if (view == null) return;
+            final User user = UsersDAO.getUser(userId);
             switch (state) {
                 case Composing:
-                    handler.post(() -> view.addTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
+                    handler.post(() -> view.addTypingUser(user));
                     break;
                 case Paused:
-                    handler.post(() -> view.removeTypingUser(new Select().from(User.class).byIds(userId).querySingle()));
+                    handler.post(() -> view.removeTypingUser(user));
                     break;
             }
         });
     }
 
     protected void connectMembers() {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users u " +
-                                "JOIN ParticipantsRelationship p " +
-                                "ON p.userId = u._id " +
-                                "WHERE p.conversationId = ?"
-                ).withSelectionArgs(new String[]{conversation.getId()}).build();
-        new RxContentResolver(activity.getContentResolver(), query -> {
-            return FlowManager.getDatabaseForTable(User.class).getWritableDatabase().rawQuery(query.selection, query.selectionArgs);
-        })
-                .query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()
+        participantsDAO.getParticipants(conversationId)
                 .map(c -> SqlUtils.convertToList(User.class, c))
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindVisibility())
                 .subscribe(members -> {
@@ -226,25 +221,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     ///////////////////////////////////////////////////////////////////////////
 
     private void connectMessages() {
-        String request = "SELECT m.*, u." + User.COLUMN_NAME + " as " + User.COLUMN_NAME +
-                ", u." + User.COLUMN_AVATAR + " as " + User.COLUMN_AVATAR +
-                ", u." + User.COLUMN_SOCIAL_ID + " as " + User.COLUMN_SOCIAL_ID +
-
-                " FROM " + Message.TABLE_NAME + " m LEFT JOIN " + User.TABLE_NAME + " u" +
-                " ON m." + Message.COLUMN_FROM + " = u." + User.COLUMN_ID +
-                " WHERE " + Message.COLUMN_CONVERSATION_ID + " = ?" +
-                " ORDER BY " + Message.COLUMN_DATE;
-
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection(request)
-                .withSelectionArgs(new String[]{conversation.getId()}).build();
-
-        new RxContentResolver(activity.getContentResolver(), query -> {
-            return FlowManager.getDatabaseForTable(Conversation.class).getWritableDatabase().rawQuery(query.selection, query.selectionArgs);
-        })
-                .query(q, Message.CONTENT_URI, User.CONTENT_URI)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io())
+        messageDAO.getMessage(conversationId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindVisibility())
                 .subscribe(cursor -> {
@@ -311,19 +288,11 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     private void updateUnreadMessageCount(Message firstMessage) {
-        String clause = Message.COLUMN_CONVERSATION_ID + " = ? "
-                + "AND " + Message.COLUMN_DATE + " > ? "
-                + "AND " + Message.COLUMN_READ + " = ? ";
-        Cursor cursor = new Select()
-                .count()
-                .from(Message.class)
-                .where(clause, conversation.getId(), firstMessage.getDate().getTime(), 0).query();
-
-        int unreadCount = cursor.moveToFirst() ? cursor.getInt(0) : 0;
-        cursor.close();
-
-        conversation.setUnreadMessageCount(unreadCount);
-        conversation.save();
+        messageDAO.unreadCount(conversationId, firstMessage.getDate().getTime())
+                .subscribe(unreadCount -> {
+                    conversation.setUnreadMessageCount(unreadCount);
+                    conversation.save();
+                });
     }
 
     private void sendAndMarkChatEntities(Message firstMessage) {
@@ -335,23 +304,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     }
 
     private void markMessagesAsRead(Message firstMessage) {
-        String clause = Message.COLUMN_CONVERSATION_ID + " = ? "
-                + "AND " + Message.COLUMN_DATE + " <= ? "
-                + "AND " + Message.COLUMN_READ + " = ? ";
-        Cursor cursor = new Select()
-                .from(Message.class)
-                .where(clause, conversation.getId(), firstMessage.getDate().getTime(), 0)
-                .query();
-
-        if (!cursor.moveToFirst()) return;
-
-        do {
-            Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-            message.setRead(true);
-            message.save();
-        } while (cursor.moveToNext());
-
-        cursor.close();
+        messageDAO.markMessagesAsRead(conversationId, firstMessage.getDate().getTime()).subscribe();
     }
 
     ///////////////////////////////////////////////////////////////////////////

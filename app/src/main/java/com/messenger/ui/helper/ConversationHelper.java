@@ -17,12 +17,13 @@ public class ConversationHelper {
         if (members == null || members.isEmpty()) {
             return;
         }
-        String initialTitle = null;
+        String initialTitle;
         switch (conversation.getType()) {
             case Conversation.Type.CHAT:
                 initialTitle = members.get(0).getName();
                 break;
             case Conversation.Type.GROUP:
+            default:
                 initialTitle = conversation.getSubject();
                 if (TextUtils.isEmpty(initialTitle)) {
                     initialTitle = Queryable.from(members).map(User::getUserName).joinStrings(", ");
@@ -59,17 +60,26 @@ public class ConversationHelper {
         if (members == null || members.isEmpty()) {
             return;
         }
-        CharSequence subtitle = null;
+        CharSequence subtitle;
         switch (conversation.getType()) {
             case Conversation.Type.CHAT:
                 int substringRes = members.get(0).isOnline() ? R.string.chat_subtitle_format_single_chat_online : R.string.chat_subtitle_format_single_chat_offline;
                 subtitle = target.getResources().getText(substringRes);
                 break;
             case Conversation.Type.GROUP:
+            default:
                 int online = Queryable.from(members).count(User::isOnline);
                 subtitle = target.getResources().getString(R.string.chat_subtitle_format_group_chat_format, online);
                 break;
         }
         target.setText(subtitle);
+    }
+
+    public boolean isGroup(Conversation conversation) {
+        return conversation.getType() != null && !conversation.getType().equals(Conversation.Type.CHAT);
+    }
+
+    public boolean isOwner(Conversation conversation, User user) {
+        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 }

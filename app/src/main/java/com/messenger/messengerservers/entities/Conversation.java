@@ -143,11 +143,12 @@ public class Conversation extends BaseProviderModel<Conversation> {
     public static final class Type {
         public static final String CHAT = "chat";
         public static final String GROUP = "group";
+        public static final String TRIP = "trip";
         public static final String RINK = "rink";
         public static final String RANK = "rank";
 
         @Retention(RetentionPolicy.SOURCE)
-        @StringDef({CHAT, GROUP, RINK, RANK})
+        @StringDef({CHAT, GROUP, TRIP, RINK, RANK})
         public @interface ConversationType {
         }
     }

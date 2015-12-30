@@ -25,6 +25,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.RxContentResolver;
@@ -67,6 +68,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
     protected WeakHandler handler;
+    protected ConversationHelper conversationHelper;
 
     private final String conversationId;
     protected Conversation conversation;
@@ -89,6 +91,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         ((Injector) context.getApplicationContext()).inject(this);
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, new ProfileRouteCreator(appSessionHolder));
+        conversationHelper = new ConversationHelper();
 
         conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
     }
@@ -106,7 +109,8 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
                 break;
             case Conversation.Type.GROUP:
             default:
-                boolean isOwner = conversation.getOwnerId().equals(user.getId());
+                String ownerId = conversation.getOwnerId();
+                boolean isOwner = ownerId != null && ownerId.equals(user.getId());
                 chat = chatManager.createMultiUserChat(conversation.getId(), getUser().getId(), isOwner);
                 break;
         }
@@ -417,7 +421,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
             menu.findItem(R.id.action_settings).setVisible(true);
         }
 
-        if (conversation.getType().equals(Conversation.Type.GROUP)) {
+        if (conversationHelper.isGroup(conversation)) {
             boolean owner = user.getId().equals(conversation.getOwnerId());
             menu.findItem(R.id.action_add).setVisible(owner);
         }
@@ -430,10 +434,10 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
                 NewChatMembersActivity.startInAddMembersMode(activity, conversation.getId());
                 return true;
             case R.id.action_settings:
-                if (conversation.getType().equals(Conversation.Type.CHAT)) {
-                    ChatSettingsActivity.startSingleChatSettings(activity, conversation.getId());
-                } else {
+                if (conversationHelper.isGroup(conversation)) {
                     ChatSettingsActivity.startGroupChatSettings(activity, conversation.getId());
+                } else {
+                    ChatSettingsActivity.startSingleChatSettings(activity, conversation.getId());
                 }
                 return true;
         }

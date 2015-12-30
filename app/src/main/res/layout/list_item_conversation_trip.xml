@@ -17,10 +17,11 @@
                   android:paddingTop="@dimen/conversation_list_item_vertical_padding"
         >
 
-        <com.messenger.ui.widget.GroupAvatarsView
-            android:id="@+id/conversation_group_avatars_view"
+        <ImageView
+            android:id="@+id/conversation_group_pic"
             style="@style/GroupChatBigAvatarView"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_chat_trip"/>
 
         <include
             layout="@layout/list_item_conversation_common"

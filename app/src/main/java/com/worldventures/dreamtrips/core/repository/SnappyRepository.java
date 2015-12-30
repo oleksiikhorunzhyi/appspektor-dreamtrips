@@ -53,6 +53,7 @@ public class SnappyRepository {
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
     public static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
+    public static final String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
     public static final String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
     public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
@@ -210,6 +211,14 @@ public class SnappyRepository {
 
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
+    }
+
+    public void saveOpenBucketTabType(String type) {
+        act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
+    }
+
+    public String getOpenBucketTabType() {
+        return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////

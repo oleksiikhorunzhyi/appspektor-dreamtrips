@@ -18,9 +18,9 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.fragment.FragmentUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -275,11 +275,17 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(data)
-                .move(Route.FULLSCREEN_PHOTO_LIST);
+        router.moveTo(
+                Route.FULLSCREEN_PHOTO_LIST,
+                NavigationConfigBuilder
+                        .forActivity()
+                        .toolbarConfig(
+                                ToolbarConfig.Builder
+                                        .create()
+                                        .visible(false)
+                                        .build())
+                        .data(data)
+                        .build());
     }
 
     @Override
@@ -294,7 +300,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         viewPagerBucketGallery.setAdapter(adapter);
         viewPagerBucketGallery.setCurrentItem(0);
         Queryable.from(photos).forEachR(photo ->
-                adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
+                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);

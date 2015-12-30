@@ -23,4 +23,8 @@
     <declare-styleable name="OverlappingViewsLayout">
         <attr name="ovl_overlap_part" format="float|reference" />
     </declare-styleable>
+    <declare-styleable name="GroupAvatarsView">
+        <attr name="gav_avatar_size" format="dimension|reference" />
+        <attr name="gav_avatar_spacing" format="dimension|reference" />
+    </declare-styleable>
 </resources>

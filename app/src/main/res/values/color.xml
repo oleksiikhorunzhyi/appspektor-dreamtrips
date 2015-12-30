@@ -70,7 +70,6 @@
     <color name="picker_panel_blue">#005E92</color>
 
     <color name="in_app_notif_background">#2F2F2F</color>
-    <drawable name="in_app_notification_drawable_bg">@color/in_app_notif_background</drawable>
 
     <!--messenger-->
     <!-- General -->
@@ -126,4 +125,7 @@
     <!-- Chat memvers screen -->
     <color name="chat_edit_members_delete_button_bg">#FA6D6D</color>
     <color name="chat_edit_members_delete_button_text_color">@color/white</color>
+
+    <color name="in_app_notification_title_text_color">#dd000000</color>
+    <color name="in_app_notification_subtitle_text_color">#8A000000</color>
 </resources>

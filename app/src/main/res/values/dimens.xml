@@ -237,11 +237,11 @@
     <dimen name="messenger_swappable_action_button_drawable_padding">4dp</dimen>
 
     <!--end messenger-->
-
-    <!--In app notifications-->
-    <dimen name="in_app_notification_avatar_image_view_size">60dp</dimen>
+    <dimen name="in_app_notification_horizontal_margin">8dp</dimen>
+    <dimen name="in_app_notification_vertical_margin">4dp</dimen>
+    <dimen name="in_app_notification_horizontal_padding">11dp</dimen>
+    <dimen name="in_app_notification_vertical_padding">11dp</dimen>
+    <dimen name="in_app_notification_avatar_image_view_size">43dp</dimen>
+    <dimen name="in_app_notification_small_avatar_image_suze">20dp</dimen>
     <dimen name="in_app_notification_close_button">40dp</dimen>
-    <dimen name="in_app_notification_view_padding">4dp</dimen>
-    <!--end in app notifications-->
-
 </resources>

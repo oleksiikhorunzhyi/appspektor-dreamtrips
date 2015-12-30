@@ -30,10 +30,4 @@ public abstract class InAppMessengerNotificationView extends BaseInAppNotificati
     public InAppMessengerNotificationView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-
-    @Override
-    protected void initialize() {
-        super.initialize();
-        setBackgroundResource(R.drawable.in_app_notification_drawable_bg);
-    }
 }

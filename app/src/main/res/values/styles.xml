@@ -233,32 +233,34 @@
         <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
     </style>
 
-    <style name="InAppNotificationTitle" parent="TextAppearance.AppCompat.Medium">
+    <style name="InAppNotificationTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/in_app_notification_title_text_color</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:ellipsize">marquee</item>
         <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:layout_marginRight">44dp</item>
     </style>
 
-    <style name="InAppNotificationText" parent="TextAppearance.AppCompat.Small">
+    <style name="InAppNotificationText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/in_app_notification_subtitle_text_color</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:ellipsize">marquee</item>
         <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:layout_marginRight">44dp</item>
     </style>
 
     <style name="InAppNotificationCloseButton">
-        <item name="android:layout_width">@dimen/in_app_notification_close_button</item>
-        <item name="android:layout_height">@dimen/in_app_notification_close_button</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentRight">true</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@null</item>
-        <item name="android:text">X</item>
+        <item name="android:src">@drawable/close</item>
     </style>
     <!--end in app notifications-->
 </resources>

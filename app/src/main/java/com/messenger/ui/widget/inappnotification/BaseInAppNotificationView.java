@@ -3,14 +3,16 @@ package com.messenger.ui.widget.inappnotification;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.messenger.ui.widget.OnSwipeGestureListener;
 import com.worldventures.dreamtrips.R;
 
-public abstract class BaseInAppNotificationView extends RelativeLayout {
+public abstract class BaseInAppNotificationView extends FrameLayout {
 
     protected InAppNotificationViewListener listener;
 
@@ -40,21 +42,22 @@ public abstract class BaseInAppNotificationView extends RelativeLayout {
     }
 
     protected void initialize(){
-        setOnTouchListener(new OnSwipeGestureListener(getContext()){
-            @Override
-            public void onSwipeTop() {
-                if (listener != null){
-                    listener.onCloseSwipe();
-                }
-            }
-
-            @Override
-            public void onSingleTap(){
-                if (listener!=null){
-                    listener.onClick();
-                }
-            }
-        });
+        // does not work currently, prevents close button click being processed
+//        setOnTouchListener(new OnSwipeGestureListener(getContext()){
+//            @Override
+//            public void onSwipeTop() {
+//                if (listener != null){
+//                    listener.onCloseSwipe();
+//                }
+//            }
+//
+//            @Override
+//            public void onSingleTap(){
+//                if (listener!=null){
+//                    listener.onClick();
+//                }
+//            }
+//        });
 
         View closeBtn = findViewById(R.id.in_app_notif_close_btn);
         if (closeBtn != null){

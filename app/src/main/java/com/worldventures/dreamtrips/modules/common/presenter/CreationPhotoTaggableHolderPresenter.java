@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
+import android.support.v4.view.ViewCompat;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
@@ -22,7 +24,6 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         super(photo);
     }
 
-    @Override
     public void addPhotoTag(PhotoTag tag) {
         view.addTag(tag);
     }
@@ -80,10 +81,12 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         });
     }
 
-    @Override
-    public void loadFriends(String query, TagView tagView) {
-        doRequest(new GetFriendsQuery(null, query, 1, 100),
-                friends -> tagView.setUserFriends(Queryable.from(friends).filter(user -> !isUserExists(user)).toList()));
+    public void loadFriends(String query, CreationTagView tagView) {
+        doRequest(new GetFriendsQuery(null, query, 1, 100), friends -> {
+            if (ViewCompat.isAttachedToWindow(tagView)) {
+                tagView.setUserFriends(Queryable.from(friends).filter(user -> !isUserExists(user)).toList());
+            }
+        });
     }
 
     private boolean isUserExists(User user) {

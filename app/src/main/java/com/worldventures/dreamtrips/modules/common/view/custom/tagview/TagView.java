@@ -19,7 +19,6 @@ import java.util.List;
 import butterknife.InjectView;
 
 public abstract class TagView<T extends TagActionListener> extends RelativeLayout {
-    protected List<User> userFriends;
     protected PhotoTag photoTag;
     protected T tagListener;
     protected User account;
@@ -79,10 +78,6 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
             pointerTop.setVisibility(VISIBLE);
             pointerBottom.setVisibility(GONE);
         }
-    }
-
-    public void setUserFriends(@Nullable List<User> userFriends) {
-        this.userFriends = (userFriends == null) ? new ArrayList<>() : userFriends;
     }
 
     public void setTagListener(T tagListener) {

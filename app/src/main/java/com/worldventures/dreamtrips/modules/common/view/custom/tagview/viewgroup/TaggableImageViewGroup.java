@@ -12,6 +12,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagActionListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagCreationActionsListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
@@ -108,27 +109,14 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         TagView view = TagView.create(getContext(), photoTag, presenter.getAccount(), presenter.getPhoto());
         PhotoTag.TagPosition tagPosition = CoordinatesTransformer.convertToAbsolute(photoTag.getPosition(), getImageBounds());
         view.setAbsoluteTagPosition(tagPosition);
-        view.setTagListener(new TagCreationActionsListener() {
-            @Override
-            public void onQueryChanged(String query) {
-                presenter.loadFriends(query, view);
-            }
-
-            @Override
-            public void onTagCreated(CreationTagView newTagView, PhotoTag tag) {
-                PhotoTag cloneTag = SerializationUtils.clone(tag);
-                presenter.addPhotoTag(cloneTag);
-                addTagView(cloneTag);
-                removeView(newTagView);
-            }
-
-            @Override
-            public void onTagDeleted(PhotoTag tag) {
-                presenter.deletePhotoTag(tag);
-            }
-        });
+        view.setTagListener(createTagListener(view));
         LayoutParams layoutParams = calculatePosition(view);
         addView(view, layoutParams);
+    }
+
+    @NonNull
+    protected TagActionListener createTagListener(final TagView view) {
+        return presenter::deletePhotoTag;
     }
 
     @NonNull

@@ -10,22 +10,25 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
     private Context context;
-    private List<User> friendList;
+    private List<User> friendList = new ArrayList<>();
+    private Set<User> cachedFriendList = new HashSet<>();
     private TagCreationActionsListener tagListener;
 
-    public TagFriendAdapter(Context context, List<User> items) {
-        super(context, 0, 0, items);
+    public TagFriendAdapter(Context context) {
+        super(context, 0, 0, new ArrayList<>());
         this.context = context;
-        this.friendList = items;
     }
 
     public void setTagListener(TagCreationActionsListener tagListener) {
@@ -33,7 +36,12 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
     }
 
     public void setFriendList(List<User> friendList) {
-        this.friendList = friendList;
+        boolean isNewList = !this.friendList.containsAll(friendList) || !friendList.containsAll(this.friendList);
+        if (isNewList) {
+            this.friendList = friendList;
+            cachedFriendList.addAll(friendList);
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -43,7 +51,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
 
     @Override
     public int getCount() {
-        return friendList.size();
+        return friendList == null ? 0 : friendList.size();
     }
 
     @Override
@@ -82,10 +90,15 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (constraint != null && constraint.toString().trim().length() > 2)
-                    tagListener.onQueryChanged(constraint.toString());
-                else
-                    setFriendList(Collections.emptyList());
+                String trim = constraint != null ? constraint.toString().trim().toLowerCase() : "";
+                if (trim.length() > 2) {
+                    tagListener.requestFriendList(trim);
+                } else {
+                    friendList = Queryable.from(cachedFriendList).filter(element -> {
+                        return element.getFullName().toLowerCase().contains(trim);
+                    }).toList();
+                }
+                notifyDataSetChanged();
             }
         };
     }

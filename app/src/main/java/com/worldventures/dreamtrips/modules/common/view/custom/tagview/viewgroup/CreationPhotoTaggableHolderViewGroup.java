@@ -8,9 +8,14 @@ import android.view.MotionEvent;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagCreationActionsListener;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +111,31 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
             return;
         }
         locallyDeletedTags.add(tag);
+    }
+
+
+    @NonNull
+    @Override
+    protected TagCreationActionsListener createTagListener(TagView view) {
+        return new TagCreationActionsListener() {
+            @Override
+            public void requestFriendList(String query) {
+                presenter.loadFriends(query, (CreationTagView) view);
+            }
+
+            @Override
+            public void onTagCreated(CreationTagView newTagView, PhotoTag tag) {
+                PhotoTag cloneTag = SerializationUtils.clone(tag);
+                presenter.addPhotoTag(cloneTag);
+                addTagView(cloneTag);
+                removeView(newTagView);
+            }
+
+            @Override
+            public void onTagDeleted(PhotoTag tag) {
+                presenter.deletePhotoTag(tag);
+            }
+        };
     }
 
     @Override

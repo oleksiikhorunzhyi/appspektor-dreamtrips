@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -51,10 +50,15 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     public void loadEntity() {
         doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
             FeedEntity feedEntity = feedEntityHolder.getItem();
-            photo.syncLikeState(feedEntity);
-            photo.setCommentsCount(feedEntity.getCommentsCount());
-            photo.setComments(feedEntity.getComments());
-            photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
+            if (photo.getUser() != null) {
+                photo.syncLikeState(feedEntity);
+                photo.setCommentsCount(feedEntity.getCommentsCount());
+                photo.setComments(feedEntity.getComments());
+                photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
+            } else {
+                photo = (Photo) feedEntity;
+                view.showContentWrapper();
+            }
             setupActualViewState();
         });
     }
@@ -141,6 +145,8 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         void showProgress();
 
         void hideProgress();
+
+        void showContentWrapper();
 
         void openEdit(EditPhotoBundle editPhotoBundle);
     }

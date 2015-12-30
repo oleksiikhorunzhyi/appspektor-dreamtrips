@@ -11,14 +11,18 @@ import java.util.ArrayList;
 
 public class FullScreenImagesBundle implements Parcelable {
 
+    public static final int NO_NOTIFICATION = -1;
+
     private TripImagesType type;
     private int userId;
     private int position;
     private ArrayList<IFullScreenObject> fixedList;
     private boolean foreign;
     private Route route;
+    private int notificationId;
 
     public FullScreenImagesBundle() {
+        notificationId = NO_NOTIFICATION;
     }
 
     protected FullScreenImagesBundle(Parcel in) {
@@ -28,6 +32,7 @@ public class FullScreenImagesBundle implements Parcelable {
         fixedList = (ArrayList<IFullScreenObject>) in.readSerializable();
         foreign = in.readByte() == 1;
         route = (Route) in.readSerializable();
+        notificationId = in.readInt();
     }
 
     public TripImagesType getType() {
@@ -52,6 +57,10 @@ public class FullScreenImagesBundle implements Parcelable {
 
     public Route getRoute() {
         return route;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
     }
 
     public static final Creator<FullScreenImagesBundle> CREATOR = new Creator<FullScreenImagesBundle>() {
@@ -79,6 +88,7 @@ public class FullScreenImagesBundle implements Parcelable {
         parcel.writeSerializable(fixedList);
         parcel.writeByte((byte) (foreign ? 1 : 0));
         parcel.writeSerializable(route);
+        parcel.writeInt(notificationId);
     }
 
     public static class Builder {
@@ -116,6 +126,13 @@ public class FullScreenImagesBundle implements Parcelable {
 
         public Builder route(Route route) {
             instance.route = route;
+            return this;
+        }
+
+        public Builder notificationId(int notificationId) {
+            instance.notificationId = notificationId;
+            //
+            if (notificationId == 0) instance.notificationId = NO_NOTIFICATION;
             return this;
         }
 

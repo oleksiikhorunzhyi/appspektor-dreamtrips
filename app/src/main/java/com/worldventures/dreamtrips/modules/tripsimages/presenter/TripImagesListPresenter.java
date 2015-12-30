@@ -66,7 +66,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         this.userId = userId;
     }
 
-    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition) {
+    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
         TripImagesListPresenter presenter;
         switch (type) {
             case MEMBERS_IMAGES:
@@ -82,7 +82,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 presenter = new InspireMePresenter(userId);
                 break;
             case FIXED:
-                presenter = new FixedListPhotosFullScreenPresenter(photos, userId);
+                presenter = new FixedListPhotosFullScreenPresenter(photos, userId, notificationId);
                 break;
             default:
                 throw new RuntimeException("Trip image type is not found");

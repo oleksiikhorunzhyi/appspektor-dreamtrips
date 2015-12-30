@@ -38,6 +38,8 @@ import java.util.List;
 
 import butterknife.InjectView;
 
+import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle.NO_NOTIFICATION;
+
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter>
         extends BaseFragmentWithArgs<T, TripsImagesBundle>
@@ -133,7 +135,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     protected T createPresenter(Bundle savedInstanceState) {
         TripImagesType type = getArgs().getType();
         int userId = getArgs().getUserId();
-        return (T) TripImagesListPresenter.create(type, userId, null, false, 0);
+        return (T) TripImagesListPresenter.create(type, userId, null, false, 0, NO_NOTIFICATION);
     }
 
     @Override

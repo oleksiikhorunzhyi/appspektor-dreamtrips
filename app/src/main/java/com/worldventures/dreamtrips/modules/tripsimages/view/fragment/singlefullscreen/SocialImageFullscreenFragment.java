@@ -260,8 +260,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         if (socialViewPagerState != null) {
             if (socialViewPagerState.isTagHolderVisible()) {
                 showTagViewGroup();
+                ivImage.setScaleEnabled(false);
             } else {
                 hideTagViewGroup();
+                ivImage.setScaleEnabled(true);
             }
         }
     }

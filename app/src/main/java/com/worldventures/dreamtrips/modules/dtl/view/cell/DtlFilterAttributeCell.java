@@ -5,20 +5,26 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
+import com.worldventures.dreamtrips.core.selectable.SelectableCell;
+import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class DtlFilterAttributeCell extends AbstractCell<DtlMerchantsFilterAttribute> {
+public class DtlFilterAttributeCell extends AbstractDelegateCell<DtlMerchantAttribute,
+        CellDelegate<DtlMerchantAttribute>> implements SelectableCell {
 
     @InjectView(R.id.textViewAttributeCaption)
     protected TextView textViewName;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
+    //
+    private SelectableDelegate selectableDelegate;
 
     public DtlFilterAttributeCell(View view) {
         super(view);
@@ -26,19 +32,24 @@ public class DtlFilterAttributeCell extends AbstractCell<DtlMerchantsFilterAttri
 
     @Override
     protected void syncUIStateWithModel() {
-        textViewName.setText(getModelObject().getAttributeName());
-        checkBox.setChecked(getModelObject().isChecked());
+        textViewName.setText(getModelObject().getName());
+        checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
     @OnClick(R.id.checkBox)
-    void checkBoxClick() {
-        getModelObject().setChecked(checkBox.isChecked());
+    void checkBoxClicked() {
+        selectableDelegate.toggleSelection(getAdapterPosition());
     }
 
     @OnClick(R.id.textViewAttributeCaption)
     void textViewRegionClick() {
-        checkBox.setChecked(!checkBox.isChecked());
-        getModelObject().setChecked(checkBox.isChecked());
+        checkBoxClicked();
+        checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
+    }
+
+    @Override
+    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+        this.selectableDelegate = selectableDelegate;
     }
 
     @Override

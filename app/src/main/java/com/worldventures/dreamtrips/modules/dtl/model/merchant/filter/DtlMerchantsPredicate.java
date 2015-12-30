@@ -79,17 +79,15 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
                 || dtlMerchant.getDistance() < dtlFilterData.getMaxDistance();
     }
 
-    public boolean checkAmenities(DtlMerchant dtlMerchant) {
-        List<DtlMerchantsFilterAttribute> selectedAmenities = dtlFilterData.getSelectedAmenities();
-        return selectedAmenities == null || dtlMerchant.getAmenities() == null ||
-                !Collections.disjoint(selectedAmenities, Queryable.from(dtlMerchant.getAmenities()).map(element ->
-                                new DtlMerchantsFilterAttribute(element.getName())
-                ).toList());
     /**
      * Filtering criteria for merchant that checks amenities criteria
      * @param dtlMerchant merchant to filter
      * @return true if merchant passes filter
      */
+    private boolean checkAmenities(DtlMerchant dtlMerchant) {
+        List<DtlMerchantAttribute> selectedAmenities = dtlFilterData.getSelectedAmenities();
+        return dtlMerchant.getAmenities() == null || dtlMerchant.getAmenities().isEmpty() ||
+                !Collections.disjoint(selectedAmenities, dtlMerchant.getAmenities());
     }
 
     public static class Builder {

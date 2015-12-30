@@ -8,8 +8,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -839,7 +839,7 @@ public class TrackingHelper {
         //
         if (filterData.getSelectedAmenities() != null && !filterData.getSelectedAmenities().isEmpty())
             stringBuilder.append(Queryable.from(filterData.getSelectedAmenities())
-                    .joinStrings(":", DtlMerchantsFilterAttribute::getAttributeName));
+                    .joinStrings(":", DtlMerchantAttribute::getName));
         //
         data.put(DTL_ATTRIBUTE_FILTER, stringBuilder.toString());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);

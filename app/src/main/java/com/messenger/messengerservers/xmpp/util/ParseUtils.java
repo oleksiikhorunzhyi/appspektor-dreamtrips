@@ -21,11 +21,9 @@ public class ParseUtils {
 
         Presence.Type type = Presence.Type.available;
         String typeString = parser.getAttributeValue("", "type");
-        boolean leave = false;
         if (typeString != null && !typeString.equals("")) {
             if (typeString.equals("leave")) {
-                leave = true;
-                type = Presence.Type.unavailable;
+                type = Presence.Type.unsubscribed;
             } else {
                 type = Presence.Type.fromString(typeString);
             }

@@ -156,11 +156,13 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
                 .subscribe(position -> {
                     Cursor cursor = adapter.getCursor();
                     int prevPos = cursor.getPosition();
-                    cursor.moveToPosition(position);
-                    Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-                    cursor.moveToPosition(prevPos);
+                    // TODO: 1/2/16
+                    if (cursor.moveToPosition(position)) {
+                        Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+                        cursor.moveToPosition(prevPos);
 
-                    getPresenter().firstVisibleMessageChanged(message);
+                        getPresenter().firstVisibleMessageChanged(message);
+                    }
                 });
     }
 

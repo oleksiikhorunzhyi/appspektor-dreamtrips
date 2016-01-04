@@ -15,6 +15,7 @@ import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.MessengerInAppNotificationListener;
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewChat;
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewGroup;
+import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -40,16 +41,19 @@ public class UnhandledMessageWatcher {
     private MessengerServerFacade messengerServerFacade;
     private AppNotification appNotification;
     private DreamSpiceManager spiceManager;
+    private OpenedConversationTracker openedConversationTracker;
 
     private UnhandledMessageListener currentUnhandledMessageListener;
     private MessengerInAppNotificationListener notificationEventListener;
 
     public UnhandledMessageWatcher(MessengerServerFacade messengerServerFacade,
                                    AppNotification appNotification,
-                                   DreamSpiceManager spiceManager) {
+                                   DreamSpiceManager spiceManager,
+                                   OpenedConversationTracker openedConversationTracker) {
         this.messengerServerFacade = messengerServerFacade;
         this.appNotification = appNotification;
         this.spiceManager = spiceManager;
+        this.openedConversationTracker = openedConversationTracker;
     }
 
     public void start(Activity activity) {
@@ -72,6 +76,10 @@ public class UnhandledMessageWatcher {
     }
 
     private void onUnhandledMessage(final Activity activity, Message message) {
+        if (message.getConversationId().equals(openedConversationTracker.getOpenedConversationId())) {
+            return;
+        }
+
         Conversation conversation = new Select()
                 .from(Conversation.class)
                 .byIds(message.getConversationId())

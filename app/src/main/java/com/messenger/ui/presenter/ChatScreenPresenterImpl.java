@@ -28,6 +28,7 @@ import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
+import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -63,6 +64,8 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     MessengerServerFacade messengerServerFacade;
     @Inject
     User user;
+    @Inject
+    OpenedConversationTracker openedConversationTracker;
 
     private Activity activity;
     protected PaginationDelegate paginationDelegate;
@@ -121,12 +124,14 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         connectConversation();
+        openedConversationTracker.setOpenedConversation(conversationId);
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
+        openedConversationTracker.setOpenedConversation(null);
     }
 
     protected void connectConversation() {

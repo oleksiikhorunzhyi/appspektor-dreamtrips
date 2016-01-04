@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
  */
 public class AvatarView extends RoundedImageView {
 
-    private static final float ONLINE_INDICATOR_SIZE_FROM_PARENT_SIZE_PERCENT = 0.12f;
+    private static final float ONLINE_SIZE_FACTOR = 0.20f;
 
     private Drawable onlineIndicatorDrawable;
     private boolean isOnline;
@@ -27,10 +27,11 @@ public class AvatarView extends RoundedImageView {
         super(context, attrs);
     }
 
-    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         onlineIndicatorDrawable = getResources().getDrawable(R.drawable.circle_online_indicator);
-        int onlineIndicatorSize = Math.round(getMeasuredWidth() * ONLINE_INDICATOR_SIZE_FROM_PARENT_SIZE_PERCENT);
+        int onlineIndicatorSize = Math.round(getMeasuredWidth() * Math.abs(1f - getMeasuredWidth() % 1000 / 1000f) * ONLINE_SIZE_FACTOR);
 
         float avatarRadius = getMeasuredWidth() / 2;
         // Use following circle equation to calculate margins:
@@ -50,7 +51,8 @@ public class AvatarView extends RoundedImageView {
         invalidate();
     }
 
-    @Override protected void onDraw(Canvas canvas) {
+    @Override
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (isOnline) {
             onlineIndicatorDrawable.draw(canvas);

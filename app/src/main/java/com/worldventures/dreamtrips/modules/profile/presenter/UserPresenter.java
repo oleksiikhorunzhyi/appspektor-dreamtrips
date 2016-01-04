@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import com.innahema.collections.query.functions.Action1;
+import com.messenger.converter.UserConverter;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.ui.activity.ChatActivity;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -90,12 +92,23 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         return new GetUserTimelineQuery(user.getId(), date);
     }
 
+    @Override
+    public boolean isConnected() {
+        return super.isConnected();
+    }
+
     public void onStartChatClicked() {
         com.messenger.messengerservers.entities.User participant =
-                new com.messenger.messengerservers.entities.User(user.getUsername());
+                new Select().from(com.messenger.messengerservers.entities.User.class)
+                        .byIds(user.getUsername()).querySingle();
+
+        if (participant == null) {
+            participant = UserConverter.convert(user);
+            participant.save();
+        }
 
         Conversation conversation = chatDelegate.getExistingSingleConverastion(participant);
-        if(conversation == null){
+        if (conversation == null) {
             conversation = chatDelegate.createNewConversation(Arrays.asList(participant), "");
             new ParticipantsRelationship(conversation.getId(), participant).save();
             ContentUtils.insert(Conversation.CONTENT_URI, conversation);
@@ -108,7 +121,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         User.Relationship userRelationship = user.getRelationship();
         if (userRelationship == null) return;
 
-        switch (userRelationship){
+        switch (userRelationship) {
             case REJECTED:
             case NONE:
                 view.showAddFriendDialog(circles, this::addAsFriend);

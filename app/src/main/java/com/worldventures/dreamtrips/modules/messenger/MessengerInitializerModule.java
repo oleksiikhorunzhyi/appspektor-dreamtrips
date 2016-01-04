@@ -4,6 +4,7 @@ import com.messenger.di.MessengerInitializer;
 import com.messenger.di.UnhandledMessageWatcher;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.ui.inappnotifications.AppNotification;
+import com.messenger.util.OpenedConversationTracker;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
@@ -27,7 +28,8 @@ public class MessengerInitializerModule {
     UnhandledMessageWatcher provideUnhandledMessageWatcher(
             MessengerServerFacade messengerServerFacade,
             AppNotification appNotification,
-            DreamSpiceManager spiceManager) {
-        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager);
+            DreamSpiceManager spiceManager,
+            OpenedConversationTracker openedConversationTracker) {
+        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker);
     }
 }

@@ -19,6 +19,7 @@ import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
 import com.messenger.ui.view.EditChatMembersScreenImpl;
+import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
@@ -50,6 +51,8 @@ import dagger.Provides;
                 ChatActivity.class,
 
                 MessengerNotificationPreSyncService.class,
+
+                UnhandledMessageWatcher.class,
         }
 )
 public class XmppServerModule {
@@ -82,6 +85,12 @@ public class XmppServerModule {
     @Provides
     ActivityWatcher provideActivityWatcher(@ForApplication Context context) {
         return new ActivityWatcher(context);
+    }
+
+    @Singleton
+    @Provides
+    OpenedConversationTracker providedOpenedConversationTracker() {
+        return new OpenedConversationTracker();
     }
 
 }

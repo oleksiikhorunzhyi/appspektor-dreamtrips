@@ -82,7 +82,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
         String fromJid = stanza.getFrom();
         if (Type.available == presenceType || Type.unavailable == presenceType) {
-            notifyUserPresenceChanged(JidCreatorHelper.obtainId(fromJid), Type.available == presenceType);
+            notifyUserPresenceChanged(JidCreatorHelper.obtainUserIdFromGroupJid(fromJid), Type.available == presenceType);
             return;
         }
         //

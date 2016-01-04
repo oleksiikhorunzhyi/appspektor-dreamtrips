@@ -33,9 +33,9 @@ public final class JidCreatorHelper {
         return jid.substring(0, pos);
     }
 
-    public static String obtainUserIdFromGroupJid(String roomJidWithResource){
+    public static String obtainUserIdFromGroupJid(String roomJidWithResource) {
         int pos = roomJidWithResource.lastIndexOf("/");
-        return pos == -1 ? null : roomJidWithResource.substring(pos+1);
+        return pos == -1 ? null : roomJidWithResource.substring(pos + 1);
     }
 
 

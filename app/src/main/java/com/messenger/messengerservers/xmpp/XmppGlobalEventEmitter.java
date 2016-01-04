@@ -57,14 +57,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         switch (stanzaType(packet)) {
             case MESSAGE: {
                 Message messageXMPP = (Message) packet;
-                if (messageXMPP.getType() == Message.Type.groupchat
-                        && messageXMPP.getFrom().split("/")[1].equals(messageXMPP.getTo().split("@")[0])) {
+                if (isMessageIgnored(messageXMPP)) {
                     return;
                 }
                 com.messenger.messengerservers.entities.Message message = messageConverter.convert(messageXMPP);
                 notifyGlobalMessage(message, true);
 
-                if (!isHandled(message)) {
+                if (!isMessageHandled(message)) {
                     notifyNewUnhandledMessage(message);
                 }
                 break;
@@ -91,13 +90,18 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         }
     }
 
-    private boolean isHandled(com.messenger.messengerservers.entities.Message message) {
+    private boolean isMessageIgnored(Message message) {
+        return (message.getType() == Message.Type.groupchat
+                && message.getFrom().split("/")[1].equals(message.getTo().split("@")[0]))
+                || message.getExtension("urn:xmpp:delay") != null;
+    }
+
+    private boolean isMessageHandled(com.messenger.messengerservers.entities.Message message) {
         for (Conversation conversation : handledConversations) {
             if (conversation.getId().equals(message.getConversationId())) {
                 return true;
             }
         }
-
         return false;
     }
 

@@ -24,24 +24,26 @@ import com.messenger.ui.viewstate.NewChatLayoutViewState;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscription;
+
+import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
 public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvpPresenter<NewChatMembersScreen, NewChatLayoutViewState>
         implements NewChatScreenPresenter {
 
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    @Named(PROFILE)
+    RouteCreator<Integer> routeCreator;
     @Inject
     MessengerServerFacade messengerServerFacade;
     @Inject
@@ -89,7 +91,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
                             .rawQuery(selection, query.selectionArgs);
                 });
 
-        profileCrosser = new ProfileCrosser(activity, new ProfileRouteCreator(appSessionHolder));
+        profileCrosser = new ProfileCrosser(activity, routeCreator);
     }
 
     @Override

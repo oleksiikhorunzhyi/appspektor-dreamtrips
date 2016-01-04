@@ -9,6 +9,7 @@ public interface EditChatMembersScreenPresenter extends ActivityAwareViewStateMv
     void onSearchFilterSelected(String search);
     void onDeleteUserFromChat(User user);
     void onDeleteUserFromChatConfirmed(User user);
+    void onUserClicked(User user);
     User getUser();
     boolean isOwner();
 }

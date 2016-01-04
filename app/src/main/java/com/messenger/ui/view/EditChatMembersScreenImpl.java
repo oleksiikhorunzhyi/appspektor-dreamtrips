@@ -29,8 +29,6 @@ import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -81,7 +79,8 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
         // to be working (provided users are sorted alphabetically) or fixed if needed if
         // it does not work when contacts sorting is fixed.
         adapter = new ActionButtonsContactsCursorAdapter(getContext(), presenter.getUser(), presenter.isOwner());
-        adapter.setRowButtonsActionListener(user -> getPresenter().onDeleteUserFromChat(user));
+        adapter.setDeleteRequestListener(user -> getPresenter().onDeleteUserFromChat(user));
+        adapter.setUserClickListener(user -> getPresenter().onUserClicked(user));
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

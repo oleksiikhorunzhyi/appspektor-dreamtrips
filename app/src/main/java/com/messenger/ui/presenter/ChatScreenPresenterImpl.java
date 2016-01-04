@@ -32,10 +32,8 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.Collections;
@@ -43,10 +41,13 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
+
+import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
 public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
@@ -55,7 +56,8 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     private static final int UNREAD_DELAY = 2000;
 
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    @Named(PROFILE)
+    RouteCreator<Integer> routeCreator;
     @Inject
     NotificationDelegate notificationDelegate;
     @Inject
@@ -88,7 +90,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
 
         ((Injector) context.getApplicationContext()).inject(this);
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
-        profileCrosser = new ProfileCrosser(context, new ProfileRouteCreator(appSessionHolder));
+        profileCrosser = new ProfileCrosser(context, routeCreator);
 
         conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
     }
@@ -191,9 +193,9 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     protected void connectMembers() {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
-                        "ON p.userId = u._id " +
-                        "WHERE p.conversationId = ?"
+                                "JOIN ParticipantsRelationship p " +
+                                "ON p.userId = u._id " +
+                                "WHERE p.conversationId = ?"
                 ).withSelectionArgs(new String[]{conversation.getId()}).build();
         new RxContentResolver(activity.getContentResolver(), query -> {
             return FlowManager.getDatabaseForTable(User.class).getWritableDatabase().rawQuery(query.selection, query.selectionArgs);

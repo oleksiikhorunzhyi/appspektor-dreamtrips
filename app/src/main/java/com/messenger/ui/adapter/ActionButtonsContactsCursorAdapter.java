@@ -21,10 +21,13 @@ import butterknife.InjectView;
 
 public class ActionButtonsContactsCursorAdapter
         extends ContactCursorAdapter implements SwipeItemMangerInterface, SwipeAdapterInterface {
+
     public final SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
     public final String userId;
     private final boolean owner;
-    private RowButtonsActionListener rowButtonsActionListener;
+
+    private DeleteRequestListener deleteRequestListener;
+    private UserClickListener userClickListener;
 
     public ActionButtonsContactsCursorAdapter(Context context, User user, boolean owner) {
         super(context, null);
@@ -47,15 +50,24 @@ public class ActionButtonsContactsCursorAdapter
         holder.swipeLayout.setSwipeEnabled(owner && !userId.equals(cursor.getString(cursor.getColumnIndex(User.COLUMN_ID))));
 
         mItemManger.bindView(holder.itemView, cursor.getPosition());
+        holder.itemView.setOnClickListener(view -> {
+            if (userClickListener != null) {
+                userClickListener.onUserClicked(user);
+            }
+        });
         holder.deleteButton.setOnClickListener(view -> {
-            if (rowButtonsActionListener != null) {
-                rowButtonsActionListener.onDeleteUserButtonPressed(user);
+            if (deleteRequestListener != null) {
+                deleteRequestListener.onDeleteUserRequired(user);
             }
         });
     }
 
-    public void setRowButtonsActionListener(RowButtonsActionListener rowButtonsActionListener) {
-        this.rowButtonsActionListener = rowButtonsActionListener;
+    public void setDeleteRequestListener(DeleteRequestListener deleteRequestListener) {
+        this.deleteRequestListener = deleteRequestListener;
+    }
+
+    public void setUserClickListener(UserClickListener userClickListener) {
+        this.userClickListener = userClickListener;
     }
 
     @Override
@@ -113,8 +125,12 @@ public class ActionButtonsContactsCursorAdapter
         mItemManger.setMode(mode);
     }
 
-    public interface RowButtonsActionListener {
-        void onDeleteUserButtonPressed(User user);
+    public interface DeleteRequestListener {
+        void onDeleteUserRequired(User user);
+    }
+
+    public interface UserClickListener {
+        void onUserClicked(User user);
     }
 
     public static class ActionButtonsViewHolder extends ContactViewHolder {

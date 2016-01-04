@@ -53,7 +53,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), false);
         photoPickerLayout.hidePanel();
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
 
         profileToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -69,12 +68,17 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         super.onResume();
         backStackDelegate.setListener(this::onBackPressed);
         TrackingHelper.viewMyProfileScreen();
+        //
+        photoPickerLayout.updatePickerDelegate();
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
     }
 
     @Override
     public void onPause() {
         super.onPause();
         backStackDelegate.setListener(null);
+        //
+        photoPickerLayout.setOnDoneClickListener(null);
     }
 
     @Override

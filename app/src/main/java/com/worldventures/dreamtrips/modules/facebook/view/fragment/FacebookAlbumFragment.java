@@ -85,9 +85,6 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
                 scrolled(itemCount, lastVisibleItemPosition);
             }
         });
-
-        photoPickerDelegate.attachScrollableView(lvItems);
-        photoPickerDelegate.setSelectedPhotosProvider(null);
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {
@@ -104,6 +101,8 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
     @Override
     public void onResume() {
         super.onResume();
+        photoPickerDelegate.attachScrollableView(lvItems);
+        photoPickerDelegate.setSelectedPhotosProvider(null);
         Session session = Session.getActiveSession();
         if (session != null && session.isOpened()) {
             loadData();

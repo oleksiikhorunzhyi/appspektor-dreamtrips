@@ -126,7 +126,11 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, boolean isVisible) {
         this.fragmentManager = fragmentManager;
         this.multiPickEnabled = multiPickEnabled;
-        if (isVisible) photoPickerDelegate.setupPhotoPickerLayout(this);
+        if (isVisible) updatePickerDelegate();
+    }
+
+    public void updatePickerDelegate() {
+        photoPickerDelegate.setupPhotoPickerLayout(this);
     }
 
     /**

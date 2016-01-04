@@ -19,7 +19,7 @@ public class BasePickerPresenter<T extends BasePickerPresenter.View> extends Pre
     private int pickLimit;
 
     public void onEvent(PhotoPickedEvent event) {
-        if (!view.isVisibleOnScreen()) return;
+        if (!view.isVisibleOnScreen() || !view.isResumed()) return;
         //
         if (!view.isMultiPickEnabled()) {
             BasePhotoPickerModel photoGalleryModel = Queryable.from(photos).filter(element ->
@@ -68,5 +68,7 @@ public class BasePickerPresenter<T extends BasePickerPresenter.View> extends Pre
         void updatePickedItemsCount(int count);
 
         boolean isMultiPickEnabled();
+
+        boolean isResumed();
     }
 }

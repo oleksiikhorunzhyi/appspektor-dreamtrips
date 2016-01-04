@@ -1,5 +1,6 @@
 package com.techery.spares.module;
 
+import com.messenger.util.EventBusWrapper;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.module.qualifier.Private;
 
@@ -22,5 +23,10 @@ public class EventBusModule {
     @Private
     EventBus provideEventBus() {
         return new EventBus();
+    }
+
+    @Provides
+    EventBusWrapper provideEventBusWrapper (@Global EventBus bus){
+        return new EventBusWrapper(bus);
     }
 }

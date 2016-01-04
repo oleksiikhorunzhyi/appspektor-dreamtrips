@@ -7,6 +7,7 @@ import android.content.Context;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.synchmechanism.ActivityWatcher;
 import com.messenger.synchmechanism.MessengerConnector;
+import com.messenger.util.EventBusWrapper;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -30,6 +31,8 @@ public class MessengerInitializer implements AppInitializer {
     DreamSpiceManager spiceManager;
     @Inject
     ActivityWatcher watcher;
+    @Inject
+    EventBusWrapper eventBusWrapper;
     //
     @Inject
     Application app;
@@ -40,7 +43,7 @@ public class MessengerInitializer implements AppInitializer {
     public void initialize(Injector injector) {
         injector.inject(this);
         //
-        MessengerConnector.init(context, watcher, appSessionHolder, messengerServerFacade, spiceManager);
+        MessengerConnector.init(context, watcher, appSessionHolder, messengerServerFacade, spiceManager, eventBusWrapper);
         //// TODO: 12/29/15 refactor
         app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
 

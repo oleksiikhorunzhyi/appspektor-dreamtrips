@@ -25,6 +25,8 @@ import com.messenger.storege.utils.ConversationsDAO;
 import com.messenger.storege.utils.MessageDAO;
 import com.messenger.storege.utils.ParticipantsDAO;
 import com.messenger.storege.utils.UsersDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
@@ -46,6 +48,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 
@@ -74,10 +77,11 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
     protected ProfileCrosser profileCrosser;
     protected WeakHandler handler;
     protected ConversationHelper conversationHelper;
+    protected Subscription connectivityStatusSubscription;
 
-    private final String conversationId;
+    protected final String conversationId;
     protected Conversation conversation;
-    private Chat chat;
+    protected Chat chat;
 
     private final ConversationsDAO conversationDAO;
     private final ParticipantsDAO participantsDAO;
@@ -138,6 +142,8 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         super.onAttachedToWindow();
         connectConversation();
         openedConversationTracker.setOpenedConversation(conversationId);
+        connectivityStatusSubscription = MessengerConnector.getInstance().subscribe()
+                .subscribe(connectionStatus -> getView().enableSendButton(connectionStatus == ConnectionStatus.CONNECTED));
     }
 
     @Override
@@ -145,6 +151,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
         openedConversationTracker.setOpenedConversation(null);
+        connectivityStatusSubscription.unsubscribe();
     }
 
     protected void connectConversation() {

@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -75,6 +76,8 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
 
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
+    @InjectView(R.id.chat_message_send_button)
+    Button sendMessageButton;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -300,6 +303,11 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
         } else if (cursor != null && cursor.getCount() == 1) {
             getPresenter().firstVisibleMessageChanged(SqlUtils.convertToModel(false, Message.class, cursor));
         }
+    }
+
+    @Override
+    public void enableSendButton(boolean enabled) {
+        sendMessageButton.setEnabled(enabled);
     }
 
     @Override

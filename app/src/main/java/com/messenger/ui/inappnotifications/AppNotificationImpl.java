@@ -11,7 +11,6 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class AppNotificationImpl implements AppNotification {
 
-    private Crouton crouton;
     private static final int SHOWING_DURATION = 3000;
 
     public AppNotificationImpl(App app) {
@@ -19,6 +18,13 @@ public class AppNotificationImpl implements AppNotification {
 
     @Override
     public void show(Activity activity, BaseInAppNotificationView view, final InAppNotificationEventListener listener) {
+        final Crouton crouton = Crouton.make(activity, view);
+        crouton.setConfiguration(new Configuration.Builder()
+                        .setDuration(SHOWING_DURATION)
+                        .setOutAnimation(0)
+                        .build()
+        );
+        crouton.show();
         view.setListener(new InAppNotificationViewListener() {
             @Override
             public void onClick() {
@@ -44,14 +50,6 @@ public class AppNotificationImpl implements AppNotification {
                 }
             }
         });
-
-        crouton = Crouton.make(activity, view);
-        crouton.setConfiguration(new Configuration.Builder()
-                        .setDuration(SHOWING_DURATION)
-                        .setOutAnimation(0)
-                        .build()
-        );
-        crouton.show();
     }
 
     @Override

@@ -81,12 +81,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         if (presenceType == null) return;
 
         String fromJid = stanza.getFrom();
+        if (Type.available == presenceType || Type.unavailable == presenceType) {
+            notifyUserPresenceChanged(JidCreatorHelper.obtainId(fromJid), Type.available == presenceType);
+            return;
+        }
+        //
         if (JidCreatorHelper.isGroupJid(fromJid) && Type.unsubscribed == presenceType) {
             notifyOnLeftChatListener(JidCreatorHelper.obtainId(fromJid), JidCreatorHelper.obtainUserIdFromGroupJid(fromJid));
-        } else {
-            if (Type.available == presenceType || Type.unavailable == presenceType) {
-                notifyUserPresenceChanged(JidCreatorHelper.obtainId(fromJid), Type.available == presenceType);
-            }
         }
     }
 

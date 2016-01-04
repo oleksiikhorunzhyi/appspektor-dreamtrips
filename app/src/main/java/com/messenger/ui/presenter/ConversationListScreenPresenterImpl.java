@@ -16,6 +16,7 @@ import com.messenger.storege.utils.ConversationsDAO;
 import com.messenger.storege.utils.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 import com.messenger.util.RxContentResolver;
@@ -34,6 +35,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
         ConversationListViewState> implements ConversationListScreenPresenter {
 
     private final RxContentResolver contentResolver;
+    private final ConversationHelper conversationHelper;
     private Subscription contactSubscription;
 
     @Inject
@@ -46,6 +48,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
+        this.conversationHelper = new ConversationHelper();
         OnLeftChatListener leaveListener = (conversationId, userId) -> {
             ContentResolver resolver = parentActivity.getContentResolver();
             ParticipantsDAO.delete(resolver, conversationId, userId);
@@ -142,7 +145,7 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     @Override
     public void onDeletionConfirmed(Conversation conversation) {
-        if (conversation.getType().equals(Conversation.Type.GROUP)) {
+        if (conversationHelper.isGroup(conversation)) {
             leaveChatDelegate.leave(conversation);
         } else {
             Toast.makeText(parentActivity, "Delete not yet implemented", Toast.LENGTH_SHORT).show();

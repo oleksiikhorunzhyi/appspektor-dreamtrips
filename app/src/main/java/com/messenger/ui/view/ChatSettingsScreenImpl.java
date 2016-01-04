@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -45,6 +46,8 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
     GroupAvatarsView groupAvatarsView;
     @InjectView(R.id.chat_settings_single_chat_avatar_view)
     AvatarView singleChatAvatarView;
+    @InjectView(R.id.chat_settings_group_pic)
+    ImageView groupPicView;
     @InjectView(R.id.chat_settings_chat_name_text_view)
     TextView chatNameTextView;
     @InjectView(R.id.chat_settings_chat_description_text_view)

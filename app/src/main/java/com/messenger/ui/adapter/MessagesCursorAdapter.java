@@ -15,6 +15,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -29,6 +30,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private final User user;
     private final Context context;
+    private final ConversationHelper conversationHelper;
     private Conversation conversation;
 
     private OnAvatarClickListener avatarClickListener;
@@ -48,6 +50,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.context = context;
         this.user = user;
 
+        this.conversationHelper = new ConversationHelper();
         this.timeDateFormatter = new SimpleDateFormat("h:mm");
         this.dayOfTheWeekDateFormatter = new SimpleDateFormat("EEEE");
         this.dayOfTheMonthDateFormatter = new SimpleDateFormat("MMM dd");
@@ -164,7 +167,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         User userFrom = SqlUtils.convertToModel(true, User.class, cursor);
 
         boolean isPreviousMessageFromTheSameUser = previousMessageIsFromSameUser(cursor);
-        if (isGroupConversation(conversation.getType()) && userFrom != null
+        if (conversationHelper.isGroup(conversation) && userFrom != null
                 && !isPreviousMessageFromTheSameUser) {
             holder.nameTextView.setVisibility(View.VISIBLE);
             holder.nameTextView.setText(userFrom.getName());
@@ -213,7 +216,4 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.avatarClickListener = avatarClickListener;
     }
 
-    private boolean isGroupConversation(String conversationType) {
-        return !conversationType.equalsIgnoreCase(Conversation.Type.CHAT);
-    }
 }

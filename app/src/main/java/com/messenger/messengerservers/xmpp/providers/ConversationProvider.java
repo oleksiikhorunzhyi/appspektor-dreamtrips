@@ -42,9 +42,12 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                     elementName = parser.getName();
                     switch (elementName) {
                         case "chat":
-                            String subject = parser.getAttributeValue("", "subject");
-                            String type = parser.getAttributeValue("", "type");
                             String thread = parser.getAttributeValue("", "thread");
+                            String type = getTypeByThread(thread);
+                            if (type == null) {
+                                type = parser.getAttributeValue("", "type");
+                            }
+                            String subject = parser.getAttributeValue("", "subject");
                             int unreadMessegeCount = ParserUtils.getIntegerAttribute(parser, "unread-count");
                             conversation = new Conversation.Builder()
                                     .id(thread)
@@ -52,7 +55,6 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .subject(subject)
                                     .unreadMessageCount(unreadMessegeCount)
                                     .build();
-
                             break;
                         case "last-message":
                             String messageId = parser.getAttributeValue("", "client_msg_id");
@@ -103,5 +105,13 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
             }
         }
         return conversationsPacket;
+    }
+
+    @Conversation.Type.ConversationType
+    private String getTypeByThread(String thread) {
+        if (thread.startsWith("dreamtrip_auto_gen")) {
+            return Conversation.Type.TRIP;
+        }
+        return null;
     }
 }

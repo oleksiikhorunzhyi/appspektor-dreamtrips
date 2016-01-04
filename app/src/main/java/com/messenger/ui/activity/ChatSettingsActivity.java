@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.messenger.ui.view.ChatSettingsScreenImpl;
 import com.messenger.ui.view.GroupChatSettingsScreenImpl;
 import com.messenger.ui.view.SingleChatSettingsScreenImpl;
+import com.messenger.ui.view.TripChatSettingsScreenImpl;
 
 public class ChatSettingsActivity extends BaseMvpViewActivity<ChatSettingsScreenImpl> {
     public static final String EXTRA_CHAT_CONVERSATION_ID = "ChatActivity#EXTRA_CHAT_CONVERSATION_ID";
@@ -14,6 +15,7 @@ public class ChatSettingsActivity extends BaseMvpViewActivity<ChatSettingsScreen
 
     public static final int CHAT_TYPE_GROUP = 0xaa54;
     public static final int CHAT_TYPE_SINGLE = 0xaa55;
+    public static final int CHAT_TYPE_TRIP = 0xaa56;
 
     public static void startGroupChatSettings(Context context, String conversationId) {
         Intent starter = new Intent(context, ChatSettingsActivity.class);
@@ -36,6 +38,8 @@ public class ChatSettingsActivity extends BaseMvpViewActivity<ChatSettingsScreen
             return new SingleChatSettingsScreenImpl(this);
         } else if (conversationType == CHAT_TYPE_GROUP) {
             return new GroupChatSettingsScreenImpl(this);
+        } else if (conversationType == CHAT_TYPE_TRIP) {
+            return new TripChatSettingsScreenImpl(this);
         }
         throw new IllegalStateException("No chat screen for this conversation type");
     }

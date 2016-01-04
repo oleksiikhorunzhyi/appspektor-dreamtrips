@@ -15,6 +15,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -59,7 +60,7 @@ public class ParticipantProvider {
                         ConversationParticipants conversationParticipants = (ConversationParticipants) packet;
                         listener.onLoaded(conversationParticipants.getOwner(), conversationParticipants.getParticipants(), conversationParticipants.isAbandoned());
                     }
-                    , exception -> listener.onLoaded(null, null, false)
+                    , exception -> listener.onLoaded(null, Collections.emptyList(), false)
             );
         } catch (SmackException.NotConnectedException e) {
             Log.e("Xmpp", "Exception", e);

@@ -72,20 +72,26 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
                             if (subscriber.isUnsubscribed()) return;
-                            if (owner == null) {
+                            if (conversationHasError(conversation, owner)) {
                                 subscriber.onCompleted();
                                 return;
                             }
                             //
-                            conversation.setOwnerId(owner.getId());
+                            if (owner != null) {
+                                conversation.setOwnerId(owner.getId());
+                                members.add(0, owner);
+                            }
                             conversation.setAbandoned(abandoned);
-                            members.add(0, owner);
                             subscriber.onNext(new ConversationData(conversation, members, conversationWithLastMessage.lastMessage));
                             subscriber.onCompleted();
                         });
                     }
                 }))
                 .toList();
+    }
+
+    private boolean conversationHasError(Conversation conversation, User owner) {
+        return owner == null && (conversation.getType().equals(Conversation.Type.CHAT) || conversation.getType().equals(Conversation.Type.GROUP));
     }
 
     private boolean hasNoOtherUsers(Conversation conversation) {

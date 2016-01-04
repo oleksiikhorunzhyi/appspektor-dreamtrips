@@ -23,6 +23,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
+import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.Constants;
@@ -41,12 +42,17 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
+import static com.messenger.messengerservers.entities.Conversation.Type.GROUP;
+import static com.messenger.messengerservers.entities.Conversation.Type.TRIP;
+
 public class ConversationsCursorAdapter
         extends CursorRecyclerViewAdapter<BaseConversationViewHolder>
         implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
+    private static final int VIEW_TYPE_TRIP_CONVERSATION = 3;
 
     private static final float CLOSED_CONVERSATION_ALPHA = 0.3f;
 
@@ -89,7 +95,7 @@ public class ConversationsCursorAdapter
 
     protected boolean deleteButtonEnable(Conversation conversation) {
         // TODO: 1/2/16 remove checking conversation type
-        return !TextUtils.equals(Conversation.Type.CHAT, conversation.getType()) && !currentUser.getId().equals(conversation.getOwnerId());
+        return conversationHelper.isGroup(conversation) && !conversationHelper.isOwner(conversation, currentUser);
     }
 
     @Override
@@ -102,7 +108,7 @@ public class ConversationsCursorAdapter
                 .setVisibility(deleteButtonEnable(conversation) ? View.VISIBLE : View.GONE);
 
         String userName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
-        setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));
+        setLastMessage(holder, message, userName, conversationHelper.isGroup(conversation));
 
         if (conversation.isAbandoned()) {
             setClosedConversationUi(holder);
@@ -212,7 +218,9 @@ public class ConversationsCursorAdapter
         if (participants == null || participants.size() == 0) return;
         //
         conversationHelper.setTitle(holder.getNameTextView(), conversation, participants);
-        if (isGroupConversation(conversation.getType())) {
+        if (conversationHelper.isGroup(conversation)) {
+            if (conversation.getType().equals(TRIP)) return;
+            //
             GroupConversationViewHolder groupHolder = (GroupConversationViewHolder) holder;
             groupHolder.getGroupAvatarsView().updateAvatars(participants);
         } else {
@@ -237,6 +245,10 @@ public class ConversationsCursorAdapter
                 View groupChatLayout = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_conversation_group, parent, false);
                 return new GroupConversationViewHolder(groupChatLayout);
+            case VIEW_TYPE_TRIP_CONVERSATION:
+                View tripChatLayout = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_conversation_trip, parent, false);
+                return new TripConversationViewHolder(tripChatLayout);
         }
         throw new IllegalStateException("There is no such view type in adapter");
     }
@@ -249,10 +261,17 @@ public class ConversationsCursorAdapter
         if (!getCursor().moveToPosition(position)) {
             throw new IllegalStateException("couldn't move cursor to position " + position);
         }
-        String type = cursor.getString(cursor.getColumnIndex("type"));
+        Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         cursor.moveToPosition(previousPosition);
-
-        return isGroupConversation(type) ? VIEW_TYPE_GROUP_CONVERSATION : VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
+        switch (conversation.getType()) {
+            case CHAT:
+                return VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
+            case TRIP:
+                return VIEW_TYPE_TRIP_CONVERSATION;
+            case GROUP:
+            default:
+                return VIEW_TYPE_GROUP_CONVERSATION;
+        }
     }
 
     public void changeCursor(Cursor newCursor, String filter) {
@@ -273,10 +292,6 @@ public class ConversationsCursorAdapter
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(recyclerView))
                 .subscribe(map -> super.swapCursor(new FilterCursorWrapper(newCursor, filter, map)));
-    }
-
-    private boolean isGroupConversation(String conversationType) {
-        return !conversationType.equalsIgnoreCase(Conversation.Type.CHAT);
     }
 
     public void setClickListener(ClickListener clickListener) {
@@ -407,7 +422,7 @@ public class ConversationsCursorAdapter
                     Conversation conversation
                             = SqlUtils.convertToModel(true, Conversation.class, cursor);
                     String conversationName;
-                    if (isGroupConversation(conversation.getType())) {
+                    if (conversationHelper.isGroup(conversation)) {
                         conversationName = getGroupConversationName(conversation, map.get(conversation));
                     } else {
                         conversationName = getOneToOneConversationName(conversation, map.get(conversation));

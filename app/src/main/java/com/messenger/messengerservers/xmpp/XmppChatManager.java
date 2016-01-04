@@ -22,12 +22,13 @@ public class XmppChatManager implements ChatManager {
     }
 
     @Override
-    public MultiUserChat createMultiUserChat(@Nullable String roomId, @NonNull String ownerId, boolean isOwner) {
-        return new XmppMultiUserChat(facade, roomId, ownerId, isOwner);
+    public MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId) {
+        boolean isOwner = ownerId != null && ownerId.equals(facade.getOwner().getId());
+        return createMultiUserChat(roomId, ownerId, isOwner);
     }
 
     @Override
-    public MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId) {
-        return createMultiUserChat(roomId, ownerId, ownerId.equals(facade.getOwner().getId()));
+    public MultiUserChat createMultiUserChat(@Nullable String roomId, @NonNull String ownerId, boolean isOwner) {
+        return new XmppMultiUserChat(facade, roomId, ownerId, isOwner);
     }
 }

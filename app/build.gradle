@@ -287,7 +287,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-annotations:23.1.1'
     compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.jakewharton.timber:timber:4.1.0'
+    compile 'com.jakewharton.timber:timber:4.0.1'
     compile 'com.innahema:collections-query:0.2.9'
     compile 'net.danlew:android.joda:2.9.0'
     compile 'com.badoo.mobile:android-weak-handler:1.1'

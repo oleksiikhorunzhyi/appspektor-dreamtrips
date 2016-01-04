@@ -28,9 +28,14 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
+import com.worldventures.dreamtrips.util.CopyFileTask;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +45,7 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
+import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
@@ -54,6 +60,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     boolean shouldReload;
     @State
     int callbackType;
+
+    public static final String TEMP_PHOTO_FILE_PREFIX = "temp_copy_of_";
 
     int REQUESTER_ID = 3745742;
 
@@ -182,9 +190,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         String filePath = CachedEntity.getFilePath(context, CachedEntity.getFilePath(context, url));
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
 
-        dreamSpiceManager.execute(bigBinaryRequest, inputStream -> {
-            action.action(filePath);
-        }, null);
+        doRequest(bigBinaryRequest, inputStream -> action.action(filePath));
     }
 
     @Override
@@ -266,9 +272,21 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             if (ValidationUtils.isUrl(filePath)) {
                 cacheFacebookImage(filePath, path -> Crop.prepare(path).startFrom((Fragment) view));
             } else {
-                Crop.prepare(filePath).startFrom((Fragment) view);
+                executeCrop(filePath);
             }
         }
+    }
+
+    /**
+     * Crop library needs temp file for processing
+     *
+     * @param originalFilePath
+     */
+    private void executeCrop(String originalFilePath) {
+        File originalFile = new File(originalFilePath);
+        doRequest(new CopyFileTask(originalFile,
+                        originalFile.getParentFile() + "/" + TEMP_PHOTO_FILE_PREFIX + originalFile.getName()),
+                s -> Crop.prepare(s).startFrom((Fragment) view));
     }
 
     public void onEvent(OnPhotoClickEvent e) {

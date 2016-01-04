@@ -366,7 +366,8 @@ public class User extends BaseEntity implements Parcelable {
         @SerializedName("friend")FRIEND,
         @SerializedName("incoming_request")INCOMING_REQUEST,
         @SerializedName("outgoing_request")OUTGOING_REQUEST,
-        @SerializedName("rejected")REJECTED
+        @SerializedName("rejected")REJECTED,
+        UNKNOWN
     }
 
     @Override

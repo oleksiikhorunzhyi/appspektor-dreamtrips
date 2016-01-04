@@ -292,6 +292,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         SEND_REQUEST,
         @SerializedName("tag_photo")
         TAG_PHOTO,
+        UNKNOWN
     }
 
 }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.view.Menu;
 import android.view.View;
 
+import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
@@ -22,31 +23,38 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import java.util.Collections;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
+
 public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresenter<EditChatMembersScreen,
         EditChatMembersViewState> implements EditChatMembersScreenPresenter {
 
-    private final MultiUserChat chat;
+    @Inject
+    @Named(PROFILE)
+    RouteCreator<Integer> routeCreator;
+    @Inject
+    MessengerServerFacade messengerServerFacade;
+    @Inject
+    User user;
+
     private Activity activity;
+    private final MultiUserChat chat;
+    private final ProfileCrosser profileCrosser;
 
     private Conversation conversation;
     private Cursor membersCursor;
 
     private RxContentResolver contentResolver;
-
-    @Inject
-    MessengerServerFacade messengerServerFacade;
-
-    @Inject
-    User user;
 
     public EditChatMembersScreenPresenterImpl(Activity activity) {
         this.activity = activity;
@@ -66,6 +74,8 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
         this.conversation = conversation;
         chat = messengerServerFacade.getChatManager()
                 .createMultiUserChat(conversation.getId(), conversation.getOwnerId());
+
+        this.profileCrosser = new ProfileCrosser(activity, routeCreator);
     }
 
     @Override
@@ -75,7 +85,7 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
         getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
         getView().showLoading();
         ParticipantsDAO.selectParticipants(contentResolver, conversation.getId(), User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()                .subscribeOn(Schedulers.io())
+                .onBackpressureLatest().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView((View) getView()))
                 .subscribe(cursor -> {
@@ -141,6 +151,11 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
                 .doOnNext(user1 -> ParticipantsDAO.delete(activity.getContentResolver(), conversation.getId(), user1.getId()))
                 .doOnError(e -> Timber.e(e, ""))
                 .subscribe();
+    }
+
+    @Override
+    public void onUserClicked(User user) {
+        profileCrosser.crossToProfile(user);
     }
 
     @Override

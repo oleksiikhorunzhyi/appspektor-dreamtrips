@@ -300,6 +300,8 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
             int offset = firstVisibleViewTop + diffHeight;
 
             linearLayoutManager.scrollToPositionWithOffset(position, offset);
+        } else if (cursor != null && cursor.getCount() == 1) {
+            getPresenter().firstVisibleMessageChanged(SqlUtils.convertToModel(false, Message.class, cursor));
         }
     }
 

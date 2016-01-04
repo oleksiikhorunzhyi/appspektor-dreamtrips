@@ -56,6 +56,11 @@ android {
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
         buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
 
+        buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
+        buildConfigField 'String', 'versionMinor', "\"${versionMinor}\""
+        buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
+        buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
+
 
     }
     productFlavors {

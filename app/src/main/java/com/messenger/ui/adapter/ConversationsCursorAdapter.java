@@ -87,16 +87,19 @@ public class ConversationsCursorAdapter
                 .getString(R.string.conversation_list_last_message_date_format_more_than_one_day_ago));
     }
 
+    protected boolean deleteButtonEnable(Conversation conversation) {
+        // TODO: 1/2/16 remove checking conversation type
+        return !TextUtils.equals(Conversation.Type.CHAT, conversation.getType()) && !currentUser.getId().equals(conversation.getOwnerId());
+    }
+
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
         Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
         setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
 
-        if (conversation.getType().equals(Conversation.Type.GROUP)) {
-            holder.getDeleteButton()
-                    .setVisibility(currentUser.getId().equals(conversation.getOwnerId()) ? View.GONE : View.VISIBLE);
-        }
+        holder.getDeleteButton()
+                .setVisibility(deleteButtonEnable(conversation) ? View.VISIBLE : View.GONE);
 
         String userName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
         setLastMessage(holder, message, userName, isGroupConversation(conversation.getType()));

@@ -83,12 +83,13 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
     }
 
     protected void addSettingsRows(ViewGroup parent) {
+        // TODO: 1/2/16  hide for RC version
         notificationsSettingsRow = new ChatSettingsRow(getContext());
         notificationsSettingsRow.setIcon(R.drawable.ic_notifications_black_24_px);
         notificationsSettingsRow.setTitle(R.string.chat_settings_row_notifications);
         notificationsSettingsRow.enableSwitch(((compoundButton, b)
                 -> getPresenter().onNotificationsSwitchClicked(b)));
-        parent.addView(notificationsSettingsRow);
+//        parent.addView(notificationsSettingsRow);
     }
 
     @Override

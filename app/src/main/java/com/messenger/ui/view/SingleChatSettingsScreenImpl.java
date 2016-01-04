@@ -23,6 +23,15 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     }
 
     @Override
+    protected void initUi() {
+        super.initUi();
+
+        // TODO: 1/2/16
+        leaveChatButton.setVisibility(GONE);
+
+    }
+
+    @Override
     public void setConversation(Conversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_single_chat);

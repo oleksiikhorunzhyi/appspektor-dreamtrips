@@ -54,19 +54,17 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
     private Cursor membersCursor;
 
     private ParticipantsDAO participantsDAO;
-    private ConversationsDAO conversationsDAO;
 
-    public Subscription subscriptionConversations;
     public Subscription subscriptionParticipants;
 
     public EditChatMembersScreenPresenterImpl(Activity activity) {
         this.activity = activity;
         ((Injector) activity.getApplication()).inject(this);
         participantsDAO = new ParticipantsDAO(activity.getApplication());
-        conversationsDAO = new ConversationsDAO(activity.getApplication());
 
         conversationId = activity.getIntent()
                 .getStringExtra(EditChatMembersActivity.EXTRA_CONVERSATION_ID);
+        conversation = ConversationsDAO.getConversationById(conversationId);
         chat = messengerServerFacade.getChatManager()
                 .createMultiUserChat(conversationId, conversation.getOwnerId());
 
@@ -79,13 +77,6 @@ public class EditChatMembersScreenPresenterImpl extends BaseViewStateMvpPresente
 
         getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
         getView().showLoading();
-
-        subscriptionConversations = conversationsDAO.getConversation(conversationId)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
-                .subscribe(conversation -> {
-                    this.conversation = conversation;
-                });
 
         subscriptionParticipants = participantsDAO.getParticipants(conversationId)
                 .observeOn(AndroidSchedulers.mainThread())

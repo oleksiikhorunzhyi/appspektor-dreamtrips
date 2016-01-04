@@ -20,6 +20,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.storege.utils.ParticipantsDAO;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
@@ -111,7 +112,7 @@ public class ConversationsCursorAdapter
         holder.getDeleteButton()
                 .setVisibility(deleteButtonEnable(conversation) ? View.VISIBLE : View.GONE);
 
-        String userName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME));
+        String userName = cursor.getString(cursor.getColumnIndex(User$Table.USERNAME));
         setLastMessage(holder, message, userName, conversationHelper.isGroup(conversation));
 
         if (conversation.isAbandoned()) {

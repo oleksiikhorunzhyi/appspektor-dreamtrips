@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
@@ -22,9 +23,9 @@ public class UsersDAO extends BaseDAO {
 
     public Observable<Cursor> getFriends() {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users WHERE " + User.COLUMN_ID + "=?")
+                .withSelection("SELECT * FROM Users WHERE " + User$Table.FRIEND + "=?")
                 .withSelectionArgs(new String[]{String.valueOf(1)})
-                .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC")
+                .withSortOrder("ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, User.CONTENT_URI)
                 .onBackpressureLatest()

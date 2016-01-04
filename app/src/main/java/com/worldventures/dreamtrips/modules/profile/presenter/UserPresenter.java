@@ -5,6 +5,7 @@ import com.messenger.converter.UserConverter;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
+import com.messenger.storege.utils.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImages
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -99,8 +101,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     public void onStartChatClicked() {
         com.messenger.messengerservers.entities.User participant =
-                new Select().from(com.messenger.messengerservers.entities.User.class)
-                        .byIds(user.getUsername()).querySingle();
+                UsersDAO.getUser(user.getUsername());
 
         if (participant == null) {
             participant = UserConverter.convert(user);
@@ -109,7 +110,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
         Conversation conversation = chatDelegate.getExistingSingleConverastion(participant);
         if (conversation == null) {
-            conversation = chatDelegate.createNewConversation(Arrays.asList(participant), "");
+            conversation = chatDelegate.createNewConversation(Collections.singletonList(participant), "");
             new ParticipantsRelationship(conversation.getId(), participant).save();
             ContentUtils.insert(Conversation.CONTENT_URI, conversation);
         }

@@ -12,6 +12,7 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
+import com.messenger.storege.utils.UsersDAO;
 import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -96,13 +97,18 @@ public class LoaderDelegate {
     }
 
     private void updateUsersViaApi(List<User> users) {
-        List<String> usernames = Queryable.from(users).map(User::getUserName).toList();
+        List<String> usernames = Queryable.from(users).map(User::getId).toList();
         requester.execute(new GetShortProfilesQuery(usernames), userz -> {
             Collections.sort(users, (lhs, rhs) -> lhs.getId().compareTo(rhs.getId()));
             Collections.sort(userz, (lhs, rhs) -> lhs.getUsername().compareTo(rhs.getUsername()));
             from(users).zip(userz, (u, z) -> {
                 u.setSocialId(z.getId());
                 u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));
+                // TODO: 1/5/16 when social API will return relationship, use: u.setFriend(z.getRelationship() == Relationship.FRIEND);
+                if (u.isFriendSet()) {
+                    User storedUser = UsersDAO.getUser(u.getId());
+                    u.setFriend(storedUser != null && storedUser.isFriend());
+                }
                 u.setAvatarUrl(z.getAvatar() == null ? null : z.getAvatar().getThumb());
                 u.save();
                 return u;

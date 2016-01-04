@@ -7,6 +7,7 @@ import android.database.Cursor;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.worldventures.dreamtrips.modules.trips.model.Schedule;
@@ -22,12 +23,12 @@ public class MessageDAO extends BaseDAO {
 
     public Observable<Cursor> getMessage(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT m.*, u." + User.COLUMN_NAME + " as " + User.COLUMN_NAME +
-                        ", u." + User.COLUMN_AVATAR + " as " + User.COLUMN_AVATAR +
-                        ", u." + User.COLUMN_SOCIAL_ID + " as " + User.COLUMN_SOCIAL_ID +
+                .withSelection("SELECT m.*, u." + User$Table.USERNAME + " as " + User$Table.USERNAME +
+                        ", u." + User$Table.USERAVATARURL + " as " + User$Table.USERAVATARURL +
+                        ", u." + User$Table.SOCIALID + " as " + User$Table.SOCIALID +
 
-                        " FROM " + Message.TABLE_NAME + " m LEFT JOIN " + User.TABLE_NAME + " u" +
-                        " ON m." + Message.COLUMN_FROM + " = u." + User.COLUMN_ID +
+                        " FROM " + Message.TABLE_NAME + " m LEFT JOIN " + User$Table.TABLE_NAME + " u" +
+                        " ON m." + Message.COLUMN_FROM + " = u." + User$Table._ID +
                         " WHERE " + Message.COLUMN_CONVERSATION_ID + " = ?" +
                         " ORDER BY " + Message.COLUMN_DATE)
                 .withSelectionArgs(new String[]{conversationId}).build();
@@ -63,7 +64,7 @@ public class MessageDAO extends BaseDAO {
                         "WHERE " + Message.COLUMN_CONVERSATION_ID + " = ? "
                         + "AND " + Message.COLUMN_DATE + " > ? "
                         + "AND " + Message.COLUMN_READ + " = ? ")
-                .withSelectionArgs(new String[] {conversationId, String.valueOf(firstMessageTime)})
+                .withSelectionArgs(new String[]{conversationId, String.valueOf(firstMessageTime)})
                 .build();
 
         return query(q)

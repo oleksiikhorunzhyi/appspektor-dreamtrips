@@ -8,6 +8,7 @@ import android.net.Uri;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
@@ -34,7 +35,7 @@ public class ParticipantsDAO extends BaseDAO {
                         "JOIN ParticipantsRelationship p " +
                         "ON p.userId = u._id " +
                         "WHERE p.conversationId = ?")
-                .withSortOrder("ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC")
+                .withSortOrder("ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC")
                 .withSelectionArgs(new String[]{conversationId}).build();
 
         return contentResolver.query(q, observeUris)
@@ -47,7 +48,7 @@ public class ParticipantsDAO extends BaseDAO {
                                 "JOIN ParticipantsRelationship p " +
                                 "ON p.userId = u._id " +
                                 "WHERE p.conversationId = ?" +
-                                "ORDER BY " + User.COLUMN_NAME + " COLLATE NOCASE ASC"
+                                "ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC"
                 ).withSelectionArgs(new String[]{conversationId}).build();
 
         return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)

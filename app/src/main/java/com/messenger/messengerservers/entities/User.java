@@ -19,10 +19,7 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 @Table(tableName = User.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class User extends BaseProviderModel<User> implements ChatUser {
     public static final String TABLE_NAME = "Users";
-    public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "userName";
-    public static final String COLUMN_AVATAR = "userAvatarUrl";
-    public static final String COLUMN_SOCIAL_ID = "socialId";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -34,14 +31,14 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     @Column String userName;
     @Column boolean online;
     @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
-    @Column boolean isFriend;
+    @Column Boolean friend;
 
     public User() {
     }
 
-    public User(String userName) {
-        this._id = userName;
-        this.userName = userName;
+    public User(String userId) {
+        this._id = userId;
+        this.userName = userId;
     }
 
     public User(Parcel in) {
@@ -49,7 +46,11 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         this._id = this.userName;
         this.socialId = in.readInt();
         this.userAvatarUrl = in.readString();
-        this.online = in.readInt() == 1;
+
+        boolean[] booleans = new boolean[2];
+        in.readBooleanArray(booleans);
+        this.online = booleans[0];
+        this.friend = booleans[1];
     }
 
     public String getUserName() {
@@ -95,11 +96,15 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     }
 
     public boolean isFriend() {
-        return isFriend;
+        return friend != null ? friend : false;
     }
 
-    public void setIsFriend(boolean isFriend) {
-        this.isFriend = isFriend;
+    public void setFriend(Boolean friend) {
+        this.friend = friend;
+    }
+
+    public boolean isFriendSet() {
+        return friend != null;
     }
 
     @Override
@@ -114,9 +119,12 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        User anotherUser = (User) o;
-        return _id.equals(anotherUser._id);
+        User user = (User) o;
+
+        return !(_id != null ? !_id.equals(user._id) : user._id != null);
     }
 
     @Override
@@ -142,7 +150,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         dest.writeString(this.userName);
         dest.writeInt(this.socialId);
         dest.writeString(this.userAvatarUrl);
-        dest.writeInt(online ? 1 : 0);
+        dest.writeBooleanArray(new boolean[]{online, friend});
     }
 
 

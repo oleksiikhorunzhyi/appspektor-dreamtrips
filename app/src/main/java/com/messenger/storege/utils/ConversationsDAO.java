@@ -10,6 +10,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -43,7 +44,7 @@ public class ConversationsDAO extends BaseDAO {
                 "m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
                 "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
                 "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + ", " +
-                "u." + User.COLUMN_NAME + " as " + User.COLUMN_NAME + " " +
+                "u." + User$Table.USERNAME + " as " + User$Table.USERNAME + " " +
                 "FROM " + Conversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + Message.TABLE_NAME + " m " +
                 "ON m." + Message._ID + "=(" +
@@ -51,7 +52,7 @@ public class ConversationsDAO extends BaseDAO {
                 "WHERE mm." + Message.COLUMN_CONVERSATION_ID + "=c." + Conversation$Table._ID +
                 " ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) " +
                 "LEFT JOIN " + User.TABLE_NAME + " u " +
-                "ON m." + Message.COLUMN_FROM + "=u." + User.COLUMN_ID
+                "ON m." + Message.COLUMN_FROM + "=u." + User$Table._ID
         );
 
 

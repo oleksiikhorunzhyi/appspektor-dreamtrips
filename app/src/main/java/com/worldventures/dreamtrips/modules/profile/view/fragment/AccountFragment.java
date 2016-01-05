@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 
@@ -156,6 +157,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     private boolean onBackPressed() {
+        if (photoPickerLayout.isShowsFacebookAlbumFragment()) {
+            return false;
+        }
         if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();
             return true;

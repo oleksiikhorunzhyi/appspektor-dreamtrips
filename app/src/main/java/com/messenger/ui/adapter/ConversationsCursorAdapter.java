@@ -27,6 +27,7 @@ import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.Constants;
+import com.messenger.util.SwipeClickListener;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -129,7 +130,7 @@ public class ConversationsCursorAdapter
 
         // init swipe layout
         swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
-        holder.getSwipeLayout().addSwipeListener(new ItemViewSwipeListener(holder.itemView,
+        holder.getSwipeLayout().addSwipeListener(new SwipeClickListener(holder.itemView,
                 itemViewListener));
         holder.getDeleteButton().setOnClickListener(view -> {
             if (swipeButtonsListener != null) {
@@ -301,46 +302,6 @@ public class ConversationsCursorAdapter
     ///////////////////////////////////////////////////////////////////////////
     // Swipe layout
     ///////////////////////////////////////////////////////////////////////////
-
-    private static class ItemViewSwipeListener implements SwipeLayout.SwipeListener {
-        private View itemView;
-        private View.OnClickListener itemViewClickListener;
-
-        public ItemViewSwipeListener(View itemView, View.OnClickListener itemViewClickListener) {
-            this.itemView = itemView;
-            this.itemViewClickListener = itemViewClickListener;
-        }
-
-        @Override
-        public void onStartOpen(SwipeLayout layout) {
-            itemView.setOnClickListener(null);
-        }
-
-        @Override
-        public void onOpen(SwipeLayout layout) {
-
-        }
-
-        @Override
-        public void onStartClose(SwipeLayout layout) {
-
-        }
-
-        @Override
-        public void onClose(SwipeLayout layout) {
-            itemView.setOnClickListener(itemViewClickListener);
-        }
-
-        @Override
-        public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-
-        }
-
-        @Override
-        public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-
-        }
-    }
 
     public void setSwipeButtonsListener(SwipeButtonsListener swipeButtonsListener) {
         this.swipeButtonsListener = swipeButtonsListener;

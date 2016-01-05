@@ -1,10 +1,13 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen;
 
+import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.R;
@@ -44,9 +47,15 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
                     DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                             .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
                             .setImageRequest(ImageRequest.fromUri(image.getUrl(size, size)))
+                            .setControllerListener(new BaseControllerListener<ImageInfo>() {
+                                @Override
+                                public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                                    super.onFinalImageSet(id, imageInfo, animatable);
+                                    onImageGlobalLayout();
+                                }
+                            })
                             .build();
                     ivImage.setController(draweeController);
-                    onImageGlobalLayout();
 
                     ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

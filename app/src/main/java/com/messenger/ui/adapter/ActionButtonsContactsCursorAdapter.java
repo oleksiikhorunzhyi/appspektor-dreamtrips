@@ -14,6 +14,7 @@ import com.daimajia.swipe.util.Attributes;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
+import com.messenger.util.SwipeClickListener;
 import com.worldventures.dreamtrips.R;
 import java.util.List;
 
@@ -48,13 +49,15 @@ public class ActionButtonsContactsCursorAdapter
         ActionButtonsViewHolder holder = (ActionButtonsViewHolder)h;
         holder.getTickImageView().setVisibility(View.GONE);
         holder.swipeLayout.setSwipeEnabled(owner && !userId.equals(cursor.getString(cursor.getColumnIndex(User.COLUMN_ID))));
-
         mItemManger.bindView(holder.itemView, cursor.getPosition());
-        holder.itemView.setOnClickListener(view -> {
+        View.OnClickListener clickListener = view -> {
             if (userClickListener != null) {
                 userClickListener.onUserClicked(user);
             }
-        });
+        };
+        holder.swipeLayout.addSwipeListener(new SwipeClickListener(holder.itemView, clickListener));
+        holder.itemView.setOnClickListener(clickListener);
+
         holder.deleteButton.setOnClickListener(view -> {
             if (deleteRequestListener != null) {
                 deleteRequestListener.onDeleteUserRequired(user);

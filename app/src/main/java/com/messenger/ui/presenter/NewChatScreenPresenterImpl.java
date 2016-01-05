@@ -64,7 +64,8 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                 }
 
                 Conversation conversation = chatDelegate.createNewConversation(selectedUsers, getView().getConversationName());
-                //
+                // we are participants too
+                selectedUsers.add(user);
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
 

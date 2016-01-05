@@ -105,9 +105,9 @@ public class LoaderDelegate {
                 u.setSocialId(z.getId());
                 u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));
                 // TODO: 1/5/16 when social API will return relationship, use: u.setFriend(z.getRelationship() == Relationship.FRIEND);
-                if (u.isFriendSet()) {
-                    User storedUser = UsersDAO.getUser(u.getId());
-                    u.setFriend(storedUser != null && storedUser.isFriend());
+                User storedUser = UsersDAO.getUser(u.getId());
+                if (storedUser != null && storedUser.isFriendSet() && !u.isFriendSet()) {
+                    u.setFriend(storedUser.isFriend());
                 }
                 u.setAvatarUrl(z.getAvatar() == null ? null : z.getAvatar().getThumb());
                 u.save();

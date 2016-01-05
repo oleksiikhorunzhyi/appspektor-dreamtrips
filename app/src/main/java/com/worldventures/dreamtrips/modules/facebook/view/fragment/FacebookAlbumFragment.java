@@ -112,7 +112,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
             loginButton.performClick();
             tryToOpenSession = true;
         } else {
-            fragmentCompass.pop();
+            getActivity().onBackPressed();
         }
     }
 

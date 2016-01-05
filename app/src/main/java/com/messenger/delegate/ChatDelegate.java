@@ -1,10 +1,8 @@
 package com.messenger.delegate;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
@@ -12,6 +10,9 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.List;
 import java.util.UUID;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ChatDelegate {
 
@@ -73,14 +74,16 @@ public class ChatDelegate {
     }
 
     public Conversation setMultiUserChatData(Conversation conversation, List<User> newParticipants, @Nullable String subject) {
-        MultiUserChat multiUserChat = messengerServerFacade.getChatManager()
-                .createMultiUserChat(conversation.getId(), currentUser.getId(), true);
-
-        multiUserChat.invite(newParticipants);
-        if (!TextUtils.isEmpty(subject) && TextUtils.getTrimmedLength(subject) > 0) {
-            multiUserChat.setSubject(subject);
-            conversation.setSubject(subject);
-        }
+        messengerServerFacade.getChatManager()
+                .createMultiUserChatObservable(conversation.getId(), currentUser.getId())
+                .doOnNext(multiUserChat -> multiUserChat.invite(newParticipants))
+                .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(multiUserChat1 -> {
+                    conversation.setSubject(subject);
+                    conversation.save();
+                });
 
         return conversation;
     }

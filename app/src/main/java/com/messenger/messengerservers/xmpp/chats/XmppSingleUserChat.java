@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import timber.log.Timber;
 
-public class XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
+public class  XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
 
     private static final String TAG = "SingleUserChat";
     private final String companionId;
@@ -75,8 +75,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
 
     @Override
     public void sendMessage(com.messenger.messengerservers.entities.Message message) {
-        if (connection == null || !connection.isConnected() || !connection.isAuthenticated())
-            throw new IllegalStateException("Your are not authorized");
+        if (!initializedAndConnected()) return;
 
         try {
             Message stanzaPacket = messageConverter.convert(message);
@@ -89,6 +88,8 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
 
     @Override
     public void changeMessageStatus(com.messenger.messengerservers.entities.Message message, @Status.MessageStatus String status) {
+        if (!initializedAndConnected()) return;
+
         StatusMessagePacket statusMessagePacket = new StatusMessagePacket(message.getId(), status,
                 JidCreatorHelper.obtainUserJid(companionId), Message.Type.chat);
         try {
@@ -96,6 +97,10 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         } catch (SmackException.NotConnectedException e) {
             Timber.e(e, TAG);
         }
+    }
+
+    private boolean initializedAndConnected(){
+        return chat != null && connection != null && connection.isConnected() && connection.isAuthenticated();
     }
 
     @Override

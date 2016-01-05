@@ -2,10 +2,12 @@ package com.messenger.messengerservers.xmpp.chats;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.ChatState;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Status;
@@ -15,7 +17,6 @@ import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
-import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.PresenceListener;
@@ -29,8 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import rx.Observable;
-import rx.functions.Action0;
-import rx.functions.Func0;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -74,8 +74,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
 
     @Override
     public void sendMessage(Message message) {
-        if (chat == null || connection == null || !connection.isConnected() || !connection.isAuthenticated())
-            throw new IllegalStateException("Your are not authorized");
+        if (!initializedAndConnected()) return;
 
         try {
             org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
@@ -90,10 +89,11 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
 
     @Override
     public void changeMessageStatus(com.messenger.messengerservers.entities.Message message, @Status.MessageStatus String status) {
+        if (!initializedAndConnected()) return;
+
         StatusMessagePacket statusMessagePacket = new StatusMessagePacket(message.getId(), status,
                 JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat);
         try {
-            Log.e("Stanza send", statusMessagePacket.toString());
             connection.sendStanza(statusMessagePacket);
         } catch (SmackException.NotConnectedException e) {
             Timber.e(e, TAG);
@@ -105,7 +105,8 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         if (!isOwner)
             throw new IllegalAccessError("You are not owner of chat");
 
-        if (chat == null) return;
+        if (!initializedAndConnected()) return;
+
         try {
             for (User user : users) {
                 chat.invite(JidCreatorHelper.obtainUserJid(user.getId()), null);
@@ -123,7 +124,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             subscriber.onStart();
 
             try {
-                if (chat != null) {
+                if (initializedAndConnected()) {
                     chat.revokeMembership(Queryable
                             .from(users)
                             .map(element -> JidCreatorHelper.obtainUserJid(element.getId()))
@@ -143,7 +144,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Override
     public void join(User user) {
         try {
-            if (chat == null) return;
+            if (!initializedAndConnected()) return;
             chat.join(user.getId());
         } catch (SmackException | XMPPException.XMPPErrorException e) {
             Log.e(TAG, "Error ", e);
@@ -155,7 +156,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         if (isOwner)
             throw new IllegalAccessError("You are an owner of chat. You cannot leave");
 
-        if (chat == null) return;
+        if (!initializedAndConnected()) return;
         try {
 //            chat.leave();
             LeavePresence leavePresence = new LeavePresence();
@@ -171,17 +172,35 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @Override
-    public void setSubject(String subject) {
+    public Observable<MultiUserChat> setSubject(String subject) {
         if (!isOwner)
             throw new IllegalAccessError("You are not owner of chat");
 
-        if (chat == null) return;
+        return Observable.create(new Observable.OnSubscribe<MultiUserChat>() {
+            @Override
+            public void call(Subscriber<? super MultiUserChat> subscriber) {
+                subscriber.onStart();
+                if (!initializedAndConnected()) {
+                    subscriber.onError(new ConnectionException());
+                    return;
+                }
 
-        try {
-            chat.changeSubject(subject);
-        } catch (XMPPException.XMPPErrorException | SmackException e) {
-            Log.e(TAG, "Xmpp Error", e);
-        }
+                try {
+                    if (!TextUtils.isEmpty(subject) && TextUtils.getTrimmedLength(subject) > 0) {
+                        chat.changeSubject(subject);
+                    }
+                    subscriber.onNext(XmppMultiUserChat.this);
+                    subscriber.onCompleted();
+                } catch (XMPPException.XMPPErrorException | SmackException e) {
+                    // TODO: 1/5/16 implement exception wrapper
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    private boolean initializedAndConnected(){
+        return chat != null && connection != null && connection.isConnected() && connection.isAuthenticated();
     }
 
     @Override
@@ -201,7 +220,6 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         if (!chat.isJoined()) {
             try {
                 try {
-                    Log.e("MUC Create ", jid);
                     chat.createOrJoin(userId);
                 } catch (IllegalStateException e) {
                     Timber.e(e, "SetConnection");

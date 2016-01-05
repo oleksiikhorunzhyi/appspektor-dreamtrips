@@ -9,6 +9,8 @@ import com.messenger.messengerservers.chat.SingleUserChat;
 import com.messenger.messengerservers.xmpp.chats.XmppMultiUserChat;
 import com.messenger.messengerservers.xmpp.chats.XmppSingleUserChat;
 
+import rx.Observable;
+
 public class XmppChatManager implements ChatManager {
     private final XmppServerFacade facade;
 
@@ -30,5 +32,10 @@ public class XmppChatManager implements ChatManager {
     @Override
     public MultiUserChat createMultiUserChat(@Nullable String roomId, @NonNull String ownerId, boolean isOwner) {
         return new XmppMultiUserChat(facade, roomId, ownerId, isOwner);
+    }
+
+    @Override
+    public Observable<MultiUserChat> createMultiUserChatObservable(@Nullable String roomId, String ownerId) {
+        return Observable.defer(() -> Observable.just(createMultiUserChat(roomId, ownerId)));
     }
 }

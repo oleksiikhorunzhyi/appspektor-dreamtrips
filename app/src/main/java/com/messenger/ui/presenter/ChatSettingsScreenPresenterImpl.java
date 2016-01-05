@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
@@ -32,7 +31,6 @@ import com.worldventures.dreamtrips.R;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -45,7 +43,6 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     private final LeaveChatDelegate leaveChatDelegate;
     private final RxContentResolver contentResolver;
-    private Subscription participantsSubscriber;
 
     @Inject
     User user;
@@ -97,7 +94,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         getView().prepareViewForOwner(isUserOwner());
-        participantsSubscriber = ParticipantsDAO.selectParticipants(contentResolver, conversation.getId(),
+        ParticipantsDAO.selectParticipants(contentResolver, conversation.getId(),
                 User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
                 .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
@@ -172,10 +169,17 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
 
     @Override
     public void applyNewChatSubject(String subject) {
-        MultiUserChat chat = facade.getChatManager().createMultiUserChat(conversation.getId(), facade.getOwner().getId(), true);
-        chat.setSubject(subject);
-        conversation.setSubject(subject);
-        getView().setConversation(conversation);
+        facade.getChatManager().createMultiUserChatObservable(conversation.getId(), facade.getOwner().getId())
+        .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(multiUserChat1 -> {
+                    conversation.setSubject(subject);
+                    conversation.save();
+                    getView().setConversation(conversation);
+                }, throwable -> {
+                    getView().showErrorDialog(R.string.chat_settings_error_change_subject);
+                });
     }
 
     ///////////////////////////////////////////////////////////////////////////

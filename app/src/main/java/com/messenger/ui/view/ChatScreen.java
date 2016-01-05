@@ -16,4 +16,5 @@ public interface ChatScreen extends ActivityAwareScreen {
     void addTypingUser(User user);
     void removeTypingUser(User user);
     void showMessages(Cursor cursor, Conversation conversation, boolean pendingScroll);
+    void enableSendButton(boolean enabled);
 }

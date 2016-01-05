@@ -2,7 +2,6 @@ package com.messenger.ui.viewstate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.app.Environment;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
 
@@ -54,9 +53,9 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
     public NewChatLayoutViewState(Parcel in) {
         super(in);
         setData(new ArrayList<>());
-        in.readList(getData(), Environment.getChatUserClassLoader());
+        in.readList(getData(), User.class.getClassLoader());
         selectedContacts = new ArrayList<>();
-        in.readList(selectedContacts, Environment.getChatUserClassLoader());
+        in.readList(selectedContacts, User.class.getClassLoader());
         searchFilter = in.readString();
     }
 }

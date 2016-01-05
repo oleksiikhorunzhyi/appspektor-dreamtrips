@@ -11,6 +11,7 @@ import android.widget.AlphabetIndexer;
 import android.widget.SectionIndexer;
 
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.ui.adapter.MessagesCursorAdapter.OnAvatarClickListener;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
@@ -69,7 +70,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
             return true;
         }
         indexer = new AlphabetIndexer(getCursor(), getCursor()
-                .getColumnIndexOrThrow(User.COLUMN_NAME),
+                .getColumnIndexOrThrow(User$Table.USERNAME),
                 " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         sectionToPosition = new TreeMap<>();
         sectionToOffset = new HashMap<>();

@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -152,18 +153,14 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(this))
-                .filter(pos -> !adapter.getCursor().isClosed())
-                .subscribe(position -> {
+                .map(pos -> {
                     Cursor cursor = adapter.getCursor();
-                    int prevPos = cursor.getPosition();
-                    // TODO: 1/2/16
-                    if (cursor.moveToPosition(position)) {
-                        Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-                        cursor.moveToPosition(prevPos);
-
-                        getPresenter().firstVisibleMessageChanged(message);
-                    }
-                });
+                    // TODO: 12/31/15  cursor.moveToPosition(pos) -- is it safely? for example, cursor use a few threads
+                    return new Pair<>(!cursor.isClosed() && cursor.moveToPosition(pos), cursor);
+                })
+                .filter(booleanCursorPair -> booleanCursorPair.first)
+                .map(cursorPair -> SqlUtils.convertToModel(true, Message.class, cursorPair.second))
+                .subscribe(message -> getPresenter().firstVisibleMessageChanged(message));
     }
 
     @Override

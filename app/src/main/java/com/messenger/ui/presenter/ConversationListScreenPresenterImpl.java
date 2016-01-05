@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnLeftChatListener;
 import com.messenger.storege.utils.ConversationsDAO;
@@ -19,8 +18,6 @@ import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
-import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -34,7 +31,6 @@ import rx.schedulers.Schedulers;
 public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresenter<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
 
-    private final RxContentResolver contentResolver;
     private final ConversationHelper conversationHelper;
     private Subscription contactSubscription;
 
@@ -45,21 +41,20 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
 
     private Activity parentActivity;
     private final LeaveChatDelegate leaveChatDelegate;
+    private final ConversationsDAO conversationsDAO;
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
         this.conversationHelper = new ConversationHelper();
+        conversationsDAO = new ConversationsDAO(activity.getApplication());
         OnLeftChatListener leaveListener = (conversationId, userId) -> {
             ContentResolver resolver = parentActivity.getContentResolver();
             ParticipantsDAO.delete(resolver, conversationId, userId);
             ConversationsDAO.leaveConversation(resolver, conversationId, user.getId().equals(userId));
         };
 
-        leaveChatDelegate  = new LeaveChatDelegate((Injector) activity.getApplication(), leaveListener);
+        leaveChatDelegate = new LeaveChatDelegate((Injector) activity.getApplication(), leaveListener);
         ((Injector) activity.getApplicationContext()).inject(this);
-        contentResolver = new RxContentResolver(activity.getContentResolver(),
-                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                        .rawQuery(query.selection, query.selectionArgs));
     }
 
     @Override
@@ -96,9 +91,8 @@ public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresent
     }
 
     private void connectCursor() {
-        contactSubscription = ConversationsDAO.selectConversationsList(contentResolver,
-                getViewState().isShowOnlyGroupConversations() ? Conversation.Type.GROUP : null,
-                Conversation.CONTENT_URI, Message.CONTENT_URI)
+        contactSubscription = conversationsDAO.selectConversationsList(
+                getViewState().isShowOnlyGroupConversations() ? Conversation.Type.GROUP : null)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

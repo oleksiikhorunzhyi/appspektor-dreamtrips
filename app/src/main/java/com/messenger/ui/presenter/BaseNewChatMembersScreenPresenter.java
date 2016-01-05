@@ -2,10 +2,10 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Menu;
@@ -21,8 +21,6 @@ import com.messenger.model.ChatUser;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
-import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -60,7 +58,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
     private Cursor contactsCursor;
     private ProfileCrosser profileCrosser;
 
-    protected final RxContentResolver contentResolver;
     protected Subscription contactSubscription;
 
     public static NewChatScreenPresenter createPresenter(Activity activity) {
@@ -80,17 +77,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
 
         textInChosenContactsEditText = activity
                 .getString(R.string.new_chat_chosen_contacts_header_empty);
-
-        contentResolver = new RxContentResolver(activity.getContentResolver(),
-                query -> {
-                    String selection = query.selection;
-                    if (!TextUtils.isEmpty(query.sortOrder)) {
-                        selection = selection + " " + query.sortOrder;
-                    }
-                    return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                            .rawQuery(selection, query.selectionArgs);
-                });
-
         profileCrosser = new ProfileCrosser(activity, routeCreator);
     }
 
@@ -190,8 +176,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
     }
 
     private void assignBlueSpan(SpannableString spannableString, int start, int end) {
-        int spannableColor = activity.getResources()
-                .getColor(R.color.contact_list_header_selected_contacts);
+        int spannableColor = ContextCompat.getColor(activity, R.color.contact_list_header_selected_contacts);
         spannableString.setSpan(new ForegroundColorSpan(spannableColor), start,
                 end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }

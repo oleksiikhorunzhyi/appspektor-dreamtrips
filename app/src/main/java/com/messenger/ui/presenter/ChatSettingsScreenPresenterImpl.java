@@ -76,10 +76,7 @@ public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<C
                 query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
                         .rawQuery(query.selection, query.selectionArgs));
 
-        conversation = new Select()
-                .from(Conversation.class)
-                .byIds(conversationId)
-                .querySingle();
+        conversation = ConversationsDAO.getConversationById(conversationId);
 
         leaveChatDelegate = new LeaveChatDelegate(injector, onLeftChatListener);
     }

@@ -4,11 +4,11 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.model.ChatConversation;
+import com.messenger.messengerservers.entities.Conversation;
 
 import java.util.List;
 
-public class ConversationListViewState extends LceViewState<List<ChatConversation>> {
+public class ConversationListViewState extends LceViewState<List<Conversation>> {
 
     public ConversationListViewState() {
     }
@@ -59,7 +59,7 @@ public class ConversationListViewState extends LceViewState<List<ChatConversatio
 
     public ConversationListViewState(Parcel in) {
         super(in);
-        showOnlyGroupConversations = in.readInt() == 1 ? true : false;
+        showOnlyGroupConversations = in.readInt() == 1;
         this.conversationsSearchFilter = in.readString();
     }
 }

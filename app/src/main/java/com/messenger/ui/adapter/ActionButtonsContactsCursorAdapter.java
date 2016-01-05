@@ -12,6 +12,7 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.messenger.util.SwipeClickListener;
@@ -48,7 +49,7 @@ public class ActionButtonsContactsCursorAdapter
         super.onBindUserHolder(h, cursor, user);
         ActionButtonsViewHolder holder = (ActionButtonsViewHolder)h;
         holder.getTickImageView().setVisibility(View.GONE);
-        holder.swipeLayout.setSwipeEnabled(owner && !userId.equals(cursor.getString(cursor.getColumnIndex(User.COLUMN_ID))));
+        holder.swipeLayout.setSwipeEnabled(owner && !userId.equals(cursor.getString(cursor.getColumnIndex(User$Table._ID))));
         mItemManger.bindView(holder.itemView, cursor.getPosition());
         View.OnClickListener clickListener = view -> {
             if (userClickListener != null) {

@@ -3,10 +3,6 @@ package com.messenger.ui.view;
 import android.database.Cursor;
 
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.model.ChatConversation;
-
-import java.util.List;
 
 public interface ConversationListScreen extends ActivityAwareScreen {
     void showLoading();

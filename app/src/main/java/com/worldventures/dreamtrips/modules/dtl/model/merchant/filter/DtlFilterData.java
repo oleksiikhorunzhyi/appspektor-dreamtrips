@@ -7,6 +7,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DtlFilterData implements Parcelable {
@@ -78,6 +79,7 @@ public class DtlFilterData implements Parcelable {
     public void setAmenities(List<DtlMerchantAttribute> amenities) {
         this.amenities.clear();
         this.amenities.addAll(amenities);
+        Collections.sort(this.amenities);
     }
 
     public List<DtlMerchantAttribute> getAmenities() {
@@ -94,8 +96,7 @@ public class DtlFilterData implements Parcelable {
 
     public void setSelectedAmenities(List<DtlMerchantAttribute> selectedAmenities) {
         this.selectedAmenities.clear();
-        this.selectedAmenities.addAll(Queryable.from(selectedAmenities).filter((element ->
-                amenities.contains(element))).toList());
+        this.selectedAmenities.addAll(selectedAmenities);
     }
 
     public void selectAllAmenities() {
@@ -154,6 +155,7 @@ public class DtlFilterData implements Parcelable {
         maxPrice = in.readInt();
         maxDistance = in.readInt();
         distanceType = (DistanceType) in.readSerializable();
+        amenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
         selectedAmenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
     }
 
@@ -163,6 +165,7 @@ public class DtlFilterData implements Parcelable {
         dest.writeInt(maxPrice);
         dest.writeInt(maxDistance);
         dest.writeSerializable(distanceType);
+        dest.writeTypedList(amenities);
         dest.writeTypedList(selectedAmenities);
     }
 

@@ -17,7 +17,9 @@ import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_header)
 public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<SelectableHeaderItem,
-        CellDelegate<SelectableHeaderItem>> {
+        CellDelegate<SelectableHeaderItem>> implements SelectableCell {
+
+    private SelectableDelegate selectableDelegate;
 
     @InjectView(R.id.checkBoxSelectAll)
     protected CheckBox checkBoxSelectAll;
@@ -31,12 +33,13 @@ public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<Selectabl
     @Override
     protected void syncUIStateWithModel() {
         textViewHeaderCaption.setText(getModelObject().getHeaderCaption());
-        checkBoxSelectAll.setChecked(getModelObject().isSelected());
+        checkBoxSelectAll.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
     @OnClick(R.id.checkBoxSelectAll)
     void checkBoxClicked() {
         getModelObject().setSelected(checkBoxSelectAll.isChecked());
+        selectableDelegate.setSelection(getAdapterPosition(), checkBoxSelectAll.isChecked());
         cellDelegate.onCellClicked(getModelObject());
     }
 
@@ -47,7 +50,13 @@ public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<Selectabl
     }
 
     @OnClick(R.id.textViewAttributeHeaderCaption)
-    void headerCaptionClicked() { /* */ }
+    void headerCaptionClicked() {
+    }
+
+    @Override
+    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+        this.selectableDelegate = selectableDelegate;
+    }
 
     @Override
     public void prepareForReuse() {

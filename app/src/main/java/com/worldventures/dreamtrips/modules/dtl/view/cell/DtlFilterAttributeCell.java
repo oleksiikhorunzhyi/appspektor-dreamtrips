@@ -39,12 +39,13 @@ public class DtlFilterAttributeCell extends AbstractDelegateCell<DtlMerchantAttr
     @OnClick(R.id.checkBox)
     void checkBoxClicked() {
         selectableDelegate.toggleSelection(getAdapterPosition());
+        cellDelegate.onCellClicked(getModelObject());
     }
 
     @OnClick(R.id.textViewAttributeCaption)
     void textViewRegionClick() {
+        checkBox.setChecked(!checkBox.isChecked());
         checkBoxClicked();
-        checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
     @Override

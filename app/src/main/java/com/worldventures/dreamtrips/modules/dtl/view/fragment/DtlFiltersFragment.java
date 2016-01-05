@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -31,7 +30,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_filters)
 public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
-        implements DtlFiltersPresenter.View, DrawerListener, CellDelegate<SelectableHeaderItem> {
+        implements DtlFiltersPresenter.View, DrawerListener {
 
     @InjectView(R.id.range_bar_distance)
     protected RangeBar rangeBarDistance;
@@ -53,7 +52,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), this);
         baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
         baseDelegateAdapter.registerCell(DtlMerchantAttribute.class, DtlFilterAttributeCell.class);
-        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, this);
+        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, filterHeaderClickDelegate);
+        baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, filterItemClickDelegate);
         //
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -85,9 +85,24 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         return new DtlFiltersPresenter();
     }
 
-    @Override
-    public void onCellClicked(SelectableHeaderItem model) {
-        selectionManager.toggleSelectionForAll(model.isSelected());
+    private CellDelegate<SelectableHeaderItem> filterHeaderClickDelegate = new CellDelegate<SelectableHeaderItem>() {
+        @Override
+        public void onCellClicked(SelectableHeaderItem model) {
+            selectionManager.setSelectionForAll(model.isSelected());
+        }
+    };
+
+    private CellDelegate<DtlMerchantAttribute> filterItemClickDelegate = new CellDelegate<DtlMerchantAttribute>() {
+        @Override
+        public void onCellClicked(DtlMerchantAttribute model) {
+            drawHeaderSelection();
+        }
+    };
+
+    private void drawHeaderSelection() {
+        boolean allSelected =
+                selectionManager.isAllSelected(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
+        selectionManager.setSelection(0, allSelected);
     }
 
     /**
@@ -101,10 +116,9 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         data.setDistanceType(distanceTypeSwitch.isChecked() ? DtlFilterData.DistanceType.KMS :
                 DtlFilterData.DistanceType.MILES);
         data.setCurrentDistance(Integer.valueOf(rangeBarDistance.getRightValue()));
-        // TODO think about passing this supercollection back and forth (line below) - potential bug generator:
-        data.setAmenities(baseDelegateAdapter.getItems());
         //
-        List<Integer> positions = selectionManager.getSelectedPositions();
+        List<Integer> positions = selectionManager
+                .getSelectedPositions(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
         List selectedItems = Queryable.from(baseDelegateAdapter.getItems())
                 .filter((element, index) -> positions.contains(index)).toList();
         data.setSelectedAmenities(selectedItems);
@@ -124,16 +138,15 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         distanceTypeSwitch.setChecked(filterData.getDistanceType() == DtlFilterData.DistanceType.KMS);
         if (filterData.hasAmenities()) {
             selectionManager.setSelectedPositions(Queryable.from(filterData.getSelectedAmenities())
-                    .map(element -> filterData.getAmenities().indexOf(element)).toList());
+                    .map(element -> baseDelegateAdapter.getItems().indexOf(element)).toList());
         }
+        drawHeaderSelection();
     }
 
     private void setupAttributesHeader(DtlFilterData filterData) {
-        Collections.sort(filterData.getAmenities());
         baseDelegateAdapter.clearAndUpdateItems(filterData.getAmenities());
-//        baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getString(R.string.dtl_amenities), true));
-        // temporary - not to mess with selection logic while WIP
-        // TODO : remove temporary code above!!!
+        baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getString(R.string.dtl_amenities), true));
+        drawHeaderSelection();
     }
 
     @Override

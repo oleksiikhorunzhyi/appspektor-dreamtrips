@@ -6,6 +6,8 @@ import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.chat.SingleUserChat;
 import com.messenger.messengerservers.entities.User;
 
+import rx.Observable;
+
 
 public interface ChatManager {
 
@@ -14,4 +16,6 @@ public interface ChatManager {
     MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId, boolean isOwner);
 
     MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId);
+
+    Observable<MultiUserChat> createMultiUserChatObservable(@Nullable String roomId, String ownerId);
 }

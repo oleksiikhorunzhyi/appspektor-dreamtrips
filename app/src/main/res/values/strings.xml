@@ -561,6 +561,7 @@
     <string name="chat_settings_menu_settings">Settings</string>
     <string name="chat_settings_menu_edit_chat_name">Edit chat name</string>
     <string name="chat_settings_leave_group_chat">Are you sure you want quit from %1$s chat</string>
+    <string name="chat_settings_error_change_subject">You cannot change subject without network connection</string>
     <!---->
     <!--Add new members -->
     <!---->

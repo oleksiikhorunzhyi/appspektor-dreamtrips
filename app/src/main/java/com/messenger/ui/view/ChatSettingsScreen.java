@@ -1,5 +1,7 @@
 package com.messenger.ui.view;
 
+import android.support.annotation.StringRes;
+
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 
@@ -14,4 +16,5 @@ public interface ChatSettingsScreen extends ActivityAwareScreen {
     void showSubjectDialog();
     void prepareViewForOwner(boolean isOwner);
     void setNotificationSettingStatus(boolean checked);
+    void showErrorDialog(@StringRes int msg);
 }

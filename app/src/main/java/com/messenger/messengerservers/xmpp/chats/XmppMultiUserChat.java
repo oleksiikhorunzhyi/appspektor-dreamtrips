@@ -2,10 +2,12 @@ package com.messenger.messengerservers.xmpp.chats;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.ChatState;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Status;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -169,17 +172,31 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @Override
-    public void setSubject(String subject) {
+    public Observable<MultiUserChat> setSubject(String subject) {
         if (!isOwner)
             throw new IllegalAccessError("You are not owner of chat");
 
-        if (!initializedAndConnected()) return;
+        return Observable.create(new Observable.OnSubscribe<MultiUserChat>() {
+            @Override
+            public void call(Subscriber<? super MultiUserChat> subscriber) {
+                subscriber.onStart();
+                if (!initializedAndConnected()) {
+                    subscriber.onError(new ConnectionException());
+                    return;
+                }
 
-        try {
-            chat.changeSubject(subject);
-        } catch (XMPPException.XMPPErrorException | SmackException e) {
-            Log.e(TAG, "Xmpp Error", e);
-        }
+                try {
+                    if (!TextUtils.isEmpty(subject) && TextUtils.getTrimmedLength(subject) > 0) {
+                        chat.changeSubject(subject);
+                    }
+                    subscriber.onNext(XmppMultiUserChat.this);
+                    subscriber.onCompleted();
+                } catch (XMPPException.XMPPErrorException | SmackException e) {
+                    // TODO: 1/5/16 implement exception wrapper
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 
     private boolean initializedAndConnected(){

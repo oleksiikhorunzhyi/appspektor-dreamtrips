@@ -19,10 +19,6 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBI
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
-
 public class MessengerConnector {
 
     private static MessengerConnector object;

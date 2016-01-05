@@ -25,7 +25,7 @@ public abstract class MultiUserChat extends Chat {
 
     public abstract void leave();
 
-    public abstract void setSubject(String subject);
+    public abstract Observable<MultiUserChat> setSubject(String subject);
 
     public void addMultiUserChatStateChangeListener(MultiUserChatStateChanged listener) {
         multiUserChatStateListeners.add(listener);

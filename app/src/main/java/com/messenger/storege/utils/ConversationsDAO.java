@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.ParticipantsRelationship;
+import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
@@ -49,28 +51,38 @@ public class ConversationsDAO extends BaseDAO {
                 "LEFT JOIN " + Message.TABLE_NAME + " m " +
                 "ON m." + Message._ID + "=(" +
                 "SELECT " + Message._ID + " FROM " + Message.TABLE_NAME + " mm " +
-                "WHERE mm." + Message.COLUMN_CONVERSATION_ID + "=c." + Conversation$Table._ID +
-                " ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) " +
+                "WHERE mm." + Message.COLUMN_CONVERSATION_ID + "=c." + Conversation$Table._ID + " " +
+                "ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) " +
                 "LEFT JOIN " + User.TABLE_NAME + " u " +
-                "ON m." + Message.COLUMN_FROM + "=u." + User$Table._ID
+                "ON m." + Message.COLUMN_FROM + "=u." + User$Table._ID + " " +
+                "LEFT JOIN " + ParticipantsRelationship.TABLE_NAME + " p " +
+                "ON p." + ParticipantsRelationship$Table.CONVERSATIONID + "=c." + Conversation$Table._ID + " "
         );
 
 
         boolean onlyGroup = type != null && Conversation.Type.GROUP.equals(type);
         if (onlyGroup) {
-            query.append(" WHERE c.type not like ?");
+            query.append("WHERE c.type not like ? ");
         }
 
-        query.append(" ORDER BY c." + Conversation$Table.ABANDONED + ", m." + Message.COLUMN_DATE + " DESC");
+        query.append("GROUP BY c." + Conversation$Table._ID + " " +
+                "HAVING c." + Conversation$Table.TYPE + "=? " +
+                "OR COUNT(p." + ParticipantsRelationship$Table.ID + ") > 1 " +
+                "ORDER BY c." + Conversation$Table.ABANDONED + ", m." + Message.COLUMN_DATE + " DESC");
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());
 
+        String[] args;
         if (onlyGroup) {
-            queryBuilder.withSelectionArgs(new String[]{Conversation.Type.CHAT});
+            args = new String[]{Conversation.Type.CHAT, Conversation.Type.CHAT};
+        } else {
+            args = new String[]{Conversation.Type.CHAT};
         }
-
-        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI);
+        queryBuilder.withSelectionArgs(args);
+        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io());
     }
 
 

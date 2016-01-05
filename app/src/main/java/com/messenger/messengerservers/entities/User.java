@@ -2,7 +2,6 @@ package com.messenger.messengerservers.entities;
 
 import android.net.Uri;
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.messenger.model.ChatUser;
 import com.messenger.storege.MessengerDatabase;
@@ -39,18 +38,6 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     public User(String userId) {
         this._id = userId;
         this.userName = userId;
-    }
-
-    public User(Parcel in) {
-        this.userName = in.readString();
-        this._id = this.userName;
-        this.socialId = in.readInt();
-        this.userAvatarUrl = in.readString();
-
-        boolean[] booleans = new boolean[2];
-        in.readBooleanArray(booleans);
-        this.online = booleans[0];
-        this.friend = booleans[1];
     }
 
     public String getUserName() {
@@ -132,28 +119,6 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         return _id.hashCode();
     }
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
-    public int describeContents() {
-        return 0;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.userName);
-        dest.writeInt(this.socialId);
-        dest.writeString(this.userAvatarUrl);
-        dest.writeBooleanArray(new boolean[]{online, friend});
-    }
-
-
     @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
@@ -173,5 +138,39 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     public Uri getQueryUri() {
         return CONTENT_URI;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this._id);
+        dest.writeInt(this.socialId);
+        dest.writeString(this.userName);
+        dest.writeByte(online ? (byte) 1 : (byte) 0);
+        dest.writeString(this.userAvatarUrl);
+        dest.writeValue(this.friend);
+    }
+
+    protected User(Parcel in) {
+        this._id = in.readString();
+        this.socialId = in.readInt();
+        this.userName = in.readString();
+        this.online = in.readByte() != 0;
+        this.userAvatarUrl = in.readString();
+        this.friend = (Boolean) in.readValue(Boolean.class.getClassLoader());
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }
 

@@ -24,6 +24,7 @@ import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Singleton;
@@ -59,10 +60,11 @@ public class XmppServerModule {
 
     @Singleton
     @Provides
-    MessengerServerFacade provideXmppServerFacade() {
-        return new XmppServerFacade(new XmppServerParams(
-                BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT
-        ));
+    MessengerServerFacade provideXmppServerFacade(@ForApplication Context context, DreamSpiceManager requester) {
+        return new XmppServerFacade(
+                new XmppServerParams(BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT),
+                context, requester
+        );
     }
 
     @Provides

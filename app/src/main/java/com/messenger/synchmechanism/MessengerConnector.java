@@ -5,6 +5,7 @@ import android.content.Context;
 import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
+import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.util.EventBusWrapper;
@@ -42,7 +43,7 @@ public class MessengerConnector {
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
-        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, spiceManager);
+        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, new UserProcessor(spiceManager));
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
         this.connectionObservable = ReplaySubject.create(1);
 
@@ -81,6 +82,7 @@ public class MessengerConnector {
         connectionObservable.onNext(currentStatus = ConnectionStatus.CONNECTING);
         messengerServerFacade.addAuthorizationListener(authListener);
         UserSession userSession = appSessionHolder.get().get();
+        if (userSession.getUser() == null) return;
         messengerServerFacade.authorizeAsync(userSession.getUsername(), userSession.getLegacyApiToken());
     }
 

@@ -32,8 +32,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import rx.Subscription;
-
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
 public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvpPresenter<NewChatMembersScreen, NewChatLayoutViewState>
@@ -57,8 +55,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends BaseViewStateMvp
 
     private Cursor contactsCursor;
     private ProfileCrosser profileCrosser;
-
-    protected Subscription contactSubscription;
 
     public static NewChatScreenPresenter createPresenter(Activity activity) {
         int mode = activity.getIntent().getIntExtra(NewChatMembersActivity.EXTRA_MODE, -1);

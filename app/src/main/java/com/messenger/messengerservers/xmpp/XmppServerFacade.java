@@ -1,7 +1,8 @@
 package com.messenger.messengerservers.xmpp;
 
-import android.util.Log;
+import android.content.Context;
 
+import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ContactManager;
 import com.messenger.messengerservers.GlobalEventEmitter;
@@ -12,6 +13,8 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
+import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SASLAuthentication;
@@ -27,18 +30,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import timber.log.Timber;
+
 public class XmppServerFacade implements MessengerServerFacade {
 
-    private static final String TAG = "XmppServerFacade";
     private static final int PACKET_REPLAY_TIMEOUT = 15000;
     private static final int TIME_PING_INTERVAL = 45;
 
+    private Context context;
     private XmppServerParams serverParams;
+    private DreamSpiceManager requester;
     private AbstractXMPPConnection connection;
     private volatile boolean isActive;
 
     private final ExecutorService connectionExecutor = Executors.newSingleThreadExecutor();
-    private final List<AuthorizeListener> onConnectListeners = new CopyOnWriteArrayList<>();
+    private final List<AuthorizeListener> connectionListeners = new CopyOnWriteArrayList<>();
 
     private final LoaderManager loaderManager;
     private final PaginationManager paginationManager;
@@ -46,45 +52,52 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final ChatManager chatManager;
     private final RosterManager rosterManager;
 
-    public XmppServerFacade(XmppServerParams serverParams) {
+    public XmppServerFacade(XmppServerParams serverParams, Context context, DreamSpiceManager requester) {
+        this.context = context;
         this.serverParams = serverParams;
+        this.requester = requester;
         PingManager.setDefaultPingInterval(TIME_PING_INTERVAL);
         loaderManager = new XmppLoaderManager(this);
         paginationManager = new XmppPaginationManager(this);
         globalEventEmitter = new XmppGlobalEventEmitter(this);
         chatManager = new XmppChatManager(this);
-        rosterManager = new RosterManager(this);
+        rosterManager = new RosterManager(context, new UserProcessor(requester));
+    }
+
+    private MessengerConnection createConnection() {
+        SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
+        MessengerConnection connection = new MessengerConnection(XMPPTCPConnectionConfiguration.builder()
+                .setServiceName(JidCreatorHelper.SERVICE_NAME)
+                .setHost(serverParams.host)
+                .setPort(serverParams.port)
+                .setResource(StringGanarator.getRandomString(5))
+                .setSendPresence(false)
+                .setDebuggerEnabled(BuildConfig.DEBUG)
+                .build());
+        connection.setPacketReplyTimeout(PACKET_REPLAY_TIMEOUT);
+        return connection;
     }
 
     @Override
     public void authorizeAsync(String username, String password) {
-        Log.i("Xmpp Authorize with ", String.format("userName:%s password:%s", username, password));
-
+        Timber.i("Logging in with %s->%s", username, password);
         connectionExecutor.execute(() -> {
-                    SASLAuthentication.registerSASLMechanism(new SASLWVMechanism());
-                    connection = new MessengerConnection(XMPPTCPConnectionConfiguration.builder()
-                            .setUsernameAndPassword(username, password)
-                            .setServiceName(JidCreatorHelper.SERVICE_NAME)
-                            .setHost(serverParams.host)
-                            .setResource(StringGanarator.getRandomString(5))
-                            .setDebuggerEnabled(true)
-                            .setPort(serverParams.port)
-                            .setSendPresence(false)
-                            .build());
-                    connection.setPacketReplyTimeout(PACKET_REPLAY_TIMEOUT);
-
                     try {
+                        connection = createConnection();
                         connection.connect();
-                        connection.login();
-
-                        for (AuthorizeListener listener : onConnectListeners) {
+                        connection.login(username, password);
+                        //
+                        rosterManager.init(connection);
+                        if (!requester.isStarted()) requester.start(context);
+                        Timber.i("Login success");
+                        for (AuthorizeListener listener : connectionListeners) {
                             listener.onSuccess();
                         }
                     } catch (SmackException | IOException | XMPPException e) {
-                        for (AuthorizeListener listener : onConnectListeners) {
+                        Timber.w(e, "Login failed");
+                        for (AuthorizeListener listener : connectionListeners) {
                             listener.onFailed(e);
                         }
-                        Log.e(TAG, "XMPP server", e);
                     }
                 }
         );
@@ -92,6 +105,8 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     @Override
     public void disconnectAsync() {
+        rosterManager.release();
+        if (requester.isStarted()) requester.shouldStop();
         connectionExecutor.execute(connection::disconnect);
         isActive = false;
     }
@@ -103,12 +118,12 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     @Override
     public void addAuthorizationListener(AuthorizeListener listener) {
-        onConnectListeners.add(listener);
+        connectionListeners.add(listener);
     }
 
     @Override
     public void removeAuthorizationListener(AuthorizeListener listener) {
-        onConnectListeners.remove(listener);
+        connectionListeners.remove(listener);
     }
 
     @Override
@@ -117,7 +132,7 @@ public class XmppServerFacade implements MessengerServerFacade {
             connection.sendStanza(new Presence(active ? Presence.Type.available : Presence.Type.unavailable));
             isActive = true;
         } catch (SmackException.NotConnectedException e) {
-            Log.w(TAG, "setPresenceStatus", e);
+            Timber.w(e, "Presence failed");
         }
     }
 

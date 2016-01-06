@@ -118,7 +118,7 @@ public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScree
             switch (conversation.getType()) {
                 case Conversation.Type.CHAT:
                     try {
-                        participantsDAO.getMate(conversationId, user.getId())
+                        participantsDAO.getParticipant(conversationId, user.getId())
                                 .subscribe(mate -> subscriber
                                                 .onNext(chatManager.createSingleUserChat(mate.getId(), conversationId))
                                 );

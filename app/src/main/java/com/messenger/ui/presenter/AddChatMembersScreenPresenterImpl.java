@@ -1,8 +1,9 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.content.Context;
+import android.util.Pair;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -15,69 +16,112 @@ import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
+import rx.subjects.PublishSubject;
+
+import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 
 public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
 
-    private Conversation conversation;
-    private List<User> originalParticipants;
+    @Inject
+    @ForApplication
+    Context context;
+    //
+    private String conversationId;
+    private ConversationsDAO conversationsDAO;
     private ParticipantsDAO participantsDAO;
+    //
+    private Observable<Conversation> conversationStream;
+    private PublishSubject<List<User>> selectedStream;
 
     public AddChatMembersScreenPresenterImpl(Activity activity) {
         super(activity);
-        String conversationId = activity.getIntent()
-                .getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
-        participantsDAO = new ParticipantsDAO(activity.getApplication());
-        // TODO: 1/4/16 need UI refactoring, that use async loading
-        conversation = ConversationsDAO.getConversationById(conversationId);
+        conversationsDAO = new ConversationsDAO(context);
+        participantsDAO = new ParticipantsDAO(context);
+        conversationId = activity.getIntent().getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
+        conversationStream = conversationsDAO.getConversation(conversationId).first().replay().autoConnect();
+        selectedStream = PublishSubject.create();
     }
 
     @Override
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.chat_add_new_members_title);
+        connectToCandidates();
+        connectSelectedCandidates();
     }
 
-    private void initExistingMembersSubscription() {
-        participantsDAO.getParticipants(conversation.getId())
+    private void connectToCandidates() {
+        participantsDAO.getNewParticipantsCandidates(conversationId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindVisibility())
-                .doOnNext(cursor -> originalParticipants = SqlUtils.convertToList(User.class, cursor))
-                .subscribe(this::showContacts, throwable -> Timber.i(throwable, "Load participants error"));
+                .compose(bindView())
+                .subscribe(this::showContacts);
     }
 
+    private void connectSelectedCandidates() {
+        Observable.combineLatest(
+                conversationStream,
+                selectedStream.asObservable(),
+                (conversation, users) -> new Pair<>(conversation, users)
+        )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(pair -> {
+                    // show conversation name edit text only for single chats that will turn to become group chats
+                    if (!pair.first.getType().equals(CHAT)) return;
+                    if (pair.second.isEmpty()) {
+                        getView().slideOutConversationNameEditText();
+                    } else {
+                        getView().slideInConversationNameEditText();
+                    }
+                });
+    }
 
     @Override
     public void onSelectedUsersStateChanged(List<User> selectedContacts) {
         super.onSelectedUsersStateChanged(selectedContacts);
-        // show conversation name edit text only for single chats that will turn to become
-        // group chats
-        if (conversation.getType().equals(Conversation.Type.CHAT)) {
-            if (selectedContacts.size() < 1) {
-                getView().slideOutConversationNameEditText();
-            } else {
-                getView().slideInConversationNameEditText();
-            }
-        }
+        selectedStream.onNext(selectedContacts);
     }
 
-    @Override
-    public void onVisibilityChanged(int visibility) {
-        super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE) {
-            initExistingMembersSubscription();
-        } else {
-            contactSubscription.unsubscribe();
+    private void tryCreateChat() {
+        List<User> newChatUsers = getViewState().getSelectedContacts();
+        if (newChatUsers == null || newChatUsers.isEmpty()) {
+            Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
+                    Toast.LENGTH_SHORT).show();
+            return;
         }
+        conversationStream
+                .flatMap(conversation -> participantsDAO
+                        .getParticipants(conversation.getId()).first()
+                        .map(cursor -> SqlUtils.convertToList(User.class, cursor))
+                        .map(currentUsers -> {
+                            Conversation newConversation = chatDelegate.modifyConversation(
+                                    conversation, currentUsers, newChatUsers, getView().getConversationName()
+                            );
+                            Queryable.from(newChatUsers).forEachR(u ->
+                                    new ParticipantsRelationship(newConversation.getId(), u).save()
+                            );
+                            ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
+                            return newConversation;
+                        }))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(newConversation -> {
+                    ChatActivity.startChat(activity, newConversation);
+                });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -88,23 +132,9 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                List<User> newChatUsers = getViewState().getSelectedContacts();
-                if (newChatUsers == null || newChatUsers.isEmpty()) {
-                    Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                Conversation newConversation = chatDelegate.modifyConversation(conversation, originalParticipants,
-                        newChatUsers, getView().getConversationName());
-
-                Queryable.from(newChatUsers).forEachR(u ->
-                        new ParticipantsRelationship(newConversation.getId(), u).save());
-                ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
-
-                ChatActivity.startChat(activity, newConversation);
+                tryCreateChat();
                 return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 }

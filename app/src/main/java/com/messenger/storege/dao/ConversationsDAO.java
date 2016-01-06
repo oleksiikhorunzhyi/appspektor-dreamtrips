@@ -15,7 +15,11 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -27,8 +31,8 @@ public class ConversationsDAO extends BaseDAO {
         super(context);
     }
 
-    public ConversationsDAO(Context context, RxContentResolver rxContentResolver) {
-        super(context, rxContentResolver);
+    public ConversationsDAO(RxContentResolver rxContentResolver, Context context) {
+        super(rxContentResolver, context);
     }
 
     public static Conversation getConversationById(String conversationId) {
@@ -85,9 +89,7 @@ public class ConversationsDAO extends BaseDAO {
             args = new String[]{Conversation.Type.CHAT};
         }
         queryBuilder.withSelectionArgs(args);
-        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io());
+        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
     }
 
 
@@ -101,9 +103,11 @@ public class ConversationsDAO extends BaseDAO {
                 .map(cursor -> SqlUtils.convertToModel(false, Conversation.class, cursor));
     }
 
-    public Observable<Conversation> getConversationWithoutObserve(String conversationId) {
-        return Observable.defer(() ->
-                Observable.just(new Select().from(Conversation.class).byIds(conversationId).querySingle()))
-                .subscribeOn(Schedulers.io());
+    public void incrementUnreadField(String conversationId) {
+        new Update<>(Conversation.class)
+                .set(Conversation$Table.UNREADMESSAGECOUNT + "=" + Conversation$Table.UNREADMESSAGECOUNT + "+1")
+                .where(Condition.column(Conversation$Table._ID).is(conversationId))
+                .queryClose();
+        getContentResolver().notifyChange(Conversation.CONTENT_URI, null);
     }
 }

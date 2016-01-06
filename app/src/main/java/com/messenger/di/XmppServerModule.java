@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -61,7 +62,7 @@ import dagger.Provides;
         }
 )
 public class XmppServerModule {
-
+    private static final String DB_FLOW_RX_RESOLVER = "DB_FLOW_RX_RESOLVER";
     @Singleton
     @Provides
     MessengerServerFacade provideXmppServerFacade(@ForApplication Context context, DreamSpiceManager requester) {
@@ -101,6 +102,7 @@ public class XmppServerModule {
 
     @Singleton
     @Provides
+    @Named(DB_FLOW_RX_RESOLVER)
     RxContentResolver providedRxContentResolver(@ForApplication Context context) {
         return new RxContentResolver(context.getContentResolver(),
                 query -> {
@@ -115,8 +117,8 @@ public class XmppServerModule {
 
     @Singleton
     @Provides
-    ConversationsDAO provideConversationsDAO(@ForApplication Context context, RxContentResolver rxContentResolver) {
-        return new ConversationsDAO(context, rxContentResolver);
+    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new ConversationsDAO(rxContentResolver, context);
     }
 
 

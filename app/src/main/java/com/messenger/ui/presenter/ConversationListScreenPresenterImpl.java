@@ -22,6 +22,8 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -38,15 +40,16 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     User user;
     @Inject
     DreamSpiceManager dreamSpiceManager;
+    @Inject
+    ConversationsDAO conversationsDAO;
 
     private Activity parentActivity;
     private final LeaveChatDelegate leaveChatDelegate;
-    private final ConversationsDAO conversationsDAO;
+
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
         this.conversationHelper = new ConversationHelper();
-        conversationsDAO = new ConversationsDAO(activity.getApplication());
         OnLeftChatListener leaveListener = (conversationId, userId) -> {
             ContentResolver resolver = parentActivity.getContentResolver();
             ParticipantsDAO.delete(resolver, conversationId, userId);
@@ -91,8 +94,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     private void connectCursor() {
+        if (contactSubscription != null && !contactSubscription.isUnsubscribed()) {
+            contactSubscription.unsubscribe();
+        }
         contactSubscription = conversationsDAO.selectConversationsList(
                 getViewState().isShowOnlyGroupConversations() ? Conversation.Type.GROUP : null)
+                .throttleLast(1, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

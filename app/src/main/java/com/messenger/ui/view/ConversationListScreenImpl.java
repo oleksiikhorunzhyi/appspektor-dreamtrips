@@ -87,14 +87,12 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_action_bar);
         final String[] dropdownArray = getContext().getResources().getStringArray(R.array.
                 conversation_list_spinner_items);
+
+        conversationsDropDownSpinner.setAdapter(spinnerAdapter);
         conversationsDropDownSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerAdapter.getItem(i).equals(dropdownArray[0])) {
-                    getPresenter().onConversationsDropdownSelected(false);
-                } else if (spinnerAdapter.getItem(i).equals(dropdownArray[1])) {
-                    getPresenter().onConversationsDropdownSelected(true);
-                }
+                getPresenter().onConversationsDropdownSelected(!spinnerAdapter.getItem(i).equals(dropdownArray[0]));
             }
 
             @Override
@@ -102,7 +100,6 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
 
             }
         });
-        conversationsDropDownSpinner.setAdapter(spinnerAdapter);
     }
 
     @Override

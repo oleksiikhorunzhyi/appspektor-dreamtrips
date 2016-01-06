@@ -35,16 +35,10 @@ public class ChatFacadeInitializer implements AppInitializer {
         emiter.addGlobalMessageListener(new GlobalMessageListener() {
             @Override
             public void onReceiveMessage(Message message) {
+                conversationsDAO.incrementUnreadField(message.getConversationId());
                 message.setDate(new Date());
                 message.setRead(false);
                 message.save();
-
-                conversationsDAO.getConversationWithoutObserve(message.getConversationId())
-                        .filter(conversation -> conversation != null)
-                        .subscribe(conversation -> {
-                            conversation.setUnreadMessageCount(conversation.getUnreadMessageCount() + 1);
-                            conversation.save();
-                        });
             }
 
             @Override
@@ -55,7 +49,8 @@ public class ChatFacadeInitializer implements AppInitializer {
             }
         });
 
-        emiter.addOnSubjectChangesListener((conversationId, subject) -> conversationsDAO.getConversationWithoutObserve(conversationId)
+        emiter.addOnSubjectChangesListener((conversationId, subject) -> conversationsDAO.getConversation(conversationId)
+                .first()
                 .subscribe(conversation -> {
                     if (conversation == null)
                         return; // TODO there should be no such situation, but sync init state is broken
@@ -64,7 +59,8 @@ public class ChatFacadeInitializer implements AppInitializer {
                 }));
 
         emiter.addOnChatCreatedListener((conversationId, createLocally) ->
-                        conversationsDAO.getConversationWithoutObserve(conversationId)
+                        conversationsDAO.getConversation(conversationId)
+                                .first()
                                 .filter(conversation -> conversation == null)
                                 .flatMap(conversation -> {
                                     LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, new UserProcessor(spiceManager));

@@ -94,7 +94,7 @@ public class PhotoDetailsFeedFragment extends BaseFragmentWithArgs<PhotoDetailsF
 
     @Override
     public void setupView(Photo photo) {
-        this.title.setText(photo.getFSTitle());
+        this.title.setText(photo.getTitle());
 
         Uri imageUrl = Uri.parse(photo.getFSImage().getUrl());
         PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();

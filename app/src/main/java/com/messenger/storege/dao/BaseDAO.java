@@ -1,4 +1,4 @@
-package com.messenger.storege.utils;
+package com.messenger.storege.dao;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -18,6 +18,7 @@ class BaseDAO {
     private final ContentResolver contentResolver;
     private RxContentResolver rxContentResolver;
 
+    @Deprecated
     BaseDAO(Context context) {
         this.context = context;
         this.contentResolver = context.getContentResolver();
@@ -33,15 +34,21 @@ class BaseDAO {
                 });
     }
 
+    BaseDAO(Context context, RxContentResolver rxContentResolver) {
+        this.context = context;
+        this.contentResolver = context.getContentResolver();
+        this.rxContentResolver = rxContentResolver;
+    }
+
     protected Observable<Cursor> query(Query rxQuery, Uri... uris) {
         return rxContentResolver.query(rxQuery, uris);
     }
 
-    public ContentResolver getContentResolver() {
+    protected ContentResolver getContentResolver() {
         return contentResolver;
     }
 
-    public Context getContext() {
+    protected Context getContext() {
         return context;
     }
 }

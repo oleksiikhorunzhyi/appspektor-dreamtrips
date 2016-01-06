@@ -1,4 +1,4 @@
-package com.messenger.storege.utils;
+package com.messenger.storege.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,8 +9,6 @@ import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;

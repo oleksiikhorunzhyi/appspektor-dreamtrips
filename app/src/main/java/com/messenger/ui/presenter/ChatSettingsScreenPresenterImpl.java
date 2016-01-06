@@ -14,8 +14,8 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnLeftChatListener;
-import com.messenger.storege.utils.ConversationsDAO;
-import com.messenger.storege.utils.ParticipantsDAO;
+import com.messenger.storege.dao.ConversationsDAO;
+import com.messenger.storege.dao.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
@@ -25,7 +25,6 @@ import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 

@@ -1,4 +1,4 @@
-package com.messenger.storege.utils;
+package com.messenger.storege.dao;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -22,8 +22,13 @@ import rx.schedulers.Schedulers;
 
 public class ConversationsDAO extends BaseDAO {
 
+    @Deprecated
     public ConversationsDAO(Context context) {
         super(context);
+    }
+
+    public ConversationsDAO(Context context, RxContentResolver rxContentResolver) {
+        super(context, rxContentResolver);
     }
 
     public static Conversation getConversationById(String conversationId) {
@@ -94,5 +99,11 @@ public class ConversationsDAO extends BaseDAO {
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> SqlUtils.convertToModel(false, Conversation.class, cursor));
+    }
+
+    public Observable<Conversation> getConversationWithoutObserve(String conversationId) {
+        return Observable.defer(() ->
+                Observable.just(new Select().from(Conversation.class).byIds(conversationId).querySingle()))
+                .subscribeOn(Schedulers.io());
     }
 }

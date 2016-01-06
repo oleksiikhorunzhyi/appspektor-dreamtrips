@@ -8,7 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.storege.utils.UsersDAO;
+import com.messenger.storege.dao.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;

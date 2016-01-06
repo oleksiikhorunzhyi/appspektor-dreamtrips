@@ -12,7 +12,11 @@ import static com.worldventures.dreamtrips.BuildConfig.versionPatch;
  */
 public class AppVersionNameBuilder {
 
-    public String versionName() {
+    /**
+     * According to http://semver.org/
+     * example: 1.5.0-beta-16
+     */
+    public String getSemanticVersionName() {
         String name = "";
         if (isCurrentFlavor("dev")) {
             name = "dev";
@@ -28,6 +32,14 @@ public class AppVersionNameBuilder {
             }
         }
         return generateName(name);
+    }
+
+    /**
+     * According to http://semver.org/
+     * example: 1.5.0
+     */
+    public String getReleaseSemanticVersionName() {
+        return String.format("%s.%s.%s", versionMajor, versionMinor, versionPatch);
     }
 
     private boolean isCurrentFlavor(String flavor) {

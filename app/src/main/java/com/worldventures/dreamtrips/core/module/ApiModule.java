@@ -79,7 +79,7 @@ public class ApiModule {
             request.addHeader("Accept-Language", localeHelper.getDefaultLocaleFormatted());
             request.addHeader("Accept", "application/com.dreamtrips.api+json;version=" + BuildConfig.API_VERSION);
 
-            request.addHeader("DT-App-Version", appVersionNameBuilder.versionName());
+            request.addHeader("DT-App-Version", appVersionNameBuilder.getSemanticVersionName());
             request.addHeader("DT-App-Platform", String.format("android-%d", Build.VERSION.SDK_INT));
         };
     }

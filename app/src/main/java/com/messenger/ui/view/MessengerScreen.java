@@ -1,8 +1,7 @@
 package com.messenger.ui.view;
 
-import android.view.ViewGroup;
+import com.messenger.synchmechanism.ConnectionStatus;
 
 public interface MessengerScreen extends ActivityAwareScreen {
-    void showDisconnectedOverlay();
-    void hideDisconnectedOverlay();
+    void onConnectionChanged(ConnectionStatus connectionStatus);
 }

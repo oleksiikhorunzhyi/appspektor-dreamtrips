@@ -29,6 +29,7 @@ public class XmppContactLoader extends AsyncLoader<User> {
 
     @Override
     protected List<User> loadEntities() {
+        // TODO encapsulate roster and use proxy instead
         Roster roster = Roster.getInstanceFor(facade.getConnection());
         if (!roster.isLoaded()) {
             try {

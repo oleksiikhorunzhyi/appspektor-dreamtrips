@@ -4,6 +4,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.listeners.OnChatCreatedListener;
 import com.messenger.messengerservers.listeners.OnLeftChatListener;
 import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
@@ -23,6 +24,7 @@ public abstract class GlobalEventEmitter {
     protected List<UnhandledMessageListener> unhandledMessageListeners = new ArrayList<>();
     protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
     protected List<OnLeftChatListener> onLeftChatListeners = new CopyOnWriteArrayList<>();
+    protected List<OnChatCreatedListener> onChatCreatedListeners = new CopyOnWriteArrayList<>();
 
     public void addHandledConversation(Conversation conversation) {
         handledConversations.add(conversation);
@@ -116,6 +118,20 @@ public abstract class GlobalEventEmitter {
     protected void notifyOnLeftChatListener(String conversationId, String userId) {
         for (OnLeftChatListener listener : onLeftChatListeners) {
             listener.onLeftChatListener(conversationId, userId);
+        }
+    }
+
+    public void addOnChatCreatedListener(OnChatCreatedListener listener) {
+        onChatCreatedListeners.add(listener);
+    }
+
+    public void removeOnChatCreatedListener(OnChatCreatedListener listener) {
+        onChatCreatedListeners.remove(listener);
+    }
+
+    protected void notifyOnChatCreatedListener(String conversationId, boolean createLocally) {
+        for (OnChatCreatedListener listener : onChatCreatedListeners) {
+            listener.onChatCreated(conversationId, createLocally);
         }
     }
 }

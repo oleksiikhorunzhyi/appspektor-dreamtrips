@@ -1,14 +1,16 @@
 package com.messenger.di;
 
+import com.messenger.delegate.LoaderDelegate;
+import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
-import com.raizlabs.android.dbflow.sql.language.Select;
+import com.messenger.storege.dao.ConversationsDAO;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
 import java.util.Date;
 
@@ -18,6 +20,12 @@ public class ChatFacadeInitializer implements AppInitializer {
 
     @Inject
     MessengerServerFacade messengerServerFacade;
+
+    @Inject
+    ConversationsDAO conversationsDAO;
+
+    @Inject
+    DreamSpiceManager spiceManager;
 
     @Override
     public void initialize(Injector injector) {
@@ -29,17 +37,14 @@ public class ChatFacadeInitializer implements AppInitializer {
             public void onReceiveMessage(Message message) {
                 message.setDate(new Date());
                 message.setRead(false);
-                ContentUtils.insert(Message.CONTENT_URI, message);
+                message.save();
 
-                Conversation conversation = new Select()
-                        .from(Conversation.class)
-                        .byIds(message.getConversationId())
-                        .querySingle();
-
-                if (conversation == null) return;
-
-                conversation.setUnreadMessageCount(conversation.getUnreadMessageCount() + 1);
-                conversation.save();
+                conversationsDAO.getConversationWithoutObserve(message.getConversationId())
+                        .filter(conversation -> conversation != null)
+                        .subscribe(conversation -> {
+                            conversation.setUnreadMessageCount(conversation.getUnreadMessageCount() + 1);
+                            conversation.save();
+                        });
             }
 
             @Override
@@ -50,11 +55,23 @@ public class ChatFacadeInitializer implements AppInitializer {
             }
         });
 
-        emiter.addOnSubjectChangesListener((conversationId, subject) -> {
-            final Conversation conversation = new Select().from(Conversation.class).byIds(conversationId).querySingle();
-            if (conversation == null) return; // TODO there should be no such situation, but sync init state is broken
-            conversation.setSubject(subject);
-            conversation.save();
-        });
+        emiter.addOnSubjectChangesListener((conversationId, subject) -> conversationsDAO.getConversationWithoutObserve(conversationId)
+                .subscribe(conversation -> {
+                    if (conversation == null)
+                        return; // TODO there should be no such situation, but sync init state is broken
+                    conversation.setSubject(subject);
+                    conversation.save();
+                }));
+
+        emiter.addOnChatCreatedListener((conversationId, createLocally) ->
+                        conversationsDAO.getConversationWithoutObserve(conversationId)
+                                .filter(conversation -> conversation == null)
+                                .flatMap(conversation -> {
+                                    LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, new UserProcessor(spiceManager));
+                                    return loaderDelegate.loadConversations();
+                                })
+                                .subscribe()
+
+        );
     }
 }

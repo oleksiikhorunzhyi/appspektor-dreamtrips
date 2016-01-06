@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
@@ -22,47 +23,21 @@ public class ParticipantsDAO extends BaseDAO {
     }
 
     @Deprecated
-    public static void delete(ContentResolver resolver, String conversationId, String userId) {
-        resolver.delete(ParticipantsRelationship.CONTENT_URI,
-                ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
-                        ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
-    }
-
-    @Deprecated
     public static Observable<Cursor> selectParticipants(RxContentResolver contentResolver, String conversationId, Uri... observeUris) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
                         "JOIN ParticipantsRelationship p " +
                         "ON p.userId = u._id " +
                         "WHERE p.conversationId = ?")
-                .withSortOrder("ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC")
-                .withSelectionArgs(new String[]{conversationId}).build();
+                .withSelectionArgs(new String[]{conversationId})
+                .withSortOrder(userOrder())
+                .build();
 
         return contentResolver.query(q, observeUris)
                 .subscribeOn(Schedulers.io());
     }
 
-    public Observable<Cursor> getParticipants(String conversationId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users u " +
-                                "JOIN ParticipantsRelationship p " +
-                                "ON p.userId = u._id " +
-                                "WHERE p.conversationId = ?" +
-                                "ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC"
-                ).withSelectionArgs(new String[]{conversationId}).build();
-
-        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io());
-    }
-
-    public void delete(String conversationId, String userId) {
-        getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
-                ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
-                        ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
-    }
-
-    public Observable<User> getMate(String conversationId, String yourId) {
+    public Observable<User> getParticipant(String conversationId, String yourId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
                         "JOIN ParticipantsRelationship p " +
@@ -75,5 +50,58 @@ public class ParticipantsDAO extends BaseDAO {
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> SqlUtils.convertToModel(false, User.class, cursor));
+    }
+
+    public Observable<Cursor> getParticipants(String conversationId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection(participantsSelection("*"))
+                .withSelectionArgs(new String[]{conversationId})
+                .withSortOrder(userOrder())
+                .build();
+
+        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Cursor> getNewParticipantsCandidates(String conversationId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM Users " +
+                        "where (" + User$Table._ID + " not in (" + participantsSelection(User$Table._ID) + "))" +
+                        "and (" + User$Table.FRIEND + " = 1)"
+                )
+                .withSelectionArgs(new String[]{conversationId})
+                .withSortOrder(userOrder())
+                .build();
+
+        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io());
+    }
+
+    @NonNull
+    private static String participantsSelection(String projection) {
+        return "SELECT " + projection + " FROM Users u " +
+                "JOIN ParticipantsRelationship p " +
+                "ON p.userId = u._id " +
+                "WHERE p.conversationId = ?";
+    }
+
+    @NonNull
+    private static String userOrder() {
+        return "ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC";
+    }
+
+    public void delete(String conversationId, String userId) {
+        getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
+                ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
+                        ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
+    }
+
+    @Deprecated
+    public static void delete(ContentResolver resolver, String conversationId, String userId) {
+        resolver.delete(ParticipantsRelationship.CONTENT_URI,
+                ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
+                        ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
     }
 }

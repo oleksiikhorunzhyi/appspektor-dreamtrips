@@ -37,7 +37,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
         getView().setTitle(R.string.new_chat_title);
         usersDAO.getFriends()
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindVisibility())
+                .compose(bindView())
                 .subscribe(this::showContacts);
     }
 

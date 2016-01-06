@@ -6,14 +6,16 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEv
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import javax.inject.Inject;
 
-public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> {
+public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, BucketFullscreenPresenter.View> {
 
     boolean foreign;
 
-    public BucketFullscreenPresenter(boolean foreign) {
+    public BucketFullscreenPresenter(BucketPhoto photo, TripImagesType type, boolean foreign) {
+        super(photo, type);
         this.foreign = foreign;
     }
 
@@ -35,36 +37,8 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
     public void onResume() {
         super.onResume();
         if (bucketItem != null) view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
-    }
-
-    @Override
-    protected boolean isDeleteVisible() {
-        return bucketItem != null;
-    }
-
-    @Override
-    protected boolean isFlagVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isLikeVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isEditVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isCommentVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isShareVisible() {
-        return false;
+        if(bucketItem!=null)  view.showDeleteBtn();
+        else view.hideDeleteBtn();
     }
 
     public void onEvent(BucketItemUpdatedEvent event) {
@@ -77,17 +51,17 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
         if (bucketItem != null) {
             bucketItemManager.deleteBucketItemPhoto(photo, bucketItem, jsonObject -> {
                 view.informUser(context.getString(R.string.photo_deleted));
-                eventBus.postSticky(new PhotoDeletedEvent(photo.getFsId()));
+                eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
             }, this);
         }
     }
 
-    @Override
+
     public void onCheckboxPressed(boolean status) {
         if (bucketItem != null) {
             if (status && !bucketItem.getCoverPhoto().equals(photo)) {
                 view.showCoverProgress();
-                bucketItemManager.updateBucketItemCoverId(bucketItem, photo.getFsId(),
+                bucketItemManager.updateBucketItemCoverId(bucketItem, photo.getFSId(),
                         item ->
                                 view.hideCoverProgress(),
                         spiceException -> {
@@ -96,5 +70,17 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto> 
                         });
             }
         }
+    }
+
+    public interface View extends FullScreenPresenter.View {
+        void showCheckbox(boolean show);
+
+        void showCoverProgress();
+
+        void hideCoverProgress();
+
+        void hideDeleteBtn();
+
+        void showDeleteBtn();
     }
 }

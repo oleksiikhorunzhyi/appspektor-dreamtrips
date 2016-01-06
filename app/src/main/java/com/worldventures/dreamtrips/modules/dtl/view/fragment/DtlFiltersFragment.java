@@ -14,8 +14,8 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterHeaderAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterHeaderAttribute;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -37,7 +37,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
     @InjectView(R.id.recyclerViewFilters)
     protected EmptyRecyclerView recyclerViewFilters;
 
-    protected BaseArrayListAdapter<DtlPlacesFilterAttribute> filtersAdapter;
+    protected BaseArrayListAdapter<DtlMerchantsFilterAttribute> filtersAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -46,8 +46,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
         this.recyclerViewFilters.setLayoutManager(layoutManager);
 
         this.filtersAdapter = new BaseArrayListAdapter<>(getActivity(), this);
-        this.filtersAdapter.registerCell(DtlPlacesFilterHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
-        this.filtersAdapter.registerCell(DtlPlacesFilterAttribute.class, DtlFilterAttributeCell.class);
+        this.filtersAdapter.registerCell(DtlMerchantsFilterHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
+        this.filtersAdapter.registerCell(DtlMerchantsFilterAttribute.class, DtlFilterAttributeCell.class);
 
         recyclerViewFilters.setAdapter(filtersAdapter);
 
@@ -55,7 +55,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
                 getPresenter().distanceChanged(Integer.valueOf(rightValue)));
         rangeBarPrice.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
                 getPresenter().priceChanged(Integer.valueOf(leftValue), Integer.valueOf(rightValue)));
-        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().distanceToggle());
+        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().toggleDistance(isChecked));
     }
 
     @OnClick(R.id.apply)
@@ -94,6 +94,6 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
     private void setupAttributesHeader(DtlFilterData filterData) {
         Collections.sort(filterData.getAmenities());
         filtersAdapter.clearAndUpdateItems(filterData.getAmenities());
-        filtersAdapter.addItem(0, new DtlPlacesFilterHeaderAttribute(getString(R.string.dtl_amenities)));
+        filtersAdapter.addItem(0, new DtlMerchantsFilterHeaderAttribute(getString(R.string.dtl_amenities)));
     }
 }

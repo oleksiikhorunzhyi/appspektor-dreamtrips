@@ -92,6 +92,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDefaultTextEncodingName("utf-8");
         webView.setWebViewClient(new WebViewClient() {
 
             @TargetApi(Build.VERSION_CODES.M)
@@ -118,7 +119,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                         errorText = webView.getContext().getString(R.string.error_webview_default);
                         break;
                 }
-                webView.loadData(errorText, "text", "utf-8");
+                webView.loadData(errorText, "text/html; charset=utf-8", null);
             }
 
             @Override

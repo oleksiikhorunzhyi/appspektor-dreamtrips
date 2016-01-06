@@ -14,8 +14,9 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 
 import butterknife.InjectView;
 
@@ -58,22 +59,13 @@ public class PhotoGalleryCell extends AbstractCell<PhotoGalleryModel> {
     }
 
     private void setImage(Uri uri, SimpleDraweeView draweeView) {
-        PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
-
         if (draweeView.getTag() != null) {
             if (uri.equals(draweeView.getTag())) {
                 return;
             }
         }
 
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setResizeOptions(new ResizeOptions(100, 100))
-                .build();
-        builder.setOldController(draweeView.getController());
-        builder.setImageRequest(request);
-
-        DraweeController dc = builder.build();
-        draweeView.setController(dc);
+        draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));
         draweeView.setTag(uri);
     }
 }

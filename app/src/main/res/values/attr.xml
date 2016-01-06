@@ -27,4 +27,8 @@
         <attr name="gav_avatar_size" format="dimension|reference" />
         <attr name="gav_avatar_spacing" format="dimension|reference" />
     </declare-styleable>
+    <declare-styleable name="HoldableButton">
+        <attr name="holdInitialDelay" format="integer"/>
+        <attr name="holdRepeatDelay" format="integer"/>
+    </declare-styleable>
 </resources>

@@ -6,19 +6,19 @@
     <string name="dtl_locations_or_caption">OR</string>
     <string name="dtl_locations_select_nearby_cities">Select from nearby</string>
     <string name="dtl_locations_select_popular">Discover popular</string>
-    <string name="dtl_place_tab_offers">Offers</string>
-    <string name="dtl_place_tab_dining">Dining</string>
+    <string name="dtl_merchant_tab_offers">Offers</string>
+    <string name="dtl_merchant_tab_dining">Dining</string>
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
     <string name="dtl_points_estimation_explanation">Points calculation explanation goes here</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
-    <string name="dtl_points_estimation_input_hint">Enter amount in USD</string>
+    <string name="dtl_points_estimation_input_hint">Enter amount</string>
     <string name="dtl_header">Point Estimator</string>
     <string name="dtl_points_estimation_default_result">0.0</string>
     <string name="dtl_field_validation_empty_input_error">Cannot be empty!</string>
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance</string>
-    <string name="dtl_receipt_hint">Enter amount in USD</string>
+    <string name="dtl_receipt_hint">Enter amount</string>
     <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
     <string name="dtl_receipt_scan">Capture Receipt</string>
     <string name="dtl_receipt_rescan">Recapture</string>
@@ -58,6 +58,7 @@
     <string name="suggest_merchant_success_snack">Successfully posted!</string>
     <string name="suggest_merchant_contact_name_hint">Contact Name</string>
     <string name="suggest_merchant_phone_number_hint">Phone</string>
+    <string name="suggest_merchant_contact_email_hint">Email</string>
     <string name="suggest_merchant_best_time_contact_caption">Best time for contact</string>
     <string name="suggest_merchant_best_time_contact_switcher">Between</string>
     <string name="suggest_merchant_best_time_contact_from_caption">From:</string>
@@ -77,7 +78,7 @@
     <string name="suggest_merchant_contact_time_past_error_format">\'%s\' field cannot be in the past!</string>
     <string name="suggest_merchant_rating_error_format">\'%s\' rating must be set!</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
-    <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %d DreamTrips points in %s</string>
+    <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %s DreamTrips points in %s</string>
     <string name="dtl_wait_for_location">Wait… Obtaining current location</string>
     <string name="dtl_wait_for_cities">Wait… Obtaining nearest cities</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
@@ -101,4 +102,9 @@
     <string name="dtl_coming_soon_offers">Offers coming soon</string>
     <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
     <string name="rep_suggest_restaurant">Suggest Restaurant</string>
+    <string name="distance_miles" formatted="false">%.1f mi</string>
+    <string name="distance_kms" formatted="false">%.1f km</string>
+    <string name="distance_dialog_miles">Miles</string>
+    <string name="distance_dialog_kms">Kilometers</string>
+    <string name="distance_header">Show distance in:</string>
 </resources>

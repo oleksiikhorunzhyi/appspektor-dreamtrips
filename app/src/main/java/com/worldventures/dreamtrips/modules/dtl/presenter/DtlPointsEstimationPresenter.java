@@ -5,30 +5,48 @@ import android.support.annotation.StringRes;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.place.EstimatePointsRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.EstimatePointsRequest;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+
+import javax.inject.Inject;
 
 public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
     public static final String BILL_TOTAL = "billTotal";
     private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
 
-    protected String placeId;
+    protected final String merchantId;
 
-    public DtlPointsEstimationPresenter(String placeId) {
-        this.placeId = placeId;
+    @Inject
+    DtlMerchantRepository dtlMerchantRepository;
+
+    private DtlMerchant dtlMerchant;
+
+    public DtlPointsEstimationPresenter(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
+        view.showCurrency(dtlMerchant.getDefaultCurrency());
     }
 
     public void onCalculateClicked(String userInput) {
         if (!validateInput(userInput)) return;
         //
         view.showProgress();
-        doRequest(new EstimatePointsRequest(placeId,
+        doRequest(new EstimatePointsRequest(merchantId,
+                dtlMerchant.getDefaultCurrency().getCode(),
                 Double.valueOf(userInput)), aDouble -> {
             view.showEstimatedPoints(aDouble.intValue());
         });
@@ -53,5 +71,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
         void showError(@StringRes int errorRes);
 
         void showEstimatedPoints(int value);
+
+        void showCurrency(DtlCurrency dtlCurrency);
     }
 }

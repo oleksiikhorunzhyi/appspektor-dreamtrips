@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.common.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 
 public class PhotoPickedEvent {
 
-    public final PhotoGalleryModel model;
+    public final BasePhotoPickerModel model;
 
-    public PhotoPickedEvent(PhotoGalleryModel model) {
+    public PhotoPickedEvent(BasePhotoPickerModel model) {
         this.model = model;
     }
 }

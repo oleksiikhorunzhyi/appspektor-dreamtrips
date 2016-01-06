@@ -34,6 +34,7 @@ public class ScaleImageView extends SimpleDraweeView {
     private int prevMoveX;
     private int prevMoveY;
     private GestureDetector detector;
+    private boolean scaleEnabled;
 
     private SingleTapListener singleTapListener;
     private DoubleTapListener doubleTapListener;
@@ -82,6 +83,8 @@ public class ScaleImageView extends SimpleDraweeView {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 if (doubleTapListener != null) doubleTapListener.onDoubleTap();
+                if (!scaleEnabled) return true;
+                //
                 maxZoomTo((int) e.getX(), (int) e.getY());
                 cutting();
                 return true;
@@ -225,6 +228,8 @@ public class ScaleImageView extends SimpleDraweeView {
         if (detector.onTouchEvent(event)) {
             return true;
         }
+        if (!scaleEnabled) return false;
+        //
         int touchCount = event.getPointerCount();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -292,6 +297,10 @@ public class ScaleImageView extends SimpleDraweeView {
 
     public void setDoubleTapListener(DoubleTapListener doubleTapListener) {
         this.doubleTapListener = doubleTapListener;
+    }
+
+    public void setScaleEnabled(boolean scaleEnabled) {
+        this.scaleEnabled = scaleEnabled;
     }
 
     public interface SingleTapListener {

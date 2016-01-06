@@ -5,16 +5,17 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -61,6 +62,10 @@ public class DtlMerchant implements Parcelable {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getAddress1() {
@@ -111,6 +116,11 @@ public class DtlMerchant implements Parcelable {
         return budget;
     }
 
+    //from 1 to 5
+    public void setBudget(int budget) {
+        this.budget = budget;
+    }
+
     public float getRating() {
         return rating;
     }
@@ -119,8 +129,20 @@ public class DtlMerchant implements Parcelable {
         return offers;
     }
 
+    public void setOffers(List<DtlOffer> offers) {
+        this.offers = offers;
+    }
+
     public List<DtlMerchantAttribute> getCategories() {
         return categories;
+    }
+
+    public void setCategories(List<DtlMerchantAttribute> categories) {
+        this.categories = categories;
+    }
+
+    public void setAmenities(List<DtlMerchantAttribute> amenities) {
+        this.amenities = amenities;
     }
 
     public List<DtlMerchantAttribute> getAmenities() {
@@ -135,7 +157,7 @@ public class DtlMerchant implements Parcelable {
         return operationDays;
     }
 
-    public DtlMerchantType getPlaceType() {
+    public DtlMerchantType getMerchantType() {
         return hasNoOffers() ? DtlMerchantType.DINING : DtlMerchantType.OFFER;
     }
 
@@ -144,8 +166,16 @@ public class DtlMerchant implements Parcelable {
     }
 
     public String getPerkDescription() {
-        return Queryable.from(offers)
-                .first(element -> element.equals(DtlOffer.TYPE_PERK)).getOffer().getDescription();
+        DtlOffer<DtlOfferPerkData> dtlOffer = (DtlOffer<DtlOfferPerkData>)
+                Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_PERK));
+        return dtlOffer.getOffer().getDescription();
+    }
+
+    public DtlCurrency getDefaultCurrency() {
+        DtlOffer<DtlOfferPointsData> dtlOffer = (DtlOffer<DtlOfferPointsData>)
+                Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_POINTS));
+
+        return Queryable.from(dtlOffer.getOffer().getCurrencies()).firstOrDefault(DtlCurrency::isDefault);
     }
 
     public boolean hasNoOffers() {
@@ -180,134 +210,121 @@ public class DtlMerchant implements Parcelable {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Parcelable part
+    // Sorting part
     ///////////////////////////////////////////////////////////////////////////
 
-    protected DtlMerchant(Parcel in) {
-        id = in.readString();
-        type = in.readString();
-        partnerStatus = (PartnerStatus) in.readSerializable();
-        displayName = in.readString();
-        address1 = in.readString();
-        address2 = in.readString();
-        city = in.readString();
-        state = in.readString();
-        country = in.readString();
-        zip = in.readString();
-        coordinates = in.readParcelable(Location.class.getClassLoader());
-        phone = in.readString();
-        email = in.readString();
-        description = in.readString();
-        website = in.readString();
-        budget = in.readInt();
-        rating = in.readFloat();
-        offers = in.createTypedArrayList(DtlOffer.CREATOR);
-        categories = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
-        amenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
-        images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
-        operationDays = in.createTypedArrayList(OperationDay.CREATOR);
-        timeZone = in.readString();
+    private transient double distance;
+    private transient DtlFilterData.DistanceType distanceType;
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public void setDistanceType(DtlFilterData.DistanceType distanceType) {
+        this.distanceType = distanceType;
+    }
+
+    public double getDistance() {
+        return distanceType == DtlFilterData.DistanceType.KMS ?
+                DtlLocationHelper.metresToKilometers(distance) :
+                DtlLocationHelper.metresToMiles(distance);
+    }
+
+    public DtlFilterData.DistanceType getDistanceType() {
+        return distanceType;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(type);
-        dest.writeSerializable(partnerStatus);
-        dest.writeString(displayName);
-        dest.writeString(address1);
-        dest.writeString(address2);
-        dest.writeString(city);
-        dest.writeString(state);
-        dest.writeString(country);
-        dest.writeString(zip);
-        dest.writeParcelable(coordinates, flags);
-        dest.writeString(phone);
-        dest.writeString(email);
-        dest.writeString(description);
-        dest.writeString(website);
-        dest.writeInt(budget);
-        dest.writeFloat(rating);
-        dest.writeTypedList(offers);
-        dest.writeTypedList(categories);
-        dest.writeTypedList(amenities);
-        dest.writeTypedList(images);
-        dest.writeTypedList(operationDays);
-        dest.writeString(timeZone);
+    public String toString() {
+        return displayName + " " + distance;
     }
 
-    public static final Creator<DtlMerchant> CREATOR = new Creator<DtlMerchant>() {
+    public static Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
         @Override
-        public DtlMerchant createFromParcel(Parcel in) {
-            return new DtlMerchant(in);
-        }
-
-        @Override
-        public DtlMerchant[] newArray(int size) {
-            return new DtlMerchant[size];
+        public int compare(DtlMerchant lhs, DtlMerchant rhs) {
+            if (lhs.distance == rhs.distance) return 0;
+            if (lhs.distance > rhs.distance) return 1;
+            else return -1;
         }
     };
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable
+    ///////////////////////////////////////////////////////////////////////////
+
 
     @Override
     public int describeContents() {
         return 0;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Filtering part
-    ///////////////////////////////////////////////////////////////////////////
-
-    public boolean containsQuery(String query) {
-        List<DtlMerchantAttribute> categories = getCategories();
-
-        return displayName.toLowerCase().contains(query.toLowerCase()) || (categories != null &&
-                Queryable.from(categories).firstOrDefault(element ->
-                        element.getName().toLowerCase().contains(query.toLowerCase())) != null);
-    }
-
-    public boolean applyFilter(DtlFilterData filterData, LatLng currentLocation) {
-        return checkPrice(filterData.getMinPrice(), filterData.getMaxPrice())
-                && checkDistance(filterData, currentLocation)
-                && checkAmenities(filterData);
-    }
-
-    private boolean checkPrice(int minPrice, int maxPrice) {
-        return budget >= minPrice && budget <= maxPrice;
-    }
-
-    private boolean checkDistance(DtlFilterData filterData, LatLng currentLocation) {
-        return filterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
-                || currentLocation == null
-                || LocationHelper.checkLocation(filterData.getMaxDistance(), currentLocation,
-                new LatLng(coordinates.getLat(), coordinates.getLng()), filterData.getDistanceType());
-    }
-
-    private boolean checkAmenities(DtlFilterData filterData) {
-        List<DtlPlacesFilterAttribute> selectedAmenities = filterData.getSelectedAmenities();
-        return selectedAmenities == null || getAmenities() == null ||
-                !Collections.disjoint(selectedAmenities, Queryable.from(getAmenities()).map(element ->
-                                new DtlPlacesFilterAttribute(element.getName())
-                ).toList());
-    }
-
-    private transient double distanceInMiles;
-
-    public void calculateDistance(LatLng currentLocation) {
-        distanceInMiles = LocationHelper.distanceInMiles(currentLocation,
-                getCoordinates().asLatLng());
-    }
-
     @Override
-    public String toString() {
-        return displayName + " " + distanceInMiles;
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.type);
+        dest.writeInt(this.partnerStatus == null ? -1 : this.partnerStatus.ordinal());
+        dest.writeString(this.displayName);
+        dest.writeString(this.address1);
+        dest.writeString(this.address2);
+        dest.writeString(this.city);
+        dest.writeString(this.state);
+        dest.writeString(this.country);
+        dest.writeString(this.zip);
+        dest.writeParcelable(this.coordinates, 0);
+        dest.writeString(this.phone);
+        dest.writeString(this.email);
+        dest.writeString(this.description);
+        dest.writeString(this.website);
+        dest.writeInt(this.budget);
+        dest.writeFloat(this.rating);
+        dest.writeString(this.timeZone);
+        dest.writeList(this.offers);
+        dest.writeList(this.categories);
+        dest.writeList(this.amenities);
+        dest.writeTypedList(images);
+        dest.writeList(this.operationDays);
+        dest.writeDouble(this.distance);
     }
 
-    public static Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
-        @Override
-        public int compare(DtlMerchant lhs, DtlMerchant rhs) {
-            if (lhs.distanceInMiles == rhs.distanceInMiles) return 0;
-            if (lhs.distanceInMiles > rhs.distanceInMiles) return 1;
-            else return -1;
+    protected DtlMerchant(Parcel in) {
+        this.id = in.readString();
+        this.type = in.readString();
+        int tmpPartnerStatus = in.readInt();
+        this.partnerStatus = tmpPartnerStatus == -1 ? null : PartnerStatus.values()[tmpPartnerStatus];
+        this.displayName = in.readString();
+        this.address1 = in.readString();
+        this.address2 = in.readString();
+        this.city = in.readString();
+        this.state = in.readString();
+        this.country = in.readString();
+        this.zip = in.readString();
+        this.coordinates = in.readParcelable(Location.class.getClassLoader());
+        this.phone = in.readString();
+        this.email = in.readString();
+        this.description = in.readString();
+        this.website = in.readString();
+        this.budget = in.readInt();
+        this.rating = in.readFloat();
+        this.timeZone = in.readString();
+        this.offers = new ArrayList<DtlOffer>();
+        in.readList(this.offers, List.class.getClassLoader());
+        this.categories = new ArrayList<DtlMerchantAttribute>();
+        in.readList(this.categories, List.class.getClassLoader());
+        this.amenities = new ArrayList<DtlMerchantAttribute>();
+        in.readList(this.amenities, List.class.getClassLoader());
+        this.images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
+        this.operationDays = new ArrayList<OperationDay>();
+        in.readList(this.operationDays, List.class.getClassLoader());
+        this.distance = in.readDouble();
+    }
+
+    public static final Parcelable.Creator<DtlMerchant> CREATOR = new Parcelable.Creator<DtlMerchant>() {
+        public DtlMerchant createFromParcel(Parcel source) {
+            return new DtlMerchant(source);
+        }
+
+        public DtlMerchant[] newArray(int size) {
+            return new DtlMerchant[size];
         }
     };
 }

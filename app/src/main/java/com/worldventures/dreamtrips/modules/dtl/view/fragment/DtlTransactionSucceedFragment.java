@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
@@ -24,7 +25,7 @@ import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_transaction_succeed)
-public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, DtlMerchant>
+public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTransactionSucceedPresenter, MerchantIdBundle>
         implements DtlTransactionSucceedPresenter.View {
 
     @InjectView(R.id.total)
@@ -60,16 +61,19 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
     }
 
     @Override
-    public void showShareDialog(int amount, DtlMerchant place) {
+    public void showShareDialog(int amount, DtlMerchant merchant) {
         new ShareDialog(activityRouter.getContext(), type -> {
             getPresenter().trackSharing(type);
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, place.getDisplayName()));
+            shareBundle.setText(getString(R.string.dtl_details_share_title_earned, amount, merchant.getDisplayName()));
             //don't attach media if website exist
-            shareBundle.setShareUrl(place.getWebsite());
-            DtlMerchantMedia media = Queryable.from(place.getImages()).firstOrDefault();
-            if (media != null) shareBundle.setImageUrl(media.getImagePath());
+            shareBundle.setShareUrl(merchant.getWebsite());
+            // don't attach media is website is attached, this image will go nowhere
+            if (TextUtils.isEmpty(merchant.getWebsite())) {
+                DtlMerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
+                if (media != null) shareBundle.setImageUrl(media.getImagePath());
+            }
             router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
                     .data(shareBundle)
                     .build());
@@ -78,7 +82,7 @@ public class DtlTransactionSucceedFragment extends BaseFragmentWithArgs<DtlTrans
 
     @Override
     protected DtlTransactionSucceedPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlTransactionSucceedPresenter(getArgs());
+        return new DtlTransactionSucceedPresenter(getArgs().getMerchantId());
     }
 
 }

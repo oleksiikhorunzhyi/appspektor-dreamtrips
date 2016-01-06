@@ -14,7 +14,12 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
@@ -86,6 +91,30 @@ public class ManagerModule {
         return new DtlFilterDelegate();
     }
 
+    @Singleton
+    @Provides
+    DtlSearchDelegate provideSearchDelegate() {
+        return new DtlSearchDelegate();
+    }
+
+    @Singleton
+    @Provides
+    DtlLocationRepository dtlLocationStore(SnappyRepository snappyRepository) {
+        return new DtlLocationRepository(snappyRepository);
+    }
+
+    @Singleton
+    @Provides
+    DtlMerchantRepository dtlMerchantDelegate(SnappyRepository snappyRepository) {
+        return new DtlMerchantRepository(snappyRepository);
+    }
+
+    @Singleton
+    @Provides
+    LocationDelegate provideLocationDelegate(@ForApplication Context context) {
+        return new LocationDelegate(context);
+    }
+
     @Provides
     FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus) {
         return new FeedEntityManager(eventBus);
@@ -95,5 +124,11 @@ public class ManagerModule {
     @Provides
     LogoutDelegate logoutDelegate(@ForApplication Injector injector) {
         return new LogoutDelegate(injector);
+    }
+
+    @Provides
+    @Singleton
+    PhotoPickerDelegate providePhotoPickerDelegate() {
+        return new PhotoPickerDelegate();
     }
 }

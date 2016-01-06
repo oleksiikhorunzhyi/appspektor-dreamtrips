@@ -6,32 +6,25 @@ import android.content.Context;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
-import com.worldventures.dreamtrips.modules.friends.notification.FriendNotificationFactory;
-import com.messenger.notification.MessengerNotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
+import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 
 import de.greenrobot.event.EventBus;
 
 public class NotificationDelegate {
 
-    private final Context context;
     private final EventBus bus;
     private final SnappyRepository repository;
     private final NotificationManager notificationManager;
     //
-    private final FriendNotificationFactory friendNotificationFactory;
-    private final MessengerNotificationFactory messengerNotificationFactory;
+    private final NotificationFactoryHolder notificationFactoryHolder;
 
-    public NotificationDelegate(Context context, EventBus bus, SnappyRepository repository,
-                                FriendNotificationFactory friendNotificationFactory,
-                                MessengerNotificationFactory messengerNotificationFactory) {
-        this.context = context;
+    public NotificationDelegate(Context context, EventBus bus, SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
         this.bus = bus;
         this.repository = repository;
-        this.friendNotificationFactory = friendNotificationFactory;
-        this.messengerNotificationFactory = messengerNotificationFactory;
+        this.notificationFactoryHolder = notificationFactoryHolder;
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -43,17 +36,22 @@ public class NotificationDelegate {
     }
 
     public void notifyFriendRequestAccepted(UserPushMessage message) {
-        Notification notification = friendNotificationFactory.createFriendRequestAccepted(message);
+        Notification notification = notificationFactoryHolder.getFriendNotificationFactory().createFriendRequestAccepted(message);
         notificationManager.notify(message.userId, notification);
     }
 
     public void notifyFriendRequestReceived(UserPushMessage message) {
-        Notification notification = friendNotificationFactory.createFriendRequestReceived(message);
+        Notification notification = notificationFactoryHolder.getFriendNotificationFactory().createFriendRequestReceived(message);
+        notificationManager.notify(message.userId, notification);
+    }
+
+    public void notifyTaggedOnPhoto(TaggedOnPhotoPushMessage message) {
+        Notification notification = notificationFactoryHolder.getPhotoNotificationFactory().createTaggedOnPhoto(message);
         notificationManager.notify(message.userId, notification);
     }
 
     public void notifyNewMessageReceived(NewMessagePushMessage message) {
-        Notification notification = messengerNotificationFactory.createNewMessage(message);
+        Notification notification = notificationFactoryHolder.getMessengerNotificationFactory().createNewMessage(message);
         notificationManager.notify(message.conversationId.hashCode(), notification);
     }
 

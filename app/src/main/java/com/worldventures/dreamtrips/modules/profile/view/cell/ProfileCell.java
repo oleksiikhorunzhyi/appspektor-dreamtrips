@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
@@ -288,11 +289,15 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     }
 
     public void setTripImagesCount(int count) {
-        tripImages.setText(String.format(context.getString(R.string.profile_trip_images), count));
+        int stringResource = QuantityHelper.chooseResource(count, R.string.profile_zero_trip_images,
+                R.string.profile_trip_images, R.string.profile_trip_images);
+        tripImages.setText(String.format(context.getString(stringResource), count));
     }
 
     public void setBucketItemsCount(int count) {
-        buckets.setText(String.format(context.getString(R.string.profile_bucket_list), count));
+        int stringResource = QuantityHelper.chooseResource(count, R.string.profile_zero_bucket_list,
+                R.string.profile_bucket_list, R.string.profile_bucket_list);
+        buckets.setText(String.format(context.getString(stringResource), count));
     }
 
     public void setSocial(Boolean isEnabled) {

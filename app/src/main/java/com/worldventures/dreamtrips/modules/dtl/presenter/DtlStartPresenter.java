@@ -3,53 +3,53 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.location.Location;
 
 import com.google.android.gms.common.api.Status;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 
 import javax.inject.Inject;
 
 import icepick.State;
-import timber.log.Timber;
 
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
     @State
     boolean initialized;
-
+    //
     @Inject
-    LocationDelegate locationDelegate;
+    LocationDelegate gpsLocationDelegate;
     @Inject
-    SnappyRepository db;
+    DtlLocationRepository dtlLocationRepository;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        gpsLocationDelegate.setPermissionView(view);
+        //
         if (initialized) return;
         initialized = true;
         //
-        DtlLocation dtlLocation = db.getSelectedDtlLocation();
+        DtlLocation dtlLocation = dtlLocationRepository.getSelectedLocation();
         if (dtlLocation != null) {
             TrackingHelper.dtlLocationLoaded(dtlLocation.getId());
-            view.openMerchants(new PlacesBundle(dtlLocation));
-        }
-        else
+            view.openMerchants();
+        } else {
             view.openDtlLocationsScreen();
+        }
     }
 
-    public void onEvent(RequestLocationUpdateEvent event) {
-        view.checkPermissions();
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     public void permissionGranted() {
-        view.bind(locationDelegate.requestLocationUpdate()
+        view.bind(gpsLocationDelegate.requestLocationUpdate()
                 .compose(new IoToMainComposer<>()))
                 .subscribe(this::onLocationObtained, this::onLocationError);
     }
@@ -61,24 +61,24 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     private void onLocationError(Throwable e) {
         if (e instanceof LocationDelegate.LocationException)
             onStatusError(((LocationDelegate.LocationException) e).getStatus());
-        else Timber.e(e, "Something went wrong while location update");
+        else locationNotGranted();
     }
 
     private void onLocationObtained(Location location) {
-        eventBus.post(new LocationObtainedEvent(location));
+        gpsLocationDelegate.onLocationObtained(location);
     }
 
     public void locationNotGranted() {
-        eventBus.post(new LocationObtainedEvent());
+        gpsLocationDelegate.onLocationObtained(null);
     }
 
-    public interface View extends RxView {
+    public interface View extends RxView, PermissionView {
         void checkPermissions();
 
         void resolutionRequired(Status status);
 
         void openDtlLocationsScreen();
 
-        void openMerchants(PlacesBundle placesBundle);
+        void openMerchants();
     }
 }

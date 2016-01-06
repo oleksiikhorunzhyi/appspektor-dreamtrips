@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRe
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -210,13 +210,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     public void openBucketList() {
-        view.openBucketList(Route.FOREIGN_BUCKET_LIST, new ForeignBucketTabsBundle(user));
+        view.openBucketList(Route.FOREIGN_BUCKET_TABS, new ForeignBucketTabsBundle(user));
     }
 
     @Override
     public void openTripImages() {
-        view.openTripImages(Route.FOREIGN_TRIP_IMAGES,
-                new TripsImagesBundle(TripImagesListFragment.Type.FOREIGN_IMAGES, user.getId()));
+        view.openTripImages(Route.TRIP_LIST_IMAGES,
+                new TripsImagesBundle(TripImagesType.MEMBERS_IMAGES, user.getId()));
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

@@ -4,10 +4,11 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.dtl.api.place.RatePlaceRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.RateMerchantRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import javax.inject.Inject;
 
@@ -15,17 +16,26 @@ import icepick.State;
 
 public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucceedPresenter.View> {
 
-    private final DtlMerchant DtlMerchant;
+    private final String merchantId;
+    private DtlMerchant dtlMerchant;
     private DtlTransaction dtlTransaction;
 
     @Inject
     SnappyRepository snapper;
+    @Inject
+    DtlMerchantRepository dtlMerchantRepository;
 
     @State
     int stars;
 
-    public DtlTransactionSucceedPresenter(DtlMerchant DtlMerchant) {
-        this.DtlMerchant = DtlMerchant;
+    public DtlTransactionSucceedPresenter(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
     }
 
     public void rate(int stars) {
@@ -33,19 +43,19 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
     }
 
     public void share() {
-        view.showShareDialog((int) dtlTransaction.getDtlTransactionResult().getEarnedPoints(), DtlMerchant);
+        view.showShareDialog((int) dtlTransaction.getDtlTransactionResult().getEarnedPoints(), dtlMerchant);
     }
 
     public void done() {
         if (stars != 0)
-            doRequest(new RatePlaceRequest(DtlMerchant.getId(),
+            doRequest(new RateMerchantRequest(merchantId,
                     stars, dtlTransaction.getDtlTransactionResult().getId()));
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlTransaction = snapper.getDtlTransaction(DtlMerchant.getId());
+        dtlTransaction = snapper.getDtlTransaction(merchantId);
         view.setCongratulations(dtlTransaction.getDtlTransactionResult());
     }
 

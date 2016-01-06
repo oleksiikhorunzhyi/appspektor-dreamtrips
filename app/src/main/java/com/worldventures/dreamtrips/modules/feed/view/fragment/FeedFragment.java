@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
@@ -52,15 +53,13 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         restorePostIfNeeded();
 
         if (isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setContainerId(R.id.additional_info_container);
-
-            NavigationBuilder.create()
-                    .with(fragmentCompass)
+            router.moveTo(Route.FEED_LIST_ADDITIONAL_INFO, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(false)
+                    .fragmentManager(getChildFragmentManager())
+                    .containerId(R.id.additional_info_container)
                     .data(new FeedAdditionalInfoBundle(getPresenter().getAccount()))
-                    .attach(Route.FEED_LIST_ADDITIONAL_INFO);
+                    .build());
         }
-
     }
 
     @Override

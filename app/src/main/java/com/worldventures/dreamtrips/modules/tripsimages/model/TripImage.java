@@ -50,42 +50,42 @@ public class TripImage implements IFullScreenObject {
     }
 
     @Override
-    public String getFsDescription() {
+    public String getFSDescription() {
         return description;
     }
 
     @Override
-    public String getFsShareText() {
+    public String getFSShareText() {
         return "";
     }
 
     @Override
-    public String getFsId() {
+    public String getFSId() {
         return id;
     }
 
     @Override
-    public int getFsCommentCount() {
+    public int getFSCommentCount() {
         return -1;
     }
 
     @Override
-    public int getFsLikeCount() {
+    public int getFSLikeCount() {
         return -1;
     }
 
     @Override
-    public String getFsLocation() {
+    public String getFSLocation() {
         return null;
     }
 
     @Override
-    public String getFsDate() {
+    public String getFSDate() {
         return "";
     }
 
     @Override
-    public String getFsUserPhoto() {
+    public String getFSUserPhoto() {
         return "";
     }
 

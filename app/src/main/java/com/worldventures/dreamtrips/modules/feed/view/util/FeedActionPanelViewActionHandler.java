@@ -67,7 +67,7 @@ public class FeedActionPanelViewActionHandler {
             case PHOTO:
                 Photo photo = (Photo) feedItem.getItem();
                 shareUrl = photo.getFSImage().getUrl();
-                text = photo.getFsShareText();
+                text = photo.getFSShareText();
 
                 break;
 

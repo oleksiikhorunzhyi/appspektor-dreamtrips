@@ -17,14 +17,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlaceDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlSearchPlaceRequestEvent;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceSearchViewDelegate;
+import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
@@ -34,31 +31,43 @@ import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import butterknife.InjectView;
 import icepick.State;
 
-@Layout(R.layout.fragment_dtl_places_map)
+@Layout(R.layout.fragment_dtl_merchant_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    SearchViewHelper searchViewHelper;
     //
-    PlacesMapBundle bundle;
+    DtlMapBundle bundle;
+    //
     @State
     LatLng selectedLocation;
-
     @State
     String lastQuery;
-
+    //
     private ClusterManager<DtlClusterItem> clusterManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cameraAnimationDuration = 400;
+        bundle = getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
     }
 
     @Override
     protected DtlMapPresenter createPresenter(Bundle savedInstanceState) {
-        bundle = getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
-        return new DtlMapPresenter(bundle);
+        return new DtlMapPresenter();
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        // monkey patch to prevent opening this over proper landscape layout
+        // after rotating from portrait
+        if (!bundle.isSlave() && isTabletLandscape()) {
+            navigateBack();
+            return;
+        }
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -66,21 +75,16 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        new DtlPlaceSearchViewDelegate(getContext()).init(searchItem, lastQuery, query -> {
+        searchViewHelper = new SearchViewHelper();
+        searchViewHelper. init(searchItem, lastQuery, query -> {
             lastQuery = query;
-            eventBus.post(new DtlSearchPlaceRequestEvent(query));
+            getPresenter().applySearch(query);
         });
-
+        //
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_list:
-                    router.moveTo(Route.DTL_PLACES_HOLDER, NavigationConfigBuilder.forFragment()
-                            .data(new PlacesBundle(bundle.getLocation()))
-                            .fragmentManager(getFragmentManager())
-                            .backStackEnabled(false)
-                            .clearBackStack(true)
-                            .containerId(R.id.dtl_container)
-                            .build());
+                    navigateBack();
                     return true;
                 case R.id.action_dtl_filter:
                     ((MainActivity) getActivity()).openRightDrawer();
@@ -109,7 +113,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             getPresenter().onMarkerClick(dtlClusterItem.getId());
             return true;
         });
-
+        //
         clusterManager.setOnClusterClickListener(cluster -> {
             if (googleMap.getCameraPosition().zoom >= 17.0f) {
                 selectedLocation = cluster.getPosition();
@@ -119,7 +123,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
             return true;
         });
-
+        //
         getPresenter().onMapLoaded();
     }
 
@@ -147,12 +151,21 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void showPlaceInfo(DtlMerchant DtlMerchant) {
+    public void showMerchantInfo(String merchantId) {
         router.moveTo(Route.DTL_MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(new PlaceDetailsBundle(DtlMerchant, bundle.isSlave()))
+                .data(new DtlMerchantDetailsBundle(merchantId, bundle.isSlave()))
+                .build());
+    }
+
+    private void navigateBack() {
+        router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
+                .fragmentManager(getFragmentManager())
+                .backStackEnabled(false)
+                .clearBackStack(true)
+                .containerId(R.id.dtl_container)
                 .build());
     }
 
@@ -182,11 +195,14 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        searchViewHelper.dropHelper();
+        //
         if (clusterManager != null) {
             clusterManager.setOnClusterClickListener(null);
             clusterManager.setOnClusterItemClickListener(null);
         }
+        //
+        super.onDestroyView();
     }
 
     @Override

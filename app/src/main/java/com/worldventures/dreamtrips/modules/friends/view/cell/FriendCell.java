@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import butterknife.OnClick;
@@ -17,8 +15,11 @@ public class FriendCell extends BaseUserCell {
 
     FriendActionDialogDelegate dialog;
 
+    private DrawableUtil drawableUtil;
+
     public FriendCell(View view) {
         super(view);
+        drawableUtil = new DrawableUtil(view.getContext());
     }
 
     @Override
@@ -39,10 +40,8 @@ public class FriendCell extends BaseUserCell {
     }
 
     @OnClick(R.id.tv_actions)
-    public void onAction(View v) {
-        sdvAvatar.buildDrawingCache();
-        Drawable profileIcon = new BitmapDrawable(v.getResources(), Bitmap.createBitmap(sdvAvatar.getDrawingCache()));
-        sdvAvatar.destroyDrawingCache();
-        dialog.showFriendDialog(getModelObject(), profileIcon);
+    public void onAction() {
+        sdvAvatar.setDrawingCacheEnabled(true);
+        dialog.showFriendDialog(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
     }
 }

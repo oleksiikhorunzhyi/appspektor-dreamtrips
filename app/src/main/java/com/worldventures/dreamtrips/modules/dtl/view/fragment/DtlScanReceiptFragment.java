@@ -16,16 +16,18 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.AmountValidator;
+import com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,7 +40,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.fragment_scan_receipt)
 @MenuResource(R.menu.menu_mock)
-public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, DtlMerchant>
+public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, MerchantIdBundle>
         implements DtlScanReceiptPresenter.View {
 
     @InjectView(R.id.verify)
@@ -53,8 +55,10 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     FabButton fabProgress;
     @InjectView(R.id.fabbutton_circle)
     CircleImageView circleView;
-    @InjectView(R.id.amount_input)
-    DTEditText amountInput;
+    @InjectView(R.id.inputPoints)
+    CurrencyDTEditText amountInput;
+    @InjectView(R.id.currency)
+    TextView currencyHint;
     @InjectView(R.id.scan_receipt_note)
     TextView scanReceiptNode;
 
@@ -104,7 +108,7 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
 
     @Override
     protected DtlScanReceiptPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlScanReceiptPresenter(getArgs());
+        return new DtlScanReceiptPresenter(getArgs().getMerchantId());
     }
 
     @Override
@@ -138,6 +142,12 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
     }
 
     @Override
+    public void showCurrency(DtlCurrency currency) {
+        currencyHint.setText(currency.getCurrencyHint());
+        amountInput.setCurrencySymbol(currency.getPrefix());
+    }
+
+    @Override
     public void enableVerification() {
         verify.setEnabled(true);
     }
@@ -165,7 +175,8 @@ public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptP
         progressDialog.show(getFragmentManager());
     }
 
-    public void openVerify(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction) {
+    @Override
+    public void openVerify(DtlTransaction dtlTransaction) {
         progressDialog.dismiss();
         dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
     }

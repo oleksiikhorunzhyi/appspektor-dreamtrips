@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager.FailureListener;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.modules.feed.api.SubscribeDeviceCommand;
 
 import javax.inject.Inject;
@@ -22,6 +23,8 @@ public class RegistrationIntentService extends InjectingIntentService {
     SnappyRepository db;
     @Inject
     DreamSpiceManager spiceManager;
+    @Inject
+    AppVersionNameBuilder appVersionNameBuilder;
 
     public RegistrationIntentService() {
         super("RegistrationIntentService");
@@ -51,7 +54,7 @@ public class RegistrationIntentService extends InjectingIntentService {
     }
 
     private void sendTokenToServer(String token) {
-        spiceManager.execute(new SubscribeDeviceCommand(token),
+        spiceManager.execute(new SubscribeDeviceCommand(token, appVersionNameBuilder.getReleaseSemanticVersionName()),
                 v -> saveToken(token),
                 FailureListener.STUB
         );

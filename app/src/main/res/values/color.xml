@@ -69,6 +69,9 @@
     <color name="share_photo_bg_color">#EEEEEE</color>
     <color name="picker_panel_blue">#005E92</color>
 
+    <color name="tag_view_background">#73000000</color>
+    <color name="tag_view_background_border">#73ffffff</color>
+
     <color name="in_app_notif_background">#2F2F2F</color>
 
     <!--messenger-->
@@ -111,7 +114,6 @@
     <color name="conversation_list_more_button_background">#505050</color>
     <color name="conversation_list_delete_button_background">#FA6D6D</color>
     <color name="conversation_list_closed_conversation">#FB7687</color>
-    <!--end messenger-->
 
     <!-- Chat settings screen -->
     <color name="chat_settings_chat_name_title_textview">#0F0F0F</color>
@@ -128,4 +130,6 @@
 
     <color name="in_app_notification_title_text_color">#dd000000</color>
     <color name="in_app_notification_subtitle_text_color">#8A000000</color>
+
+    <!--end messenger-->
 </resources>

@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
-import com.worldventures.dreamtrips.modules.common.api.BODY_DELETE;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
+import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -30,10 +30,14 @@ import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 
 import org.json.JSONObject;
@@ -94,19 +98,16 @@ public interface DreamTripsApi {
     List<ActivityModel> getActivities();
 
     @GET("/api/photos")
-    ArrayList<Photo> getUsersPhotos(@Query("per_page") int perPage, @Query("page") int page);
-
-    @GET("/api/users/{id}/photos")
-    ArrayList<Photo> getAccountPhotos(@Path("id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    ArrayList<Photo> getMembersPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/users/{user_id}/photos")
-    ArrayList<Photo> getForeignUserPhotos(@Path("user_id") int currentUserId, @Query("per_page") int query, @Query("page") int page);
+    ArrayList<Photo> getUserPhotos(@Path("user_id") int userId, @Query("per_page") int query, @Query("page") int page);
 
     @GET("/api/inspirations?random_seed=1")
     ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
 
     @GET("/api/ysbh_photos")
-    ArrayList<Photo> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
+    ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
     @GET("/api/success_stories")
     ArrayList<SuccessStory> getSuccessStores();
@@ -316,7 +317,7 @@ public interface DreamTripsApi {
     Void addToGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
     @FormUrlEncoded
-    @BODY_DELETE("/api/social/circles/{circle_id}/users")
+    @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
     Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
     @POST("/api/{uid}/likes")
@@ -359,4 +360,13 @@ public interface DreamTripsApi {
 
     @GET("/api/social/friends/{userId}/mutual/")
     ArrayList<User> getMutualFriends(@Path("userId") int userId);
+
+    @POST("/api/photos/{uid}/tags")
+    ArrayList<PhotoTag> addPhotoTags(@Path("uid") String photoId, @Body AddPhotoTag addTag);
+
+    @DELETE_WITH_BODY("/api/photos/{uid}/tags")
+    Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
+
+    @GET("/api/photos/{uid}")
+    Photo getPhotoInfo(@Path("uid") String uid);
 }

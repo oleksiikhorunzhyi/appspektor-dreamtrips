@@ -72,12 +72,12 @@ public class Inspiration implements IFullScreenObject, Parcelable {
     }
 
     @Override
-    public String getFsDescription() {
+    public String getFSDescription() {
         return String.format("\"%s\"", quote);
     }
 
     @Override
-    public String getFsShareText() {
+    public String getFSShareText() {
         return quote + " -" + author;
     }
 
@@ -100,7 +100,7 @@ public class Inspiration implements IFullScreenObject, Parcelable {
     }
 
     @Override
-    public String getFsId() {
+    public String getFSId() {
         return id;
     }
 
@@ -109,27 +109,27 @@ public class Inspiration implements IFullScreenObject, Parcelable {
     }
 
     @Override
-    public int getFsCommentCount() {
+    public int getFSCommentCount() {
         return -1;
     }
 
     @Override
-    public int getFsLikeCount() {
+    public int getFSLikeCount() {
         return -1;
     }
 
     @Override
-    public String getFsLocation() {
+    public String getFSLocation() {
         return "";
     }
 
     @Override
-    public String getFsDate() {
+    public String getFSDate() {
         return "";
     }
 
     @Override
-    public String getFsUserPhoto() {
+    public String getFSUserPhoto() {
         return "";
     }
 

@@ -55,6 +55,10 @@ public class Schedule implements Serializable {
                 (endOn.equals(dateFilterItem.getEndDate()) || endOn.before(dateFilterItem.getEndDate()));
     }
 
+    public String getStartDateString() {
+        return simpleDateFormatMonthDay.format(getStartDate());
+    }
+
     @Override
     public String toString() {
         Calendar calendarStart = Calendar.getInstance(TimeZone.getTimeZone("UTC"));

@@ -1,26 +1,34 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.app.Activity;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -45,6 +53,10 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     protected DTEditText etTime;
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
+    @InjectView(R.id.taggable_holder)
+    protected CreationPhotoTaggableHolderViewGroup taggableImageHolder;
+    @InjectView(R.id.tag)
+    protected ImageView tag;
 
     private Uri uri;
 
@@ -59,6 +71,19 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
         ivImage.setController(GraphicUtils.provideFrescoResizingController(uri, ivImage.getController()));
+        taggableImageHolder.setup(this, null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        OrientationUtil.lockOrientation(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Override
@@ -68,10 +93,62 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         return new CreatePhotoPresenter(type);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        taggableImageHolder.post(() -> {
+            if (taggableImageHolder.isShown()) {
+                showTagViewGroup();
+            } else {
+                hideTagViewGroup();
+            }
+            taggableImageHolder.restoreState();
+        });
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
     @OnClick(R.id.btn_save)
     public void onActionSave() {
         getPresenter().saveAction();
+    }
+
+    @OnClick(R.id.tag)
+    public void onTag() {
+        if (!taggableImageHolder.isSetuped()) return;
+        //
+        if (taggableImageHolder.isShown()) {
+            hideTagViewGroup();
+        } else {
+            showTagViewGroup();
+        }
+    }
+
+    protected void showTagViewGroup() {
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+        tag.setSelected(true);
+        RectF imageBounds = new RectF();
+        ivImage.getHierarchy().getActualImageBounds(imageBounds);
+        taggableImageHolder.show(imageBounds);
+    }
+
+    protected void hideTagViewGroup() {
+        tag.setSelected(false);
+        taggableImageHolder.hide();
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+    }
+
+    @Override
+    public List<PhotoTag> getTagsToUpload() {
+        return taggableImageHolder.getTagsToUpload();
     }
 
     @Override

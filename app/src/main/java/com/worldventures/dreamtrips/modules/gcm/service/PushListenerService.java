@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
+import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ public class PushListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         Timber.i("Push message received: " + data);
         PushMessage message = parser.parseMessage(data, PushMessage.class);
+        if (message == null) return;
         //
         switch (message.type) {
             case ACCEPT_REQUEST:
@@ -38,6 +40,9 @@ public class PushListenerService extends GcmListenerService {
                 break;
             case SEND_REQUEST:
                 delegate.notifyFriendRequestReceived(parser.parseMessage(data, UserPushMessage.class));
+                break;
+            case TAGGED_ON_PHOTO:
+                delegate.notifyTaggedOnPhoto(parser.parseMessage(data, TaggedOnPhotoPushMessage.class));
                 break;
             case NEW_MESSAGE:
                 delegate.notifyNewMessageReceived(parser.parseMessage(data, NewMessagePushMessage.class));

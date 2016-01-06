@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
+import com.facebook.Session;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -135,6 +136,9 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
             pickImageDelegate.setImageCallback(this::imagePicked);
             pickImageDelegate.onActivityResult(requestCode, resultCode, data);
         }
+
+        if (Session.getActiveSession() != null && requestCode == Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE)
+            Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override

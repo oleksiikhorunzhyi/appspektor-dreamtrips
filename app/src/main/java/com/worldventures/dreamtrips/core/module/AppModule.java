@@ -47,6 +47,7 @@ import dagger.Provides;
                 NavigationModule.class,
                 //
                 LocaleModule.class,
+                AppVersionNameModule.class,
                 //
                 XmppServerModule.class,
                 MessengerModule.class

@@ -4,31 +4,26 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class FullScreenPhotoBundle implements Parcelable {
 
     private IFullScreenObject photo;
-    private TripImagesListFragment.Type type;
+    private TripImagesType type;
     private boolean foreign;
 
-    public FullScreenPhotoBundle(IFullScreenObject photo, TripImagesListFragment.Type type, boolean foreign) {
+    public FullScreenPhotoBundle(IFullScreenObject photo, TripImagesType type, boolean foreign) {
         this.photo = photo;
         this.type = type;
         this.foreign = foreign;
-    }
-
-    protected FullScreenPhotoBundle(Parcel in) {
-        photo = in.readParcelable(IFullScreenObject.class.getClassLoader());
-        type = (TripImagesListFragment.Type) in.readSerializable();
-        foreign = in.readByte() == 1;
     }
 
     public IFullScreenObject getPhoto() {
         return photo;
     }
 
-    public TripImagesListFragment.Type getType() {
+    public TripImagesType getType() {
         return type;
     }
 
@@ -36,27 +31,32 @@ public class FullScreenPhotoBundle implements Parcelable {
         return foreign;
     }
 
-    public static final Creator<FullScreenPhotoBundle> CREATOR = new Creator<FullScreenPhotoBundle>() {
-        @Override
-        public FullScreenPhotoBundle createFromParcel(Parcel in) {
-            return new FullScreenPhotoBundle(in);
-        }
-
-        @Override
-        public FullScreenPhotoBundle[] newArray(int size) {
-            return new FullScreenPhotoBundle[size];
-        }
-    };
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(photo, i);
-        parcel.writeSerializable(type);
-        parcel.writeByte((byte) (foreign ? 1 : 0));
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.photo, 0);
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+        dest.writeByte(foreign ? (byte) 1 : (byte) 0);
     }
+
+    protected FullScreenPhotoBundle(Parcel in) {
+        this.photo = in.readParcelable(IFullScreenObject.class.getClassLoader());
+        int tmpTab = in.readInt();
+        this.type = tmpTab == -1 ? null : TripImagesType.values()[tmpTab];
+        this.foreign = in.readByte() != 0;
+    }
+
+    public static final Creator<FullScreenPhotoBundle> CREATOR = new Creator<FullScreenPhotoBundle>() {
+        public FullScreenPhotoBundle createFromParcel(Parcel source) {
+            return new FullScreenPhotoBundle(source);
+        }
+
+        public FullScreenPhotoBundle[] newArray(int size) {
+            return new FullScreenPhotoBundle[size];
+        }
+    };
 }

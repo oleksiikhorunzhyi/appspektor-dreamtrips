@@ -1,204 +1,224 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
+import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
-import com.worldventures.dreamtrips.modules.dtl.bundle.PlacesBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.LocationObtainedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.RequestLocationUpdateEvent;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlLocationSearchDelegate;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.State;
-import rx.Observable;
-import timber.log.Timber;
 
-public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View> {
+public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
+        implements DtlLocationRepository.LocationsLoadedListener, LocationDelegate.LocationListener,
+        DtlLocationSearchDelegate.Listener {
 
     @Inject
-    SnappyRepository db;
-
+    DtlLocationRepository dtlLocationRepository;
+    @Inject
+    DtlMerchantRepository dtlMerchantRepository;
+    //
+    private DtlLocationSearchDelegate searchDelegate;
+    //
     @State
-    ArrayList<DtlLocation> dtlLocations;
+    ArrayList<DtlLocation> dtlLocations = new ArrayList<>();
     @State
     Status status = Status.NEARBY;
-
-    DtlLocation selectedLocation;
     //
+    private Location userGpsLocation;
+    @Inject
+    LocationDelegate gpsLocationDelegate;
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlLocationRepository.setRequestingPresenter(this);
+        searchDelegate = new DtlLocationSearchDelegate();
+        searchDelegate.setRequestingPresenter(this);
+    }
+
+    @Override
+    public void saveInstanceState(Bundle outState) {
+        super.saveInstanceState(outState);
+        searchDelegate.saveInstanceState(outState);
+    }
+
+    @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
+        searchDelegate.restoreInstanceState(savedState);
+    }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
+        dtlLocationRepository.attachListener(this);
+        gpsLocationDelegate.attachListener(this);
+        searchDelegate.attachListener(this);
         //
-        if (dtlLocations != null || searchLocations != null) {
-            setItems();
-            return;
+        if (status.equals(Status.NEARBY)) {
+            if (dtlLocations.isEmpty()) {
+                gpsLocationDelegate.tryRequestLocation();
+                view.showGpsObtainingProgress();
+            } else {
+                view.hideProgress();
+                setItems(dtlLocations);
+            }
+        } else {
+            view.hideProgress();
+            searchDelegate.requestSavedSearchResults();
         }
-
-        searchLocations = new ArrayList<>();
-        dtlLocations = new ArrayList<>();
-
-        selectedLocation = db.getSelectedDtlLocation();
-        //
-        eventBus.post(new RequestLocationUpdateEvent());
-
-        view.startLoading();
     }
 
-    public void onEvent(LocationObtainedEvent event) {
-        if (event.getLocation() != null) loadNearbyCities(event.getLocation());
-        else {
-            view.finishLoading();
+    @Override
+    public void dropView() {
+        gpsLocationDelegate.detachListener(this);
+        dtlLocationRepository.detachListener(this);
+        searchDelegate.detachListener();
+        searchDelegate.unsetRequestingPresenter();
+        dtlLocationRepository.detachRequestingPresenter();
+        super.dropView();
+    }
+
+    @Override
+    public void onLocationObtained(Location location) {
+        if (location != null) {
+            userGpsLocation = location;
+            view.showLocationsObtainingProgress();
+            dtlLocationRepository.loadNearbyLocations(userGpsLocation);
+        } else {
+            view.hideProgress();
             view.showSearch();
         }
     }
 
-    private void loadNearbyCities(Location currentLocation) {
-        view.citiesLoadingStarted();
-        doRequest(new GetDtlLocationsQuery(currentLocation.getLatitude(),
-                        currentLocation.getLongitude()),
-                dtlLocations -> onNearbyLocationLoaded(dtlLocations, currentLocation));
+    @Override
+    public void onLocationsLoaded(List<DtlLocation> locations) {
+        if (locations.isEmpty()) {
+            view.showSearch();
+            return;
+        } else if (dtlLocationRepository.getSelectedLocation() == null) {
+            selectNearest(locations, userGpsLocation);
+        } else {
+            showLoadedLocations(locations);
+        }
     }
 
-    private void onNearbyLocationLoaded(ArrayList<DtlLocation> dtlLocations, Location currentLocation) {
-        this.dtlLocations = dtlLocations;
-        view.finishLoading();
-        setItems();
-
-        if (dtlLocations.isEmpty()) view.showSearch();
-        else if (selectedLocation == null) selectNearest(currentLocation);
+    private void showLoadedLocations(List<DtlLocation> locations) {
+        view.hideProgress();
+        dtlLocations.clear();
+        dtlLocations.addAll(locations);
+        setItems(dtlLocations);
     }
 
-    private void selectNearest(Location currentLocation) {
+    @Override
+    public void onLocationsFailed(SpiceException exception) {
+        handleError(exception);
+    }
+
+    private void selectNearest(List<DtlLocation> dtlLocations, Location currentGpsLocation) {
         DtlLocation dtlLocation = Queryable.from(dtlLocations)
-                .min(new DtlLocation.DtlNearestComparator(currentLocation));
+                .min(new DtlLocation.DtlNearestComparator(currentGpsLocation));
         onLocationSelected(dtlLocation);
     }
 
     public void onLocationSelected(DtlLocation location) {
-        trackLocationSelection(location);
-        DtlLocation currentLocation = db.getSelectedDtlLocation();
-        if (currentLocation == null || !location.getId().equals(currentLocation.getId())) {
-            db.saveSelectedDtlLocation(location);
-            db.clearMerchantData();
-        }
-        view.showMerchants(new PlacesBundle(location));
-    }
-
-    private void setItems() {
-        view.setSearchHintVisibility(!(status == Status.SEARCH && !dtlLocations.isEmpty()));
-        view.setItems(status == Status.NEARBY ? dtlLocations : searchLocations);
+        trackLocationSelection(dtlLocationRepository.getSelectedLocation(), location);
+        dtlLocationRepository.persistLocation(location);
+        dtlMerchantRepository.clean();
+        view.navigateToMerchants();
     }
 
     /**
      * Analytic-related
      */
-    private void trackLocationSelection(DtlLocation location) {
-        if (db.getSelectedDtlLocation() != null)
-            TrackingHelper.dtlChangeLocation(location.getId());
+    private void trackLocationSelection(DtlLocation previousLocation, DtlLocation newLocation) {
+        if (previousLocation != null)
+            TrackingHelper.dtlChangeLocation(newLocation.getId());
         String locationSelectType = status.equals(Status.NEARBY) ?
                 TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_NEARBY : TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_SEARCH;
-        TrackingHelper.dtlSelectLocation(locationSelectType, location.getId());
+        TrackingHelper.dtlSelectLocation(locationSelectType, newLocation.getId());
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Search stuff
     ///////////////////////////////////////////////////////////////////////////
 
-    public static final int SEARCH_SYMBOL_COUNT = 3;
-
-    @State
-    String caption;
-    @State
-    ArrayList<DtlLocation> searchLocations;
-
-    private GetDtlLocationsQuery getDtlLocationsQuery;
+    public void searchOpened() {
+        status = Status.SEARCH;
+        setItems(Collections.EMPTY_LIST);
+    }
 
     public void searchClosed() {
         status = Status.NEARBY;
-        setItems();
+        searchDelegate.dismissDelegate();
+        view.hideProgress();
+        setItems(dtlLocations);
     }
 
-    public void searchOpened() {
-        status = Status.SEARCH;
-        setItems();
+    public void search(String query) {
+        searchDelegate.performSearch(query);
     }
 
-    public void search(String caption) {
-        if (view != null) {
-            int oldLength = this.caption != null ? this.caption.length() : 0;
-
-            this.caption = caption;
-
-            boolean apiSearch = oldLength < caption.length() &&
-                    caption.length() == SEARCH_SYMBOL_COUNT;
-
-            if (caption.length() < SEARCH_SYMBOL_COUNT) flushSearch();
-            else if (apiSearch) apiSearch();
-            else localSearch();
-        }
+    @Override
+    public void onSearchStarted() {
+        view.showEmptyProgress();
     }
 
-    private void flushSearch() {
-        searchLocations.clear();
-        setItems();
+    @Override
+    public void onSearchFinished(List<DtlLocation> locations) {
+        view.hideProgress();
+        setItems(locations);
     }
 
-    private void apiSearch() {
-        view.startLoading();
-        view.citiesLoadingStarted();
-
-        if (getDtlLocationsQuery != null) dreamSpiceManager.cancel(getDtlLocationsQuery);
-
-        getDtlLocationsQuery = new GetDtlLocationsQuery(caption);
-        doRequest(getDtlLocationsQuery, this::onSearchResultLoaded);
+    @Override
+    public void onSearchError(SpiceException e) {
+        handleError(e);
     }
 
-    private void onSearchResultLoaded(ArrayList<DtlLocation> searchLocations) {
-        this.searchLocations = searchLocations;
-        view.finishLoading();
-        localSearch();
-    }
-
-    private void localSearch() {
-        if (searchLocations != null && !searchLocations.isEmpty())
-            view.bind(Observable.from(Queryable
-                                    .from(searchLocations)
-                                    .filter(dtlLocation ->
-                                            dtlLocation.getLongName().toLowerCase().contains(caption))
-                                    .sort(new DtlLocation.DtlLocationRangeComparator(caption))
-                                    .toList()
-                    ).toList().compose(new IoToMainComposer<>())
-            ).subscribe(view::setItems, e -> Timber.e(e, "Smth went wrong while search"));
+    private void setItems(List<DtlLocation> locations) {
+        if (status == Status.NEARBY)
+            view.setEmptyViewVisibility(locations.isEmpty());
+        else if (TextUtils.isEmpty(searchDelegate.getQuery()))
+            view.setEmptyViewVisibility(dtlLocations.isEmpty());
+        else view.setEmptyViewVisibility(false);
+        //
+        view.setItems(locations);
     }
 
     public interface View extends RxView, ApiErrorView {
 
         void setItems(List<DtlLocation> dtlLocations);
 
-        void startLoading();
+        void showGpsObtainingProgress();
 
-        void finishLoading();
+        void showLocationsObtainingProgress();
 
-        void citiesLoadingStarted();
+        void showEmptyProgress();
 
-        void showMerchants(PlacesBundle bundle);
+        void hideProgress();
 
         void showSearch();
 
-        void setSearchHintVisibility(boolean visibile);
+        void navigateToMerchants();
+
+        void setEmptyViewVisibility(boolean visible);
     }
 
     public enum Status {

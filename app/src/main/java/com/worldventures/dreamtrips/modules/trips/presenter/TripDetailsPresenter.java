@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
@@ -9,7 +10,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     public void onItemClick(int position) {
         FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                 .position(position)
-                .type(TripImagesListFragment.Type.FIXED_LIST)
+                .route(Route.TRIP_PHOTO_FULLSCREEN)
+                .type(TripImagesType.FIXED)
                 .fixedList(new ArrayList<>(filteredImages))
                 .build();
 

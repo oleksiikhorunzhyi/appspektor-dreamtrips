@@ -3,37 +3,44 @@ package com.worldventures.dreamtrips.modules.tripsimages.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class FullScreenImagesBundle implements Parcelable {
 
-    private TripImagesListFragment.Type type;
-    private int foreignUserId;
+    public static final int NO_NOTIFICATION = -1;
+
+    private TripImagesType type;
+    private int userId;
     private int position;
     private ArrayList<IFullScreenObject> fixedList;
     private boolean foreign;
+    private Route route;
+    private int notificationId;
 
     public FullScreenImagesBundle() {
+        notificationId = NO_NOTIFICATION;
     }
 
     protected FullScreenImagesBundle(Parcel in) {
-        type = (TripImagesListFragment.Type) in.readSerializable();
-        foreignUserId = in.readInt();
+        type = (TripImagesType) in.readSerializable();
+        userId = in.readInt();
         position = in.readInt();
         fixedList = (ArrayList<IFullScreenObject>) in.readSerializable();
         foreign = in.readByte() == 1;
+        route = (Route) in.readSerializable();
+        notificationId = in.readInt();
     }
 
-    public TripImagesListFragment.Type getType() {
+    public TripImagesType getType() {
         return type;
     }
 
-    public int getForeignUserId() {
-        return foreignUserId;
+    public int getUserId() {
+        return userId;
     }
 
     public int getPosition() {
@@ -46,6 +53,14 @@ public class FullScreenImagesBundle implements Parcelable {
 
     public boolean isForeign() {
         return foreign;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
     }
 
     public static final Creator<FullScreenImagesBundle> CREATOR = new Creator<FullScreenImagesBundle>() {
@@ -68,10 +83,12 @@ public class FullScreenImagesBundle implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeSerializable(type);
-        parcel.writeInt(foreignUserId);
+        parcel.writeInt(userId);
         parcel.writeInt(position);
         parcel.writeSerializable(fixedList);
         parcel.writeByte((byte) (foreign ? 1 : 0));
+        parcel.writeSerializable(route);
+        parcel.writeInt(notificationId);
     }
 
     public static class Builder {
@@ -82,13 +99,13 @@ public class FullScreenImagesBundle implements Parcelable {
             instance = new FullScreenImagesBundle();
         }
 
-        public Builder type(TripImagesListFragment.Type type) {
+        public Builder type(TripImagesType type) {
             instance.type = type;
             return this;
         }
 
-        public Builder foreignUserId(int userId) {
-            instance.foreignUserId = userId;
+        public Builder userId(int userId) {
+            instance.userId = userId;
             return this;
         }
 
@@ -104,6 +121,18 @@ public class FullScreenImagesBundle implements Parcelable {
 
         public Builder foreign(boolean foreign) {
             instance.foreign = foreign;
+            return this;
+        }
+
+        public Builder route(Route route) {
+            instance.route = route;
+            return this;
+        }
+
+        public Builder notificationId(int notificationId) {
+            instance.notificationId = notificationId;
+            //
+            if (notificationId == 0) instance.notificationId = NO_NOTIFICATION;
             return this;
         }
 

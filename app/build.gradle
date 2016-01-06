@@ -17,6 +17,7 @@ repositories {
     maven { url "http://nexus.idamob.ru/content/groups/public" }
     maven { url "http://dl.bintray.com/populov/maven" }
     maven { url "https://github.com/shaubert/maven-repo/raw/master/snapshots" }
+    maven { url 'http://dl.bintray.com/amulyakhare/maven' }
 }
 
 android {
@@ -57,15 +58,20 @@ android {
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
         buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
 
+        buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
+        buildConfigField 'String', 'versionMinor', "\"${versionMinor}\""
+        buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
+        buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
+
         buildConfigField 'String', 'MESSENGER_API_URL', '"ejabberd-dev-1245504791.us-east-1.elb.amazonaws.com"'
         buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
     }
     productFlavors {
         dev {
-            applicationId "com.worldventures.dreamtrips.dev"
+            applicationIdSuffix ".dev"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.dev",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             ext.enableCrashlytics = false
@@ -76,12 +82,26 @@ android {
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
             resValue "string", "facebook_app_id", "761062457321921"
         }
-        stage {
-            applicationId "com.worldventures.dreamtrips.stage"
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+        dtl {
+            applicationIdSuffix ".dtl"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.stage",
+                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
+
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            resValue "string", "facebook_app_id", "761062457321921"
+        }
+        stage {
+            applicationIdSuffix ".stage"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"
+
+            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
@@ -93,8 +113,8 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         messenger {
-            applicationId "com.worldventures.dreamtrips.messenger"
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+            applicationIdSuffix ".messenger"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-messenger" + "-${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
                                     appId         : "com.worldventures.dreamtrips.stage",
@@ -112,11 +132,10 @@ android {
         }
         perf {
             // the same as stage except API endpoint
-            applicationId "com.worldventures.dreamtrips.perf"
-            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+            applicationIdSuffix ".perf"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-perf" + "-${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    appId         : "com.worldventures.dreamtrips.perf",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz/"'
@@ -128,10 +147,7 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         prod {
-            applicationId "com.worldventures.dreamtrips"
-
             manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa",
-                                    appId         : "com.worldventures.dreamtrips",
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
@@ -231,7 +247,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
     compile 'com.google.android.gms:play-services-location:8.3.0'
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
-    compile 'com.instabug.library:instabugsupport:1.7'
+    compile 'com.instabug.library:instabugsupport:1.7.1'
     compile 'net.hockeyapp.android:HockeySDK:3.6.2'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
     compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
@@ -274,8 +290,9 @@ dependencies {
     compile 'com.github.techery:AndroidImageZoomCrop:1.0.7'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
-    compile 'com.github.techery:ProperRatingBar:v0.0.2'
-    compile 'com.sothree.slidinguppanel:library:3.2.0'
+    compile 'com.github.techery:ProperRatingBar:v0.0.3'
+    compile 'com.sothree.slidinguppanel:library:3.2.1'
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
     // Util
     compile 'com.github.hotchemi:permissionsdispatcher:1.2.1@aar'
@@ -298,7 +315,7 @@ dependencies {
     compile 'com.github.pwittchen:networkevents:2.1.2'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.0.6'
 
-    //Messenger
+    // Messenger
 
     compile 'com.makeramen:roundedimageview:2.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
@@ -318,6 +335,13 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0'
 
     compile 'com.apptentive:apptentive-android:2.0.1'
+
+    // Testing
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.assertj:assertj-core:1.7.1'
 }
 
 apply plugin: "de.felixschulze.gradle.hockeyapp"

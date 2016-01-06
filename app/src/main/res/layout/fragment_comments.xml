@@ -5,6 +5,13 @@
               android:animateLayoutChanges="true"
               android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/title"
+        style="@style/ToolBarStyle.Header"
+        android:background="@color/theme_main"
+        android:visibility="gone"
+        android:text="@string/comments_title"/>
+
     <include
         layout="@layout/include_user_liked"
         android:visibility="gone"/>

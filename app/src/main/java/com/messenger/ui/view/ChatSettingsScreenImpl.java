@@ -33,11 +33,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<ChatSettingsScreen, ChatSettingsScreenPresenter>
+public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatSettingsScreen, ChatSettingsScreenPresenter>
         implements ChatSettingsScreen {
 
     @InjectView(R.id.chat_settings_content_view)
-    View contentView;
+    ViewGroup contentView;
     @InjectView(R.id.chat_settings_loading_view)
     View loadingView;
     @InjectView(R.id.chat_settings_error_view)
@@ -127,6 +127,10 @@ public abstract class ChatSettingsScreenImpl extends BaseViewStateLinearLayout<C
         contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
+    }
+
+    public ViewGroup getContentView() {
+        return contentView;
     }
 
     @Override

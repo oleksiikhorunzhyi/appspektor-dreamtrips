@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,14 +49,14 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatScreenPresenter>
+public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreenPresenter>
         implements ChatScreen {
 
     private static final int THRESHOLD = 5;
     private static final int POST_DELAY_TIME = 2;
 
     @InjectView(R.id.chat_content_view)
-    View contentView;
+    ViewGroup contentView;
     @InjectView(R.id.chat_loading_view)
     View loadingView;
     @InjectView(R.id.chat_error_view)
@@ -314,5 +315,10 @@ public class ChatScreenImpl extends BaseViewStateLinearLayout<ChatScreen, ChatSc
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         messageEditText.removeTextChangedListener(messageWatcher);
+    }
+
+    @Override
+    public ViewGroup getContentView() {
+        return contentView;
     }
 }

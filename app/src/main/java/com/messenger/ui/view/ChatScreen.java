@@ -7,7 +7,7 @@ import com.messenger.messengerservers.entities.User;
 
 import java.util.List;
 
-public interface ChatScreen extends ActivityAwareScreen {
+public interface ChatScreen extends MessengerScreen {
     void showLoading();
     void showContent();
     void showError(Throwable e);

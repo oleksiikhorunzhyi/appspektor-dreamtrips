@@ -54,7 +54,7 @@ import rx.observables.ConnectableObservable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
-public class ChatScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatScreen, ChatLayoutViewState>
+public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
 
     private final static int MAX_MESSAGE_PER_PAGE = 20;

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -35,11 +36,11 @@ import butterknife.InjectView;
 
 import static com.messenger.ui.adapter.ConversationsCursorAdapter.*;
 
-public class ConversationListScreenImpl extends BaseViewStateLinearLayout<ConversationListScreen,
+public class ConversationListScreenImpl extends MessengerLinearLayout<ConversationListScreen,
         ConversationListScreenPresenter> implements ConversationListScreen, SwipeButtonsListener {
 
-    @InjectView(R.id.conversation_list_recycler_view)
-    RecyclerView recyclerView;
+    @InjectView(R.id.conversation_list_content_view)
+    ViewGroup contentView;;
     @InjectView(R.id.conversation_list_loading_view)
     View loadingView;
     @InjectView(R.id.conversation_list_error_view)
@@ -47,6 +48,8 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
 
     @InjectView(R.id.conversation_list_toolbar)
     Toolbar toolbar;
+    @InjectView(R.id.conversation_list_recycler_view)
+    RecyclerView recyclerView;
     @InjectView(R.id.conversation_conversation_type_spinner)
     Spinner conversationsDropDownSpinner;
 
@@ -201,6 +204,11 @@ public class ConversationListScreenImpl extends BaseViewStateLinearLayout<Conver
                     adapter.closeAllItems();
                 })
                 .show();
+    }
+
+    @Override
+    protected ViewGroup getContentView() {
+        return contentView;
     }
 
     ///////////////////////////////////////////////////////////////////////////

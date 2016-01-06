@@ -6,7 +6,7 @@ import com.messenger.ui.viewstate.NewChatLayoutViewState;
 
 import java.util.List;
 
-public interface NewChatScreenPresenter extends ActivityAwareViewStateMvpPresenter<NewChatMembersScreen,
+public interface NewChatScreenPresenter extends MessengerPresenter<NewChatMembersScreen,
         NewChatLayoutViewState> {
     void onSelectedUsersStateChanged(List<User> selectedUsers);
 

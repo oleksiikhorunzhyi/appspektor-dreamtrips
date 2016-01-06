@@ -4,7 +4,7 @@ import android.database.Cursor;
 
 import com.messenger.messengerservers.entities.Conversation;
 
-public interface ConversationListScreen extends ActivityAwareScreen {
+public interface ConversationListScreen extends MessengerScreen {
     void showLoading();
     void showContent();
     void showError(Throwable e);

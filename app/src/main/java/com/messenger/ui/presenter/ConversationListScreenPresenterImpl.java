@@ -28,7 +28,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ConversationListScreenPresenterImpl extends BaseViewStateMvpPresenter<ConversationListScreen,
+public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
 
     private final ConversationHelper conversationHelper;

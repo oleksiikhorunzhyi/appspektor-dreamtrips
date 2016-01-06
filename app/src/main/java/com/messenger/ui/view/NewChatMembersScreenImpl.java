@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -37,11 +38,11 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatMembersScreen, NewChatScreenPresenter>
+public class NewChatMembersScreenImpl extends MessengerLinearLayout<NewChatMembersScreen, NewChatScreenPresenter>
         implements NewChatMembersScreen {
 
     @InjectView(R.id.new_chat_content_view)
-    View contentView;
+    ViewGroup contentView;
     @InjectView(R.id.new_chat_loading_view)
     View loadingView;
     @InjectView(R.id.new_chat_error_view)
@@ -186,6 +187,11 @@ public class NewChatMembersScreenImpl extends BaseViewStateLinearLayout<NewChatM
         contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public ViewGroup getContentView() {
+        return contentView;
     }
 
     @Override

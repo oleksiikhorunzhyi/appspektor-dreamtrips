@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
@@ -32,11 +33,11 @@ import com.worldventures.dreamtrips.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditChatMembersScreen,
+public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMembersScreen,
         EditChatMembersScreenPresenter> implements EditChatMembersScreen {
 
     @InjectView(R.id.edit_chat_members_content_view)
-    View contentView;
+    ViewGroup contentView;
     @InjectView(R.id.edit_chat_members_loading_view)
     View loadingView;
     @InjectView(R.id.edit_chat_members_error_view)
@@ -113,6 +114,11 @@ public class EditChatMembersScreenImpl extends BaseViewStateLinearLayout<EditCha
         contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public ViewGroup getContentView() {
+        return contentView;
     }
 
     @Override

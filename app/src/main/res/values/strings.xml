@@ -596,6 +596,9 @@
 
     <string name="unread_conversation">Conversations</string>
 
+    <string name="disconnected_overlay_disconnected_message">Connection lost</string>
+    <string name="disconnected_overlay_connecting_message">Connecting...</string>
+
     <!-- messenger ends-->
 
 </resources>

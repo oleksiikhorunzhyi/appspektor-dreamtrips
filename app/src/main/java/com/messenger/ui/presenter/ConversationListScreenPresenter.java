@@ -5,7 +5,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.view.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 
-public interface ConversationListScreenPresenter extends ActivityAwareViewStateMvpPresenter<ConversationListScreen,
+public interface ConversationListScreenPresenter extends MessengerPresenter<ConversationListScreen,
         ConversationListViewState> {
     User getUser();
 

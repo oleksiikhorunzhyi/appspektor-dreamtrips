@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ChatSettingsScreenPresenterImpl extends BaseViewStateMvpPresenter<ChatSettingsScreen,
+public class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
 
     private Activity activity;

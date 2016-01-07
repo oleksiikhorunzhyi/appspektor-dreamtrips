@@ -5,6 +5,9 @@ import android.text.TextUtils;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storege.dao.ConversationsDAO;
+import com.messenger.storege.dao.MessageDAO;
+import com.messenger.storege.dao.ParticipantsDAO;
+import com.messenger.storege.dao.UsersDAO;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -41,7 +44,25 @@ public class MessengerStorageModule {
     @Provides
     @Singleton
     ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new ConversationsDAO(rxContentResolver, context);
+        return new ConversationsDAO(context, rxContentResolver);
+    }
+
+    @Provides
+    @Singleton
+    ParticipantsDAO provideParticipantsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new ParticipantsDAO(context);
+    }
+
+    @Provides
+    @Singleton
+    UsersDAO provideUsersDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new UsersDAO(context);
+    }
+
+    @Provides
+    @Singleton
+    MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new MessageDAO(context);
     }
 
 }

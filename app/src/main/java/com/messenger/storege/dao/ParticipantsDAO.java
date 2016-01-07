@@ -98,6 +98,11 @@ public class ParticipantsDAO extends BaseDAO {
                         ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
     }
 
+    public void delete(String conversationId) {
+        getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
+                ParticipantsRelationship$Table.CONVERSATIONID + "=?", new String[]{conversationId});
+    }
+
     @Deprecated
     public static void delete(ContentResolver resolver, String conversationId, String userId) {
         resolver.delete(ParticipantsRelationship.CONTENT_URI,

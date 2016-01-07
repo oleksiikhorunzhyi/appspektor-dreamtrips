@@ -27,10 +27,13 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
     @Column String userId;
 
     public ParticipantsRelationship(String conversationId, User user) {
-        id = String.format("%s_%s", conversationId, user.getId());
+        this(conversationId, user.getId());
+    }
 
+    public ParticipantsRelationship(String conversationId, String userId) {
+        this.id = String.format("%s_%s", conversationId, userId);
         this.conversationId = conversationId;
-        this.userId = user.getId();
+        this.userId = userId;
     }
 
     public ParticipantsRelationship() {

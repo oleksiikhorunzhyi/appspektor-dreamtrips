@@ -1,6 +1,6 @@
 package com.messenger.di;
 
-import com.messenger.delegate.LeaveChatDelegate;
+import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.activity.ChatActivity;
@@ -33,7 +33,7 @@ import dagger.Provides;
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,
 
-                LeaveChatDelegate.class,
+                ChatLeavingDelegate.class,
 
                 ChatSettingsScreenPresenterImpl.class,
                 ConversationListScreenPresenterImpl.class,

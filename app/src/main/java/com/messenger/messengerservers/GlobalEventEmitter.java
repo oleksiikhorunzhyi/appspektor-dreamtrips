@@ -1,11 +1,11 @@
 package com.messenger.messengerservers;
 
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.listeners.OnChatCreatedListener;
-import com.messenger.messengerservers.listeners.OnLeftChatListener;
+import com.messenger.messengerservers.listeners.OnChatJoinedListener;
+import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
@@ -16,23 +16,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class GlobalEventEmitter {
 
-    protected List<Conversation> handledConversations = new ArrayList<>();
-
     protected List<GlobalMessageListener> globalMessageListeners = new ArrayList<>();
     protected List<PresenceListener> presenceListeners = new ArrayList<>();
     protected List<InvitationListener> invitationListeners = new ArrayList<>();
     protected List<UnhandledMessageListener> unhandledMessageListeners = new ArrayList<>();
     protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
-    protected List<OnLeftChatListener> onLeftChatListeners = new CopyOnWriteArrayList<>();
+    protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
+    protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatCreatedListener> onChatCreatedListeners = new CopyOnWriteArrayList<>();
-
-    public void addHandledConversation(Conversation conversation) {
-        handledConversations.add(conversation);
-    }
-
-    public void removeHandledConversation(Conversation conversation) {
-        handledConversations.remove(conversation);
-    }
 
     public void addGlobalMessageListener(GlobalMessageListener listener) {
         globalMessageListeners.add(listener);
@@ -107,17 +98,31 @@ public abstract class GlobalEventEmitter {
         }
     }
 
-    public void addOnLeftChatListener(OnLeftChatListener listener) {
-        onLeftChatListeners.add(listener);
+    public void addOnChatLeftListener(OnChatLeftListener listener) {
+        onChatLeftListeners.add(listener);
     }
 
-    public void removeOnLeftChatListener(OnLeftChatListener listener) {
-        onLeftChatListeners.remove(listener);
+    public void removeOnChatLeftListener(OnChatLeftListener listener) {
+        onChatLeftListeners.remove(listener);
     }
 
-    protected void notifyOnLeftChatListener(String conversationId, String userId) {
-        for (OnLeftChatListener listener : onLeftChatListeners) {
-            listener.onLeftChatListener(conversationId, userId);
+    protected void notifyOnChatLeftListener(String conversationId, String userId) {
+        for (OnChatLeftListener listener : onChatLeftListeners) {
+            listener.onChatLeft(conversationId, userId);
+        }
+    }
+
+    public void addOnChatJoinedListener(OnChatJoinedListener listener) {
+        onChatJoinedListeners.add(listener);
+    }
+
+    public void removeOnChatJoinedListener(OnChatJoinedListener listener) {
+        onChatJoinedListeners.remove(listener);
+    }
+
+    protected void notifyOnChatJoinedListener(String conversationId, String userId) {
+        for (OnChatJoinedListener listener : onChatJoinedListeners) {
+            listener.onChatJoined(conversationId, userId);
         }
     }
 

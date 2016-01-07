@@ -1,4 +1,4 @@
-package com.messenger.synchmechanism;
+package com.worldventures.dreamtrips.util;
 
 import android.app.Activity;
 import android.app.Application;

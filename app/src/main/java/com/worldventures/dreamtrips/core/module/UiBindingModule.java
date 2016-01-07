@@ -1,11 +1,17 @@
 package com.worldventures.dreamtrips.core.module;
 
+import android.content.Context;
+
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.AppNotificationImpl;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
+import com.worldventures.dreamtrips.util.ActivityWatcher;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,9 +26,15 @@ import dagger.Provides;
 )
 public class UiBindingModule {
 
-        @Provides
-        public AppNotification provideInAppNotification(App app) {
-                return new AppNotificationImpl(app);
-        }
+    @Provides
+    public AppNotification provideInAppNotification(App app) {
+        return new AppNotificationImpl(app);
+    }
+
+    @Singleton
+    @Provides
+    ActivityWatcher provideActivityWatcher(@ForApplication Context context) {
+        return new ActivityWatcher(context);
+    }
 
 }

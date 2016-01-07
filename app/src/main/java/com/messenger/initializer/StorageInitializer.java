@@ -1,4 +1,4 @@
-package com.messenger.di;
+package com.messenger.initializer;
 
 import android.content.Context;
 

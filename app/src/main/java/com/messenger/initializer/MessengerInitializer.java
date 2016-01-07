@@ -1,11 +1,12 @@
-package com.messenger.di;
+package com.messenger.initializer;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.synchmechanism.ActivityWatcher;
+import com.worldventures.dreamtrips.util.ActivityWatcher;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.util.EventBusWrapper;
 import com.techery.spares.application.AppInitializer;

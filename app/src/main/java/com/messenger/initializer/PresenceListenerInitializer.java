@@ -1,4 +1,4 @@
-package com.messenger.di;
+package com.messenger.initializer;
 
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;

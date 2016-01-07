@@ -1,4 +1,4 @@
-package com.messenger.di;
+package com.messenger.notification;
 
 import android.app.Activity;
 import android.text.TextUtils;

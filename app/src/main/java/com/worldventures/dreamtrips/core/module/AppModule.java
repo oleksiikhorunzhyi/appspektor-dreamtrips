@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
-import com.messenger.di.XmppServerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
 import com.techery.spares.module.InjectingApplicationModule;
@@ -12,7 +11,7 @@ import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
-import com.worldventures.dreamtrips.modules.messenger.MessengerModule;
+import com.messenger.di.MessengerModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,7 +48,6 @@ import dagger.Provides;
                 LocaleModule.class,
                 AppVersionNameModule.class,
                 //
-                XmppServerModule.class,
                 MessengerModule.class
         },
         library = true,

@@ -33,7 +33,7 @@ public class UserProcessor {
                 .compose(updateWithSocialData())
                 .subscribeOn(Schedulers.io()).observeOn(Schedulers.trampoline())
                 .publish();
-        observable.subscribe();
+        observable.subscribe(aVoid -> Timber.i("Users processed"), t -> Timber.w(t, "Can't process users"));
         observable.connect();
         return observable.asObservable();
     }
@@ -42,8 +42,8 @@ public class UserProcessor {
         return listObservable -> listObservable.flatMap(users -> {
             if (users.isEmpty()) return Observable.just(null);
             //
+            List<String> usernames = from(users).map(User::getId).toList();
             return Observable.create(subscriber -> {
-                List<String> usernames = from(users).map(User::getId).toList();
                 requester.execute(new GetShortProfilesQuery(usernames), userz -> {
                     Collections.sort(users, (lhs, rhs) -> lhs.getId().compareTo(rhs.getId()));
                     Collections.sort(userz, (lhs, rhs) -> lhs.getUsername().compareTo(rhs.getUsername()));

@@ -2,6 +2,7 @@ package com.messenger.messengerservers.xmpp;
 
 import android.content.Context;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ContactManager;
@@ -11,14 +12,18 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
+import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -44,7 +49,8 @@ public class XmppServerFacade implements MessengerServerFacade {
     private volatile boolean isActive;
 
     private final ExecutorService connectionExecutor = Executors.newSingleThreadExecutor();
-    private final List<AuthorizeListener> connectionListeners = new CopyOnWriteArrayList<>();
+    private final List<AuthorizeListener> authListeners = new CopyOnWriteArrayList<>();
+    private final List<ConnectionListener> connectionListeners = new CopyOnWriteArrayList<>();
 
     private final LoaderManager loaderManager;
     private final PaginationManager paginationManager;
@@ -75,6 +81,7 @@ public class XmppServerFacade implements MessengerServerFacade {
                 .setDebuggerEnabled(BuildConfig.DEBUG)
                 .build());
         connection.setPacketReplyTimeout(PACKET_REPLAY_TIMEOUT);
+        connection.addConnectionListener(connectionListener);
         return connection;
     }
 
@@ -90,12 +97,12 @@ public class XmppServerFacade implements MessengerServerFacade {
                         rosterManager.init(connection);
                         if (!requester.isStarted()) requester.start(context);
                         Timber.i("Login success");
-                        for (AuthorizeListener listener : connectionListeners) {
+                        for (AuthorizeListener listener : authListeners) {
                             listener.onSuccess();
                         }
                     } catch (SmackException | IOException | XMPPException e) {
                         Timber.w(e, "Login failed");
-                        for (AuthorizeListener listener : connectionListeners) {
+                        for (AuthorizeListener listener : authListeners) {
                             listener.onFailed(e);
                         }
                     }
@@ -111,6 +118,19 @@ public class XmppServerFacade implements MessengerServerFacade {
         isActive = false;
     }
 
+    private AbstractConnectionListener connectionListener = new AbstractConnectionClosedListener() {
+
+        @Override
+        public void connected(XMPPConnection connection) {
+            Queryable.from(connectionListeners).forEachR(ConnectionListener::onConnected);
+        }
+
+        @Override
+        public void connectionTerminated() {
+            Queryable.from(connectionListeners).forEachR(ConnectionListener::onDisconnected);
+        }
+    };
+
     @Override
     public boolean isAuthorized() {
         return connection != null && connection.isConnected() && connection.isAuthenticated();
@@ -118,11 +138,21 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     @Override
     public void addAuthorizationListener(AuthorizeListener listener) {
-        connectionListeners.add(listener);
+        authListeners.add(listener);
     }
 
     @Override
     public void removeAuthorizationListener(AuthorizeListener listener) {
+        authListeners.remove(listener);
+    }
+
+    @Override
+    public void addConnectionListener(ConnectionListener listener) {
+        connectionListeners.add(listener);
+    }
+
+    @Override
+    public void removeConnectionListener(ConnectionListener listener) {
         connectionListeners.remove(listener);
     }
 

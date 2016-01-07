@@ -21,10 +21,10 @@ public class MessengerCacheSynchronizer {
     }
 
     public void updateCache(OnUpdatedListener listener) {
-        Timber.i("Sync started %s", System.currentTimeMillis());
-        loaderDelegate.synchronizeCache(synchResult -> {
-            Timber.i("Sync finished %s", System.currentTimeMillis());
-            listener.onUpdated(synchResult);
+        Timber.i("Sync started :: at %s", System.currentTimeMillis());
+        loaderDelegate.synchronizeCache(syncResult -> {
+            Timber.i("Sync finished %s :: at %s", syncResult ? "ok" : "failed", System.currentTimeMillis());
+            listener.onUpdated(syncResult);
         });
     }
 

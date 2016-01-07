@@ -8,6 +8,7 @@ import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
+import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.util.EventBusWrapper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -19,21 +20,24 @@ import rx.subjects.ReplaySubject;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
+import static com.messenger.synchmechanism.ConnectionStatus.CONNECTED;
+import static com.messenger.synchmechanism.ConnectionStatus.CONNECTING;
+import static com.messenger.synchmechanism.ConnectionStatus.DISCONNECTED;
+import static com.messenger.synchmechanism.ConnectionStatus.ERROR;
 
 public class MessengerConnector {
 
-    private static MessengerConnector object;
-
+    private static MessengerConnector INSTANCE;
+    //
     private Context applicationContext;
-
     private SessionHolder<UserSession> appSessionHolder;
-    private MessengerServerFacade messengerServerFacade;
     private DreamSpiceManager spiceManager;
-    private MessengerCacheSynchronizer messengerCacheSynchronizer;
     private NetworkEvents networkEvents;
-
-    private ReplaySubject<ConnectionStatus> connectionObservable;
-    private ConnectionStatus currentStatus;
+    //
+    private MessengerServerFacade messengerServerFacade;
+    private MessengerCacheSynchronizer messengerCacheSynchronizer;
+    //
+    private ReplaySubject<ConnectionStatus> connectionStream;
 
     private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                                SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
@@ -45,7 +49,10 @@ public class MessengerConnector {
         this.spiceManager = spiceManager;
         this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, new UserProcessor(spiceManager));
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
-        this.connectionObservable = ReplaySubject.create(1);
+        this.connectionStream = ReplaySubject.create(1);
+
+        messengerServerFacade.addAuthorizationListener(authListener);
+        messengerServerFacade.addConnectionListener(connectionListener);
 
         activityWatcher.addOnStartStopListener(startStopAppListener);
 
@@ -54,48 +61,46 @@ public class MessengerConnector {
     }
 
     public static MessengerConnector getInstance() {
-        if (object == null) {
+        if (INSTANCE == null) {
             throw new IllegalStateException("You should initialize it");
         }
-        return object;
+        return INSTANCE;
     }
 
     public static void init(Context applicationContext, ActivityWatcher activityWatcher,
                             SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
                             DreamSpiceManager spiceManager, EventBusWrapper eventBusWrapper) {
 
-        object = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
+        INSTANCE = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
                 spiceManager, eventBusWrapper);
     }
 
     public Observable<ConnectionStatus> subscribe() {
-        return connectionObservable.asObservable();
+        return connectionStream.asObservable();
     }
 
     public void connect() {
-        if (messengerServerFacade.isAuthorized() || appSessionHolder == null
+        if (appSessionHolder == null
                 || appSessionHolder.get() == null || !appSessionHolder.get().isPresent()
-                || currentStatus == ConnectionStatus.CONNECTING || currentStatus == ConnectionStatus.CONNECTED) {
+                || connectionStream.getValue() == CONNECTING || connectionStream.getValue() == CONNECTED) {
             return;
         }
 
-        connectionObservable.onNext(currentStatus = ConnectionStatus.CONNECTING);
-        messengerServerFacade.addAuthorizationListener(authListener);
+        connectionStream.onNext(CONNECTING);
         UserSession userSession = appSessionHolder.get().get();
         if (userSession.getUser() == null) return;
         messengerServerFacade.authorizeAsync(userSession.getUsername(), userSession.getLegacyApiToken());
     }
 
     public void disconnect() {
-        if (messengerServerFacade.isAuthorized()) {
-            if (spiceManager.isStarted()) spiceManager.shouldStop();
-            messengerServerFacade.disconnectAsync();
-        }
+        if (connectionStream.getValue() != CONNECTED && connectionStream.getValue() != CONNECTING) return;
+        //
+        if (spiceManager.isStarted()) spiceManager.shouldStop();
+        messengerServerFacade.disconnectAsync();
 
-        if (currentStatus != ConnectionStatus.DISCONNECTED) {
-            connectionObservable.onNext(currentStatus = ConnectionStatus.DISCONNECTED);
+        if (connectionStream.getValue() != DISCONNECTED) {
+            connectionStream.onNext(DISCONNECTED);
         }
-        messengerServerFacade.removeAuthorizationListener(authListener);
     }
 
     public void onEvent(ConnectivityChanged event) {
@@ -112,16 +117,23 @@ public class MessengerConnector {
         @Override
         public void onSuccess() {
             if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
-            messengerCacheSynchronizer.updateCache(result -> {
-                messengerServerFacade.setPresenceStatus(result);
-                connectionObservable.onNext(currentStatus = ConnectionStatus.CONNECTED);
+            messengerCacheSynchronizer.updateCache(success -> {
+                messengerServerFacade.setPresenceStatus(success);
+                connectionStream.onNext(success ? CONNECTED : ERROR);
             });
         }
 
         @Override
         public void onFailed(Exception exception) {
             super.onFailed(exception);
-            connectionObservable.onNext(currentStatus = ConnectionStatus.ERROR);
+            connectionStream.onNext(ERROR);
+        }
+    };
+
+    final private ConnectionListener connectionListener = new ConnectionListener() {
+        @Override
+        public void onDisconnected() {
+            connectionStream.onNext(DISCONNECTED);
         }
     };
 

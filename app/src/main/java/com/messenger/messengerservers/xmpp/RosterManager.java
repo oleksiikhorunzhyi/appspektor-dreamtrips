@@ -42,6 +42,8 @@ public class RosterManager implements ContactManager {
     }
 
     public void release() {
+        if (roster == null) return;
+        //
         roster.removeRosterListener(rosterListener);
         roster = null;
     }

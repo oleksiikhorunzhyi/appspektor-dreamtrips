@@ -1,5 +1,6 @@
 package com.messenger.delegate;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ConversationData;
@@ -49,12 +50,18 @@ public class LoaderDelegate {
                     List<Message> messages = from(data).map(c -> c.lastMessage).notNulls().toList();
                     ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
                     ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages);
+
+                    //remove previous participants, cause server side does not send removed ones.
+                    String clause = " "+ ParticipantsRelationship.COLUMN_CONVERSATION_ID + " = ? ";
+                    Queryable.from(convs).forEachR(c ->
+                            new Delete().from(ParticipantsRelationship.class).where(clause, c.getId()).query());
+
                     // save relationships
                     List<ParticipantsRelationship> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
-                            .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p)))
+                            .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p.getUser(), p.getAffiliation())))
                             .toList();
                     ContentUtils.bulkInsert(ParticipantsRelationship.CONTENT_URI, ParticipantsRelationship.class, relationships);
-                    List<User> users = data.isEmpty() ? Collections.emptyList() : from(data).mapMany(d -> d.participants).distinct().toList();
+                    List<User> users = data.isEmpty() ? Collections.emptyList() : from(data).mapMany(d -> d.participants).map((elem, idx) -> elem.getUser()).distinct().toList();
                     return users;
                 }
             });

@@ -1,9 +1,7 @@
 package com.messenger.messengerservers.xmpp.util;
 
-
-import android.util.Log;
-
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationParticipants;
@@ -25,17 +23,20 @@ public class ParticipantProvider {
     private AbstractXMPPConnection connection;
 
     public interface OnGroupChatParticipantsLoaded {
-        void onLoaded(User user, List<User> participants, boolean abandoned);
+        void onLoaded(Participant owner, List<Participant> participants, boolean abandoned);
     }
 
     public ParticipantProvider(AbstractXMPPConnection connection) {
         this.connection = connection;
     }
 
-    public List<User> getSingleChatParticipants(Conversation conversation) {
-        ArrayList<User> participants = new ArrayList<>();
+    public List<Participant> getSingleChatParticipants(Conversation conversation) {
+        ArrayList<Participant> participants = new ArrayList<>();
         String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, connection.getUser());
-        participants.add(JidCreatorHelper.obtainUser(companionJid));
+        User user = new User(JidCreatorHelper.obtainId(companionJid));
+        Participant companion = new Participant(user, Participant.Affiliation.MEMBER, conversation.getId());
+
+        participants.add(companion);
         return participants;
     }
 
@@ -44,7 +45,7 @@ public class ParticipantProvider {
         participantsPacket.setTo(JidCreatorHelper.obtainGroupJid(conversation.getId()));
         participantsPacket.setFrom(connection.getUser());
         ProviderManager.addIQProvider(ConversationParticipants.ELEMENT_QUERY, ConversationParticipants.NAMESPACE,
-                new ConversationParticipantsProvider(connection.getUser()));
+                new ConversationParticipantsProvider(connection.getUser(), conversation));
 
         try {
             connection.sendStanzaWithResponseCallback(participantsPacket,
@@ -63,7 +64,7 @@ public class ParticipantProvider {
                     , exception -> listener.onLoaded(null, Collections.emptyList(), false)
             );
         } catch (SmackException.NotConnectedException e) {
-            Log.e("Xmpp", "Exception", e);
+            Timber.e(e, "XMPP Exception");
         }
     }
 

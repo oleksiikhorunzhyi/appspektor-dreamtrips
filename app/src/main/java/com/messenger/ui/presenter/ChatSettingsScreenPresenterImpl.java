@@ -170,7 +170,7 @@ public class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<Chat
     @Override
     public void applyNewChatSubject(String subject) {
         facade.getChatManager().createMultiUserChatObservable(conversation.getId(), facade.getOwner().getId())
-        .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
+                .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(multiUserChat1 -> {

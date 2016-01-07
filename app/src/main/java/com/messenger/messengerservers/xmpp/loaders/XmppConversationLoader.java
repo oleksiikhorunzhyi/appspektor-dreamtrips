@@ -2,7 +2,7 @@ package com.messenger.messengerservers.xmpp.loaders;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ConversationData;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.entities.ConversationWithLastMessage;
@@ -24,7 +24,6 @@ import timber.log.Timber;
 import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 
 public class XmppConversationLoader extends Loader<ConversationData> {
-    private static final String TAG = "XMPP CONTACT LOADER";
 
     private static final int MAX_CONVERSATIONS = 512;
     private final XmppServerFacade facade;
@@ -64,10 +63,10 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                 .flatMap(conversationWithLastMessage -> Observable.<ConversationData>create(subscriber -> {
                     Conversation conversation = conversationWithLastMessage.conversation;
                     if (conversation.getType().equals(CHAT)) {
-                        List<User> users = provider.getSingleChatParticipants(conversation);
+                        List<Participant> participants = provider.getSingleChatParticipants(conversation);
                         if (subscriber.isUnsubscribed()) return;
                         //
-                        subscriber.onNext(new ConversationData(conversation, users, conversationWithLastMessage.lastMessage));
+                        subscriber.onNext(new ConversationData(conversation, participants, conversationWithLastMessage.lastMessage));
                         subscriber.onCompleted();
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
@@ -78,7 +77,7 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                             }
                             //
                             if (owner != null) {
-                                conversation.setOwnerId(owner.getId());
+                                conversation.setOwnerId(owner.getUser().getId());
                                 members.add(0, owner);
                             }
                             conversation.setAbandoned(abandoned);
@@ -90,7 +89,7 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                 .toList();
     }
 
-    private boolean conversationHasError(Conversation conversation, User owner) {
+    private boolean conversationHasError(Conversation conversation, Participant owner) {
         return owner == null && (conversation.getType().equals(Conversation.Type.CHAT) || conversation.getType().equals(Conversation.Type.GROUP));
     }
 

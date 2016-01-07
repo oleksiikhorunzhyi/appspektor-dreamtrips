@@ -1,7 +1,7 @@
 package com.messenger.messengerservers.xmpp.packets;
 
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.entities.Participant;
 
 import org.jivesoftware.smack.packet.IQ;
 
@@ -13,9 +13,8 @@ public class ConversationParticipants extends IQ {
     public static final String NAMESPACE = "http://jabber.org/protocol/muc#admin";
     public static final String ELEMENT_QUERY = "query";
 
-    private List<User> participants;
-    // TODO: 12/24/15 remove user
-    private User owner;
+    private List<Participant> participants;
+    private Participant owner;
     private boolean abandoned;
 
     public ConversationParticipants() {
@@ -23,11 +22,11 @@ public class ConversationParticipants extends IQ {
         participants = new ArrayList<>();
     }
 
-    public User getOwner() {
+    public Participant getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(Participant owner) {
         this.owner = owner;
     }
 
@@ -39,11 +38,11 @@ public class ConversationParticipants extends IQ {
         this.abandoned = abandoned;
     }
 
-    public void addParticipant(User user){
-        participants.add(user);
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
     }
 
-    public java.util.List<User> getParticipants() {
+    public List<Participant> getParticipants() {
         return participants;
     }
 

@@ -4,6 +4,8 @@ package com.messenger.messengerservers.xmpp.providers;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -19,9 +21,11 @@ import java.io.IOException;
 public class ConversationParticipantsProvider extends IQProvider<ConversationParticipants> {
 
     private final String userId;
+    private final Conversation conversation;
 
-    public ConversationParticipantsProvider(String userJid) {
+    public ConversationParticipantsProvider(String userJid, Conversation conversation) {
         this.userId = JidCreatorHelper.obtainId(userJid);
+        this.conversation = conversation;
     }
 
     @Override
@@ -50,15 +54,17 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
                     switch (elementName) {
                         case "item":
                             if (user == null) continue;
-                            if (StringUtils.equalsIgnoreCase(affiliation, "owner")) {
-                                conversationParticipants.setOwner(user);
+                            Participant participant = new Participant(user, affiliation.toLowerCase(), conversation.getId());
+
+                            if (StringUtils.equalsIgnoreCase(affiliation, Participant.Affiliation.OWNER)) {
+                                conversationParticipants.setOwner(participant);
                             } else {
-                                conversationParticipants.addParticipant(user);
+                                conversationParticipants.addParticipant(participant);
                             }
                             break;
                         case "query":
-                            boolean isOwner =conversationParticipants.getOwner() != null && conversationParticipants.getOwner().getId().equals(userId);
-                            boolean isMember = Queryable.from(conversationParticipants.getParticipants()).map(User::getId).contains(this.userId);
+                            boolean isOwner = conversationParticipants.getOwner() != null && conversationParticipants.getOwner().getUser().getId().equals(userId);
+                            boolean isMember = Queryable.from(conversationParticipants.getParticipants()).map((elem, idx) -> elem.getUser().getId()).contains(userId);
                             conversationParticipants.setAbandoned(!isOwner && !isMember);
                             done = true;
                             break;

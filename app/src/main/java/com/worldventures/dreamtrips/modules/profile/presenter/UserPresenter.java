@@ -4,10 +4,10 @@ import com.innahema.collections.query.functions.Action1;
 import com.messenger.converter.UserConverter;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.storege.utils.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -34,7 +34,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -111,7 +110,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         Conversation conversation = chatDelegate.getExistingSingleConverastion(participant);
         if (conversation == null) {
             conversation = chatDelegate.createNewConversation(Collections.singletonList(participant), "");
-            new ParticipantsRelationship(conversation.getId(), participant).save();
+            //there is no owners in single chat
+            new ParticipantsRelationship(conversation.getId(), participant, Participant.Affiliation.MEMBER).save();
             ContentUtils.insert(Conversation.CONTENT_URI, conversation);
         }
 

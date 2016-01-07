@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storege.utils.ConversationsDAO;
@@ -111,7 +112,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                                     conversation, currentUsers, newChatUsers, getView().getConversationName()
                             );
                             Queryable.from(newChatUsers).forEachR(u ->
-                                    new ParticipantsRelationship(newConversation.getId(), u).save()
+                                    new ParticipantsRelationship(newConversation.getId(), u, Participant.Affiliation.MEMBER).save()
                             );
                             ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
                             return newConversation;

@@ -4,10 +4,10 @@ import java.util.List;
 
 public class ConversationData {
     public final Conversation conversation;
-    public final List<User> participants;
+    public final List<Participant> participants;
     public final Message lastMessage;
 
-    public ConversationData(Conversation conversation, List<User> participants, Message lastMessage) {
+    public ConversationData(Conversation conversation, List<Participant> participants, Message lastMessage) {
         this.lastMessage = lastMessage;
         this.conversation = conversation;
         this.participants = participants;

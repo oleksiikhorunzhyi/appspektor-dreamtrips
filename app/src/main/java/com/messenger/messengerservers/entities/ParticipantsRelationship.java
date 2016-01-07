@@ -17,6 +17,8 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRelationship> {
     public static final String TABLE_NAME = "ParticipantsRelationship";
 
+    public static final String COLUMN_CONVERSATION_ID = "conversationId";
+
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
@@ -25,12 +27,14 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
 
     @Column String conversationId;
     @Column String userId;
+    @Column String affiliation;
 
-    public ParticipantsRelationship(String conversationId, User user) {
+    public ParticipantsRelationship(String conversationId, User user, @Participant.Affiliation.AffiliationType String affiliation) {
         id = String.format("%s_%s", conversationId, user.getId());
 
         this.conversationId = conversationId;
         this.userId = user.getId();
+        this.affiliation = affiliation;
     }
 
     public ParticipantsRelationship() {
@@ -46,6 +50,10 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getAffiliation() {
+        return affiliation;
     }
 
     @Override
@@ -67,4 +75,5 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
     public Uri getQueryUri() {
         return CONTENT_URI;
     }
+
 }

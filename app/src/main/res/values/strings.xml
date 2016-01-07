@@ -502,11 +502,11 @@
     <!--Conversation List -->
     <!---->
     <string name="conversation_list_title">Conversations</string>
-    <string-array name="conversation_list_spinner_items">
-        <item>All chats</item>
-        <item>Group chats</item>
-    </string-array>
-    <string name="conversation_list_search_hint">Search conversations...</string>
+
+    <string name="conversation_list_spinner_item_all_chats">All chats</string>
+    <string name="conversation_list_spinner_item_group_chats">Group chats</string>
+
+    <string name="conversation_list_search_hint">Search conversations…</string>
     <string name="conversation_list_search_edittext_hint">Search for groups and people</string>
     <string name="conversation_list_item_last_message_format_you">You: %s</string>
     <string name="conversation_list_last_message_date_format_today">h:mm</string>

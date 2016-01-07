@@ -2,6 +2,7 @@ package com.messenger.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -31,10 +33,14 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.worldventures.dreamtrips.R;
 
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.messenger.ui.adapter.ConversationsCursorAdapter.*;
+import static com.messenger.ui.presenter.ConversationListScreenPresenter.*;
 
 public class ConversationListScreenImpl extends MessengerLinearLayout<ConversationListScreen,
         ConversationListScreenPresenter> implements ConversationListScreen, SwipeButtonsListener {
@@ -81,18 +87,11 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         toolbarPresenter.enableUpNavigationButton();
         toolbarPresenter.disableTitle();
 
-        final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.conversation_list_spinner_items, R.layout.spinner_item_action_bar);
-        // Specify the layout to use when the list of choices appears
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_action_bar);
-        final String[] dropdownArray = getContext().getResources().getStringArray(R.array.
-                conversation_list_spinner_items);
-
-        conversationsDropDownSpinner.setAdapter(spinnerAdapter);
+        conversationsDropDownSpinner.setAdapter(createSpinnerAdapter());
         conversationsDropDownSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                getPresenter().onConversationsDropdownSelected(!spinnerAdapter.getItem(i).equals(dropdownArray[0]));
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                getPresenter().onConversationsDropdownSelected((ChatTypeItem) adapterView.getAdapter().getItem(position));
             }
 
             @Override
@@ -100,6 +99,17 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
 
             }
         });
+    }
+
+    protected BaseAdapter createSpinnerAdapter() {
+        Resources res = getResources();
+        List<ChatTypeItem> listItems = Arrays.asList(
+                new ChatTypeItem(ChatTypeItem.ALL_CHATS, res.getString(R.string.conversation_list_spinner_item_all_chats)),
+                new ChatTypeItem(ChatTypeItem.GROUP_CHATS, res.getString(R.string.conversation_list_spinner_item_group_chats))
+        );
+        ArrayAdapter<ChatTypeItem> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item_action_bar, listItems);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_action_bar);
+        return adapter;
     }
 
     @Override

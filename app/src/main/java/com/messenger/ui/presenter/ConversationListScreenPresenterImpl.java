@@ -171,8 +171,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     @Override
-    public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
-        getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
+    public void onConversationsDropdownSelected(ChatTypeItem selectedItem) {
+        getViewState().setShowOnlyGroupConversations(selectedItem.getType().equals(ChatTypeItem.GROUP_CHATS));
         connectCursor();
     }
 

@@ -14,6 +14,8 @@ public interface ChatSettingsScreenPresenter extends MessengerPresenter<ChatSett
 
     void onMembersRowClicked();
 
+    void onConversationAvatarClick();
+
     String getCurrentSubject();
 
     void applyNewChatSubject(String subject);

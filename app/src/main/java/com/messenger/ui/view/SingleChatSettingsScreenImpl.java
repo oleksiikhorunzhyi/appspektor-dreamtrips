@@ -1,16 +1,22 @@
 package com.messenger.ui.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
+import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
 import com.messenger.util.Constants;
 import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
+
+import butterknife.OnClick;
 
 public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl {
 
@@ -29,6 +35,11 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl {
         // TODO: 1/2/16
         leaveChatButton.setVisibility(GONE);
 
+    }
+
+    @OnClick(R.id.chat_settings_single_chat_avatar_view)
+    public void onAvatarClick() {
+        getPresenter().onConversationAvatarClick();
     }
 
     @Override
@@ -54,5 +65,12 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     @Override
     protected int getLeaveChatButtonStringRes() {
         return R.string.chat_settings_row_delete_chat;
+    }
+
+    @NonNull
+    @Override
+    public ChatSettingsScreenPresenter createPresenter() {
+        Activity activity = getActivity();
+        return new SingleChatSettingsScreenPresenterImpl(activity, activity.getIntent());
     }
 }

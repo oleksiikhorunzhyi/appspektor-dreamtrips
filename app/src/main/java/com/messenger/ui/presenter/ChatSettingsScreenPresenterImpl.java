@@ -27,20 +27,23 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
+public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
 
-    private Activity activity;
+    protected Activity activity;
 
-    private Conversation conversation;
+    protected Conversation conversation;
+    protected List<User> participants;
 
-    private final ChatLeavingDelegate chatLeavingDelegate;
+    protected final ChatLeavingDelegate chatLeavingDelegate;
 
     @Inject
     User user;
@@ -83,7 +86,10 @@ public class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<Chat
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindVisibility())
-                .subscribe(users -> getView().setParticipants(conversation, users));
+                .subscribe(users -> {
+                    participants = users;
+                    getView().setParticipants(conversation, users);
+                });
 
         // TODO Implement this
         // getView().setNotificationSettingStatus();

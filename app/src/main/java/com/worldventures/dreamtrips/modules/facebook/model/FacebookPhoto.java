@@ -11,11 +11,12 @@ import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.List;
 
 import timber.log.Timber;
 
-public class FacebookPhoto implements BasePhotoPickerModel {
+public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
 
     private static final String ID = "id";
     private static final String ALBUM = "album";
@@ -267,7 +268,7 @@ public class FacebookPhoto implements BasePhotoPickerModel {
         }
     }
 
-    public static class ImageSource {
+    public static class ImageSource implements Serializable {
 
         private Integer mHeight;
         private String mSource;

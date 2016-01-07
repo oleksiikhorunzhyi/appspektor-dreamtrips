@@ -29,6 +29,8 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     protected WeakHandler mainHandler;
     protected WeakHandler filterHandler;
 
+    protected Comparator comparator;
+
     public FilterableArrayListAdapter(Context context, Injector injector) {
         super(context, injector);
         cachedItems = new ArrayList<>();
@@ -67,6 +69,7 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
                 mainHandler.post(() -> {
                     items.clear();
                     items.addAll(filtered);
+                    if (comparator != null) Collections.sort(items, comparator);
                     notifyDataSetChanged();
                 });
             });
@@ -87,11 +90,16 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         notifyDataSetChanged();
     }
 
+    public void setDefaultComparator(Comparator comparator) {
+        this.comparator = comparator;
+    }
+
     public void flushFilter() {
         if (query != null) {
             query = null;
             items.clear();
             items.addAll(cachedItems);
+            if (comparator != null) Collections.sort(items, comparator);
             notifyDataSetChanged();
             filterHandler.post(cachedItems::clear);
         }

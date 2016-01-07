@@ -34,14 +34,15 @@ public class ScaleImageView extends SimpleDraweeView {
     private int prevMoveX;
     private int prevMoveY;
     private GestureDetector detector;
-    private boolean scaleEnabled;
+    private boolean scaleEnabled = true;
 
     private SingleTapListener singleTapListener;
     private DoubleTapListener doubleTapListener;
 
     @State
     int intrinsicWidth;
-    @State int intrinsicHeight;
+    @State
+    int intrinsicHeight;
 
     public ScaleImageView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -55,11 +56,13 @@ public class ScaleImageView extends SimpleDraweeView {
         initialize();
     }
 
-    @Override public Parcelable onSaveInstanceState() {
+    @Override
+    public Parcelable onSaveInstanceState() {
         return Icepick.saveInstanceState(this, super.onSaveInstanceState());
     }
 
-    @Override public void onRestoreInstanceState(Parcelable state) {
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
 

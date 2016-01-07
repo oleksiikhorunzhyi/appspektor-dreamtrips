@@ -17,6 +17,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.fragment.FragmentUtil;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -155,6 +156,19 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
                     .dismissListener(menu -> event.getAnchor().setEnabled(true))
                     .show();
         }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (ViewUtils.isTablet(getActivity()) && !ViewUtils.isLandscapeOrientation(getActivity())) {
+            OrientationUtil.lockOrientation(getActivity());
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Override

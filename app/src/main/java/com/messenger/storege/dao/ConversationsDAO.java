@@ -1,7 +1,5 @@
 package com.messenger.storege.dao;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -19,8 +17,6 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -31,8 +27,8 @@ public class ConversationsDAO extends BaseDAO {
         super(context);
     }
 
-    public ConversationsDAO(RxContentResolver rxContentResolver, Context context) {
-        super(rxContentResolver, context);
+    public ConversationsDAO(Context context, RxContentResolver rxContentResolver) {
+        super(context, rxContentResolver);
     }
 
     public static Conversation getConversationById(String conversationId) {
@@ -42,12 +38,8 @@ public class ConversationsDAO extends BaseDAO {
                 .querySingle();
     }
 
-    @Deprecated
-    public static void leaveConversation(ContentResolver contentResolver, String conversationId, boolean isOwner) {
-        ContentValues contentValues = new ContentValues(1);
-        contentValues.put(Conversation$Table.ABANDONED, isOwner);
-        contentResolver.update(Conversation.CONTENT_URI, contentValues, Conversation$Table._ID + "=?",
-                new String[]{conversationId});
+    public void deleteConversation(String conversationId) {
+        getConversationById(conversationId).delete();
     }
 
     public Observable<Cursor> selectConversationsList(@Nullable @Conversation.Type.ConversationType String type) {

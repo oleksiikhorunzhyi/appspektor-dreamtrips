@@ -34,7 +34,7 @@ class BaseDAO {
                 });
     }
 
-    BaseDAO(RxContentResolver rxContentResolver, Context context) {
+    BaseDAO(Context context, RxContentResolver rxContentResolver) {
         this.context = context;
         this.contentResolver = context.getContentResolver();
         this.rxContentResolver = rxContentResolver;

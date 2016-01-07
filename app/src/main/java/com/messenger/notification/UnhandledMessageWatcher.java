@@ -9,7 +9,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
+import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.MessengerInAppNotificationListener;
@@ -28,6 +28,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static com.messenger.messengerservers.listeners.GlobalMessageListener.*;
+
 public class UnhandledMessageWatcher {
 
     /**
@@ -43,7 +45,6 @@ public class UnhandledMessageWatcher {
     private DreamSpiceManager spiceManager;
     private OpenedConversationTracker openedConversationTracker;
 
-    private UnhandledMessageListener currentUnhandledMessageListener;
     private MessengerInAppNotificationListener notificationEventListener;
 
     public UnhandledMessageWatcher(MessengerServerFacade messengerServerFacade,
@@ -56,19 +57,25 @@ public class UnhandledMessageWatcher {
         this.openedConversationTracker = openedConversationTracker;
     }
 
+    private GlobalMessageListener messageListener = new SimpleGlobalMessageListener() {
+        @Override
+        public void onReceiveMessage(Message message) {
+            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, message);
+        }
+    };
+
     public void start(Activity activity) {
         if (currentActivity == activity) return;
-
-        messengerServerFacade.getGlobalEventEmitter().removeUnhandledMessageListener(currentUnhandledMessageListener);
+        //
+        messengerServerFacade.getGlobalEventEmitter().removeGlobalMessageListener(messageListener);
         this.currentActivity = activity;
-        currentUnhandledMessageListener = message -> onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, message);
-        messengerServerFacade.getGlobalEventEmitter().addUnhandledMessageListener(currentUnhandledMessageListener);
+        messengerServerFacade.getGlobalEventEmitter().addGlobalMessageListener(messageListener);
     }
 
     public void stop(Activity activity) {
         if (currentActivity == activity) {
             dismissAppNotification(currentActivity);
-            messengerServerFacade.getGlobalEventEmitter().removeUnhandledMessageListener(currentUnhandledMessageListener);
+            messengerServerFacade.getGlobalEventEmitter().removeGlobalMessageListener(messageListener);
             currentActivity = null;
         } else {
             dismissAppNotification(activity);

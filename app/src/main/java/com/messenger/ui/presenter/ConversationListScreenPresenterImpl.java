@@ -1,18 +1,15 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.messenger.delegate.LeaveChatDelegate;
+import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.listeners.OnLeftChatListener;
 import com.messenger.storege.dao.ConversationsDAO;
-import com.messenger.storege.dao.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;
@@ -44,19 +41,14 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     ConversationsDAO conversationsDAO;
 
     private Activity parentActivity;
-    private final LeaveChatDelegate leaveChatDelegate;
+    private final ChatLeavingDelegate chatLeavingDelegate;
 
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
         this.conversationHelper = new ConversationHelper();
-        OnLeftChatListener leaveListener = (conversationId, userId) -> {
-            ContentResolver resolver = parentActivity.getContentResolver();
-            ParticipantsDAO.delete(resolver, conversationId, userId);
-            ConversationsDAO.leaveConversation(resolver, conversationId, user.getId().equals(userId));
-        };
 
-        leaveChatDelegate = new LeaveChatDelegate((Injector) activity.getApplication(), leaveListener);
+        chatLeavingDelegate = new ChatLeavingDelegate((Injector) activity.getApplication(), null);
         ((Injector) activity.getApplicationContext()).inject(this);
     }
 
@@ -87,9 +79,9 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
         if (visibility == View.VISIBLE) {
-            leaveChatDelegate.register();
+            chatLeavingDelegate.register();
         } else {
-            leaveChatDelegate.unregister();
+            chatLeavingDelegate.unregister();
         }
     }
 
@@ -147,7 +139,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Override
     public void onDeletionConfirmed(Conversation conversation) {
         if (conversationHelper.isGroup(conversation)) {
-            leaveChatDelegate.leave(conversation);
+            chatLeavingDelegate.leave(conversation);
         } else {
             Toast.makeText(parentActivity, "Delete not yet implemented", Toast.LENGTH_SHORT).show();
         }

@@ -7,6 +7,7 @@ import org.jivesoftware.smack.packet.Stanza;
 public final class XmppPacketDetector {
     public static final int MESSAGE = 0x74747;
     public static final int SUBJECT = 0x74741;
+    public static final int SYSTEM = 0x74748;
     public static final int UNKNOW = -1;
 
     @Deprecated
@@ -20,8 +21,8 @@ public final class XmppPacketDetector {
 
         Message message = (Message) stanza;
         Message.Type messageType = message.getType();
-        if (messageType != Message.Type.chat && messageType != Message.Type.groupchat)
-            return UNKNOW;
+        if (messageType != Message.Type.chat && messageType != Message.Type.groupchat && messageType == Message.Type.normal)
+            return SYSTEM;
 
         // TODO: 12/23/15 refactoring this
         if (!StringUtils.isEmpty(message.getBody())) {

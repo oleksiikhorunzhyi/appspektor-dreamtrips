@@ -2,6 +2,7 @@ package com.messenger.messengerservers.entities;
 
 import android.net.Uri;
 
+import com.messenger.messengerservers.entities.Participant.Affiliation.AffiliationType;
 import com.messenger.storege.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -11,6 +12,8 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
+
+import retrofit.http.HEAD;
 
 @Table(databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 @TableEndpoint(name = ParticipantsRelationship.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
@@ -29,11 +32,14 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
     @Column String userId;
     @Column String affiliation;
 
-    public ParticipantsRelationship(String conversationId, User user, @Participant.Affiliation.AffiliationType String affiliation) {
-        id = String.format("%s_%s", conversationId, user.getId());
+    public ParticipantsRelationship(String conversationId, User user, @AffiliationType String affiliation) {
+        this(conversationId, user.getId(), affiliation);
+    }
 
+    public ParticipantsRelationship(String conversationId, String userId, @AffiliationType String affiliation) {
+        this.id = String.format("%s_%s", conversationId, userId);
         this.conversationId = conversationId;
-        this.userId = user.getId();
+        this.userId = userId;
         this.affiliation = affiliation;
     }
 
@@ -52,7 +58,7 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
         return userId;
     }
 
-    @Participant.Affiliation.AffiliationType
+    @AffiliationType
     public String getAffiliation() {
         return affiliation;
     }

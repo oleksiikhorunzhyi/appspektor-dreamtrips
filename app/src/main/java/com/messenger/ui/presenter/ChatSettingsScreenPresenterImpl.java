@@ -1,19 +1,19 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.messenger.delegate.LeaveChatDelegate;
+import com.messenger.delegate.ChatLeavingDelegate;
+import com.messenger.di.MessengerStorageModule;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.listeners.OnLeftChatListener;
+import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storege.dao.ConversationsDAO;
 import com.messenger.storege.dao.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
@@ -23,12 +23,12 @@ import com.messenger.ui.view.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -40,41 +40,24 @@ public class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<Chat
 
     private Conversation conversation;
 
-    private final LeaveChatDelegate leaveChatDelegate;
-    private final RxContentResolver contentResolver;
+    private final ChatLeavingDelegate chatLeavingDelegate;
 
     @Inject
     User user;
-
     @Inject
     MessengerServerFacade facade;
-
-    private final OnLeftChatListener onLeftChatListener = new OnLeftChatListener() {
-        @Override
-        public void onLeftChatListener(String conversationId, String userId) {
-            ContentResolver resolver = activity.getContentResolver();
-            ParticipantsDAO.delete(resolver, conversationId, userId);
-            ConversationsDAO.leaveConversation(resolver, conversationId, user.getId().equals(userId));
-            if (userId.equals(user.getId())) {
-                Intent intent = new Intent(activity, MessengerStartActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                activity.startActivity(intent);
-            }
-        }
-    };
+    @Inject
+    @Named(MessengerStorageModule.DB_FLOW_RX_RESOLVER)
+    RxContentResolver rxContentResolver;
 
     public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
         this.activity = activity;
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
         Injector injector = (Injector) activity.getApplication();
         injector.inject(this);
-        contentResolver = new RxContentResolver(activity.getContentResolver(),
-                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                        .rawQuery(query.selection, query.selectionArgs));
-
+;
         conversation = ConversationsDAO.getConversationById(conversationId);
-
-        leaveChatDelegate = new LeaveChatDelegate(injector, onLeftChatListener);
+        chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
     }
 
     @Override
@@ -93,7 +76,7 @@ public class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<Chat
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         getView().prepareViewForOwner(isUserOwner());
-        ParticipantsDAO.selectParticipants(contentResolver, conversation.getId(),
+        ParticipantsDAO.selectParticipants(rxContentResolver, conversation.getId(),
                 User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
                 .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
@@ -129,23 +112,34 @@ public class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<Chat
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onClearChatHistoryClicked() {
-    }
-
-    @Override
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
         if (visibility == View.VISIBLE) {
-            leaveChatDelegate.register();
+            chatLeavingDelegate.register();
         } else {
-            leaveChatDelegate.unregister();
+            chatLeavingDelegate.unregister();
         }
     }
 
     @Override
-    public void onLeaveChatClicked() {
-        leaveChatDelegate.leave(conversation);
+    public void onClearChatHistoryClicked() {
     }
+
+    @Override
+    public void onLeaveChatClicked() {
+        chatLeavingDelegate.leave(conversation);
+    }
+
+    private final OnChatLeftListener onChatLeftListener = new OnChatLeftListener() {
+        @Override
+        public void onChatLeft(String conversationId, String userId) {
+            if (userId.equals(user.getId())) {
+                Intent intent = new Intent(activity, MessengerStartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activity.startActivity(intent);
+            }
+        }
+    };
 
     @Override
     public void onNotificationsSwitchClicked(boolean isChecked) {

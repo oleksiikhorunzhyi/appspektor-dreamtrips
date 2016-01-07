@@ -32,10 +32,6 @@ import com.worldventures.dreamtrips.util.CopyFileTask;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +41,6 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
-import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
@@ -82,6 +77,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             shouldReload = false;
             loadProfile();
         }
+        //
+        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     @Override

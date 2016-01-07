@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.friends.view.cell.UserCell;
 import java.util.List;
 
 import butterknife.InjectView;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_likes)
 public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle>
@@ -41,8 +40,7 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
     public void onResume() {
         super.onResume();
         //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
-        header.getBackground().setAlpha(255);
-
+        header.getBackground().mutate().setAlpha(255);
     }
 
     @Override

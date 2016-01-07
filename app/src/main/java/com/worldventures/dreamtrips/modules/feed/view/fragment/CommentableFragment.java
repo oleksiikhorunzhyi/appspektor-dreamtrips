@@ -137,7 +137,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     private void showHeaderIfNeeded() {
         if (header != null && isTabletLandscape()) {
             header.setVisibility(View.VISIBLE);
-            header.getBackground().setAlpha(255);
+            header.getBackground().mutate().setAlpha(255);
         }
     }
 

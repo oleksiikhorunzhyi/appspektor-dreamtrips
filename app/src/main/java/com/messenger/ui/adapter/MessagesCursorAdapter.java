@@ -4,9 +4,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +31,8 @@ import com.worldventures.dreamtrips.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import timber.log.Timber;
+
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
     private static final int VIEW_TYPE_SOMEONES_MESSAGE = 2;
@@ -38,12 +44,27 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private OnAvatarClickListener avatarClickListener;
     private OnRepeatMessageSend onRepeatMessageSend;
+    private OnMessageClickListener messageClickListener;
 
     private SimpleDateFormat timeDateFormatter;
     private SimpleDateFormat dayOfTheWeekDateFormatter;
     private SimpleDateFormat dayOfTheMonthDateFormatter;
 
     private final int rowVerticalMargin;
+
+    private int currentManualTimestampMessagePosition = -1;
+
+    public interface OnAvatarClickListener {
+        void onAvatarClick(User user);
+    }
+
+    public interface OnRepeatMessageSend {
+        void onRepeatMessageSend(String messageId);
+    }
+
+    public interface OnMessageClickListener {
+        void onMessageClick(int position, Message message);
+    }
 
     public MessagesCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
         super(cursor);
@@ -81,23 +102,78 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public void onBindViewHolderCursor(MessageHolder holder, Cursor cursor) {
         switch (getItemViewType(cursor.getPosition())) {
             case VIEW_TYPE_OWN_MESSAGE:
-                bindMessageHolder(holder, cursor);
                 bindOwnMessageHolder((OwnMessageViewHolder) holder, cursor);
                 break;
             case VIEW_TYPE_SOMEONES_MESSAGE:
-                bindMessageHolder(holder, cursor);
                 bindUserMessageHolder((UserMessageViewHolder) holder, cursor);
                 break;
         }
     }
 
-    private void bindMessageHolder(MessageHolder holder, Cursor cursor) {
-        String dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
+    private void bindMessageHolder(MessageHolder holder, int position, Cursor cursor, Message message) {
+        holder.messageTextView
+                .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(), message));
+        String dateDivider;
+        // should show timestamp anyway
+        if (currentManualTimestampMessagePosition == position) {
+            dateDivider = getDateTimestamp(cursor.getLong(cursor.getColumnIndex(Message$Table.DATE)));
+        } else {
+            dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
+        }
         if (!TextUtils.isEmpty(dateDivider)) {
             holder.dateTextView.setVisibility(View.VISIBLE);
             holder.dateTextView.setText(dateDivider);
         } else {
             holder.dateTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private class TextSelectableClickListener
+            implements View.OnTouchListener, GestureDetector.OnGestureListener {
+
+        private Message message;
+        private int position;
+        private GestureDetectorCompat gestureDetector;
+
+        public TextSelectableClickListener(Context context, int position, Message message) {
+            this.gestureDetector = new GestureDetectorCompat(context, this);
+            this.position = position;
+            this.message = message;
+        }
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            return gestureDetector.onTouchEvent(motionEvent);
+        }
+
+        @Override
+        public boolean onDown(MotionEvent motionEvent) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent motionEvent) {
+            messageClickListener.onMessageClick(position, message);
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent motionEvent) {
+        }
+
+        @Override
+        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+            return false;
         }
     }
 
@@ -174,6 +250,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.visibleError(cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS)) == Message.Status.ERROR);
         holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message$Table.TEXT)));
 
+        int position = cursor.getPosition();
+        Message message = SqlUtils.convertToModel(false, Message.class, cursor);
+
+        bindMessageHolder(holder, position, cursor, message);
+
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
         if (previousMessageIsFromSameUser(cursor)) {
@@ -186,8 +267,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
+        int position = cursor.getPosition();
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
         User userFrom = SqlUtils.convertToModel(true, User.class, cursor);
+
+        bindMessageHolder(holder, position, cursor, message);
 
         boolean isPreviousMessageFromTheSameUser = previousMessageIsFromSameUser(cursor);
         if (conversationHelper.isGroup(conversation) && userFrom != null
@@ -223,6 +307,18 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         }
     }
 
+    public void showManualTimestampForPosition(int position) {
+        if (position == currentManualTimestampMessagePosition) {
+            currentManualTimestampMessagePosition = -1;
+            notifyItemChanged(position);
+        } else {
+            int prevPosition = currentManualTimestampMessagePosition;
+            currentManualTimestampMessagePosition = position;
+            notifyItemChanged(prevPosition);
+            notifyItemChanged(currentManualTimestampMessagePosition);
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
         Cursor cursor = getCursor();
@@ -243,11 +339,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.onRepeatMessageSend = onRepeatMessageSend;
     }
 
-    public interface OnAvatarClickListener {
-        void onAvatarClick(User user);
-    }
-
-    public interface OnRepeatMessageSend {
-        void onRepeatMessageSend(String messageId);
+    public void setMessageClickListener(OnMessageClickListener messageClickListener) {
+        this.messageClickListener = messageClickListener;
     }
 }

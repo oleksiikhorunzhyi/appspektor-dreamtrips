@@ -177,6 +177,9 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         ChatScreenPresenter presenter = getPresenter();
         adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
         adapter.setAvatarClickListener(presenter::openUserProfile);
+        adapter.setMessageClickListener((p, m) -> {
+            adapter.showManualTimestampForPosition(p);
+        });
         return adapter;
     }
 

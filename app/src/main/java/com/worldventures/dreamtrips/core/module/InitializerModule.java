@@ -2,12 +2,11 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.messenger.di.ChatFacadeInitializer;
-import com.messenger.di.MessengerInitializer;
-import com.messenger.di.PresenceListenerInitializer;
-import com.messenger.di.StorageInitializer;
+import com.messenger.di.MessengerInitializerModule;
+import com.messenger.initializer.MessengerInitializer;
+import com.messenger.initializer.PresenceListenerInitializer;
+import com.messenger.initializer.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
@@ -17,7 +16,6 @@ import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
-import com.worldventures.dreamtrips.modules.messenger.MessengerInitializerModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -97,21 +95,6 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideBadgeCountObserverInitializer() {
         return new BadgeCountObserverInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideStorageInitializer(@ForApplication Context context) {
-        return new StorageInitializer(context);
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideFacadeInitializer() {
-        return new ChatFacadeInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer providePresenceListenerInitializer() {
-        return new PresenceListenerInitializer();
     }
 
 }

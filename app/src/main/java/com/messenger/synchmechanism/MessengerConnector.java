@@ -13,6 +13,7 @@ import com.messenger.util.EventBusWrapper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import rx.Observable;
 import rx.subjects.ReplaySubject;

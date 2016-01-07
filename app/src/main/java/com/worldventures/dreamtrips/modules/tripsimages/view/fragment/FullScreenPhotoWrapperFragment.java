@@ -87,7 +87,7 @@ public class FullScreenPhotoWrapperFragment
     @Override
     public void onResume() {
         super.onResume();
-        toolbar.getBackground().setAlpha(0);
+        toolbar.getBackground().mutate().setAlpha(0);
     }
 
 

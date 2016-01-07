@@ -1,12 +1,16 @@
 package com.messenger.ui.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
+import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.messenger.util.UiUtils;
 import com.worldventures.dreamtrips.R;
@@ -79,5 +83,12 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     @Override
     protected int getLeaveChatButtonStringRes() {
         return R.string.chat_settings_row_leave_chat;
+    }
+
+    @NonNull
+    @Override
+    public ChatSettingsScreenPresenter createPresenter() {
+        Activity activity = getActivity();
+        return new MultiChatSettingsScreenPresenter(activity, activity.getIntent());
     }
 }

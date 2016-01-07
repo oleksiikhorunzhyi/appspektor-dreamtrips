@@ -11,6 +11,7 @@ import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
+import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
 import com.messenger.ui.view.EditChatMembersScreenImpl;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -36,6 +37,8 @@ import dagger.Provides;
                 LeaveChatDelegate.class,
 
                 ChatSettingsScreenPresenterImpl.class,
+                SingleChatSettingsScreenPresenterImpl.class,
+
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,
                 EditChatMembersScreenImpl.class,

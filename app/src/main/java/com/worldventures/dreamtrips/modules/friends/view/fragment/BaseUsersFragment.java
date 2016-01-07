@@ -88,7 +88,10 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
         layoutManager = createLayoutManager();
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+            recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
+                    .getDrawable(R.drawable.list_divider), true));
+        }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {

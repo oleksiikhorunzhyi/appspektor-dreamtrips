@@ -52,6 +52,7 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
         return userId;
     }
 
+    @Participant.Affiliation.AffiliationType
     public String getAffiliation() {
         return affiliation;
     }

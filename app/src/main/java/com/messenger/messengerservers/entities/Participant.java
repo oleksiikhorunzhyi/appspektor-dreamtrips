@@ -1,6 +1,9 @@
 package com.messenger.messengerservers.entities;
 
+import android.database.Cursor;
 import android.support.annotation.StringDef;
+
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -21,12 +24,19 @@ public class Participant {
         return user;
     }
 
+    @Affiliation.AffiliationType
     public String getAffiliation() {
         return affiliation;
     }
 
     public String getConversationId() {
         return conversationId;
+    }
+
+    public static Participant from(Cursor cursor){
+        User user = SqlUtils.convertToModel(true, User.class, cursor);
+        ParticipantsRelationship relationship = SqlUtils.convertToModel(true, ParticipantsRelationship.class, cursor);
+        return new Participant(user, relationship.getAffiliation(), relationship.getConversationId());
     }
 
     public static final class Affiliation {

@@ -11,6 +11,7 @@ import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
+import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
@@ -45,8 +46,16 @@ public class ActionButtonsContactsCursorAdapter
     }
 
     @Override
-    protected void onBindUserHolder(ContactViewHolder h, Cursor cursor, final User user) {
-        super.onBindUserHolder(h, cursor, user);
+    public void onBindViewHolderCursor(BaseViewHolder h, Cursor cursor) {
+        ContactViewHolder holder = (ContactViewHolder) h;
+        Participant participant = Participant.from(cursor);
+
+        onBindUserHolder(holder, cursor, participant.getUser());
+        onBindUserHolder(holder, cursor, participant);
+    }
+
+    protected void onBindUserHolder(ContactViewHolder h, Cursor cursor, final Participant participant) {
+        final User user = participant.getUser();
         ActionButtonsViewHolder holder = (ActionButtonsViewHolder)h;
         holder.getTickImageView().setVisibility(View.GONE);
         holder.swipeLayout.setSwipeEnabled(owner && !userId.equals(cursor.getString(cursor.getColumnIndex(User$Table._ID))));

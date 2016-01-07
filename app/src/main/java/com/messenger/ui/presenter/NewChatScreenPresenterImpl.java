@@ -11,22 +11,24 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storege.utils.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
 public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
+
     private final UsersDAO usersDAO;
+    private final ConversationHelper conversationHelper;
 
     public NewChatScreenPresenterImpl(Activity activity) {
         super(activity);
         usersDAO = new UsersDAO(activity.getApplication());
+        conversationHelper = new ConversationHelper();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -68,7 +70,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
 
                 Conversation conversation = chatDelegate.createNewConversation(selectedUsers, getView().getConversationName());
                 // we are participants too and if conversation is group then we're owner otherwise we're member
-                if ( StringUtils.equals(conversation.getType(), Conversation.Type.CHAT) ){
+                if (!conversationHelper.isGroup(conversation)) {
                     new ParticipantsRelationship(conversation.getId(), user, Participant.Affiliation.MEMBER).save();
                 } else {
                     new ParticipantsRelationship(conversation.getId(), user, Participant.Affiliation.OWNER).save();

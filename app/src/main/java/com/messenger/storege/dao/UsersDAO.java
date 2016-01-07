@@ -1,4 +1,4 @@
-package com.messenger.storege.utils;
+package com.messenger.storege.dao;
 
 import android.content.Context;
 import android.database.Cursor;

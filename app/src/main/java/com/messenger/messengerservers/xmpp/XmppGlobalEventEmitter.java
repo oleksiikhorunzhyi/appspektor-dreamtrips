@@ -7,11 +7,15 @@ import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.chat.Chat;
+import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.packet.Stanza;
+
+import timber.log.Timber;
 
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
@@ -39,6 +43,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             abstractXMPPConnection.addPacketInterceptor(XmppGlobalEventEmitter.this::interceptOutgoingPacket, null);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPacket, null);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
+            ChatManager.getInstanceFor(abstractXMPPConnection).addChatListener(XmppGlobalEventEmitter.this::onChatCreated);
         }
     };
 
@@ -51,9 +56,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         }
     }
 
+    private void onChatCreated(Chat chat, boolean createdLocally) {
+        notifyOnChatCreatedListener(chat.getThreadID(), createdLocally);
+    }
+
     private void interceptIncomingPacket(Stanza packet) {
         if (!facade.isActive()) return;
-        //
+
         switch (stanzaType(packet)) {
             case MESSAGE: {
                 Message messageXMPP = (Message) packet;

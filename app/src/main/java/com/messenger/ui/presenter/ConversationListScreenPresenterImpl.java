@@ -11,8 +11,8 @@ import com.messenger.delegate.LeaveChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnLeftChatListener;
-import com.messenger.storege.utils.ConversationsDAO;
-import com.messenger.storege.utils.ParticipantsDAO;
+import com.messenger.storege.dao.ConversationsDAO;
+import com.messenger.storege.dao.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;
@@ -21,6 +21,8 @@ import com.messenger.ui.viewstate.ConversationListViewState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -38,15 +40,16 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     User user;
     @Inject
     DreamSpiceManager dreamSpiceManager;
+    @Inject
+    ConversationsDAO conversationsDAO;
 
     private Activity parentActivity;
     private final LeaveChatDelegate leaveChatDelegate;
-    private final ConversationsDAO conversationsDAO;
+
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
         this.conversationHelper = new ConversationHelper();
-        conversationsDAO = new ConversationsDAO(activity.getApplication());
         OnLeftChatListener leaveListener = (conversationId, userId) -> {
             ContentResolver resolver = parentActivity.getContentResolver();
             ParticipantsDAO.delete(resolver, conversationId, userId);
@@ -91,8 +94,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     private void connectCursor() {
+        if (contactSubscription != null && !contactSubscription.isUnsubscribed()) {
+            contactSubscription.unsubscribe();
+        }
         contactSubscription = conversationsDAO.selectConversationsList(
                 getViewState().isShowOnlyGroupConversations() ? Conversation.Type.GROUP : null)
+                .throttleLast(1, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -164,8 +171,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     @Override
-    public void onConversationsDropdownSelected(boolean showOnlyGroupConversations) {
-        getViewState().setShowOnlyGroupConversations(showOnlyGroupConversations);
+    public void onConversationsDropdownSelected(ChatTypeItem selectedItem) {
+        getViewState().setShowOnlyGroupConversations(selectedItem.getType().equals(ChatTypeItem.GROUP_CHATS));
         connectCursor();
     }
 

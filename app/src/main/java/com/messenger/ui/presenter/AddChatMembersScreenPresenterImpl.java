@@ -103,6 +103,12 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                     Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if (!isConnectionPresent()) {
+            showAbsentConnectionMessage(activity);
+            return;
+        }
+
         conversationStream
                 .flatMap(conversation -> participantsDAO
                         .getParticipants(conversation.getId()).first()
@@ -112,7 +118,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                                     conversation, currentUsers, newChatUsers, getView().getConversationName()
                             );
                             Queryable.from(newChatUsers).forEachR(u ->
-                                    new ParticipantsRelationship(newConversation.getId(), u, Participant.Affiliation.MEMBER).save()
+                                            new ParticipantsRelationship(newConversation.getId(), u, Participant.Affiliation.MEMBER).save()
                             );
                             ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
                             return newConversation;

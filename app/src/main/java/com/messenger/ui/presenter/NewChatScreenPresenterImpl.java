@@ -68,6 +68,11 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                     return true;
                 }
 
+                if (!isConnectionPresent() && selectedUsers.size() != 1){
+                    showAbsentConnectionMessage(activity);
+                    return true;
+                }
+
                 Conversation conversation = chatDelegate.createNewConversation(selectedUsers, getView().getConversationName());
                 // we are participants too and if conversation is group then we're owner otherwise we're member
                 if (!conversationHelper.isGroup(conversation)) {

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
     <include layout="@layout/list_item_chat_date_entry"/>
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/chat_message_container"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -22,10 +23,29 @@
             style="@style/ChatMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/chat_color_message_own"
             android:textIsSelectable="true"
+            tools:textColor="@color/black"
+            tools:text="MESSAGES"
             />
-    </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_message_error"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:paddingRight="@dimen/spacing_small"
+            android:paddingEnd="@dimen/spacing_small"
+            android:paddingTop="@dimen/spacing_tiny"
+            android:layout_below="@+id/chat_message"
+            android:layout_alignRight="@+id/chat_message"
+            android:layout_alignEnd="@+id/chat_message"
+            android:src="@drawable/ic_error_red_400_18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="ContentDescription"/>
+    </RelativeLayout>
 </LinearLayout>

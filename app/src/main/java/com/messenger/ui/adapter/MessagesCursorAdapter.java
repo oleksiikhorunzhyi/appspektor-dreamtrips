@@ -168,10 +168,8 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
-        String msgText = cursor.getString(cursor.getColumnIndex(Message$Table.TEXT));
-        int msgStatus = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
-
-        holder.messageTextView.setText(msgStatus == Message.Status.ERROR ? "!!! " + msgText : msgText);
+        holder.visibleError(cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS)) == Message.Status.ERROR);
+        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message$Table.TEXT)));
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
+import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 
 import dagger.Module;
@@ -80,6 +81,11 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideLoggingInitializer() {
         return new LoggingInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideRxLogInitializer() {
+        return new RxJavaLoggingInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

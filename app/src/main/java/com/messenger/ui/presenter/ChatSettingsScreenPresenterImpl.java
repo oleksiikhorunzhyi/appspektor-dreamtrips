@@ -58,7 +58,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
         Injector injector = (Injector) activity.getApplication();
         injector.inject(this);
-;
+
         conversation = ConversationsDAO.getConversationById(conversationId);
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
     }

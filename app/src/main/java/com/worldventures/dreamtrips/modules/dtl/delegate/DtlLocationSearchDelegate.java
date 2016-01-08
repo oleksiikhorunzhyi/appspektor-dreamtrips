@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.api.location.GetDtlLocationsQuery;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;

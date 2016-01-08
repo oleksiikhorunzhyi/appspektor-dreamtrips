@@ -19,7 +19,7 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.rx.NonNullFilter;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Date;
 

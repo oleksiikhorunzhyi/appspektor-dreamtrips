@@ -503,8 +503,8 @@
     <!---->
     <string name="conversation_list_title">Conversations</string>
 
-    <string name="conversation_list_spinner_item_all_chats">All chats</string>
-    <string name="conversation_list_spinner_item_group_chats">Group chats</string>
+    <string name="conversation_list_spinner_item_all_chats">All Chats</string>
+    <string name="conversation_list_spinner_item_group_chats">Group Chats</string>
 
     <string name="conversation_list_search_hint">Search conversations…</string>
     <string name="conversation_list_search_edittext_hint">Search for groups and people</string>

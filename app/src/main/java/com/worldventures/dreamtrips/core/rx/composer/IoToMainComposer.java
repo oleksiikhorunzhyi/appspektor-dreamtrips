@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.rx;
+package com.worldventures.dreamtrips.core.rx.composer;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

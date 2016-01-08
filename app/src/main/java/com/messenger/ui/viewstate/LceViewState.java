@@ -46,12 +46,6 @@ public class LceViewState<C> extends BaseRestorableViewState {
         parcel.writeSerializable(error);
     }
 
-    public static final Creator<LceViewState> CREATOR = new Creator<LceViewState>() {
-        public LceViewState createFromParcel(Parcel source) {return new LceViewState(source);}
-
-        public LceViewState[] newArray(int size) {return new LceViewState[size];}
-    };
-
     public LceViewState(Parcel in) {
         loadingState = LoadingState.values()[in.readInt()];
         error = (Throwable) in.readSerializable();

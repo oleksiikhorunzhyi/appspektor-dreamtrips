@@ -10,6 +10,7 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
+import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
 import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
 import com.messenger.ui.view.EditChatMembersScreenImpl;
@@ -36,8 +37,8 @@ import dagger.Provides;
 
                 ChatLeavingDelegate.class,
 
-                ChatSettingsScreenPresenterImpl.class,
                 SingleChatSettingsScreenPresenterImpl.class,
+                MultiChatSettingsScreenPresenter.class,
 
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,

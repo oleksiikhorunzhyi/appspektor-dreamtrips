@@ -113,27 +113,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private Observable<Chat> createChat(ChatManager chatManager, Conversation conversation) {
-        return Observable.<Chat>create(subscriber -> {
-            switch (conversation.getType()) {
-                case Conversation.Type.CHAT:
-                    try {
-                        participantsDAO.getParticipant(conversationId, user.getId())
-                                .subscribe(mate -> subscriber
-                                                .onNext(chatManager.createSingleUserChat(mate.getId(), conversationId))
-                                );
-                    } catch (Exception e) {
-                        subscriber.onError(e);
-                    }
-                    break;
-                case Conversation.Type.GROUP:
-                default:
-                    String ownerId = conversation.getOwnerId();
-                    boolean isOwner = ownerId != null && ownerId.equals(user.getId());
-                    subscriber.onNext(chatManager.createMultiUserChat(conversation.getId(), getUser().getId(), isOwner));
-                    break;
-            }
-            subscriber.onCompleted();
-        });
+        switch (conversation.getType()) {
+            case Conversation.Type.CHAT:
+                return participantsDAO
+                        .getParticipant(conversation.getId(), user.getId()).first()
+                        .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));
+            case Conversation.Type.GROUP:
+            default:
+                boolean isOwner = conversationHelper.isOwner(conversation, user);
+                return Observable.defer(() -> Observable.just(chatManager.createMultiUserChat(conversation.getId(), user.getId(), isOwner)));
+        }
     }
 
     @Override
@@ -171,8 +160,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(this::onConversationUpdated);
 
         source
-                .first()
-                .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
+                .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv)).first()
                 .compose(new IoToMainComposer<>())
                 .subscribe(this::onChatLoaded);
 

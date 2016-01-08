@@ -119,7 +119,7 @@ android {
         messenger {
             flavorDimension "config"
 
-            applicationIdSuffix ".messenger"
+            applicationId "com.worldventures.dreamtrips.messenger"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-messenger" + "-${versionBuild}"
 
             manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",

@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 
 import com.messenger.model.ChatUser;
-import com.messenger.storege.MessengerDatabase;
+import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;

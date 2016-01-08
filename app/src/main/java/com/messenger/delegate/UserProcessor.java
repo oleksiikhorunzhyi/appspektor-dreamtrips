@@ -2,7 +2,7 @@ package com.messenger.delegate;
 
 import com.messenger.api.GetShortProfilesQuery;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.storege.dao.UsersDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.process.ProcessModelInfo;
 import com.raizlabs.android.dbflow.runtime.transaction.process.SaveModelTransaction;

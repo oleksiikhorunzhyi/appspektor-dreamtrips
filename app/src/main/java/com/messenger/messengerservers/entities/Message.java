@@ -2,7 +2,7 @@ package com.messenger.messengerservers.entities;
 
 import android.net.Uri;
 
-import com.messenger.storege.MessengerDatabase;
+import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;

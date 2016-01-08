@@ -146,9 +146,9 @@
         <!--Content Provider-->
 
         <provider
-            android:authorities="com.worldventures.dreamtrips.storege"
+            android:authorities="${applicationId}"
             android:exported="false"
-            android:name="com.messenger.storege.MessengerDatabase$Provider"/>
+            android:name="com.messenger.storage.MessengerDatabase$Provider"/>
 
         <!--Foreign activities-->
 

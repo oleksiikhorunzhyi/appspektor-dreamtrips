@@ -4,10 +4,10 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.messenger.messengerservers.entities.User;
-import com.messenger.storege.dao.ConversationsDAO;
-import com.messenger.storege.dao.MessageDAO;
-import com.messenger.storege.dao.ParticipantsDAO;
-import com.messenger.storege.dao.UsersDAO;
+import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;

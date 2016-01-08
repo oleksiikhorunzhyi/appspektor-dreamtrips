@@ -9,7 +9,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.storege.dao.UsersDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.NewChatMembersScreen;

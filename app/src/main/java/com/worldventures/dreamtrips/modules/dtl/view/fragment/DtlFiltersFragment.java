@@ -115,7 +115,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         data.setPrice(Integer.valueOf(rangeBarPrice.getLeftValue()), Integer.valueOf(rangeBarPrice.getRightValue()));
         data.setDistanceType(distanceTypeSwitch.isChecked() ? DtlFilterData.DistanceType.KMS :
                 DtlFilterData.DistanceType.MILES);
-        data.setCurrentDistance(Integer.valueOf(rangeBarDistance.getRightValue()));
+        data.setMaxDistance(Integer.valueOf(rangeBarDistance.getRightValue()));
         //
         List<Integer> positions = selectionManager
                 .getSelectedPositions(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));

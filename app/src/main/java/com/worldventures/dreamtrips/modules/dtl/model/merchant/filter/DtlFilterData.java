@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
 import java.util.ArrayList;
@@ -109,10 +108,6 @@ public class DtlFilterData implements Parcelable {
     }
 
     public void setMaxDistance(int maxDistance) {
-        this.maxDistance = maxDistance;
-    }
-
-    public void setCurrentDistance(int maxDistance) {
         // monkey-patch for unusual crashes with values out of bounds for rangebar
         this.maxDistance = maxDistance > MAX_DISTANCE ? MAX_DISTANCE : maxDistance;
     }

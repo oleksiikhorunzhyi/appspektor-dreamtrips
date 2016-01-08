@@ -84,10 +84,9 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
      * @param dtlMerchant merchant to filter
      * @return true if merchant passes filter
      */
-    private boolean checkAmenities(DtlMerchant dtlMerchant) {
-        List<DtlMerchantAttribute> selectedAmenities = dtlFilterData.getSelectedAmenities();
+    public boolean checkAmenities(DtlMerchant dtlMerchant) {
         return dtlMerchant.getAmenities() == null || dtlMerchant.getAmenities().isEmpty() ||
-                !Collections.disjoint(selectedAmenities, dtlMerchant.getAmenities());
+                !Collections.disjoint(dtlFilterData.getSelectedAmenities(), dtlMerchant.getAmenities());
     }
 
     public static class Builder {

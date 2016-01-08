@@ -551,8 +551,8 @@
     <string name="chat_error_loading">Could not load chat history</string>
     <string name="chat_unread_messages_textview_format">%d unread</string>
     <string name="chat_more_typing_users_hint_format">and %d more</string>
-    <string name="chat_list_date_entry_today">TODAY</string>
-    <string name="chat_list_date_entry_yesterday">YESTERDAY</string>
+    <string name="chat_list_date_entry_today">Today</string>
+    <string name="chat_list_date_entry_yesterday">Yesterday</string>
 
     <!---->
     <!--Chat Settings -->

@@ -2,9 +2,11 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
@@ -51,9 +54,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.user = user;
 
         this.conversationHelper = new ConversationHelper();
-        this.timeDateFormatter = new SimpleDateFormat("h:mm");
+
+        this.timeDateFormatter = new SimpleDateFormat("h:mm aa");
         this.dayOfTheWeekDateFormatter = new SimpleDateFormat("EEEE");
         this.dayOfTheMonthDateFormatter = new SimpleDateFormat("MMM dd");
+
         rowVerticalMargin = context.getResources()
                 .getDimensionPixelSize(R.dimen.chat_list_item_vertical_padding);
     }
@@ -90,7 +95,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindMessageHolder(MessageHolder holder, Cursor cursor) {
-        String dateDivider = getDateDivider(cursor);
+        String dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
         if (!TextUtils.isEmpty(dateDivider)) {
             holder.dateTextView.setVisibility(View.VISIBLE);
             holder.dateTextView.setText(dateDivider);
@@ -99,7 +104,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         }
     }
 
-    private String getDateDivider(Cursor cursor) {
+    private String getMessageTimestampBetweenMessagesIfNeeded(Cursor cursor) {
         int dateColumnIndex = cursor.getColumnIndex(Message.COLUMN_DATE);
         long currentDate = cursor.getLong(dateColumnIndex);
         long previousDate = 0;
@@ -108,33 +113,51 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             previousDate = cursor.getLong(dateColumnIndex);
         }
         cursor.moveToNext();
-        return getDateChatEntryIfNeeded(previousDate, currentDate);
+        return getMessageTimestampBetweenDatesIfNeeded(previousDate, currentDate);
     }
 
-    public String getDateChatEntryIfNeeded(long previousDate, long currentDate) {
-        StringBuilder dateString = new StringBuilder();
+    private String getMessageTimestampBetweenDatesIfNeeded(long previousDate, long currentDate) {
         int calendarDaysSincePreviousDate = 0;
         if (previousDate != 0) {
             calendarDaysSincePreviousDate = (int) ChatDateUtils
                     .calendarDaysBetweenDates(previousDate, currentDate);
         }
         if ((previousDate != 0 && calendarDaysSincePreviousDate > 0) || previousDate == 0) {
-            long todayMidnightTimestamp = ChatDateUtils.getToday().getTime().getTime();
-            int daysSinceToday = (int) ChatDateUtils
-                    .calendarDaysBetweenDates(todayMidnightTimestamp, currentDate);
-            if (daysSinceToday == 0) {
-                dateString.append(context.getString(R.string.chat_list_date_entry_today));
-            } else if (daysSinceToday == 1) {
-                dateString.append(context.getString(R.string.chat_list_date_entry_yesterday));
-            } else if (daysSinceToday > 1 && daysSinceToday <= 4) {
-                dateString.append(dayOfTheWeekDateFormatter.format(currentDate).toUpperCase());
-            } else {
-                dateString.append(dayOfTheMonthDateFormatter.format(currentDate).toUpperCase());
-            }
-            dateString.append(", ");
-            dateString.append(timeDateFormatter.format(currentDate));
+            return getDateTimestamp(currentDate);
         }
-        return dateString.toString();
+        return null;
+    }
+
+    @NonNull
+    private String getDateTimestamp(long currentDate) {
+        StringBuilder sb = new StringBuilder();
+        Calendar dateCalendar = Calendar.getInstance();
+        dateCalendar.setTimeInMillis(currentDate);
+        Calendar todayMidnightCalendar = ChatDateUtils.getToday();
+        long todayMidnightTimestamp = todayMidnightCalendar.getTime().getTime();
+        int daysSinceToday = (int) ChatDateUtils
+                .calendarDaysBetweenDates(todayMidnightTimestamp, currentDate);
+        if (daysSinceToday == 0) {
+            sb.append(context.getString(R.string.chat_list_date_entry_today));
+            sb.append(", ");
+            sb.append(timeDateFormatter.format(currentDate));
+        } else if (daysSinceToday == 1) {
+            sb.append(context.getString(R.string.chat_list_date_entry_yesterday));
+            sb.append(", ");
+            sb.append(timeDateFormatter.format(currentDate));
+        } else if (daysSinceToday > 1 && daysSinceToday < 7) {
+            sb.append(dayOfTheWeekDateFormatter.format(currentDate));
+            sb.append(", ");
+            sb.append(timeDateFormatter.format(currentDate));
+        } else if (dateCalendar.get(Calendar.YEAR) == todayMidnightCalendar.get(Calendar.YEAR)) {
+            sb.append(dayOfTheMonthDateFormatter.format(currentDate));
+            sb.append(", ");
+            sb.append(timeDateFormatter.format(currentDate));
+        } else {
+            sb.append(DateUtils.getRelativeDateTimeString(context, currentDate,
+                    DateUtils.HOUR_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, 0));
+        }
+        return sb.toString();
     }
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {

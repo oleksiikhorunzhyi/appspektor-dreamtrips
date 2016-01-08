@@ -34,6 +34,7 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,8 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Subscription;
 
 import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 import static com.messenger.messengerservers.entities.Conversation.Type.GROUP;
@@ -59,20 +59,20 @@ public class ConversationsCursorAdapter
 
     private static final float CLOSED_CONVERSATION_ALPHA = 0.3f;
 
-    private Context context;
-
+    private final Context context;
     private final RecyclerView recyclerView;
+
     private User currentUser;
 
-    private ClickListener clickListener;
-
-    public SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
+    private SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
     private SwipeButtonsListener swipeButtonsListener;
+    private ClickListener clickListener;
 
     private ConversationHelper conversationHelper;
     private SimpleDateFormat todayDateFormat;
     private SimpleDateFormat moreThanTwoDaysAgoFormat;
     private ParticipantsDAO participantsDAO;
+    private Subscription mainSubscription;
 
     public interface ClickListener {
         void onConversationClick(Conversation conversation);
@@ -280,21 +280,25 @@ public class ConversationsCursorAdapter
     }
 
     public void changeCursor(Cursor newCursor, String filter) {
+        if (mainSubscription != null && !mainSubscription.isUnsubscribed()) {
+            mainSubscription.unsubscribe();
+        }
+        //
         if (TextUtils.isEmpty(filter)) {
             super.swapCursor(newCursor);
             return;
         }
-        Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
-                .flatMap(c -> participantsDAO.getParticipants(c.getId())
-                        .map(cursor -> {
-                            return SqlUtils.convertToList(User.class, cursor);
-                        })
-                        .map(users -> new Pair<>(c, users)))
+        mainSubscription = Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
+                .flatMap(c -> participantsDAO.getParticipants(c.getId()).first()
+                        .map(cursor -> SqlUtils.convertToList(User.class, cursor))
+                        .map(users -> new Pair<>(c, users))
+                )
                 .toMap(p -> p.first, p -> p.second)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .compose(RxLifecycle.bindView(recyclerView))
-                .subscribe(map -> super.swapCursor(new FilterCursorWrapper(newCursor, filter, map)));
+                .subscribe(map -> {
+                    super.swapCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
+                });
     }
 
     public void setClickListener(ClickListener clickListener) {
@@ -368,12 +372,12 @@ public class ConversationsCursorAdapter
     // Search related
     ///////////////////////////////////////////////////////////////////////////
 
-    public class FilterCursorWrapper extends CursorWrapper {
+    public static class FilterCursorWrapper extends CursorWrapper {
         private int[] index;
         private int count;
         private int pos;
 
-        public FilterCursorWrapper(Cursor cursor, String filter, Map<Conversation, List<User>> map) {
+        public FilterCursorWrapper(ConversationHelper helper, Cursor cursor, String filter, Map<Conversation, List<User>> map) {
             super(cursor);
             filter = filter.toLowerCase();
 
@@ -385,7 +389,7 @@ public class ConversationsCursorAdapter
                     Conversation conversation
                             = SqlUtils.convertToModel(true, Conversation.class, cursor);
                     String conversationName;
-                    if (conversationHelper.isGroup(conversation)) {
+                    if (helper.isGroup(conversation)) {
                         conversationName = getGroupConversationName(conversation, map.get(conversation));
                     } else {
                         conversationName = getOneToOneConversationName(conversation, map.get(conversation));

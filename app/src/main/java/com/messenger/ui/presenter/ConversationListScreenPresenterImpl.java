@@ -20,14 +20,14 @@ import com.messenger.ui.viewstate.ConversationListViewState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.ALL_CHATS;
@@ -116,15 +116,15 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
                     String convType = type == GROUP_CHATS ? Conversation.Type.GROUP : null;
                     return conversationsDAO.selectConversationsList(convType)
                             .onBackpressureLatest()
-                            .throttleLast(200, TimeUnit.MILLISECONDS);
+                            .throttleLast(200l, TimeUnit.MILLISECONDS);
                 });
         Observable<String> filterObs = filterStream.asObservable()
                 .startWith(getViewState().getSearchFilter())
+                .compose(new DelayedComposer<>(300L))
                 .distinctUntilChanged();
 
         Observable.combineLatest(cursorObs, filterObs, (c, s) -> new Pair<>(c, s))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .compose(bindView())
                 .subscribe(pair -> {
                     state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);

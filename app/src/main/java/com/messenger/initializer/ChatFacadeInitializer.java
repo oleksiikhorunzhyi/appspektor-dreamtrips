@@ -21,9 +21,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.NonNullFilter;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -33,6 +31,8 @@ import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
 import static com.messenger.messengerservers.entities.Participant.Affiliation.MEMBER;
+import static java.util.Collections.singletonList;
+import static rx.Observable.just;
 
 public class ChatFacadeInitializer implements AppInitializer {
 
@@ -98,18 +98,25 @@ public class ChatFacadeInitializer implements AppInitializer {
         });
         emitter.addOnChatJoinedListener((conversationId, userId) -> {
             Timber.i("Chat joined :: chat=%s , user=%s", conversationId, userId);
-            participantsDAO
-                    .getParticipants(conversationId)
-                    .map(c -> SqlUtils.convertToList(ParticipantsRelationship.class, c))
-                    .first()
-                    .filter(list -> !from(list).map(ParticipantsRelationship::getUserId).contains(userId))
-                    .flatMap(list -> usersDAO.getUserById(userId))
+            usersDAO.getUserById(userId)
                     .flatMap(cachedUser -> {
-                        Observable<List<User>> provider = cachedUser == null ?
-                                Observable.just(Collections.emptyList()) : Observable.just(Collections.singletonList(new User(userId)));
-                        return userProcessor.connectToUserProvider(provider);
+                        if (cachedUser != null) return just(singletonList(cachedUser));
+                        else return userProcessor.connectToUserProvider(just(singletonList(new User(userId))));
                     })
-                    .doOnNext(aVoid -> new ParticipantsRelationship(conversationId, userId, MEMBER).save())
+                    .doOnNext(users -> from(users).forEachR(u -> {
+                        if (u.isOnline()) return;
+                        u.setOnline(true);
+                        u.save();
+                    }))
+                    .flatMap(users -> participantsDAO.getParticipants(conversationId)
+                            .map(c -> SqlUtils.convertToList(ParticipantsRelationship.class, c))
+                            .map(list -> from(list).map(ParticipantsRelationship::getUserId).contains(userId))
+                            .first()
+                    )
+                    .filter(isAlreadyConnected -> !isAlreadyConnected)
+                    .doOnNext(isAlreadyConnected -> {
+                        new ParticipantsRelationship(conversationId, userId, MEMBER).save();
+                    })
                     .subscribeOn(Schedulers.io())
                     .subscribe();
         });

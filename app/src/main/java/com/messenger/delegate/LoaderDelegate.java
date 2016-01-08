@@ -65,10 +65,10 @@ public class LoaderDelegate {
             });
             conversationLoader.load();
         });
-        return userProcessor.connectToUserProvider(loader);
+        return userProcessor.connectToUserProvider(loader).map(users -> (Void) null);
     }
 
-    public Observable<Void> loadContacts() {
+    public Observable<List<User>> loadContacts() {
         Observable<List<User>> loader = Observable.<List<User>>create(subscriber -> {
             Loader<User> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
             contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<User, User>(subscriber) {

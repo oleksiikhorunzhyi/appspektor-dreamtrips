@@ -27,8 +27,8 @@ public class UserProcessor {
         this.requester = requester;
     }
 
-    public Observable<Void> connectToUserProvider(Observable<List<User>> provider) {
-        ConnectableObservable<Void> observable = provider
+    public Observable<List<User>> connectToUserProvider(Observable<List<User>> provider) {
+        ConnectableObservable<List<User>> observable = provider
                 .compose(updateWithSocialData())
                 .subscribeOn(Schedulers.io()).observeOn(Schedulers.trampoline())
                 .publish();
@@ -37,9 +37,9 @@ public class UserProcessor {
         return observable.asObservable();
     }
 
-    private Observable.Transformer<List<User>, Void> updateWithSocialData() {
+    private Observable.Transformer<List<User>, List<User>> updateWithSocialData() {
         return listObservable -> listObservable.flatMap(users -> {
-            if (users.isEmpty()) return Observable.just(null);
+            if (users.isEmpty()) return Observable.just(Collections.emptyList());
             //
             List<String> usernames = from(users).map(User::getId).toList();
             return Observable.create(subscriber -> {
@@ -64,7 +64,7 @@ public class UserProcessor {
                     }).toList();
                     TransactionManager.getInstance().addTransaction(new SaveModelTransaction<>(ProcessModelInfo.withModels(result)));
                     if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(null);
+                        subscriber.onNext(result);
                         subscriber.onCompleted();
                     }
                 }, spiceException -> {

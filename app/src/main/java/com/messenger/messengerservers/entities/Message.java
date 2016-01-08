@@ -1,6 +1,7 @@
 package com.messenger.messengerservers.entities;
 
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.support.annotation.IntDef;
 
 import com.messenger.storage.MessengerDatabase;
@@ -21,17 +22,11 @@ import java.util.Locale;
 public class Message extends BaseProviderModel<Message> {
     public static final String TABLE_NAME = "Messages";
 
-    @Deprecated public static final String COLUMN_DATE = "date";
-    @Deprecated public static final String COLUMN_TEXT = "text";
-    @Deprecated public static final String COLUMN_FROM = "fromId";
-    @Deprecated public static final String COLUMN_CONVERSATION_ID = "conversationId";
-    @Deprecated public static final String _ID = "_id";
-
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @PrimaryKey @Column String _id;
+    @PrimaryKey @Column(name = BaseColumns._ID) String id;
     @Column String fromId;
     @Column String toId;
     @Column String text;
@@ -48,11 +43,11 @@ public class Message extends BaseProviderModel<Message> {
         this.fromId = from;
         this.toId = to;
         this.text = text;
-        this._id = id;
+        this.id = id;
     }
 
     private Message(Builder builder) {
-        _id = builder.id;
+        setId(builder.id);
         setConversationId(builder.conversationId);
         setFromId(builder.from);
         setToId(builder.to);
@@ -60,6 +55,14 @@ public class Message extends BaseProviderModel<Message> {
         setDate(builder.date);
         setLocale(builder.locale);
         setStatus(builder.status);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getConversationId() {
@@ -88,10 +91,6 @@ public class Message extends BaseProviderModel<Message> {
 
     public String getText() {
         return text;
-    }
-
-    public String getId() {
-        return _id;
     }
 
     public void setText(String text) {

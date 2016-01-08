@@ -2,7 +2,6 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
@@ -43,10 +43,6 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private SimpleDateFormat dayOfTheMonthDateFormatter;
 
     private final int rowVerticalMargin;
-
-    public interface OnAvatarClickListener {
-        void onAvatarClick(User user);
-    }
 
     public MessagesCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
         super(cursor);
@@ -105,7 +101,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private String getMessageTimestampBetweenMessagesIfNeeded(Cursor cursor) {
-        int dateColumnIndex = cursor.getColumnIndex(Message.COLUMN_DATE);
+        int dateColumnIndex = cursor.getColumnIndex(Message$Table.DATE);
         long currentDate = cursor.getLong(dateColumnIndex);
         long previousDate = 0;
         boolean moveCursorToPrev = cursor.moveToPrevious();
@@ -161,18 +157,21 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {
-        String currentId = cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM));
+        String currentId = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
         boolean moveCursorToPrev = cursor.moveToPrevious();
         if (!moveCursorToPrev) {
             return false;
         }
-        String prevId = cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM));
+        String prevId = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
         cursor.moveToNext();
         return prevId.equals(currentId);
     }
 
     private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
-        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message.COLUMN_TEXT)));
+        String msgText = cursor.getString(cursor.getColumnIndex(Message$Table.TEXT));
+        int msgStatus = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
+
+        holder.messageTextView.setText(msgStatus == Message.Status.ERROR ? "!!! " + msgText : msgText);
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
@@ -227,7 +226,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public int getItemViewType(int position) {
         Cursor cursor = getCursor();
         cursor.moveToPosition(position);
-        return cursor.getString(cursor.getColumnIndex(Message.COLUMN_FROM))
+        return cursor.getString(cursor.getColumnIndex(Message$Table.FROMID))
                 .equals(user.getId()) ? VIEW_TYPE_OWN_MESSAGE : VIEW_TYPE_SOMEONES_MESSAGE;
     }
 
@@ -239,4 +238,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.avatarClickListener = avatarClickListener;
     }
 
+    public interface OnAvatarClickListener {
+        void onAvatarClick(User user);
+    }
+
+    public interface OnRepeatMessageSend {
+        void OnRepeatMessageSend(Message message);
+    }
 }

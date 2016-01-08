@@ -72,11 +72,17 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Override
     public Observable<Message> send(Message message) {
         return Observable.just(message)
-                .doOnNext(message1 -> {
-                    message1.setFromId(userId);
-                    message1.setConversationId(roomId);
+                .doOnNext(msg -> {
+                    msg.setFromId(userId);
+                    msg.setConversationId(roomId);
                 })
-                .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), chat::sendMessage));
+                .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), smackMsg -> {
+                    if (chat != null) {
+                        chat.sendMessage(smackMsg);
+                        return true;
+                    }
+                    return false;
+                }));
     }
 
     @Override
@@ -84,7 +90,13 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         return Observable.just(message)
                 .compose(new StatusMessageTranformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
                         JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat),
-                        connection::sendStanza));
+                        stanza -> {
+                            if (connection != null) {
+                                connection.sendStanza(stanza);
+                                return true;
+                            }
+                            return false;
+                        }));
     }
 
     @Override

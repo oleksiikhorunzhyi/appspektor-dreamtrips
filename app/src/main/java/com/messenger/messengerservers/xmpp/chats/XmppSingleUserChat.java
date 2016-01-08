@@ -26,7 +26,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
 
     private static final String TAG = "SingleUserChat";
     private final String companionId;
-    private String thread;
+    private String roomId;
 
     @Nullable
     private ChatStateManager chatStateManager;
@@ -46,10 +46,10 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         }
     };
 
-    public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String thread) {
+    public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String roomId) {
         this.facade = facade;
         this.companionId = companionId;
-        this.thread = thread;
+        this.roomId = roomId;
         facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
         if (facade.isAuthorized()) {
             setConnection(facade.getConnection());
@@ -69,7 +69,14 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     @Override
     public Observable<com.messenger.messengerservers.entities.Message> send(com.messenger.messengerservers.entities.Message message) {
         return Observable.just(message)
-                .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), connection::sendStanza));
+                .doOnNext(msg -> msg.setConversationId(roomId))
+                .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), smackMsg -> {
+                    if (chat != null) {
+                        chat.sendMessage(smackMsg);
+                        return true;
+                    }
+                    return false;
+                }));
 
     }
 
@@ -78,7 +85,13 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         return Observable.just(message)
                 .compose(new StatusMessageTranformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
                         JidCreatorHelper.obtainUserJid(companionId), org.jivesoftware.smack.packet.Message.Type.chat),
-                        connection::sendStanza));
+                        stanza -> {
+                            if (connection != null) {
+                                connection.sendStanza(stanza);
+                                return true;
+                            }
+                            return false;
+                        }));
     }
 
     @Override
@@ -99,25 +112,25 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         if (companionId != null) {
             companionJid = JidCreatorHelper.obtainUserJid(companionId);
         }
-        if (thread == null) {
+        if (roomId == null) {
             if (companionJid == null) throw new Error();
-            thread = ThreadCreatorHelper.obtainThreadSingleChat(userJid, companionJid);
+            roomId = ThreadCreatorHelper.obtainThreadSingleChat(userJid, companionJid);
         }
 
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
-        Chat existingChat = chatManager.getThreadChat(thread);
+        Chat existingChat = chatManager.getThreadChat(roomId);
 
         if (existingChat == null) {
             if (companionJid == null) {
                 companionJid = JidCreatorHelper
                         .obtainUserJid(
-                                thread
+                                roomId
                                         .replace(userJid.split("@")[0], "")
                                         .replace("_", "")
-                                        //// TODO: 12/15/15  remove after implemented social graph
+                                                //// TODO: 12/15/15  remove after implemented social graph
                                         .replace("yu", "y_u"));
             }
-            chat = chatManager.createChat(companionJid, thread, null);
+            chat = chatManager.createChat(companionJid, roomId, null);
         } else {
             chat = existingChat;
         }

@@ -23,24 +23,22 @@ class SendMessageTransformer implements Observable.Transformer<Message, Message>
 
     @Override
     public Observable<Message> call(Observable<Message> messageObservable) {
-        return messageObservable.doOnNext(message1 -> message1.setStatus(Message.Status.SENDING))
-                .doOnNext(emitter::interceptOutgoingMessages)
-                .flatMap(message1 -> Observable.<com.messenger.messengerservers.entities.Message>create(subscriber -> {
+        return messageObservable.doOnNext(message -> message.setStatus(Message.Status.SENDING))
+                .doOnNext(message -> {
+                    message.setId(UUID.randomUUID().toString());
+                    emitter.interceptOutgoingMessages(message);
+                })
+                .flatMap(message -> Observable.<com.messenger.messengerservers.entities.Message>create(subscriber -> {
                     try {
-                        subscriber.onStart();
+                        org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
 
-                        org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message1);
-                        stanzaPacket.setStanzaId(UUID.randomUUID().toString());
-                        sendAction.call(stanzaPacket);
-                        message1.setStatus(Message.Status.SENT);
-                        subscriber.onNext(message1);
+                        message.setStatus(sendAction.call(stanzaPacket) ? Message.Status.SENT : Message.Status.ERROR);
                     } catch (SmackException.NotConnectedException e) {
-                        message1.setStatus(Message.Status.ERROR);
-                        subscriber.onNext(message1);
+                        message.setStatus(Message.Status.ERROR);
+                        subscriber.onNext(message);
                     } catch (Throwable throwable) {
                         subscriber.onError(throwable);
                     }
-                    subscriber.onCompleted();
                 }))
                 .doOnNext(emitter::interceptOutgoingMessages);
     }

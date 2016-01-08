@@ -24,9 +24,10 @@ class StatusMessageTranformer implements Observable.Transformer<Message, Message
                 .flatMap(message -> Observable.<Message>create(subscriber -> {
                     subscriber.onStart();
                     try {
-                        sendAction.call(statusMessagePacket);
-                        subscriber.onNext(message);
-                        subscriber.onCompleted();
+                        if (sendAction.call(statusMessagePacket)) {
+                            subscriber.onNext(message);
+                            subscriber.onCompleted();
+                        }
                     } catch (SmackException.NotConnectedException e) {
                         subscriber.onError(new ConnectionException(e));
                     } catch (Throwable throwable) {

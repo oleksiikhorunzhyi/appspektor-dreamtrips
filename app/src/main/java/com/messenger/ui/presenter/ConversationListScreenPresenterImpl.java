@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.storege.dao.ConversationsDAO;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;

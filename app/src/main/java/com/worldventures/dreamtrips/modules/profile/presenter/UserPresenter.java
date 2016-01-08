@@ -6,7 +6,7 @@ import com.messenger.delegate.ChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.storege.dao.UsersDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;

@@ -9,6 +9,7 @@ import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 
 import rx.Observable;
 
@@ -23,7 +24,7 @@ public class MessageDAO extends BaseDAO {
         super(context, rxContentResolver);
     }
 
-    public Observable<Cursor> getMessage(String conversationId) {
+    public Observable<Cursor> getMessages(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, u." + User$Table.USERNAME + " as " + User$Table.USERNAME +
                         ", u." + User$Table.USERAVATARURL + " as " + User$Table.USERAVATARURL +
@@ -38,6 +39,20 @@ public class MessageDAO extends BaseDAO {
         return query(q, Message.CONTENT_URI, User.CONTENT_URI);
     }
 
+    public Observable<Message> getMessage(String messageId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM " + Message$Table.TABLE_NAME + " " +
+                "WHERE " + Message$Table._ID + "=?")
+                .withSelectionArgs(new String[] {messageId})
+                .build();
+
+        return query(q, Message.CONTENT_URI)
+                .map(cursor -> {
+                    Message res = SqlUtils.convertToModel(false, Message.class, cursor);
+                    cursor.close();
+                    return res;
+                });
+    }
     public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
         return Observable.create(subscriber -> {
             subscriber.onStart();

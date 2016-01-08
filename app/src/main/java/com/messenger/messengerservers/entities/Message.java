@@ -34,6 +34,7 @@ public class Message extends BaseProviderModel<Message> {
     @Column String conversationId;
     @Status.MessageStatus @Column int status;
 
+    // TODO: 1/9/16 store this column
     private Locale locale;
 
     public Message() {

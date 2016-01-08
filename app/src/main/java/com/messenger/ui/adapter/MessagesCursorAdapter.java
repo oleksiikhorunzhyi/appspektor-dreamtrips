@@ -37,6 +37,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private Conversation conversation;
 
     private OnAvatarClickListener avatarClickListener;
+    private OnRepeatMessageSend onRepeatMessageSend;
 
     private SimpleDateFormat timeDateFormatter;
     private SimpleDateFormat dayOfTheWeekDateFormatter;
@@ -65,7 +66,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             case VIEW_TYPE_OWN_MESSAGE: {
                 View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_own_messsage,
                         parent, false);
-                return new OwnMessageViewHolder(itemRow);
+                return new OwnMessageViewHolder(itemRow, onRepeatMessageSend);
             }
             case VIEW_TYPE_SOMEONES_MESSAGE: {
                 View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_someones_message,
@@ -168,6 +169,8 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
+        holder.setMessageId(cursor.getString(cursor.getColumnIndex(Message$Table._ID)));
+        holder.setOnRepeatMessageSend(onRepeatMessageSend);
         holder.visibleError(cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS)) == Message.Status.ERROR);
         holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message$Table.TEXT)));
 
@@ -236,11 +239,15 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.avatarClickListener = avatarClickListener;
     }
 
+    public void setOnRepeatMessageSend(OnRepeatMessageSend onRepeatMessageSend) {
+        this.onRepeatMessageSend = onRepeatMessageSend;
+    }
+
     public interface OnAvatarClickListener {
         void onAvatarClick(User user);
     }
 
     public interface OnRepeatMessageSend {
-        void OnRepeatMessageSend(Message message);
+        void onRepeatMessageSend(String messageId);
     }
 }

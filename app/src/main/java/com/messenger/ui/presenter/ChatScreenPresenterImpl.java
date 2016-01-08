@@ -217,7 +217,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void connectMessages() {
-        messageDAO.getMessage(conversationId)
+        messageDAO.getMessages(conversationId)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -349,6 +349,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribeOn(Schedulers.io())
                 .subscribe();
         return true;
+    }
+
+    @Override
+    public void retrySendMessage(String messageId) {
+        messageDAO.getMessage(messageId)
+                .flatMap(chat::send)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
     ///////////////////////////////////////////////////////////////////////////

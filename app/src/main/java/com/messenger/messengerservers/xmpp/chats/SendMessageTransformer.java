@@ -9,6 +9,7 @@ import org.jivesoftware.smack.SmackException;
 import java.util.UUID;
 
 import rx.Observable;
+import timber.log.Timber;
 
 class SendMessageTransformer implements Observable.Transformer<Message, Message> {
     private XmppGlobalEventEmitter emitter;
@@ -25,21 +26,22 @@ class SendMessageTransformer implements Observable.Transformer<Message, Message>
     public Observable<Message> call(Observable<Message> messageObservable) {
         return messageObservable.doOnNext(message -> message.setStatus(Message.Status.SENDING))
                 .doOnNext(message -> {
-                    message.setId(UUID.randomUUID().toString());
+                    if (message.getId() == null) message.setId(UUID.randomUUID().toString());
                     emitter.interceptOutgoingMessages(message);
                 })
                 .flatMap(message -> Observable.<com.messenger.messengerservers.entities.Message>create(subscriber -> {
+                    int status = Message.Status.ERROR;
                     try {
                         org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
-
-                        message.setStatus(sendAction.call(stanzaPacket) ? Message.Status.SENT : Message.Status.ERROR);
-                    } catch (SmackException.NotConnectedException e) {
-                        message.setStatus(Message.Status.ERROR);
-                        subscriber.onNext(message);
+                        status = sendAction.call(stanzaPacket) ? Message.Status.SENT : Message.Status.ERROR;
                     } catch (Throwable throwable) {
-                        subscriber.onError(throwable);
+                        Timber.e(throwable, "send message");
+                    } finally {
+                        message.setStatus(status);
+                        subscriber.onNext(message);
+                        subscriber.onCompleted();
                     }
                 }))
-                .doOnNext(emitter::interceptOutgoingMessages);
+                    .doOnNext(emitter::interceptOutgoingMessages);
+                }
     }
-}

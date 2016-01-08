@@ -157,10 +157,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
                     .show();
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        if (ViewUtils.isTablet(getActivity()) && !ViewUtils.isLandscapeOrientation(getActivity())) {
+        if (isVisible() && ViewUtils.isTablet(getActivity()) && !ViewUtils.isLandscapeOrientation(getActivity())) {
             OrientationUtil.lockOrientation(getActivity());
         }
     }

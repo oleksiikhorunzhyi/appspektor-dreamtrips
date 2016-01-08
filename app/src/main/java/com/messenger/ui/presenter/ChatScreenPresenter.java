@@ -6,7 +6,7 @@ import com.messenger.ui.view.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 
 public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, ChatLayoutViewState> {
-    boolean onNewMessageFromUi(String message);
+    boolean sendMessage(String message);
 
     User getUser();
 

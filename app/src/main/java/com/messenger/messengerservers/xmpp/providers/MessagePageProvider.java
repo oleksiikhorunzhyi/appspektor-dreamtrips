@@ -48,7 +48,7 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                             Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
-                                    .read(unread == null || !unread)
+                                    .status((unread == null || !unread) ? Message.Status.READ : Message.Status.SENT)
                                     //// TODO: 12/18/15 today attribute secs is millisecond
                                     .date(new Date(timestamp))
                                     .from(JidCreatorHelper.obtainId(jid));

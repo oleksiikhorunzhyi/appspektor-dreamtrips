@@ -25,7 +25,6 @@ public class Message extends BaseProviderModel<Message> {
     @Deprecated public static final String COLUMN_TEXT = "text";
     @Deprecated public static final String COLUMN_FROM = "fromId";
     @Deprecated public static final String COLUMN_CONVERSATION_ID = "conversationId";
-    @Deprecated public static final String COLUMN_READ = "read";
     @Deprecated public static final String _ID = "_id";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
@@ -38,7 +37,6 @@ public class Message extends BaseProviderModel<Message> {
     @Column String text;
     @Column Date date;
     @Column String conversationId;
-    @Deprecated @Column boolean read;
     @Status.MessageStatus @Column int status;
 
     private Locale locale;
@@ -62,7 +60,6 @@ public class Message extends BaseProviderModel<Message> {
         setDate(builder.date);
         setLocale(builder.locale);
         setStatus(builder.status);
-        setRead(builder.read);
     }
 
     public String getConversationId() {
@@ -117,16 +114,6 @@ public class Message extends BaseProviderModel<Message> {
         this.locale = locale;
     }
 
-    @Deprecated
-    public boolean isRead() {
-        return read;
-    }
-
-    @Deprecated
-    public void setRead(boolean read) {
-        this.read = read;
-    }
-
     public int getStatus() {
         return status;
     }
@@ -164,8 +151,6 @@ public class Message extends BaseProviderModel<Message> {
         private Date date;
         private Locale locale;
         private int status;
-        @Deprecated
-        private boolean read;
 
         public Builder() {
         }
@@ -207,12 +192,6 @@ public class Message extends BaseProviderModel<Message> {
 
         public Builder status(@Status.MessageStatus int val) {
             status = val;
-            return this;
-        }
-
-        @Deprecated
-        public Builder read(boolean val) {
-            read = val;
             return this;
         }
 

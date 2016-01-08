@@ -8,7 +8,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.storege.dao.ConversationsDAO;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import timber.log.Timber;

@@ -6,7 +6,7 @@ import android.content.Context;
 
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.storege.dao.ConversationsDAO;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.util.EventBusWrapper;

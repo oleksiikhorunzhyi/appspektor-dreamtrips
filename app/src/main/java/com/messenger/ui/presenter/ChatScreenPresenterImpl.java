@@ -23,8 +23,6 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.synchmechanism.ConnectionStatus;
-import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
@@ -81,9 +79,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected Conversation conversation;
     protected Chat chat;
 
-    private final ConversationsDAO conversationDAO;
-    private final ParticipantsDAO participantsDAO;
-    private final MessageDAO messageDAO;
+    @Inject
+    ConversationsDAO conversationDAO;
+    @Inject
+    MessageDAO messageDAO;
+    @Inject
+    ParticipantsDAO participantsDAO;
 
     protected int page = 0;
     protected long before = 0;
@@ -100,9 +101,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         participants = Collections.emptyList();
 
         ((Injector) context.getApplicationContext()).inject(this);
-        conversationDAO = new ConversationsDAO(context.getApplicationContext());
-        participantsDAO = new ParticipantsDAO(context.getApplicationContext());
-        messageDAO = new MessageDAO(context.getApplicationContext());
 
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
@@ -129,7 +127,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         super.onAttachedToWindow();
         openedConversationTracker.setOpenedConversation(conversationId);
         connectConversation();
-        connectStatus();
     }
 
     @Override
@@ -139,15 +136,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         openedConversationTracker.setOpenedConversation(null);
     }
 
-    private void connectStatus() {
-        MessengerConnector.getInstance().status()
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
-                .subscribe(connectionStatus -> getView().enableSendButton(connectionStatus == ConnectionStatus.CONNECTED));
-    }
-
     private void connectConversation() {
         ConnectableObservable<Conversation> source = conversationDAO.getConversation(conversationId)
+                .onBackpressureLatest()
+                .observeOn(Schedulers.io())
                 .filter(conversation -> conversation != null)
                 .compose(new IoToMainComposer<>())
                 .compose(bindView())
@@ -173,7 +165,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
         //
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-        connectMembers();
+        subscribeUnreadMessageCount(conversation);
+        connectMembers(conversation);
         connectMessages();
         loadNextPage();
     }
@@ -205,8 +198,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         });
     }
 
-    protected void connectMembers() {
+    protected void connectMembers(Conversation conversation) {
         participantsDAO.getParticipants(conversationId)
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
@@ -222,6 +218,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void connectMessages() {
         messageDAO.getMessage(conversationId)
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(cursor -> {
@@ -266,9 +264,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void firstVisibleMessageChanged(Message firstVisibleMessage) {
-        if (firstVisibleMessage.isRead()) return;
-
-        sendAndMarkChatEntities(firstVisibleMessage);
+        // not outgoing and unread
+        if (!TextUtils.equals(user.getId(), firstVisibleMessage.getFromId()) && firstVisibleMessage.getStatus() == Message.Status.SENT) {
+            sendAndMarkChatEntities(firstVisibleMessage);
+        }
     }
 
     @Override
@@ -280,34 +279,42 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Unread and Mark as read
     ///////////////////////////////////////////////////////////////////////////
 
-    private void showUnreadMessageCount() {
+    private void showUnreadMessageCount(int unreadMessageCount) {
         handler.postDelayed(() -> {
             ChatScreen view = getView();
             if (view != null) view.showUnreadMessageCount(conversation.getUnreadMessageCount());
         }, UNREAD_DELAY);
     }
 
-    private void updateUnreadMessageCount(Message firstMessage) {
-        messageDAO.unreadCount(conversationId, firstMessage.getDate().getTime())
-                .subscribe(unreadCount -> {
-                    conversation.setUnreadMessageCount(unreadCount);
-                    conversation.save();
-                });
+    private void subscribeUnreadMessageCount(Conversation conversation) {
+        messageDAO.unreadCount(conversationId, user.getId())
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindVisibility())
+                .doOnNext(unreadCount -> {
+                    if (conversation.getUnreadMessageCount() != unreadCount) {
+                        conversation.setUnreadMessageCount(unreadCount);
+                        conversation.save();
+                    }
+                })
+                .subscribe(this::showUnreadMessageCount);
     }
 
     private void sendAndMarkChatEntities(Message firstMessage) {
         chat.sendReadStatus(firstMessage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(message -> {
-                    markMessagesAsRead(message);
-                    updateUnreadMessageCount(message);
-                    showUnreadMessageCount();
-                });
+                .flatMap(this::markMessagesAsRead)
+                .first()
+                .subscribe();
     }
 
-    private void markMessagesAsRead(Message firstMessage) {
-        messageDAO.markMessagesAsRead(conversationId, firstMessage.getDate().getTime()).subscribe();
+    private Observable<Message> markMessagesAsRead(Message firstIncomingMessage) {
+        //message does not contain toId
+        return messageDAO.markMessagesAsRead(conversationId,
+                user.getId(), firstIncomingMessage.getDate().getTime())
+                .map(integer -> firstIncomingMessage);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -327,20 +334,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     @Override
-    public boolean onNewMessageFromUi(String message) {
+    public boolean sendMessage(String message) {
         if (TextUtils.getTrimmedLength(message) == 0) {
             Toast.makeText(activity, R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (conversation == null) return false;
-
-
         chat.send(new Message.Builder()
-                .locale(Locale.getDefault())
-                .text(message)
-                .from(user.getId())
-                .build())
+                        .locale(Locale.getDefault())
+                        .text(message)
+                        .from(user.getId())
+                        .build()
+        )
                 .subscribeOn(Schedulers.io())
                 .subscribe();
         return true;

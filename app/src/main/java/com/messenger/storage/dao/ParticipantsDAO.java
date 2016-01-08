@@ -18,8 +18,13 @@ import rx.schedulers.Schedulers;
 
 public class ParticipantsDAO extends BaseDAO {
 
+    @Deprecated
     public ParticipantsDAO(Context context) {
         super(context);
+    }
+
+    public ParticipantsDAO(RxContentResolver rxContentResolver, Context context) {
+        super(context, rxContentResolver);
     }
 
     @Deprecated

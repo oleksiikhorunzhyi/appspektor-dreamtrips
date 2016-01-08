@@ -8,6 +8,8 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -81,7 +83,8 @@ public class ChatDelegate {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(multiUserChat1 -> {
-                    conversation.setSubject(subject);
+                    if (!StringUtils.isEmpty(subject)) conversation.setSubject(subject);
+                    //
                     conversation.save();
                 });
 

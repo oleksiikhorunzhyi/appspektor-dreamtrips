@@ -91,7 +91,7 @@ public class ChatFacadeInitializer implements AppInitializer {
             Timber.i("Chat created :: chat=%s", conversationId);
             conversationsDAO.getConversation(conversationId).first()
                     .flatMap(conversation -> {
-                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor);
+                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO);
                         return loaderDelegate.loadConversations();
                     })
                     .subscribe();

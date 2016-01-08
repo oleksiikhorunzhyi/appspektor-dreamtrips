@@ -8,6 +8,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.storege.dao.ConversationsDAO;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import timber.log.Timber;
@@ -16,8 +17,8 @@ public class MessengerCacheSynchronizer {
 
     private LoaderDelegate loaderDelegate;
 
-    public MessengerCacheSynchronizer(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor) {
-        this.loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor);
+    public MessengerCacheSynchronizer(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor, ConversationsDAO conversationsDAO) {
+        this.loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO);
     }
 
     public void updateCache(OnUpdatedListener listener) {

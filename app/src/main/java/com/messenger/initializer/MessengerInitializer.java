@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.storege.dao.ConversationsDAO;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.util.EventBusWrapper;
@@ -33,6 +34,8 @@ public class MessengerInitializer implements AppInitializer {
     @Inject
     ActivityWatcher watcher;
     @Inject
+    ConversationsDAO conversationsDAO;
+    @Inject
     EventBusWrapper eventBusWrapper;
     //
     @Inject
@@ -44,7 +47,8 @@ public class MessengerInitializer implements AppInitializer {
     public void initialize(Injector injector) {
         injector.inject(this);
         //
-        MessengerConnector.init(context, watcher, appSessionHolder, messengerServerFacade, spiceManager, eventBusWrapper);
+        MessengerConnector.init(context, watcher, appSessionHolder, messengerServerFacade, spiceManager,
+                conversationsDAO,eventBusWrapper);
         //// TODO: 12/29/15 refactor
         app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
 

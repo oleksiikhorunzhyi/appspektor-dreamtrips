@@ -9,6 +9,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
+import com.messenger.storege.dao.ConversationsDAO;
 import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
@@ -26,10 +27,12 @@ public class LoaderDelegate {
 
     private final MessengerServerFacade messengerServerFacade;
     private final UserProcessor userProcessor;
+    private final ConversationsDAO conversationsDAO;
 
-    public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor) {
+    public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor, ConversationsDAO conversationsDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.userProcessor = userProcessor;
+        this.conversationsDAO = conversationsDAO;
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
@@ -46,8 +49,9 @@ public class LoaderDelegate {
                 @Override
                 protected List<User> process(List<ConversationData> data) {
                     // cleanup cache
-                    new Delete().from(Conversation.class).queryClose();
-                    new Delete().from(ParticipantsRelationship.class).queryClose();
+                    // // TODO: 1/8/16 clean replace this logic, cause we can creat single without internet on user profile
+                    List<Conversation> conversations = conversationsDAO.getConversationsList(Conversation.Type.GROUP);
+                    conversationsDAO.deleteConversations(conversations);
                     // save conversations
                     List<Conversation> convs = from(data).map(d -> d.conversation).toList();
                     List<Message> messages = from(data).map(c -> c.lastMessage).notNulls().toList();

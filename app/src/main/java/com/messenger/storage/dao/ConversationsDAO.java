@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.Message;
@@ -12,10 +13,18 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.runtime.TransactionManager;
+import com.raizlabs.android.dbflow.runtime.transaction.process.DeleteModelListTransaction;
+import com.raizlabs.android.dbflow.runtime.transaction.process.ProcessModelInfo;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.builder.ConditionQueryBuilder;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
+
+import java.util.Collection;
+import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -31,6 +40,7 @@ public class ConversationsDAO extends BaseDAO {
         super(context, rxContentResolver);
     }
 
+    @Deprecated
     public static Conversation getConversationById(String conversationId) {
         return new Select()
                 .from(Conversation.class)
@@ -38,8 +48,30 @@ public class ConversationsDAO extends BaseDAO {
                 .querySingle();
     }
 
+    public List<Conversation> getConversationsList(@Conversation.Type.ConversationType String type) {
+        ConditionQueryBuilder queryBuilder = new ConditionQueryBuilder(Conversation.class,
+                Condition.column(Conversation$Table.TYPE).is(type));
+
+        return new Select()
+                .from(Conversation.class)
+                .where(queryBuilder)
+                .queryList();
+    }
+
     public void deleteConversation(String conversationId) {
         getConversationById(conversationId).delete();
+    }
+
+    public void deleteConversations(@Nullable Collection<Conversation> conversations) {
+        if (conversations != null && conversations.size() > 0) {
+            String firstArg = Queryable.from(conversations).first().getId();
+            String[] args = Queryable.from(conversations).skip(1).map(element -> element.getId()).toArray();
+            ConditionQueryBuilder queryBuilder = new ConditionQueryBuilder(ParticipantsRelationship.class,
+                    Condition.column(ParticipantsRelationship$Table.CONVERSATIONID).in(firstArg, args));
+            new Delete().from(ParticipantsRelationship.class).where(queryBuilder).query();
+
+            TransactionManager.getInstance().addTransaction(new DeleteModelListTransaction(ProcessModelInfo.withModels(conversations)));
+        }
     }
 
     public Observable<Cursor> selectConversationsList(@Nullable @Conversation.Type.ConversationType String type) {

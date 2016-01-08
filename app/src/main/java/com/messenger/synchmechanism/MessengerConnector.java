@@ -9,6 +9,7 @@ import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
+import com.messenger.storege.dao.ConversationsDAO;
 import com.messenger.util.EventBusWrapper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -42,13 +43,13 @@ public class MessengerConnector {
 
     private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                                SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-                               DreamSpiceManager spiceManager, EventBusWrapper eventBusWrapper) {
+                               DreamSpiceManager spiceManager, ConversationsDAO conversationsDAO, EventBusWrapper eventBusWrapper) {
 
         this.applicationContext = applicationContext;
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
-        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, new UserProcessor(spiceManager));
+        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, new UserProcessor(spiceManager), conversationsDAO);
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
         this.connectionStream = ReplaySubject.create(1);
 
@@ -70,10 +71,10 @@ public class MessengerConnector {
 
     public static void init(Context applicationContext, ActivityWatcher activityWatcher,
                             SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-                            DreamSpiceManager spiceManager, EventBusWrapper eventBusWrapper) {
+                            DreamSpiceManager spiceManager, ConversationsDAO conversationsDAO, EventBusWrapper eventBusWrapper) {
 
         INSTANCE = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
-                spiceManager, eventBusWrapper);
+                spiceManager, conversationsDAO, eventBusWrapper);
     }
 
     public Observable<ConnectionStatus> status() {

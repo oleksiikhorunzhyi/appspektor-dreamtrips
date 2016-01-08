@@ -20,7 +20,7 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        MessengerConnector.getInstance().subscribe()
+        MessengerConnector.getInstance().status()
                 .compose(bindView())
                 .throttleLast(50, TimeUnit.MILLISECONDS)
                 .subscribe(connectionStatus -> {

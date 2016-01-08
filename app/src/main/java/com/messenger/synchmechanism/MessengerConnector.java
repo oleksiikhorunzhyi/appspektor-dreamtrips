@@ -76,7 +76,7 @@ public class MessengerConnector {
                 spiceManager, eventBusWrapper);
     }
 
-    public Observable<ConnectionStatus> subscribe() {
+    public Observable<ConnectionStatus> status() {
         return connectionStream.asObservable();
     }
 

@@ -38,6 +38,7 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.Collections;
@@ -48,7 +49,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 
@@ -77,7 +77,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected ProfileCrosser profileCrosser;
     protected WeakHandler handler;
     protected ConversationHelper conversationHelper;
-    protected Subscription connectivityStatusSubscription;
 
     protected final String conversationId;
     protected Conversation conversation;
@@ -140,10 +139,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        connectConversation();
         openedConversationTracker.setOpenedConversation(conversationId);
-        connectivityStatusSubscription = MessengerConnector.getInstance().subscribe()
-                .subscribe(connectionStatus -> getView().enableSendButton(connectionStatus == ConnectionStatus.CONNECTED));
+        connectConversation();
+        connectStatus();
     }
 
     @Override
@@ -151,13 +149,19 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
         openedConversationTracker.setOpenedConversation(null);
-        connectivityStatusSubscription.unsubscribe();
     }
 
-    protected void connectConversation() {
+    private void connectStatus() {
+        MessengerConnector.getInstance().status()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(connectionStatus -> getView().enableSendButton(connectionStatus == ConnectionStatus.CONNECTED));
+    }
+
+    private void connectConversation() {
         ConnectableObservable<Conversation> source = conversationDAO.getConversation(conversationId)
                 .filter(conversation -> conversation != null)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .compose(bindView())
                 .publish();
         source
@@ -167,9 +171,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(this::onConversationUpdated);
 
         source
-                .flatMap(conversation1 -> createChat(messengerServerFacade.getChatManager(), conversation))
-                .doOnNext(this::onChatLoaded)
-                .subscribe(chat -> this.chat = chat);
+                .first()
+                .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
+                .compose(new IoToMainComposer<>())
+                .subscribe(this::onChatLoaded);
 
         source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
@@ -197,6 +202,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onChatLoaded(Chat chat) {
+        this.chat = chat;
         chat.addOnChatStateListener((state, userId) -> {
             ChatScreen view = getView();
             if (view == null) return;
@@ -216,7 +222,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         participantsDAO.getParticipants(conversationId)
                 .map(c -> SqlUtils.convertToList(User.class, c))
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindVisibility())
+                .compose(bindView())
                 .subscribe(members -> {
                     participants = members;
                     getView().setTitle(conversation, participants);
@@ -230,7 +236,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectMessages() {
         messageDAO.getMessage(conversationId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindVisibility())
+                .compose(bindView())
                 .subscribe(cursor -> {
                     getView().showMessages(cursor, conversation, pendingScroll);
                     pendingScroll = false;
@@ -320,6 +326,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void messageTextChanged(int length) {
+        if (!isConnectionPresent()) return;
         if (!typing && length > 0) {
             typing = true;
             chat.setCurrentState(ChatState.Composing);

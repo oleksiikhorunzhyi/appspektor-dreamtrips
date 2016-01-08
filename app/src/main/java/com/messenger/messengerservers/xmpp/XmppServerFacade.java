@@ -6,7 +6,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ContactManager;
-import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
@@ -54,7 +53,7 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     private final LoaderManager loaderManager;
     private final PaginationManager paginationManager;
-    private final GlobalEventEmitter globalEventEmitter;
+    private final XmppGlobalEventEmitter globalEventEmitter;
     private final ChatManager chatManager;
     private final RosterManager rosterManager;
 
@@ -192,7 +191,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     }
 
     @Override
-    public GlobalEventEmitter getGlobalEventEmitter() {
+    public XmppGlobalEventEmitter getGlobalEventEmitter() {
         return globalEventEmitter;
     }
 

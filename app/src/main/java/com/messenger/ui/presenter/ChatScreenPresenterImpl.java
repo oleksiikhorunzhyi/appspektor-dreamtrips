@@ -14,12 +14,10 @@ import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ChatState;
-import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -51,6 +49,7 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
+import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
@@ -297,11 +296,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void sendAndMarkChatEntities(Message firstMessage) {
-        chat.changeMessageStatus(firstMessage, Status.DISPLAYED);
-
-        markMessagesAsRead(firstMessage);
-        updateUnreadMessageCount(firstMessage);
-        showUnreadMessageCount();
+        chat.sendReadStatus(firstMessage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(message -> {
+                    markMessagesAsRead(message);
+                    updateUnreadMessageCount(message);
+                    showUnreadMessageCount();
+                });
     }
 
     private void markMessagesAsRead(Message firstMessage) {
@@ -333,17 +335,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         if (conversation == null) return false;
 
-        try {
-            pendingScroll = true;
-            chat.sendMessage(new Message.Builder()
-                    .locale(Locale.getDefault())
-                    .text(message)
-                    .from(user.getId())
-                    .build());
-        } catch (ConnectionException e) {
-            e.printStackTrace();
-            return false;
-        }
+
+        chat.send(new Message.Builder()
+                .locale(Locale.getDefault())
+                .text(message)
+                .from(user.getId())
+                .build())
+                .subscribeOn(Schedulers.io())
+                .subscribe();
         return true;
     }
 

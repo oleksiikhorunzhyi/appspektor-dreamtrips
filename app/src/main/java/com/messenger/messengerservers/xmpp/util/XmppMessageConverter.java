@@ -25,6 +25,7 @@ public final class XmppMessageConverter {
 
         org.jivesoftware.smack.packet.Message smackMessage = new org.jivesoftware.smack.packet.Message();
         smackMessage.setFrom(JidCreatorHelper.obtainUserJid(message.getFromId()));
+        smackMessage.setThread(message.getConversationId());
         smackMessage.setBody(bodyJson);
 
         return smackMessage;

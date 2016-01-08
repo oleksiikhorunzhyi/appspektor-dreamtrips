@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttrib
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import org.junit.Test;
@@ -16,7 +15,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class DtlMerchantsPredicateTest {
@@ -130,7 +128,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkAmenities_Empty() {
         DtlFilterData dtlFilterData = DtlFilterData.createDefault();
-        dtlFilterData.setAmenities(Collections.singletonList(new DtlPlacesFilterAttribute("Free beer", true)));
+        dtlFilterData.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
         DtlMerchantsPredicate predicate =
                 DtlMerchantsPredicate.Builder.create().withDtlFilterData(dtlFilterData).build();
         DtlMerchant dtlMerchant = new DtlMerchant();
@@ -143,21 +141,22 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkAmenities_Success() {
         DtlFilterData dtlFilterData = DtlFilterData.createDefault();
-        dtlFilterData.setAmenities(Collections.singletonList(new DtlPlacesFilterAttribute("Free beer", true)));
-        DtlMerchantsPredicate predicate =
-                DtlMerchantsPredicate.Builder.create().withDtlFilterData(dtlFilterData).build();
+        dtlFilterData.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
+        dtlFilterData.selectAllAmenities();
+        DtlMerchantsPredicate predicate = DtlMerchantsPredicate.Builder.create()
+                .withDtlFilterData(dtlFilterData).build();
+        //
         DtlMerchant dtlMerchant = new DtlMerchant();
         dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
-
+        //
         boolean result = predicate.checkAmenities(dtlMerchant);
-
         assertThat(result).isTrue();
     }
 
     @Test
     public void checkAmenities_Fail() {
         DtlFilterData dtlFilterData = DtlFilterData.createDefault();
-        dtlFilterData.setAmenities(Collections.singletonList(new DtlPlacesFilterAttribute("Free beer", true)));
+        dtlFilterData.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
         DtlMerchantsPredicate predicate = DtlMerchantsPredicate.Builder.create()
                 .withDtlFilterData(dtlFilterData)
                 .build();
@@ -211,7 +210,8 @@ public class DtlMerchantsPredicateTest {
                 .build();
 
         DtlMerchant dtlMerchant = new DtlMerchant();
-        dtlMerchant.setDistance(38.0132d);
+        dtlMerchant.setDistanceType(DtlFilterData.DistanceType.KMS);
+        dtlMerchant.setDistance(38000d);
 
         boolean result = predicate.checkDistance(dtlMerchant);
 

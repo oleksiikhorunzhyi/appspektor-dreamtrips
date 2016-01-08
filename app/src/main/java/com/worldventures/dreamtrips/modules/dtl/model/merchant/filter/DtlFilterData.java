@@ -14,6 +14,7 @@ public class DtlFilterData implements Parcelable {
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
     public static final int MAX_DISTANCE = 50;
+    // TODO : current MAX_DISTANCE assumes miles - wrong
 
     private int minPrice;
     private int maxPrice;

@@ -35,7 +35,11 @@ public class UsersDAO extends BaseDAO {
                 .withSortOrder("ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, User.CONTENT_URI)
-                .map(c -> SqlUtils.convertToModel(false, User.class, c));
+                .map(c -> {
+                    User user = SqlUtils.convertToModel(false, User.class, c);
+                    c.close();
+                    return user;
+                });
     }
 
     public Observable<Cursor> getFriends() {

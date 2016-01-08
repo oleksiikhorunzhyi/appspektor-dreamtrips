@@ -116,7 +116,6 @@ public class ConversationsDAO extends BaseDAO {
         return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
     }
 
-
     public Observable<Conversation> getConversation(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection(new Select().from(Conversation.class).byIds(conversationId).toString())
@@ -124,7 +123,11 @@ public class ConversationsDAO extends BaseDAO {
         return query(q, Conversation.CONTENT_URI)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
-                .map(cursor -> SqlUtils.convertToModel(false, Conversation.class, cursor));
+                .map(cursor -> {
+                    Conversation conversation = SqlUtils.convertToModel(false, Conversation.class, cursor);
+                    cursor.close();
+                    return conversation;
+                });
     }
 
     public void incrementUnreadField(String conversationId) {

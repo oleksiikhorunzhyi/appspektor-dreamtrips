@@ -54,7 +54,11 @@ public class ParticipantsDAO extends BaseDAO {
         return query(q)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
-                .map(cursor -> SqlUtils.convertToModel(false, User.class, cursor));
+                .map(cursor -> {
+                    User res = SqlUtils.convertToModel(false, User.class, cursor);
+                    cursor.close();
+                    return res;
+                });
     }
 
     public Observable<Cursor> getParticipants(String conversationId) {

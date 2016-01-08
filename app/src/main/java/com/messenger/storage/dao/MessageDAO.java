@@ -68,7 +68,11 @@ public class MessageDAO extends BaseDAO {
                 .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(Message.Status.SENT)})
                 .build();
 
-        return query(q)
-                .map(cursor -> cursor.moveToFirst() ? cursor.getInt(0) : 0);
+        return query(q, Message.CONTENT_URI)
+                .map(cursor -> {
+                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
+                    cursor.close();
+                    return res;
+                });
     }
 }

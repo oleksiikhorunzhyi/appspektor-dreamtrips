@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
-import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DtlFilterData implements Parcelable {
@@ -14,15 +14,17 @@ public class DtlFilterData implements Parcelable {
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
     public static final int MAX_DISTANCE = 50;
+    // TODO : current MAX_DISTANCE assumes miles - wrong
 
     private int minPrice;
     private int maxPrice;
-
+    //
     private int maxDistance;
-
+    //
     private DistanceType distanceType;
-
-    private List<DtlMerchantsFilterAttribute> amenities;
+    //
+    private List<DtlMerchantAttribute> amenities = new ArrayList<>();
+    private List<DtlMerchantAttribute> selectedAmenities = new ArrayList<>();
 
     private DtlFilterData() {
     }
@@ -33,9 +35,27 @@ public class DtlFilterData implements Parcelable {
         return dtlFilterData;
     }
 
+    /**
+     * Create new filter data model based on current and given as parameter.
+     * To be used to update presenter and delegate filter state from UI
+     * @param filterData filter data constructed from UI
+     * @return mutated instance
+     * <br /><br />
+     * TODO : think about using proper immutable mechanism here
+     */
+    public DtlFilterData mutateFrom(DtlFilterData filterData) {
+        DtlFilterData result = new DtlFilterData();
+        result.setAmenities(this.amenities);
+        result.setSelectedAmenities(filterData.getSelectedAmenities());
+        result.setDistanceType(filterData.getDistanceType());
+        result.setPrice(filterData.getMinPrice(), getMaxPrice());
+        result.setMaxDistance(filterData.getMaxDistance());
+        return result;
+    }
+
     public void reset() {
-        if (amenities == null) amenities = new ArrayList<>();
-        Queryable.from(amenities).forEachR(amenity -> amenity.setChecked(true));
+        selectedAmenities.clear();
+        selectedAmenities.addAll(amenities);
         minPrice = MIN_PRICE;
         maxPrice = MAX_PRICE;
         maxDistance = MAX_DISTANCE;
@@ -56,27 +76,32 @@ public class DtlFilterData implements Parcelable {
         this.maxPrice = maxPrice > MAX_PRICE ? MAX_PRICE : maxPrice;
     }
 
-    public List<DtlMerchantsFilterAttribute> getAmenities() {
-        return amenities;
+    public void setAmenities(List<DtlMerchantAttribute> amenities) {
+        this.amenities.clear();
+        this.amenities.addAll(amenities);
+        Collections.sort(this.amenities);
     }
 
-    @Nullable
-    public List<DtlMerchantsFilterAttribute> getSelectedAmenities() {
-        return amenities != null && !amenities.isEmpty()
-                ? Queryable.from(amenities).filter(DtlMerchantsFilterAttribute::isChecked).toList()
-                : null;
+    public List<DtlMerchantAttribute> getAmenities() {
+        return this.amenities;
     }
 
-    public void toggleAmenitiesSelection(boolean selected) {
-        if (amenities != null) {
-            for (DtlMerchantsFilterAttribute attribute : amenities) {
-                attribute.setChecked(selected);
-            }
-        }
+    public boolean hasAmenities() {
+        return !amenities.isEmpty();
     }
 
-    public void setAmenities(List<DtlMerchantsFilterAttribute> amenities) {
-        this.amenities = amenities;
+    public List<DtlMerchantAttribute> getSelectedAmenities() {
+        return selectedAmenities;
+    }
+
+    public void setSelectedAmenities(List<DtlMerchantAttribute> selectedAmenities) {
+        this.selectedAmenities.clear();
+        this.selectedAmenities.addAll(selectedAmenities);
+    }
+
+    public void selectAllAmenities() {
+        this.selectedAmenities.clear();
+        this.selectedAmenities.addAll(amenities);
     }
 
     public int getMaxDistance() {
@@ -84,10 +109,6 @@ public class DtlFilterData implements Parcelable {
     }
 
     public void setMaxDistance(int maxDistance) {
-        this.maxDistance = maxDistance;
-    }
-
-    public void setCurrentDistance(int maxDistance) {
         // monkey-patch for unusual crashes with values out of bounds for rangebar
         this.maxDistance = maxDistance > MAX_DISTANCE ? MAX_DISTANCE : maxDistance;
     }
@@ -130,7 +151,8 @@ public class DtlFilterData implements Parcelable {
         maxPrice = in.readInt();
         maxDistance = in.readInt();
         distanceType = (DistanceType) in.readSerializable();
-        amenities = in.createTypedArrayList(DtlMerchantsFilterAttribute.CREATOR);
+        amenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
+        selectedAmenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
     }
 
     @Override
@@ -140,6 +162,7 @@ public class DtlFilterData implements Parcelable {
         dest.writeInt(maxDistance);
         dest.writeSerializable(distanceType);
         dest.writeTypedList(amenities);
+        dest.writeTypedList(selectedAmenities);
     }
 
     public static final Creator<DtlFilterData> CREATOR = new Creator<DtlFilterData>() {

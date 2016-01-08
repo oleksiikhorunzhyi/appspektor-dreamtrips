@@ -9,8 +9,8 @@ public class SingleSelectionManager extends SimpleSelectionManager {
     }
 
     @Override
-    protected void toggle(int position) {
+    protected void toggleSelectionImpl(int position) {
         selectableWrapperAdapter.clearSelections();
-        super.toggle(position);
+        super.toggleSelectionImpl(position);
     }
 }

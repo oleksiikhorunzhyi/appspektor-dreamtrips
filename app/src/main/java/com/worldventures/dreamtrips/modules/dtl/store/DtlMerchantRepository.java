@@ -44,7 +44,7 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
 
     private void merchantLoaded(List<DtlMerchant> dtlMerchants) {
         this.merchants = dtlMerchants;
-        saveMerchants();
+        db.saveDtlMerhants(merchants);
         saveAmenities(dtlMerchants);
         //
         notifyListeners();
@@ -55,10 +55,6 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
         Queryable.from(listeners).forEachR(MerchantUpdatedListener::onMerchantsUploaded);
     }
 
-    private void saveMerchants() {
-        db.saveDtlMerhants(merchants);
-    }
-
     private void saveAmenities(List<DtlMerchant> dtlMerchants) {
         Set<DtlMerchantAttribute> amenitiesSet = new HashSet<>();
         Queryable.from(dtlMerchants).forEachR(dtlMerchant -> {
@@ -66,7 +62,7 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
                         amenitiesSet.addAll(dtlMerchant.getAmenities());
                 }
         );
-
+        //
         db.saveAmenities(amenitiesSet);
     }
 

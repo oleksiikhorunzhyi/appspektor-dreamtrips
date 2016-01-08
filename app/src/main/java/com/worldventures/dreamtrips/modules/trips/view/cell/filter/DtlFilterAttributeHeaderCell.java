@@ -5,16 +5,21 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
+import com.worldventures.dreamtrips.core.selectable.SelectableCell;
+import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
+import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_header)
-public class DtlFilterAttributeHeaderCell extends AbstractCell<DtlMerchantsFilterAttribute> {
+public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<SelectableHeaderItem,
+        CellDelegate<SelectableHeaderItem>> implements SelectableCell {
+
+    private SelectableDelegate selectableDelegate;
 
     @InjectView(R.id.checkBoxSelectAll)
     protected CheckBox checkBoxSelectAll;
@@ -27,14 +32,15 @@ public class DtlFilterAttributeHeaderCell extends AbstractCell<DtlMerchantsFilte
 
     @Override
     protected void syncUIStateWithModel() {
-        textViewHeaderCaption.setText(getModelObject().getAttributeName());
-        checkBoxSelectAll.setChecked(getModelObject().isChecked());
+        textViewHeaderCaption.setText(getModelObject().getHeaderCaption());
+        checkBoxSelectAll.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
     }
 
     @OnClick(R.id.checkBoxSelectAll)
     void checkBoxClicked() {
-        getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        getEventBus().post(new FilterAttributesSelectAllEvent(checkBoxSelectAll.isChecked()));
+        getModelObject().setSelected(checkBoxSelectAll.isChecked());
+        selectableDelegate.setSelection(getAdapterPosition(), checkBoxSelectAll.isChecked());
+        cellDelegate.onCellClicked(getModelObject());
     }
 
     @OnClick(R.id.textViewSelectAllCaption)
@@ -44,7 +50,13 @@ public class DtlFilterAttributeHeaderCell extends AbstractCell<DtlMerchantsFilte
     }
 
     @OnClick(R.id.textViewAttributeHeaderCaption)
-    void headerCaptionClicked() { /* */ }
+    void headerCaptionClicked() {
+    }
+
+    @Override
+    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+        this.selectableDelegate = selectableDelegate;
+    }
 
     @Override
     public void prepareForReuse() {

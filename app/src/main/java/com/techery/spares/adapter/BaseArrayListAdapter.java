@@ -48,6 +48,15 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         }
     }
 
+    /**
+     * Return itemViewType ID for items of given model class
+     * @param itemClass model object class to query
+     * @return viewType id
+     */
+    public int getClassItemViewType(Class<?> itemClass) {
+        return this.viewTypes.indexOf(itemClass);
+    }
+
     @Override
     public AbstractCell onCreateViewHolder(ViewGroup parent, int viewType) {
         Class itemClass = this.viewTypes.get(viewType);

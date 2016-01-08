@@ -152,7 +152,7 @@
 
     </FrameLayout>
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

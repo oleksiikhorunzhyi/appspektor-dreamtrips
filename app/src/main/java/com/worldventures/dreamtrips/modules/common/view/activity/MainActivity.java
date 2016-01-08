@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -20,6 +21,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -45,6 +50,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     protected DrawerLayout drawerLayout;
 
     private ActionBarDrawerToggle mDrawerToggle;
+    private List<DrawerListener> rightDrawerListeners = new ArrayList<>();
 
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
@@ -208,10 +214,12 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     public void openRightDrawer() {
         drawerLayout.openDrawer(GravityCompat.END);
         enableRightDrawer();
+        Queryable.from(rightDrawerListeners).forEachR(DrawerListener::onDrawerOpened);
     }
 
     public void closeRightDrawer() {
         drawerLayout.closeDrawer(GravityCompat.END);
+        Queryable.from(rightDrawerListeners).forEachR(DrawerListener::onDrawerClosed);
     }
 
     public void disableLeftDrawer() {
@@ -253,4 +261,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         }
     }
 
+    public void attachRightDrawerListener(DrawerListener listener) {
+        rightDrawerListeners.add(listener);
+    }
+
+    public void detachRightDrawerListener(DrawerListener listener) {
+        rightDrawerListeners.remove(listener);
+    }
 }

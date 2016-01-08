@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -54,8 +53,7 @@ public class DtlMerchantsListFragment
     @InjectView(R.id.merchant_holder_offers)
     protected TextView emptyTextView;
     //
-    BaseDelegateAdapter<DtlMerchant> adapter;
-    RecyclerView.Adapter wrappedAdapter;
+    BaseDelegateAdapter<DtlMerchant> baseDelegateAdapter;
     //
     RecyclerViewStateDelegate stateDelegate;
     //
@@ -87,15 +85,15 @@ public class DtlMerchantsListFragment
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
-        adapter.registerCell(DtlMerchant.class, DtlMerchantCell.class);
-        adapter.registerDelegate(DtlMerchant.class, this);
-
+        //
+        baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
+        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantCell.class);
+        baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
+        //
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
         //
-        wrappedAdapter = selectionManager.provideWrappedAdapter(adapter);
-        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
+        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
         recyclerView.setEmptyView(emptyView);
         //
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -117,7 +115,7 @@ public class DtlMerchantsListFragment
     public void setItems(List<DtlMerchant> merchants) {
         if (merchants != null && !merchants.isEmpty()) hideProgress();
         //
-        adapter.setItems(merchants);
+        baseDelegateAdapter.setItems(merchants);
         stateDelegate.restoreStateIfNeeded();
     }
 
@@ -143,9 +141,8 @@ public class DtlMerchantsListFragment
 
     @Override
     public void toggleSelection(DtlMerchant DtlMerchant) {
-        int index = adapter.getItems().indexOf(DtlMerchant);
-        if (index != -1)
-            selectionManager.toggleSelection(index);
+        int index = baseDelegateAdapter.getItems().indexOf(DtlMerchant);
+        if (index != -1) selectionManager.toggleSelection(index);
     }
 
     @Override

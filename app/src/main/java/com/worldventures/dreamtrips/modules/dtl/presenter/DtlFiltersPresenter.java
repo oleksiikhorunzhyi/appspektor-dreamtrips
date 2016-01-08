@@ -7,10 +7,9 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
-
+    //
     @State
     DtlFilterData dtlFilterData;
 
@@ -42,11 +41,13 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
         if (dtlFilterData == null) {
             dtlFilterData = DtlFilterData.createDefault();
             dtlFilterData.setDistanceType(db.getDistanceType());
+            dtlFilterData.setAmenities(db.getAmenities());
+            dtlFilterData.selectAllAmenities();
         }
-
+        //
         dtlFilterDelegate.addDataChangedListener(this);
         dtlFilterDelegate.setDtlFilterData(dtlFilterData);
-        attachAmenities();
+        view.attachFilterData(dtlFilterData);
     }
 
     @Override
@@ -58,11 +59,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
 
     @Override
     public void onFilterDataChanged() {
-        view.attachFilterData(dtlFilterData);
-    }
-
-    public void onEvent(FilterAttributesSelectAllEvent event) {
-        toggleAmenitiesSelection(event.isChecked());
+        view.syncUi(dtlFilterData);
     }
 
     @Override
@@ -75,50 +72,53 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
         //nothing to do here
     }
 
+    /**
+     * Request filter parameters that are currently applied. To use in view to update itself
+     */
+    public void requestActualFilterData() {
+        view.syncUi(dtlFilterData);
+    }
+
     private void attachAmenities() {
-        List<DtlMerchantsFilterAttribute> amenities = Queryable.from(db.getAmenities())
-                .map(element -> new DtlMerchantsFilterAttribute(element.getName())).toList();
-
-        dtlFilterData.setAmenities(amenities);
+        dtlFilterData.setAmenities(db.getAmenities());
+        dtlFilterData.selectAllAmenities();
         view.attachFilterData(dtlFilterData);
     }
 
-    public void priceChanged(int left, int right) {
-        dtlFilterData.setPrice(left, right);
-    }
-
-    public void distanceChanged(int right) {
-        dtlFilterData.setCurrentDistance(right);
-    }
-
-    public void apply() {
+    /**
+     * Apply selected filter parameters
+     * @param data new filter parameters
+     */
+    public void apply(DtlFilterData data) {
+        this.dtlFilterData = dtlFilterData.mutateFrom(data);
         TrackingHelper.dtlMerchantFilter(dtlFilterData);
-        dtlFilterDelegate.performFiltering();
-    }
-
-    public void toggleDistance(boolean isChecked) {
-        dtlFilterData.setDistanceType(isChecked ? DtlFilterData.DistanceType.KMS :
-                DtlFilterData.DistanceType.MILES);
         db.saveDistanceToggle(dtlFilterData.getDistanceType());
-        view.attachFilterData(dtlFilterData);
+        dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         dtlFilterDelegate.performFiltering();
     }
 
+    /**
+     * Reset filter parameters to default and update view
+     */
     public void resetAll() {
         dtlFilterData.reset();
         dtlFilterDelegate.performFiltering();
         view.attachFilterData(dtlFilterData);
     }
 
-    private void toggleAmenitiesSelection(boolean selected) {
-        dtlFilterData.toggleAmenitiesSelection(selected);
-        view.dataSetChanged();
-    }
-
     public interface View extends RxView {
 
+        /**
+         * Fully update UI state with given filter parameters, <br />
+         * including (re-)adding amenities to filter
+         * @param filterData dataSet to map to UI
+         */
         void attachFilterData(DtlFilterData filterData);
 
-        void dataSetChanged();
+        /**
+         * Update UI state with given filter parameters
+         * @param filterData dataSet to map to UI
+         */
+        void syncUi(DtlFilterData filterData);
     }
 }

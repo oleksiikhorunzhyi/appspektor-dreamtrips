@@ -3,7 +3,9 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+
     <include layout="@layout/list_item_chat_date_entry"/>
+
     <RelativeLayout
         android:id="@+id/chat_message_container"
                     android:layout_width="match_parent"

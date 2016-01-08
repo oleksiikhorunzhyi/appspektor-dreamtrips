@@ -1,5 +1,7 @@
 package com.messenger.ui.adapter;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -13,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
@@ -21,6 +25,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
+import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.Constants;
@@ -30,8 +35,6 @@ import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import timber.log.Timber;
 
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
@@ -52,7 +55,9 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private final int rowVerticalMargin;
 
-    private int currentManualTimestampMessagePosition = -1;
+    private int manualTimestampPositionToAdd = -1;
+    private int manualTimestampPosition = -1;
+    private int manualTimestampPositionToRemove = -1;
 
     public interface OnAvatarClickListener {
         void onAvatarClick(User user);
@@ -63,7 +68,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     public interface OnMessageClickListener {
-        void onMessageClick(int position, Message message);
+        void onMessageClick(Message message);
     }
 
     public MessagesCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
@@ -111,34 +116,81 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindMessageHolder(MessageHolder holder, int position, Cursor cursor, Message message) {
-        holder.messageTextView
-                .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(), message));
+        boolean manualTimestamp = manualTimestampPosition == position
+                || manualTimestampPositionToAdd == position
+                || manualTimestampPositionToRemove == position;
         String dateDivider;
-        // should show timestamp anyway
-        if (currentManualTimestampMessagePosition == position) {
+        if (manualTimestamp) {
             dateDivider = getDateTimestamp(cursor.getLong(cursor.getColumnIndex(Message$Table.DATE)));
         } else {
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
         }
-        if (!TextUtils.isEmpty(dateDivider)) {
+        boolean clickableTimestamp = manualTimestamp || TextUtils.isEmpty(dateDivider);
+        holder.messageTextView
+                .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(),
+                        message, clickableTimestamp));
+
+        TextView dateTextView = holder.dateTextView;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();
+        if (manualTimestampPositionToAdd == position) {
+            manualTimestampPositionToAdd = -1;
+            manualTimestampPosition = position;
+
             holder.dateTextView.setVisibility(View.VISIBLE);
-            holder.dateTextView.setText(dateDivider);
+            dateTextView.setText(dateDivider);
+
+            if (dateTextView.getMeasuredHeight() == 0) {
+                dateTextView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            }
+            ValueAnimator animator = ValueAnimator.ofFloat(-dateTextView.getMeasuredHeight(), 0);
+            animator.addUpdateListener(valueAnimator -> {
+                float margin = (Float) valueAnimator.getAnimatedValue();
+                params.bottomMargin = (int) margin;
+                dateTextView.requestLayout();
+            });
+            animator.start();
+        } else if (manualTimestampPositionToRemove == position){
+            manualTimestampPositionToRemove = -1;
+            manualTimestampPosition = -1;
+            ValueAnimator animator = ValueAnimator.ofFloat(0, -dateTextView.getMeasuredHeight());
+            animator.addUpdateListener(valueAnimator -> {
+                float margin = (Float)valueAnimator.getAnimatedValue();
+                params.bottomMargin = (int)margin;
+                dateTextView.requestLayout();
+            });
+            animator.addListener(new SimpleAnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    dateTextView.setVisibility(View.GONE);
+                }
+            });
+            animator.start();
         } else {
-            holder.dateTextView.setVisibility(View.GONE);
+            params.bottomMargin = 0;
+            if (!TextUtils.isEmpty(dateDivider)) {
+                dateTextView.setVisibility(View.VISIBLE);
+                dateTextView.setText(dateDivider);
+            } else {
+                dateTextView.setVisibility(View.GONE);
+            }
         }
     }
 
     private class TextSelectableClickListener
             implements View.OnTouchListener, GestureDetector.OnGestureListener {
 
-        private Message message;
-        private int position;
-        private GestureDetectorCompat gestureDetector;
+        Message message;
+        int position;
+        GestureDetectorCompat gestureDetector;
+        boolean clickableTimestamp;
 
-        public TextSelectableClickListener(Context context, int position, Message message) {
+        public TextSelectableClickListener(Context context, int position, Message message,
+                                           boolean clickableTimestamp) {
             this.gestureDetector = new GestureDetectorCompat(context, this);
             this.position = position;
             this.message = message;
+            this.clickableTimestamp = clickableTimestamp;
         }
 
         @Override
@@ -158,7 +210,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
         @Override
         public boolean onSingleTapUp(MotionEvent motionEvent) {
-            messageClickListener.onMessageClick(position, message);
+            if (clickableTimestamp) {
+                showManualTimestampForPosition(position);
+            }
+            if (messageClickListener != null) {
+                messageClickListener.onMessageClick(message);
+            }
             return true;
         }
 
@@ -251,19 +308,26 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message$Table.TEXT)));
 
         int position = cursor.getPosition();
-        Message message = SqlUtils.convertToModel(false, Message.class, cursor);
+        Message message = SqlUtils.convertToModel(true, Message.class, cursor);
 
         bindMessageHolder(holder, position, cursor, message);
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
+        int backgroundResource;
+        // disabled until dark blue bubbles assets are provided
+        boolean selectedMessage = false;
+        //boolean selectedMessage = position == manualTimestampPosition;
         if (previousMessageIsFromSameUser(cursor)) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
-            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble);
+            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
+            backgroundResource = R.drawable.blue_bubble;
         } else {
             params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
-            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble_comics);
+            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
+            backgroundResource = R.drawable.blue_bubble_comics;
         }
+        holder.messageTextView.setBackgroundResource(backgroundResource);
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
@@ -286,13 +350,20 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
+        int backgroundResource;
+        // disabled until dark blue bubbles assets are provided
+        boolean selectedMessage = false;
+        //boolean selectedMessage = position == manualTimestampPosition;
         if (isPreviousMessageFromTheSameUser) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
             holder.avatarImageView.setVisibility(View.INVISIBLE);
             holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble);
+            backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble
+                    : R.drawable.grey_bubble;
         } else {
             params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
-            holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble_comics);
+            backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble_comics
+                    : R.drawable.grey_bubble_comics;
             holder.avatarImageView.setVisibility(View.VISIBLE);
             Picasso.with(context)
                     .load(userFrom == null ? null : userFrom.getAvatarUrl())
@@ -305,17 +376,19 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
                 }
             });
         }
+        holder.messageTextView.setBackgroundResource(backgroundResource);
     }
 
     public void showManualTimestampForPosition(int position) {
-        if (position == currentManualTimestampMessagePosition) {
-            currentManualTimestampMessagePosition = -1;
+        if (position == manualTimestampPosition) {
+            manualTimestampPositionToRemove = manualTimestampPosition;
             notifyItemChanged(position);
         } else {
-            int prevPosition = currentManualTimestampMessagePosition;
-            currentManualTimestampMessagePosition = position;
+            int prevPosition = manualTimestampPosition;
+            manualTimestampPositionToAdd = position;
+            manualTimestampPositionToRemove = prevPosition;
             notifyItemChanged(prevPosition);
-            notifyItemChanged(currentManualTimestampMessagePosition);
+            notifyItemChanged(manualTimestampPositionToAdd);
         }
     }
 

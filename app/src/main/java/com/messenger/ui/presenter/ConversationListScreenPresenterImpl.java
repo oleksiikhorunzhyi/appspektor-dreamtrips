@@ -1,6 +1,8 @@
 package com.messenger.ui.presenter;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,15 +25,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+
+import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.ALL_CHATS;
+import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.GROUP_CHATS;
 
 public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
-
-    private final ConversationHelper conversationHelper;
-    private Subscription contactSubscription;
 
     @Inject
     User user;
@@ -40,9 +43,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Inject
     ConversationsDAO conversationsDAO;
 
-    private Activity parentActivity;
+    private final Activity parentActivity;
     private final ChatLeavingDelegate chatLeavingDelegate;
-
+    private final ConversationHelper conversationHelper;
+    //
+    private PublishSubject<String> filterStream;
+    private PublishSubject<String> typeStream;
 
     public ConversationListScreenPresenterImpl(Activity activity) {
         this.parentActivity = activity;
@@ -53,17 +59,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     @Override
-    public void onNewViewState() {
-        state = new ConversationListViewState();
-    }
-
-    @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         dreamSpiceManager.start(getView().getContext());
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
-        getView().showLoading();
-        connectCursor();
+        applyViewState();
+        connectData();
     }
 
     public void onDetachedFromWindow() {
@@ -71,8 +72,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
         }
-        contactSubscription.unsubscribe();
-        getViewState().setCursor(null);
     }
 
     @Override
@@ -85,39 +84,71 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         }
     }
 
-    private void connectCursor() {
-        if (contactSubscription != null && !contactSubscription.isUnsubscribed()) {
-            contactSubscription.unsubscribe();
-        }
-        contactSubscription = conversationsDAO.selectConversationsList(
-                getViewState().isShowOnlyGroupConversations() ? Conversation.Type.GROUP : null)
-                .throttleLast(1, TimeUnit.MILLISECONDS)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(cursor -> {
-                    state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
-                    state.setCursor(cursor);
-                    applyViewState();
-                });
-    }
-
     @Override
     public User getUser() {
         return user;
     }
 
+    private void connectData() {
+        connectFilterStream();
+        connectTypeStream();
+        connectCursor();
+    }
+
+    private void connectFilterStream() {
+        filterStream = PublishSubject.create();
+        filterStream
+                .doOnNext(getViewState()::setSearchFilter)
+                .compose(bindView()).subscribe();
+    }
+
+    private void connectTypeStream() {
+        typeStream = PublishSubject.create();
+        typeStream
+                .doOnNext(getViewState()::setChatType)
+                .compose(bindView()).subscribe();
+
+    }
+
+    private void connectCursor() {
+        Observable<Cursor> cursorObs = typeStream.asObservable().startWith(ALL_CHATS).distinctUntilChanged()
+                .flatMap(type -> {
+                    String convType = type == GROUP_CHATS ? Conversation.Type.GROUP : null;
+                    return conversationsDAO.selectConversationsList(convType)
+                            .onBackpressureLatest()
+                            .throttleLast(200, TimeUnit.MILLISECONDS);
+                });
+        Observable<String> filterObs = filterStream.asObservable()
+                .startWith(getViewState().getSearchFilter())
+                .distinctUntilChanged();
+
+        Observable.combineLatest(cursorObs, filterObs, (c, s) -> new Pair<>(c, s))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(pair -> {
+                    state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
+                    applyViewState(pair.first, pair.second);
+                });
+    }
+
+    @Override
+    public void onNewViewState() {
+        state = new ConversationListViewState();
+    }
+
+    private void applyViewState(Cursor cursor, String filter) {
+        getView().showConversations(cursor, filter);
+        applyViewState();
+    }
+
     @Override
     public void applyViewState() {
-        if (!isViewAttached()) {
-            return;
-        }
         switch (getViewState().getLoadingState()) {
             case LOADING:
                 getView().showLoading();
                 break;
             case CONTENT:
-                getView().showConversations(getViewState().getCursor(), getViewState().getConversationsSearchFilter());
                 getView().showContent();
                 break;
             case ERROR:
@@ -125,6 +156,10 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
                 break;
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Interaction
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onConversationSelected(Conversation conversation) {
@@ -164,14 +199,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onConversationsDropdownSelected(ChatTypeItem selectedItem) {
-        getViewState().setShowOnlyGroupConversations(selectedItem.getType().equals(ChatTypeItem.GROUP_CHATS));
-        connectCursor();
+        typeStream.onNext(selectedItem.getType());
     }
 
     @Override
     public void onConversationsSearchFilterSelected(String searchFilter) {
-        getViewState().setConversationsSearchFilter(searchFilter);
-        applyViewState();
+        filterStream.onNext(searchFilter);
     }
 
     ///////////////////////////////////////////////////////////////////////////

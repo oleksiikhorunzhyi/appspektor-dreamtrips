@@ -32,7 +32,7 @@ public interface ConversationListScreenPresenter extends MessengerPresenter<Conv
         public static final String GROUP_CHATS = "group";
 
         @StringDef({ALL_CHATS, GROUP_CHATS})
-        @interface ChatsType {}
+        public @interface ChatsType {}
 
         private String title;
         private String type;

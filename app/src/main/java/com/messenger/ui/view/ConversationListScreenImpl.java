@@ -39,14 +39,15 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.messenger.ui.adapter.ConversationsCursorAdapter.*;
-import static com.messenger.ui.presenter.ConversationListScreenPresenter.*;
+import static com.messenger.ui.adapter.ConversationsCursorAdapter.SwipeButtonsListener;
+import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem;
 
 public class ConversationListScreenImpl extends MessengerLinearLayout<ConversationListScreen,
         ConversationListScreenPresenter> implements ConversationListScreen, SwipeButtonsListener {
 
     @InjectView(R.id.conversation_list_content_view)
-    ViewGroup contentView;;
+    ViewGroup contentView;
+    ;
     @InjectView(R.id.conversation_list_loading_view)
     View loadingView;
     @InjectView(R.id.conversation_list_error_view)
@@ -59,11 +60,9 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     @InjectView(R.id.conversation_conversation_type_spinner)
     Spinner conversationsDropDownSpinner;
 
-    private SearchView searchView;
-    private String savedSearchFilter;
-
+    SearchView searchView;
+    //
     private ToolbarPresenter toolbarPresenter;
-
     private ConversationsCursorAdapter adapter;
 
     public ConversationListScreenImpl(Context context) {
@@ -74,6 +73,18 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     public ConversationListScreenImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
         initUi();
+    }
+
+    @NonNull
+    @Override
+    public ConversationListScreenPresenter createPresenter() {
+        return new ConversationListScreenPresenterImpl(getActivity());
+    }
+
+    @Override
+    public void setPresenter(ConversationListScreenPresenter presenter) {
+        super.setPresenter(presenter);
+        setAdapters();
     }
 
     private void initUi() {
@@ -112,12 +123,6 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         return adapter;
     }
 
-    @Override
-    public void setPresenter(ConversationListScreenPresenter presenter) {
-        super.setPresenter(presenter);
-        setAdapters();
-    }
-
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
@@ -154,23 +159,12 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
 
     @Override
     public void showConversations(Cursor cursor) {
-        if (adapter != null) {
-            adapter.changeCursor(cursor);
-        }
+        this.showConversations(cursor, null);
     }
 
     @Override
     public void showConversations(Cursor cursor, String searchFilter) {
-        this.savedSearchFilter = searchFilter;
-        if (adapter != null) {
-            adapter.changeCursor(cursor, searchFilter);
-        }
-    }
-
-    @NonNull
-    @Override
-    public ConversationListScreenPresenter createPresenter() {
-        return new ConversationListScreenPresenterImpl(getActivity());
+        adapter.changeCursor(cursor, searchFilter);
     }
 
     @Override
@@ -250,14 +244,13 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
             });
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             // search filter not null search was opened before (e.g. before orientation change), open it
-            if (savedSearchFilter != null) {
+            String filter = getPresenter().getViewState().getSearchFilter();
+            if (filter != null) {
                 searchItem.expandActionView();
-                searchView.setQuery(savedSearchFilter, false);
+                searchView.setQuery(filter, false);
             }
             searchView.setQueryHint(getContext().getString(R.string.conversation_list_search_hint));
-            searchView.setOnCloseListener(() -> {
-                return false;
-            });
+            searchView.setOnCloseListener(() -> false);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {

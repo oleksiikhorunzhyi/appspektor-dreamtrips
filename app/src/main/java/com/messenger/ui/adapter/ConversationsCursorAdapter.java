@@ -286,7 +286,9 @@ public class ConversationsCursorAdapter
         }
         Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
                 .flatMap(c -> participantsDAO.getParticipants(c.getId())
-                        .map(cursor -> SqlUtils.convertToList(User.class, cursor))
+                        .map(cursor -> {
+                            return SqlUtils.convertToList(User.class, cursor);
+                        })
                         .map(users -> new Pair<>(c, users)))
                 .toMap(p -> p.first, p -> p.second)
                 .subscribeOn(Schedulers.io())

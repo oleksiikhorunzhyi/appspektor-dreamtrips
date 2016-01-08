@@ -1,65 +1,66 @@
 package com.messenger.ui.viewstate;
 
-import android.database.Cursor;
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.ChatsType;
 
 import java.util.List;
 
 public class ConversationListViewState extends LceViewState<List<Conversation>> {
 
+    private String chatType;
+    private String searchFilter;
+
     public ConversationListViewState() {
     }
 
-    private boolean showOnlyGroupConversations;
-    private String conversationsSearchFilter;
-    private Cursor cursor;
-
-    public boolean isShowOnlyGroupConversations() {
-        return showOnlyGroupConversations;
+    public @ChatsType String getChatType() {
+        return chatType;
     }
 
-    public void setShowOnlyGroupConversations(boolean showOnlyGroupConversations) {
-        this.showOnlyGroupConversations = showOnlyGroupConversations;
+    public void setChatType(@ChatsType String type) {
+        this.chatType = type;
     }
 
-    public String getConversationsSearchFilter() {
-        return conversationsSearchFilter;
+    public String getSearchFilter() {
+        return searchFilter;
     }
 
-    public void setConversationsSearchFilter(String conversationsSearchFilter) {
-        this.conversationsSearchFilter = conversationsSearchFilter;
-    }
-
-    public Cursor getCursor() {
-        return cursor;
-    }
-
-    public void setCursor(Cursor cursor) {
-        this.cursor = cursor;
+    public void setSearchFilter(String conversationsSearchFilter) {
+        this.searchFilter = conversationsSearchFilter;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override public void writeToParcel(Parcel parcel, int flags) {
-        super.writeToParcel(parcel, flags);
-        parcel.writeInt(showOnlyGroupConversations ? 1 : 0);
-        parcel.writeString(conversationsSearchFilter);
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public static final Parcelable.Creator<ConversationListViewState> CREATOR = new Parcelable.Creator<ConversationListViewState>() {
-        public ConversationListViewState createFromParcel(Parcel source) {return new ConversationListViewState(source);}
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.chatType);
+        dest.writeString(this.searchFilter);
+    }
 
-        public ConversationListViewState[] newArray(int size) {return new ConversationListViewState[size];}
-    };
-
-    public ConversationListViewState(Parcel in) {
+    protected ConversationListViewState(Parcel in) {
         super(in);
-        showOnlyGroupConversations = in.readInt() == 1;
-        this.conversationsSearchFilter = in.readString();
+        this.chatType = in.readString();
+        this.searchFilter = in.readString();
     }
+
+    public static final Creator<ConversationListViewState> CREATOR = new Creator<ConversationListViewState>() {
+        public ConversationListViewState createFromParcel(Parcel source) {
+            return new ConversationListViewState(source);
+        }
+
+        public ConversationListViewState[] newArray(int size) {
+            return new ConversationListViewState[size];
+        }
+    };
 }

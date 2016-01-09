@@ -9,8 +9,10 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class UnreadConversationObservable {
+
     private Observable<Integer> observable;
 
     public UnreadConversationObservable(RxContentResolver contentResolver) {
@@ -22,12 +24,13 @@ public class UnreadConversationObservable {
                 .query(queryBuilder.build())
                 .onBackpressureLatest()
                 .map(cursor -> cursor.moveToFirst() ? cursor.getInt(0) : 0)
+                .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Subscription subscribe(Action1<Integer> action) {
-        return observable.subscribe(action, throwable -> {});
+        return observable.subscribe(action, throwable -> Timber.w("Can't get unread conv count"));
     }
 
 }

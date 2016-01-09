@@ -33,8 +33,13 @@ public class RxContentResolver {
                             }
                         }
                     };
-                    for (Uri uri : uriToObserve) {
-                        subscribeToContentUpdates(uri, contentObserver[0]);
+                    if (query.uri != null) {
+                        subscribeToContentUpdates(query.uri, contentObserver[0]);
+                    }
+                    if (uriToObserve != null) {
+                        for (Uri uri : uriToObserve) {
+                            subscribeToContentUpdates(uri, contentObserver[0]);
+                        }
                     }
                     tryFetchCursor(query, subscriber);
                 }

@@ -1,5 +1,6 @@
 package com.messenger.initializer;
 
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.messenger.delegate.LoaderDelegate;
@@ -15,10 +16,10 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Date;
@@ -79,9 +80,9 @@ public class ChatFacadeInitializer implements AppInitializer {
         });
         emitter.addOnSubjectChangesListener((conversationId, subject) -> {
             conversationsDAO.getConversation(conversationId).first()
+                    .filter(c -> c != null && !TextUtils.equals(c.getSubject(), subject))
+                    .compose(new IoToMainComposer<>())
                     .subscribe(conversation -> {
-                        if (conversation == null)
-                            return; // TODO there should be no such situation, but sync init state is broken
                         conversation.setSubject(subject);
                         conversation.save();
                     });

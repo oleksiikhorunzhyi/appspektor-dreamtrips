@@ -9,63 +9,85 @@ import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class MessageDAO extends BaseDAO {
 
+    @Deprecated
     public MessageDAO(Context context) {
         super(context);
     }
 
-    public Observable<Cursor> getMessage(String conversationId) {
+    public MessageDAO(RxContentResolver rxContentResolver, Context context) {
+        super(context, rxContentResolver);
+    }
+
+    public Observable<Cursor> getMessages(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, u." + User$Table.USERNAME + " as " + User$Table.USERNAME +
                         ", u." + User$Table.USERAVATARURL + " as " + User$Table.USERAVATARURL +
                         ", u." + User$Table.SOCIALID + " as " + User$Table.SOCIALID +
 
                         " FROM " + Message.TABLE_NAME + " m LEFT JOIN " + User$Table.TABLE_NAME + " u" +
-                        " ON m." + Message.COLUMN_FROM + " = u." + User$Table._ID +
-                        " WHERE " + Message.COLUMN_CONVERSATION_ID + " = ?" +
-                        " ORDER BY " + Message.COLUMN_DATE)
+                        " ON m." + Message$Table.FROMID + " = u." + User$Table._ID +
+                        " WHERE " + Message$Table.CONVERSATIONID + " = ?" +
+                        " ORDER BY " + Message$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId}).build();
 
-        return query(q, Message.CONTENT_URI, User.CONTENT_URI)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io());
+        return query(q, Message.CONTENT_URI, User.CONTENT_URI);
     }
 
-    public Observable<Integer> markMessagesAsRead(String conversationId, long visibleTime) {
-        return Observable.<Integer>create(subscriber -> {
+    public Observable<Message> getMessage(String messageId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM " + Message$Table.TABLE_NAME + " " +
+                "WHERE " + Message$Table._ID + "=?")
+                .withSelectionArgs(new String[] {messageId})
+                .build();
+
+        return query(q, Message.CONTENT_URI)
+                .map(cursor -> {
+                    Message res = SqlUtils.convertToModel(false, Message.class, cursor);
+                    cursor.close();
+                    return res;
+                });
+    }
+    public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
+        return Observable.create(subscriber -> {
             subscriber.onStart();
-            String clause = Message.COLUMN_CONVERSATION_ID + " = ? "
-                    + "AND " + Message.COLUMN_DATE + " <= ? "
-                    + "AND " + Message.COLUMN_READ + " = ? ";
+            String clause = Message$Table.CONVERSATIONID + " = ? "
+                    + "AND " + Message$Table.DATE + " <= ? "
+                    + "AND " + Message$Table.FROMID + " <> ? "
+                    + "AND " + Message$Table.STATUS + " = ? ";
             ContentValues cv = new ContentValues(1);
-            cv.put(Message$Table.READ, true);
+            cv.put(Message$Table.STATUS, Message.Status.READ);
             try {
                 subscriber.onNext(getContentResolver().update(Message.CONTENT_URI, cv, clause,
-                        new String[]{conversationId, String.valueOf(visibleTime), String.valueOf(0)}));
+                        new String[]{conversationId, String.valueOf(visibleTime),
+                                userId, String.valueOf(Message.Status.SENT)})
+                );
+                subscriber.onCompleted();
             } catch (Exception e) {
                 subscriber.onError(e);
             }
-            subscriber.onCompleted();
-        })
-                .subscribeOn(Schedulers.io())
-                .onBackpressureLatest();
+        });
     }
 
-    public Observable<Integer> unreadCount(String conversationId, long firstMessageTime) {
+    public Observable<Integer> unreadCount(String conversationId, String userId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT COUNT(_id) FROM " + Message.TABLE_NAME + " " +
-                        "WHERE " + Message.COLUMN_CONVERSATION_ID + " = ? "
-                        + "AND " + Message.COLUMN_DATE + " > ? "
-                        + "AND " + Message.COLUMN_READ + " = ? ")
-                .withSelectionArgs(new String[]{conversationId, String.valueOf(firstMessageTime)})
+                        "WHERE " + Message$Table.CONVERSATIONID + " = ? "
+                        + "AND " + Message$Table.FROMID + " <> ? "
+                        + "AND " + Message$Table.STATUS + " = ? ")
+                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(Message.Status.SENT)})
                 .build();
 
-        return query(q)
-                .map(cursor -> cursor.moveToFirst() ? cursor.getInt(0) : 0);
+        return query(q, Message.CONTENT_URI)
+                .map(cursor -> {
+                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
+                    cursor.close();
+                    return res;
+                });
     }
 }

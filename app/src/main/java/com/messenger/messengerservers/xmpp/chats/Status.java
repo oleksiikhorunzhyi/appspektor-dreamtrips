@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.entities;
+package com.messenger.messengerservers.xmpp.chats;
 
 import android.support.annotation.StringDef;
 

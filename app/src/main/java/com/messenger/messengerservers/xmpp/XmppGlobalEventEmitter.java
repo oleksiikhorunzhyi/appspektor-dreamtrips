@@ -18,7 +18,6 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
-import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.isMessage;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
 
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
@@ -47,15 +46,16 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     };
 
     private void interceptOutgoingPacket(Stanza packet) {
-        if (!isMessage(packet)) return;
-        //// TODO: 12/17/15 add from, cause this is a bug: stanza remove FROM from packet
-        com.messenger.messengerservers.entities.Message message = messageConverter.convert((Message) packet);
-        message.setFromId(facade.getOwner().getId());
-        notifyGlobalMessage(message, false);
     }
 
     private void onChatCreated(Chat chat, boolean createdLocally) {
         notifyOnChatCreatedListener(chat.getThreadID(), createdLocally);
+    }
+
+    public void interceptOutgoingMessages(com.messenger.messengerservers.entities.Message message) {
+        // TODO: 1/7/16 set fromId in chat
+        message.setFromId(facade.getOwner().getId());
+        notifyGlobalMessage(message, false);
     }
 
     private void interceptIncomingMessage(Stanza packet) {

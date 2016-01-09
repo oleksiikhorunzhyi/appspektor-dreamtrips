@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,8 +76,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
 
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
-    @InjectView(R.id.chat_message_send_button)
-    Button sendMessageButton;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -171,9 +168,16 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     protected void onAttachedToWindow() {
         conversationHelper = new ConversationHelper();
         super.onAttachedToWindow();
-        recyclerView.setAdapter(adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null));
-        adapter.setAvatarClickListener(getPresenter()::openUserProfile);
+        recyclerView.setAdapter(adapter = createAdapter());
         messageEditText.addTextChangedListener(messageWatcher);
+    }
+
+    protected MessagesCursorAdapter createAdapter() {
+        MessagesCursorAdapter adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null);
+        ChatScreenPresenter presenter = getPresenter();
+        adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
+        adapter.setAvatarClickListener(presenter::openUserProfile);
+        return adapter;
     }
 
     @OnEditorAction(R.id.chat_message_edit_text)
@@ -187,7 +191,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
 
     @OnClick(R.id.chat_message_send_button)
     protected void onSendMessage() {
-        if (getPresenter().onNewMessageFromUi(messageEditText.getText().toString())) {
+        if (getPresenter().sendMessage(messageEditText.getText().toString())) {
             messageEditText.getText().clear();
             recyclerView.smoothScrollToPosition(adapter.getItemCount());
         }
@@ -256,7 +260,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     }
 
     public void showUnreadMessageCount(int unreadMessage) {
-        unreadMessageCountText.setText(Integer.toString(unreadMessage));
+        unreadMessageCountText.setText(String.valueOf(unreadMessage));
         unreadMessageCountText.setVisibility(unreadMessage == 0 ? GONE : VISIBLE);
     }
 
@@ -304,11 +308,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         } else if (cursor != null && cursor.getCount() == 1) {
             getPresenter().firstVisibleMessageChanged(SqlUtils.convertToModel(false, Message.class, cursor));
         }
-    }
-
-    @Override
-    public void enableSendButton(boolean enabled) {
-        sendMessageButton.setEnabled(enabled);
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
-import com.messenger.storege.dao.ConversationsDAO;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.util.EventBusWrapper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;

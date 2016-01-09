@@ -1,7 +1,7 @@
 package com.messenger.messengerservers.xmpp.packets;
 
 
-import com.messenger.messengerservers.entities.Status;
+import com.messenger.messengerservers.xmpp.chats.Status;
 
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;

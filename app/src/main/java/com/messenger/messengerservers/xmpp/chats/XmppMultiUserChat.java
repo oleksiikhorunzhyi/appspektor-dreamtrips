@@ -10,13 +10,11 @@ import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Status;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
-import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.PresenceListener;
@@ -27,7 +25,6 @@ import org.jivesoftware.smackx.muc.SubjectUpdatedListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -41,20 +38,20 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Nullable
     private org.jivesoftware.smackx.muc.MultiUserChat chat;
 
+    private XmppServerFacade facade;
     private final String userId;
     private boolean isOwner;
     private final String roomId;
     private PresenceListener presenceListener;
     private SubjectUpdatedListener subjectUpdatedListener;
     private AbstractXMPPConnection connection;
-    private XmppMessageConverter messageConverter;
 
     public XmppMultiUserChat(XmppServerFacade facade, String roomId, String userId, boolean isOwner) {
+        this.facade = facade;
         this.userId = userId;
         this.roomId = roomId;
         this.isOwner = isOwner;
-        //
-        messageConverter = new XmppMessageConverter();
+
         facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
         if (facade.isAuthorized()) {
             setConnection(facade.getConnection());
@@ -66,38 +63,40 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         // TODO: 12/11/15 add future implementation
         presenceListener = presence -> notifyParticipantsChanged(new ArrayList<>());
         chat.addParticipantListener(presenceListener);
-//        chat.addParticipantStatusListener()
+
         subjectUpdatedListener = (subject, from) -> notifySubjectUpdateListeners(subject);
         chat.addSubjectUpdatedListener(subjectUpdatedListener);
         org.jivesoftware.smack.packet.Message packet;
     }
 
     @Override
-    public void sendMessage(Message message) {
-        if (!initializedAndConnected()) return;
-
-        try {
-            org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
-            stanzaPacket.setStanzaId(UUID.randomUUID().toString());
-            stanzaPacket.setThread(roomId);
-            stanzaPacket.setFrom(JidCreatorHelper.obtainUserJid(userId));
-            chat.sendMessage(stanzaPacket);
-        } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, "Error ", e);
-        }
+    public Observable<Message> send(Message message) {
+        return Observable.just(message)
+                .doOnNext(msg -> {
+                    msg.setFromId(userId);
+                    msg.setConversationId(roomId);
+                })
+                .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), smackMsg -> {
+                    if (chat != null) {
+                        chat.sendMessage(smackMsg);
+                        return true;
+                    }
+                    return false;
+                }));
     }
 
     @Override
-    public void changeMessageStatus(com.messenger.messengerservers.entities.Message message, @Status.MessageStatus String status) {
-        if (!initializedAndConnected()) return;
-
-        StatusMessagePacket statusMessagePacket = new StatusMessagePacket(message.getId(), status,
-                JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat);
-        try {
-            connection.sendStanza(statusMessagePacket);
-        } catch (SmackException.NotConnectedException e) {
-            Timber.e(e, TAG);
-        }
+    public Observable<Message> sendReadStatus(Message message) {
+        return Observable.just(message)
+                .compose(new StatusMessageTranformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
+                        JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat),
+                        stanza -> {
+                            if (connection != null) {
+                                connection.sendStanza(stanza);
+                                return true;
+                            }
+                            return false;
+                        }));
     }
 
     @Override

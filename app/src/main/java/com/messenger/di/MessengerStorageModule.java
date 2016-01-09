@@ -50,19 +50,19 @@ public class MessengerStorageModule {
     @Provides
     @Singleton
     ParticipantsDAO provideParticipantsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new ParticipantsDAO(context);
+        return new ParticipantsDAO(rxContentResolver, context);
     }
 
     @Provides
     @Singleton
     UsersDAO provideUsersDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new UsersDAO(context);
+        return new UsersDAO(rxContentResolver, context);
     }
 
     @Provides
     @Singleton
     MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new MessageDAO(context);
+        return new MessageDAO(rxContentResolver, context);
     }
 
 }

@@ -8,6 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
 import com.messenger.messengerservers.entities.User;
@@ -76,18 +77,18 @@ public class ConversationsDAO extends BaseDAO {
 
     public Observable<Cursor> selectConversationsList(@Nullable @Conversation.Type.ConversationType String type) {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
-                "m." + Message.COLUMN_TEXT + " as " + Message.COLUMN_TEXT + ", " +
-                "m." + Message.COLUMN_FROM + " as " + Message.COLUMN_FROM + ", " +
-                "m." + Message.COLUMN_DATE + " as " + Message.COLUMN_DATE + ", " +
+                "m." + Message$Table.TEXT + " as " + Message$Table.TEXT + ", " +
+                "m." + Message$Table.FROMID + " as " + Message$Table.FROMID + ", " +
+                "m." + Message$Table.DATE + " as " + Message$Table.DATE + ", " +
                 "u." + User$Table.USERNAME + " as " + User$Table.USERNAME + " " +
                 "FROM " + Conversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + Message.TABLE_NAME + " m " +
-                "ON m." + Message._ID + "=(" +
-                "SELECT " + Message._ID + " FROM " + Message.TABLE_NAME + " mm " +
-                "WHERE mm." + Message.COLUMN_CONVERSATION_ID + "=c." + Conversation$Table._ID + " " +
-                "ORDER BY mm." + Message.COLUMN_DATE + " DESC LIMIT 1) " +
+                "ON m." + Message$Table._ID + "=(" +
+                "SELECT " + Message$Table._ID + " FROM " + Message.TABLE_NAME + " mm " +
+                "WHERE mm." + Message$Table.CONVERSATIONID + "=c." + Conversation$Table._ID + " " +
+                "ORDER BY mm." + Message$Table.DATE + " DESC LIMIT 1) " +
                 "LEFT JOIN " + User.TABLE_NAME + " u " +
-                "ON m." + Message.COLUMN_FROM + "=u." + User$Table._ID + " " +
+                "ON m." + Message$Table.FROMID + "=u." + User$Table._ID + " " +
                 "LEFT JOIN " + ParticipantsRelationship.TABLE_NAME + " p " +
                 "ON p." + ParticipantsRelationship$Table.CONVERSATIONID + "=c." + Conversation$Table._ID + " "
         );
@@ -101,7 +102,7 @@ public class ConversationsDAO extends BaseDAO {
         query.append("GROUP BY c." + Conversation$Table._ID + " " +
                 "HAVING c." + Conversation$Table.TYPE + "=? " +
                 "OR COUNT(p." + ParticipantsRelationship$Table.ID + ") > 1 " +
-                "ORDER BY c." + Conversation$Table.ABANDONED + ", m." + Message.COLUMN_DATE + " DESC");
+                "ORDER BY c." + Conversation$Table.ABANDONED + ", m." + Message$Table.DATE + " DESC");
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());
@@ -116,7 +117,6 @@ public class ConversationsDAO extends BaseDAO {
         return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
     }
 
-
     public Observable<Conversation> getConversation(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection(new Select().from(Conversation.class).byIds(conversationId).toString())
@@ -124,7 +124,11 @@ public class ConversationsDAO extends BaseDAO {
         return query(q, Conversation.CONTENT_URI)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
-                .map(cursor -> SqlUtils.convertToModel(false, Conversation.class, cursor));
+                .map(cursor -> {
+                    Conversation conversation = SqlUtils.convertToModel(false, Conversation.class, cursor);
+                    cursor.close();
+                    return conversation;
+                });
     }
 
     public void incrementUnreadField(String conversationId) {

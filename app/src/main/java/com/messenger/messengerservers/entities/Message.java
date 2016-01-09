@@ -1,6 +1,8 @@
 package com.messenger.messengerservers.entities;
 
 import android.net.Uri;
+import android.provider.BaseColumns;
+import android.support.annotation.IntDef;
 
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -20,26 +22,19 @@ import java.util.Locale;
 public class Message extends BaseProviderModel<Message> {
     public static final String TABLE_NAME = "Messages";
 
-    public static final String COLUMN_DATE = "date";
-    public static final String COLUMN_TEXT = "text";
-    public static final String COLUMN_FROM = "fromId";
-    public static final String COLUMN_CONVERSATION_ID = "conversationId";
-    public static final String COLUMN_READ = "read";
-
-    public static final String _ID = "_id";
-
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @PrimaryKey @Column String _id;
+    @PrimaryKey @Column(name = BaseColumns._ID) String id;
     @Column String fromId;
     @Column String toId;
     @Column String text;
     @Column Date date;
     @Column String conversationId;
-    @Column boolean read;
+    @Status.MessageStatus @Column int status;
 
+    // TODO: 1/9/16 store this column
     private Locale locale;
 
     public Message() {
@@ -49,18 +44,26 @@ public class Message extends BaseProviderModel<Message> {
         this.fromId = from;
         this.toId = to;
         this.text = text;
-        this._id = id;
+        this.id = id;
     }
 
     private Message(Builder builder) {
-        _id = builder.id;
+        setId(builder.id);
         setConversationId(builder.conversationId);
         setFromId(builder.from);
         setToId(builder.to);
         setText(builder.text);
         setDate(builder.date);
         setLocale(builder.locale);
-        setRead(builder.read);
+        setStatus(builder.status);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getConversationId() {
@@ -91,10 +94,6 @@ public class Message extends BaseProviderModel<Message> {
         return text;
     }
 
-    public String getId() {
-        return _id;
-    }
-
     public void setText(String text) {
         this.text = text;
     }
@@ -115,12 +114,12 @@ public class Message extends BaseProviderModel<Message> {
         this.locale = locale;
     }
 
-    public boolean isRead() {
-        return read;
+    public int getStatus() {
+        return status;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setStatus(@Status.MessageStatus int status) {
+        this.status = status;
     }
 
     @Override
@@ -151,7 +150,7 @@ public class Message extends BaseProviderModel<Message> {
         private String text;
         private Date date;
         private Locale locale;
-        private boolean read;
+        private int status;
 
         public Builder() {
         }
@@ -191,13 +190,23 @@ public class Message extends BaseProviderModel<Message> {
             return this;
         }
 
-        public Builder read(boolean val) {
-            read = val;
+        public Builder status(@Status.MessageStatus int val) {
+            status = val;
             return this;
         }
 
         public Message build() {
             return new Message(this);
         }
+    }
+
+    public static class Status {
+        public static final int ERROR = -1;
+        public static final int SENDING = 0;
+        public static final int SENT = 1;
+        public static final int READ = 2;
+
+        @IntDef({ERROR, SENDING, SENT, READ})
+        @interface MessageStatus {}
     }
 }

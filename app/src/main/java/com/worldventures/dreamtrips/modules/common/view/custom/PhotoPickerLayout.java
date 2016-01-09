@@ -86,7 +86,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
         if (isShown)
-            showPanel();
+            post(() -> showPanel());
     }
 
     @Override

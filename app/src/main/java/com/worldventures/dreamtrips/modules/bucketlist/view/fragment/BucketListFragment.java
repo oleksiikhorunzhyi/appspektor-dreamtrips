@@ -292,14 +292,18 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void showDetailsContainer() {
-        if (detailsContainer != null)
-            handler.post(() -> detailsContainer.setVisibility(View.VISIBLE));
+        handler.post(() -> {
+            if (detailsContainer != null)
+                detailsContainer.setVisibility(View.VISIBLE);
+        });
     }
 
     @Override
     public void hideDetailContainer() {
-        if (detailsContainer != null)
-            handler.post(() -> detailsContainer.setVisibility(View.GONE));
+        handler.post(() -> {
+            if (detailsContainer != null)
+                detailsContainer.setVisibility(View.GONE);
+        });
     }
 
     @Override

@@ -308,7 +308,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         @Override
         protected void onRefresh(ArrayList<IFullScreenObject> iFullScreenObjects) {
             prepareTasks(iFullScreenObjects);
-            super.onRefresh(iFullScreenObjects);
+            onPreFinish(LoadType.RELOAD, iFullScreenObjects, null);
+            onFinish(LoadType.RELOAD, iFullScreenObjects, null);
         }
 
         @Override
@@ -317,7 +318,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
-
                     if (loadType.equals(RoboSpiceAdapterController.LoadType.RELOAD)) {
                         UploadTask uploadTask = null;
                         if(photos.size() > 0 && photos.get(0) instanceof UploadTask)

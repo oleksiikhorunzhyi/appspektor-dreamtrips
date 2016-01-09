@@ -134,8 +134,6 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
 
             //buildConfigField 'String', 'MESSENGER_API_URL', '"support2.sonrisa.hu"' // tmp test server
-
-            minSdkVersion 21
         }
         perf {
             flavorDimension "config"

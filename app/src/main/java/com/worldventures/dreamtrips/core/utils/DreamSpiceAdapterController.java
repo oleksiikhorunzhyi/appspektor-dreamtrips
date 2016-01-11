@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.utils;
 
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -9,14 +10,32 @@ import java.util.ArrayList;
 public abstract class DreamSpiceAdapterController<BaseItemClass>
         extends RoboSpiceAdapterController<DreamSpiceManager, BaseItemClass> {
 
+    /*
+    Don't change to retrolambda expressions, because it causes crash on some devices (Samsung S3)
+     */
     private DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>> nextRequestSuccessListener =
-            this::onNextItemsLoaded;
+            new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
+                @Override
+                public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
+                    onNextItemsLoaded(baseItemClasses);
+                }
+            };
 
     private DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>> baseRequestSuccessListener =
-            this::onRefresh;
+            new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
+                @Override
+                public void onRequestSuccess(ArrayList<BaseItemClass> baseItemClasses) {
+                    onRefresh(baseItemClasses);
+                }
+            };
 
     private DreamSpiceManager.FailureListener baseRequestFailureListener =
-            this::onFailure;
+            new DreamSpiceManager.FailureListener() {
+                @Override
+                public void handleError(SpiceException spiceException) {
+                    onFailure(spiceException);
+                }
+            };
 
     @Override
     protected void executeNextRequest(SpiceRequest<ArrayList<BaseItemClass>> request) {

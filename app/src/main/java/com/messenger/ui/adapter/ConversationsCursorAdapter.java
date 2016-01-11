@@ -134,18 +134,20 @@ public class ConversationsCursorAdapter
 
         // init swipe layout
         swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
-        holder.getSwipeLayout().addSwipeListener(new SwipeClickListener(holder.itemView,
-                itemViewListener));
-        holder.getDeleteButton().setOnClickListener(view -> {
-            if (swipeButtonsListener != null) {
-                swipeButtonsListener.onDeleteButtonPressed(conversation);
-            }
-        });
-        holder.getMoreButton().setOnClickListener(view -> {
-            if (swipeButtonsListener != null) {
-                swipeButtonsListener.onMoreOptionsButtonPressed(conversation);
-            }
-        });
+        //// TODO: 1/11/16 enable swipe and use comments below for future functional
+        holder.getSwipeLayout().setSwipeEnabled(false);
+//        holder.getSwipeLayout().addSwipeListener(new SwipeClickListener(holder.itemView,
+//                itemViewListener));
+//        holder.getDeleteButton().setOnClickListener(view -> {
+//            if (swipeButtonsListener != null) {
+//                swipeButtonsListener.onDeleteButtonPressed(conversation);
+//            }
+//        });
+//        holder.getMoreButton().setOnClickListener(view -> {
+//            if (swipeButtonsListener != null) {
+//                swipeButtonsListener.onMoreOptionsButtonPressed(conversation);
+//            }
+//        });
 
         holder.updateParticipants(conversation.getId(), users -> setNameAndAvatar(holder, conversation, users));
     }

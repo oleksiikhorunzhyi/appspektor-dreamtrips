@@ -9,11 +9,12 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.activity.MessengerStartActivity;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 
 public class MessengerNotificationFactory extends NotificationFactory {
+
+
 
     public MessengerNotificationFactory(Context context) {
         super(context);
@@ -50,7 +51,7 @@ public class MessengerNotificationFactory extends NotificationFactory {
         resultIntent.putExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID, conversationId);
         //
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(MessengerStartActivity.class);
+        stackBuilder.addParentStack(ChatActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         //
         return stackBuilder.getPendingIntent(0, forAction ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_CANCEL_CURRENT);

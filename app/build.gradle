@@ -61,6 +61,8 @@ android {
         buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
         buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
 
+        manifestPlaceholders = [:]
+        manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
 
     }
     productFlavors {
@@ -68,8 +70,7 @@ android {
             applicationIdSuffix ".dev"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
 
-            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             ext.enableCrashlytics = false
 
@@ -83,8 +84,7 @@ android {
             applicationIdSuffix ".dtl"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
 
-            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -98,8 +98,7 @@ android {
             applicationIdSuffix ".stage"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"
 
-            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -114,8 +113,7 @@ android {
             applicationIdSuffix ".perf"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-perf" + "-${versionBuild}"
 
-            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz/"'
 
@@ -126,8 +124,7 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         prod {
-            manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
 

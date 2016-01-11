@@ -2,6 +2,11 @@ package com.messenger.ui.adapter;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * FilterCursorWrapper is for casses when running SQL query to get new cursor is not desirable.
@@ -11,16 +16,39 @@ public class FilterCursorWrapper extends CursorWrapper {
     private int count;
     private int pos;
 
-    public FilterCursorWrapper(Cursor cursor, String filter, int column) {
-        super(cursor);
-        filter = filter.toLowerCase();
+    public FilterCursorWrapper(Cursor cursor, String filter, int filterColumn) {
+        this(cursor, filter, filterColumn, null);
+    }
 
-        if (filter != "") {
+    public FilterCursorWrapper(Cursor cursor, String filter, int filterColumn,
+                               int[] additionalHidePositions) {
+        super(cursor);
+
+        if (!TextUtils.isEmpty(filter) || additionalHidePositions != null) {
+            if (!TextUtils.isEmpty(filter)) {
+                filter = filter.toLowerCase();
+            }
             this.count = super.getCount();
             this.index = new int[this.count];
             for (int i = 0; i < this.count; i++) {
+                boolean shouldHidePosition = false;
+                if (additionalHidePositions != null) {
+                    for (int hidePosition : additionalHidePositions) {
+                        if (i == hidePosition) {
+                            shouldHidePosition = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldHidePosition) {
+                    continue;
+                }
                 super.moveToPosition(i);
-                if (this.getString(column).toLowerCase().contains(filter)) {
+                if (!TextUtils.isEmpty(filter)) {
+                    if (this.getString(filterColumn).toLowerCase().contains(filter)) {
+                        this.index[this.pos++] = i;
+                    }
+                } else {
                     this.index[this.pos++] = i;
                 }
             }

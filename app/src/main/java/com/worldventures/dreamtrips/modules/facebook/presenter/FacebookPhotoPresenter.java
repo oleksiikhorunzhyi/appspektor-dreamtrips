@@ -3,29 +3,59 @@ package com.worldventures.dreamtrips.modules.facebook.presenter;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
-import com.kbeanie.imagechooser.api.ChosenImage;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.facebook.model.GraphObject;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
+import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
+import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.facebook.HttpMethod.GET;
 
 
-public class FacebookPhotoPresenter extends Presenter<FacebookPhotoPresenter.View> {
+public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPresenter.View> {
 
     Request requestForPagedResults;
 
     String albumId;
 
+    int previousTotal;
+    boolean loading;
+
     Request.Callback callback = response -> {
         requestForPagedResults = response.getRequestForPagedResults(Response.PagingDirection.NEXT);
-        view.handleResponse(response);
+        if (view != null)
+            handleResponse(response);
     };
+
+    private void handleResponse(Response response) {
+        List<GraphObject> graphObjects = FacebookUtils.typedListFromResponse(response, GraphObject.class);
+        List<BasePhotoPickerModel> tempList = new ArrayList<>();
+        for (GraphObject graphObject : graphObjects) {
+            FacebookPhoto photo = FacebookPhoto.create(graphObject);
+            tempList.add(photo);
+        }
+        //
+        photos.addAll(tempList);
+        view.addItems(tempList);
+    }
 
     public FacebookPhotoPresenter(String albumId) {
         this.albumId = albumId;
+        this.photos = new ArrayList<>();
     }
 
-    public void onPhotoChosen(ChosenImage image) {
-        view.preFinishProcessing(image);
+    public void scrolled(int totalItemCount, int lastVisible) {
+        if (totalItemCount > previousTotal) {
+            loading = false;
+            previousTotal = totalItemCount;
+        }
+        if (!loading && lastVisible == totalItemCount - 1) {
+            requestPhotos(true);
+            loading = true;
+        }
     }
 
     public void requestPhotos(boolean fromScroll) {
@@ -40,8 +70,6 @@ public class FacebookPhotoPresenter extends Presenter<FacebookPhotoPresenter.Vie
         }
     }
 
-    public interface View extends Presenter.View {
-        void preFinishProcessing(ChosenImage image);
-        void handleResponse(Response response);
+    public interface View extends BasePickerPresenter.View {
     }
 }

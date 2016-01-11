@@ -13,26 +13,36 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.place.EarnPointsRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import javax.inject.Inject;
 
 public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
-    private final DtlMerchant dtlMerchant;
+    private final String merchantId;
+    private DtlMerchant dtlMerchant;
     private TransferObserver transferObserver;
 
     DtlTransaction dtlTransaction;
 
     @Inject
     SnappyRepository snapper;
+    @Inject
+    DtlMerchantRepository dtlMerchantRepository;
 
-    public DtlScanQrCodePresenter(DtlMerchant dtlMerchant) {
-        this.dtlMerchant = dtlMerchant;
+    public DtlScanQrCodePresenter(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
     }
 
     @Override
@@ -41,7 +51,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         apiErrorPresenter.setView(view);
         //
         dtlTransaction = snapper.getDtlTransaction(dtlMerchant.getId());
-        view.setPlace(dtlMerchant);
+        view.setMerchant(dtlMerchant);
 
         if (!TextUtils.isEmpty(dtlTransaction.getCode()))
             checkReceiptUploading();
@@ -68,7 +78,8 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         dtlTransaction.setReceiptPhotoUrl(photoUploadingSpiceManager.
                 getResultUrl(dtlTransaction.getUploadTask()));
         //
-        doRequest(new EarnPointsRequest(dtlMerchant.getId(), dtlTransaction),
+        doRequest(new EarnPointsRequest(dtlMerchant.getId(), dtlMerchant.getDefaultCurrency().getCode(),
+                        dtlTransaction),
                 this::processTransactionResult);
     }
 
@@ -175,7 +186,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
         void noConnection();
 
-        void setPlace(DtlMerchant DtlMerchant);
+        void setMerchant(DtlMerchant DtlMerchant);
 
         void openScanReceipt(DtlTransaction dtlTransaction);
     }

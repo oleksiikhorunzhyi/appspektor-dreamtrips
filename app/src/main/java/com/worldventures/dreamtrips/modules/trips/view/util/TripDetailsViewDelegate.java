@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
@@ -81,7 +82,7 @@ public class TripDetailsViewDelegate {
         };
 
         Queryable.from(filteredImages).forEachR(photo ->
-                        adapter.add(new FragmentItem(TripImagePagerFragment.class, ""))
+                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
 
         if (viewPagerGallery != null) {
@@ -123,7 +124,12 @@ public class TripDetailsViewDelegate {
 
         textViewPlace.setText(tripModel.getGeoLocation().getName());
         textViewPrice.setText(tripModel.getPrice().toString());
-        textViewDate.setText(tripModel.getAvailabilityDates().toString());
+        if (tripModel.isHasMultipleDates()) {
+            textViewDate.setText(String.format(textViewDate.getResources().getString(R.string.multiple_dates),
+                    tripModel.getAvailabilityDates().getStartDateString()));
+        } else {
+            textViewDate.setText(tripModel.getAvailabilityDates().toString());
+        }
         textViewDescription.setText(tripModel.getDescription());
     }
 

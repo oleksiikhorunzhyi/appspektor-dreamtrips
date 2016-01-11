@@ -89,7 +89,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
             Object item = imagesAdapter.getItem(i);
             if (item instanceof BucketPhoto) {
-                boolean equals = photo.getFsId().equals(((BucketPhoto) item).getFsId());
+                boolean equals = photo.getFSId().equals(((BucketPhoto) item).getFSId());
                 if (equals) {
                     imagesAdapter.remove(item);
                     break;
@@ -130,12 +130,15 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Override
     public void addImage(UploadTask image) {
+        if (imagesAdapter.getItems().contains(image)) return;
+        //
         imagesAdapter.addItem(1, image);
         imagesAdapter.notifyItemInserted(1);
     }
 
     @Override
     public void addImages(List<UploadTask> tasks) {
+        tasks.removeAll(imagesAdapter.getItems());
         imagesAdapter.addItems(1, tasks);
         imagesAdapter.notifyDataSetChanged();
     }

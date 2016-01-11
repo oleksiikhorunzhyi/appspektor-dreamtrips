@@ -1,14 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 @SuppressWarnings("unused")
-public class DtlOffer implements Parcelable {
+public class DtlOffer<T extends DtlOfferData> {
 
     @Offer.OfferType
     String type;
-    DtlOfferDescription offer;
+    T offer;
 
     public DtlOffer() {
     }
@@ -17,12 +14,20 @@ public class DtlOffer implements Parcelable {
         this.type = type;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getType() {
         return type;
     }
 
-    public DtlOfferDescription getOffer() {
+    public T getOffer() {
         return offer;
+    }
+
+    public void setOffer(T offer) {
+        this.offer = offer;
     }
 
     public static final DtlOffer TYPE_POINTS = new DtlOffer(Offer.POINT_REWARD);
@@ -42,36 +47,5 @@ public class DtlOffer implements Parcelable {
     public int hashCode() {
         return type != null ? type.hashCode() : 0;
     }
-///////////////////////////////////////////////////////////////////////////
-    // Parcelable
-    ///////////////////////////////////////////////////////////////////////////
 
-    protected DtlOffer(Parcel in) {
-        //noinspection ResourceType
-        type = in.readString();
-        offer = in.readParcelable(DtlOfferDescription.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(type);
-        dest.writeParcelable(offer, flags);
-    }
-
-    public static final Creator<DtlOffer> CREATOR = new Creator<DtlOffer>() {
-        @Override
-        public DtlOffer createFromParcel(Parcel in) {
-            return new DtlOffer(in);
-        }
-
-        @Override
-        public DtlOffer[] newArray(int size) {
-            return new DtlOffer[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 }

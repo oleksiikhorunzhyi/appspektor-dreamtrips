@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.Palyer360Activity;
+import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
@@ -39,10 +39,11 @@ public class ActivityRouter extends ActivityBoundRouter {
         startForResult(fm, CreatePhotoActivity.class, CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO, bundle);
     }
 
-    public void open360Activity(String url) {
+    public void open360Activity(String url, String title) {
         Bundle bundle = new Bundle();
-        bundle.putString(Palyer360Activity.EXTRA_URL, url);
-        startActivity(Palyer360Activity.class, bundle);
+        bundle.putString(Player360Activity.EXTRA_URL, url);
+        bundle.putString(Player360Activity.EXTRA_TITLE, title);
+        startActivity(Player360Activity.class, bundle);
     }
 
     public void openShare(String imageUrl, String shareLink, String text, @ShareFragment.ShareType String type) {

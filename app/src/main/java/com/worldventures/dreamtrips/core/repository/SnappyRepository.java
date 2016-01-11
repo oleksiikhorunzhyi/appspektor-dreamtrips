@@ -11,10 +11,10 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
@@ -35,8 +37,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import timber.log.Timber;
-
-import static com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment.Type;
 
 public class SnappyRepository {
 
@@ -54,6 +54,7 @@ public class SnappyRepository {
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
     public static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
+    public static final String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
     public static final String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
     public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
@@ -61,10 +62,12 @@ public class SnappyRepository {
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
     public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
+    public static final String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
 
+    public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
-    public static final String DTL_PLACES_PREFIX = "DTL_PLACES_TYPE_";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
+    public static final String DTL_DISTANCE_TOGGLE = "DTL_DISTANCE_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
 
     private Context context;
@@ -212,6 +215,14 @@ public class SnappyRepository {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
     }
 
+    public void saveOpenBucketTabType(String type) {
+        act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
+    }
+
+    public String getOpenBucketTabType() {
+        return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Trips
     ///////////////////////////////////////////////////////////////////////////
@@ -314,12 +325,12 @@ public class SnappyRepository {
     // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
 
-    public void savePhotoEntityList(Type type, int userId, List<IFullScreenObject> items) {
+    public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type + ":" + userId, items);
 
     }
 
-    public List<IFullScreenObject> readPhotoEntityList(Type type, int userId) {
+    public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
         return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
     }
 
@@ -430,6 +441,14 @@ public class SnappyRepository {
         act(db -> db.put(GCM_REG_TOKEN, token));
     }
 
+    public void saveSocialViewPagerState(SocialViewPagerState state) {
+        act(db -> db.put(SOCIAL_VIEW_PAGER_STATE, state));
+    }
+
+    public SocialViewPagerState getSocialViewPagerState() {
+        return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // GCM
     ///////////////////////////////////////////////////////////////////////////
@@ -446,17 +465,26 @@ public class SnappyRepository {
     // DTL
     ///////////////////////////////////////////////////////////////////////////
 
-    public void saveSelectedDtlLocation(DtlLocation location) {
-        act(db -> db.put(DTL_SELECTED_LOCATION, location));
+    public void saveDtlLocation(DtlLocation dtlLocation) {
+        act(db -> db.put(DTL_SELECTED_LOCATION, dtlLocation));
     }
 
-    public DtlLocation getSelectedDtlLocation() {
-        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class)).orNull();
+    public void cleanDtlLocation() {
+        clearAllForKey(DTL_SELECTED_LOCATION);
     }
 
-    public void saveDtlPlaces(DtlMerchantType type, List<DtlMerchant> places) {
-        clearAllForKey(DTL_PLACES_PREFIX + type);
-        putList(DTL_PLACES_PREFIX + type, places);
+    public DtlLocation getDtlLocation() {
+        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class))
+                .orNull();
+    }
+
+    public void saveDtlMerhants(List<DtlMerchant> merchants) {
+        clearAllForKey(DTL_MERCHANTS);
+        putList(DTL_MERCHANTS, merchants);
+    }
+
+    public List<DtlMerchant> getDtlMerchants() {
+        return readList(DTL_MERCHANTS, DtlMerchant.class);
     }
 
     public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
@@ -468,12 +496,8 @@ public class SnappyRepository {
         return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
     }
 
-    public List<DtlMerchant> getDtlPlaces(DtlMerchantType type) {
-        return readList(DTL_PLACES_PREFIX + type, DtlMerchant.class);
-    }
-
     public void clearMerchantData() {
-        clearAllForKey(DTL_PLACES_PREFIX);
+        clearAllForKey(DTL_MERCHANTS);
         clearAllForKey(DTL_AMENITIES);
         clearAllForKey(DTL_TRANSACTION_PREFIX);
     }
@@ -481,6 +505,15 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
     // DTL Transaction
     ///////////////////////////////////////////////////////////////////////////
+
+    public void saveDistanceToggle(DtlFilterData.DistanceType distanceType) {
+        act(db -> db.put(DTL_DISTANCE_TOGGLE, distanceType));
+    }
+
+    public DtlFilterData.DistanceType getDistanceType() {
+        return actWithResult(db -> db.get(DTL_DISTANCE_TOGGLE, DtlFilterData.DistanceType.class))
+                .or(DtlFilterData.DistanceType.MILES);
+    }
 
     public DtlTransaction getDtlTransaction(String id) {
         return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();

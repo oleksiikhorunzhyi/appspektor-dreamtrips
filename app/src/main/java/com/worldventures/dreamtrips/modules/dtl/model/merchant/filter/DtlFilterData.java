@@ -22,10 +22,15 @@ public class DtlFilterData implements Parcelable {
 
     private DistanceType distanceType;
 
-    private List<DtlPlacesFilterAttribute> amenities;
+    private List<DtlMerchantsFilterAttribute> amenities;
 
-    public DtlFilterData() {
-        reset();
+    private DtlFilterData() {
+    }
+
+    public static DtlFilterData createDefault() {
+        DtlFilterData dtlFilterData = new DtlFilterData();
+        dtlFilterData.reset();
+        return dtlFilterData;
     }
 
     public void reset() {
@@ -51,26 +56,26 @@ public class DtlFilterData implements Parcelable {
         this.maxPrice = maxPrice > MAX_PRICE ? MAX_PRICE : maxPrice;
     }
 
-    public List<DtlPlacesFilterAttribute> getAmenities() {
+    public List<DtlMerchantsFilterAttribute> getAmenities() {
         return amenities;
     }
 
     @Nullable
-    public List<DtlPlacesFilterAttribute> getSelectedAmenities() {
+    public List<DtlMerchantsFilterAttribute> getSelectedAmenities() {
         return amenities != null && !amenities.isEmpty()
-                ? Queryable.from(amenities).filter(DtlPlacesFilterAttribute::isChecked).toList()
+                ? Queryable.from(amenities).filter(DtlMerchantsFilterAttribute::isChecked).toList()
                 : null;
     }
 
     public void toggleAmenitiesSelection(boolean selected) {
         if (amenities != null) {
-            for (DtlPlacesFilterAttribute attribute : amenities) {
+            for (DtlMerchantsFilterAttribute attribute : amenities) {
                 attribute.setChecked(selected);
             }
         }
     }
 
-    public void setAmenities(List<DtlPlacesFilterAttribute> amenities) {
+    public void setAmenities(List<DtlMerchantsFilterAttribute> amenities) {
         this.amenities = amenities;
     }
 
@@ -78,18 +83,22 @@ public class DtlFilterData implements Parcelable {
         return maxDistance;
     }
 
-    public void setDistanceType(int maxDistance) {
+    public void setMaxDistance(int maxDistance) {
+        this.maxDistance = maxDistance;
+    }
+
+    public void setCurrentDistance(int maxDistance) {
         // monkey-patch for unusual crashes with values out of bounds for rangebar
         this.maxDistance = maxDistance > MAX_DISTANCE ? MAX_DISTANCE : maxDistance;
     }
 
-    public DistanceType getDistanceType() {
-        return distanceType;
+
+    public void setDistanceType(DistanceType distanceType) {
+        this.distanceType = distanceType;
     }
 
-    public void toggleDistance() {
-        if (distanceType == DistanceType.KMS) distanceType = DistanceType.MILES;
-        else distanceType = DistanceType.KMS;
+    public DistanceType getDistanceType() {
+        return distanceType;
     }
 
     public enum DistanceType {
@@ -121,7 +130,7 @@ public class DtlFilterData implements Parcelable {
         maxPrice = in.readInt();
         maxDistance = in.readInt();
         distanceType = (DistanceType) in.readSerializable();
-        amenities = in.createTypedArrayList(DtlPlacesFilterAttribute.CREATOR);
+        amenities = in.createTypedArrayList(DtlMerchantsFilterAttribute.CREATOR);
     }
 
     @Override

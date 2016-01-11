@@ -20,4 +20,8 @@
             <enum name="width" value="1"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="HoldableButton">
+        <attr name="holdInitialDelay" format="integer"/>
+        <attr name="holdRepeatDelay" format="integer"/>
+    </declare-styleable>
 </resources>

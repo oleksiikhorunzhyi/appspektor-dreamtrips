@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketTabPresenter;
 
 @Layout(R.layout.fragment_bucket_tab)
@@ -19,7 +20,7 @@ public class ForeignBucketTabsFragment extends BucketTabsFragment<ForeignBucketT
 
     @NonNull
     @Override
-    protected Class<ForeignBucketListFragment> getBucketListFragmentClass() {
-        return ForeignBucketListFragment.class;
+    protected Route getBucketRoute() {
+        return Route.FOREIGN_BUCKET_LIST;
     }
 }

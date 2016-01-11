@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.modules.common.view.viewpager;
 
-import android.support.v4.app.Fragment;
+import com.worldventures.dreamtrips.core.navigation.Route;
 
 public class FragmentItem {
-    public final Class<? extends Fragment> aClass;
+    public final Route route;
     public final String title;
 
-    public FragmentItem(Class<? extends Fragment> aClass, String title) {
-        this.aClass = aClass;
+    public FragmentItem(Route route, String title) {
+        this.route = route;
         this.title = title;
     }
 }

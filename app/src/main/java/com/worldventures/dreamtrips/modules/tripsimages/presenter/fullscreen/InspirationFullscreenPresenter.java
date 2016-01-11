@@ -1,29 +1,23 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-public class InspirationFullscreenPresenter extends FullScreenPresenter {
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 
-    @Override
-    protected boolean isFlagVisible() {
-        return false;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+
+public class InspirationFullscreenPresenter extends FullScreenPresenter<Inspiration, InspirationFullscreenPresenter.View> {
+
+    public InspirationFullscreenPresenter(Inspiration photo, TripImagesType type) {
+        super(photo, type);
+    }
+
+
+    public interface View extends FullScreenPresenter.View {
     }
 
     @Override
-    protected boolean isDeleteVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isLikeVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isEditVisible() {
-        return false;
-    }
-
-    @Override
-    protected boolean isCommentVisible() {
-        return false;
+    public void onResume() {
+        super.onResume();
+        TrackingHelper.insprDetails(getAccountUserId(), photo.getFSId());
     }
 }

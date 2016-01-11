@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +23,13 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     private List<String> tags;
     private Image images;
     private String taskId;
+    private List<PhotoTag> photoTags;
 
     public Photo() {
+    }
+
+    public Photo(String uid) {
+        this.uid = uid;
     }
 
     @Override
@@ -70,6 +77,14 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         this.images = images;
     }
 
+    public List<PhotoTag> getPhotoTags() {
+        return photoTags;
+    }
+
+    public void setPhotoTags(List<PhotoTag> photoTags) {
+        this.photoTags = photoTags;
+    }
+
     @Override
     public String toString() {
         return "Photo{" +
@@ -96,7 +111,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         return images.getUrl();
     }
 
-    public String getFsId() {
+    public String getFSId() {
         return uid;
     }
 
@@ -114,27 +129,27 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     @Override
-    public String getFsDescription() {
+    public String getFSDescription() {
         return title;
     }
 
     @Override
-    public String getFsShareText() {
+    public String getFSShareText() {
         return title;
     }
 
     @Override
-    public int getFsCommentCount() {
+    public int getFSCommentCount() {
         return commentsCount;
     }
 
     @Override
-    public int getFsLikeCount() {
+    public int getFSLikeCount() {
         return getLikesCount();
     }
 
     @Override
-    public String getFsLocation() {
+    public String getFSLocation() {
         if (location == null) {
             return "";
         }
@@ -142,12 +157,12 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     @Override
-    public String getFsDate() {
+    public String getFSDate() {
         return DateTimeUtils.convertDateToString(shotAt, DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT);
     }
 
     @Override
-    public String getFsUserPhoto() {
+    public String getFSUserPhoto() {
         if (owner == null) {
             return "";
         } else {
@@ -163,6 +178,18 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        @Override
+        public Photo createFromParcel(Parcel in) {
+            return new Photo(in);
+        }
+
+        @Override
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -182,6 +209,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         parcel.writeParcelable(images, i);
         parcel.writeString(taskId);
         parcel.writeParcelable(owner, i);
+        parcel.writeTypedList(photoTags);
     }
 
     protected Photo(Parcel in) {
@@ -196,17 +224,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         images = in.readParcelable(Image.class.getClassLoader());
         taskId = in.readString();
         owner = in.readParcelable(User.class.getClassLoader());
+        photoTags = new ArrayList<>();
+        in.readTypedList(photoTags, PhotoTag.CREATOR);
     }
 
-    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-        @Override
-        public Photo createFromParcel(Parcel in) {
-            return new Photo(in);
-        }
-
-        @Override
-        public Photo[] newArray(int size) {
-            return new Photo[size];
-        }
-    };
 }

@@ -32,7 +32,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     @Global
     protected EventBus eventBus;
 
-    private List<Class> viewTypes = new ArrayList<>();
+    protected List<Class> viewTypes = new ArrayList<>();
 
     public BaseArrayListAdapter(Context context, Injector injector) {
         this.injector = injector;

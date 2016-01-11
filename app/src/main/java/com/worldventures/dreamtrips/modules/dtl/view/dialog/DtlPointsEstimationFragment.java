@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.dialog;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -11,12 +10,13 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
+import com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -26,7 +26,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         implements DtlPointsEstimationPresenter.View {
 
     @InjectView(R.id.inputPoints)
-    DTEditText inputPoints;
+    CurrencyDTEditText inputPoints;
     @InjectView(R.id.calculateButton)
     Button calculateButton;
     @InjectView(R.id.pointsEstimated)
@@ -35,6 +35,8 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
     ProgressBar progressBar;
     @InjectView(R.id.info)
     TextView info;
+    @InjectView(R.id.currency)
+    TextView currency;
 
     private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
         @Override
@@ -48,7 +50,7 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
 
     @Override
     protected DtlPointsEstimationPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlPointsEstimationPresenter(getArgs().getPlaceId());
+        return new DtlPointsEstimationPresenter(getArgs().getMerchantId());
     }
 
     @Override
@@ -63,6 +65,12 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
             }
             return false;
         });
+    }
+
+    @Override
+    public void showCurrency(DtlCurrency dtlCurrency) {
+        currency.setText(dtlCurrency.getCurrencyHint());
+        inputPoints.setCurrencySymbol(dtlCurrency.getPrefix());
     }
 
     @Override

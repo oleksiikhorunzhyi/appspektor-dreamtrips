@@ -78,7 +78,7 @@ public class Video360Cell extends AbstractCell<Video> {
         if (cacheEntity.isCached(context)) {
             url = CachedEntity.getFilePath(context, getModelObject().getMp4Url());
         }
-        activityRouter.open360Activity(url);
+        activityRouter.open360Activity(url, video.getVideoName());
         getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_360_PLAY, video.getVideoName()));
         TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_VIEW, video.getVideoName());
     }

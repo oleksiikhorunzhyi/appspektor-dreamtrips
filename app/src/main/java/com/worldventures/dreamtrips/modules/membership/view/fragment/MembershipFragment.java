@@ -9,6 +9,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -48,10 +49,10 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(this);
 
-        adapter.add(new FragmentItem(PresentationVideosFragment.class, getString(R.string.presentations)));
-        adapter.add(new FragmentItem(StaticInfoFragment.EnrollFragment.class, getString(R.string.enroll_member)));
+        adapter.add(new FragmentItem(Route.PRESENTATION_VIDEOS, getString(R.string.presentations)));
+        adapter.add(new FragmentItem(Route.ENROLL, getString(R.string.enroll_member)));
         if (getPresenter().showInvite()) {
-            adapter.add(new FragmentItem(InviteFragment.class, getString(R.string.invite_and_share)));
+            adapter.add(new FragmentItem(Route.INVITE, getString(R.string.invite_and_share)));
         }
         adapter.notifyDataSetChanged();
 

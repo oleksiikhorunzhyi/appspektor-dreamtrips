@@ -102,8 +102,8 @@
 
 
         <activity
-            android:name=".modules.common.view.activity.Palyer360Activity"
-            android:screenOrientation="landscape"/>
+            android:name=".modules.common.view.activity.Player360Activity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <activity
             android:name=".modules.common.view.activity.PlayerActivity"
@@ -118,7 +118,6 @@
             android:label="@string/trips"/>
         <activity
             android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
-            android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:label="@string/trips"/>
 
         <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>

@@ -17,10 +17,11 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.fragment.FragmentUtil;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -158,6 +159,20 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (isVisible() && ViewUtils.isTablet(getActivity()) && !ViewUtils.isLandscapeOrientation(getActivity())) {
+            OrientationUtil.lockOrientation(getActivity());
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
+    }
+
+    @Override
     public boolean isVisibleOnScreen() {
         return ViewUtils.isPartVisibleOnScreen(this);
     }
@@ -269,17 +284,24 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void done() {
-        if (getActivity() instanceof ComponentActivity)
+        if (getActivity() instanceof ComponentActivity
+                && !ViewUtils.isLandscapeOrientation(getActivity()))
             getActivity().onBackPressed();
     }
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(data)
-                .move(Route.FULLSCREEN_PHOTO_LIST);
+        router.moveTo(
+                Route.FULLSCREEN_PHOTO_LIST,
+                NavigationConfigBuilder
+                        .forActivity()
+                        .toolbarConfig(
+                                ToolbarConfig.Builder
+                                        .create()
+                                        .visible(false)
+                                        .build())
+                        .data(data)
+                        .build());
     }
 
     @Override
@@ -294,7 +316,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         viewPagerBucketGallery.setAdapter(adapter);
         viewPagerBucketGallery.setCurrentItem(0);
         Queryable.from(photos).forEachR(photo ->
-                adapter.add(new FragmentItem(TripImagePagerFragment.class, ""))
+                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);

@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/background_merchant_cell"
+    android:orientation="horizontal"
     android:padding="@dimen/spacing_normal"
-    tools:showIn="@layout/fragment_dtl_place_details">
+    android:baselineAligned="false"
+    tools:showIn="@layout/fragment_dtl_merchant_details">
 
     <LinearLayout
         android:id="@+id/info_holder"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_weight="7"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/place_title"
+            android:id="@+id/merchant_title"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,6 +40,18 @@
             />
 
         <TextView
+            android:id="@+id/categories"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dtl_cities_text_color"
+            android:textSize="@dimen/font_small"
+            tools:text="French boulangerie"
+            />
+
+        <TextView
             android:id="@+id/operational_time"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
@@ -51,17 +64,38 @@
 
     </LinearLayout>
 
-    <io.techery.properratingbar.ProperRatingBar
-        android:id="@+id/place_details_pricing"
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/distance_holder"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/info_holder"
-        app:prb_symbolicTick="$"
-        app:prb_symbolicTickNormalColor="@color/grey"
-        app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
-        app:prb_totalTicks="4"
-        />
-</RelativeLayout>
+        android:layout_weight="2"
+        android:orientation="vertical"
+        >
+
+        <io.techery.properratingbar.ProperRatingBar
+            android:id="@+id/merchant_details_pricing"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:prb_symbolicTick="$"
+            app:prb_symbolicTickNormalColor="@color/grey"
+            app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
+            app:prb_totalTicks="4"
+            />
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
+            android:layout_gravity="end"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:drawableEnd="@drawable/ic_drop_down"
+            android:drawableRight="@drawable/ic_drop_down"
+            android:drawablePadding="@dimen/spacing_tiny"
+            tools:text="20.97 mi"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

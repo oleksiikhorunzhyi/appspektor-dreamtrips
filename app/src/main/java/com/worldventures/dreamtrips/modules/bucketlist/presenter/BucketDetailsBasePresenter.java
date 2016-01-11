@@ -1,18 +1,13 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.net.Uri;
-
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
@@ -28,14 +23,10 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
-import com.worldventures.dreamtrips.util.ValidationUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -129,6 +120,17 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ///////// Photo processing
     //////////////////////////////
 
+    /**
+     * Current tab name will be override to null on BucketTypePresenter::dropView()
+     * @see BucketDetailsBasePresenter#openFullScreen(int)
+     * @see BucketTabsPresenter#dropView()
+     * @return
+     */
+    private boolean isTabTrulyVisible() {
+        String currentTabTypeName = db.getOpenBucketTabType();
+        return currentTabTypeName == null || currentTabTypeName.equalsIgnoreCase(type.getName());
+    }
+
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         photoUploadingSpiceManager.cancelUploading(event.getModelObject());
 
@@ -145,9 +147,29 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         openFullScreen(event.getPhoto());
     }
 
+    /**
+     * On Bucket List all instance of BucketDetailsFragment (with presenters) are initialized
+     * and all of them receive callback from bus to openFullScreen.
+     * It is not expected behaviour so I save current tab type onTabChange and
+     * execute openFullScreen for truly visible tab.
+     *
+     * @see BucketTabsPresenter#onTabChange(com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType)
+     *
+     * Method view.isVisibleOnScreen() cannot help to resolve this issue, because it returns
+     * true for any BucketDetails instance (current tab and all others)
+     *
+     * If this method calls from external code (so current type is null) -
+     * isTabVisible will return true
+     *
+     * @see BucketDetailsBasePresenter#isTabTrulyVisible()
+     *
+     * @param position
+     */
     public void openFullScreen(int position) {
-        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItemId));
-        openFullScreen(bucketItem.getPhotos().get(position));
+        if (isTabTrulyVisible()) {
+            eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItemId));
+            openFullScreen(bucketItem.getPhotos().get(position));
+        }
     }
 
     public void openFullScreen(BucketPhoto selectedPhoto) {
@@ -155,13 +177,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             ArrayList<IFullScreenObject> photos = new ArrayList<>();
             if (bucketItem.getCoverPhoto() != null) {
                 Queryable.from(bucketItem.getPhotos()).forEachR(photo ->
-                        photo.setIsCover(photo.getFsId().equals(bucketItem.getCoverPhoto().getFsId())));
+                        photo.setIsCover(photo.getFSId().equals(bucketItem.getCoverPhoto().getFSId())));
             }
             photos.addAll(bucketItem.getPhotos());
 
             FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
                     .position(photos.indexOf(selectedPhoto))
-                    .type(TripImagesListFragment.Type.FIXED_LIST)
+                    .type(TripImagesType.FIXED)
+                    .route(Route.BUCKET_PHOTO_FULLSCREEN)
+                    .userId(bucketItem.getOwner().getId())
                     .fixedList(photos)
                     .foreign(bucketItem.getOwner().getId() != appSessionHolder.get().get().getUser().getId())
                     .build();
@@ -173,7 +197,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     public void onEvent(BucketPhotoAsCoverRequestEvent event) {
         if (bucketItem.getPhotos().contains(event.getPhoto())) {
             eventBus.cancelEventDelivery(event);
-            saveCover(event.getPhoto().getFsId());
+            saveCover(event.getPhoto().getFSId());
         }
     }
 
@@ -250,6 +274,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Override
     public void onError(int id, Exception ex) {
+        if (view == null) return;
+        //
         UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(String.valueOf(id));
         if (bucketPhotoUploadTask != null)
             photoUploadError(bucketPhotoUploadTask);

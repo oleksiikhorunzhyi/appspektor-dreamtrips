@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -21,16 +22,16 @@ import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDial
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.Palyer360Activity;
+import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
-import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
@@ -64,7 +65,7 @@ import dagger.Provides;
                 MainActivity.class,
                 PlayerActivity.class,
                 ShareFragment.class,
-                Palyer360Activity.class,
+                Player360Activity.class,
                 FilterableArrayListAdapter.class,
                 DraggableArrayListAdapter.class,
                 NavigationDrawerFragment.class,
@@ -74,6 +75,7 @@ import dagger.Provides;
                 ComponentPresenter.class,
                 CopyFileCommand.class,
                 ProgressDialogFragment.class,
+                PhotoPickerLayout.class,
 
                 DialogFragmentNavigator.NavigationDialogFragment.class,
                 BaseImageFragment.class,
@@ -85,9 +87,17 @@ import dagger.Provides;
 )
 public class CommonModule {
 
+    public static final String LOGOUT = "Logout";
+
     @Provides
     RootComponentsProvider provideRootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig config) {
         return new RootComponentsProvider(descriptions, config);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideLogoutComponent() {
+        return new ComponentDescription(LOGOUT, 0,
+                R.string.logout_component, R.drawable.ic_logout, null);
     }
 
     @Provides
@@ -112,6 +122,8 @@ public class CommonModule {
         activeComponents.add(InfoModule.TERMS);
 
         activeComponents.add(TripsModule.MAP_TRIPS);
+
+        activeComponents.add(LOGOUT);
 
         return new ComponentsConfig(activeComponents);
     }

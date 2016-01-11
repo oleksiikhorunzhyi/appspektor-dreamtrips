@@ -6,15 +6,17 @@ import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 
 import com.facebook.model.GraphObject;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.List;
 
 import timber.log.Timber;
 
-public class FacebookPhoto {
+public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
 
     private static final String ID = "id";
     private static final String ALBUM = "album";
@@ -54,6 +56,8 @@ public class FacebookPhoto {
     private String mPlaceId = null;
     private Parcelable mParcelable = null;
     private byte[] mBytes = null;
+
+    private boolean checked;
 
     private FacebookPhoto(GraphObject graphObject) {
 
@@ -174,6 +178,32 @@ public class FacebookPhoto {
         return mWidth;
     }
 
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    @Override
+    public String getThumbnailPath() {
+        if (mImageSources.size() > 2) {
+            return mImageSources.get(mImageSources.size() / 2 + 1).getSource();
+        } else {
+            return getSource();
+        }
+    }
+
+    @Override
+    public String getOriginalPath() {
+        if (mImageSources.size() > 2) {
+            return mImageSources.get(0).getSource();
+        } else {
+            return getSource();
+        }
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
     /**
      * Is used for publishing action
      */
@@ -238,7 +268,7 @@ public class FacebookPhoto {
         }
     }
 
-    public static class ImageSource {
+    public static class ImageSource implements Serializable {
 
         private Integer mHeight;
         private String mSource;

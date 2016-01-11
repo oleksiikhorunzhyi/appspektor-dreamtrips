@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import com.innahema.collections.query.functions.Action1;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -24,7 +23,7 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRe
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,7 +86,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         User.Relationship userRelationship = user.getRelationship();
         if (userRelationship == null) return;
 
-        switch (userRelationship){
+        switch (userRelationship) {
             case REJECTED:
             case NONE:
                 view.showAddFriendDialog(circles, this::addAsFriend);
@@ -175,13 +174,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Override
     public void openBucketList() {
-        view.openBucketList(Route.FOREIGN_BUCKET_LIST, new ForeignBucketTabsBundle(user));
+        view.openBucketList(Route.FOREIGN_BUCKET_TABS, new ForeignBucketTabsBundle(user));
     }
 
     @Override
     public void openTripImages() {
-        view.openTripImages(Route.FOREIGN_TRIP_IMAGES,
-                new TripsImagesBundle(TripImagesListFragment.Type.FOREIGN_IMAGES, user.getId()));
+        view.openTripImages(Route.TRIP_LIST_IMAGES,
+                new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, user.getId()));
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

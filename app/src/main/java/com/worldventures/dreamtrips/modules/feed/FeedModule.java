@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.PhotoPickerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
@@ -16,6 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInf
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PhotoDetailsFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoDetailsFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
@@ -73,7 +74,6 @@ import de.greenrobot.event.EventBus;
                 CommentCell.class,
                 BaseCommentPresenter.class,
                 PostPresenter.class,
-                PhotoPickerPresenter.class,
                 PostFragment.class,
                 PostEditPresenter.class,
 
@@ -98,6 +98,9 @@ import de.greenrobot.event.EventBus;
 
                 EditCommentFragment.class,
                 EditCommentPresenter.class,
+
+                DtGalleryFragment.class,
+                GalleryPresenter.class,
 
         },
         complete = false,

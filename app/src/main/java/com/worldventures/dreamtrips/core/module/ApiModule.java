@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -19,10 +20,13 @@ import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferDeserializer;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
@@ -65,7 +69,7 @@ public class ApiModule {
     }
 
     @Provides
-    RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper) {
+    RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper, AppVersionNameBuilder appVersionNameBuilder) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
                 UserSession userSession = appSessionHolder.get().get();
@@ -73,8 +77,10 @@ public class ApiModule {
                 request.addHeader("Authorization", authToken);
             }
             request.addHeader("Accept-Language", localeHelper.getDefaultLocaleFormatted());
-            request.addHeader("Accept", "application/com.dreamtrips.api+json;version="
-                    + BuildConfig.API_VERSION);
+            request.addHeader("Accept", "application/com.dreamtrips.api+json;version=" + BuildConfig.API_VERSION);
+
+            request.addHeader("DT-App-Version", appVersionNameBuilder.getSemanticVersionName());
+            request.addHeader("DT-App-Platform", String.format("android-%d", Build.VERSION.SDK_INT));
         };
     }
 
@@ -93,6 +99,7 @@ public class ApiModule {
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
                 .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
                 .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
+                .registerTypeAdapter(DtlOffer.class, new DtlOfferDeserializer())
                 .create();
     }
 

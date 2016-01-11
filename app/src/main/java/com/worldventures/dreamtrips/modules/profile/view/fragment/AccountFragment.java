@@ -9,13 +9,17 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import io.techery.scalablecropp.library.Crop;
@@ -27,6 +31,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     public static final int AVATAR_CALLBACK = 1;
     public static final int COVER_CALLBACK = 2;
+
+    @Inject
+    BackStackDelegate backStackDelegate;
 
     @InjectView(R.id.photo_picker)
     PhotoPickerLayout photoPickerLayout;
@@ -44,8 +51,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
         profileToolbar.inflateMenu(R.menu.profile_fragment);
 
-        photoPickerLayout.setup(this, false);
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
+        inject(photoPickerLayout);
+        photoPickerLayout.setup(getChildFragmentManager(), false);
+        photoPickerLayout.hidePanel();
 
         profileToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -59,7 +67,19 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void onResume() {
         super.onResume();
+        backStackDelegate.setListener(this::onBackPressed);
         TrackingHelper.viewMyProfileScreen();
+        //
+        photoPickerLayout.updatePickerDelegate();
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        backStackDelegate.setListener(null);
+        //
+        photoPickerLayout.setOnDoneClickListener(null);
     }
 
     @Override
@@ -138,5 +158,17 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void hidePhotoPicker() {
         photoPickerLayout.hidePanel();
+    }
+
+    private boolean onBackPressed() {
+        if (photoPickerLayout.isShowsFacebookAlbumFragment()) {
+            return false;
+        }
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
+            return true;
+        }
+
+        return false;
     }
 }

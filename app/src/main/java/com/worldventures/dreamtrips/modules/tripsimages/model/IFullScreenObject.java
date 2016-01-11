@@ -13,21 +13,21 @@ public interface IFullScreenObject extends ImagePathHolder, Serializable, Parcel
 
     String getFSTitle();
 
-    String getFsDescription();
+    String getFSDescription();
 
-    String getFsShareText();
+    String getFSShareText();
 
-    String getFsId();
+    String getFSId();
 
-    int getFsCommentCount();
+    int getFSCommentCount();
 
-    int getFsLikeCount();
+    int getFSLikeCount();
 
-    String getFsLocation();
+    String getFSLocation();
 
-    String getFsDate();
+    String getFSDate();
 
-    String getFsUserPhoto();
+    String getFSUserPhoto();
 
     User getUser();
 }

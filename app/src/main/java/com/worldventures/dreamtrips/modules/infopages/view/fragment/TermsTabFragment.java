@@ -7,6 +7,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
@@ -41,9 +42,9 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter(getChildFragmentManager());
-            this.adapter.add(new FragmentItem(StaticInfoFragment.PrivacyPolicyFragment.class, getString(R.string.privacy)));
-            this.adapter.add(new FragmentItem(StaticInfoFragment.TermsOfServiceFragment.class, getString(R.string.terms_of_service)));
-            this.adapter.add(new FragmentItem(StaticInfoFragment.CookiePolicyFragment.class, getString(R.string.cookie)));
+            this.adapter.add(new FragmentItem(Route.PRIVACY_POLICY, getString(R.string.privacy)));
+            this.adapter.add(new FragmentItem(Route.TERMS_OF_SERVICE, getString(R.string.terms_of_service)));
+            this.adapter.add(new FragmentItem(Route.COOKIE_POLICY, getString(R.string.cookie)));
         }
 
         pager.setAdapter(adapter);

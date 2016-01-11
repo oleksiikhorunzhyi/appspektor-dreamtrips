@@ -57,6 +57,9 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     @Optional
     @InjectView(R.id.likers_panel)
     protected TextView likersPanel;
+    @Optional
+    @InjectView(R.id.title)
+    protected TextView header;
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
@@ -128,6 +131,14 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
             SoftInputUtil.showSoftInputMethod(input);
         }
         restorePostIfNeeded();
+        showHeaderIfNeeded();
+    }
+
+    private void showHeaderIfNeeded() {
+        if (header != null && isTabletLandscape()) {
+            header.setVisibility(View.VISIBLE);
+            header.getBackground().mutate().setAlpha(255);
+        }
     }
 
     private void restorePostIfNeeded() {

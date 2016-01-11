@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.worldventures.dreamtrips.core.utils.LocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlLocation implements Parcelable {
 
     String id;
@@ -30,6 +29,10 @@ public class DtlLocation implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public DtlLocationType getType() {
@@ -60,17 +63,33 @@ public class DtlLocation implements Parcelable {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Parcelable part
+    // Parcelable
     ///////////////////////////////////////////////////////////////////////////
 
     protected DtlLocation(Parcel in) {
         id = in.readString();
+        type = (DtlLocationType) in.readSerializable();
         shortName = in.readString();
         longName = in.readString();
-        type = (DtlLocationType) in.readSerializable();
         coordinates = in.readParcelable(Location.class.getClassLoader());
         merchantCount = in.readInt();
         locatedIn = in.createTypedArrayList(DtlLocation.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeSerializable(type);
+        dest.writeString(shortName);
+        dest.writeString(longName);
+        dest.writeParcelable(coordinates, flags);
+        dest.writeInt(merchantCount);
+        dest.writeTypedList(locatedIn);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<DtlLocation> CREATOR = new Creator<DtlLocation>() {
@@ -85,21 +104,9 @@ public class DtlLocation implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(shortName);
-        dest.writeString(longName);
-        dest.writeSerializable(type);
-        dest.writeParcelable(coordinates, flags);
-        dest.writeInt(merchantCount);
-        dest.writeTypedList(locatedIn);
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Filtering and stuff
+    ///////////////////////////////////////////////////////////////////////////
 
     public static class DtlNearestComparator implements Comparator<DtlLocation> {
 
@@ -111,11 +118,14 @@ public class DtlLocation implements Parcelable {
 
         @Override
         public int compare(DtlLocation lhs, DtlLocation rhs) {
-            double distanceToLeft = LocationHelper.distanceInMiles(currentLocation,
+            double distanceToLeft = DtlLocationHelper.distanceInMiles(currentLocation,
                     lhs.getCoordinates().asLatLng());
-            double distanceToRight = LocationHelper.distanceInMiles(currentLocation,
+            double distanceToRight = DtlLocationHelper.distanceInMiles(currentLocation,
                     rhs.getCoordinates().asLatLng());
-            return Double.valueOf(distanceToLeft - distanceToRight).intValue();
+            //
+            if (distanceToLeft == distanceToRight) return 0;
+            if (distanceToLeft > distanceToRight) return 1;
+            else return -1;
         }
     }
 

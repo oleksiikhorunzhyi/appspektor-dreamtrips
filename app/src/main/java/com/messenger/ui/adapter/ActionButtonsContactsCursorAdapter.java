@@ -36,6 +36,7 @@ public class ActionButtonsContactsCursorAdapter
         super(context, null);
         this.userId = user.getId();
         this.owner = owner;
+        setAdminSectionEnabled(true);
     }
 
     @Override
@@ -45,20 +46,13 @@ public class ActionButtonsContactsCursorAdapter
         return new ActionButtonsViewHolder(itemRow);
     }
 
-    @Override
-    public void onBindViewHolderCursor(BaseViewHolder h, Cursor cursor) {
-        ContactViewHolder holder = (ContactViewHolder) h;
-        Participant participant = Participant.from(cursor);
-
-        onBindUserHolder(holder, cursor, participant.getUser());
-        onBindUserHolder(holder, cursor, participant);
-    }
-
-    protected void onBindUserHolder(ContactViewHolder h, Cursor cursor, final Participant participant) {
-        final User user = participant.getUser();
+    protected void onBindUserHolder(ContactViewHolder h, Cursor cursor, final User user) {
+        super.onBindUserHolder(h, cursor, user);
         ActionButtonsViewHolder holder = (ActionButtonsViewHolder)h;
+
+        holder.swipeLayout.setSwipeEnabled(owner && !user.equals(admin));
+
         holder.getTickImageView().setVisibility(View.GONE);
-        holder.swipeLayout.setSwipeEnabled(owner && !userId.equals(cursor.getString(cursor.getColumnIndex(User$Table._ID))));
         mItemManger.bindView(holder.itemView, cursor.getPosition());
         View.OnClickListener clickListener = view -> {
             if (userClickListener != null) {

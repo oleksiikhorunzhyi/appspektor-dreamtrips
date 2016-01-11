@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
@@ -53,6 +54,7 @@ public class SnappyRepository {
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
     public static final String IMAGE = "IMAGE";
     public static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
+    public static final String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
     public static final String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
     public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
     public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
@@ -60,6 +62,7 @@ public class SnappyRepository {
     public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
     public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
     public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
+    public static final String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
 
     public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
@@ -210,6 +213,14 @@ public class SnappyRepository {
 
     public void saveRecentlyAddedBucketItems(String type, final int count) {
         act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
+    }
+
+    public void saveOpenBucketTabType(String type) {
+        act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
+    }
+
+    public String getOpenBucketTabType() {
+        return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -430,6 +441,14 @@ public class SnappyRepository {
         act(db -> db.put(GCM_REG_TOKEN, token));
     }
 
+    public void saveSocialViewPagerState(SocialViewPagerState state) {
+        act(db -> db.put(SOCIAL_VIEW_PAGER_STATE, state));
+    }
+
+    public SocialViewPagerState getSocialViewPagerState() {
+        return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // GCM
     ///////////////////////////////////////////////////////////////////////////
@@ -448,6 +467,10 @@ public class SnappyRepository {
 
     public void saveDtlLocation(DtlLocation dtlLocation) {
         act(db -> db.put(DTL_SELECTED_LOCATION, dtlLocation));
+    }
+
+    public void cleanDtlLocation() {
+        clearAllForKey(DTL_SELECTED_LOCATION);
     }
 
     public DtlLocation getDtlLocation() {

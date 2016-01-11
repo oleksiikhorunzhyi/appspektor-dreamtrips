@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.annotation.StringRes;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +19,10 @@ public class AttachPhotoModel {
 
     private int attachType;
 
-    public AttachPhotoModel(@AttachType int attachType, int iconRes, int titleRes, int colorRes) {
+    public AttachPhotoModel(@AttachType int attachType,
+                            @DrawableRes int iconRes,
+                            @StringRes int titleRes,
+                            @ColorRes int colorRes) {
         this.attachType = attachType;
         this.iconRes = iconRes;
         this.titleRes = titleRes;

@@ -95,6 +95,7 @@ public class Player360Activity extends BaseActivity implements PFAssetObserver {
         if (pfAsset != null) {
             pfAsset.stop();
         }
+        finish();
     }
 
     @Override

@@ -7,7 +7,7 @@
     <dimen name="post_spacing_vertical">16dp</dimen>
 
     <!-- Dtl module dimens -->
-    <dimen name="dtl_details_header_height">200dp</dimen>
+    <dimen name="dtl_details_header_height">220dp</dimen>
     <dimen name="dtl_details_photo_height">150dp</dimen>
 
     ///////Additional info fragment empty view spacing

@@ -44,7 +44,8 @@ import dagger.Provides;
                 //
                 NavigationModule.class,
                 //
-                LocaleModule.class
+                LocaleModule.class,
+                AppVersionNameModule.class
         },
         library = true,
         complete = false,

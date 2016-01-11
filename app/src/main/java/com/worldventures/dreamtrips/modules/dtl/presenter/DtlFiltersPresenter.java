@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.FilterAttributesSelectAllEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import icepick.State;
 
 public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
-        DtlMerchantRepository.MerchantUpdatedListener {
+        DtlMerchantRepository.MerchantUpdatedListener, DtlFilterDelegate.FilterChangedListener {
 
     @Inject
     LocationDelegate locationDelegate;
@@ -44,14 +44,21 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
             dtlFilterData.setDistanceType(db.getDistanceType());
         }
 
+        dtlFilterDelegate.addDataChangedListener(this);
         dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         attachAmenities();
     }
 
     @Override
     public void dropView() {
+        dtlFilterDelegate.removeDataChangedListener(this);
         dtlMerchantRepository.detachListener(this);
         super.dropView();
+    }
+
+    @Override
+    public void onFilterDataChanged() {
+        view.attachFilterData(dtlFilterData);
     }
 
     public void onEvent(FilterAttributesSelectAllEvent event) {
@@ -69,8 +76,8 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     }
 
     private void attachAmenities() {
-        List<DtlPlacesFilterAttribute> amenities = Queryable.from(db.getAmenities())
-                .map(element -> new DtlPlacesFilterAttribute(element.getName())).toList();
+        List<DtlMerchantsFilterAttribute> amenities = Queryable.from(db.getAmenities())
+                .map(element -> new DtlMerchantsFilterAttribute(element.getName())).toList();
 
         dtlFilterData.setAmenities(amenities);
         view.attachFilterData(dtlFilterData);
@@ -94,6 +101,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
                 DtlFilterData.DistanceType.MILES);
         db.saveDistanceToggle(dtlFilterData.getDistanceType());
         view.attachFilterData(dtlFilterData);
+        dtlFilterDelegate.performFiltering();
     }
 
     public void resetAll() {

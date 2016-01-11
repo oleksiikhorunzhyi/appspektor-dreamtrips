@@ -130,12 +130,15 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Override
     public void addImage(UploadTask image) {
+        if (imagesAdapter.getItems().contains(image)) return;
+        //
         imagesAdapter.addItem(1, image);
         imagesAdapter.notifyItemInserted(1);
     }
 
     @Override
     public void addImages(List<UploadTask> tasks) {
+        tasks.removeAll(imagesAdapter.getItems());
         imagesAdapter.addItems(1, tasks);
         imagesAdapter.notifyDataSetChanged();
     }

@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:showIn="@layout/adapter_item_dtl_place">
+    tools:showIn="@layout/adapter_item_dtl_merchant">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/place_details_cover"
+        android:id="@+id/merchant_details_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"

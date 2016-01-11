@@ -23,19 +23,21 @@ public class CurrencyDTEditText extends DTEditText {
     }
 
     public void setCurrencySymbol(String symbol) {
+        int drawablePadding;
+        if (symbol.length() > 2) {
+            //TODO think about fix, very-very dirty
+            symbol = " " + symbol;
+            drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_large);
+        } else if (symbol.length() > 1)
+            drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
+        else drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_small);
+
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
                 .fontSize(getResources().getDimensionPixelSize(R.dimen.font_normal))
                 .textColor(getResources().getColor(R.color.black))
                 .endConfig()
                 .buildRect(symbol, Color.TRANSPARENT);
-
-        int drawablePadding;
-        if (symbol.length() > 2)
-            drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_large);
-        else if (symbol.length() > 1)
-            drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
-        else drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_small);
 
         setCompoundDrawablePadding(drawablePadding);
         setCompoundDrawables(drawable, null, null, null);

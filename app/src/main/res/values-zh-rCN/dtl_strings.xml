@@ -6,8 +6,8 @@
     <string name="dtl_locations_or_caption">或</string>
     <string name="dtl_locations_select_nearby_cities">从附近选择</string>
     <string name="dtl_locations_select_popular">发现受欢迎的</string>
-    <string name="dtl_place_tab_offers">优惠</string>
-    <string name="dtl_place_tab_dining">餐饮</string>
+    <string name="dtl_merchant_tab_offers">优惠</string>
+    <string name="dtl_merchant_tab_dining">餐饮</string>
     <string name="dtl_place_list_empty_text">没有所选类型的地方</string>
     <string name="dtl_points_estimation_explanation">点数计算解释在这里</string>
     <string name="dtl_points_estimation_calculate_button_caption">计算</string>
@@ -78,7 +78,7 @@
     <string name="suggest_merchant_contact_time_past_error_format">\'%s\'字段不能是在过去时间！</string>
     <string name="suggest_merchant_rating_error_format">\'%s\' 打分必须确定下来!</string>
     <string name="dtl_details_share_title">我要在%s 赚取Dreamtrips点数</string>
-    <string name="dtl_details_share_title_earned" formatted="false">我已经在 %s赚取 %d DreamTrips点数</string>
+    <string name="dtl_details_share_title_earned" formatted="false">我已经在 %s赚取 %s DreamTrips点数</string>
     <string name="dtl_wait_for_location">请稍候…获取当前位置</string>
     <string name="dtl_wait_for_cities">请稍候…获取最近的城市</string>
     <string name="dtl_wait_for_receipt">请稍候…上传收据</string>
@@ -104,4 +104,7 @@
     <string name="rep_suggest_restaurant">推荐餐厅</string>
     <string name="distance_miles" formatted="false">%.1f 英里</string>
     <string name="distance_kms" formatted="false">%.1f 公里</string>
+    <string name="distance_dialog_miles">英里</string>
+    <string name="distance_dialog_kms">公里</string>
+    <string name="distance_header">显示距离以：</string>
 </resources>

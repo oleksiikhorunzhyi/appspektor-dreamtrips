@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.api.place.SuggestPlaceCommand;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.SuggestRestaurantCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
-import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestPlaceBasePresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestRestaurantBasePresenter;
 
-public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<SuggestRestaurantPresenter.View> {
+public class SuggestRestaurantPresenter extends SuggestRestaurantBasePresenter<SuggestRestaurantPresenter.View> {
 
     @Override
     public void submitClicked() {
@@ -20,7 +20,7 @@ public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<Sugges
                 .rating(DtlLead.Rating.UNIQUENESS, view.getUniquenessRating())
                 .comment(view.getAdditionalInfo());
 
-        doRequest(new SuggestPlaceCommand(leadBuilder.build()),
+        doRequest(new SuggestRestaurantCommand(leadBuilder.build()),
                 aVoid -> {
                     TrackingHelper.dtlSuggestMerchant(null);
                     view.merchantSubmitted();
@@ -33,7 +33,7 @@ public class SuggestRestaurantPresenter extends SuggestPlaceBasePresenter<Sugges
                 });
     }
 
-    public interface View extends SuggestPlaceBasePresenter.View {
+    public interface View extends SuggestRestaurantBasePresenter.View {
 
         String getRestaurantName();
 

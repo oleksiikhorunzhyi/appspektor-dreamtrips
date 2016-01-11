@@ -12,11 +12,11 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.PlaceClickedEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceCommonDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceInfoInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlPlaceSingleImageDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommonDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 
@@ -27,8 +27,8 @@ public class DtlMapInfoFragment
         extends BaseFragmentWithArgs<DtlMapInfoPresenter, DtlMerchantDetailsBundle>
         implements DtlMapInfoPresenter.View {
 
-    DtlPlaceCommonDataInflater commonDataInflater;
-    DtlPlaceInfoInflater categoryDataInflater;
+    DtlMerchantCommonDataInflater commonDataInflater;
+    DtlMerchantInfoInflater categoryDataInflater;
 
     @Override
     protected DtlMapInfoPresenter createPresenter(Bundle savedInstanceState) {
@@ -38,12 +38,19 @@ public class DtlMapInfoFragment
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        DtlPlaceHelper helper = new DtlPlaceHelper(rootView.getContext());
-        commonDataInflater = new DtlPlaceSingleImageDataInflater(helper);
-        categoryDataInflater = new DtlPlaceInfoInflater(helper);
+        DtlMerchantHelper helper = new DtlMerchantHelper(rootView.getContext());
+        commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
+        categoryDataInflater = new DtlMerchantInfoInflater(helper);
         commonDataInflater.setView(rootView);
         categoryDataInflater.setView(rootView);
         observeSize(rootView);
+    }
+
+    @OnClick(R.id.distance_holder)
+    public void onDistanceClicked() {
+        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
+                .fragmentManager(getChildFragmentManager())
+                .build());
     }
 
     private void observeSize(final View rootView) {
@@ -65,14 +72,19 @@ public class DtlMapInfoFragment
     }
 
     @Override
-    public void setPlace(DtlMerchant place) {
-        commonDataInflater.apply(place);
-        categoryDataInflater.apply(place);
+    public void setMerchant(DtlMerchant merchant) {
+        commonDataInflater.apply(merchant);
+        categoryDataInflater.apply(merchant);
     }
 
-    @OnClick(R.id.place_details_root)
-    void placeClicked() {
-        getPresenter().onPlaceClick();
+    @Override
+    public void distanceTypeChanged(DtlMerchant merchant) {
+        categoryDataInflater.apply(merchant);
+    }
+
+    @OnClick(R.id.merchant_details_root)
+    void merchantClicked() {
+        getPresenter().onMerchantClick();
     }
 
     @Override
@@ -88,7 +100,7 @@ public class DtlMapInfoFragment
     @Override
     public void showDetails(String id) {
         if (tabletAnalytic.isTabletLandscape() && getArgs().isSlave()) {
-            eventBus.post(new PlaceClickedEvent(id));
+            eventBus.post(new MerchantClickedEvent(id));
         } else {
             router.moveTo(Route.DTL_MERCHANT_DETAILS, NavigationConfigBuilder.forActivity()
                     .data(new DtlMerchantDetailsBundle(id, false))

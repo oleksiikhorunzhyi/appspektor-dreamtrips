@@ -44,6 +44,12 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         getBucketItemManager().loadBucketItems(getUser(), this);
     }
 
+    @Override
+    public void dropView(){
+        super.dropView();
+        db.saveOpenBucketTabType(null);
+    }
+
     protected User getUser() {
         return getAccount();
     }
@@ -67,6 +73,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public void onTabChange(BucketType type) {
         currentType = type;
         db.saveRecentlyAddedBucketItems(type.name(), 0);
+        db.saveOpenBucketTabType(type.name());
         view.resetRecentlyAddedBucketItem(type);
     }
 

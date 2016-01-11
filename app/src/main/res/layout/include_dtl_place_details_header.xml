@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/fragment_dtl_place_details">
+    tools:showIn="@layout/fragment_dtl_merchant_details">
 
     <ImageView
-        android:id="@+id/place_details_cover_stub"
+        android:id="@+id/merchant_details_cover_stub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -16,7 +16,7 @@
         />
 
     <me.relex.circleindicator.CircleIndicator
-        android:id="@+id/place_details_cover_pager_indicator"
+        android:id="@+id/merchant_details_cover_pager_indicator"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_alignParentTop="true"
@@ -32,7 +32,7 @@
         />
 
     <io.techery.properratingbar.ProperRatingBar
-        android:id="@+id/place_details_rating"
+        android:id="@+id/merchant_details_rating"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         >
 
         <ImageView
-            android:id="@+id/place_details_points_badge"
+            android:id="@+id/merchant_details_points_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/badge_placeholder"

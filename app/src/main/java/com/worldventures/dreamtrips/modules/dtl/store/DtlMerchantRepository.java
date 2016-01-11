@@ -4,7 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.api.place.GetNearbyMerchantsRequest;
+import com.worldventures.dreamtrips.modules.dtl.api.merchant.GetNearbyMerchantsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
@@ -39,10 +39,10 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
     public void loadMerchants(DtlLocation location) {
         checkState();
         //
-        requestingPresenter.doRequest(new GetNearbyMerchantsRequest(location), this::placeLoaded);
+        requestingPresenter.doRequest(new GetNearbyMerchantsRequest(location), this::merchantLoaded);
     }
 
-    private void placeLoaded(List<DtlMerchant> dtlMerchants) {
+    private void merchantLoaded(List<DtlMerchant> dtlMerchants) {
         this.merchants = dtlMerchants;
         saveMerchants();
         saveAmenities(dtlMerchants);
@@ -61,9 +61,9 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
 
     private void saveAmenities(List<DtlMerchant> dtlMerchants) {
         Set<DtlMerchantAttribute> amenitiesSet = new HashSet<>();
-        Queryable.from(dtlMerchants).forEachR(dtlPlace -> {
-                    if (dtlPlace.getAmenities() != null)
-                        amenitiesSet.addAll(dtlPlace.getAmenities());
+        Queryable.from(dtlMerchants).forEachR(dtlMerchant -> {
+                    if (dtlMerchant.getAmenities() != null)
+                        amenitiesSet.addAll(dtlMerchant.getAmenities());
                 }
         );
 

@@ -15,7 +15,7 @@
     "appid": "4f5251b8ad92dc80cd466d51874149c53c0f0193d6fcb704521806b8943bd080"
   },
   "analytics": {
-    "rsids": "rovdreamtrips2-mobile-proda",
+    "rsids": "rovdreamtrips2-mobile-proda, roviaglobal-proda",
     "server": "roviallc.sc.omtrdc.net",
     "ssl": false,
     "offlineEnabled": false,

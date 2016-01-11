@@ -6,8 +6,10 @@ import com.facebook.model.GraphObject;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.facebook.FacebookUtils;
 
+import java.io.Serializable;
 
-public class FacebookAlbum {
+
+public class FacebookAlbum implements Serializable {
 
     private static final String ID = "id";
     private static final String FROM = "from";

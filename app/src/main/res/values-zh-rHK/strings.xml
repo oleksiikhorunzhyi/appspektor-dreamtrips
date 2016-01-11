@@ -268,6 +268,8 @@
     </string-array>
 
     <string name="profile_update_info">資料更新</string>
+    <string name="profile_zero_trip_images">旅行圖片</string>
+    <string name="profile_zero_bucket_list">願望清單</string>
     <string name="profile_trip_images">%d旅行圖片</string>
     <string name="profile_bucket_list">%d願望清單</string>
     <string name="profile_post">發佈</string>
@@ -425,6 +427,7 @@
     <string name="no_notifications">您還沒有任何通知</string>
     <string name="notification_message_friend_accepted">%s接受了您的好友請求</string>
     <string name="notification_message_friend_request">%s向您發送了好友請求</string>
+    <string name="notification_message_tagged_on_photo">%s tagged you on photo</string>
 
     <string name="error_webview_no_internet">無網絡鏈接，請檢查并重新加載頁面。</string>
     <string name="error_webview_default">網絡連接有問題。嘗試重新加載頁面。</string>
@@ -486,5 +489,11 @@
     <string name="logout_component">退出</string>
     <string name="back">回到</string>
     <string name="start_typing_name">開始輸入名稱</string>
+
+    <string name="multiple_dates">Multiple Dates, %s...</string>
+
+    <string name="tag_photo">tagged you on</string>
+
+    <string name="user_already_exists">%s already exists</string>
 
 </resources>

@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.Display;
 import android.view.View;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class ViewUtils {
 
     private ViewUtils() {

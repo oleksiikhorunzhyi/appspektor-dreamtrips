@@ -22,7 +22,7 @@ public class DtlFilterData implements Parcelable {
 
     private DistanceType distanceType;
 
-    private List<DtlPlacesFilterAttribute> amenities;
+    private List<DtlMerchantsFilterAttribute> amenities;
 
     private DtlFilterData() {
     }
@@ -56,26 +56,26 @@ public class DtlFilterData implements Parcelable {
         this.maxPrice = maxPrice > MAX_PRICE ? MAX_PRICE : maxPrice;
     }
 
-    public List<DtlPlacesFilterAttribute> getAmenities() {
+    public List<DtlMerchantsFilterAttribute> getAmenities() {
         return amenities;
     }
 
     @Nullable
-    public List<DtlPlacesFilterAttribute> getSelectedAmenities() {
+    public List<DtlMerchantsFilterAttribute> getSelectedAmenities() {
         return amenities != null && !amenities.isEmpty()
-                ? Queryable.from(amenities).filter(DtlPlacesFilterAttribute::isChecked).toList()
+                ? Queryable.from(amenities).filter(DtlMerchantsFilterAttribute::isChecked).toList()
                 : null;
     }
 
     public void toggleAmenitiesSelection(boolean selected) {
         if (amenities != null) {
-            for (DtlPlacesFilterAttribute attribute : amenities) {
+            for (DtlMerchantsFilterAttribute attribute : amenities) {
                 attribute.setChecked(selected);
             }
         }
     }
 
-    public void setAmenities(List<DtlPlacesFilterAttribute> amenities) {
+    public void setAmenities(List<DtlMerchantsFilterAttribute> amenities) {
         this.amenities = amenities;
     }
 
@@ -130,7 +130,7 @@ public class DtlFilterData implements Parcelable {
         maxPrice = in.readInt();
         maxDistance = in.readInt();
         distanceType = (DistanceType) in.readSerializable();
-        amenities = in.createTypedArrayList(DtlPlacesFilterAttribute.CREATOR);
+        amenities = in.createTypedArrayList(DtlMerchantsFilterAttribute.CREATOR);
     }
 
     @Override

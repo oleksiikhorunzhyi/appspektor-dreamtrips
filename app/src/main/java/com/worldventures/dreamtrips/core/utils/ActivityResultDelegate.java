@@ -25,4 +25,12 @@ public class ActivityResultDelegate {
     public int getRequestCode() {
         return requestCode;
     }
+
+    /**
+     * Clear data stored in delegate from previous activation - to ensure it won't <br />
+     * fire again with outdated request/result code or data
+     */
+    public void clear() {
+        onActivityResult(Integer.MIN_VALUE, Integer.MIN_VALUE, null);
+    }
 }

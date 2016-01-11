@@ -45,7 +45,11 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
         picker.setLayoutManager(new GridAutofitLayoutManager(getContext(),
                 getContext().getResources().getDimension(R.dimen.photo_picker_size)));
         picker.setAdapter(adapter);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
         photoPickerDelegate.attachScrollableView(picker);
         photoPickerDelegate.setSelectedPhotosProvider(() -> getPresenter().getSelectedPhotos());
     }

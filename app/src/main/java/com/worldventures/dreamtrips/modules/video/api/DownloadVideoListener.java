@@ -11,10 +11,9 @@ import com.octo.android.robospice.request.listener.RequestProgressListener;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
+import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
@@ -54,7 +53,6 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
             db.saveDownloadVideoEntity(entity);
             eventBus.post(new DownloadVideoFailedEvent(spiceException, entity));
         }
-
     }
 
     @Override
@@ -78,12 +76,9 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
         }
     }
 
-
     @Override
     public void onRequestNotFound() {
         Timber.v("onRequestNotFound");
-        entity.setIsFailed(true);
-        db.saveDownloadVideoEntity(entity);
-        eventBus.post(new DownloadVideoFailedEvent(new SpiceException("onRequestNotFound"), entity));
+        eventBus.post(new DownloadVideoRequestEvent(entity));
     }
 }

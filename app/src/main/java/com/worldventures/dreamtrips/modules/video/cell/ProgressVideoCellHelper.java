@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
 import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -28,12 +27,6 @@ public class ProgressVideoCellHelper {
         if (event.getEntity().getUrl().equals(url)) {
             pinProgressButton.setProgress(0);
             setInProgressState();
-        }
-    }
-
-    public void onEventMainThread(DownloadVideoProgressEvent event) {
-        if (event.getEntity().getUrl().equals(url)) {
-            pinProgressButton.setProgress(event.getProgress());
         }
     }
 

@@ -161,14 +161,13 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     private void imageSelected(Uri uri, int requestType) {
         String type = "";
         switch (requestType) {
-            case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
+            case PickImageDelegate.CAPTURE_PICTURE:
                 type = "camera";
                 break;
-            case PickImageDelegate.REQUEST_MULTI_SELECT:
-            case PickImageDelegate.REQUEST_PICK_PICTURE:
+            case PickImageDelegate.PICK_PICTURE:
                 type = "album";
                 break;
-            case PickImageDelegate.REQUEST_FACEBOOK:
+            case PickImageDelegate.FACEBOOK:
                 type = "facebook";
                 break;
         }

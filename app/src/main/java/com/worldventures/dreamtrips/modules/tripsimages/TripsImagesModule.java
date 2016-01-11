@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.tripsimages;
 
+import android.content.Context;
+
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.PreviewPhotoTaggableHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMembersPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
@@ -109,4 +112,10 @@ public class TripsImagesModule {
     ComponentDescription provideTripImagesComponent() {
         return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
     }
+
+    @Provides
+    DrawableUtil provideDrawableUtil(Context context) {
+        return new DrawableUtil(context);
+    }
+
 }

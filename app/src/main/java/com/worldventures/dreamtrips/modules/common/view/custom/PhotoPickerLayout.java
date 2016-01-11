@@ -252,7 +252,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public interface OnDoneClickListener {
-        void onDone(List<ChosenImage> chosenImages);
+        void onDone(List<ChosenImage> chosenImages, int type);
     }
 
     private void clearAllBackStack() {

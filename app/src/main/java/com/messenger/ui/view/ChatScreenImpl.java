@@ -139,6 +139,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
                 }
             }
         });
+        recyclerView.setItemAnimator(null);
     }
 
     private void setPostDelayObservable(LinearLayoutManager linearLayoutManager) {
@@ -177,6 +178,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         ChatScreenPresenter presenter = getPresenter();
         adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
         adapter.setAvatarClickListener(presenter::openUserProfile);
+        //adapter.setMessageClickListener(message -> //do something);
         return adapter;
     }
 

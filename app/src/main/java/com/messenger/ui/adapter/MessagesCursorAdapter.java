@@ -1,14 +1,22 @@
 package com.messenger.ui.adapter;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
@@ -17,6 +25,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
+import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.Constants;
@@ -38,12 +47,29 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private OnAvatarClickListener avatarClickListener;
     private OnRepeatMessageSend onRepeatMessageSend;
+    private OnMessageClickListener messageClickListener;
 
     private SimpleDateFormat timeDateFormatter;
     private SimpleDateFormat dayOfTheWeekDateFormatter;
     private SimpleDateFormat dayOfTheMonthDateFormatter;
 
     private final int rowVerticalMargin;
+
+    private int manualTimestampPositionToAdd = -1;
+    private int manualTimestampPosition = -1;
+    private int manualTimestampPositionToRemove = -1;
+
+    public interface OnAvatarClickListener {
+        void onAvatarClick(User user);
+    }
+
+    public interface OnRepeatMessageSend {
+        void onRepeatMessageSend(String messageId);
+    }
+
+    public interface OnMessageClickListener {
+        void onMessageClick(Message message);
+    }
 
     public MessagesCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
         super(cursor);
@@ -81,23 +107,130 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public void onBindViewHolderCursor(MessageHolder holder, Cursor cursor) {
         switch (getItemViewType(cursor.getPosition())) {
             case VIEW_TYPE_OWN_MESSAGE:
-                bindMessageHolder(holder, cursor);
                 bindOwnMessageHolder((OwnMessageViewHolder) holder, cursor);
                 break;
             case VIEW_TYPE_SOMEONES_MESSAGE:
-                bindMessageHolder(holder, cursor);
                 bindUserMessageHolder((UserMessageViewHolder) holder, cursor);
                 break;
         }
     }
 
-    private void bindMessageHolder(MessageHolder holder, Cursor cursor) {
-        String dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
-        if (!TextUtils.isEmpty(dateDivider)) {
-            holder.dateTextView.setVisibility(View.VISIBLE);
-            holder.dateTextView.setText(dateDivider);
+    private void bindMessageHolder(MessageHolder holder, int position, Cursor cursor, Message message) {
+        boolean manualTimestamp = manualTimestampPosition == position
+                || manualTimestampPositionToAdd == position
+                || manualTimestampPositionToRemove == position;
+        String dateDivider;
+        if (manualTimestamp) {
+            dateDivider = getDateTimestamp(cursor.getLong(cursor.getColumnIndex(Message$Table.DATE)));
         } else {
-            holder.dateTextView.setVisibility(View.GONE);
+            dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
+        }
+        boolean clickableTimestamp = manualTimestamp || TextUtils.isEmpty(dateDivider);
+        holder.messageTextView
+                .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(),
+                        message, clickableTimestamp));
+
+        TextView dateTextView = holder.dateTextView;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();
+        if (manualTimestampPositionToAdd == position) {
+            manualTimestampPositionToAdd = -1;
+            manualTimestampPosition = position;
+
+            holder.dateTextView.setVisibility(View.VISIBLE);
+            dateTextView.setText(dateDivider);
+
+            if (dateTextView.getMeasuredHeight() == 0) {
+                dateTextView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            }
+            ValueAnimator animator = ValueAnimator.ofFloat(-dateTextView.getMeasuredHeight(), 0);
+            animator.addUpdateListener(valueAnimator -> {
+                float margin = (Float) valueAnimator.getAnimatedValue();
+                params.bottomMargin = (int) margin;
+                dateTextView.requestLayout();
+            });
+            animator.start();
+        } else if (manualTimestampPositionToRemove == position){
+            manualTimestampPositionToRemove = -1;
+            manualTimestampPosition = -1;
+            ValueAnimator animator = ValueAnimator.ofFloat(0, -dateTextView.getMeasuredHeight());
+            animator.addUpdateListener(valueAnimator -> {
+                float margin = (Float)valueAnimator.getAnimatedValue();
+                params.bottomMargin = (int)margin;
+                dateTextView.requestLayout();
+            });
+            animator.addListener(new SimpleAnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    dateTextView.setVisibility(View.GONE);
+                }
+            });
+            animator.start();
+        } else {
+            params.bottomMargin = 0;
+            if (!TextUtils.isEmpty(dateDivider)) {
+                dateTextView.setVisibility(View.VISIBLE);
+                dateTextView.setText(dateDivider);
+            } else {
+                dateTextView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private class TextSelectableClickListener
+            implements View.OnTouchListener, GestureDetector.OnGestureListener {
+
+        Message message;
+        int position;
+        GestureDetectorCompat gestureDetector;
+        boolean clickableTimestamp;
+
+        public TextSelectableClickListener(Context context, int position, Message message,
+                                           boolean clickableTimestamp) {
+            this.gestureDetector = new GestureDetectorCompat(context, this);
+            this.position = position;
+            this.message = message;
+            this.clickableTimestamp = clickableTimestamp;
+        }
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            return gestureDetector.onTouchEvent(motionEvent);
+        }
+
+        @Override
+        public boolean onDown(MotionEvent motionEvent) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent motionEvent) {
+            if (clickableTimestamp) {
+                showManualTimestampForPosition(position);
+            }
+            if (messageClickListener != null) {
+                messageClickListener.onMessageClick(message);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent motionEvent) {
+        }
+
+        @Override
+        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+            return false;
         }
     }
 
@@ -174,20 +307,35 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.visibleError(cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS)) == Message.Status.ERROR);
         holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message$Table.TEXT)));
 
+        int position = cursor.getPosition();
+        Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+
+        bindMessageHolder(holder, position, cursor, message);
+
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
+        int backgroundResource;
+        // disabled until dark blue bubbles assets are provided
+        boolean selectedMessage = false;
+        //boolean selectedMessage = position == manualTimestampPosition;
         if (previousMessageIsFromSameUser(cursor)) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
-            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble);
+            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
+            backgroundResource = R.drawable.blue_bubble;
         } else {
             params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
-            holder.messageTextView.setBackgroundResource(R.drawable.blue_bubble_comics);
+            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
+            backgroundResource = R.drawable.blue_bubble_comics;
         }
+        holder.messageTextView.setBackgroundResource(backgroundResource);
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
+        int position = cursor.getPosition();
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
         User userFrom = SqlUtils.convertToModel(true, User.class, cursor);
+
+        bindMessageHolder(holder, position, cursor, message);
 
         boolean isPreviousMessageFromTheSameUser = previousMessageIsFromSameUser(cursor);
         if (conversationHelper.isGroup(conversation) && userFrom != null
@@ -202,13 +350,20 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
+        int backgroundResource;
+        // disabled until dark blue bubbles assets are provided
+        boolean selectedMessage = false;
+        //boolean selectedMessage = position == manualTimestampPosition;
         if (isPreviousMessageFromTheSameUser) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
             holder.avatarImageView.setVisibility(View.INVISIBLE);
             holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble);
+            backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble
+                    : R.drawable.grey_bubble;
         } else {
             params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
-            holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble_comics);
+            backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble_comics
+                    : R.drawable.grey_bubble_comics;
             holder.avatarImageView.setVisibility(View.VISIBLE);
             Picasso.with(context)
                     .load(userFrom == null ? null : userFrom.getAvatarUrl())
@@ -220,6 +375,20 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
                     avatarClickListener.onAvatarClick(userFrom);
                 }
             });
+        }
+        holder.messageTextView.setBackgroundResource(backgroundResource);
+    }
+
+    public void showManualTimestampForPosition(int position) {
+        if (position == manualTimestampPosition) {
+            manualTimestampPositionToRemove = manualTimestampPosition;
+            notifyItemChanged(position);
+        } else {
+            int prevPosition = manualTimestampPosition;
+            manualTimestampPositionToAdd = position;
+            manualTimestampPositionToRemove = prevPosition;
+            notifyItemChanged(prevPosition);
+            notifyItemChanged(manualTimestampPositionToAdd);
         }
     }
 
@@ -243,11 +412,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.onRepeatMessageSend = onRepeatMessageSend;
     }
 
-    public interface OnAvatarClickListener {
-        void onAvatarClick(User user);
-    }
-
-    public interface OnRepeatMessageSend {
-        void onRepeatMessageSend(String messageId);
+    public void setMessageClickListener(OnMessageClickListener messageClickListener) {
+        this.messageClickListener = messageClickListener;
     }
 }

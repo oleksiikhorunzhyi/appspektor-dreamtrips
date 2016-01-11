@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
@@ -125,15 +126,19 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        openedConversationTracker.setOpenedConversation(conversationId);
         connectConversation();
+    }
+
+    @Override
+    public void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        openedConversationTracker.setOpenedConversation(visibility == View.VISIBLE ? conversationId : null);
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
-        openedConversationTracker.setOpenedConversation(null);
     }
 
     private void connectConversation() {

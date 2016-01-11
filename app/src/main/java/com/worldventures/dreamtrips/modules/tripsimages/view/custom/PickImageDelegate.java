@@ -2,30 +2,22 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.custom;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 
-import com.google.gson.Gson;
-import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 
 import icepick.Icepick;
 import icepick.State;
-import nl.changer.polypicker.ImagePickerActivity;
-import nl.changer.polypicker.IntentBuilder;
 import timber.log.Timber;
 
 public class PickImageDelegate implements ImageChooserListener {
 
-    public static final int REQUEST_MULTI_SELECT = 345;
-    public static final int REQUEST_FACEBOOK = 346;
-    public static final int REQUEST_CAPTURE_PICTURE = ChooserType.REQUEST_CAPTURE_PICTURE;
-    public static final int REQUEST_PICK_PICTURE = ChooserType.REQUEST_PICK_PICTURE;
+    public static final int FACEBOOK = 346;
+    public static final int CAPTURE_PICTURE = ChooserType.REQUEST_CAPTURE_PICTURE;
+    public static final int PICK_PICTURE = ChooserType.REQUEST_PICK_PICTURE;
 
     public static final String FOLDERNAME = "dreamtrip_folder_temp_sd";
 
@@ -63,51 +55,11 @@ public class PickImageDelegate implements ImageChooserListener {
         this.requestType = requestType;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
     public void show() {
         switch (requestType) {
-            case REQUEST_CAPTURE_PICTURE:
+            case CAPTURE_PICTURE:
                 takePicture();
                 break;
-            case REQUEST_PICK_PICTURE:
-                chooseImage();
-                break;
-            case REQUEST_MULTI_SELECT:
-                chooseMultiSelect();
-                break;
-            case REQUEST_FACEBOOK:
-                chooseFacebook();
-                break;
-        }
-    }
-
-    private void chooseFacebook() {
-        Intent intent = new Intent(activity, FacebookPickPhotoActivity.class);
-        activity.startActivityForResult(intent, REQUEST_FACEBOOK);
-    }
-
-    private void chooseMultiSelect() {
-        Intent intent = new IntentBuilder()
-                .setSelectionLimit(5)
-                .setOptions(IntentBuilder.Option.GALLERY)
-                .createIntent(activity);
-        activity.startActivityForResult(intent, REQUEST_MULTI_SELECT);
-    }
-
-    private void chooseImage() {
-        imageChooserManager = new ImageChooserManager(activity, requestType, FOLDERNAME, true);
-        imageChooserManager.setImageChooserListener(this);
-        try {
-            filePath = imageChooserManager.choose();
-        } catch (Exception e) {
-            Timber.e(e, "Problem on image choosing");
         }
     }
 
@@ -132,35 +84,8 @@ public class PickImageDelegate implements ImageChooserListener {
 
                 imageChooserManager.reinitialize(filePath);
                 imageChooserManager.submit(requestCode, data);
-            } else if (requestCode == REQUEST_MULTI_SELECT) {
-                handleMultiSelectActivityResult(data);
-            } else if (requestCode == REQUEST_FACEBOOK) {
-                handleFacebookActivityResult(data);
             }
         }
-    }
-
-    private void handleMultiSelectActivityResult(Intent data) {
-        Parcelable[] parcelableUris = data.getParcelableArrayExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
-
-        if (parcelableUris != null) {
-            Uri[] uris = new Uri[parcelableUris.length];
-            System.arraycopy(parcelableUris, 0, uris, 0, parcelableUris.length);
-
-            if (imageCallback != null)
-                imageCallback.onImagePicked(Queryable.from(uris).map(element -> {
-                    ChosenImage chosenImage = new ChosenImage();
-                    chosenImage.setFilePathOriginal(element.toString());
-                    chosenImage.setFileThumbnail("file://" + element.toString());
-                    return chosenImage;
-                }).toArray());
-        }
-
-    }
-
-    private void handleFacebookActivityResult(Intent data) {
-        ChosenImage image = new Gson().fromJson(data.getStringExtra(FacebookPickPhotoActivity.RESULT_PHOTO), ChosenImage.class);
-        if (imageCallback != null) imageCallback.onImagePicked(image);
     }
 
     public int getRequesterId() {
@@ -173,7 +98,7 @@ public class PickImageDelegate implements ImageChooserListener {
 
     @Override
     public void onImageChosen(ChosenImage chosenImage) {
-        chosenImage.setFileThumbnail("file://" + chosenImage.getFilePathOriginal());
+        chosenImage.setFileThumbnail("file://" + chosenImage.getFileThumbnail());
         if (imageCallback != null) imageCallback.onImagePicked(chosenImage);
     }
 

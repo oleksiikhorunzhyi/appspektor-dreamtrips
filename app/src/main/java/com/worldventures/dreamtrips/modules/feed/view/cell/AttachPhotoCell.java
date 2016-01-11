@@ -37,7 +37,7 @@ public class AttachPhotoCell extends AbstractCell<AttachPhotoModel> {
 
             switch (getModelObject().getType()) {
                 case AttachPhotoModel.CAMERA:
-                    requestType = PickImageDelegate.REQUEST_CAPTURE_PICTURE;
+                    requestType = PickImageDelegate.CAPTURE_PICTURE;
                     getEventBus().post(new AttachPhotoEvent(requestType));
                     break;
 

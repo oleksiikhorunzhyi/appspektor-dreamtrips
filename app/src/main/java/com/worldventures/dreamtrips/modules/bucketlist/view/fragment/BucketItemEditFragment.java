@@ -35,7 +35,6 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.Calendar;
 import java.util.List;
@@ -173,7 +172,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), true, 5);
         photoPickerLayout.hidePanel();
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages, PickImageDelegate.REQUEST_MULTI_SELECT));
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
     }
 
     @Override

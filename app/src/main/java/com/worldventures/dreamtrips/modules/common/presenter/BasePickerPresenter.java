@@ -5,9 +5,12 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import icepick.State;
 
@@ -17,6 +20,9 @@ public class BasePickerPresenter<T extends BasePickerPresenter.View> extends Pre
     protected ArrayList<BasePhotoPickerModel> photos;
 
     private int pickLimit;
+
+    @Inject
+    DrawableUtil drawableUtil;
 
     public void onEvent(PhotoPickedEvent event) {
         if (!view.isVisibleOnScreen() || !view.isResumed()) return;
@@ -44,7 +50,8 @@ public class BasePickerPresenter<T extends BasePickerPresenter.View> extends Pre
     public List<ChosenImage> getSelectedPhotos() {
         return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).map(element -> {
             ChosenImage chosenImage = new ChosenImage();
-            chosenImage.setFileThumbnail(element.getThumbnailPath());
+            chosenImage.setFileThumbnail("file://" + drawableUtil
+                    .compressAndRotateImage(element.getOriginalPath(), DrawableUtil.THUMBNAIL_BIG));
             chosenImage.setFilePathOriginal(element.getOriginalPath());
 
             return chosenImage;

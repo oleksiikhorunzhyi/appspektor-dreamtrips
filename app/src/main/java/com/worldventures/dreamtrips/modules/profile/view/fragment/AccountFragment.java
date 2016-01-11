@@ -71,7 +71,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         TrackingHelper.viewMyProfileScreen();
         //
         photoPickerLayout.updatePickerDelegate();
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImage(chosenImages));
     }
 
     @Override

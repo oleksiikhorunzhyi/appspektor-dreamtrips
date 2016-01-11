@@ -50,11 +50,9 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
     protected boolean adminSectionEnabled;
 
     public ContactCursorAdapter(Context context, Cursor cursor) {
-        super(cursor);
+        super(null);
         this.context = context;
-        if (cursor != null) {
-            buildHeaderSectionsData();
-        }
+        swapCursor(cursor);
     }
 
     @Override
@@ -74,6 +72,10 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
                             adminPositionInCursor = cursor.getPosition();
                         }
                     } while (cursor.moveToNext());
+                }
+                if (admin == null) {
+                    adminSectionEnabled = false;
+                    adminPositionInCursor = -1;
                 }
             }
             int columnIndex = column == null ? 0 : cursor.getColumnIndexOrThrow(column);
@@ -184,7 +186,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
     @Override
     public void onBindViewHolderCursor(BaseViewHolder h, Cursor cursor) {
         ContactViewHolder holder = (ContactViewHolder) h;
-        User user = SqlUtils.convertToModel(true, User.class, cursor);;
+        User user = SqlUtils.convertToModel(true, User.class, cursor);
         onBindUserHolder(holder, cursor, user);
     }
 

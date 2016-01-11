@@ -66,7 +66,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             case VIEW_TYPE_OWN_MESSAGE: {
                 View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_own_messsage,
                         parent, false);
-                return new OwnMessageViewHolder(itemRow, onRepeatMessageSend);
+                return new OwnMessageViewHolder(itemRow);
             }
             case VIEW_TYPE_SOMEONES_MESSAGE: {
                 View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_someones_message,

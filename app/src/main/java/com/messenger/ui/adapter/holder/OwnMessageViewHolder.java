@@ -2,6 +2,7 @@ package com.messenger.ui.adapter.holder;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ViewSwitcher;
 
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.worldventures.dreamtrips.R;
@@ -12,18 +13,24 @@ public class OwnMessageViewHolder extends MessageHolder {
     private String messageId;
     private MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSend;
 
+    @InjectView(R.id.iv_message_error)
+    View ivMessageError;
+
+    @InjectView(R.id.view_switcher)
+    ViewSwitcher viewSwitcher;
+
     private View.OnClickListener onClickListener = view -> {
         switch (view.getId()) {
             case R.id.iv_message_error:
-                if (onRepeatMessageSend != null) onRepeatMessageSend.onRepeatMessageSend(messageId);
+                if (onRepeatMessageSend != null) {
+                    onRepeatMessageSend.onRepeatMessageSend(messageId);
+                    viewSwitcher.showNext();
+                }
                 break;
         }
     };
 
-    @InjectView(R.id.iv_message_error)
-    View ivMessageError;
-
-    public OwnMessageViewHolder(View itemView, MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSend) {
+    public OwnMessageViewHolder(View itemView) {
         super(itemView);
         ivMessageError.setOnClickListener(onClickListener);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) messageTextView.getLayoutParams();
@@ -33,8 +40,11 @@ public class OwnMessageViewHolder extends MessageHolder {
 
     public void visibleError(boolean visible) {
         int viewVisible = visible ? View.VISIBLE : View.GONE;
-        if (viewVisible != ivMessageError.getVisibility()) {
-            ivMessageError.setVisibility(viewVisible);
+        if (viewVisible != viewSwitcher.getVisibility()) {
+            viewSwitcher.setVisibility(viewVisible);
+        }
+        if (visible && viewSwitcher.getCurrentView().getId() == R.id.progress_bar) {
+            viewSwitcher.showPrevious();
         }
     }
 

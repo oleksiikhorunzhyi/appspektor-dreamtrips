@@ -62,7 +62,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         try {
             chatStateManager.setCurrentState(XmppUtils.convertState(state), chat);
         } catch (SmackException.NotConnectedException e) {
-            Timber.e(TAG, e);
+            Timber.e(e, "Send status error");
         }
     }
 

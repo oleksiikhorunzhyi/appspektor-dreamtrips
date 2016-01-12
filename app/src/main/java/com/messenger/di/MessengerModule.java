@@ -5,6 +5,9 @@ import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
+import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
+import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
@@ -28,7 +31,9 @@ import dagger.Provides;
                 MessengerDelegateModule.class
         },
         injects = {
-                BaseConversationViewHolder.class,
+                GroupConversationViewHolder.class,
+                OneToOneConversationViewHolder.class,
+                TripConversationViewHolder.class,
 
                 ChatScreenPresenterImpl.class,
 

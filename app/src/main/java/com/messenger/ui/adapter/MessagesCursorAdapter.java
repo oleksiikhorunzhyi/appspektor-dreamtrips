@@ -315,17 +315,13 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
         int backgroundResource;
-        // disabled until dark blue bubbles assets are provided
-        boolean selectedMessage = false;
-        //boolean selectedMessage = position == manualTimestampPosition;
+        boolean selectedMessage = position == manualTimestampPosition;
         if (previousMessageIsFromSameUser(cursor)) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
-            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
-            backgroundResource = R.drawable.blue_bubble;
+            backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
         } else {
             params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
-            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
-            backgroundResource = R.drawable.blue_bubble_comics;
+            backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
         }
         holder.messageTextView.setBackgroundResource(backgroundResource);
     }
@@ -351,13 +347,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
         int backgroundResource;
-        // disabled until dark blue bubbles assets are provided
-        boolean selectedMessage = false;
-        //boolean selectedMessage = position == manualTimestampPosition;
+        boolean selectedMessage = position == manualTimestampPosition;
         if (isPreviousMessageFromTheSameUser) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
             holder.avatarImageView.setVisibility(View.INVISIBLE);
-            holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble);
             backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble
                     : R.drawable.grey_bubble;
         } else {

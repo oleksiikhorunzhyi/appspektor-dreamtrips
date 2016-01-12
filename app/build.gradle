@@ -299,7 +299,6 @@ dependencies {
     compile 'com.github.techery:ProperRatingBar:v0.0.3'
     compile 'com.sothree.slidinguppanel:library:3.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
     // Util
     compile 'com.github.hotchemi:permissionsdispatcher:1.2.1@aar'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:1.2.1'

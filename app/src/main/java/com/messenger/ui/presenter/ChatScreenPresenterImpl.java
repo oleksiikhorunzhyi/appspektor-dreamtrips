@@ -41,12 +41,14 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -69,6 +71,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     User user;
     @Inject
+    UsersDAO usersDAO;
+    @Inject
     OpenedConversationTracker openedConversationTracker;
 
     private Activity activity;
@@ -79,7 +83,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     protected final String conversationId;
     protected Conversation conversation;
-    protected Chat chat;
 
     @Inject
     ConversationsDAO conversationDAO;
@@ -160,9 +163,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
                 .replay(1).autoConnect();
 
-        chatObservable
-                .first()
-                .subscribe(this::onChatLoaded);
+        submitOneChatAction(this::onChatLoaded);
 
         source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
@@ -191,19 +192,24 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onChatLoaded(Chat chat) {
-        this.chat = chat;
         chat.addOnChatStateListener((state, userId) -> {
             ChatScreen view = getView();
             if (view == null) return;
-            final User user = UsersDAO.getUser(userId);
-            switch (state) {
-                case Composing:
-                    handler.post(() -> view.addTypingUser(user));
-                    break;
-                case Paused:
-                    handler.post(() -> view.removeTypingUser(user));
-                    break;
-            }
+
+            usersDAO.getUserById(userId)
+                    .first()
+                    .compose(bindView())
+                    .compose(new IoToMainComposer<>())
+                    .subscribe(user -> {
+                        switch (state) {
+                            case Composing:
+                                view.addTypingUser(user);
+                                break;
+                            case Paused:
+                                view.removeTypingUser(user);
+                                break;
+                        }
+                    });
         });
     }
 
@@ -289,10 +295,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void showUnreadMessageCount(int unreadMessageCount) {
-        handler.postDelayed(() -> {
-            ChatScreen view = getView();
-            if (view != null) view.showUnreadMessageCount(conversation.getUnreadMessageCount());
-        }, UNREAD_DELAY);
+        Observable.just(true)
+                .delay(UNREAD_DELAY, TimeUnit.MILLISECONDS)
+                .compose(new IoToMainComposer<>())
+                .compose(bindView())
+                .subscribe(o -> getView().showUnreadMessageCount(conversation.getUnreadMessageCount()));
     }
 
     private void subscribeUnreadMessageCount(Conversation conversation) {
@@ -312,8 +319,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void sendAndMarkChatEntities(Message firstMessage) {
         chatObservable.first()
-                .flatMap(chat -> chat.sendReadStatus(firstMessage)
-                .flatMap(this::markMessagesAsRead))
+                .flatMap(chat -> chat.sendReadStatus(firstMessage).flatMap(this::markMessagesAsRead))
                 .compose(new IoToMainComposer<>())
                 .doOnNext(m -> Timber.i("Message marked as read %s", m))
                 .subscribe();
@@ -333,13 +339,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void messageTextChanged(int length) {
         if (!isConnectionPresent()) return;
-        if (!typing && length > 0) {
-            typing = true;
-            chat.setCurrentState(ChatState.Composing);
-        } else if (length == 0) {
-            typing = false;
-            chat.setCurrentState(ChatState.Paused);
-        }
+
+        submitOneChatAction(chat -> {
+            if (!typing && length > 0) {
+                typing = true;
+                chat.setCurrentState(ChatState.Composing);
+            } else if (length == 0) {
+                typing = false;
+                chat.setCurrentState(ChatState.Paused);
+            }
+        });
     }
 
     @Override
@@ -349,23 +358,27 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             return false;
         }
 
-        chat.send(new Message.Builder()
-                .locale(Locale.getDefault())
-                .text(message)
-                .from(user.getId())
-                .build()
-        )
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        submitOneChatAction(chat -> {
+            chat.send(new Message.Builder()
+                            .locale(Locale.getDefault())
+                            .text(message)
+                            .from(user.getId())
+                            .build()
+            )
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
+        });
         return true;
     }
 
     @Override
     public void retrySendMessage(String messageId) {
-        messageDAO.getMessage(messageId)
-                .flatMap(chat::send)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        submitOneChatAction(chat -> {
+            messageDAO.getMessage(messageId)
+                    .flatMap(chat::send)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -461,4 +474,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         screen.getActivity().runOnUiThread(screen::showContent);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void submitOneChatAction(Action1<Chat> action1){
+        chatObservable
+                .first()
+                .compose(bindView())
+                .subscribe(action1);
+    }
 }

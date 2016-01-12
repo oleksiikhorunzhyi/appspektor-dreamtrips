@@ -66,7 +66,7 @@ public class ConversationsDAO extends BaseDAO {
     public void deleteConversations(@Nullable Collection<Conversation> conversations) {
         if (conversations != null && conversations.size() > 0) {
             String firstArg = Queryable.from(conversations).first().getId();
-            String[] args = Queryable.from(conversations).skip(1).map(element -> element.getId()).toArray();
+            String[] args = Queryable.from(conversations).skip(1).map(element -> element.getId()).toArray(String.class);
             ConditionQueryBuilder queryBuilder = new ConditionQueryBuilder(ParticipantsRelationship.class,
                     Condition.column(ParticipantsRelationship$Table.CONVERSATIONID).in(firstArg, args));
             new Delete().from(ParticipantsRelationship.class).where(queryBuilder).query();

@@ -28,6 +28,7 @@ import com.messenger.ui.adapter.holder.UserMessageViewHolder;
 import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
+import com.messenger.util.ChatTimestampFormatter;
 import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
@@ -43,15 +44,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private final User user;
     private final Context context;
     private final ConversationHelper conversationHelper;
+    private final ChatTimestampFormatter timestampFormatter;
     private Conversation conversation;
 
     private OnAvatarClickListener avatarClickListener;
     private OnRepeatMessageSend onRepeatMessageSend;
     private OnMessageClickListener messageClickListener;
-
-    private SimpleDateFormat timeDateFormatter;
-    private SimpleDateFormat dayOfTheWeekDateFormatter;
-    private SimpleDateFormat dayOfTheMonthDateFormatter;
 
     private final int rowVerticalMargin;
 
@@ -77,10 +75,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.user = user;
 
         this.conversationHelper = new ConversationHelper();
-
-        this.timeDateFormatter = new SimpleDateFormat("h:mm aa");
-        this.dayOfTheWeekDateFormatter = new SimpleDateFormat("EEEE");
-        this.dayOfTheMonthDateFormatter = new SimpleDateFormat("MMM dd");
+        this.timestampFormatter = new ChatTimestampFormatter(context);
 
         rowVerticalMargin = context.getResources()
                 .getDimensionPixelSize(R.dimen.chat_list_item_vertical_padding);
@@ -121,7 +116,8 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
                 || manualTimestampPositionToRemove == position;
         String dateDivider;
         if (manualTimestamp) {
-            dateDivider = getDateTimestamp(cursor.getLong(cursor.getColumnIndex(Message$Table.DATE)));
+            dateDivider = timestampFormatter.getMessageDateManualTimestamp(cursor
+                    .getLong(cursor.getColumnIndex(Message$Table.DATE)));
         } else {
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
         }
@@ -253,41 +249,9 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
                     .calendarDaysBetweenDates(previousDate, currentDate);
         }
         if ((previousDate != 0 && calendarDaysSincePreviousDate > 0) || previousDate == 0) {
-            return getDateTimestamp(currentDate);
+            return timestampFormatter.getMessageDateDividerTimestamp(currentDate);
         }
         return null;
-    }
-
-    @NonNull
-    private String getDateTimestamp(long currentDate) {
-        StringBuilder sb = new StringBuilder();
-        Calendar dateCalendar = Calendar.getInstance();
-        dateCalendar.setTimeInMillis(currentDate);
-        Calendar todayMidnightCalendar = ChatDateUtils.getToday();
-        long todayMidnightTimestamp = todayMidnightCalendar.getTime().getTime();
-        int daysSinceToday = (int) ChatDateUtils
-                .calendarDaysBetweenDates(todayMidnightTimestamp, currentDate);
-        if (daysSinceToday == 0) {
-            sb.append(context.getString(R.string.chat_list_date_entry_today));
-            sb.append(", ");
-            sb.append(timeDateFormatter.format(currentDate));
-        } else if (daysSinceToday == 1) {
-            sb.append(context.getString(R.string.chat_list_date_entry_yesterday));
-            sb.append(", ");
-            sb.append(timeDateFormatter.format(currentDate));
-        } else if (daysSinceToday > 1 && daysSinceToday < 7) {
-            sb.append(dayOfTheWeekDateFormatter.format(currentDate));
-            sb.append(", ");
-            sb.append(timeDateFormatter.format(currentDate));
-        } else if (dateCalendar.get(Calendar.YEAR) == todayMidnightCalendar.get(Calendar.YEAR)) {
-            sb.append(dayOfTheMonthDateFormatter.format(currentDate));
-            sb.append(", ");
-            sb.append(timeDateFormatter.format(currentDate));
-        } else {
-            sb.append(DateUtils.getRelativeDateTimeString(context, currentDate,
-                    DateUtils.HOUR_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, 0));
-        }
-        return sb.toString();
     }
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {
@@ -315,17 +279,13 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
         int backgroundResource;
-        // disabled until dark blue bubbles assets are provided
-        boolean selectedMessage = false;
-        //boolean selectedMessage = position == manualTimestampPosition;
+        boolean selectedMessage = position == manualTimestampPosition;
         if (previousMessageIsFromSameUser(cursor)) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
-            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
-            backgroundResource = R.drawable.blue_bubble;
+            backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
         } else {
             params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
-            //backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
-            backgroundResource = R.drawable.blue_bubble_comics;
+            backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
         }
         holder.messageTextView.setBackgroundResource(backgroundResource);
     }
@@ -351,13 +311,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
                 .chatMessageContainer.getLayoutParams();
         int backgroundResource;
-        // disabled until dark blue bubbles assets are provided
-        boolean selectedMessage = false;
-        //boolean selectedMessage = position == manualTimestampPosition;
+        boolean selectedMessage = position == manualTimestampPosition;
         if (isPreviousMessageFromTheSameUser) {
             params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
             holder.avatarImageView.setVisibility(View.INVISIBLE);
-            holder.messageTextView.setBackgroundResource(R.drawable.grey_bubble);
             backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble
                     : R.drawable.grey_bubble;
         } else {

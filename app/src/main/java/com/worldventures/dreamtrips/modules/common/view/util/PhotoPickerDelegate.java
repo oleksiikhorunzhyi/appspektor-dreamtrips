@@ -45,7 +45,7 @@ public class PhotoPickerDelegate {
 
     public void onDone() {
         if (onDoneClickListener != null && selectedPhotosProvider != null)
-            onDoneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos());
+            onDoneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos(), selectedPhotosProvider.getType());
     }
 
     public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
@@ -57,7 +57,9 @@ public class PhotoPickerDelegate {
     }
 
     public interface SelectedPhotosProvider {
-        List<ChosenImage> provideSelectedPhotos();
+        List provideSelectedPhotos();
+
+        int getType();
     }
 
 }

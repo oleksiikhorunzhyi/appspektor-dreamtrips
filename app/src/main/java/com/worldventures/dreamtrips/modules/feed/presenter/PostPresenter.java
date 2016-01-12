@@ -297,6 +297,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     public interface View extends Presenter.View {
+
         void setName(String userName);
 
         void setAvatar(String avatarUrl);

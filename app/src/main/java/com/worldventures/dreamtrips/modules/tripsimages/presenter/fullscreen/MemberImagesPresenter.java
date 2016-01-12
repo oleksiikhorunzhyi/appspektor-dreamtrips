@@ -82,13 +82,13 @@ public class MemberImagesPresenter extends TripImagesListPresenter<MemberImagesP
         if (activityRouter != null) {
             String type = "";
             switch (requestType) {
-                case PickImageDelegate.REQUEST_CAPTURE_PICTURE:
+                case PickImageDelegate.CAPTURE_PICTURE:
                     type = "camera";
                     break;
-                case PickImageDelegate.REQUEST_PICK_PICTURE:
+                case PickImageDelegate.PICK_PICTURE:
                     type = "album";
                     break;
-                case PickImageDelegate.REQUEST_FACEBOOK:
+                case PickImageDelegate.FACEBOOK:
                     type = "facebook";
                     break;
             }

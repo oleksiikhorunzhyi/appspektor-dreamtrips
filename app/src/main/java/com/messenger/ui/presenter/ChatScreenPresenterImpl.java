@@ -49,6 +49,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
@@ -95,6 +96,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected boolean typing;
 
     private List<User> participants;
+    private Observable<Chat> chatObservable;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
@@ -144,7 +146,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectConversation() {
         ConnectableObservable<Conversation> source = conversationDAO.getConversation(conversationId)
                 .onBackpressureLatest()
-                .observeOn(Schedulers.io())
                 .filter(conversation -> conversation != null)
                 .compose(new IoToMainComposer<>())
                 .compose(bindView())
@@ -155,9 +156,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         source
                 .subscribe(this::onConversationUpdated);
 
-        source
-                .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv)).first()
-                .compose(new IoToMainComposer<>())
+        chatObservable = source
+                .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
+                .replay(1).autoConnect();
+
+        chatObservable
+                .first()
                 .subscribe(this::onChatLoaded);
 
         source.doOnSubscribe(() -> getView().showLoading());
@@ -307,11 +311,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void sendAndMarkChatEntities(Message firstMessage) {
-        chat.sendReadStatus(firstMessage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(this::markMessagesAsRead)
-                .first()
+        chatObservable.first()
+                .flatMap(chat -> chat.sendReadStatus(firstMessage)
+                .flatMap(this::markMessagesAsRead))
+                .compose(new IoToMainComposer<>())
+                .doOnNext(m -> Timber.i("Message marked as read %s", m))
                 .subscribe();
     }
 
@@ -346,10 +350,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         }
 
         chat.send(new Message.Builder()
-                        .locale(Locale.getDefault())
-                        .text(message)
-                        .from(user.getId())
-                        .build()
+                .locale(Locale.getDefault())
+                .text(message)
+                .from(user.getId())
+                .build()
         )
                 .subscribeOn(Schedulers.io())
                 .subscribe();

@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.ChatManager;
@@ -78,11 +77,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Activity activity;
     protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
-    protected WeakHandler handler;
     protected ConversationHelper conversationHelper;
 
     protected final String conversationId;
-    protected Conversation conversation;
 
     @Inject
     ConversationsDAO conversationDAO;
@@ -100,10 +97,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private List<User> participants;
     private Observable<Chat> chatObservable;
+    private Observable<Conversation> conversationObservable;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
-        handler = new WeakHandler();
         participants = Collections.emptyList();
 
         ((Injector) context.getApplicationContext()).inject(this);
@@ -153,11 +150,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(new IoToMainComposer<>())
                 .compose(bindView())
                 .publish();
-        source
+
+
+        conversationObservable = source
+                .replay(1)
+                .autoConnect();
+
+        conversationObservable
                 .first()
                 .subscribe(this::onConversationLoadedFirstTime);
-        source
-                .subscribe(this::onConversationUpdated);
+
+        conversationObservable.subscribe(this::updateConversationInfo);
 
         chatObservable = source
                 .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
@@ -170,23 +173,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onConversationLoadedFirstTime(Conversation conversation) {
-        this.conversation = conversation;
         notificationDelegate.cancel(conversation.getId().hashCode());
         ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
         //
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
         subscribeUnreadMessageCount(conversation);
         connectMembers(conversation);
-        connectMessages();
+        connectMessages(conversation);
         loadNextPage();
     }
 
-    private void onConversationUpdated(Conversation conversation) {
-        this.conversation = conversation;
-        updateConversationInfo();
-    }
-
-    private void updateConversationInfo() {
+    private void updateConversationInfo(Conversation conversation) {
         getView().setTitle(conversation, participants);
         getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
     }
@@ -198,8 +195,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
             usersDAO.getUserById(userId)
                     .first()
-                    .compose(bindView())
                     .compose(new IoToMainComposer<>())
+                    .compose(bindView())
                     .subscribe(user -> {
                         switch (state) {
                             case Composing:
@@ -231,7 +228,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Messages
     ///////////////////////////////////////////////////////////////////////////
 
-    private void connectMessages() {
+    private void connectMessages(Conversation conversation) {
         messageDAO.getMessages(conversationId)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
@@ -255,9 +252,13 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         getView().showLoading();
         viewState.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-        paginationDelegate.loadConversationHistoryPage(conversation, ++page, before,
-                this::paginationPageLoaded,
-                this::showContent);
+        conversationObservable
+                .first()
+                .compose(new IoToMainComposer<>())
+                .compose(bindView())
+                .subscribe(conversation -> paginationDelegate.loadConversationHistoryPage(conversation,
+                        ++page, before, this::paginationPageLoaded, this::showContent));
+
     }
 
     private void paginationPageLoaded(int loadedPage, List<Message> loadedMessages) {
@@ -287,7 +288,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onNextPageReached() {
-        if (!isLoading && conversation != null) loadNextPage();
+        conversationObservable
+                .first()
+                .filter(conversation -> !isLoading)
+                .compose(new IoToMainComposer<>())
+                .compose(bindView())
+                .subscribe(conversation -> loadNextPage());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -295,11 +301,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void showUnreadMessageCount(int unreadMessageCount) {
-        Observable.just(true)
+        conversationObservable
+                .first()
                 .delay(UNREAD_DELAY, TimeUnit.MILLISECONDS)
                 .compose(new IoToMainComposer<>())
                 .compose(bindView())
-                .subscribe(o -> getView().showUnreadMessageCount(conversation.getUnreadMessageCount()));
+                .subscribe(conversation -> {
+                    getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
+                });
     }
 
     private void subscribeUnreadMessageCount(Conversation conversation) {
@@ -408,33 +417,51 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         // hide button for adding user for not owners of group chats
-        if (conversation == null) {
-            menu.findItem(R.id.action_add).setVisible(false);
-            menu.findItem(R.id.action_settings).setVisible(false);
-            return;
-        } else {
-            menu.findItem(R.id.action_add).setVisible(true);
-            menu.findItem(R.id.action_settings).setVisible(true);
-        }
+        conversationObservable
+                .lastOrDefault(null)
+                .compose(new IoToMainComposer<>())
+                .compose(bindVisibility())
+                .subscribe(conversation -> {
+                    if (conversation == null) {
+                        menu.findItem(R.id.action_add).setVisible(false);
+                        menu.findItem(R.id.action_settings).setVisible(false);
+                    } 
+                });
 
-        if (conversationHelper.isGroup(conversation)) {
-            boolean owner = user.getId().equals(conversation.getOwnerId());
-            menu.findItem(R.id.action_add).setVisible(owner);
-        }
+        conversationObservable
+                .first()
+                .compose(new IoToMainComposer<>())
+                .compose(bindVisibility())
+                .subscribe(conversation -> {
+                    if (conversationHelper.isGroup(conversation)) {
+                        boolean owner = user.getId().equals(conversation.getOwnerId());
+                        menu.findItem(R.id.action_add).setVisible(owner);
+                        menu.findItem(R.id.action_settings).setVisible(true);
+                    } else {
+                        menu.findItem(R.id.action_add).setVisible(true);
+                        menu.findItem(R.id.action_settings).setVisible(true);
+                    }
+                });
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInAddMembersMode(activity, conversation.getId());
+                NewChatMembersActivity.startInAddMembersMode(activity, conversationId);
                 return true;
             case R.id.action_settings:
-                if (conversationHelper.isGroup(conversation)) {
-                    ChatSettingsActivity.startGroupChatSettings(activity, conversation.getId());
-                } else {
-                    ChatSettingsActivity.startSingleChatSettings(activity, conversation.getId());
-                }
+                conversationObservable
+                        .first()
+                        .compose(new IoToMainComposer<>())
+                        .compose(bindView())
+                        .subscribe(conversation -> {
+                            if (conversationHelper.isGroup(conversation)) {
+                                ChatSettingsActivity.startGroupChatSettings(activity, conversationId);
+                            } else {
+                                ChatSettingsActivity.startSingleChatSettings(activity, conversationId);
+                            }
+                        });
                 return true;
         }
         return false;
@@ -447,8 +474,19 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onNewViewState() {
         state = new ChatLayoutViewState();
-        state.setLoadingState(conversation == null ?
-                ChatLayoutViewState.LoadingState.LOADING : ChatLayoutViewState.LoadingState.CONTENT);
+
+        if (conversationObservable == null) {
+            state.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+            return;
+        }
+
+        conversationObservable
+                .lastOrDefault(null)
+                .compose(new IoToMainComposer<>())
+                .compose(bindVisibility())
+                .subscribe(conversation -> state.setLoadingState(conversation == null ?
+                                ChatLayoutViewState.LoadingState.LOADING : ChatLayoutViewState.LoadingState.CONTENT)
+                );
     }
 
     @Override

@@ -17,12 +17,7 @@ public abstract class TaggableImageHolderPresenter<VIEW extends TaggableImageHol
         this.photo = photo;
     }
 
-    @Override
-    public void takeView(VIEW view) {
-        super.takeView(view);
-    }
-
-    public void setupTags() {
+    public void showExistingTags() {
         if (photo != null && photo.getPhotoTags() != null) view.addTags(photo.getPhotoTags());
     }
 

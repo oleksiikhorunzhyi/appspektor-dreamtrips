@@ -20,9 +20,12 @@ import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
@@ -32,6 +35,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+
 
 @Layout(R.layout.fragment_create_photo)
 public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> implements DatePickerDialog.OnDateSetListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener, CreatePhotoPresenter.View {
@@ -57,7 +61,8 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     protected CreationPhotoTaggableHolderViewGroup taggableImageHolder;
     @InjectView(R.id.tag)
     protected ImageView tag;
-
+    @InjectView(R.id.imageView)
+    ImageView imageView;
     private Uri uri;
 
     @Override
@@ -71,7 +76,19 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
         ivImage.setController(GraphicUtils.provideFrescoResizingController(uri, ivImage.getController()));
-        taggableImageHolder.setup(this, null);
+        Photo photo = new Photo();
+        Image images = new Image();
+        images.setUrl(uri.toString());
+        photo.setImages(images);
+        taggableImageHolder.setup(this, photo);
+        showTagViewGroup();
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -88,8 +105,8 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
 
     @Override
     protected CreatePhotoPresenter createPresenter(Bundle savedInstanceState) {
-        uri = getArguments().getParcelable(BUNDLE_IMAGE_URI);
-        String type = getArguments().getString(BUNDLE_TYPE);
+        uri = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getParcelable(BUNDLE_IMAGE_URI);
+        String type = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getString(BUNDLE_TYPE);
         return new CreatePhotoPresenter(type);
     }
 
@@ -102,7 +119,6 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
             } else {
                 hideTagViewGroup();
             }
-            taggableImageHolder.restoreState();
         });
     }
 
@@ -148,7 +164,7 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
 
     @Override
     public List<PhotoTag> getTagsToUpload() {
-        return taggableImageHolder.getTagsToUpload();
+        return taggableImageHolder.getLocallyAddedTags();
     }
 
     @Override

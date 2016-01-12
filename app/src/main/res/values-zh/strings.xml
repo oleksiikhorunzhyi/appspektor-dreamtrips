@@ -495,5 +495,6 @@
     <string name="tag_photo">tagged you on</string>
 
     <string name="user_already_exists">%s already exists</string>
+    <string name="photo_tag_title">Tap anywhere to tag people</string>
 
 </resources>

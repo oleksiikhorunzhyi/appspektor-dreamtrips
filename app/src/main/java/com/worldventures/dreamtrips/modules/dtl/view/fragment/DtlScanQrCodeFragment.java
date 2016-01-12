@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlPlaceHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -58,17 +58,17 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     TextView name;
     @InjectView(R.id.address)
     TextView address;
-    @InjectView(R.id.place_image)
-    SimpleDraweeView placeImage;
+    @InjectView(R.id.merchant_image)
+    SimpleDraweeView merchantImage;
 
-    DtlPlaceHelper helper;
+    DtlMerchantHelper helper;
 
     private DtlEnrollWizard dtlEnrollWizard;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        helper = new DtlPlaceHelper(activity);
+        helper = new DtlMerchantHelper(activity);
     }
 
     @Override
@@ -107,14 +107,14 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
 
     @Override
-    public void setPlace(DtlMerchant dtlMerchant) {
+    public void setMerchant(DtlMerchant dtlMerchant) {
         name.setText(dtlMerchant.getDisplayName());
         if (!TextUtils.isEmpty(dtlMerchant.getAddress1())) {
             address.setText(String.format("%s, %s, %s, %s", dtlMerchant.getAddress1(), dtlMerchant.getCity(),
                     dtlMerchant.getState(), dtlMerchant.getZip()));
         }
         if (!dtlMerchant.getImages().isEmpty()) {
-            placeImage.setImageURI(Uri.parse(dtlMerchant.getImages().get(0).getImagePath()));
+            merchantImage.setImageURI(Uri.parse(dtlMerchant.getImages().get(0).getImagePath()));
         }
     }
 

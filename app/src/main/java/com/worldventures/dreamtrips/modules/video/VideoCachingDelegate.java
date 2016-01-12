@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.video;
 
 import android.content.Context;
 
-import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.module.Injector;
@@ -11,6 +10,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
+import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
@@ -43,6 +43,10 @@ public class VideoCachingDelegate {
         startCaching(entity);
     }
 
+    public void onEvent(DownloadVideoProgressEvent event) {
+        view.notifyItemChanged(event.getEntity());
+    }
+
     public void onEvent(DeleteCachedVideoRequestEvent event) {
         view.onDeleteAction(event.getVideoEntity());
     }
@@ -57,7 +61,6 @@ public class VideoCachingDelegate {
         db.saveDownloadVideoEntity(videoEntity);
         view.notifyItemChanged(videoEntity);
     }
-
 
     public void onCancelAction(CachedEntity cacheEntity) {
         videoDownloadSpiceManager.cancel(InputStream.class, cacheEntity.getUuid());

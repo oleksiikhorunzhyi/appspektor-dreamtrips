@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
@@ -16,6 +15,12 @@ public class NavigationDrawerPresenter extends Presenter<NavigationDrawerPresent
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.notificationCountChanged(db.getExclusiveNotificationsCount());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     public void logout() {

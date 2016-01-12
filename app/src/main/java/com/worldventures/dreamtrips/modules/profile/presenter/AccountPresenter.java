@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
+import com.worldventures.dreamtrips.util.CopyFileTask;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
@@ -55,6 +56,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @State
     int callbackType;
 
+    public static final String TEMP_PHOTO_FILE_PREFIX = "temp_copy_of_";
+
     int REQUESTER_ID = 3745742;
 
     public AccountPresenter() {
@@ -74,6 +77,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             shouldReload = false;
             loadProfile();
         }
+        //
+        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     @Override
@@ -182,9 +187,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         String filePath = CachedEntity.getFilePath(context, CachedEntity.getFilePath(context, url));
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
 
-        dreamSpiceManager.execute(bigBinaryRequest, inputStream -> {
-            action.action(filePath);
-        }, null);
+        doRequest(bigBinaryRequest, inputStream -> action.action(filePath));
     }
 
     @Override
@@ -266,9 +269,21 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             if (ValidationUtils.isUrl(filePath)) {
                 cacheFacebookImage(filePath, path -> Crop.prepare(path).startFrom((Fragment) view));
             } else {
-                Crop.prepare(filePath).startFrom((Fragment) view);
+                executeCrop(filePath);
             }
         }
+    }
+
+    /**
+     * Crop library needs temp file for processing
+     *
+     * @param originalFilePath
+     */
+    private void executeCrop(String originalFilePath) {
+        File originalFile = new File(originalFilePath);
+        doRequest(new CopyFileTask(originalFile,
+                        originalFile.getParentFile() + "/" + TEMP_PHOTO_FILE_PREFIX + originalFile.getName()),
+                s -> Crop.prepare(s).startFrom((Fragment) view));
     }
 
     public void onEvent(OnPhotoClickEvent e) {

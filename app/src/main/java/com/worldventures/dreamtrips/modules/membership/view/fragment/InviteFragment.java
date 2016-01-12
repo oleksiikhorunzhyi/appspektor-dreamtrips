@@ -249,6 +249,11 @@ public class InviteFragment
         adapter.sort(comparator);
     }
 
+    @Override
+    public void setAdapterComparator(Comparator comparator) {
+        adapter.setDefaultComparator(comparator);
+    }
+
     @OnClick(R.id.bt_continue)
     public void continueAction() {
         getPresenter().continueAction();

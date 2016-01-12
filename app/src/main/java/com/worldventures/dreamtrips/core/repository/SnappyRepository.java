@@ -469,6 +469,10 @@ public class SnappyRepository {
         act(db -> db.put(DTL_SELECTED_LOCATION, dtlLocation));
     }
 
+    public void cleanDtlLocation() {
+        clearAllForKey(DTL_SELECTED_LOCATION);
+    }
+
     public DtlLocation getDtlLocation() {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class))
                 .orNull();

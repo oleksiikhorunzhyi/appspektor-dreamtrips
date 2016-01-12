@@ -65,10 +65,10 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     }
 
     public boolean checkAmenities(DtlMerchant dtlMerchant) {
-        List<DtlPlacesFilterAttribute> selectedAmenities = dtlFilterData.getSelectedAmenities();
+        List<DtlMerchantsFilterAttribute> selectedAmenities = dtlFilterData.getSelectedAmenities();
         return selectedAmenities == null || dtlMerchant.getAmenities() == null ||
                 !Collections.disjoint(selectedAmenities, Queryable.from(dtlMerchant.getAmenities()).map(element ->
-                                new DtlPlacesFilterAttribute(element.getName())
+                                new DtlMerchantsFilterAttribute(element.getName())
                 ).toList());
     }
 

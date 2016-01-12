@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 
@@ -53,7 +54,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), false);
         photoPickerLayout.hidePanel();
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
 
         profileToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -69,12 +69,17 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         super.onResume();
         backStackDelegate.setListener(this::onBackPressed);
         TrackingHelper.viewMyProfileScreen();
+        //
+        photoPickerLayout.updatePickerDelegate();
+        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImage(chosenImages));
     }
 
     @Override
     public void onPause() {
         super.onPause();
         backStackDelegate.setListener(null);
+        //
+        photoPickerLayout.setOnDoneClickListener(null);
     }
 
     @Override
@@ -156,6 +161,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     private boolean onBackPressed() {
+        if (photoPickerLayout.isShowsFacebookAlbumFragment()) {
+            return false;
+        }
         if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();
             return true;

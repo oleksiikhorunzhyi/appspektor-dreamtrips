@@ -52,7 +52,8 @@ public class DtlLocationRepositoryTest {
                     .onRequestSuccess(locations);
             return null;
         }).when(requestingPresenter).doRequest(any(SpiceRequest.class),
-                any(DreamSpiceManager.SuccessListener.class));
+                any(DreamSpiceManager.SuccessListener.class),
+                any(DreamSpiceManager.FailureListener.class));
 
         List<DtlLocation> locationsObtained = new ArrayList<>();
         dtlLocationRepository.attachListener(new DtlLocationRepository.LocationsLoadedListener() {

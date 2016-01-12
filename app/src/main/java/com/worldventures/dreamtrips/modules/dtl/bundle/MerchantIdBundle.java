@@ -15,8 +15,8 @@ public class MerchantIdBundle implements Parcelable {
         return merchantId;
     }
 
-    public void setPlace(String placeId) {
-        this.merchantId = placeId;
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
     }
 
     ///////////////////////////////////////////////////////////////////////////

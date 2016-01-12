@@ -18,16 +18,17 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlDistanceFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlaceDetailsFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesHostFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesListFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlPlacesTabsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantDetailsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsHostFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
@@ -77,11 +78,11 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDe
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.BucketPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.InspirePhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.SocialImageFullscreenFragment;
@@ -162,15 +163,16 @@ public enum Route {
     DTL_START(DtlStartFragment.class),
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
     DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
-    DTL_MERCHANTS_HOLDER(DtlPlacesHostFragment.class),
-    DTL_MERCHANTS_TABS(DtlPlacesTabsFragment.class),
-    DTL_MERCHANTS_LIST(DtlPlacesListFragment.class),
+    DTL_MERCHANTS_HOLDER(DtlMerchantsHostFragment.class),
+    DTL_MERCHANTS_TABS(DtlMerchantsTabsFragment.class),
+    DTL_MERCHANTS_LIST(DtlMerchantsListFragment.class),
     DTL_IMAGE(DtlImageFragment.class),
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
+    DTL_DISTANCE_SETTINGS(DtlDistanceFragment.class),
     DTL_FILTERS(DtlFiltersFragment.class),
     DTL_MAP(DtlMapFragment.class),
     DTL_MAP_INFO(DtlMapInfoFragment.class),
-    DTL_MERCHANT_DETAILS(DtlPlaceDetailsFragment.class),
+    DTL_MERCHANT_DETAILS(DtlMerchantDetailsFragment.class),
     DTL_SUGGEST_MERCHANT(DtlSuggestMerchantFragment.class, R.string.suggest_merchant_title),
 
     DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),

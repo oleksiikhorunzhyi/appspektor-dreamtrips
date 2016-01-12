@@ -4,5 +4,6 @@ public enum DtlLocationType {
     CITY,
     METRO,
     STATE,
-    COUNTRY
+    COUNTRY,
+    UNKNOWN
 }

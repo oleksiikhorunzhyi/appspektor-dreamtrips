@@ -150,7 +150,12 @@ public class FullScreenPhotoActionPanelDelegate {
     }
 
     public void setDescription(String desc) {
-        tvDescription.setText(desc);
+        if (TextUtils.isEmpty(desc)) {
+            tvDescription.setVisibility(View.GONE);
+        } else {
+            tvDescription.setText(desc);
+            tvDescription.setVisibility(View.VISIBLE);
+        }
         actionSeeMore();
     }
 
@@ -161,15 +166,6 @@ public class FullScreenPhotoActionPanelDelegate {
         tvDescription.setSingleLine(false);
 
         tvSeeMore.setVisibility(View.GONE);
-        if (tvDescription.getText().length() == 0) {
-            tvDescription.setVisibility(View.GONE);
-        }
-        if (tvDate.getText().length() == 0) {
-            tvDate.setVisibility(View.GONE);
-        }
-        if (tvLocation.getText().length() == 0) {
-            tvLocation.setVisibility(View.GONE);
-        }
     }
 
     @OnClick({R.id.bottom_container, R.id.title_container})

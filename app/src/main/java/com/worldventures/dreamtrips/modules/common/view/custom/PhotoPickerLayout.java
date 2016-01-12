@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
         if (isShown)
-            showPanel();
+            post(() -> showPanel());
     }
 
     @Override
@@ -126,7 +127,11 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, boolean isVisible) {
         this.fragmentManager = fragmentManager;
         this.multiPickEnabled = multiPickEnabled;
-        if (isVisible) photoPickerDelegate.setupPhotoPickerLayout(this);
+        if (isVisible) updatePickerDelegate();
+    }
+
+    public void updatePickerDelegate() {
+        photoPickerDelegate.setupPhotoPickerLayout(this);
     }
 
     /**
@@ -171,6 +176,10 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
             selectedCount.setText(String.format(getResources().getString(R.string.photos_selected),
                     pickedCount));
         }
+    }
+
+    public boolean isShowsFacebookAlbumFragment() {
+        return fragmentManager.findFragmentById(container.getId()) instanceof FacebookAlbumFragment;
     }
 
     public boolean isMultiPickEnabled() {

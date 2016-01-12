@@ -24,9 +24,9 @@ android {
 
     // App version
     def versionMajor = 1
-    def versionMinor = 5
+    def versionMinor = 6
     def versionPatch = 0
-    def versionBuild = 12  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 0  // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -56,6 +56,13 @@ android {
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
         buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
 
+        buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
+        buildConfigField 'String', 'versionMinor', "\"${versionMinor}\""
+        buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
+        buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
+
+        manifestPlaceholders = [:]
+        manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
 
     }
     productFlavors {
@@ -63,8 +70,7 @@ android {
             applicationIdSuffix ".dev"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
 
-            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             ext.enableCrashlytics = false
 
@@ -74,12 +80,25 @@ android {
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
             resValue "string", "facebook_app_id", "761062457321921"
         }
+        dtl {
+            applicationIdSuffix ".dtl"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
+
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
+
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
+
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            resValue "string", "facebook_app_id", "761062457321921"
+        }
         stage {
             applicationIdSuffix ".stage"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"
 
-            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
 
@@ -94,8 +113,7 @@ android {
             applicationIdSuffix ".perf"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-perf" + "-${versionBuild}"
 
-            manifestPlaceholders = [surveyApiToken: "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz/"'
 
@@ -106,8 +124,7 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         prod {
-            manifestPlaceholders = [surveyApiToken: "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa",
-                                    fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
+            manifestPlaceholders.put 'surveyApiToken', "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
 
@@ -202,13 +219,13 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
     compile 'com.google.android.gms:play-services-location:8.3.0'
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
-    compile 'com.instabug.library:instabugsupport:1.7'
+    compile 'com.instabug.library:instabugsupport:1.7.1'
     compile 'net.hockeyapp.android:HockeySDK:3.6.2'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
     compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
         transitive = true;
     }
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
     compile 'com.apptentive:apptentive-android:2.0.1@aar'

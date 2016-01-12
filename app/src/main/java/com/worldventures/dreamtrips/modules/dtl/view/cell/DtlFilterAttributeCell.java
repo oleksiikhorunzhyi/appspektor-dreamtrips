@@ -7,13 +7,13 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlPlacesFilterAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class DtlFilterAttributeCell extends AbstractCell<DtlPlacesFilterAttribute> {
+public class DtlFilterAttributeCell extends AbstractCell<DtlMerchantsFilterAttribute> {
 
     @InjectView(R.id.textViewAttributeCaption)
     protected TextView textViewName;

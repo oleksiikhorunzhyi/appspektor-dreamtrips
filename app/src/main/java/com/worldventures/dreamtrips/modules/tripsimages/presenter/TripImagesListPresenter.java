@@ -106,7 +106,10 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         view.fillWithItems(photos);
         view.setSelection(currentPhotoPosition);
 
-        if (!fullscreenMode) reload();
+        if (!fullscreenMode) {
+            prepareTasks(photos);
+            reload();
+        }
     }
 
     @Override
@@ -305,7 +308,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         @Override
         protected void onRefresh(ArrayList<IFullScreenObject> iFullScreenObjects) {
             prepareTasks(iFullScreenObjects);
-            super.onRefresh(iFullScreenObjects);
+            onPreFinish(LoadType.RELOAD, iFullScreenObjects, null);
+            onFinish(LoadType.RELOAD, iFullScreenObjects, null);
         }
 
         @Override
@@ -314,9 +318,13 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             if (getAdapterController() != null) {
                 view.finishLoading();
                 if (spiceException == null) {
-
                     if (loadType.equals(RoboSpiceAdapterController.LoadType.RELOAD)) {
+                        UploadTask uploadTask = null;
+                        if(photos.size() > 0 && photos.get(0) instanceof UploadTask)
+                            uploadTask = (UploadTask) photos.get(0);
+                        //
                         photos.clear();
+                        if (uploadTask != null) photos.add(uploadTask);
                         photos.addAll(items);
                         resetLazyLoadFields();
                     } else {
@@ -338,6 +346,15 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     private void prepareTask(UploadTask uploadTask) {
+        if (uploadTask.getAmazonTaskId() == null) {
+            UploadTask savedTask = db.getUploadTask(uploadTask.getFilePath());
+            if (savedTask != null) {
+                uploadTask.setAmazonTaskId(savedTask.getAmazonTaskId());
+                uploadTask.setBucketName(savedTask.getBucketName());
+                uploadTask.setKey(savedTask.getKey());
+            }
+        }
+        //
         TransferObserver transferObserver = photoUploadingSpiceManager
                 .getTransferById(uploadTask.getAmazonTaskId());
         transferObserver.setTransferListener(this);

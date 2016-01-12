@@ -71,6 +71,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         } else {
             handleResponse();
         }
+        //
+        view.setAdapterComparator(getSelectedComparator());
     }
 
     @Override
@@ -200,7 +202,6 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
                         query = newText.toLowerCase();
                 }
                 view.setFilter(query);
-                sortSelected();
                 updatePositions(query);
             }
         }, 150L);
@@ -329,7 +330,15 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     private void sortSelected() {
-        Collections.sort(members, (lhs, rhs) -> lhs.isChecked() && !rhs.isChecked() ? -1 : !lhs.isChecked() && rhs.isChecked() ? 1 : 0);
+        Collections.sort(members, getSelectedComparator());
+    }
+
+    private Comparator<Member> getSelectedComparator() {
+        return (lhs, rhs) -> {
+            if (!lhs.isChecked() && !rhs.isChecked()) return lhs.getName().compareTo(rhs.getName());
+            //
+            return lhs.isChecked() && !rhs.isChecked() ? -1 : !lhs.isChecked() && rhs.isChecked() ? 1 : 0;
+        };
     }
 
     private void resetSelected() {
@@ -350,6 +359,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         void setFilter(String newText);
 
         void sort(Comparator<Member> comparator);
+
+        void setAdapterComparator(Comparator comparator);
 
         void showNextStepButtonVisibility(boolean isVisible);
 

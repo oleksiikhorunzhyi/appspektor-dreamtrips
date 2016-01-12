@@ -36,8 +36,7 @@ public class MessageDAO extends BaseDAO {
                         " ORDER BY " + Message$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId}).build();
 
-        return query(q, Message.CONTENT_URI, User.CONTENT_URI)
-                .compose(new DaoTransformer());
+        return query(q, Message.CONTENT_URI, User.CONTENT_URI);
     }
 
     public Observable<Message> getMessage(String messageId) {

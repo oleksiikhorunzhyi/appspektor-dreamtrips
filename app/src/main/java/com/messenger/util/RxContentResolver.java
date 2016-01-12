@@ -45,7 +45,7 @@ public class RxContentResolver {
                 }
         ).doOnUnsubscribe(() -> {
             if (contentObserver[0] != null) unsubscribeFromContentUpdates(contentObserver[0]);
-        });
+        }).compose(new CursorSweeper());
     }
 
     private void tryFetchCursor(Query query, Observer<? super Cursor> subscriber) {
@@ -174,6 +174,19 @@ public class RxContentResolver {
             public Query build() {
                 return new Query(uri, projection, selection, selectionArgs, sortOrder);
             }
+        }
+    }
+
+    public static class CursorSweeper implements Observable.Transformer<Cursor, Cursor> {
+        @Override
+        public Observable<Cursor> call(Observable<Cursor> cursorObservable) {
+            Cursor[] cursors = {null};
+            return cursorObservable
+                    .doOnNext(cursor -> cursors[0] = cursor)
+                    .doOnUnsubscribe(() -> {
+                        Cursor cursor = cursors[0];
+                        if (cursor != null && !cursor.isClosed()) cursor.close();
+                    });
         }
     }
 }

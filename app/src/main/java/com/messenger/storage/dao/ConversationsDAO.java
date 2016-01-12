@@ -114,8 +114,7 @@ public class ConversationsDAO extends BaseDAO {
             args = new String[]{Conversation.Type.CHAT};
         }
         queryBuilder.withSelectionArgs(args);
-        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .compose(new DaoTransformer());
+        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
     }
 
     public Observable<Conversation> getConversation(String conversationId) {

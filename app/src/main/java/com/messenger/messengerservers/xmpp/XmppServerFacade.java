@@ -113,6 +113,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     public void disconnectAsync() {
         rosterManager.release();
         if (requester.isStarted()) requester.shouldStop();
+        if (connection == null) return; // skip if not connected yet
         connectionExecutor.execute(connection::disconnect);
         isActive = false;
     }

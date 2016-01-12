@@ -10,16 +10,14 @@ import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class GlobalEventEmitter {
-
-    protected List<GlobalMessageListener> globalMessageListeners = new ArrayList<>();
-    protected List<PresenceListener> presenceListeners = new ArrayList<>();
-    protected List<InvitationListener> invitationListeners = new ArrayList<>();
-    protected List<UnhandledMessageListener> unhandledMessageListeners = new ArrayList<>();
+    protected List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
+    protected List<PresenceListener> presenceListeners = new CopyOnWriteArrayList<>();
+    protected List<InvitationListener> invitationListeners = new CopyOnWriteArrayList<>();
+    protected List<UnhandledMessageListener> unhandledMessageListeners = new CopyOnWriteArrayList<>();
     protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();

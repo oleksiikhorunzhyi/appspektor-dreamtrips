@@ -5,24 +5,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.util.RxContentResolver;
-import com.messenger.util.RxContentResolver.Query;
-import com.messenger.util.RxContentResolver.Query.Builder;
-import com.raizlabs.android.dbflow.config.FlowManager;
+import com.messenger.storage.dao.ParticipantsDAO;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class BaseConversationViewHolder extends BaseViewHolder {
 
@@ -44,14 +44,15 @@ public class BaseConversationViewHolder extends BaseViewHolder {
     @InjectView(R.id.swipe_layout_button_more)
     View moreButton;
     //
-    private final RxContentResolver contentResolver;
+
+    @Inject
+    ParticipantsDAO participantsDAO;
+
     private Subscription participantsSubscriber;
 
     public BaseConversationViewHolder(View itemView) {
         super(itemView);
-        contentResolver = new RxContentResolver(itemView.getContext().getContentResolver(),
-                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                .rawQuery(query.selection, query.selectionArgs));
+        ((Injector) itemView.getContext().getApplicationContext()).inject(this);
     }
 
     public ViewGroup getContentLayout() {
@@ -90,22 +91,21 @@ public class BaseConversationViewHolder extends BaseViewHolder {
         if (participantsSubscriber != null && !participantsSubscriber.isUnsubscribed()) {
             participantsSubscriber.unsubscribe();
         }
-        Query q = new Builder(null)
-                .withSelection("SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
-                        "ON p.userId = u._id " +
-                        "WHERE p.conversationId = ?"
-                ).withSelectionArgs(new String[]{conversationId}).build();
-        participantsSubscriber = contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()
-                .map(c -> SqlUtils.convertToList(User.class, c))
-                .onErrorReturn(throwable -> Collections.<User>emptyList())
+
+        participantsSubscriber = participantsDAO.getParticipants(conversationId)
+                .map(cursor -> {
+                    List<User> result = SqlUtils.convertToList(User.class, cursor);
+                    cursor.close();
+                    return result;
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(itemView))
-                .subscribe(users -> {
-                    listener.call(users);
-                });
+                .onErrorReturn(throwable -> {
+                    Timber.e(throwable, "Load participants on ");
+                    return Collections.<User>emptyList();
+                })
+                .subscribe(listener::call);
     }
 
 }

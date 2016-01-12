@@ -32,7 +32,6 @@ public class UsersDAO extends BaseDAO {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users WHERE " + User$Table._ID + "=?")
                 .withSelectionArgs(new String[]{String.valueOf(id)})
-                .withSortOrder("ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, User.CONTENT_URI)
                 .map(c -> {

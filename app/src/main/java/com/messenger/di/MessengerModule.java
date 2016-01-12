@@ -4,10 +4,12 @@ import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
+import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
-import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
@@ -27,6 +29,10 @@ import dagger.Provides;
                 MessengerDelegateModule.class
         },
         injects = {
+                GroupConversationViewHolder.class,
+                OneToOneConversationViewHolder.class,
+                TripConversationViewHolder.class,
+
                 ChatScreenPresenterImpl.class,
 
                 ChatFacadeInitializer.class,

@@ -69,6 +69,17 @@ public class ApiModule {
     }
 
     @Provides
+    RestAdapter.Builder provideRestAdapterBuilder(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, OkClient okClient) {
+        return new RestAdapter.Builder()
+                .setEndpoint(BuildConfig.DreamTripsApi)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setConverter(gsonConverter)
+                .setClient(okClient)
+                .setRequestInterceptor(requestInterceptor);
+    }
+
+
+    @Provides
     RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper, AppVersionNameBuilder appVersionNameBuilder) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
@@ -111,8 +122,9 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    DtlApi provideDtlApi(RestAdapter adapter) {
-        return adapter.create(DtlApi.class);
+    DtlApi provideDtlApi(RestAdapter.Builder builder, DTErrorHandler errorHandler) {
+        return builder.setErrorHandler(errorHandler).build()
+                .create(DtlApi.class);
     }
 
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {

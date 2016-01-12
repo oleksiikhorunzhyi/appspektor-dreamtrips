@@ -1,16 +1,19 @@
 package com.worldventures.dreamtrips.core.api.error;
 
+import retrofit.RetrofitError;
+
 public class DtApiException extends Exception {
     private int httpStatus;
     private ErrorResponse errorResponse;
 
-    public DtApiException(ErrorResponse errorResponse, int httpStatus) {
+    public DtApiException(ErrorResponse errorResponse, int httpStatus, RetrofitError retrofitError) {
+        super(retrofitError);
         this.errorResponse = errorResponse;
         this.httpStatus = httpStatus;
     }
 
-    public DtApiException(String detailMessage) {
-        super(detailMessage);
+    public DtApiException(String detailMessage, RetrofitError retrofitError) {
+        super(detailMessage, retrofitError);
     }
 
     public ErrorResponse getErrorResponse() {

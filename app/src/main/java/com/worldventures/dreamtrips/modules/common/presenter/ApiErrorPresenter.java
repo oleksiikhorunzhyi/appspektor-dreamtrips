@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
@@ -27,16 +26,22 @@ public class ApiErrorPresenter {
         return apiErrorView != null;
     }
 
-    public void handleError(SpiceException spiceException) {
+    public void handleError(Throwable exception) {
         if (!hasView()) return;
 
         apiErrorView.onApiCallFailed();
 
-        if (spiceException.getCause() instanceof DtApiException) {
-            ErrorResponse errorResponse = ((DtApiException) spiceException.getCause()).getErrorResponse();
+        DtApiException dtApiException = null;
+        if (exception instanceof DtApiException)
+            dtApiException = (DtApiException) exception;
+        if (exception.getCause() instanceof DtApiException)
+            dtApiException = (DtApiException) exception.getCause();
+
+        if (dtApiException != null) {
+            ErrorResponse errorResponse = dtApiException.getErrorResponse();
             if (errorResponse == null || errorResponse.getErrors() == null
                     || errorResponse.getErrors().isEmpty()) {
-                apiErrorView.informUser(spiceException.getCause().getLocalizedMessage());
+                apiErrorView.informUser(exception.getCause().getLocalizedMessage());
                 return;
             }
             //

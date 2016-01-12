@@ -100,8 +100,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     };
 
     private void drawHeaderSelection() {
-        boolean allSelected =
-                selectionManager.isAllSelected(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
+        final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class);
+        final boolean allSelected = selectionManager.isAllSelected(amenityViewTypeId);
         selectionManager.setSelection(0, allSelected);
     }
 
@@ -136,17 +136,20 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
         distanceTypeSwitch.setChecked(filterData.getDistanceType() == DtlFilterData.DistanceType.KMS);
+        updateSelection(filterData);
+        drawHeaderSelection();
+    }
+
+    private void updateSelection(DtlFilterData filterData) {
         if (filterData.hasAmenities()) {
             selectionManager.setSelectedPositions(Queryable.from(filterData.getSelectedAmenities())
                     .map(element -> baseDelegateAdapter.getItems().indexOf(element)).toList());
         }
-        drawHeaderSelection();
     }
 
     private void setupAttributesHeader(DtlFilterData filterData) {
         baseDelegateAdapter.clearAndUpdateItems(filterData.getAmenities());
         baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getString(R.string.dtl_amenities), true));
-        drawHeaderSelection();
     }
 
     @Override

@@ -89,7 +89,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     private boolean processParticipantsActions(Presence presence, String fromJid) {
         MUCUser extension = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
-        if (extension == null || extension.getStatus().isEmpty() || !JidCreatorHelper.isGroupJid(fromJid))
+        if (extension == null || !JidCreatorHelper.isGroupJid(fromJid))
             return false;
         //
         String conversationId = JidCreatorHelper.obtainId(fromJid);
@@ -98,7 +98,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
         //
         MUCRole role = extension.getItem().getRole();
-        if (role == null || extension.getStatus().isEmpty()) return false;
+        if (role == null) return false;
         //
         if (role == MUCRole.none) {
             notifyOnChatLeftListener(conversationId, userId);

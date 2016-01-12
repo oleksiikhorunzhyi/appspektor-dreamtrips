@@ -64,7 +64,7 @@
                         android:layout_marginLeft="@dimen/chat_settings_chat_name_textview_left_margin">
                         <TextView
                             android:id="@+id/chat_settings_chat_name_text_view"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/chat_settings_chat_name_textview_text_size"
                             android:textColor="@color/chat_settings_chat_name_title_textview"

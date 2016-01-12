@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ConversationHelper {
 
-    public void setTitle(final TextView target, Conversation conversation, List<User> members) {
+    public void setTitle(final TextView target, Conversation conversation, List<User> members, boolean withGroupSize) {
         if (members == null || members.isEmpty()) {
             return;
         }
@@ -26,14 +26,14 @@ public class ConversationHelper {
             default:
                 initialTitle = conversation.getSubject();
                 if (TextUtils.isEmpty(initialTitle)) {
-                    initialTitle = Queryable.from(members).map(User::getUserName).joinStrings(", ");
+                    initialTitle = Queryable.from(members).map(u -> u.getUserName().split("\\s")[0]).joinStrings(", ");
                 }
                 break;
         }
         final int usersCount = members.size();
-        if (usersCount == 1) {
+        if (usersCount == 1 || !withGroupSize) {
             target.setText(initialTitle);
-        } else {
+        } else if (withGroupSize) {
             final String fInitialTitle = initialTitle;
             Runnable textSetter = () -> {
                 CharSequence truncatedSubject = TextUtils.ellipsize(fInitialTitle, target.getPaint(), target.getMeasuredWidth() / 4f * 3f, TextUtils.TruncateAt.END);

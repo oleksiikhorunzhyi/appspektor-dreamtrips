@@ -3,16 +3,17 @@ package com.messenger.ui.view;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.widget.ChatSettingsRow;
-import com.messenger.util.UiUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     TextView groupChatInfoTextView;
 
     private ChatSettingsRow membersSettingsRow;
+    private ConversationHelper conversationHelper;
 
     public GroupChatSettingsScreenImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,19 +37,25 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     }
 
     @Override
+    protected void initUi() {
+        conversationHelper = new ConversationHelper();
+        super.initUi();
+    }
+
+    @Override
     public void setConversation(Conversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_group_chat);
-        chatNameTextView.setText(conversation.getSubject());
+        if (!TextUtils.isEmpty(conversation.getSubject())) {
+            chatNameTextView.setText(conversation.getSubject());
+        }
     }
 
     @Override
     public void setParticipants(Conversation conversation, List<User> participants) {
         groupAvatarsView.setVisibility(View.VISIBLE);
         groupAvatarsView.updateAvatars(participants);
-        if (chatNameTextView.getText().length() == 0) {
-            chatNameTextView.setText(UiUtils.getGroupConversationName(conversation, participants));
-        }
+        conversationHelper.setTitle(chatNameTextView, conversation, participants, false);
         String chatDescriptionFormat = getContext()
                 .getString(R.string.chat_settings_group_chat_description);
         int onlineCount = 0;

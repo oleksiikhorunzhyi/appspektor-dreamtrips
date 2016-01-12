@@ -29,7 +29,6 @@ import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.Constants;
-import com.messenger.util.SwipeClickListener;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -224,7 +223,7 @@ public class ConversationsCursorAdapter
     private void setNameAndAvatar(BaseConversationViewHolder holder, Conversation conversation, List<User> participants) {
         if (participants == null || participants.size() == 0) return;
         //
-        conversationHelper.setTitle(holder.getNameTextView(), conversation, participants);
+        conversationHelper.setTitle(holder.getNameTextView(), conversation, participants, true);
         if (conversationHelper.isGroup(conversation)) {
             if (conversation.getType().equals(TRIP)) return;
             //

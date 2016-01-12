@@ -257,7 +257,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
 
     @Override
     public void setTitle(Conversation conversation, List<User> members) {
-        conversationHelper.setTitle(title, conversation, members);
+        conversationHelper.setTitle(title, conversation, members, true);
         conversationHelper.setSubtitle(subtitle, conversation, members);
     }
 

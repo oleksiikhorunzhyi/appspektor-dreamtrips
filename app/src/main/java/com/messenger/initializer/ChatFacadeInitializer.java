@@ -14,7 +14,6 @@ import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.helper.ConversationHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
@@ -49,12 +48,7 @@ public class ChatFacadeInitializer implements AppInitializer {
     @Inject
     DreamSpiceManager spiceManager;
     //
-    private final ConversationHelper conversationHelper;
     private UserProcessor userProcessor;
-
-    public ChatFacadeInitializer() {
-        conversationHelper = new ConversationHelper();
-    }
 
     @Override
     public void initialize(Injector injector) {
@@ -89,7 +83,9 @@ public class ChatFacadeInitializer implements AppInitializer {
         });
         emitter.addOnChatCreatedListener((conversationId, createLocally) -> {
             Timber.i("Chat created :: chat=%s", conversationId);
+            if (createLocally) return;
             conversationsDAO.getConversation(conversationId).first()
+                    .filter(conversation -> conversation == null)
                     .flatMap(conversation -> {
                         LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO);
                         return loaderDelegate.loadConversations();

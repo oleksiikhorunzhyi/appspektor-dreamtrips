@@ -39,7 +39,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return contentResolver.query(q, observeUris)
-                .subscribeOn(Schedulers.io());
+                .compose(new DaoTransformer());
     }
 
     public Observable<User> getParticipant(String conversationId, String yourId) {
@@ -69,6 +69,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .compose(new DaoTransformer())
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
     }
@@ -84,6 +85,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .compose(new DaoTransformer())
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
     }

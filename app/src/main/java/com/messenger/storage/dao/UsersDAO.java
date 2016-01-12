@@ -49,6 +49,7 @@ public class UsersDAO extends BaseDAO {
                 .build();
         return query(q, User.CONTENT_URI)
                 .onBackpressureLatest()
+                .compose(new DaoTransformer())
                 .subscribeOn(Schedulers.io());
     }
 }

@@ -57,7 +57,15 @@ public class RxContentResolver {
     }
 
     private Cursor fetchCursor(Query query) {
-        return cursorFetcher.fetchCursor(query);
+        Cursor cursor = cursorFetcher.fetchCursor(query);
+        try {
+            // Ensure the cursor window is filled.
+            cursor.getCount();
+        } catch (RuntimeException ex) {
+            cursor.close();
+            throw ex;
+        }
+        return cursor;
     }
 
     private void subscribeToContentUpdates(Uri uri, ContentObserver contentObserver) {

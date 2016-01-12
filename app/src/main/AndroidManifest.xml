@@ -25,6 +25,17 @@
         android:protectionLevel="signature"/>
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
 
+    <permission android:name="com.worldventures.dreamtrips.permission.CP_READ"
+                android:permissionGroup="myapp.permission-group.STUB"
+                android:protectionLevel="signature" />
+
+    <permission android:name="com.worldventures.dreamtrips.permission.CP_WRITE"
+                android:permissionGroup="myapp.permission-group.STUB"
+                android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.worldventures.dreamtrips.permission.CP_READ"/>
+    <uses-permission android:name="com.worldventures.dreamtrips.permission.CP_WRITE"/>
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
@@ -156,7 +167,10 @@
         <provider
             android:authorities="${applicationId}"
             android:exported="false"
-            android:name="com.messenger.storage.MessengerDatabase$Provider"/>
+            android:name="com.messenger.storage.MessengerDatabase$Provider"
+            android:readPermission="com.worldventures.dreamtrips.permission.CP_READ"
+            android:writePermission="com.worldventures.dreamtrips.permission.CP_WRITE"
+            />
 
         <!--Foreign activities-->
 

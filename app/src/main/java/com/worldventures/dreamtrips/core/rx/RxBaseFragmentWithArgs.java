@@ -23,7 +23,7 @@ public abstract class RxBaseFragmentWithArgs<PM extends Presenter, P extends Par
 
     @Override
     public <T> Observable<T> bind(Observable<T> observable) {
-        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
+        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
     }
 
     @Override

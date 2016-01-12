@@ -32,7 +32,6 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
     @Inject
     LocationDelegate gpsLocationDelegate;
     //
-    @State
     ArrayList<DtlLocation> dtlLocations = new ArrayList<>();
     @State
     Status status = Status.NEARBY;
@@ -44,6 +43,8 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        connectLocationsExecutor();
+        connectLocationsSearchExecutor();
         //
         apiErrorPresenter.setView(view);
         gpsLocationDelegate.attachListener(this);
@@ -63,12 +64,6 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        connectLocationsExecutor();
-        connectLocationsSearchExecutor();
-    }
 
     @Override
     public void dropView() {

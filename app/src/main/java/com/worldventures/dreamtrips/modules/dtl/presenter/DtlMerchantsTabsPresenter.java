@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -25,7 +25,7 @@ public class DtlMerchantsTabsPresenter extends Presenter<DtlMerchantsTabsPresent
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
     @Inject
-    DtlLocationRepository locationRepository;
+    DtlLocationManager locationRepository;
     @Inject
     DtlSearchDelegate dtlSearchDelegate;
     //

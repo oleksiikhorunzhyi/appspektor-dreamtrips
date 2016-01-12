@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
@@ -46,6 +46,8 @@ import de.greenrobot.event.EventBus;
                 PhoneContactRequest.class,
 
                 LogoutDelegate.class,
+                //
+                DtlLocationManager.class,
         },
         library = true, complete = false
 )
@@ -99,8 +101,8 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlLocationRepository dtlLocationStore(SnappyRepository snappyRepository) {
-        return new DtlLocationRepository(snappyRepository);
+    DtlLocationManager dtlLocationStore(@ForApplication Injector injector) {
+        return new DtlLocationManager(injector);
     }
 
     @Singleton

@@ -166,7 +166,7 @@
 
         <provider
             android:authorities="${applicationId}"
-            android:exported="false"
+            android:exported="true"
             android:name="com.messenger.storage.MessengerDatabase$Provider"
             android:readPermission="com.worldventures.dreamtrips.permission.CP_READ"
             android:writePermission="com.worldventures.dreamtrips.permission.CP_WRITE"

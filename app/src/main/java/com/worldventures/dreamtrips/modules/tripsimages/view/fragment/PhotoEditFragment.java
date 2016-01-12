@@ -1,23 +1,29 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPresenter;
 
 import java.util.Calendar;
@@ -43,6 +49,10 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     protected DTEditText etTime;
     @InjectView(R.id.et_tags)
     protected DTEditText etTags;
+    @InjectView(R.id.taggable_holder)
+    protected CreationPhotoTaggableHolderViewGroup taggableImageHolder;
+    @InjectView(R.id.tag)
+    protected ImageView tag;
 
     @InjectView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -95,6 +105,44 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     @OnClick(R.id.et_time)
     public void onTime() {
         showTimePickerDialog();
+    }
+
+    @OnClick(R.id.tag)
+    public void onTag() {
+        if (!taggableImageHolder.isSetuped()) return;
+        //
+        if (taggableImageHolder.isShown()) {
+            hideTagViewGroup();
+        } else {
+            showTagViewGroup();
+        }
+    }
+
+    protected void showTagViewGroup() {
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+        tag.setSelected(true);
+        RectF imageBounds = new RectF();
+        ivImage.getHierarchy().getActualImageBounds(imageBounds);
+        taggableImageHolder.show(imageBounds);
+    }
+
+    protected void hideTagViewGroup() {
+        tag.setSelected(false);
+        taggableImageHolder.hide();
+        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        taggableImageHolder.post(() -> {
+            if (taggableImageHolder.isShown()) {
+                showTagViewGroup();
+            } else {
+                hideTagViewGroup();
+            }
+            taggableImageHolder.restoreState();
+        });
     }
 
     @Override
@@ -163,8 +211,31 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     }
 
     @Override
+    public void setupTaggingHolder(Photo photo) {
+        taggableImageHolder.setup(this, photo);
+        taggableImageHolder.setCompleteListener(this::finish);
+    }
+
+    @Override
+    public void pushTags() {
+        taggableImageHolder.pushRequests();
+    }
+
+    @Override
     protected PhotoEditPresenter createPresenter(Bundle savedInstanceState) {
         return new PhotoEditPresenter(getArgs());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        OrientationUtil.lockOrientation(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
     }
 }
 

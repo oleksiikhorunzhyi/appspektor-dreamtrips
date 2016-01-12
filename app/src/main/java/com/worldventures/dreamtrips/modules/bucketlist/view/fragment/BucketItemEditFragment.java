@@ -14,13 +14,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -40,6 +40,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -48,6 +50,9 @@ import butterknife.Optional;
 @MenuResource(R.menu.menu_bucket_quick)
 public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
+
+    @Inject
+    BackStackDelegate backStackDelegate;
 
     @Optional
     @InjectView(R.id.done)
@@ -89,14 +94,23 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     public void onResume() {
         super.onResume();
         initAutoCompleteDate();
-
+        backStackDelegate.setListener(this::onBackPressed);
         if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        backStackDelegate.setListener(null);
         OrientationUtil.unlockOrientation(getActivity());
+    }
+
+    private boolean onBackPressed() {
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
+            return true;
+        }
+        return false;
     }
 
     @Optional
@@ -158,6 +172,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
 
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), true, 5);
+        photoPickerLayout.hidePanel();
         photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages, PickImageDelegate.REQUEST_MULTI_SELECT));
     }
 

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.worldventures.dreamtrips.R;
@@ -17,6 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 
 import java.util.List;
 
@@ -25,6 +28,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.State;
 
 public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
@@ -41,6 +46,11 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     Router router;
     @Inject
     PhotoPickerDelegate photoPickerDelegate;
+
+    @State
+    boolean isShown;
+
+    private WeakHandler handler = new WeakHandler();
 
     private InputMethodManager inputMethodManager;
 
@@ -65,6 +75,18 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         draggableView = inflate(getContext(), R.layout.gallery_view, null);
 
         inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+        if (isShown)
+            post(() -> showPanel());
     }
 
     @Override
@@ -94,10 +116,22 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void setup(FragmentManager fragmentManager, boolean multiPickEnabled) {
+        this.setup(fragmentManager, multiPickEnabled, true);
+    }
+
+    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, int pickLimit) {
+        this.setup(fragmentManager, multiPickEnabled);
+        this.pickLimit = pickLimit;
+    }
+
+    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, boolean isVisible) {
         this.fragmentManager = fragmentManager;
         this.multiPickEnabled = multiPickEnabled;
+        if (isVisible) updatePickerDelegate();
+    }
+
+    public void updatePickerDelegate() {
         photoPickerDelegate.setupPhotoPickerLayout(this);
-        hidePanel();
     }
 
     /**
@@ -133,18 +167,19 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
                 .build());
     }
 
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, int pickLimit) {
-        this.setup(fragmentManager, multiPickEnabled);
-        this.pickLimit = pickLimit;
-    }
-
     public void updatePickedItemsCount(int pickedCount) {
+        if (selectedCount == null) return;
+        //
         if (pickedCount == 0) {
             selectedCount.setText(null);
         } else {
             selectedCount.setText(String.format(getResources().getString(R.string.photos_selected),
                     pickedCount));
         }
+    }
+
+    public boolean isShowsFacebookAlbumFragment() {
+        return fragmentManager.findFragmentById(container.getId()) instanceof FacebookAlbumFragment;
     }
 
     public boolean isMultiPickEnabled() {
@@ -165,7 +200,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @OnClick(R.id.button_cancel)
     void onCancel() {
         if (fragmentManager.getBackStackEntryCount() > 1) {
-            fragmentManager.popBackStack();
+            fragmentManager.popBackStackImmediate();
             updatePickedItemsCount(0);
             updateCancelButtonState();
             return;
@@ -182,23 +217,34 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void showPanel() {
-        inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
+        isShown = true;
+        boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
         if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
         updateCancelButtonState();
-        setPanelHeight((int) container.getResources().getDimension(R.dimen.picker_panel_height));
+        int panelHeight = (int) container.getResources().getDimension(R.dimen.picker_panel_height);
+        if (isKeyboardClosed)
+            handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
+        else
+            setPanelHeight(panelHeight);
     }
 
     public void hidePanel() {
-        if (!ViewCompat.isAttachedToWindow(this)) return;
-        //
+        isShown = false;
         updatePickedItemsCount(0);
-        clearAllBackStack();
         setPanelHeight(0);
+        setScrollableView(null);
+        //
+        if (!ViewCompat.isAttachedToWindow(this)) return;
+        clearAllBackStack();
     }
 
     public boolean isPanelVisible() {
         return getPanelHeight() != 0;
+    }
+
+    public boolean isShown() {
+        return isShown;
     }
 
     public void setOnDoneClickListener(OnDoneClickListener onDoneClickListener) {
@@ -210,6 +256,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     private void clearAllBackStack() {
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

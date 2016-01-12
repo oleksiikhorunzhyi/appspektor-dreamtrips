@@ -376,6 +376,7 @@ public class DtlMerchantDetailsFragment
                     default:
                         break;
                 }
+                activityResultDelegate.clear();
                 break;
         }
     }

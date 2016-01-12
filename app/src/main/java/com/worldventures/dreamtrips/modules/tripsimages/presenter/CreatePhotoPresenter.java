@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEv
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,7 +81,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
                 imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
                 imageUploadTask.setType(type);
 
-                eventBus.post(new InsertNewImageUploadTaskEvent(imageUploadTask));
+                eventBus.post(new InsertNewImageUploadTaskEvent(imageUploadTask, view.getTagsToUpload()));
                 view.end();
             }
     }
@@ -105,5 +106,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
         void setTime(String format);
 
         void inject(Object o);
+
+        List<PhotoTag> getTagsToUpload();
     }
 }

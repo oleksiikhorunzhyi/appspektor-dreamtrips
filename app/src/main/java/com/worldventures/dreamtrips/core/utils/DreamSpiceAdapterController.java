@@ -10,6 +10,9 @@ import java.util.ArrayList;
 public abstract class DreamSpiceAdapterController<BaseItemClass>
         extends RoboSpiceAdapterController<DreamSpiceManager, BaseItemClass> {
 
+    /*
+    Don't change to retrolambda expressions, because it causes crash on some devices (Samsung S3)
+     */
     private DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>> nextRequestSuccessListener =
             new DreamSpiceManager.SuccessListener<ArrayList<BaseItemClass>>() {
                 @Override

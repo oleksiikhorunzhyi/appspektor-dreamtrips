@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
@@ -16,7 +15,6 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -40,13 +38,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     public void takeView(View view) {
         super.takeView(view);
         uidItemDelegate = new UidItemDelegate(this);
-        loadEntity(feedEntityHolder -> {
-            FeedEntity feedEntity = feedEntityHolder.getItem();
-            photo.syncLikeState(feedEntity);
-            photo.setCommentsCount(feedEntity.getCommentsCount());
-            photo.setComments(feedEntity.getComments());
-            setupActualViewState();
-        });
+        loadEntity();
     }
 
     @Override
@@ -55,8 +47,20 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         entityManager.setRequestingPresenter(this);
     }
 
-    private void loadEntity(DreamSpiceManager.SuccessListener<FeedEntityHolder> successListener) {
-        doRequest(new GetFeedEntityQuery(photo.getUid()), successListener);
+    public void loadEntity() {
+        doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
+            FeedEntity feedEntity = feedEntityHolder.getItem();
+            if (photo.getUser() != null) {
+                photo.syncLikeState(feedEntity);
+                photo.setCommentsCount(feedEntity.getCommentsCount());
+                photo.setComments(feedEntity.getComments());
+                photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
+            } else {
+                photo = (Photo) feedEntity;
+                view.showContentWrapper();
+            }
+            setupActualViewState();
+        });
     }
 
     @Override
@@ -113,6 +117,10 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         uidItemDelegate.loadFlags(flaggable);
     }
 
+    public boolean isOwnPhoto() {
+        return photo.getOwner().getId() == getAccount().getId();
+    }
+
     public void onEvent(FeedEntityChangedEvent event) {
         updatePhoto(event.getFeedEntity());
     }
@@ -137,6 +145,8 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         void showProgress();
 
         void hideProgress();
+
+        void showContentWrapper();
 
         void openEdit(EditPhotoBundle editPhotoBundle);
     }

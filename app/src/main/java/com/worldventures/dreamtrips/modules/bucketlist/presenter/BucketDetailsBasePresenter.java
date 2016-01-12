@@ -120,6 +120,17 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     ///////// Photo processing
     //////////////////////////////
 
+    /**
+     * Current tab name will be override to null on BucketTypePresenter::dropView()
+     * @see BucketDetailsBasePresenter#openFullScreen(int)
+     * @see BucketTabsPresenter#dropView()
+     * @return
+     */
+    private boolean isTabTrulyVisible() {
+        String currentTabTypeName = db.getOpenBucketTabType();
+        return currentTabTypeName == null || currentTabTypeName.equalsIgnoreCase(type.getName());
+    }
+
     public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
         photoUploadingSpiceManager.cancelUploading(event.getModelObject());
 
@@ -136,9 +147,29 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         openFullScreen(event.getPhoto());
     }
 
+    /**
+     * On Bucket List all instance of BucketDetailsFragment (with presenters) are initialized
+     * and all of them receive callback from bus to openFullScreen.
+     * It is not expected behaviour so I save current tab type onTabChange and
+     * execute openFullScreen for truly visible tab.
+     *
+     * @see BucketTabsPresenter#onTabChange(com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType)
+     *
+     * Method view.isVisibleOnScreen() cannot help to resolve this issue, because it returns
+     * true for any BucketDetails instance (current tab and all others)
+     *
+     * If this method calls from external code (so current type is null) -
+     * isTabVisible will return true
+     *
+     * @see BucketDetailsBasePresenter#isTabTrulyVisible()
+     *
+     * @param position
+     */
     public void openFullScreen(int position) {
-        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItemId));
-        openFullScreen(bucketItem.getPhotos().get(position));
+        if (isTabTrulyVisible()) {
+            eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItemId));
+            openFullScreen(bucketItem.getPhotos().get(position));
+        }
     }
 
     public void openFullScreen(BucketPhoto selectedPhoto) {
@@ -243,6 +274,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     @Override
     public void onError(int id, Exception ex) {
+        if (view == null) return;
+        //
         UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(String.valueOf(id));
         if (bucketPhotoUploadTask != null)
             photoUploadError(bucketPhotoUploadTask);

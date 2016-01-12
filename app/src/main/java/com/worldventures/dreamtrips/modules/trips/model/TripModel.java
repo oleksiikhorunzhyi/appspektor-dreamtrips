@@ -33,6 +33,7 @@ public class TripModel extends BaseFeedEntity implements Filterable {
     @SerializedName("price_available")
     private boolean priceAvailable;
     private boolean available;
+    private boolean hasMultipleDates;
     @SerializedName("sold_out")
     private boolean soldOut;
     private long rewardsLimit;
@@ -112,6 +113,10 @@ public class TripModel extends BaseFeedEntity implements Filterable {
 
     public boolean isAvailable() {
         return available;
+    }
+
+    public boolean isHasMultipleDates() {
+        return hasMultipleDates;
     }
 
     public void setAvailable(boolean available) {

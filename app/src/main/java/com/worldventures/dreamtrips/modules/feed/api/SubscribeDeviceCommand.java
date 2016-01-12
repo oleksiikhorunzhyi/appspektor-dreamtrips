@@ -9,15 +9,17 @@ import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscrip
 public class SubscribeDeviceCommand extends Command<Void> {
 
     private String token;
+    private String releaseSemanticVersionName;
 
-    public SubscribeDeviceCommand(String token) {
+    public SubscribeDeviceCommand(String token, String releaseSemanticVersionName) {
         super(Void.class);
         this.token = token;
+        this.releaseSemanticVersionName = releaseSemanticVersionName;
     }
 
     @Override
     public Void loadDataFromNetwork() throws Exception {
         return getService().subscribeDevice(new PushSubscription(token,
-                "android", BuildConfig.VERSION_NAME, String.valueOf(Build.VERSION.SDK_INT)));
+                "android", releaseSemanticVersionName, String.valueOf(Build.VERSION.SDK_INT)));
     }
 }

@@ -180,7 +180,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     @Override
     public void openTripImages() {
         view.openTripImages(Route.TRIP_LIST_IMAGES,
-                new TripsImagesBundle(TripImagesType.MEMBERS_IMAGES, user.getId()));
+                new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, user.getId()));
     }
 
     public void onEvent(OnAcceptRequestEvent e) {

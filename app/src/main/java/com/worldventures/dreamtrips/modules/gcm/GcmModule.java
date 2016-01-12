@@ -6,9 +6,9 @@ import com.google.gson.Gson;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.friends.notification.FriendNotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactoryHolder;
 import com.worldventures.dreamtrips.modules.gcm.service.PushListenerService;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 
@@ -31,8 +31,8 @@ public class GcmModule {
 
     @Provides
     NotificationDelegate provideNotificationDelegate(@ForApplication Context context, @Global EventBus bus, SnappyRepository repository, NotificationDataParser dataParser,
-                                                     FriendNotificationFactory friendNotificationFactory) {
-        return new NotificationDelegate(context, bus, repository, friendNotificationFactory);
+                                                     NotificationFactoryHolder notificationFactoryHolder) {
+        return new NotificationDelegate(context, bus, repository, notificationFactoryHolder);
     }
 
     @Provides

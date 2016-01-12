@@ -218,6 +218,8 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     }
 
     private String getActionCaption(Resources resources, boolean isAccountsItem, boolean ownAction, boolean isTrip) {
+        if(action == null) return "";
+        //
         switch (action) {
             case BOOK:
                 return resources.getString(R.string.booked);
@@ -237,8 +239,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
                 return isAccountsItem && !ownAction ? resources.getString(R.string.comment) : resources.getString(R.string.comment_foreign);
             case SEND_REQUEST:
                 return resources.getString(R.string.send_request);
+            case TAG_PHOTO:
+                return resources.getString(R.string.tag_photo);
         }
-        return null;
+        return "";
     }
 
 
@@ -286,6 +290,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         REJECT_REQUEST,
         @SerializedName("send_request")
         SEND_REQUEST,
+        @SerializedName("tag_photo")
+        TAG_PHOTO,
+        UNKNOWN
     }
 
 }

@@ -3,6 +3,7 @@ package com.messenger.storage.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
@@ -14,12 +15,8 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.runtime.TransactionManager;
-import com.raizlabs.android.dbflow.runtime.transaction.process.DeleteModelListTransaction;
-import com.raizlabs.android.dbflow.runtime.transaction.process.ProcessModelInfo;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.builder.ConditionQueryBuilder;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
@@ -50,12 +47,9 @@ public class ConversationsDAO extends BaseDAO {
     }
 
     public List<Conversation> getConversationsList(@Conversation.Type.ConversationType String type) {
-        ConditionQueryBuilder queryBuilder = new ConditionQueryBuilder(Conversation.class,
-                Condition.column(Conversation$Table.TYPE).is(type));
-
         return new Select()
                 .from(Conversation.class)
-                .where(queryBuilder)
+                .where(Condition.column(Conversation$Table.TYPE).is(type))
                 .queryList();
     }
 
@@ -63,15 +57,21 @@ public class ConversationsDAO extends BaseDAO {
         getConversationById(conversationId).delete();
     }
 
+    @WorkerThread
     public void deleteConversations(@Nullable Collection<Conversation> conversations) {
         if (conversations != null && conversations.size() > 0) {
             String firstArg = Queryable.from(conversations).first().getId();
-            String[] args = Queryable.from(conversations).skip(1).map(element -> element.getId()).toArray(String.class);
-            ConditionQueryBuilder queryBuilder = new ConditionQueryBuilder(ParticipantsRelationship.class,
-                    Condition.column(ParticipantsRelationship$Table.CONVERSATIONID).in(firstArg, args));
-            new Delete().from(ParticipantsRelationship.class).where(queryBuilder).query();
+            String[] args = Queryable.from(conversations).skip(1).map(Conversation::getId).toArray(String.class);
+            new Delete()
+                    .from(ParticipantsRelationship.class)
+                    .where(Condition.column(ParticipantsRelationship$Table.CONVERSATIONID).in(firstArg, args))
+                    .query();
 
-            TransactionManager.getInstance().addTransaction(new DeleteModelListTransaction(ProcessModelInfo.withModels(conversations)));
+            new Delete()
+                    .from(Conversation.class)
+                    .where(Condition.column(Conversation$Table._ID).in(firstArg, args))
+                    .query();
+            getContentResolver().notifyChange(Conversation.CONTENT_URI, null);
         }
     }
 

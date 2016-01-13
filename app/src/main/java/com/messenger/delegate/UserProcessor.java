@@ -3,9 +3,7 @@ package com.messenger.delegate;
 import com.messenger.api.GetShortProfilesQuery;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.UsersDAO;
-import com.raizlabs.android.dbflow.runtime.TransactionManager;
-import com.raizlabs.android.dbflow.runtime.transaction.process.ProcessModelInfo;
-import com.raizlabs.android.dbflow.runtime.transaction.process.SaveModelTransaction;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 
@@ -62,7 +60,7 @@ public class UserProcessor {
                         u.setAvatarUrl(z.getAvatar() == null ? null : z.getAvatar().getThumb());
                         return u;
                     }).toList();
-                    TransactionManager.getInstance().addTransaction(new SaveModelTransaction<>(ProcessModelInfo.withModels(result)));
+                    ContentUtils.bulkInsert(User.CONTENT_URI, User.class, result);
                     if (!subscriber.isUnsubscribed()) {
                         subscriber.onNext(result);
                         subscriber.onCompleted();

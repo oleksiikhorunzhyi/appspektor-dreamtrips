@@ -11,11 +11,9 @@ import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.raizlabs.android.dbflow.annotation.NotNull;
-import com.raizlabs.android.dbflow.runtime.TransactionManager;
-import com.raizlabs.android.dbflow.runtime.transaction.process.ProcessModelInfo;
-import com.raizlabs.android.dbflow.runtime.transaction.process.SaveModelTransaction;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,13 +55,13 @@ public class LoaderDelegate {
                     // save conversations
                     List<Conversation> convs = from(data).map(d -> d.conversation).toList();
                     List<Message> messages = from(data).map(c -> c.lastMessage).notNulls().toList();
-                    TransactionManager.getInstance().addTransaction(new SaveModelTransaction(ProcessModelInfo.withModels(convs)));
-                    TransactionManager.getInstance().addTransaction(new SaveModelTransaction(ProcessModelInfo.withModels(messages)));
+                    ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
+                    ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages);
                     // save relationships
                     List<ParticipantsRelationship> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
                             .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p.getUser(), p.getAffiliation())))
                             .toList();
-                    TransactionManager.getInstance().addTransaction(new SaveModelTransaction(ProcessModelInfo.withModels(relationships)));
+                    ContentUtils.bulkInsert(ParticipantsRelationship.CONTENT_URI, ParticipantsRelationship.class, relationships);
                     //
                     List<User> users = data.isEmpty() ? Collections.emptyList() : from(data).mapMany(d -> d.participants).map((elem, idx) -> elem.getUser()).distinct().toList();
                     return users;

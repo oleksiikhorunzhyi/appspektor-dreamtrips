@@ -4,6 +4,7 @@ import android.graphics.PointF;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -13,6 +14,8 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
 public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
@@ -39,9 +43,13 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
     SimpleDraweeView photo;
     @InjectView(R.id.title)
     TextView title;
+    @InjectView(R.id.tag)
+    protected ImageView tag;
 
     @Inject
     ActivityRouter activityRouter;
+    @Inject
+    Router router;
 
     public PhotoFeedItemCell(View view) {
         super(view);
@@ -61,6 +69,7 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
             } else {
                 title.setVisibility(View.GONE);
             }
+            tag.setVisibility(photoObj.getPhotoTagsCount() > 0 ? View.VISIBLE : View.GONE);
         }
 
         photo.setOnClickListener(v -> {
@@ -88,6 +97,26 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
         int size = itemView.getResources().getDimensionPixelSize(R.dimen.feed_item_height);
         photo.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(photoObj.getImages()
                 .getUrl(size, size)), photo.getController()));
+    }
+
+    @OnClick(R.id.tag)
+    public void onTagClick(View view){
+        ArrayList<IFullScreenObject> items = new ArrayList<>();
+        items.add(getModelObject().getItem());
+        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                .position(0)
+                .userId(getModelObject().getItem().getOwner().getId())
+                .type(TripImagesType.FIXED)
+                .route(Route.SOCIAL_IMAGE_FULLSCREEN)
+                .fixedList(items)
+                .showTags(true)
+                .build();
+
+        NavigationConfig config = NavigationConfigBuilder.forActivity()
+                .data(data)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .build();
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, config);
     }
 
     @Override

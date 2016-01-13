@@ -97,7 +97,7 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
         return input -> input
                 .compose(new IoToMainComposer<>())
-                .compose(RxLifecycle.bindView(((View) getView())));
+                .compose(RxLifecycle.bindView((View) getView()));
     }
 
 }

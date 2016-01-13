@@ -10,8 +10,8 @@ import android.view.View;
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.di.MessengerStorageModule;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -26,22 +26,23 @@ import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Observable;
 
 public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
 
     protected Activity activity;
 
-    protected Conversation conversation;
-    protected List<User> participants;
+    String conversationId;
+    Observable<Conversation> conversationObservable;
+    Observable<List<User>> participantsObservable;
 
     protected final ChatLeavingDelegate chatLeavingDelegate;
 
@@ -49,50 +50,68 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     User user;
     @Inject
     MessengerServerFacade facade;
+
+    @Inject
+    ConversationsDAO conversationsDAO;
+    @Inject
+    ParticipantsDAO participantsDAO;
+
     @Inject
     @Named(MessengerStorageModule.DB_FLOW_RX_RESOLVER)
     RxContentResolver rxContentResolver;
 
     public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
         this.activity = activity;
-        String conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+
         Injector injector = (Injector) activity.getApplication();
         injector.inject(this);
 
-        conversation = ConversationsDAO.getConversationById(conversationId);
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
+
+        conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
     }
 
     @Override
     public void onNewViewState() {
         state = new ChatSettingsViewState();
         state.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-        getView().setConversation(conversation);
         getView().showContent();
-    }
-
-    private boolean isUserOwner() {
-        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getView().prepareViewForOwner(isUserOwner());
-        ParticipantsDAO.selectParticipants(rxContentResolver, conversation.getId(),
-                User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()
-                .map(c -> SqlUtils.convertToList(User.class, c))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindVisibility())
-                .subscribe(users -> {
-                    participants = users;
-                    getView().setParticipants(conversation, users);
-                });
+        connectToConversation();
 
         // TODO Implement this
         // getView().setNotificationSettingStatus();
+    }
+
+    private void connectToConversation(){
+        conversationObservable = conversationsDAO
+                .getConversation(conversationId)
+                .first()
+                .compose(bindViewIoToMainComposer())
+                .replay(1)
+                .autoConnect();
+
+        conversationObservable.subscribe(conversation -> {
+            connectToParticipants(conversation);
+
+            ChatSettingsScreen screen = getView();
+            screen.prepareViewForOwner(isUserOwner(conversation));
+            screen.setConversation(conversation);
+        });
+    }
+
+    private void connectToParticipants(Conversation conversation){
+        participantsObservable = participantsDAO.getParticipants(conversationId)
+                .onBackpressureLatest()
+                .map(c -> SqlUtils.convertToList(User.class, c))
+                .compose(bindVisibilityIoToMainComposer());
+
+        participantsObservable.subscribe(users ->
+                getView().setParticipants(conversation, users));
     }
 
     @Override
@@ -113,7 +132,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     // Settings UI actions
     ///////////////////////////////////////////////////////////////////////////
 
@@ -133,7 +152,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onLeaveChatClicked() {
-        chatLeavingDelegate.leave(conversation);
+        conversationObservable.subscribe(conversation -> chatLeavingDelegate.leave(conversation));
     }
 
     private final OnChatLeftListener onChatLeftListener = new OnChatLeftListener() {
@@ -154,25 +173,32 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onMembersRowClicked() {
-        EditChatMembersActivity.start(activity, conversation.getId());
-    }
-
-    @Override
-    public String getCurrentSubject() {
-        return conversation.getSubject();
+        EditChatMembersActivity.start(activity, conversationId);
     }
 
     public void onEditChatName() {
-        getView().showSubjectDialog();
+        conversationObservable
+                .map(conversation -> conversation.getSubject())
+                .subscribe(subject -> getView().showSubjectDialog(subject));
+    }
+
+    @Override
+    public void onLeaveButtonClick() {
+        conversationObservable
+                .map(conversation -> conversation.getSubject())
+                .subscribe(subject -> getView().showLeaveChatDialog(subject));
     }
 
     @Override
     public void applyNewChatSubject(String subject) {
-        facade.getChatManager().createMultiUserChatObservable(conversation.getId(), facade.getOwner().getId())
-                .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(multiUserChat1 -> {
+        Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
+                .createMultiUserChatObservable(conversationId, facade.getOwner().getId())
+                .flatMap(multiUserChat -> multiUserChat.setSubject(subject));
+
+        Observable.zip(multiUserChatObservable, conversationObservable,
+                (multiUserChat, conversation) -> conversation)
+                .compose(new IoToMainComposer<>())
+                .subscribe(conversation -> {
                     conversation.setSubject(subject);
                     conversation.save();
                     getView().setConversation(conversation);
@@ -195,7 +221,8 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_overflow).setVisible(isUserOwner());
+        conversationObservable.subscribe(conversation ->
+                menu.findItem(R.id.action_overflow).setVisible(isUserOwner(conversation)));
     }
 
     @Override
@@ -209,5 +236,13 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
                 return true;
         }
         return false;
+    }
+
+    ////////////////////////////////////////////////////
+    ///// Helpers
+    ////////////////////////////////////////////////////
+
+    private boolean isUserOwner(Conversation conversation) {
+        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 }

@@ -2,7 +2,6 @@ package com.messenger.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
-import com.messenger.ui.presenter.ChatSettingsScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.AvatarView;
 import com.messenger.ui.widget.ChatSettingsRow;
@@ -145,14 +143,17 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
 
     @OnClick(R.id.chat_settings_leave_chat_button)
     void onLeaveChatButtonClicked() {
+        getPresenter().onLeaveButtonClick();
+    }
+
+    public void showLeaveChatDialog(String currentSubject) {
         new AlertDialog.Builder(getContext())
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> getPresenter().onLeaveChatClicked())
                 .setNegativeButton(android.R.string.cancel, null)
-                .setMessage(getResources().getString(R.string.chat_settings_leave_group_chat, getPresenter().getCurrentSubject()))
+                .setMessage(getResources().getString(R.string.chat_settings_leave_group_chat, currentSubject))
                 .create()
                 .show();
     }
-
 
     @Override
     public AppCompatActivity getActivity() {
@@ -189,11 +190,10 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
     int getLeaveChatButtonStringRes();
 
     @Override
-    public void showSubjectDialog() {
+    public void showSubjectDialog(String currentSubject) {
         Context context = getContext();
         final View dialogView = inflate(context, R.layout.dialog_change_subject, null);
         EditText etSubject = (EditText) dialogView.findViewById(R.id.et_subject);
-        String currentSubject = getPresenter().getCurrentSubject();
         etSubject.setText(currentSubject);
         if (currentSubject != null) {
             etSubject.setSelection(currentSubject.length());

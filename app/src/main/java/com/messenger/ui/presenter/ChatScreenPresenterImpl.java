@@ -48,7 +48,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
@@ -256,21 +255,21 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         for (; firstPos <= lastPos; firstPos++) {
                             cursor.moveToPosition(firstPos);
                             int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
-                            if (status == Message.Status.SENT) {
-                                Message m = SqlUtils.convertToModel(true, Message.class, cursor);
-                                long markAsReadDelay = 0;
-                                Runnable markAsReadRunnable = ()->sendAndMarkChatEntities(m);
-                                if (timeSinceOpenedScreen() < MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED){
-                                    markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceOpenedScreen();
-                                    handler.postDelayed(markAsReadRunnable, markAsReadDelay);
-                                    skipNextMessagesUiDueToPendingChangesInDb = false;
-                                } else {
-                                    markAsReadRunnable.run();
-                                    // avoid applying new messages with outdated statuses right away
-                                    // to prevent blinking
-                                    skipNextMessagesUiDueToPendingChangesInDb = true;
-                                }
-                            }
+//                            if (status == Message.Status.SENT) {
+//                                Message m = SqlUtils.convertToModel(true, Message.class, cursor);
+//                                long markAsReadDelay = 0;
+//                                Runnable markAsReadRunnable = ()->sendAndMarkChatEntities(m);
+//                                if (timeSinceOpenedScreen() < MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED){
+//                                    markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceOpenedScreen();
+//                                    handler.postDelayed(markAsReadRunnable, markAsReadDelay);
+//                                    skipNextMessagesUiDueToPendingChangesInDb = false;
+//                                } else {
+//                                    markAsReadRunnable.run();
+//                                    // avoid applying new messages with outdated statuses right away
+//                                    // to prevent blinking
+//                                    skipNextMessagesUiDueToPendingChangesInDb = true;
+//                                }
+//                            }
                         }
                     }
 

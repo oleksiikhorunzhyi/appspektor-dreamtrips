@@ -21,4 +21,8 @@ public interface ChatScreen extends MessengerScreen {
     void removeTypingUser(User user);
 
     void showMessages(Cursor cursor, Conversation conversation, boolean pendingScroll);
+
+    int getFirstVisiblePosition();
+    int getLastVisiblePosition();
+    Cursor getCurrentMessagesCursor();
 }

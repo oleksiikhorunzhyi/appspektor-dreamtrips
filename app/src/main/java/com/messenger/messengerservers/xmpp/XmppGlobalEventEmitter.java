@@ -103,7 +103,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         if (role == MUCRole.none) {
             notifyOnChatLeftListener(conversationId, userId);
         } else {
-            notifyOnChatJoinedListener(conversationId, userId);
+            boolean isOnline = presence.getType() == Type.available;
+            notifyOnChatJoinedListener(conversationId, userId, isOnline);
         }
         return true;
     }

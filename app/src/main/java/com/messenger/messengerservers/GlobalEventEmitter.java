@@ -118,9 +118,9 @@ public abstract class GlobalEventEmitter {
         onChatJoinedListeners.remove(listener);
     }
 
-    protected void notifyOnChatJoinedListener(String conversationId, String userId) {
+    protected void notifyOnChatJoinedListener(String conversationId, String userId, boolean isOnline) {
         for (OnChatJoinedListener listener : onChatJoinedListeners) {
-            listener.onChatJoined(conversationId, userId);
+            listener.onChatJoined(conversationId, userId, isOnline);
         }
     }
 

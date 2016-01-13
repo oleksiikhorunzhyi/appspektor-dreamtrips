@@ -4,6 +4,9 @@ import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Process;
 
 import java.util.Arrays;
 
@@ -14,16 +17,19 @@ public class RxContentResolver {
 
     private final ContentResolver contentResolver;
     private CursorFetcher<Query> cursorFetcher;
+    private final HandlerThread thread;
 
     public RxContentResolver(ContentResolver contentResolver, CursorFetcher<Query> cursorFetcher) {
         this.contentResolver = contentResolver;
         this.cursorFetcher = cursorFetcher;
+        thread = new HandlerThread("ObserverThread", Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
     }
 
     public Observable<Cursor> query(Query query, Uri... uriToObserve) {
         final ContentObserver[] contentObserver = {null};
         return Observable.<Cursor>create(subscriber -> {
-                    contentObserver[0] = new ContentObserver(null) {
+            contentObserver[0] = new ContentObserver(new Handler(thread.getLooper())) {
                         @Override
                         public void onChange(boolean selfChange) {
                             if (!subscriber.isUnsubscribed()) {

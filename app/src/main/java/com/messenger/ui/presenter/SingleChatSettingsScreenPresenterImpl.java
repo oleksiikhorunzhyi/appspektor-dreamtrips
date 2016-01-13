@@ -3,12 +3,15 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
@@ -28,6 +31,10 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
 
     @Override
     public void onConversationAvatarClick() {
-        profileCrosser.crossToProfile(participants.get(0));
+        participantsObservable
+                .flatMap(users -> Observable.from(users))
+                .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
+                .first()
+                .subscribe(user ->  profileCrosser.crossToProfile(user));
     }
 }

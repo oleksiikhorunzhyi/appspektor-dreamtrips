@@ -19,11 +19,13 @@ public interface ChatSettingsScreen extends MessengerScreen {
 
     void setParticipants(Conversation conversation, List<User> participants);
 
-    void showSubjectDialog();
+    void showSubjectDialog(String currentSubject);
 
     void prepareViewForOwner(boolean isOwner);
 
     void setNotificationSettingStatus(boolean checked);
 
     void showErrorDialog(@StringRes int msg);
+
+    void showLeaveChatDialog(String currentSubject);
 }

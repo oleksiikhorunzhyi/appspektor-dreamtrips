@@ -43,7 +43,6 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;

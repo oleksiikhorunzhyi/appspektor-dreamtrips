@@ -10,6 +10,7 @@ import android.view.View;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import icepick.Icepick;
 import icepick.State;
@@ -82,4 +83,21 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     @Override public S getViewState() {
         return state;
     }
+
+    ///////////////////////////////////////////////////
+    /////// Helpers
+    //////////////////////////////////////////////////
+
+    protected <T> Observable.Transformer<T, T> bindVisibilityIoToMainComposer() {
+        return input -> input
+                .compose(new IoToMainComposer<>())
+                .compose(bindVisibility());
+    }
+
+    protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
+        return input -> input
+                .compose(new IoToMainComposer<>())
+                .compose(RxLifecycle.bindView((View) getView()));
+    }
+
 }

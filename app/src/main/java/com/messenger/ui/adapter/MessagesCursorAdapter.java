@@ -78,7 +78,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.timestampFormatter = new ChatTimestampFormatter(context);
 
         rowVerticalMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.chat_list_item_vertical_padding);
+                .getDimensionPixelSize(R.dimen.chat_list_item_row_vertical_padding);
     }
 
     @Override
@@ -276,15 +276,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
         bindMessageHolder(holder, position, cursor, message);
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
-                .chatMessageContainer.getLayoutParams();
         int backgroundResource;
+        View itemView = holder.itemView;
         boolean selectedMessage = position == manualTimestampPosition;
         if (previousMessageIsFromSameUser(cursor)) {
-            params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
+            itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
             backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
         } else {
-            params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
+            itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
             backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
         }
         holder.messageTextView.setBackgroundResource(backgroundResource);
@@ -308,17 +307,16 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
         holder.messageTextView.setText(message.getText());
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder
-                .chatMessageContainer.getLayoutParams();
         int backgroundResource;
+        View itemView = holder.itemView;
         boolean selectedMessage = position == manualTimestampPosition;
         if (isPreviousMessageFromTheSameUser) {
-            params.setMargins(params.leftMargin, 0, params.rightMargin, rowVerticalMargin);
+            itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
             holder.avatarImageView.setVisibility(View.INVISIBLE);
             backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble
                     : R.drawable.grey_bubble;
         } else {
-            params.setMargins(params.leftMargin, rowVerticalMargin, params.rightMargin, rowVerticalMargin);
+            itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
             backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble_comics
                     : R.drawable.grey_bubble_comics;
             holder.avatarImageView.setVisibility(View.VISIBLE);

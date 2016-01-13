@@ -61,7 +61,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         implements ChatScreenPresenter {
 
     private final static int MAX_MESSAGE_PER_PAGE = 20;
-    private static final int REFRESH_UNREAD_COUNT_DELAY = 2000;
     private static final int MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS = 2000;
     private static final int MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED = 2000;
 
@@ -106,6 +105,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Observable<Conversation> conversationObservable;
 
     private Handler handler = new Handler();
+    boolean skipNextMessagesUiDueToPendingChangesInDb = false;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
@@ -247,7 +247,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(cursor -> {
-                    boolean skipNextUiUpdateDueToPendingChangesInDb = false;
+                    skipNextMessagesUiDueToPendingChangesInDb = false;
 
                     Cursor oldCursor = getView().getCurrentMessagesCursor();
                     int diff = 0;
@@ -272,18 +272,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                                 if (timeSinceOpenedScreen() < MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED){
                                     markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceOpenedScreen();
                                     handler.postDelayed(markAsReadRunnable, markAsReadDelay);
-                                    skipNextUiUpdateDueToPendingChangesInDb = false;
+                                    skipNextMessagesUiDueToPendingChangesInDb = false;
                                 } else {
                                     markAsReadRunnable.run();
                                     // avoid applying new messages with outdated statuses right away
                                     // to prevent blinking
-                                    skipNextUiUpdateDueToPendingChangesInDb = true;
+                                    skipNextMessagesUiDueToPendingChangesInDb = true;
                                 }
                             }
                         }
                     }
 
-                    if (!skipNextUiUpdateDueToPendingChangesInDb) {
+                    if (!skipNextMessagesUiDueToPendingChangesInDb) {
                         getView().showMessages(cursor, conversation, pendingScroll);
                         pendingScroll = false;
                     }
@@ -354,7 +354,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void showUnreadMessageCount(int unreadMessageCount) {
         conversationObservable
                 .first()
-                .delay(REFRESH_UNREAD_COUNT_DELAY, TimeUnit.MILLISECONDS)
                 .compose(new IoToMainComposer<>())
                 .compose(bindView())
                 .subscribe(conversation -> {

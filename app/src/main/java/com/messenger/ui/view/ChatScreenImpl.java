@@ -151,7 +151,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
                         int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                         subscriber.onNext(firstVisibleItem + visibleItemCount - 1); //cause first visible item is included to visibleItemCount
                     }
-                })).throttleWithTimeout(POST_DELAY_TIME, TimeUnit.SECONDS)
+                }))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxLifecycle.bindView(this))
@@ -162,7 +162,9 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
                 })
                 .filter(booleanCursorPair -> booleanCursorPair.first)
                 .map(cursorPair -> SqlUtils.convertToModel(true, Message.class, cursorPair.second))
-                .subscribe(message -> getPresenter().firstVisibleMessageChanged(message));
+                .subscribe(message -> {
+                    getPresenter().firstVisibleMessageChanged(message);
+                });
     }
 
     @Override
@@ -310,6 +312,30 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         } else if (cursor != null && cursor.getCount() == 1) {
             getPresenter().firstVisibleMessageChanged(SqlUtils.convertToModel(false, Message.class, cursor));
         }
+    }
+
+    @Override
+    public int getFirstVisiblePosition() {
+        if (linearLayoutManager == null) {
+            return -1;
+        }
+        return linearLayoutManager.findFirstVisibleItemPosition();
+    }
+
+    @Override
+    public int getLastVisiblePosition() {
+        if (linearLayoutManager == null) {
+            return -1;
+        }
+        return linearLayoutManager.findLastVisibleItemPosition();
+    }
+
+    @Override
+    public Cursor getCurrentMessagesCursor() {
+        if (adapter == null) {
+            return null;
+        }
+        return adapter.getCursor();
     }
 
     @Override

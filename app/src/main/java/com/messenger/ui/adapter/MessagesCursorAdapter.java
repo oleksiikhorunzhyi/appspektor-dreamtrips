@@ -334,6 +334,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             });
         }
         holder.messageTextView.setBackgroundResource(backgroundResource);
+
+        if (message.getStatus() == Message.Status.SENT) {
+            holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_unread_background);
+        } else {
+            holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
+        }
     }
 
     public void showManualTimestampForPosition(int position) {

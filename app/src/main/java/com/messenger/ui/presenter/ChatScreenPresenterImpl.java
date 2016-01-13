@@ -3,6 +3,8 @@ package com.messenger.ui.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -58,7 +61,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         implements ChatScreenPresenter {
 
     private final static int MAX_MESSAGE_PER_PAGE = 20;
-    private static final int UNREAD_DELAY = 2000;
+    private static final int REFRESH_UNREAD_COUNT_DELAY = 2000;
+    private static final int MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS = 2000;
+    private static final int MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED = 2000;
 
     @Inject
     @Named(PROFILE)
@@ -94,10 +99,13 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected boolean isLoading = false;
     protected boolean pendingScroll = false;
     protected boolean typing;
+    private long screenOpenedTimestamp;
 
     private List<User> participants;
     private Observable<Chat> chatObservable;
     private Observable<Conversation> conversationObservable;
+
+    private Handler handler = new Handler();
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
@@ -129,12 +137,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         connectConversation();
+        screenOpenedTimestamp = System.currentTimeMillis();
     }
 
     @Override
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
         openedConversationTracker.setOpenedConversation(visibility == View.VISIBLE ? conversationId : null);
+        if (visibility == View.GONE) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
@@ -235,8 +247,46 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(cursor -> {
-                    getView().showMessages(cursor, conversation, pendingScroll);
-                    pendingScroll = false;
+                    boolean skipNextUiUpdateDueToPendingChangesInDb = false;
+
+                    Cursor oldCursor = getView().getCurrentMessagesCursor();
+                    int diff = 0;
+                    if (oldCursor != null) {
+                        diff = Math.max(0, cursor.getCount() - oldCursor.getCount());
+                    }
+
+                    // calculate future position of visible elements after cursor is updated in view
+                    int firstPos = getView().getFirstVisiblePosition() + diff;
+                    int lastPos = getView().getLastVisiblePosition() + diff;
+
+                    if (oldCursor != null && cursor.getCount() >= firstPos
+                            && cursor.getCount() - 1 <= lastPos) {
+                        // mark all messages in visible window as read right away
+                        for (; firstPos <= lastPos; firstPos++) {
+                            cursor.moveToPosition(firstPos);
+                            int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
+                            if (status == Message.Status.SENT) {
+                                Message m = SqlUtils.convertToModel(true, Message.class, cursor);
+                                long markAsReadDelay = 0;
+                                Runnable markAsReadRunnable = ()->sendAndMarkChatEntities(m);
+                                if (timeSinceOpenedScreen() < MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED){
+                                    markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceOpenedScreen();
+                                    handler.postDelayed(markAsReadRunnable, markAsReadDelay);
+                                    skipNextUiUpdateDueToPendingChangesInDb = false;
+                                } else {
+                                    markAsReadRunnable.run();
+                                    // avoid applying new messages with outdated statuses right away
+                                    // to prevent blinking
+                                    skipNextUiUpdateDueToPendingChangesInDb = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!skipNextUiUpdateDueToPendingChangesInDb) {
+                        getView().showMessages(cursor, conversation, pendingScroll);
+                        pendingScroll = false;
+                    }
                 });
     }
 
@@ -282,7 +332,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void firstVisibleMessageChanged(Message firstVisibleMessage) {
         // not outgoing and unread
         if (!TextUtils.equals(user.getId(), firstVisibleMessage.getFromId()) && firstVisibleMessage.getStatus() == Message.Status.SENT) {
-            sendAndMarkChatEntities(firstVisibleMessage);
+            handler.postDelayed(()
+                    -> sendAndMarkChatEntities(firstVisibleMessage), MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS);
         }
     }
 
@@ -303,7 +354,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void showUnreadMessageCount(int unreadMessageCount) {
         conversationObservable
                 .first()
-                .delay(UNREAD_DELAY, TimeUnit.MILLISECONDS)
+                .delay(REFRESH_UNREAD_COUNT_DELAY, TimeUnit.MILLISECONDS)
                 .compose(new IoToMainComposer<>())
                 .compose(bindView())
                 .subscribe(conversation -> {
@@ -521,5 +572,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .compose(bindView())
                 .subscribe(action1);
+    }
+
+    private long timeSinceOpenedScreen() {
+        return System.currentTimeMillis() - screenOpenedTimestamp;
     }
 }

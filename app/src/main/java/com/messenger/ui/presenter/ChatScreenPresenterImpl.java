@@ -43,7 +43,6 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -243,24 +242,26 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectMessages(Conversation conversation) {
         messageDAO.getMessages(conversationId)
                 .onBackpressureLatest()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .filter(cursor -> cursor.getCount() > 0)
+                .compose(new IoToMainComposer<>())
                 .compose(bindView())
                 .subscribe(cursor -> {
                     skipNextMessagesUiDueToPendingChangesInDb = false;
 
                     Cursor oldCursor = getView().getCurrentMessagesCursor();
                     int diff = 0;
+                    int count = cursor.getCount();
+
                     if (oldCursor != null) {
-                        diff = Math.max(0, cursor.getCount() - oldCursor.getCount());
+                        diff = Math.max(0, count - oldCursor.getCount());
                     }
 
                     // calculate future position of visible elements after cursor is updated in view
                     int firstPos = getView().getFirstVisiblePosition() + diff;
                     int lastPos = getView().getLastVisiblePosition() + diff;
 
-                    if (oldCursor != null && cursor.getCount() >= firstPos
-                            && cursor.getCount() - 1 <= lastPos) {
+                    if (oldCursor != null && count >= firstPos
+                            && count - 1 <= lastPos) {
                         // mark all messages in visible window as read right away
                         for (; firstPos <= lastPos; firstPos++) {
                             cursor.moveToPosition(firstPos);

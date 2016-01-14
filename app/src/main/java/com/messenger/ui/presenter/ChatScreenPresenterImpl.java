@@ -241,36 +241,25 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     Cursor oldCursor = getView().getCurrentMessagesCursor();
                     int diff = 0;
                     int count = cursor.getCount();
-
                     if (oldCursor != null) {
                         diff = Math.max(0, count - oldCursor.getCount());
                     }
-
-                    // calculate future position of visible elements after cursor is updated in view
-                    int firstPos = getView().getFirstVisiblePosition() + diff;
-                    int lastPos = getView().getLastVisiblePosition() + diff;
-
-                    if (oldCursor != null && count >= firstPos
-                            && count - 1 <= lastPos) {
-                        // mark all messages in visible window as read right away
-                        for (; firstPos <= lastPos; firstPos++) {
-                            cursor.moveToPosition(firstPos);
-                            int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
-                            String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
-                            if (status == Message.Status.SENT && !id.equals(user.getId())) {
-                                Message m = SqlUtils.convertToModel(true, Message.class, cursor);
-                                long markAsReadDelay = 0;
-                                Runnable markAsReadRunnable = ()->sendAndMarkChatEntities(m);
-                                if (timeSinceOpenedScreen() < MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED){
-                                    markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceOpenedScreen();
-                                    handler.postDelayed(markAsReadRunnable, markAsReadDelay);
-                                    skipNextMessagesUiDueToPendingChangesInDb = false;
-                                } else {
-                                    markAsReadRunnable.run();
-                                    // avoid applying new messages with outdated statuses right away
-                                    // to prevent blinking
-                                    skipNextMessagesUiDueToPendingChangesInDb = true;
-                                }
+                    int lastVisiblePosition = getView().getLastVisiblePosition() + diff;
+                    if (oldCursor != null && lastVisiblePosition < count) {
+                        cursor.moveToPosition(lastVisiblePosition);
+                        int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
+                        String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
+                        if (status == Message.Status.SENT && !id.equals(user.getId())) {
+                            Message m = SqlUtils.convertToModel(true, Message.class, cursor);
+                            if (timeSinceOpenedScreen() < MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED){
+                                long markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceOpenedScreen();
+                                handler.postDelayed(() -> sendAndMarkChatEntities(m), markAsReadDelay);
+                                skipNextMessagesUiDueToPendingChangesInDb = false;
+                            } else {
+                                sendAndMarkChatEntities(m);
+                                // avoid applying new messages with outdated statuses right away
+                                // to prevent blinking
+                                skipNextMessagesUiDueToPendingChangesInDb = true;
                             }
                         }
                     }
@@ -320,12 +309,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     @Override
-    public void firstVisibleMessageChanged(Message firstVisibleMessage) {
-        // not outgoing and unread
-        if (!TextUtils.equals(user.getId(), firstVisibleMessage.getFromId()) && firstVisibleMessage.getStatus() == Message.Status.SENT) {
-            handler.postDelayed(()
-                    -> sendAndMarkChatEntities(firstVisibleMessage), MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS);
-        }
+    public void onLastVisibleMessageChanged(int position) {
+        markAsReadWithMessagePosition(getView().getCurrentMessagesCursor(),
+                position, MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS);
     }
 
     @Override
@@ -363,6 +349,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(this::showUnreadMessageCount);
     }
 
+    private void markAsReadWithMessagePosition(Cursor cursor, int position, long delay) {
+        if (cursor == null || cursor.isClosed() || !cursor.moveToPosition(position)) return;
+
+        int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
+        String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
+        // not outgoing and unread
+        if (status == Message.Status.SENT && !id.equals(user.getId())) {
+            Message m = SqlUtils.convertToModel(true, Message.class, cursor);
+            handler.postDelayed(() -> sendAndMarkChatEntities(m), delay);
+        }
+    }
+
     private void sendAndMarkChatEntities(Message firstMessage) {
         chatObservable.first()
                 .flatMap(chat -> chat.sendReadStatus(firstMessage).flatMap(this::markMessagesAsRead))
@@ -397,7 +395,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             position = cursor.getPosition();
         }
         if (cursor.getCount() > 0) {
-            Timber.d("Scroll to position %d message %s", position, firstUnreadMessage);
             getView().smoothScrollToPosition(position);
         }
     }

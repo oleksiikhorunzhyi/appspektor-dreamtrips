@@ -127,13 +127,15 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
-        setPostDelayObservable(linearLayoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) return;
+                int visibleItemCount = linearLayoutManager.getChildCount();
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                //cause first visible item is included to visibleItemCount
+                getPresenter().onLastVisibleMessageChanged(firstVisibleItem + visibleItemCount - 1);
+
+                if (dy > 0) return;
 
                 if (firstVisibleItem <= THRESHOLD) {
                     getPresenter().onNextPageReached();
@@ -146,31 +148,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         unreadMessagesView.setUnreadMessagesClickListener((view -> {
             getPresenter().onUnreadMessagesHeaderClicked();
         }));
-    }
-
-    private void setPostDelayObservable(LinearLayoutManager linearLayoutManager) {
-        Observable.<Integer>create(subscriber ->
-                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        int visibleItemCount = linearLayoutManager.getChildCount();
-                        int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                        subscriber.onNext(firstVisibleItem + visibleItemCount - 1); //cause first visible item is included to visibleItemCount
-                    }
-                }))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView(this))
-                .map(pos -> {
-                    Cursor cursor = adapter.getCursor();
-                    // TODO: 12/31/15  cursor.moveToPosition(pos) -- is it safely? for example, cursor use a few threads
-                    return new Pair<>(!cursor.isClosed() && cursor.moveToPosition(pos), cursor);
-                })
-                .filter(booleanCursorPair -> booleanCursorPair.first)
-                .map(cursorPair -> SqlUtils.convertToModel(true, Message.class, cursorPair.second))
-                .subscribe(message -> {
-                    getPresenter().firstVisibleMessageChanged(message);
-                });
     }
 
     @Override
@@ -320,7 +297,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
 
             linearLayoutManager.scrollToPositionWithOffset(position, offset);
         } else if (cursor != null && cursor.getCount() == 1) {
-            getPresenter().firstVisibleMessageChanged(SqlUtils.convertToModel(false, Message.class, cursor));
+            getPresenter().onLastVisibleMessageChanged(0);
         }
     }
 

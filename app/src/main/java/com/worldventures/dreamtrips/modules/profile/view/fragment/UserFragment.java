@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -28,6 +29,8 @@ import butterknife.ButterKnife;
 public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
 
+    private MenuItem chatActionItem;
+
     private DrawableUtil drawableUtil;
 
     @Override
@@ -40,16 +43,32 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         super.afterCreateView(rootView);
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+
         profileToolbar.inflateMenu(R.menu.user_profile_fragment);
-        profileToolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_chat:
-                    getPresenter().onStartChatClicked();
-            }
+        chatActionItem = profileToolbar.getMenu().findItem(R.id.action_chat);
+        chatActionItem.setOnMenuItemClickListener(item -> {
+            getPresenter().onStartChatClicked();
             return true;
         });
+        showChatButtonForFriend(getPresenter().getUser());
 
         drawableUtil = new DrawableUtil(getContext());
+    }
+
+    @Override
+    public void setUser(User user) {
+        super.setUser(user);
+        showChatButtonForFriend(user);
+    }
+
+    @Override
+    public void notifyUserChanged() {
+        super.notifyUserChanged();
+        showChatButtonForFriend(getPresenter().getUser());
+    }
+
+    public void showChatButtonForFriend(User user) {
+        chatActionItem.setVisible(user.getRelationship() == User.Relationship.FRIEND);
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {

@@ -76,18 +76,25 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        getPresenter().requireAdapterInfo();
+    }
+
+    public void setAdapterWithInfo(User user, boolean isOwner) {
+        Context context = getContext();
+        EditChatMembersScreenPresenter presenter = getPresenter();
+
         // Use this class until sorting logic in ContactCursorAdapter is checked
         // to be working (provided users are sorted alphabetically) or fixed if needed if
         // it does not work when contacts sorting is fixed.
-        adapter = new ActionButtonsContactsCursorAdapter(getContext(), presenter.getUser(), presenter.isOwner());
-        adapter.setDeleteRequestListener(user -> getPresenter().onDeleteUserFromChat(user));
-        adapter.setUserClickListener(user -> getPresenter().onUserClicked(user));
+        adapter = new ActionButtonsContactsCursorAdapter(context, user, isOwner);
+        adapter.setDeleteRequestListener(presenter::onDeleteUserFromChat);
+        adapter.setUserClickListener(presenter::onUserClicked);
 
         recyclerView.setSaveEnabled(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new VerticalDivider(
-                ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
+                ContextCompat.getDrawable(context, R.drawable.divider_list)));
     }
 
     private void initUi() {
@@ -188,9 +195,7 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
                 searchView.setQuery(savedSearchFilter, false);
             }
             searchView.setQueryHint(getContext().getString(R.string.conversation_list_search_hint));
-            searchView.setOnCloseListener(() -> {
-                return false;
-            });
+            searchView.setOnCloseListener(() -> false);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override public boolean onQueryTextSubmit(String query) {
                     return false;

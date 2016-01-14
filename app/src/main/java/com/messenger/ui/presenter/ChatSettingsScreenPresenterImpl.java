@@ -108,7 +108,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         participantsObservable = participantsDAO.getParticipants(conversationId)
                 .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
-                .compose(bindVisibilityIoToMainComposer());
+                .compose(bindViewIoToMainComposer());
 
         participantsObservable.subscribe(users ->
                 getView().setParticipants(conversation, users));

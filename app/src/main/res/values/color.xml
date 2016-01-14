@@ -95,7 +95,7 @@
     <color name="chat_color_username">@color/chat_grey_color</color>
     <color name="chat_color_message">@color/black</color>
     <color name="chat_color_message_own">@android:color/white</color>
-    <color name="chat_unread_message_header_text_color">@color/white</color>
+    <color name="chat_unread_message_header_text_color">#53b5fe</color>
     <color name="chat_typing_textview">#A4A6AA</color>
     <color name="chat_typing_avatars_border">@color/white</color>
     <color name="chat_date_entry">@color/chat_grey_color</color>

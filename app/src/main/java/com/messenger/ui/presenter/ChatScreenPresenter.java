@@ -18,5 +18,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
     void messageTextChanged(int length);
 
     void openUserProfile(User user);
+
+    void onUnreadMessagesHeaderClicked();
 }
 

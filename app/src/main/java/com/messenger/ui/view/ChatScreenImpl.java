@@ -33,6 +33,7 @@ import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.ChatUsersTypingView;
+import com.messenger.ui.widget.UnreadMessagesView;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -69,8 +70,8 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     TextView subtitle;
     @InjectView(R.id.chat_recycler_view)
     RecyclerView recyclerView;
-    @InjectView(R.id.chat_users_unread_messages_textview)
-    TextView unreadMessageCountText;
+    @InjectView(R.id.chat_users_unread_messages_view)
+    UnreadMessagesView unreadMessagesView;
     @InjectView(R.id.chat_users_typing_view)
     ChatUsersTypingView chatUsersTypingView;
 
@@ -140,6 +141,11 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
             }
         });
         recyclerView.setItemAnimator(null);
+
+        unreadMessagesView.setCloseButtonClickListener((view -> unreadMessagesView.hide()));
+        unreadMessagesView.setUnreadMessagesClickListener((view -> {
+            getPresenter().onUnreadMessagesHeaderClicked();
+        }));
     }
 
     private void setPostDelayObservable(LinearLayoutManager linearLayoutManager) {
@@ -263,9 +269,13 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         conversationHelper.setSubtitle(subtitle, conversation, members);
     }
 
-    public void showUnreadMessageCount(int unreadMessage) {
-        unreadMessageCountText.setText(String.valueOf(unreadMessage));
-        unreadMessageCountText.setVisibility(unreadMessage == 0 ? GONE : VISIBLE);
+    public void showUnreadMessageCount(int unreadMessagesCount) {
+        if (unreadMessagesCount > 0) {
+            unreadMessagesView.updateCount(unreadMessagesCount);
+            unreadMessagesView.show();
+        } else {
+            unreadMessagesView.hide();
+        }
     }
 
     @Override
@@ -312,6 +322,11 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         } else if (cursor != null && cursor.getCount() == 1) {
             getPresenter().firstVisibleMessageChanged(SqlUtils.convertToModel(false, Message.class, cursor));
         }
+    }
+
+    @Override
+    public void smoothScrollToPosition(int position) {
+        recyclerView.smoothScrollToPosition(position);
     }
 
     @Override

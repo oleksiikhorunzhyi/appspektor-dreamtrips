@@ -378,6 +378,30 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .map(integer -> firstIncomingMessage);
     }
 
+    @Override
+    public void onUnreadMessagesHeaderClicked() {
+        Cursor cursor = getView().getCurrentMessagesCursor();
+        Message firstUnreadMessage = null;
+        int position = 0;
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+                if (!user.getId().equals(message.getFromId())
+                        && message.getStatus() == Message.Status.SENT) {
+                    firstUnreadMessage = message;
+                    break;
+                }
+            } while (cursor.moveToNext());
+        }
+        if (firstUnreadMessage != null) {
+            position = cursor.getPosition();
+        }
+        if (cursor.getCount() > 0) {
+            Timber.d("Scroll to position %d message %s", position, firstUnreadMessage);
+            getView().smoothScrollToPosition(position);
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // New message
     ///////////////////////////////////////////////////////////////////////////

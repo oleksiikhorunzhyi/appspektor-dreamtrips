@@ -6,14 +6,13 @@ import com.messenger.messengerservers.entities.ConversationData;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.raizlabs.android.dbflow.annotation.NotNull;
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,12 +26,20 @@ public class LoaderDelegate {
 
     private final MessengerServerFacade messengerServerFacade;
     private final UserProcessor userProcessor;
-    private final ConversationsDAO conversationsDAO;
 
-    public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor, ConversationsDAO conversationsDAO) {
+    private final ConversationsDAO conversationsDAO;
+    private final ParticipantsDAO participantsDAO;
+    private final MessageDAO messageDAO;
+    private final UsersDAO usersDAO;
+
+    public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
+                          ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO, MessageDAO messageDAO, UsersDAO usersDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.userProcessor = userProcessor;
         this.conversationsDAO = conversationsDAO;
+        this.participantsDAO = participantsDAO;
+        this.messageDAO = messageDAO;
+        this.usersDAO = usersDAO;
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
@@ -48,23 +55,24 @@ public class LoaderDelegate {
             conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<ConversationData, User>(subscriber) {
                 @Override
                 protected List<User> process(List<ConversationData> data) {
-                    // cleanup cache
-                    // // TODO: 1/8/16 clean replace this logic, cause we can creat single without internet on user profile
-                    List<Conversation> conversations = conversationsDAO.getConversationsList(Conversation.Type.GROUP);
-                    conversationsDAO.deleteConversations(conversations);
-                    // save conversations
+                    final long syncTime = System.currentTimeMillis();
                     List<Conversation> convs = from(data).map(d -> d.conversation).toList();
+                    from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
                     List<Message> messages = from(data).map(c -> c.lastMessage).notNulls().toList();
-                    ContentUtils.bulkInsert(Conversation.CONTENT_URI, Conversation.class, convs);
-                    ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages);
-                    // save relationships
                     List<ParticipantsRelationship> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
                             .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p.getUser(), p.getAffiliation())))
                             .toList();
-                    ContentUtils.bulkInsert(ParticipantsRelationship.CONTENT_URI, ParticipantsRelationship.class, relationships);
-                    //
+                    from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
+                    conversationsDAO.save(convs);
+                    conversationsDAO.deleteBySyncTime(syncTime);
+                    messageDAO.save(messages);
+                    participantsDAO.save(relationships);
+                    participantsDAO.deleteBySyncTime(syncTime);
+
+
                     List<User> users = data.isEmpty() ? Collections.emptyList() : from(data).mapMany(d -> d.participants).map((elem, idx) -> elem.getUser()).distinct().toList();
                     return users;
+
                 }
             });
             conversationLoader.load();
@@ -78,7 +86,7 @@ public class LoaderDelegate {
             contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<User, User>(subscriber) {
                 @Override
                 protected List<User> process(List<User> entities) {
-                    new Delete().from(User.class).where(Condition.column(User$Table.FRIEND).is(true)).queryClose();
+                    usersDAO.deleteFriends();
                     return entities;
                 }
             });

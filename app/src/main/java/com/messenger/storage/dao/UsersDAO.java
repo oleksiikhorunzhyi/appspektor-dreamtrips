@@ -7,6 +7,8 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import rx.Observable;
@@ -50,5 +52,9 @@ public class UsersDAO extends BaseDAO {
         return query(q, User.CONTENT_URI)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
+    }
+
+    public void deleteFriends() {
+        new Delete().from(User.class).where(Condition.column(User$Table.FRIEND).is(true)).queryClose();
     }
 }

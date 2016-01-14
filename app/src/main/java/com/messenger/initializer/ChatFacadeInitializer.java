@@ -12,6 +12,7 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -44,6 +45,8 @@ public class ChatFacadeInitializer implements AppInitializer {
     ParticipantsDAO participantsDAO;
     @Inject
     UsersDAO usersDAO;
+    @Inject
+    MessageDAO messageDAO;
     //
     @Inject
     DreamSpiceManager spiceManager;
@@ -87,7 +90,7 @@ public class ChatFacadeInitializer implements AppInitializer {
             conversationsDAO.getConversation(conversationId).first()
                     .filter(conversation -> conversation == null)
                     .flatMap(conversation -> {
-                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO);
+                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO, participantsDAO, messageDAO, usersDAO);
                         return loaderDelegate.loadConversations();
                     })
                     .subscribe();

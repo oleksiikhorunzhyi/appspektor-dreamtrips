@@ -73,6 +73,11 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
     }
 
     @Override
+    public void hideCheckBox() {
+        checkBox.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showCheckbox(boolean status) {
         checkBox.setText(status ? R.string.bucket_current_cover : R.string.bucket_photo_cover);
         checkBox.setClickable(!status);

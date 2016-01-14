@@ -18,6 +18,8 @@ public interface EditChatMembersScreen extends MessengerScreen {
 
     void setTitle(@StringRes int title);
 
+    void setAdapterWithInfo(User user, boolean isOwner);
+
     void setMembers(Cursor cursor);
 
     void setMembers(Cursor cursor, String query, String queryColumn);

@@ -15,7 +15,5 @@ public interface EditChatMembersScreenPresenter extends MessengerPresenter<EditC
 
     void onUserClicked(User user);
 
-    User getUser();
-
-    boolean isOwner();
+    void requireAdapterInfo();
 }

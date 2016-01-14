@@ -2,8 +2,8 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.view.Menu;
-import android.view.View;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -18,7 +18,6 @@ import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 import com.messenger.ui.viewstate.LceViewState;
 import com.techery.spares.module.Injector;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
@@ -27,8 +26,8 @@ import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
@@ -44,29 +43,28 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Inject
     User user;
 
+    @Inject
+    ParticipantsDAO participantsDAO;
+    @Inject
+    ConversationsDAO conversationsDAO;
+
     private Activity activity;
-    private final MultiUserChat chat;
     private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
-    private Conversation conversation;
+    private Observable<Conversation> conversationObservable;
+    private Observable<MultiUserChat> chatObservable;
+    private Observable<Cursor> membersCursorObservable;
 
-    private Cursor membersCursor;
-
-    private ParticipantsDAO participantsDAO;
-
-    public Subscription subscriptionParticipants;
+    private PublishSubject<Void> adapterInitializer = PublishSubject.create();
+    private Observable<Void> adapterInitializeObservable;
 
     public EditChatMembersScreenPresenterImpl(Activity activity) {
         this.activity = activity;
         ((Injector) activity.getApplication()).inject(this);
-        participantsDAO = new ParticipantsDAO(activity.getApplication());
 
         conversationId = activity.getIntent()
                 .getStringExtra(EditChatMembersActivity.EXTRA_CONVERSATION_ID);
-        conversation = ConversationsDAO.getConversationById(conversationId);
-        chat = messengerServerFacade.getChatManager()
-                .createMultiUserChat(conversationId, conversation.getOwnerId());
 
         this.profileCrosser = new ProfileCrosser(activity, routeCreator);
     }
@@ -78,14 +76,40 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
         getView().showLoading();
 
-        subscriptionParticipants = participantsDAO.getParticipants(conversationId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindView((View) getView()))
-                .subscribe(cursor -> {
-                    getViewState().setLoadingState(LceViewState.LoadingState.CONTENT);
-                    membersCursor = cursor;
-                    applyViewState();
-                });
+        connectConversation();
+        connectChat();
+        connectParticipants();
+
+        adapterInitializeObservable = adapterInitializer.replay(1).autoConnect();
+    }
+
+    private void connectConversation() {
+        conversationObservable = conversationsDAO.getConversation(conversationId)
+                .compose(bindViewIoToMainComposer())
+                .replay(1)
+                .autoConnect();
+    }
+
+    private void connectChat() {
+        chatObservable = conversationObservable
+                .first()
+                .map(conversation -> messengerServerFacade.getChatManager()
+                        .createMultiUserChat(conversationId, conversation.getOwnerId()))
+                .compose(bindViewIoToMainComposer())
+                .replay(1)
+                .autoConnect();
+    }
+
+    private void connectParticipants() {
+        membersCursorObservable = participantsDAO.getParticipants(conversationId)
+                .compose(bindViewIoToMainComposer())
+                .replay(1)
+                .autoConnect();
+
+        membersCursorObservable.subscribe(cursor -> {
+            getViewState().setLoadingState(LceViewState.LoadingState.CONTENT);
+            showContent();
+        });
     }
 
     @Override
@@ -109,21 +133,32 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Override
     public void applyViewState() {
+        EditChatMembersViewState editChatMembersViewState = getViewState();
         EditChatMembersScreen view = getView();
+
         assert view != null;
-        switch (getViewState().getLoadingState()) {
+        switch (editChatMembersViewState.getLoadingState()) {
             case LOADING:
                 view.showLoading();
                 break;
             case CONTENT:
-                view.showContent();
-                view.setMembers(membersCursor, getViewState().getSearchFilter(), User.COLUMN_NAME);
-                view.setTitle(String.format(activity.getString(R.string.edit_chat_members_title), membersCursor.getCount()));
+                showContent();
                 break;
             case ERROR:
-                view.showError(getViewState().getError());
+                view.showError(editChatMembersViewState.getError());
                 break;
         }
+    }
+
+    private void showContent() {
+        Observable.zip(adapterInitializeObservable, membersCursorObservable, (aVoid, cursor1) -> cursor1)
+                .compose(bindVisibilityIoToMainComposer())
+                .subscribe(cursor -> {
+                    EditChatMembersScreen view = getView();
+                    view.showContent();
+                    view.setMembers(cursor, getViewState().getSearchFilter(), User.COLUMN_NAME);
+                    view.setTitle(String.format(activity.getString(R.string.edit_chat_members_title), cursor.getCount()));
+                });
     }
 
     @Override
@@ -139,11 +174,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Override
     public void onDeleteUserFromChatConfirmed(User user) {
-        chat.kick(Collections.singletonList(user))
-                .map(users -> users.get(0))
-                .doOnNext(user1 -> participantsDAO.delete(conversationId, user1.getId()))
-                .doOnError(e -> Timber.e(e, ""))
-                .subscribe();
+        chatObservable.subscribe(chat -> {
+            chat.kick(Collections.singletonList(user))
+                    .map(users -> users.get(0))
+                    .doOnNext(member -> participantsDAO.delete(conversationId, member.getId()))
+                    .doOnError(e -> Timber.e(e, ""))
+                    .subscribe();
+        });
     }
 
     @Override
@@ -152,12 +189,18 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     @Override
-    public User getUser() {
-        return user;
+    public void requireAdapterInfo() {
+        conversationObservable.subscribe(conversation -> {
+            getView().setAdapterWithInfo(user, isOwner(conversation));
+            adapterInitializer.onNext(null);
+        });
     }
 
-    @Override
-    public boolean isOwner() {
-        return user.getId().equals(conversation.getOwnerId());
+    ////////////////////////////////////////////////////////
+    ////   Helpers
+    ////////////////////////////////////////////////////////
+
+    private boolean isOwner(Conversation conversation) {
+        return TextUtils.equals(user.getId(), conversation.getOwnerId());
     }
 }

@@ -18,16 +18,17 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
+import javax.inject.Inject;
 
 public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
 
-    private final UsersDAO usersDAO;
+    @Inject
+    UsersDAO usersDAO;
+
     private final ConversationHelper conversationHelper;
 
     public NewChatScreenPresenterImpl(Activity activity) {
         super(activity);
-        usersDAO = new UsersDAO(activity.getApplication());
         conversationHelper = new ConversationHelper();
     }
 
@@ -40,10 +41,14 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.new_chat_title);
-        usersDAO.getFriends()
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
-                .subscribe(this::showContacts);
+        contactUsers();
+    }
+
+    private void contactUsers() {
+        cursorObservable = usersDAO.getFriends()
+                .compose(bindViewIoToMainComposer());
+
+        cursorObservable.subscribe(this::showContacts);
     }
 
     @Override
@@ -68,7 +73,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
                     return true;
                 }
 
-                if (!isConnectionPresent() && selectedUsers.size() != 1){
+                if (!isConnectionPresent() && selectedUsers.size() != 1) {
                     showAbsentConnectionMessage(activity);
                     return true;
                 }

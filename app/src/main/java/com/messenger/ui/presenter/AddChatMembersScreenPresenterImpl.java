@@ -37,18 +37,18 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     @Inject
     @ForApplication
     Context context;
-    //
+
+    @Inject
+    ConversationsDAO conversationsDAO;
+    @Inject
+    ParticipantsDAO participantsDAO;
+
     private String conversationId;
-    private ConversationsDAO conversationsDAO;
-    private ParticipantsDAO participantsDAO;
-    //
     private Observable<Conversation> conversationStream;
     private PublishSubject<List<User>> selectedStream;
 
     public AddChatMembersScreenPresenterImpl(Activity activity) {
         super(activity);
-        conversationsDAO = new ConversationsDAO(context);
-        participantsDAO = new ParticipantsDAO(context);
         conversationId = activity.getIntent().getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
         conversationStream = conversationsDAO.getConversation(conversationId).first().replay().autoConnect();
         selectedStream = PublishSubject.create();
@@ -63,11 +63,13 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     }
 
     private void connectToCandidates() {
-        participantsDAO.getNewParticipantsCandidates(conversationId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
-                .subscribe(this::showContacts);
+        cursorObservable = participantsDAO
+                .getNewParticipantsCandidates(conversationId)
+                .compose(bindViewIoToMainComposer())
+                .replay(1)
+                .autoConnect();
+
+        cursorObservable.subscribe(this::showContacts);
     }
 
     private void connectSelectedCandidates() {

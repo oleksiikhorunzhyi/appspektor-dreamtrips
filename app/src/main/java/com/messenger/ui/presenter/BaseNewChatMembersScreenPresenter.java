@@ -2,12 +2,8 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -17,26 +13,29 @@ import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.model.ChatUser;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.view.NewChatMembersScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
+import com.messenger.util.ContactsHeaderCreator;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
 public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresenterImpl<NewChatMembersScreen, NewChatLayoutViewState>
         implements NewChatScreenPresenter {
 
+    @Inject
+    User user;
     @Inject
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
@@ -45,16 +44,15 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     @Inject
     DreamSpiceManager dreamSpiceManager;
     @Inject
-    User user;
-    @Inject
     ChatDelegate chatDelegate;
 
-    private String textInChosenContactsEditText = "";
+    protected Observable<Cursor> cursorObservable;
 
     protected Activity activity;
+    private String textInChosenContactsEditText;
 
-    private Cursor contactsCursor;
-    private ProfileCrosser profileCrosser;
+    final private ProfileCrosser profileCrosser;
+    final private ContactsHeaderCreator contactsHeaderCreator;
 
     public static NewChatScreenPresenter createPresenter(Activity activity) {
         int mode = activity.getIntent().getIntExtra(NewChatMembersActivity.EXTRA_MODE, -1);
@@ -73,13 +71,15 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
 
         textInChosenContactsEditText = activity
                 .getString(R.string.new_chat_chosen_contacts_header_empty);
+
         profileCrosser = new ProfileCrosser(activity, routeCreator);
+        contactsHeaderCreator = new ContactsHeaderCreator(activity);
     }
 
     @Override
     public void attachView(NewChatMembersScreen view) {
         super.attachView(view);
-        dreamSpiceManager.start(view.getContext());
+        dreamSpiceManager.start(activity);
         getView().setConversationNameEditTextVisibility(View.GONE);
     }
 
@@ -93,8 +93,9 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     @Override
     public void onNewViewState() {
         state = new NewChatLayoutViewState();
+        state.setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
+
         getView().showLoading();
-        getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
     }
 
     @Override
@@ -104,19 +105,24 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
 
     @Override
     public void applyViewState() {
-        switch (getViewState().getLoadingState()) {
+        NewChatLayoutViewState viewState = getViewState();
+        NewChatMembersScreen screen = getView();
+        List<User> selectedContacts = viewState.getSelectedContacts();
+
+        switch (viewState.getLoadingState()) {
             case LOADING:
-                getView().showLoading();
+                screen.showLoading();
                 break;
             case CONTENT:
-                getView().showContent();
+                screen.showContent();
                 break;
             case ERROR:
-                getView().showError(getViewState().getError());
+                screen.showError(viewState.getError());
                 break;
         }
-        if (getViewState().getSelectedContacts() != null) {
-            getView().setSelectedContacts(getViewState().getSelectedContacts());
+
+        if (selectedContacts != null) {
+            screen.setSelectedContacts(selectedContacts);
             refreshSelectedContactsHeader();
         }
     }
@@ -129,80 +135,38 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
 
     private void refreshSelectedContactsHeader() {
         List<User> selectedContacts = getViewState().getSelectedContacts();
-        StringBuilder sb = new StringBuilder();
-        sb.append(activity.getString(R.string.new_chat_chosen_contacts_header_contacts_list_start_value));
-        if (!selectedContacts.isEmpty()) {
-            sb.append(" (");
-            sb.append(String.valueOf(selectedContacts.size()));
-            sb.append(")");
-        }
-        sb.append(": ");
-
-        List<String> userNames = new ArrayList<>();
-
-        for (int i = 0; i < selectedContacts.size(); i++) {
-            ChatUser user = selectedContacts.get(i);
-            CharSequence name = user.getName();
-            sb.append(name);
-            userNames.add(name.toString());
-            sb.append(", ");
-        }
-
-        String resultString = sb.toString();
-        SpannableString spannableString = new SpannableString(resultString);
-
-        for (int i = 0; i < userNames.size(); i++) {
-            String name = userNames.get(i);
-            int spanBeginning = resultString.indexOf(name);
-            int underlinedSpanEnding = spanBeginning + name.length();
-            int coloredSpanEnding = underlinedSpanEnding;
-            coloredSpanEnding++;
-            assignUnderlinedSpan(spannableString, spanBeginning, underlinedSpanEnding);
-            assignBlueSpan(spannableString, spanBeginning, coloredSpanEnding);
-        }
-
-        textInChosenContactsEditText = resultString;
-
+        SpannableString spannableString = contactsHeaderCreator.createHeader(selectedContacts);
+        textInChosenContactsEditText = spannableString.toString();
         getView().setSelectedUsersHeaderText(spannableString);
-    }
-
-    private void assignUnderlinedSpan(SpannableString spannableString, int start, int end) {
-        spannableString.setSpan(new UnderlineSpan(), start,
-                end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    }
-
-    private void assignBlueSpan(SpannableString spannableString, int start, int end) {
-        int spannableColor = ContextCompat.getColor(activity, R.color.contact_list_header_selected_contacts);
-        spannableString.setSpan(new ForegroundColorSpan(spannableColor), start,
-                end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     @Override
     public void onTextChangedInChosenContactsEditText(String text) {
-        if (textInChosenContactsEditText.length() > text.length()) {
+        int textInChosenContactsLength = textInChosenContactsEditText.length();
+        int textLength = text.length();
+
+        if (textInChosenContactsLength > textLength) {
             List<User> selectedContacts = getViewState().getSelectedContacts();
             if (selectedContacts != null && !selectedContacts.isEmpty()) {
-                getViewState().getSelectedContacts().
-                        remove(getViewState().getSelectedContacts().size() - 1);
-                getView().setSelectedContacts(getViewState().getSelectedContacts());
-                onSelectedUsersStateChanged(getViewState().getSelectedContacts());
+                selectedContacts.remove(selectedContacts.size() - 1);
+                getView().setSelectedContacts(selectedContacts);
+                onSelectedUsersStateChanged(selectedContacts);
             }
             return;
         }
-        String searchQuery = text.substring(textInChosenContactsEditText.length(),
-                text.length());
+        String searchQuery = text.substring(textInChosenContactsLength, textLength);
         getViewState().setSearchFilter(searchQuery);
-        getView().setContacts(contactsCursor, searchQuery, User.COLUMN_NAME);
+
+        cursorObservable.subscribe(cursor ->
+                getView().setContacts(cursor, searchQuery, User.COLUMN_NAME));
     }
 
     protected void showContacts(Cursor cursor) {
-        if (!isViewAttached()) {
-            return;
-        }
+        if (!isViewAttached()) return;
+
         getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.CONTENT);
         getView().setContacts(cursor);
         getView().showContent();
-        contactsCursor = cursor;
     }
 
     @Override

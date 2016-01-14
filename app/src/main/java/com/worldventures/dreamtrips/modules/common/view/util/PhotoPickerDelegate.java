@@ -57,6 +57,7 @@ public class PhotoPickerDelegate {
     }
 
     public interface SelectedPhotosProvider {
+
         List provideSelectedPhotos();
 
         int getType();

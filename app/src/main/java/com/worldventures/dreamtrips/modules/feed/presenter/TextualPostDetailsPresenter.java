@@ -33,7 +33,7 @@ public class TextualPostDetailsPresenter extends Presenter<TextualPostDetailsPre
 
     private void itemDeleted() {
         eventBus.post(new FeedEntityDeletedEvent(textualPost));
-        fragmentCompass.pop();
+        view.back();
     }
 
     public void onEdit() {
@@ -45,5 +45,7 @@ public class TextualPostDetailsPresenter extends Presenter<TextualPostDetailsPre
         void moveToEdit(TextualPost textualPost);
 
         void setupView(TextualPost textualPost);
+
+        void back();
     }
 }

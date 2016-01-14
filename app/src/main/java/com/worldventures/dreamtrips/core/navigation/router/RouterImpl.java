@@ -5,10 +5,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
@@ -44,9 +44,17 @@ public class RouterImpl implements Router {
         openActivity(route, NavigationConfigBuilder.forActivity().build());
     }
 
+    @Override
+    public void back() {
+        activity.onBackPressed();
+    }
+
     private void openActivity(Route route, NavigationConfig config) {
         ActivityRouter activityRouter = new ActivityRouter(activity);
-        activityRouter.openComponentActivity(route, getArgs(config));
+        if (config.getFlags() != -1)
+            activityRouter.openComponentActivity(route, getArgs(config), config.getFlags());
+        else
+            activityRouter.openComponentActivity(route, getArgs(config));
     }
 
     private void openFragment(Route route, NavigationConfig config) {
@@ -97,6 +105,9 @@ public class RouterImpl implements Router {
         args.putParcelable(ComponentPresenter.EXTRA_DATA, config.getData());
         if (config.getToolbarConfig() != null) {
             args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, config.getToolbarConfig());
+        }
+        if (config.getGravity() != Gravity.NO_GRAVITY) {
+            args.putInt(ComponentPresenter.DIALOG_GRAVITY, config.getGravity());
         }
         return args;
     }

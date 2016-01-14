@@ -5,10 +5,13 @@ import android.content.Context;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
@@ -25,11 +28,11 @@ import de.greenrobot.event.EventBus;
 
 public class FeedActionPanelViewActionHandler {
 
-    ActivityRouter activityRouter;
+    Router router;
     EventBus eventBus;
 
-    public FeedActionPanelViewActionHandler(ActivityRouter activityRouter, EventBus eventBus) {
-        this.activityRouter = activityRouter;
+    public FeedActionPanelViewActionHandler(Router router, EventBus eventBus) {
+        this.router = router;
         this.eventBus = eventBus;
     }
 
@@ -81,7 +84,14 @@ public class FeedActionPanelViewActionHandler {
                 break;
         }
 
-        activityRouter.openShare(imageUrl, shareUrl, text, shareType);
+        ShareBundle data = new ShareBundle();
+        data.setImageUrl(imageUrl);
+        data.setShareUrl(shareUrl);
+        data.setText(text == null ? "" : text);
+        data.setShareType(shareType);
+        router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
     }
 
 }

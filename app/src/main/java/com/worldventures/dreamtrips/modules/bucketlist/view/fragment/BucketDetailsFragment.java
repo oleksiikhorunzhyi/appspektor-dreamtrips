@@ -48,6 +48,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import me.relex.circleindicator.CircleIndicator;
@@ -116,7 +117,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @Inject
     @ForActivity
     Provider<Injector> injector;
-
 
     @InjectView(R.id.contentView)
     ViewGroup contentView;
@@ -378,5 +378,33 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @Override
     public void dismissProgressDialog() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void showEdit(BucketBundle bucketBundle) {
+        int containerId = R.id.container_details_floating;
+        router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forRemoval()
+                .containerId(containerId)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .build());
+        if (isTabletLandscape()) {
+            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(true)
+                    .containerId(containerId)
+                    .fragmentManager(getActivity().getSupportFragmentManager())
+                    .data(bucketBundle)
+                    .build());
+            showContainer(containerId);
+        } else {
+            bucketBundle.setLock(true);
+            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
+                    .data(bucketBundle)
+                    .build());
+        }
+    }
+
+    private void showContainer(int containerId) {
+        View container = ButterKnife.findById(getActivity(), containerId);
+        if (container != null) container.setVisibility(View.VISIBLE);
     }
 }

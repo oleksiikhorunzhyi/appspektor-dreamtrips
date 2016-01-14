@@ -113,10 +113,6 @@
         <!--For result activities-->
 
         <activity
-            android:name=".modules.facebook.view.activity.FacebookPickPhotoActivity"
-            android:configChanges="layoutDirection|locale"
-            android:label="@string/trips"/>
-        <activity
             android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
             android:label="@string/trips"/>
 

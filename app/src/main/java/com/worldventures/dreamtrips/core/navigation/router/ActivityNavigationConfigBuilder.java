@@ -28,6 +28,11 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
         return this;
     }
 
+    public ActivityNavigationConfigBuilder flags(int flags) {
+        navigationConfig.flags = flags;
+        return this;
+    }
+
     @Override
     protected void validateConfig() throws IllegalStateException {
         // so far activity navigation has no specific state to validate

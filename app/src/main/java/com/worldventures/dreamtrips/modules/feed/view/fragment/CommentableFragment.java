@@ -15,13 +15,13 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
@@ -41,6 +41,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -99,7 +100,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         //
         likersPanelHelper = new LikersPanelHelper(View.GONE);
         likersNaviagtionWrapper = new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
-                activityRouter, fragmentCompass, tabletAnalytic
+                router, getFragmentManager(), tabletAnalytic
         );
     }
 
@@ -142,11 +143,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     }
 
     private void restorePostIfNeeded() {
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
-        if (baseFragment instanceof PostFragment) {
-            fragmentCompass.showContainer();
-        }
+
     }
 
     @Override
@@ -168,6 +165,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         likersPanel.setOnClickListener(v -> {
             likersNaviagtionWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid()));
         });
+    }
+
+    @Override
+    public void back() {
+        router.back();
     }
 
     @Override
@@ -213,9 +215,10 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     @Override
     public void editComment(Comment comment) {
-        NavigationBuilder.create().forDialog(getChildFragmentManager(), Gravity.CENTER_HORIZONTAL | Gravity.TOP)
-                .data(new SingleCommentBundle(comment))
-                .attach(Route.EDIT_COMMENT);
+        router.moveTo(Route.EDIT_COMMENT, NavigationConfigBuilder.forDialog()
+                .fragmentManager(getChildFragmentManager())
+                .gravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
+                .data(new SingleCommentBundle(comment)).build());
     }
 
     @Override
@@ -229,6 +232,30 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     public void showViewMore() {
         loadMore.setVisible(true);
         adapter.notifyItemChanged(getLoadMorePosition());
+    }
+
+    @Override
+    public void showEdit(BucketBundle bucketBundle) {
+        int containerId = R.id.container_details_floating;
+        if (isTabletLandscape()) {
+            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(true)
+                    .containerId(containerId)
+                    .fragmentManager(getActivity().getSupportFragmentManager())
+                    .data(bucketBundle)
+                    .build());
+            showContainer(containerId);
+        } else {
+            bucketBundle.setLock(true);
+            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
+                    .data(bucketBundle)
+                    .build());
+        }
+    }
+
+    private void showContainer(int containerId) {
+        View container = ButterKnife.findById(getActivity(), containerId);
+        if (container != null) container.setVisibility(View.VISIBLE);
     }
 
     @Override

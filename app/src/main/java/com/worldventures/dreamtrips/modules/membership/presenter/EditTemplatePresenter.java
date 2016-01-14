@@ -8,8 +8,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -17,7 +15,6 @@ import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitatio
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
-import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -114,9 +111,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
             template.setLink(inviteTemplate.getLink());
             if (preview) {
                 preview = false;
-                NavigationBuilder.create().with(activityRouter)
-                        .data(new UrlBundle(inviteTemplate.getLink()))
-                        .move(Route.PREVIEW_TEMPLATE);
+                view.openPreviewTemplate(new UrlBundle(inviteTemplate.getLink()));
             }
         } else {
             handleError(new SpiceException(""));
@@ -205,5 +200,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         void finishLoading();
 
         void hidePhotoUpload();
+
+        void openPreviewTemplate(UrlBundle bundle);
     }
 }

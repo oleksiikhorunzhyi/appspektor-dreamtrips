@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -158,14 +155,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         bundle.setType(event.getType());
         bundle.setBucketItemUid(event.getUid());
 
-        if (view.isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.container_details_floating);
-            fragmentCompass.showContainer();
-            NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);
-        } else {
-            bundle.setLock(true);
-            NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
-        }
+        view.showEdit(bundle);
     }
 
     public void onEvent(DeletePostEvent event) {
@@ -189,7 +179,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
-        fragmentCompass.pop();
+        view.back();
     }
 
     public void onEvent(LoadFlagEvent event) {
@@ -278,6 +268,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         void showViewMore();
 
+        void showEdit(BucketBundle bucketBundle);
+
         void setLikersPanel(FeedEntity entity);
+
+        void back();
     }
 }

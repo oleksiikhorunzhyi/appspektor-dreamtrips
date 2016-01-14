@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.MapInfoReadyEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -35,18 +33,18 @@ public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter
     }
 
     public void onClick() {
-        Route detailsRoute = Route.FEED_ITEM_DETAILS;
         FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(trip, appSessionHolder.get().get().getUser()));
         if (tabletAnalytic.isTabletLandscape()) {
             bundle.setSlave(true);
         }
-        NavigationBuilder.create().with(activityRouter).data(bundle).move(detailsRoute);
-
+        view.openDetails(bundle);
     }
 
     public interface View extends BaseTripPresenter.View {
         void showLayout();
 
         void setImage(String url);
+
+        void openDetails(FeedItemDetailsBundle bundle);
     }
 }

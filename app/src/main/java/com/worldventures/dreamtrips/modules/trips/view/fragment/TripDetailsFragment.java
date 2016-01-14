@@ -13,9 +13,9 @@ import com.linearlistview.LinearListView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
@@ -138,14 +138,17 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        NavigationBuilder.create().with(activityRouter)
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data)
+                .build());
     }
 
     @Override
     public void openBookIt(String url) {
-        NavigationBuilder.create().with(activityRouter).data(new UrlBundle(url)).move(Route.BOOK_IT);
+        router.moveTo(Route.BOOK_IT, NavigationConfigBuilder.forActivity()
+                .data(new UrlBundle(url))
+                .build());
     }
 
     @Override

@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.presenter.TextualPostDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -49,19 +50,29 @@ public class TextualPostDetailsFragment extends BaseFragmentWithArgs<TextualPost
 
     @Override
     public void moveToEdit(TextualPost textualPost) {
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        fragmentCompass.disableBackStack();
-        fragmentCompass.showContainer();
-        //
-        NavigationBuilder.create()
-                .with(fragmentCompass)
+        int containerId = R.id.container_details_floating;
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(containerId)
                 .data(new PostBundle(textualPost))
-                .attach(Route.POST_CREATE);
+                .build());
+        showContainer(containerId);
+    }
+
+    private void showContainer(int containerId) {
+        View container = ButterKnife.findById(getActivity(), containerId);
+        if (container != null) container.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void setupView(TextualPost textualPost) {
         post.setText(textualPost.getDescription());
+    }
+
+    @Override
+    public void back() {
+        router.back();
     }
 
     public void onEvent(FeedEntityEditClickEvent event) {

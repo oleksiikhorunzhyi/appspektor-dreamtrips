@@ -14,8 +14,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 public class ActivityRouter extends ActivityBoundRouter {
@@ -44,15 +42,6 @@ public class ActivityRouter extends ActivityBoundRouter {
         bundle.putString(Player360Activity.EXTRA_URL, url);
         bundle.putString(Player360Activity.EXTRA_TITLE, title);
         startActivity(Player360Activity.class, bundle);
-    }
-
-    public void openShare(String imageUrl, String shareLink, String text, @ShareFragment.ShareType String type) {
-        ShareBundle data = new ShareBundle();
-        data.setImageUrl(imageUrl);
-        data.setShareUrl(shareLink);
-        data.setText(text == null ? "" : text);
-        data.setShareType(type);
-        NavigationBuilder.create().data(data).with(this).move(Route.SHARE);
     }
 
     public void openDefaultShareIntent(Intent intent) {

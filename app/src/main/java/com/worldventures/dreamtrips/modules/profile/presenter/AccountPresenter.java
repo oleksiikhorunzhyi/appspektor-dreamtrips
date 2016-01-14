@@ -295,6 +295,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public interface View extends ProfilePresenter.View {
+        
         void openAvatarPicker();
 
         void openCoverPicker();

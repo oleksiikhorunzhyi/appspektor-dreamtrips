@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
@@ -81,11 +80,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     protected abstract void initialToolbar();
 
     private void restorePostIfNeeded() {
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
-        if (baseFragment instanceof PostFragment) {
-            showPostContainer();
-        }
+
     }
 
     @Override
@@ -144,12 +139,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     public void openPost() {
         showPostContainer();
 
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        //
-        NavigationBuilder.create()
-                .with(fragmentCompass)
-                .attach(Route.POST_CREATE);
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .build());
     }
 
     @Override

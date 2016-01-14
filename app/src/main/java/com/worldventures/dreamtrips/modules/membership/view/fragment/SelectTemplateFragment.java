@@ -12,8 +12,8 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
@@ -98,6 +98,11 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     public void openTemplate(TemplateBundle templateBundle) {
-        NavigationBuilder.create().with(fragmentCompass).data(templateBundle).move(Route.EDIT_INVITE_TEMPLATE);
+        router.moveTo(Route.EDIT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(true)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_main)
+                .data(templateBundle)
+                .build());
     }
 }

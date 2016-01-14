@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,9 +9,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
@@ -71,10 +70,10 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
     @Optional
     @OnClick({R.id.user_cover, R.id.view_profile})
     protected void onUserClick() {
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(getArgs().getUser()))
+        router.moveTo(routeCreator.createRoute(getArgs().getUser().getId()), NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(getArgs().getUser().getId()));
+                .data(new UserBundle(getArgs().getUser()))
+                .build());
     }
 
 }

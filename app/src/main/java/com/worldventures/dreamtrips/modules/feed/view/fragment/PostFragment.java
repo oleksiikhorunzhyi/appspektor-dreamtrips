@@ -16,6 +16,8 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
@@ -297,7 +299,9 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
 
         SoftInputUtil.hideSoftInputMethod(post);
         getPresenter().cancel();
-        fragmentCompass.removePost();
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+                .fragmentManager(getFragmentManager())
+                .build());
     }
 
     private boolean onBackPressed() {

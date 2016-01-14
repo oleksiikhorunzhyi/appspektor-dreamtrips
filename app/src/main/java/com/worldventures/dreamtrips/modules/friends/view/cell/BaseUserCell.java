@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell;
 
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -8,9 +9,8 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -30,9 +30,9 @@ public abstract class BaseUserCell extends AbstractCell<User> {
     @Inject
     Presenter.TabletAnalytic tabletAnalytic;
     @Inject
-    FragmentCompass fragmentCompass;
+    FragmentManager fragmentManager;
     @Inject
-    ActivityRouter activityRouter;
+    Router router;
 
     @InjectView(R.id.sdv_avatar)
     SimpleDraweeView sdvAvatar;
@@ -92,7 +92,7 @@ public abstract class BaseUserCell extends AbstractCell<User> {
 
     private NavigationWrapper createActionPanelNavigationWrapper() {
         return new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
-                activityRouter, fragmentCompass, tabletAnalytic
+                router, fragmentManager, tabletAnalytic
         );
     }
 }

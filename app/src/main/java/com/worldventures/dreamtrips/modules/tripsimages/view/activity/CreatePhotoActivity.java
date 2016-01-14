@@ -9,13 +9,15 @@ import android.view.WindowManager;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.routing.BaseRouter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_create_photo)
-public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParentPresenter> {
+public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParentPresenter> implements CreatePhotoParentPresenter.View {
     public static final String EXTRA_FILE_URI = "EXTRA_FILE_URI";
     public static final String EXTRA_TYPE = "type_extra";
     public static final int REQUEST_CODE_CREATE_PHOTO = 342;
@@ -52,5 +54,15 @@ public class CreatePhotoActivity extends ActivityWithPresenter<CreatePhotoParent
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void addFragment(Route route, Bundle bundle) {
+        router.moveTo(route, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.container_main)
+                .fragmentManager(getSupportFragmentManager())
+                .backStackEnabled(true)
+                .data(bundle)
+                .build());
     }
 }

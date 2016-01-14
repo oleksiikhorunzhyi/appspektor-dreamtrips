@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 import android.app.Dialog;
 import android.support.annotation.MenuRes;
 import android.support.annotation.StringRes;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -10,10 +11,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -55,15 +54,13 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     ImageView editFeedItem;
 
     @Inject
-    FragmentCompass fragmentCompass;
-    @Inject
     Presenter.TabletAnalytic tabletAnalytic;
     @Inject
     SessionHolder<UserSession> sessionHolder;
     @Inject
     FeedActionPanelViewActionHandler feedActionHandler;
     @Inject
-    ActivityRouter activityRouter;
+    FragmentManager fragmentManager;
 
     private boolean syncUIStateWithModelWasCalled = false;
     //
@@ -83,7 +80,7 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     public void afterInject() {
         super.afterInject();
         navigationWrapper = new NavigationWrapperFactory()
-                .componentOrDialogNavigationWrapper(activityRouter, fragmentCompass, tabletAnalytic);
+                .componentOrDialogNavigationWrapper(router, fragmentManager, tabletAnalytic);
     }
 
     @Override
@@ -139,10 +136,9 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
         if (tabletAnalytic.isTabletLandscape()) {
             bundle.setSlave(true);
         }
-        NavigationBuilder.create()
-                .with(activityRouter)
+        router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
                 .data(bundle)
-                .move(detailsRoute);
+                .build());
     }
 
     protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {

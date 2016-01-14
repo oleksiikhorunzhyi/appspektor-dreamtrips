@@ -68,6 +68,7 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
             feedItem.setItem(feedEntity);
             eventBus.post(new FeedEntityChangedEvent(feedEntity));
             checkCommentsAndLikesToLoad();
+            view.updateFeedItem(feedItem);
             //
             if (view.isTabletLandscape()) view.showAdditionalInfo(feedEntity.getOwner());
         }, spiceException -> Timber.e(spiceException, TAG));
@@ -122,6 +123,7 @@ public class FeedItemDetailsPresenter extends BaseCommentPresenter<FeedItemDetai
 
 
     public interface View extends BaseCommentPresenter.View {
+        
         void setFeedItem(FeedItem feedItem);
 
         void updateFeedItem(FeedItem feedItem);

@@ -33,13 +33,6 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
         super();
     }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        fragmentCompass.setContainerId(R.id.container_info);
-        fragmentCompass.disableBackStack();
-    }
-
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
             setFilters(event);
@@ -106,7 +99,7 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
                 .firstOrDefault(t -> t.getTripId().equals(id));
         Bundle bundle = new Bundle();
         bundle.putSerializable(TripMapInfoFragment.EXTRA_TRIP, resultTrip);
-        fragmentCompass.replace(Route.MAP_INFO, bundle);
+        view.moveTo(Route.MAP_INFO, bundle);
     }
 
     public void onEvent(MapInfoReadyEvent event) {
@@ -126,20 +119,25 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
     }
 
     private void removeInfoIfNeeded() {
-        if (fragmentCompass.getCurrentFragment() instanceof TripMapInfoFragment) {
-            fragmentCompass.remove(Route.MAP_INFO.getClazzName());
-        }
+        view.removeIfNeeded(Route.MAP_INFO);
     }
 
     public void actionList() {
-        fragmentCompass.pop();
+        view.back();
     }
 
     public interface View extends Presenter.View {
+
         void addPin(LatLng latLng, String id);
 
         void clearMap();
 
         void prepareInfoWindow(int offset);
+
+        void moveTo(Route route, Bundle bundle);
+
+        void removeIfNeeded(Route route);
+
+        void back();
     }
 }

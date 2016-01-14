@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -8,6 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 
 import butterknife.InjectView;
@@ -49,27 +51,18 @@ public class ComponentActivity extends ToolbarActivity<ComponentPresenter> imple
         }
     }
 
-    boolean handleComponentChange() {
-        if (detailsFloatingContainer.getVisibility() == View.VISIBLE) {
-            detailsFloatingContainer.setVisibility(View.GONE);
-            return true;
-        }
-        return false;
-    }
-
-    public void hideToolbar() {
-        toolbar.setVisibility(View.GONE);
-    }
-
     @Override
     protected ComponentPresenter createPresentationModel(Bundle savedInstanceState) {
         return new ComponentPresenter(extras);
     }
 
     @Override
-    public void onBackPressed() {
-        if (!handleComponentChange()) {
-            super.onBackPressed();
-        }
+    public void moveTo(Route route, Parcelable args) {
+        router.moveTo(route, NavigationConfigBuilder.forFragment()
+                .fragmentManager(getSupportFragmentManager())
+                .containerId(R.id.container_main)
+                .backStackEnabled(true)
+                .data(args)
+                .build());
     }
 }

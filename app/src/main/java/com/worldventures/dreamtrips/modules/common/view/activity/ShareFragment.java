@@ -16,6 +16,8 @@ import com.facebook.widget.WebDialog;
 import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -140,8 +142,16 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
             loginButton.setSessionStatusCallback((s, state, exception) -> {
                 Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
                 if (session != null && session.isOpened()) {
-                    getActivity().runOnUiThread(() -> new Handler().postDelayed(() ->
-                            activityRouter.openShare(picture, link, text, ShareFragment.FB), 150));
+                    getActivity().runOnUiThread(() -> new Handler().postDelayed(() -> {
+                        ShareBundle data = new ShareBundle();
+                        data.setImageUrl(picture);
+                        data.setShareUrl(link);
+                        data.setText(text == null ? "" : text);
+                        data.setShareType(ShareFragment.FB);
+                        router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                                .data(data)
+                                .build());
+                    }, 150));
                 }
             });
             loginButton.performClick();

@@ -13,8 +13,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -25,6 +23,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -48,10 +47,6 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
     @Inject
     Presenter.TabletAnalytic tabletAnalytic;
     @Inject
-    FragmentCompass fragmentCompass;
-    @Inject
-    ActivityRouter activityRouter;
-    @Inject
     FeedEntityContentFragmentFactory fragmentFactory;
     @Inject
     FragmentManager fragmentManager;
@@ -59,8 +54,6 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
     SessionHolder<UserSession> sessionHolder;
     @Inject
     FeedActionPanelViewActionHandler feedActionHandler;
-    @Inject
-    Router router;
     //
     FeedItemCommonDataHelper feedItemCommonDataHelper;
     LikersPanelHelper likersPanelHelper;
@@ -140,18 +133,19 @@ public class FeedItemDetailsCell extends AbstractCell<FeedItem> {
 
     private NavigationWrapper createActionPanelNavigationWrapper() {
         return new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
-                activityRouter, fragmentCompass, tabletAnalytic
+                router, fragmentManager, tabletAnalytic
         );
     }
 
     private FragmentManager getFragmentManager() {
-        if (fragmentCompass.getCurrentFragment() instanceof BucketTabsFragment
+        BaseFragment fragment = (BaseFragment) fragmentManager.findFragmentById(R.id.container_main);
+        if (fragment instanceof BucketTabsFragment
                 && getModelObject().getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
-            return Queryable.from(fragmentCompass.getCurrentFragment().getChildFragmentManager().getFragments()).filter(element -> {
+            return Queryable.from(fragment.getChildFragmentManager().getFragments()).filter(element -> {
                 return ((BucketItem.BucketType) element.getArguments().getSerializable("BUNDLE_TYPE")).getName().equals(((BucketItem) getModelObject().getItem()).getType());
             }).first().getChildFragmentManager().getFragments().get(0).getChildFragmentManager();
-        } else if (fragmentCompass.getCurrentFragment() instanceof FeedItemDetailsFragment) {
-            return fragmentCompass.getCurrentFragment().getChildFragmentManager();
+        } else if (fragmentManager.getFragments().get(fragmentManager.getFragments().size() - 1) instanceof FeedItemDetailsFragment) {
+            return fragmentManager.getFragments().get(fragmentManager.getFragments().size() - 1).getChildFragmentManager();
         }
 
         return fragmentManager;

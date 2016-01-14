@@ -31,6 +31,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column String type;
     @Column int unreadMessageCount;
     @Column boolean abandoned;
+    @Column long syncTime;
 
     public Conversation() {}
 
@@ -90,6 +91,14 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setAbandoned(boolean abandoned) {
         this.abandoned = abandoned;
+    }
+
+    public long getSyncTime() {
+        return syncTime;
+    }
+
+    public void setSyncTime(long syncTime) {
+        this.syncTime = syncTime;
     }
 
     @Override

@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.Message$Adapter;
 import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -89,5 +92,9 @@ public class MessageDAO extends BaseDAO {
                     cursor.close();
                     return res;
                 });
+    }
+
+    public void save(List<Message> messages) {
+        bulkInsert(messages, new Message$Adapter(), Message.CONTENT_URI);
     }
 }

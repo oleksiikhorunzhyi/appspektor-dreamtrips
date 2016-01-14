@@ -7,11 +7,16 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
+import com.messenger.messengerservers.entities.ParticipantsRelationship$Adapter;
 import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -116,5 +121,16 @@ public class ParticipantsDAO extends BaseDAO {
         resolver.delete(ParticipantsRelationship.CONTENT_URI,
                 ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
                         ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
+    }
+
+    public void save(List<ParticipantsRelationship> participants) {
+        bulkInsert(participants, new ParticipantsRelationship$Adapter(), ParticipantsRelationship.CONTENT_URI);
+    }
+
+    public void deleteBySyncTime(long time) {
+        new Delete().from(ParticipantsRelationship.class)
+                .where(Condition.column(ParticipantsRelationship$Table.SYNCTIME).lessThan(time))
+                .and(Condition.column(ParticipantsRelationship$Table.SYNCTIME).isNot(0))
+                .queryClose();
     }
 }

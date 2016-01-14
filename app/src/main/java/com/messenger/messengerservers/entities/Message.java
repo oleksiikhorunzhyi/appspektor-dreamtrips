@@ -142,6 +142,11 @@ public class Message extends BaseProviderModel<Message> {
         return CONTENT_URI;
     }
 
+    @Override
+    public String toString() {
+        return id + "  " + text;
+    }
+
     public static final class Builder {
         private String id;
         private String conversationId;

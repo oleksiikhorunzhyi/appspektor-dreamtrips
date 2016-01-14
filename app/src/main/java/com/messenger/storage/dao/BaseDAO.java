@@ -1,17 +1,25 @@
 package com.messenger.storage.dao;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.messenger.messengerservers.entities.User;
+import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.RxContentResolver;
 import com.messenger.util.RxContentResolver.Query;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.ModelAdapter;
+
+import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 
 class BaseDAO {
     private final Context context;
@@ -50,5 +58,17 @@ class BaseDAO {
 
     protected Context getContext() {
         return context;
+    }
+
+    protected <T extends BaseModel> void bulkInsert(List<T> collection, ModelAdapter<T> adapter, Uri uri) {
+        ContentValues values = new ContentValues();
+        for (T t : collection) {
+            adapter.bindToContentValues(values, t);
+            FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase()
+                    .insertWithOnConflict(adapter.getTableName(), null, values, ConflictAction.getSQLiteDatabaseAlgorithmInt(adapter.getInsertOnConflictAction()));
+            Timber.d("Insert %s : " + t, adapter.getTableName());
+            values.clear();
+        }
+        contentResolver.notifyChange(uri, null);
     }
 }

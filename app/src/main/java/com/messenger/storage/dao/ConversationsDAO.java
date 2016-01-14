@@ -3,10 +3,10 @@ package com.messenger.storage.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Conversation$Adapter;
 import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Message$Table;
@@ -57,7 +57,7 @@ public class ConversationsDAO extends BaseDAO {
         getConversationById(conversationId).delete();
     }
 
-    @WorkerThread
+    @Deprecated
     public void deleteConversations(@Nullable Collection<Conversation> conversations) {
         if (conversations != null && conversations.size() > 0) {
             String firstArg = Queryable.from(conversations).first().getId();
@@ -72,7 +72,15 @@ public class ConversationsDAO extends BaseDAO {
                     .where(Condition.column(Conversation$Table._ID).in(firstArg, args))
                     .query();
             getContentResolver().notifyChange(Conversation.CONTENT_URI, null);
+            getContentResolver().notifyChange(ParticipantsRelationship.CONTENT_URI, null);
         }
+    }
+
+    public void deleteBySyncTime(long time) {
+        new Delete().from(Conversation.class)
+                .where(Condition.column(Conversation$Table.SYNCTIME).lessThan(time))
+                .and(Condition.column(Conversation$Table.SYNCTIME).isNot(0))
+                .queryClose();
     }
 
     public Observable<Cursor> selectConversationsList(@Nullable @Conversation.Type.ConversationType String type) {
@@ -137,5 +145,9 @@ public class ConversationsDAO extends BaseDAO {
                 .where(Condition.column(Conversation$Table._ID).is(conversationId))
                 .queryClose();
         getContentResolver().notifyChange(Conversation.CONTENT_URI, null);
+    }
+
+    public void save(List<Conversation> conversations) {
+        bulkInsert(conversations, new Conversation$Adapter(), Conversation.CONTENT_URI);
     }
 }

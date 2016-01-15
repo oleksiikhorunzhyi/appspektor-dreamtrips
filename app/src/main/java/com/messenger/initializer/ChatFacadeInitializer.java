@@ -63,16 +63,20 @@ public class ChatFacadeInitializer implements AppInitializer {
         emitter.addGlobalMessageListener(new GlobalMessageListener() {
             @Override
             public void onReceiveMessage(Message message) {
-                conversationsDAO.incrementUnreadField(message.getConversationId());
-                message.setDate(new Date());
+                long time = System.currentTimeMillis();
+                message.setDate(new Date(time));
                 message.setStatus(Message.Status.SENT);
                 message.save();
+                conversationsDAO.incrementUnreadField(message.getConversationId());
+                conversationsDAO.updateDate(message.getConversationId(), time);
             }
 
             @Override
             public void onSendMessage(Message message) {
-                message.setDate(new Date());
+                long time = System.currentTimeMillis();
+                message.setDate(new Date(time));
                 message.save();
+                conversationsDAO.updateDate(message.getConversationId(), time);
             }
         });
         emitter.addOnSubjectChangesListener((conversationId, subject) -> {

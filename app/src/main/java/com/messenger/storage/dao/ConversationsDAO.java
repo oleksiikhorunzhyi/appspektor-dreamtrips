@@ -1,5 +1,6 @@
 package com.messenger.storage.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -57,6 +58,13 @@ public class ConversationsDAO extends BaseDAO {
         getConversationById(conversationId).delete();
     }
 
+    public int updateDate(String conversationId, long date) {
+        ContentValues contentValues = new ContentValues(1);
+        contentValues.put(Conversation$Table.LASTACTIVEDATE, date);
+        return getContentResolver().update(Conversation.CONTENT_URI, contentValues,
+                Conversation$Table._ID + "=?", new String[] {conversationId});
+    }
+
     @Deprecated
     public void deleteConversations(@Nullable Collection<Conversation> conversations) {
         if (conversations != null && conversations.size() > 0) {
@@ -110,7 +118,9 @@ public class ConversationsDAO extends BaseDAO {
         query.append("GROUP BY c." + Conversation$Table._ID + " " +
                 "HAVING c." + Conversation$Table.TYPE + "=? " +
                 "OR COUNT(p." + ParticipantsRelationship$Table.ID + ") > 1 " +
-                "ORDER BY c." + Conversation$Table.ABANDONED + ", m." + Message$Table.DATE + " DESC");
+                "ORDER BY c." + Conversation$Table.ABANDONED + ", " +
+                "c." + Conversation$Table.LASTACTIVEDATE + " DESC"
+        );
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());

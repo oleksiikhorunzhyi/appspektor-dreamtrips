@@ -7,6 +7,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -85,7 +86,7 @@ public class ChatDelegate {
                 .subscribe(multiUserChat1 -> {
                     if (!StringUtils.isEmpty(subject)) conversation.setSubject(subject);
                     //
-                    conversation.save();
+                    ContentUtils.insert(Conversation.CONTENT_URI, conversation);
                 });
 
         return conversation;

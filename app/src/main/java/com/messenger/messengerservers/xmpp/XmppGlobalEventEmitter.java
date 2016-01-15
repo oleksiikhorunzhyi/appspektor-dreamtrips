@@ -81,13 +81,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         if (presenceType == null) return;
 
         String fromJid = stanza.getFrom();
-        boolean processed = processParticipantsActions(presence, fromJid);
+        boolean processed = processGroupChatParticipantsActions(presence, fromJid);
         if (!processed && (Type.available == presenceType || Type.unavailable == presenceType)) {
-            notifyUserPresenceChanged(JidCreatorHelper.obtainUserIdFromGroupJid(fromJid), Type.available == presenceType);
+            notifyUserPresenceChanged(JidCreatorHelper.obtainId(fromJid), Type.available == presenceType);
         }
     }
 
-    private boolean processParticipantsActions(Presence presence, String fromJid) {
+    private boolean processGroupChatParticipantsActions(Presence presence, String fromJid) {
         MUCUser extension = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
         if (extension == null || !JidCreatorHelper.isGroupJid(fromJid))
             return false;

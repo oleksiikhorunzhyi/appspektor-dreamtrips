@@ -13,6 +13,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.activity.EditChatMembersActivity;
+import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.view.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
@@ -151,9 +152,15 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     private void showContent() {
-        Observable.zip(adapterInitializeObservable, membersCursorObservable, (aVoid, cursor1) -> cursor1)
+        Observable.zip(adapterInitializeObservable, membersCursorObservable, (aVoid, cursor) -> cursor)
                 .compose(bindVisibilityIoToMainComposer())
                 .subscribe(cursor -> {
+                    // cause admin of group chat is also participant
+                    if (cursor.getCount() <= 1) {
+                        MessengerStartActivity.start(activity);
+                        return;
+                    }
+
                     EditChatMembersScreen view = getView();
                     view.showContent();
                     view.setMembers(cursor, getViewState().getSearchFilter(), User.COLUMN_NAME);

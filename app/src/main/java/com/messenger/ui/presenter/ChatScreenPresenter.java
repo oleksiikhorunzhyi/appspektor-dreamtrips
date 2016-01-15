@@ -13,10 +13,12 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onNextPageReached();
 
-    void firstVisibleMessageChanged(Message firstVisibleMessage);
+    void onLastVisibleMessageChanged(int position);
 
     void messageTextChanged(int length);
 
     void openUserProfile(User user);
+
+    void onUnreadMessagesHeaderClicked();
 }
 

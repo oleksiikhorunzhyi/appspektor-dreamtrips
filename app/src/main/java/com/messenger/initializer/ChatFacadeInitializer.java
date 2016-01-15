@@ -102,6 +102,7 @@ public class ChatFacadeInitializer implements AppInitializer {
         emitter.addOnChatJoinedListener((conversationId, userId, isOnline) -> {
             Timber.i("Chat joined :: chat=%s , user=%s", conversationId, userId);
             usersDAO.getUserById(userId)
+                    .first()
                     .flatMap(cachedUser -> {
                         if (cachedUser != null) return just(singletonList(cachedUser));
                         else return userProcessor.connectToUserProvider(just(singletonList(new User(userId))));

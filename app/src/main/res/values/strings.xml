@@ -511,7 +511,7 @@
     <string name="conversation_list_item_last_message_format_you">You: %s</string>
     <string name="conversation_list_last_message_date_format_today">h:mm</string>
     <string name="conversation_list_last_message_date_format_yesterday">Yesterday</string>
-    <string name="conversation_list_last_message_date_format_more_than_one_day_ago">dd.M</string>
+    <string name="conversation_list_last_message_date_format_more_than_one_day_ago">MMM, dd</string>
     <string name="conversation_list_abandoned">Closed</string>
     <string name="conversation_list_swipe_button_delete">Delete</string>
     <!-- TODO Approve this dialog text -->

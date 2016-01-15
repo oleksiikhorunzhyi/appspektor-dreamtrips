@@ -43,7 +43,6 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,7 +60,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private final static int MAX_MESSAGE_PER_PAGE = 20;
     private static final int MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS = 2000;
-    private static final int MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED = 2000;
+    private static final int MARK_AS_READ_DELAY_SINCE_MESSAGES_UI_INITIALIZED = 2000;
 
     @Inject
     User user;
@@ -97,7 +96,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected boolean isLoading = false;
     protected boolean pendingScroll = false;
     protected boolean typing;
-    private long screenOpenedTimestamp;
+    private long messagesUiWasInitializedTimestamp;
+
+    private boolean isInitialUnreadMessagesLoading = false;
+    private int initialConversationUnreadMessagesCount;
 
     private Observable<Chat> chatObservable;
     private Observable<Conversation> conversationObservable;
@@ -134,7 +136,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         connectConversation();
-        screenOpenedTimestamp = System.currentTimeMillis();
+        messagesUiWasInitializedTimestamp = System.currentTimeMillis();
     }
 
     @Override
@@ -168,8 +170,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(this::onConversationLoadedFirstTime);
 
         conversationObservable
-                .subscribe(conversation ->
-                        getView().showUnreadMessageCount(conversation.getUnreadMessageCount()));
+                .subscribe(conversation -> {
+                                if (!isInitialUnreadMessagesLoading) {
+                                    getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
+                                }
+                            }
+                        );
 
         chatObservable = source
                 .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
@@ -189,7 +195,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         subscribeUnreadMessageCount(conversation);
         connectMembers(conversation);
         connectMessages(conversation);
-        loadNextPage();
+        initPagination(conversation);
     }
 
     private void onChatLoaded(Chat chat) {
@@ -238,28 +244,30 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(cursor -> {
                     skipNextMessagesUiDueToPendingChangesInDb = false;
 
-                    Cursor oldCursor = getView().getCurrentMessagesCursor();
-                    int diff = 0;
-                    int count = cursor.getCount();
-                    if (oldCursor != null) {
-                        diff = Math.max(0, count - oldCursor.getCount());
-                    }
-                    int lastVisiblePosition = getView().getLastVisiblePosition() + diff;
-                    if (oldCursor != null && lastVisiblePosition < count) {
-                        cursor.moveToPosition(lastVisiblePosition);
-                        int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
-                        String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
-                        if (status == Message.Status.SENT && !id.equals(user.getId())) {
-                            Message m = SqlUtils.convertToModel(true, Message.class, cursor);
-                            if (timeSinceOpenedScreen() < MARK_AS_READ_DELAY_SINCE_SCREEN_OPENED){
-                                long markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceOpenedScreen();
-                                handler.postDelayed(() -> sendAndMarkChatEntities(m), markAsReadDelay);
-                                skipNextMessagesUiDueToPendingChangesInDb = false;
-                            } else {
-                                sendAndMarkChatEntities(m);
-                                // avoid applying new messages with outdated statuses right away
-                                // to prevent blinking
-                                skipNextMessagesUiDueToPendingChangesInDb = true;
+                    if (!isInitialUnreadMessagesLoading) {
+                        Cursor oldCursor = getView().getCurrentMessagesCursor();
+                        int diff = 0;
+                        int count = cursor.getCount();
+                        if (oldCursor != null) {
+                            diff = Math.max(0, count - oldCursor.getCount());
+                        }
+                        int lastVisiblePosition = getView().getLastVisiblePosition() + diff;
+                        if (oldCursor != null && lastVisiblePosition < count) {
+                            cursor.moveToPosition(lastVisiblePosition);
+                            int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
+                            String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
+                            if (status == Message.Status.SENT && !id.equals(user.getId())) {
+                                Message m = SqlUtils.convertToModel(true, Message.class, cursor);
+                                if (timeSinceMessagesUiInitialized() < MARK_AS_READ_DELAY_SINCE_MESSAGES_UI_INITIALIZED){
+                                    long markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceMessagesUiInitialized();
+                                    handler.postDelayed(() -> sendAndMarkChatEntities(m), markAsReadDelay);
+                                    skipNextMessagesUiDueToPendingChangesInDb = false;
+                                } else {
+                                    sendAndMarkChatEntities(m);
+                                    // avoid applying new messages with outdated statuses right away
+                                    // to prevent blinking
+                                    skipNextMessagesUiDueToPendingChangesInDb = true;
+                                }
                             }
                         }
                     }
@@ -275,14 +283,25 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Message Pagination
     ///////////////////////////////////////////////////////////////////////////
 
+    private void initPagination(Conversation conversation) {
+        int localUnreadMessagesCount = messageDAO.unreadCount(conversationId, user.getId())
+                .toBlocking().first();
+        initialConversationUnreadMessagesCount = conversation.getUnreadMessageCount();
+        int localUnreadMessagesCountDiff = initialConversationUnreadMessagesCount - localUnreadMessagesCount;
+        if (localUnreadMessagesCountDiff > 0) {
+            isInitialUnreadMessagesLoading = true;
+        }
+        loadNextPage();
+    }
+
     private void loadNextPage() {
-        isLoading = true;
-        ChatLayoutViewState viewState = getViewState();
-        if (!haveMoreElements || viewState.getLoadingState() == ChatLayoutViewState.LoadingState.LOADING)
+        if (!haveMoreElements || isLoading)
             return;
 
+        isLoading = true;
+
         getView().showLoading();
-        viewState.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
         conversationObservable
                 .first()
                 .compose(bindViewIoToMainComposer())
@@ -292,26 +311,41 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void paginationPageLoaded(int loadedPage, List<Message> loadedMessages) {
-        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
         isLoading = false;
         if (loadedMessages == null || loadedMessages.size() == 0) {
             haveMoreElements = false;
-            showContent();
-            return;
+        } else {
+            int loadedCount = loadedMessages.size();
+            haveMoreElements = loadedCount == MAX_MESSAGE_PER_PAGE;
+            Message lastMessage = loadedMessages.get(loadedCount - 1);
+            before = lastMessage.getDate().getTime();
         }
 
-        int loadedCount = loadedMessages.size();
-        haveMoreElements = loadedCount == MAX_MESSAGE_PER_PAGE;
-        Message lastMessage = loadedMessages.get(loadedCount - 1);
-
-        before = lastMessage.getDate().getTime();
+        if (isInitialUnreadMessagesLoading) {
+            int localUnreadMessagesCount = messageDAO.unreadCount(conversationId, user.getId())
+                    .toBlocking().first();
+            int localUnreadMessagesCountDiff = initialConversationUnreadMessagesCount
+                    - localUnreadMessagesCount;
+            if (localUnreadMessagesCountDiff > 0) {
+                // We haven't reached conversation unread count - load next page.
+                // Call with handler because this callback is called on Smack thread and UI thread is required
+                // conversation observable
+                handler.post(() -> loadNextPage());
+                // don't hide loading UI by showing content as we are still loading
+                return;
+            }
+            isInitialUnreadMessagesLoading = false;
+            messagesUiWasInitializedTimestamp = System.currentTimeMillis();
+        }
         showContent();
     }
 
     @Override
     public void onLastVisibleMessageChanged(int position) {
-        markAsReadWithMessagePosition(getView().getCurrentMessagesCursor(),
-                position, MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS);
+        if (!isInitialUnreadMessagesLoading) {
+            markAsReadWithMessagePosition(getView().getCurrentMessagesCursor(),
+                    position, MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS);
+        }
     }
 
     @Override
@@ -332,7 +366,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(conversation -> {
-                    getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
+                    if (!isInitialUnreadMessagesLoading) {
+                        getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
+                    }
                 });
     }
 
@@ -378,25 +414,36 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onUnreadMessagesHeaderClicked() {
-        Cursor cursor = getView().getCurrentMessagesCursor();
-        Message firstUnreadMessage = null;
-        int position = 0;
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-                if (!user.getId().equals(message.getFromId())
-                        && message.getStatus() == Message.Status.SENT) {
-                    firstUnreadMessage = message;
-                    break;
-                }
-            } while (cursor.moveToNext());
-        }
-        if (firstUnreadMessage != null) {
-            position = cursor.getPosition();
-        }
-        if (cursor.getCount() > 0) {
-            getView().smoothScrollToPosition(position);
-        }
+        searchUnreadMessages(getView().getCurrentMessagesCursor())
+                .filter(result -> result.count > 0)
+                .subscribe(result -> {
+                    getView().smoothScrollToPosition(result.firstUnreadMessagePosition);
+                });
+    }
+
+    private Observable<UnreadMessagesSearchResult> searchUnreadMessages(Cursor cursor) {
+        return Observable.<UnreadMessagesSearchResult>create(subscriber -> {
+            UnreadMessagesSearchResult result = new UnreadMessagesSearchResult();
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+                    if (!user.getId().equals(message.getFromId())
+                            && message.getStatus() == Message.Status.SENT) {
+                        if (result.count == 0) {
+                            result.firstUnreadMessagePosition = cursor.getPosition();
+                        }
+                        result.count++;
+                    }
+                } while (cursor.moveToNext());
+            }
+            subscriber.onNext(result);
+        })
+        .compose(new IoToMainComposer<>());
+    }
+
+    private static class UnreadMessagesSearchResult {
+        private int count;
+        private int firstUnreadMessagePosition;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -575,7 +622,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(action1);
     }
 
-    private long timeSinceOpenedScreen() {
-        return System.currentTimeMillis() - screenOpenedTimestamp;
+    private long timeSinceMessagesUiInitialized() {
+        return System.currentTimeMillis() - messagesUiWasInitializedTimestamp;
     }
 }

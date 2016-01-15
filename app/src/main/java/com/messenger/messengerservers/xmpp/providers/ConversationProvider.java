@@ -49,6 +49,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             }
                             String subject = parser.getAttributeValue("", "subject");
                             int unreadMessegeCount = ParserUtils.getIntegerAttribute(parser, "unread-count");
+                            //noinspection all
                             conversation = new Conversation.Builder()
                                     .id(thread)
                                     .type(type.toLowerCase())
@@ -57,15 +58,17 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .build();
                             break;
                         case "last-message":
+                            long timestamp = ParserUtils.getLongAttribute(parser, "time");
+                            //noinspection all
+                            conversation.setLastActiveDate(timestamp);
+
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             if (TextUtils.isEmpty(messageId)) {
                                 message = null;
                                 continue;
                             }
                             String from = parser.getAttributeValue("", "from");
-                            long timestamp = ParserUtils.getLongAttribute(parser, "time");
                             String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
-
                             Message.Builder builder = new Message.Builder()
                                     .id(messageId)
                                     .conversationId(conversation.getId())

@@ -32,6 +32,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column int unreadMessageCount;
     @Column boolean abandoned;
     @Column long syncTime;
+    @Column long lastActiveDate;
 
     public Conversation() {}
 
@@ -42,6 +43,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
         setAbandoned(builder.abandoned);
+        setLastActiveDate(builder.date);
     }
 
     public String getId() {
@@ -99,6 +101,14 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setSyncTime(long syncTime) {
         this.syncTime = syncTime;
+    }
+
+    public long getLastActiveDate() {
+        return lastActiveDate;
+    }
+
+    public void setLastActiveDate(long lastActiveDate) {
+        this.lastActiveDate = lastActiveDate;
     }
 
     @Override
@@ -167,6 +177,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         private String ownerId;
         private String subject;
         private String type;
+        private long date;
         private int unreadMessageCount = 0;
         private boolean abandoned;
 
@@ -180,6 +191,11 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder ownerId(String id) {
             ownerId = id;
+            return this;
+        }
+
+        public Builder lastActiveDate(long dateMS) {
+            date = dateMS;
             return this;
         }
 

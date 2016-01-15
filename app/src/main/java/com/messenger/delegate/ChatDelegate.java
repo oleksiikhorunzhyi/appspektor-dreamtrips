@@ -8,6 +8,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
+import com.worldventures.dreamtrips.BuildConfig;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,6 +29,7 @@ public class ChatDelegate {
     }
 
     public Conversation createNewConversation(List<User> participants, @Nullable String subject) {
+    if (BuildConfig.DEBUG && participants.size() < 1) throw new RuntimeException();
         return participants.size() == 1 ?
                 createSingleChat(participants.get(0)) : createMultiUserChat(participants, subject);
     }
@@ -37,6 +39,7 @@ public class ChatDelegate {
                 .type(Conversation.Type.CHAT)
                 .id(ThreadCreatorHelper.obtainThreadSingleChat(currentUser, participant))
                 .ownerId(currentUser.getUserName())
+                .lastActiveDate(System.currentTimeMillis())
                 .build();
     }
 
@@ -45,6 +48,7 @@ public class ChatDelegate {
                 .type(Conversation.Type.GROUP)
                 .id(UUID.randomUUID().toString())
                 .ownerId(currentUser.getUserName())
+                .lastActiveDate(System.currentTimeMillis())
                 .build();
 
         return setMultiUserChatData(conversation, participans, subject);
@@ -55,6 +59,7 @@ public class ChatDelegate {
             conversation = new Conversation.Builder()
                     .ownerId(currentUser.getId())
                     .type(Conversation.Type.GROUP)
+                    .lastActiveDate(System.currentTimeMillis())
                     .id(UUID.randomUUID().toString())
                     .build();
             // since we create new group chat

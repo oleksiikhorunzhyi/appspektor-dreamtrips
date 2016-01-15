@@ -2,6 +2,7 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 
@@ -113,9 +114,11 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     @Override
-    public void onDetachedFromWindow() {
+    public void onSaveInstanceState(Bundle bundle) {
+        //if presenter is recreated and view has previous state with LOADING status,
+        //in applyViewState method all observables will be null cause onAttachedToWindow method calls after one
         getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
-        super.onDetachedFromWindow();
+        super.onSaveInstanceState(bundle);
     }
 
     @Override

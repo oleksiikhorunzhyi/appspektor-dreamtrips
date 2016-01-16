@@ -49,6 +49,8 @@
             android:layout_below="@+id/conversation_last_message_date_textview"
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
+            android:visibility="gone"
+            tools:visibility="gone"
             />
     </RelativeLayout>
 </RelativeLayout>

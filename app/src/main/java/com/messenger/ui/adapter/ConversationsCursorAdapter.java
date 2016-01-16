@@ -3,7 +3,6 @@ package com.messenger.ui.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -28,9 +27,7 @@ import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
-import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -55,25 +52,25 @@ public class ConversationsCursorAdapter
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
     private static final int VIEW_TYPE_TRIP_CONVERSATION = 3;
+    private static final int VIEW_TYPE_GROUP_CLOSE_CONVERSATION = 4;
 
-    private static final float CLOSED_CONVERSATION_ALPHA = 0.3f;
-
+    private final SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
     private final Context context;
     private final RecyclerView recyclerView;
+    private final User currentUser;
 
-    private User currentUser;
-
-    private SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
     private SwipeButtonsListener swipeButtonsListener;
-    private ClickListener clickListener;
+    private ConversationClickListener conversationClickListener;
 
     private ConversationHelper conversationHelper;
     private SimpleDateFormat todayDateFormat;
     private SimpleDateFormat moreThanTwoDaysAgoFormat;
+
+    // for filter
     private ParticipantsDAO participantsDAO;
     private Subscription mainSubscription;
 
-    public interface ClickListener {
+    public interface ConversationClickListener {
         void onConversationClick(Conversation conversation);
     }
 
@@ -83,13 +80,13 @@ public class ConversationsCursorAdapter
         void onMoreOptionsButtonPressed(Conversation conversation);
     }
 
-    public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, User currentUser) {
+    public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, User currentUser, ParticipantsDAO participantsDAO) {
         super(null);
         this.context = context;
         this.recyclerView = recyclerView;
         this.currentUser = currentUser;
-        participantsDAO = new ParticipantsDAO(context);
-        //
+        this.participantsDAO = participantsDAO;
+
         conversationHelper = new ConversationHelper();
         todayDateFormat = new SimpleDateFormat(context
                 .getString(R.string.conversation_list_last_message_date_format_today));
@@ -106,103 +103,54 @@ public class ConversationsCursorAdapter
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
         Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-        setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
 
-        holder.getDeleteButton()
-                .setVisibility(deleteButtonEnable(conversation) ? View.VISIBLE : View.GONE);
+        holder.bindConversation(conversation);
+        holder.setConversationClickListener(conversationClickListener);
+        holder.setSwipeButtonsListener(swipeButtonsListener);
 
+        holder.setDeleteButtonVisibility(deleteButtonEnable(conversation));
+
+        holder.setDate(formatLastConversationMessage(new Date(conversation.getLastActiveDate())));
         String userName = cursor.getString(cursor.getColumnIndex(User$Table.USERNAME));
         setLastMessage(holder, message, userName, conversationHelper.isGroup(conversation));
 
-        if (conversation.isAbandoned()) {
-            setClosedConversationUi(holder);
-        } else {
-            for (int i = 0; i < holder.getContentLayout().getChildCount(); i++) {
-                holder.getContentLayout().getChildAt(i).setAlpha(1f);
-            }
-            setUnreadMessageCount(holder, conversation.getUnreadMessageCount());
-        }
-
-        ////// TODO: 12/28/15 attach listeners in holder  !!!!!!!
-        final View.OnClickListener itemViewListener = v -> {
-            if (clickListener != null) {
-                clickListener.onConversationClick(conversation);
-            }
-        };
-        holder.itemView.setOnClickListener(itemViewListener);
-
         // init swipe layout
+        // TODO: 1/16/16 wtf ????
         swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
         //// TODO: 1/11/16 enable swipe and use comments below for future functional
         holder.getSwipeLayout().setSwipeEnabled(false);
-//        holder.getSwipeLayout().addSwipeListener(new SwipeClickListener(holder.itemView,
-//                itemViewListener));
-//        holder.getDeleteButton().setOnClickListener(view -> {
-//            if (swipeButtonsListener != null) {
-//                swipeButtonsListener.onDeleteButtonPressed(conversation);
-//            }
-//        });
-//        holder.getMoreButton().setOnClickListener(view -> {
-//            if (swipeButtonsListener != null) {
-//                swipeButtonsListener.onMoreOptionsButtonPressed(conversation);
-//            }
-//        });
-
-        holder.updateParticipants(conversation.getId(), users -> setNameAndAvatar(holder, conversation, users));
     }
 
-    private void setClosedConversationUi(BaseConversationViewHolder holder) {
-        holder.itemView.setBackgroundColor(
-                ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
-        for (int i = 0; i < holder.getContentLayout().getChildCount(); i++) {
-            View child = holder.getContentLayout().getChildAt(i);
-            if (child.getId() != R.id.conversation_last_messages_layout) {
-                child.setAlpha(CLOSED_CONVERSATION_ALPHA);
+    private void setLastMessage(BaseConversationViewHolder holder, Message message, String userName, boolean isGroupConversation) {
+        String messageText = null;
+        if (message.getText() != null) {
+            messageText = message.getText();
+            if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
+                messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
+            } else if (isGroupConversation) {
+                messageText = userName + ": " + messageText;
             }
         }
-        holder.getLastMessageDateTextView().setVisibility(View.VISIBLE);
-        holder.getLastMessageDateTextView().setTextColor(ContextCompat.getColor(context,
-                R.color.conversation_list_closed_conversation));
-        holder.getLastMessageDateTextView().setText(R.string.conversation_list_abandoned);
-        holder.getUnreadMessagesCountTextView().setVisibility(View.GONE);
+        holder.setLastMessage(messageText);
     }
 
-    private void setUnreadMessageCount(BaseConversationViewHolder holder, int unreadMessageCount) {
-        if (unreadMessageCount > 0) {
-            holder.itemView.setBackgroundColor(
-                    ContextCompat.getColor(context, R.color.conversation_list_unread_conversation_bg));
-            holder.getUnreadMessagesCountTextView().setVisibility(View.VISIBLE);
-            holder.getUnreadMessagesCountTextView().setText(String.valueOf(unreadMessageCount));
-        } else {
-            holder.itemView.setBackgroundColor(
-                    ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
-            holder.getUnreadMessagesCountTextView().setVisibility(View.GONE);
-        }
-    }
 
-    private void setLastMessage(BaseConversationViewHolder holder, Message lastMessage, String userName, boolean isGroupConversation) {
-        if (lastMessage == null) {
-            holder.getLastMessageTextView().setVisibility(View.GONE);
-            holder.getLastMessageDateTextView().setVisibility(View.INVISIBLE);
-            return;
-        }
-        holder.getLastMessageTextView().setVisibility(View.VISIBLE);
-        String messageText = lastMessage.getText();
-        if (lastMessage.getFromId() != null && lastMessage.getFromId().equals(currentUser.getId())) {
-            messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
-        } else if (isGroupConversation && lastMessage.getFromId() != null) {
-            messageText = userName + ": " + messageText;
-        }
-        holder.getLastMessageTextView().setText(messageText);
-        if (lastMessage.getDate() != null) {
-            holder.getLastMessageDateTextView().setVisibility(View.VISIBLE);
-            holder.getLastMessageDateTextView().setTextColor(ContextCompat
-                    .getColor(context, R.color.conversation_list_last_message_date));
-            holder.getLastMessageDateTextView().setText(formatLastConversationMessage(lastMessage.getDate()));
-        } else {
-            holder.getLastMessageDateTextView().setVisibility(View.INVISIBLE);
-        }
-    }
+    // TODO: 1/16/16 add new layout for close conversations
+//    private void setClosedConversationUi(BaseConversationViewHolder holder) {
+//        holder.itemView.setBackgroundColor(
+//                ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
+//        for (int i = 0; i < holder.getContentLayout().getChildCount(); i++) {
+//            View child = holder.getContentLayout().getChildAt(i);
+//            if (child.getId() != R.id.conversation_last_messages_layout) {
+//                child.setAlpha(CLOSED_CONVERSATION_ALPHA);
+//            }
+//        }
+//        holder.getLastMessageDateTextView().setVisibility(View.VISIBLE);
+//        holder.getLastMessageDateTextView().setTextColor(ContextCompat.getColor(context,
+//                R.color.conversation_list_closed_conversation));
+//        holder.getLastMessageDateTextView().setText(R.string.conversation_list_abandoned);
+//        holder.getUnreadMessagesCountTextView().setVisibility(View.GONE);
+//    }
 
     public String formatLastConversationMessage(Date date) {
         Calendar today = ChatDateUtils.getToday();
@@ -217,26 +165,6 @@ public class ConversationsCursorAdapter
             } else {
                 return moreThanTwoDaysAgoFormat.format(date);
             }
-        }
-    }
-
-    private void setNameAndAvatar(BaseConversationViewHolder holder, Conversation conversation, List<User> participants) {
-        if (participants == null || participants.size() == 0) return;
-        //
-        conversationHelper.setTitle(holder.getNameTextView(), conversation, participants, true);
-        if (conversationHelper.isGroup(conversation)) {
-            if (conversation.getType().equals(TRIP)) return;
-            //
-            GroupConversationViewHolder groupHolder = (GroupConversationViewHolder) holder;
-            groupHolder.getGroupAvatarsView().updateAvatars(participants);
-        } else {
-            User addressee = participants.get(0);
-            OneToOneConversationViewHolder oneToOneHolder = (OneToOneConversationViewHolder) holder;
-            Picasso.with(context)
-                    .load(addressee.getAvatarUrl())
-                    .placeholder(Constants.PLACEHOLDER_USER_AVATAR_BIG)
-                    .into(oneToOneHolder.getAvatarView());
-            oneToOneHolder.getAvatarView().setOnline(addressee.isOnline());
         }
     }
 
@@ -255,6 +183,9 @@ public class ConversationsCursorAdapter
                 View tripChatLayout = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_conversation_trip, parent, false);
                 return new TripConversationViewHolder(tripChatLayout);
+            case VIEW_TYPE_GROUP_CLOSE_CONVERSATION:
+                // TODO: 1/16/16
+                throw new Error("Not implemented");
         }
         throw new IllegalStateException("There is no such view type in adapter");
     }
@@ -276,6 +207,7 @@ public class ConversationsCursorAdapter
                 return VIEW_TYPE_TRIP_CONVERSATION;
             case GROUP:
             default:
+                if (conversation.isAbandoned()) return VIEW_TYPE_GROUP_CLOSE_CONVERSATION;
                 return VIEW_TYPE_GROUP_CONVERSATION;
         }
     }
@@ -286,7 +218,7 @@ public class ConversationsCursorAdapter
         }
         //
         if (TextUtils.isEmpty(filter)) {
-            super.swapCursor(newCursor);
+            changeCursor(newCursor);
             return;
         }
         mainSubscription = Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
@@ -298,12 +230,12 @@ public class ConversationsCursorAdapter
                 .compose(new IoToMainComposer<>())
                 .compose(RxLifecycle.bindView(recyclerView))
                 .subscribe(map -> {
-                    super.swapCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
+                    changeCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
                 });
     }
 
-    public void setClickListener(ClickListener clickListener) {
-        this.clickListener = clickListener;
+    public void setConversationClickListener(ConversationClickListener conversationClickListener) {
+        this.conversationClickListener = conversationClickListener;
     }
 
     ///////////////////////////////////////////////////////////////////////////

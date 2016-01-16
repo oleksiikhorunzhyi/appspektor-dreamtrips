@@ -139,8 +139,6 @@
                     android:textColor="@color/tripPlaceColor"
                     android:textSize="22sp"
                     android:textStyle="bold"/>
-
-
             </LinearLayout>
 
             <View
@@ -165,14 +163,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/ic_stripe_right"
-                        android:paddingTop="@dimen/spacing_medium"
                         android:paddingBottom="@dimen/spacing_medium"
                         android:paddingLeft="@dimen/spacing_medium"
                         android:paddingRight="@dimen/spacing_large"
+                        android:paddingTop="@dimen/spacing_medium"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold"/>
-
                 </LinearLayout>
 
                 <TextView
@@ -183,9 +180,29 @@
                     android:gravity="end"
                     android:padding="@dimen/spacing_medium"
                     android:textColor="@color/black"/>
-
-
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:background="@drawable/trip_details_shadow"/>
+
+            <TextView
+                android:id="@+id/textViewBookIt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/tripButtonColor"
+                android:gravity="center"
+                android:paddingTop="@dimen/spacing_normal"
+                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_huger"
+                android:paddingRight="@dimen/spacing_huger"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                android:text="@string/book_it"
+                android:textColor="@color/white"
+                android:textSize="22sp"/>
 
             <TextView
                 android:id="@+id/textViewDescription"
@@ -235,32 +252,6 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:showDividers="none"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="64dp"/>
-
         </LinearLayout>
-
     </ScrollView>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
-
-
-        <TextView
-            android:id="@+id/textViewBookIt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/tripButtonColor"
-            android:gravity="center"
-            android:padding="@dimen/spacing_normal"
-            android:text="@string/book_it"
-            android:textColor="@color/white"
-            android:textSize="22sp"/>
-    </FrameLayout>
-
-
 </FrameLayout>

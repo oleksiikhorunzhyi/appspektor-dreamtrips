@@ -18,7 +18,9 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
 
 import butterknife.InjectView;
@@ -52,9 +54,9 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
                 additionalContainer.setVisibility(View.GONE);
             }
         }
-        adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
-        adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
-        adapter.registerCell(PhotoFeedItem.class, FeedItemDetailsCell.class);
+        adapter.registerCell(PostFeedItem.class, PostFeedItemDetailsCell.class);
+        adapter.registerCell(BucketFeedItem.class, BucketFeedItemDetailsCell.class);
+        adapter.registerCell(PhotoFeedItem.class, PhotoFeedItemDetailsCell.class);
         adapter.registerCell(TripFeedItem.class, TripFeedItemDetailsCell.class);
     }
 

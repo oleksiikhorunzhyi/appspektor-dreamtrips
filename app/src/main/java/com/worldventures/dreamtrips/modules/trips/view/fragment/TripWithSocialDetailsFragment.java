@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
-import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewDelegate;
+import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class TripWithSocialDetailsFragment extends BaseFragmentWithArgs<TripDeta
     @InjectView(R.id.feed_trip_inner_toolbar)
     Toolbar feedTripInnerToolbar;
 
-    TripDetailsViewDelegate tripDetailsViewDelegate;
+    TripDetailsViewInjector tripDetailsViewInjector;
 
     @Override
     protected TripDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -41,9 +41,9 @@ public class TripWithSocialDetailsFragment extends BaseFragmentWithArgs<TripDeta
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        tripDetailsViewDelegate = new TripDetailsViewDelegate(rootView);
+        tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
         feedTripInnerToolbar.inflateMenu(R.menu.menu_detailed_trip);
-        tripDetailsViewDelegate.initMenuItems(feedTripInnerToolbar.getMenu());
+        tripDetailsViewInjector.initMenuItems(feedTripInnerToolbar.getMenu());
 
         feedTripInnerToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -56,11 +56,11 @@ public class TripWithSocialDetailsFragment extends BaseFragmentWithArgs<TripDeta
             }
             return true;
         });
-        tripDetailsViewDelegate.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
+        tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
     }
 
     public void onEvent(ImageClickedEvent event) {
-        getPresenter().onItemClick(tripDetailsViewDelegate.getCurrentActivePhotoPosition());
+        getPresenter().onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition());
     }
 
     @Override
@@ -86,7 +86,7 @@ public class TripWithSocialDetailsFragment extends BaseFragmentWithArgs<TripDeta
                 .build());
     }
 
-    @OnClick(R.id.openTripDetails)
+    @OnClick(R.id.trip_info)
     void openTripDetails() {
         router.moveTo(Route.DETAILED_TRIP, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
@@ -96,6 +96,6 @@ public class TripWithSocialDetailsFragment extends BaseFragmentWithArgs<TripDeta
 
     @Override
     public void setup(TripModel tripModel) {
-        tripDetailsViewDelegate.initTripData(tripModel, getPresenter().getAccount());
+        tripDetailsViewInjector.initTripData(tripModel, getPresenter().getAccount());
     }
 }

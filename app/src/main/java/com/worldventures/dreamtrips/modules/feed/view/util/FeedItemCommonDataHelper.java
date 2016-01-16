@@ -65,11 +65,11 @@ public class FeedItemCommonDataHelper {
         Resources res = context.getResources();
         FeedEntity entity = feedItem.getItem();
         try {
-            User user = (forDetails || !feedItem.getLinks().hasUsers()) ? entity.getOwner() : feedItem.getLinks().getUsers().get(0);
+            User user = ((forDetails && entity.getOwner() != null) || !feedItem.getLinks().hasUsers()) ? entity.getOwner() : feedItem.getLinks().getUsers().get(0);
             if (user != null) {
                 avatar.setImageURI(user.getAvatar() == null ? null : Uri.parse(user.getAvatar().getThumb()));
             }
-            text.setText(Html.fromHtml(forDetails ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
+            text.setText(Html.fromHtml((forDetails && entity.getOwner() != null) ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
             text.setVisibility(TextUtils.isEmpty(text.getText()) ? View.GONE : View.VISIBLE);
 
             if (TextUtils.isEmpty(entity.place())) {

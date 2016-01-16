@@ -38,7 +38,7 @@ public class FeedEntityContentFragmentFactory {
                 //now is not used.
                 break;
             case TRIP:
-                route=Route.DETAILS_TRIP_WITH_SOCIAL;
+                route = Route.DETAILS_TRIP_WITH_SOCIAL;
                 args = new TripDetailsBundle((TripModel) holder.getItem());
                 break;
             case PHOTO:

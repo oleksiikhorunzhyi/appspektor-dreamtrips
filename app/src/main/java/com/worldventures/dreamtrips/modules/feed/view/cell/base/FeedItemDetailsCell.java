@@ -37,17 +37,10 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
+public abstract class FeedItemDetailsCell<T extends FeedItem> extends AbstractCell<T> {
 
     FeedItemCommonDataHelper feedItemCommonDataHelper;
-    CommentCellHelper commentCellHelper;
 
-    @Optional
-    @InjectView(R.id.comment_preview)
-    View commentPreview;
-    @Optional
-    @InjectView(R.id.comment_divider)
-    View commentDivider;
     @InjectView(R.id.actionView)
     FeedActionPanelView actionView;
     @InjectView(R.id.edit_feed_item)
@@ -66,14 +59,10 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     //
     private NavigationWrapper navigationWrapper;
 
-    public FeedItemCell(View view) {
+    public FeedItemDetailsCell(View view) {
         super(view);
         feedItemCommonDataHelper = new FeedItemCommonDataHelper(view.getContext());
         feedItemCommonDataHelper.attachView(view);
-        if (commentPreview != null) {
-            commentCellHelper = new CommentCellHelper(view.getContext());
-            commentCellHelper.attachView(view);
-        }
     }
 
     @Override
@@ -87,19 +76,6 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     protected void syncUIStateWithModel() {
         feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get().get().getUser().getId(), false);
         feedItemCommonDataHelper.setOnEditClickListener(view -> onMore());
-        if (commentCellHelper != null) {
-            Comment comment = getModelObject().getItem().getComments() == null ? null :
-                    Queryable.from(getModelObject().getItem().getComments())
-                            .firstOrDefault();
-            if (comment != null) {
-                commentDivider.setVisibility(View.VISIBLE);
-                commentPreview.setVisibility(View.VISIBLE);
-                commentCellHelper.set(comment);
-            } else {
-                commentDivider.setVisibility(View.GONE);
-                commentPreview.setVisibility(View.GONE);
-            }
-        }
 
         syncUIStateWithModelWasCalled = true;
 
@@ -182,14 +158,6 @@ public abstract class FeedItemCell<T extends FeedItem> extends AbstractCell<T> {
     @OnClick(R.id.feed_header_avatar)
     void eventOwnerClicked() {
         User user = getModelObject().getLinks().getUsers().get(0);
-        getEventBus().post(new ProfileClickedEvent(user));
-
-    }
-
-    @Optional
-    @OnClick(R.id.user_photo)
-    void commentOwnerClicked() {
-        User user = commentCellHelper.getComment().getOwner();
         getEventBus().post(new ProfileClickedEvent(user));
 
     }

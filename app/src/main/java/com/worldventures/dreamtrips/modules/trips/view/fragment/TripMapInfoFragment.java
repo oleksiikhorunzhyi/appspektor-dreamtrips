@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
@@ -105,7 +105,7 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     }
 
     @Override
-    public void openDetails(FeedItemDetailsBundle bundle) {
+    public void openDetails(FeedDetailsBundle bundle) {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(bundle)
                 .build());

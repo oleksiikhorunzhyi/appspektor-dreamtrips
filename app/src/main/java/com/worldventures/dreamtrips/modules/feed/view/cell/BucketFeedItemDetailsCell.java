@@ -10,13 +10,13 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -25,39 +25,30 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsC
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
 public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem> {
 
     @InjectView(R.id.imageViewCover)
     SimpleDraweeView imageViewCover;
-
     @InjectView(R.id.textViewName)
     TextView textViewName;
-
     @InjectView(R.id.textViewCategory)
     TextView textViewCategory;
-
     @InjectView(R.id.textViewDate)
     TextView textViewDate;
-
     @InjectView(R.id.textViewPlace)
     TextView textViewPlace;
-
     @InjectView(R.id.textViewFriends)
     TextView textViewFriends;
     @InjectView(R.id.textViewTags)
     TextView textViewTags;
-
     @InjectView(R.id.bucket_tags_container)
     View bucketTags;
     @InjectView(R.id.bucket_who_container)
     View bucketWho;
 
-    @Inject
-    ActivityRouter activityRouter;
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
     @Inject
     BucketItemManager bucketItemManager;
 
@@ -72,12 +63,6 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
                 .build();
         imageViewCover.getHierarchy().setActualImageFocusPoint(new PointF(0.5f, 0.0f));
         imageViewCover.setController(draweeController);
-    }
-
-    @Override
-    public void afterInject() {
-        super.afterInject();
-
     }
 
     @Override
@@ -101,20 +86,19 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
             textViewPlace.setVisibility(View.VISIBLE);
             textViewPlace.setText(BucketItemInfoUtil.getPlace(bucketItem));
         }
-
         textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
-
         if (!TextUtils.isEmpty(bucketItem.getFriends())) {
             bucketWho.setVisibility(View.VISIBLE);
             textViewFriends.setText(bucketItem.getFriends());
-        } else
+        } else {
             bucketWho.setVisibility(View.GONE);
-
+        }
         if (!TextUtils.isEmpty(bucketItem.getBucketTags())) {
             bucketTags.setVisibility(View.VISIBLE);
             textViewTags.setText(bucketItem.getBucketTags());
-        } else
+        } else {
             bucketTags.setVisibility(View.GONE);
+        }
     }
 
 
@@ -143,8 +127,15 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
         super.onEdit();
         BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
         bucketItemManager.saveSingleBucketItem(getModelObject().getItem());
-
+        //
         getEventBus().post(new EditBucketEvent(getModelObject().getItem().getUid(), bucketType));
+    }
+
+    @OnClick({R.id.bucket_meta, R.id.bucket_main})
+    void openBucketEntityDetails() {
+        router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+                .data(new FeedDetailsBundle(getModelObject()))
+                .build());
     }
 
     private BucketItem.BucketType getType(String name) {

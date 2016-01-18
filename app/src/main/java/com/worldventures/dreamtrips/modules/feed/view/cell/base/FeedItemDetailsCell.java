@@ -3,34 +3,21 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 import android.app.Dialog;
 import android.support.annotation.MenuRes;
 import android.support.annotation.StringRes;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
-import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
-import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
-import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemCommonDataHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
@@ -68,7 +55,7 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
 
     public void openItemDetails() {
         Route detailsRoute = Route.FEED_ITEM_DETAILS;
-        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(getModelObject());
+        FeedDetailsBundle bundle = new FeedDetailsBundle(getModelObject());
         if (tabletAnalytic.isTabletLandscape()) {
             bundle.setSlave(true);
         }

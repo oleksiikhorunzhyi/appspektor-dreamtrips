@@ -10,14 +10,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 
 import javax.inject.Inject;
 
 @Layout(R.layout.adapter_item_entity_details)
-public class FeedEntityDetailsCell extends BaseFeedCell<TripFeedItem> {
+public class FeedEntityDetailsCell extends BaseFeedCell<FeedItem> {
 
     @Inject
     FeedEntityContentFragmentFactory fragmentFactory;

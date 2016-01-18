@@ -15,9 +15,10 @@ import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -75,9 +76,9 @@ public class TripFeedViewInjector extends TripViewInjector {
 
     @OnClick(R.id.itemLayout)
     void actionItemClick() {
-        router.moveTo(Route.DETAILED_TRIP, NavigationConfigBuilder.forActivity()
+        router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new TripDetailsBundle(tripModel))
+                .data(new FeedDetailsBundle(FeedItem.create(tripModel, null)))
                 .build());
 
         eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, tripModel.getTripId()));

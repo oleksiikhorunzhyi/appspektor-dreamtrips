@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -144,7 +144,7 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     public void onEvent(CommentIconClickedEvent event) {
         if (isVisibleOnScreen()) {
             Route detailsRoute = Route.FEED_ITEM_DETAILS;
-            FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(event.getFeedItem());
+            FeedDetailsBundle bundle = new FeedDetailsBundle(event.getFeedItem());
             if (tabletAnalytic.isTabletLandscape()) {
                 bundle.setSlave(true);
             }

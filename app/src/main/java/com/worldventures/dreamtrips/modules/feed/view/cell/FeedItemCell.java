@@ -63,9 +63,8 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
             feedItemDetailsCell.itemView.setOnClickListener(view -> feedItemDetailsCell.openItemDetails());
         }
         //
-        super.fillWithItem(item);
-        //
         feedItemDetailsCell.fillWithItem(item);
+        super.fillWithItem(item);
     }
 
     private FeedItemDetailsCell createCell(ITEM item) {
@@ -97,6 +96,16 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
                 commentCellHelper.hideContainer();
             }
         }
+        /**
+         * temporary, while we don't redesign feed likers
+         */
+        hideLikersPanel();
+    }
+
+    private void hideLikersPanel() {
+        View likersPanel = itemView.findViewById(R.id.likers_panel);
+        if (likersPanel != null)
+            itemView.findViewById(R.id.likers_panel).setVisibility(View.GONE);
     }
 
     @Override

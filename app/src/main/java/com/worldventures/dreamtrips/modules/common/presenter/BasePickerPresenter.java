@@ -11,7 +11,7 @@ import java.util.List;
 
 import icepick.State;
 
-public class BasePickerPresenter<T extends BasePickerPresenter.View> extends Presenter<T> {
+public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> extends Presenter<T> {
 
     @State
     protected ArrayList<BasePhotoPickerModel> photos;
@@ -44,12 +44,14 @@ public class BasePickerPresenter<T extends BasePickerPresenter.View> extends Pre
     public List<ChosenImage> getSelectedPhotos() {
         return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).map(element -> {
             ChosenImage chosenImage = new ChosenImage();
-            chosenImage.setFileThumbnail(element.getThumbnailPath());
+            chosenImage.setFileThumbnail(generateUri(element));
             chosenImage.setFilePathOriginal(element.getOriginalPath());
 
             return chosenImage;
         }).toList();
     }
+
+    protected abstract String generateUri(BasePhotoPickerModel model);
 
     public void setLimit(int pickLimit) {
         this.pickLimit = pickLimit;

@@ -310,6 +310,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             prepareTasks(iFullScreenObjects);
             onPreFinish(LoadType.RELOAD, iFullScreenObjects, null);
             onFinish(LoadType.RELOAD, iFullScreenObjects, null);
+            super.onRefresh(iFullScreenObjects);
         }
 
         @Override

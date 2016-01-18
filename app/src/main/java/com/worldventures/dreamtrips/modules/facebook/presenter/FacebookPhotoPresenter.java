@@ -14,7 +14,6 @@ import java.util.List;
 
 import static com.facebook.HttpMethod.GET;
 
-
 public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPresenter.View> {
 
     Request requestForPagedResults;
@@ -68,6 +67,11 @@ public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPre
                 requestForPagedResults.executeAsync();
             }
         }
+    }
+
+    @Override
+    protected String generateUri(BasePhotoPickerModel model) {
+        return model.getThumbnailPath();
     }
 
     public interface View extends BasePickerPresenter.View {

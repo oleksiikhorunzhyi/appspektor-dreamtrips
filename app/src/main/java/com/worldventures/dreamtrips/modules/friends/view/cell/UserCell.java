@@ -26,12 +26,11 @@ public class UserCell extends BaseUserCell {
 
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
-
-    private DrawableUtil drawableUtil;
+    @Inject
+    protected DrawableUtil drawableUtil;
 
     public UserCell(View view) {
         super(view);
-        drawableUtil = new DrawableUtil(view.getContext());
     }
 
     @Override

@@ -36,8 +36,12 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
     @Override
     public void onResume() {
         super.onResume();
-        if (bucketItem != null) view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
-        if(bucketItem!=null)  view.showDeleteBtn();
+        if (bucketItem != null && !foreign) {
+            view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
+        } else {
+            view.hideCheckBox();
+        }
+        if (bucketItem != null) view.showDeleteBtn();
         else view.hideDeleteBtn();
     }
 
@@ -82,5 +86,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
         void hideDeleteBtn();
 
         void showDeleteBtn();
+
+        void hideCheckBox();
     }
 }

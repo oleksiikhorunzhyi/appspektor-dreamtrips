@@ -43,6 +43,9 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
 
+    //For resolving Fresco onFinalImageSet callback double launch (here onImageGlobalLayout() method)
+    private boolean isImageLoaded;
+
     @InjectView(R.id.flag)
     protected FlagView flag;
     @InjectView(R.id.taggable_holder)
@@ -80,22 +83,16 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @Override
     public void onStart() {
         super.onStart();
+        //it is ok sync and send message to sync
         syncContentWrapperViewGroupWithGlobalState();
-        taggableImageHolder.post(() -> {
-            if (taggableImageHolder == null) return;
-            //
-            if (taggableImageHolder.isShown()) {
-                showTagViewGroup();
-            } else {
-                hideTagViewGroup();
-            }
-        });
+        syncTagViewGroupWithGlobalState();
+        eventBus.post(new SocialViewPagerStateChangedEvent());
     }
 
     @Override
     public void setContent(IFullScreenObject photo) {
-        if(photo.getUser() == null) return;
-        //
+        if (photo.getUser() == null) return;
+
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
         taggableImageHolder.setup(this, (Photo) photo);
@@ -128,7 +125,9 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     public void showContentWrapper() {
-        if (!viewDelegate.isContentWrapperShown()) viewDelegate.showContent();
+        SocialViewPagerState state = getState();
+        saveViewState(true, state.isTagHolderVisible());
+        syncContentWrapperViewGroupWithGlobalState();
     }
 
     @OnClick(R.id.iv_share)
@@ -146,7 +145,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     public void actionLikes() {
         getPresenter().onLikesAction();
     }
-
 
     @OnClick(R.id.iv_like)
     public void actionLike() {
@@ -182,14 +180,9 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @OnClick(R.id.tag)
     public void onTag() {
-        if (!taggableImageHolder.isSetuped()) return;
-        //
-        if (taggableImageHolder.isShown()) {
-            hideTagViewGroup();
-        } else {
-            showTagViewGroup();
-        }
-        notifyGlobalPagerStateChanged();
+        SocialViewPagerState state = getState();
+        saveViewState(state.isContentWrapperVisible(), !taggableImageHolder.isShown());
+        eventBus.post(new SocialViewPagerStateChangedEvent());
     }
 
     protected void hideTagViewGroup() {
@@ -219,56 +212,56 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         dialog.show();
     }
 
-
-    private void notifyGlobalPagerStateChanged() {
-        if (taggableImageHolder != null && viewDelegate != null && db != null) {
-            SocialViewPagerState state = new SocialViewPagerState();
-            state.setContentWrapperVisible(viewDelegate.isContentWrapperShown());
-            state.setTagHolderVisible(taggableImageHolder.isShown());
-            db.saveSocialViewPagerState(state);
-            eventBus.post(new SocialViewPagerStateChangedEvent());
-        }
-    }
-
-    public void onEvent(SocialViewPagerStateChangedEvent event) {
-        if (isResumed()) {
-            syncContentWrapperViewGroupWithGlobalState();
-            syncTagViewGroupWithGlobalState();
-        }
-    }
-
-
     @Override
     protected void onImageGlobalLayout() {
-        syncTagViewGroupWithGlobalState();
-    }
-
-    protected void syncContentWrapperViewGroupWithGlobalState() {
-        SocialViewPagerState socialViewPagerState = db.getSocialViewPagerState();
-        if (socialViewPagerState != null) {
-            if (socialViewPagerState.isContentWrapperVisible()) {
-                viewDelegate.showContent();
-            } else {
-                viewDelegate.hideContent();
-            }
+        if (isImageLoaded) {
+            syncTagViewGroupWithGlobalState();
         }
-    }
-
-    protected void syncTagViewGroupWithGlobalState() {
-        SocialViewPagerState socialViewPagerState = db.getSocialViewPagerState();
-        if (socialViewPagerState != null) {
-            if (socialViewPagerState.isTagHolderVisible()) {
-                showTagViewGroup();
-                ivImage.setScaleEnabled(false);
-            } else {
-                hideTagViewGroup();
-                ivImage.setScaleEnabled(true);
-            }
-        }
+        isImageLoaded = true; //for listening second callback
     }
 
     @Override
     public void onVisibilityChange() {
-        notifyGlobalPagerStateChanged();
+        SocialViewPagerState state = getState();
+        saveViewState(!state.isContentWrapperVisible(), state.isTagHolderVisible());
+        eventBus.post(new SocialViewPagerStateChangedEvent());
+    }
+
+    public void onEvent(SocialViewPagerStateChangedEvent event) {
+        if (isResumed()) {
+            syncTagViewGroupWithGlobalState();
+            syncContentWrapperViewGroupWithGlobalState();
+        }
+    }
+
+    private void syncContentWrapperViewGroupWithGlobalState() {
+        if (getState().isContentWrapperVisible()) {
+            viewDelegate.showContent();
+        } else {
+            viewDelegate.hideContent();
+        }
+    }
+
+    private void syncTagViewGroupWithGlobalState() {
+        SocialViewPagerState state = getState();
+        if (state.isTagHolderVisible()) {
+            showTagViewGroup();
+            ivImage.setScaleEnabled(false);
+        } else {
+            hideTagViewGroup();
+            ivImage.setScaleEnabled(true);
+        }
+    }
+
+    private SocialViewPagerState getState() {
+        SocialViewPagerState state = db.getSocialViewPagerState();
+        return state == null ? new SocialViewPagerState() : state;
+    }
+
+    private void saveViewState(boolean showContent, boolean showTag) {
+        SocialViewPagerState state = new SocialViewPagerState();
+        state.setContentWrapperVisible(showContent);
+        state.setTagHolderVisible(showTag);
+        db.saveSocialViewPagerState(state);
     }
 }

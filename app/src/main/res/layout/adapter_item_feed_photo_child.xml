@@ -12,8 +12,18 @@
         android:layout_height="@dimen/feed_item_height"
         fresco:actualImageScaleType="centerCrop"
         fresco:placeholderImage="@drawable/ic_cover_place_holder"
-        fresco:placeholderImageScaleType="centerCrop"
-        />
+        fresco:placeholderImageScaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:clickable="true"
+        android:visibility="gone"
+        android:src="@drawable/ic_tag"/>
 
     <TextView
         android:id="@+id/title"

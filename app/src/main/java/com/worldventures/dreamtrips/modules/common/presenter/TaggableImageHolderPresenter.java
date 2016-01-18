@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 

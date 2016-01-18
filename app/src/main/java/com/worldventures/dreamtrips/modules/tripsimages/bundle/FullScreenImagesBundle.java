@@ -11,6 +11,12 @@ import java.util.ArrayList;
 
 public class FullScreenImagesBundle implements Parcelable {
 
+    /**
+     * Temp default tag state. Introduce users new feature
+     * Due to Esmira Khasanogly requirement (15.01.2016)
+     */
+    private static final boolean SHOW_TAGS_BY_DEFAULT = true;
+
     public static final int NO_NOTIFICATION = -1;
 
     private TripImagesType type;
@@ -20,6 +26,7 @@ public class FullScreenImagesBundle implements Parcelable {
     private boolean foreign;
     private Route route;
     private int notificationId;
+    private boolean showTags = SHOW_TAGS_BY_DEFAULT;
 
     public FullScreenImagesBundle() {
         notificationId = NO_NOTIFICATION;
@@ -33,6 +40,7 @@ public class FullScreenImagesBundle implements Parcelable {
         foreign = in.readByte() == 1;
         route = (Route) in.readSerializable();
         notificationId = in.readInt();
+        showTags = in.readByte() == 1;
     }
 
     public TripImagesType getType() {
@@ -63,6 +71,10 @@ public class FullScreenImagesBundle implements Parcelable {
         return notificationId;
     }
 
+    public boolean isShowTags(){
+        return showTags;
+    }
+
     public static final Creator<FullScreenImagesBundle> CREATOR = new Creator<FullScreenImagesBundle>() {
         @Override
         public FullScreenImagesBundle createFromParcel(Parcel in) {
@@ -89,6 +101,7 @@ public class FullScreenImagesBundle implements Parcelable {
         parcel.writeByte((byte) (foreign ? 1 : 0));
         parcel.writeSerializable(route);
         parcel.writeInt(notificationId);
+        parcel.writeByte((byte) (showTags ? 1 : 0));
     }
 
     public static class Builder {
@@ -133,6 +146,11 @@ public class FullScreenImagesBundle implements Parcelable {
             instance.notificationId = notificationId;
             //
             if (notificationId == 0) instance.notificationId = NO_NOTIFICATION;
+            return this;
+        }
+
+        public Builder showTags(boolean showTags) {
+            instance.showTags = showTags;
             return this;
         }
 

@@ -93,7 +93,25 @@ public class FullScreenPhotoWrapperFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setDefaultSocialPagerState();
+        boolean isFirstLaunch = savedInstanceState == null;
+        setDefaultSocialPagerState(isFirstLaunch);
+    }
+
+    protected void setDefaultSocialPagerState(boolean firstLaunch) {
+        SocialViewPagerState state  = db.getSocialViewPagerState();
+        state = state == null ?  new SocialViewPagerState() : state;
+
+        boolean isFromNotification = getArgs().getNotificationId() != FullScreenImagesBundle.NO_NOTIFICATION;
+
+        if (isFromNotification){
+            state.setContentWrapperVisible(false);
+            state.setTagHolderVisible(true);
+        } else if (firstLaunch) {
+            state.setContentWrapperVisible(true);
+            state.setTagHolderVisible(getArgs().isShowTags());
+        }
+
+        db.saveSocialViewPagerState(state);
     }
 
     private void setupAdapter() {
@@ -172,13 +190,6 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     public void replace(int position, IFullScreenObject item) {
-    }
-
-    protected void setDefaultSocialPagerState() {
-        SocialViewPagerState state = new SocialViewPagerState();
-        state.setTagHolderVisible(getArgs().getNotificationId() == FullScreenImagesBundle.NO_NOTIFICATION ? false : true);
-        state.setContentWrapperVisible(getArgs().getNotificationId() == FullScreenImagesBundle.NO_NOTIFICATION ? true : false);
-        db.saveSocialViewPagerState(state);
     }
 
     @Override

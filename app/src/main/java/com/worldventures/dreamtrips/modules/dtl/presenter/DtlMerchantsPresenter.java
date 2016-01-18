@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
     @Inject
-    DtlLocationRepository locationRepository;
+    DtlLocationManager locationRepository;
     @Inject
     DtlSearchDelegate dtlSearchDelegate;
     //

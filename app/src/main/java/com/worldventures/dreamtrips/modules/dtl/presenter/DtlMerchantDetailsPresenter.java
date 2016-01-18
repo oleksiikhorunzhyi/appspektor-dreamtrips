@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEve
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 
 import java.util.Calendar;
 
@@ -41,7 +41,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     @Inject
     LocationDelegate locationDelegate;
     @Inject
-    DtlLocationRepository locationRepository;
+    DtlLocationManager locationRepository;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
 

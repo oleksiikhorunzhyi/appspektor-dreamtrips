@@ -135,11 +135,15 @@ public class DtlLocation implements Parcelable {
     public static Comparator<DtlLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) ->
             lhs.getLongName().compareToIgnoreCase(rhs.getLongName());
 
+    public static Comparator<DtlLocation> provideComparator(String query)  {
+        return new DtlLocationRangeComparator(query);
+    }
+
     public static class DtlLocationRangeComparator implements Comparator<DtlLocation> {
 
         private String subString;
 
-        public DtlLocationRangeComparator(String subString) {
+        private DtlLocationRangeComparator(String subString) {
             this.subString = subString;
         }
 
@@ -153,6 +157,7 @@ public class DtlLocation implements Parcelable {
                 return ALPHABETICAL_COMPARATOR.compare(lhs, rhs);
             }
         }
+
     }
 }
 

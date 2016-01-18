@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 
 import javax.inject.Inject;
 
@@ -24,7 +24,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
     @Inject
     LocationDelegate gpsLocationDelegate;
     @Inject
-    DtlLocationRepository dtlLocationRepository;
+    DtlLocationManager dtlLocationManager;
 
     @Override
     public void takeView(View view) {
@@ -34,7 +34,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         if (initialized) return;
         initialized = true;
         //
-        DtlLocation dtlLocation = dtlLocationRepository.getSelectedLocation();
+        DtlLocation dtlLocation = dtlLocationManager.getSelectedLocation();
         if (dtlLocation != null) {
             TrackingHelper.dtlLocationLoaded(dtlLocation.getId());
             view.openMerchants();

@@ -232,6 +232,8 @@ dependencies {
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
     compile 'io.reactivex:rxjava:1.0.15'
     compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'com.github.techery:job-executor:0.1.1'
+    compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'

@@ -1,19 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlLocationSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import java.util.ArrayList;
@@ -24,125 +22,63 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
-        implements DtlLocationRepository.LocationsLoadedListener, LocationDelegate.LocationListener,
-        DtlLocationSearchDelegate.Listener {
+public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.View>
+        implements LocationDelegate.LocationListener {
 
     @Inject
-    DtlLocationRepository dtlLocationRepository;
+    DtlLocationManager dtlLocationManager;
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
+    @Inject
+    LocationDelegate gpsLocationDelegate;
     //
-    private DtlLocationSearchDelegate searchDelegate;
-    //
-    @State
     ArrayList<DtlLocation> dtlLocations = new ArrayList<>();
     @State
     Status status = Status.NEARBY;
-    //
-    private Location userGpsLocation;
-    @Inject
-    LocationDelegate gpsLocationDelegate;
-
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        dtlLocationRepository.setRequestingPresenter(this);
-        searchDelegate = new DtlLocationSearchDelegate();
-        searchDelegate.setRequestingPresenter(this);
-    }
-
-    @Override
-    public void saveInstanceState(Bundle outState) {
-        super.saveInstanceState(outState);
-        searchDelegate.saveInstanceState(outState);
-    }
-
-    @Override
-    public void restoreInstanceState(Bundle savedState) {
-        super.restoreInstanceState(savedState);
-        searchDelegate.restoreInstanceState(savedState);
-    }
+    @State
+    String query;
+    @State
+    Location userGpsLocation;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        connectLocationsExecutor();
+        connectLocationsSearchExecutor();
+        //
         apiErrorPresenter.setView(view);
-        dtlLocationRepository.attachListener(this);
         gpsLocationDelegate.attachListener(this);
-        searchDelegate.attachListener(this);
         //
         if (status.equals(Status.NEARBY)) {
             if (dtlLocations.isEmpty()) {
-                gpsLocationDelegate.tryRequestLocation();
-                view.showGpsObtainingProgress();
+                if (userGpsLocation == null) {
+                    gpsLocationDelegate.tryRequestLocation();
+                    view.showGpsObtainingProgress();
+                }
             } else {
                 view.hideProgress();
                 setItems(dtlLocations);
             }
         } else {
             view.hideProgress();
-            searchDelegate.requestSavedSearchResults();
         }
     }
+
 
     @Override
     public void dropView() {
         gpsLocationDelegate.detachListener(this);
-        dtlLocationRepository.detachListener(this);
-        searchDelegate.detachListener();
-        searchDelegate.unsetRequestingPresenter();
-        dtlLocationRepository.detachRequestingPresenter();
         super.dropView();
     }
 
-    @Override
-    public void onLocationObtained(Location location) {
-        if (location != null) {
-            userGpsLocation = location;
-            view.showLocationsObtainingProgress();
-            dtlLocationRepository.loadNearbyLocations(userGpsLocation);
-        } else {
-            view.hideProgress();
-            view.showSearch();
-        }
-    }
-
-    @Override
-    public void onLocationsLoaded(List<DtlLocation> locations) {
-        if (locations.isEmpty()) {
-            view.showSearch();
-            return;
-        } else if (dtlLocationRepository.getSelectedLocation() == null) {
-            selectNearest(locations, userGpsLocation);
-        } else {
-            showLoadedLocations(locations);
-        }
-    }
-
-    private void showLoadedLocations(List<DtlLocation> locations) {
-        view.hideProgress();
-        dtlLocations.clear();
-        dtlLocations.addAll(locations);
-        setItems(dtlLocations);
-    }
-
-    @Override
-    public void onLocationsFailed(SpiceException exception) {
-        handleError(exception);
-    }
-
-    private void selectNearest(List<DtlLocation> dtlLocations, Location currentGpsLocation) {
-        DtlLocation dtlLocation = Queryable.from(dtlLocations)
-                .min(new DtlLocation.DtlNearestComparator(currentGpsLocation));
-        onLocationSelected(dtlLocation);
-    }
-
-    public void onLocationSelected(DtlLocation location) {
-        trackLocationSelection(dtlLocationRepository.getSelectedLocation(), location);
-        dtlLocationRepository.persistLocation(location);
-        dtlMerchantRepository.clean();
-        view.navigateToMerchants();
+    private void setItems(List<DtlLocation> locations) {
+        if (status == Status.NEARBY)
+            view.setEmptyViewVisibility(locations.isEmpty());
+        else if (TextUtils.isEmpty(query))
+            view.setEmptyViewVisibility(dtlLocations.isEmpty());
+        else view.setEmptyViewVisibility(false);
+        //
+        view.setItems(locations);
     }
 
     /**
@@ -157,8 +93,70 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Nearby stuff
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void connectLocationsExecutor() {
+        bindJobCached(dtlLocationManager.nearbyLocationExecutor)
+                .onProgress(view::showLocationsObtainingProgress)
+                .onError(this::onLocationsFailed)
+                .onSuccess(this::onLocationsLoaded);
+    }
+
+    @Override
+    public void onLocationObtained(Location location) {
+        if (location != null) {
+            userGpsLocation = location;
+            dtlLocationManager.loadNearbyLocations(userGpsLocation);
+        } else {
+            view.hideProgress();
+            view.showSearch();
+        }
+    }
+
+    public void onLocationsLoaded(List<DtlLocation> locations) {
+        if (locations.isEmpty()) view.showSearch();
+        else if (dtlLocationManager.getSelectedLocation() == null)
+            selectNearest(locations, userGpsLocation);
+        else showLoadedLocations(locations);
+    }
+
+    public void onLocationsFailed(Throwable exception) {
+        apiErrorPresenter.handleError(exception);
+    }
+
+    private void showLoadedLocations(List<DtlLocation> locations) {
+        view.hideProgress();
+        dtlLocations.clear();
+        dtlLocations.addAll(locations);
+        setItems(dtlLocations);
+    }
+
+    private void selectNearest(List<DtlLocation> dtlLocations, Location currentGpsLocation) {
+        DtlLocation dtlLocation = Queryable.from(dtlLocations)
+                .min(new DtlLocation.DtlNearestComparator(currentGpsLocation));
+        onLocationSelected(dtlLocation);
+    }
+
+    public void onLocationSelected(DtlLocation location) {
+        trackLocationSelection(dtlLocationManager.getSelectedLocation(), location);
+        dtlLocationManager.persistLocation(location);
+        dtlMerchantRepository.clean();
+        view.navigateToMerchants();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Search stuff
     ///////////////////////////////////////////////////////////////////////////
+
+    private void connectLocationsSearchExecutor() {
+        bindJobCached(dtlLocationManager.searchLocationExecutor)
+                .onProgress(this::onSearchStarted)
+                .onError(this::onSearchError)
+                .onSuccess(this::onSearchFinished);
+
+        if (status == Status.SEARCH) dtlLocationManager.searchLocations(query);
+    }
 
     public void searchOpened() {
         status = Status.SEARCH;
@@ -167,39 +165,26 @@ public class DtlLocationsPresenter extends Presenter<DtlLocationsPresenter.View>
 
     public void searchClosed() {
         status = Status.NEARBY;
-        searchDelegate.dismissDelegate();
         view.hideProgress();
         setItems(dtlLocations);
     }
 
     public void search(String query) {
-        searchDelegate.performSearch(query);
+        this.query = query;
+        dtlLocationManager.searchLocations(query);
     }
 
-    @Override
     public void onSearchStarted() {
         view.showEmptyProgress();
     }
 
-    @Override
     public void onSearchFinished(List<DtlLocation> locations) {
         view.hideProgress();
         setItems(locations);
     }
 
-    @Override
-    public void onSearchError(SpiceException e) {
-        handleError(e);
-    }
-
-    private void setItems(List<DtlLocation> locations) {
-        if (status == Status.NEARBY)
-            view.setEmptyViewVisibility(locations.isEmpty());
-        else if (TextUtils.isEmpty(searchDelegate.getQuery()))
-            view.setEmptyViewVisibility(dtlLocations.isEmpty());
-        else view.setEmptyViewVisibility(false);
-        //
-        view.setItems(locations);
+    public void onSearchError(Throwable e) {
+        if (e instanceof DtApiException) apiErrorPresenter.handleError(e);
     }
 
     public interface View extends RxView, ApiErrorView {

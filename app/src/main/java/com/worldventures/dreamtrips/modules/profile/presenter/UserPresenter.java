@@ -99,6 +99,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     public void onStartChatClicked() {
+        if (user.getUsername() == null) return; // if user isn't loaded yet
+
         com.messenger.messengerservers.entities.User participant =
                 UsersDAO.getUser(user.getUsername());
 

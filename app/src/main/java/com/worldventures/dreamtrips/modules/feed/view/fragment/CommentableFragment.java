@@ -61,6 +61,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     @Optional
     @InjectView(R.id.title)
     protected TextView header;
+    @InjectView(R.id.input_container)
+    View inputContainer;
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
@@ -69,9 +71,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     //
     private LikersPanelHelper likersPanelHelper;
     private NavigationWrapper likersNavigationWrapper;
-
-    @InjectView(R.id.input_container)
-    View inputContainer;
 
     @Inject
     @Named(RouteCreatorModule.PROFILE)

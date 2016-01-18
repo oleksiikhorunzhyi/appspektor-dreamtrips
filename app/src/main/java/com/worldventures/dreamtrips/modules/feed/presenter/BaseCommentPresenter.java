@@ -151,6 +151,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     }
 
     public void onEvent(EditBucketEvent event) {
+        if (!view.isVisibleOnScreen()) return;
+        //
         BucketBundle bundle = new BucketBundle();
         bundle.setType(event.getType());
         bundle.setBucketItemUid(event.getUid());

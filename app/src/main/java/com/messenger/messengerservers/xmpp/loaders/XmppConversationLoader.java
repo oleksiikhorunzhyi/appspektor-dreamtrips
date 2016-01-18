@@ -3,6 +3,7 @@ package com.messenger.messengerservers.xmpp.loaders;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.ConversationData;
 import com.messenger.messengerservers.entities.Participant;
+import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.entities.ConversationWithLastMessage;
@@ -65,13 +66,17 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                     if (conversation.getType().equals(CHAT)) {
                         List<Participant> participants = provider.getSingleChatParticipants(conversation);
                         if (subscriber.isUnsubscribed()) return;
+                        if (singleChatInvalid(conversation, facade.getOwner())) {
+                            subscriber.onCompleted();
+                            return;
+                        }
                         //
                         subscriber.onNext(new ConversationData(conversation, participants, conversationWithLastMessage.lastMessage));
                         subscriber.onCompleted();
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
                             if (subscriber.isUnsubscribed()) return;
-                            if (conversationHasError(conversation, owner)) {
+                            if (groupChatInvalid(conversation, owner)) {
                                 subscriber.onCompleted();
                                 return;
                             }
@@ -89,8 +94,14 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                 .toList();
     }
 
-    private boolean conversationHasError(Conversation conversation, Participant owner) {
-        return owner == null && (conversation.getType().equals(Conversation.Type.CHAT) || conversation.getType().equals(Conversation.Type.GROUP));
+    private boolean groupChatInvalid(Conversation conversation, Participant owner) {
+        boolean withoutOwner = owner == null && (conversation.getType().equals(Conversation.Type.CHAT) || conversation.getType().equals(Conversation.Type.GROUP));
+        return withoutOwner;
+    }
+
+    private boolean singleChatInvalid(Conversation conversation, User user) {
+        boolean wrongSingleChat = !conversation.getId().contains(user.getId());
+        return wrongSingleChat;
     }
 
     private boolean hasNoOtherUsers(Conversation conversation) {

@@ -120,6 +120,13 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     }
 
     @Override
+    public String toString() {
+        return "User{" +
+                "_id='" + _id + '\'' +
+                '}';
+    }
+
+    @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
     }

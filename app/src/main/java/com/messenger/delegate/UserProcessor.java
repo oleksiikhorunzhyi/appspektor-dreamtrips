@@ -1,5 +1,6 @@
 package com.messenger.delegate;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.api.GetShortProfilesQuery;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.UsersDAO;
@@ -44,7 +45,8 @@ public class UserProcessor {
                 requester.execute(new GetShortProfilesQuery(usernames), userz -> {
                     Collections.sort(users, (lhs, rhs) -> lhs.getId().compareTo(rhs.getId()));
                     Collections.sort(userz, (lhs, rhs) -> lhs.getUsername().compareTo(rhs.getUsername()));
-                    List<User> result = from(users).zip(userz, (u, z) -> {
+                    List<String> socialUsernames = Queryable.from(userz).map(z -> z.getUsername()).toList();
+                    List<User> result = from(users).filter(u -> socialUsernames.contains(u.getId())).zip(userz, (u, z) -> {
                         u.setSocialId(z.getId());
                         u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));
                         User storedUser = UsersDAO.getUser(u.getId());

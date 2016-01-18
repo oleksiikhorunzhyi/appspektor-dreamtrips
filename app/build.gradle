@@ -68,6 +68,7 @@ android {
     productFlavors {
         dev {
             applicationIdSuffix ".dev"
+            minSdkVersion 23 // temporary, until new build gradle merged - to decrease build time
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
 
             manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"

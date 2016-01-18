@@ -173,8 +173,6 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         } else {
             share.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     public void setOnCommentIconClickListener(OnViewClickListener onCommentIconClickListener) {

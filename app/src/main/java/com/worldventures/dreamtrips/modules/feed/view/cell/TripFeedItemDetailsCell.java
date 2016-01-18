@@ -41,7 +41,7 @@ public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem> {
     }
 
     @Override
-    protected void openItemDetails() {
+    public void openItemDetails() {
         super.openItemDetails();
         getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW,
                 getModelObject().getItem().getUid(), FeedEntityHolder.Type.TRIP));

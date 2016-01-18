@@ -38,12 +38,8 @@ public class FeedEntityContentFragmentFactory {
                 //now is not used.
                 break;
             case TRIP:
-                route = Route.DETAILS_TRIP_WITH_SOCIAL;
+                route = Route.DETAILED_TRIP;
                 args = new TripDetailsBundle((TripModel) holder.getItem());
-                break;
-            case PHOTO:
-                route = Route.FEED_DETAILS_PHOTO;
-                args = new PhotoBundle((Photo) holder.getItem());
                 break;
             case BUCKET_LIST_ITEM:
                 User user = holder.getItem().getOwner();
@@ -55,10 +51,6 @@ public class FeedEntityContentFragmentFactory {
                 bucketBundle.setBucketItemUid(item.getUid());
                 bucketBundle.setOwnerId(userId);
                 args = bucketBundle;
-                break;
-            case POST:
-                route = Route.DETAILS_TEXTUAL_POST;
-                args = new PostBundle((TextualPost) holder.getItem());
                 break;
         }
         return new Pair<>(route, args);

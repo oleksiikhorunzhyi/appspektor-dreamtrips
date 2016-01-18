@@ -10,14 +10,19 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
@@ -32,6 +37,9 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
+    @Inject
+    @Named(RouteCreatorModule.PROFILE)
+    RouteCreator<Integer> routeCreator;
 
     CommentCellHelper commentCellHelper;
 
@@ -52,6 +60,7 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
             //
             commentCellHelper = new CommentCellHelper(itemView.getContext());
             commentCellHelper.attachView(itemView);
+            feedItemDetailsCell.itemView.setOnClickListener(view -> feedItemDetailsCell.openItemDetails());
         }
         //
         super.fillWithItem(item);
@@ -96,9 +105,18 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
     }
 
     @Optional
+    @OnClick(R.id.comment_preview)
+    void commentsPreviewClicked() {
+        feedItemDetailsCell.openItemDetails();
+    }
+
+    @Optional
     @OnClick(R.id.user_photo)
     void commentOwnerClicked() {
         User user = commentCellHelper.getComment().getOwner();
-        getEventBus().post(new ProfileClickedEvent(user));
+        router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .data(new UserBundle(user))
+                .build());
     }
 }

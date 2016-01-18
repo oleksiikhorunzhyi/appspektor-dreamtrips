@@ -34,7 +34,7 @@ public class XmppContactLoader extends AsyncLoader<User> {
         if (!roster.isLoaded()) {
             try {
                 roster.reloadAndWait();
-            } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {
+            } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException | InterruptedException e) {
                 Log.w("XmppContactLoader", "reload failed", e);
             }
         }

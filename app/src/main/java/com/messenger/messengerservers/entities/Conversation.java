@@ -29,6 +29,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column String ownerId;
     @Column String subject;
     @Column String type;
+    @Column String status;
     @Column int unreadMessageCount;
     @Column boolean abandoned;
     @Column long syncTime;
@@ -40,6 +41,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setId(builder.id);
         setOwnerId(builder.ownerId);
         setSubject(builder.subject);
+        setStatus(builder.status);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
         setAbandoned(builder.abandoned);
@@ -77,6 +79,15 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
     public void setType(@Type.ConversationType String type) {
         this.type = type;
+    }
+
+    @Status.ConversationStatus
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(@Status.ConversationStatus String status){
+        this.status = status;
     }
 
     public int getUnreadMessageCount() {
@@ -128,6 +139,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
                 "_id='" + _id + '\'' +
                 ", ownerId='" + ownerId + '\'' +
                 ", subject='" + subject + '\'' +
+                ", status='" + status + '\'' +
                 ", type='" + type + '\'' +
                 ", unreadMessageCount=" + unreadMessageCount +
                 ", abandoned=" + abandoned +
@@ -172,11 +184,23 @@ public class Conversation extends BaseProviderModel<Conversation> {
         }
     }
 
+    public static final class Status {
+        public static final String PRESENT = "present";
+        public static final String KICKED = "kicked";
+        public static final String LEFT = "left";
+
+        @Retention(RetentionPolicy.SOURCE)
+        @StringDef({PRESENT, KICKED, LEFT})
+        public @interface ConversationStatus {
+        }
+    }
+
     public static final class Builder {
         private String id;
         private String ownerId;
         private String subject;
         private String type;
+        private String status;
         private long date;
         private int unreadMessageCount = 0;
         private boolean abandoned;
@@ -211,6 +235,11 @@ public class Conversation extends BaseProviderModel<Conversation> {
 
         public Builder type(@Type.ConversationType String val) {
             type = val;
+            return this;
+        }
+
+        public Builder status(@Status.ConversationStatus String val) {
+            status = val;
             return this;
         }
 

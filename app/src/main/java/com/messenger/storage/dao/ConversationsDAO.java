@@ -109,11 +109,12 @@ public class ConversationsDAO extends BaseDAO {
                 "ON p." + ParticipantsRelationship$Table.CONVERSATIONID + "=c." + Conversation$Table._ID + " "
         );
 
-
+        String where = "WHERE c." + Conversation$Table.STATUS + " = ? ";
         boolean onlyGroup = type != null && Conversation.Type.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("WHERE c.type not like ? ");
+            where += "AND c.type not like ?";
         }
+        query.append(where);
 
         query.append("GROUP BY c." + Conversation$Table._ID + " " +
                 "HAVING c." + Conversation$Table.TYPE + "=? " +
@@ -127,9 +128,9 @@ public class ConversationsDAO extends BaseDAO {
 
         String[] args;
         if (onlyGroup) {
-            args = new String[]{Conversation.Type.CHAT, Conversation.Type.CHAT};
+            args = new String[]{Conversation.Status.PRESENT, Conversation.Type.CHAT, Conversation.Type.CHAT};
         } else {
-            args = new String[]{Conversation.Type.CHAT};
+            args = new String[]{Conversation.Status.PRESENT, Conversation.Type.CHAT};
         }
         queryBuilder.withSelectionArgs(args);
         return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);

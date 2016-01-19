@@ -157,7 +157,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     private final OnChatLeftListener onChatLeftListener = new OnChatLeftListener() {
         @Override
-        public void onChatLeft(String conversationId, String userId) {
+        public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
                 Intent intent = new Intent(activity, MessengerStartActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

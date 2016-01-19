@@ -23,6 +23,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -199,7 +200,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onConversationLoadedFirstTime(Conversation conversation) {
-        notificationDelegate.cancel(conversation.getId().hashCode());
+        notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
         ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
         //
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);

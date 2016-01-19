@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 
 public class MessengerNotificationFactory extends NotificationFactory {
 
-
+    public static final String MESSENGER_TAG = "messenger_tag";
 
     public MessengerNotificationFactory(Context context) {
         super(context);
@@ -28,7 +28,7 @@ public class MessengerNotificationFactory extends NotificationFactory {
                 .append(data.alertWrapper.alert.locArgs.get(2)); // message text
 
         NotificationCompat.Builder notification = createNewMessageNotification(
-                data.conversationId, messageBuilder.toString()
+                data.conversationId, data.unreadConversationsCount, messageBuilder.toString()
         );
         return notification.build();
     }
@@ -36,13 +36,15 @@ public class MessengerNotificationFactory extends NotificationFactory {
     /**
      * Shows a push notification with ability to open conversation
      *
+     * @param unreadConversations
      * @param message actual message that will be shown in notification
      */
-    private NotificationCompat.Builder createNewMessageNotification(String conversationId, String message) {
+    private NotificationCompat.Builder createNewMessageNotification(String conversationId, int unreadConversations, String message) {
         PendingIntent intent = createMessengerIntent(conversationId, false);
         return super.createNotification()
                 .setContentIntent(intent)
-                .setContentText(message);
+                .setContentText(message)
+                .setNumber(unreadConversations);
     }
 
     private PendingIntent createMessengerIntent(String conversationId, boolean forAction) {

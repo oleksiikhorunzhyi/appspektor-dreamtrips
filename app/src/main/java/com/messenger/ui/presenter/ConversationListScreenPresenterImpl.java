@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
+import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +44,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     DreamSpiceManager dreamSpiceManager;
     @Inject
     ConversationsDAO conversationsDAO;
+    @Inject
+    NotificationDelegate notificationDelegate;
 
     private final Activity parentActivity;
     private final ChatLeavingDelegate chatLeavingDelegate;
@@ -61,6 +65,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
         dreamSpiceManager.start(getView().getContext());
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         applyViewState();

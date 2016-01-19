@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 
+import com.messenger.notification.MessengerNotificationFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
@@ -52,7 +53,11 @@ public class NotificationDelegate {
 
     public void notifyNewMessageReceived(NewMessagePushMessage message) {
         Notification notification = notificationFactoryHolder.getMessengerNotificationFactory().createNewMessage(message);
-        notificationManager.notify(message.conversationId.hashCode(), notification);
+        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, 0, notification);
+    }
+
+    public void cancel(String tag) {
+        notificationManager.cancel(tag, 0);
     }
 
     public void cancel(int id) {

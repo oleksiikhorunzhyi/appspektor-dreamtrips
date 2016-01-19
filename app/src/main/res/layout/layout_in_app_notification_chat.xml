@@ -41,7 +41,8 @@
                     android:id="@+id/in_app_notif_avatar"
                     style="@style/InAppNotificationSingleChatAvatarView"
                     android:layout_centerVertical="true"
-                    app:riv_oval="true"/>
+                    app:placeholderImage="@drawable/noavatar_big"
+                    app:roundAsCircle="true"/>
 
                 <TextView
                     android:id="@+id/in_app_notif_title"

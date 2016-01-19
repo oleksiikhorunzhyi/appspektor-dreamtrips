@@ -2,12 +2,13 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/avatar_view_rounded_avatar"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="@dimen/list_item_avatar_image_view_size"
         android:layout_height="@dimen/list_item_avatar_image_view_size"
-        app:riv_oval="true"
+        app:placeholderImage="@drawable/noavatar_small"
+        app:roundAsCircle="true"
         />
 
     <ImageView

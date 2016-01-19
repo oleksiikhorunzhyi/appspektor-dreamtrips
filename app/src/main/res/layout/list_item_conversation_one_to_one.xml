@@ -22,7 +22,9 @@
             android:id="@+id/conversation_avatar_view"
             style="@style/SingleChatBigAvatarView"
             android:layout_centerVertical="true"
-            app:riv_oval="true"/>
+            app:placeholderImage="@drawable/noavatar_big"
+            app:roundAsCircle="true"
+            />
 
         <include
             layout="@layout/list_item_conversation_common"

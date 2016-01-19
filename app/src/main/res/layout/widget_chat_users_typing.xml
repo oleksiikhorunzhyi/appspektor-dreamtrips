@@ -14,28 +14,31 @@
         app:ovl_overlap_part="0.6"
         >
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/chat_typing_avatar_1"
-            app:riv_oval="true"
-            app:riv_border_width="@dimen/chat_typing_avatars_border"
-            app:riv_border_color="@color/chat_typing_avatars_border"
+            app:placeholderImage="@drawable/noavatar_small"
+            app:roundAsCircle="true"
+            app:roundingBorderWidth="@dimen/chat_typing_avatars_border"
+            app:roundingBorderColor="@color/chat_typing_avatars_border"
             style="@style/TypingAvatarImageView"
             />
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/chat_typing_avatar_2"
             style="@style/TypingAvatarImageView"
-            app:riv_oval="true"
-            app:riv_border_width="@dimen/chat_typing_avatars_border"
-            app:riv_border_color="@color/chat_typing_avatars_border"
+            app:placeholderImage="@drawable/noavatar_small"
+            app:roundAsCircle="true"
+            app:roundingBorderWidth="@dimen/chat_typing_avatars_border"
+            app:roundingBorderColor="@color/chat_typing_avatars_border"
             />
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/chat_typing_avatar_3"
             style="@style/TypingAvatarImageView"
-            app:riv_oval="true"
-            app:riv_border_width="@dimen/chat_typing_avatars_border"
-            app:riv_border_color="@color/chat_typing_avatars_border"
+            app:placeholderImage="@drawable/noavatar_small"
+            app:roundAsCircle="true"
+            app:roundingBorderWidth="@dimen/chat_typing_avatars_border"
+            app:roundingBorderColor="@color/chat_typing_avatars_border"
             />
 
     </com.messenger.ui.widget.OverlappingViewsLayout>

@@ -47,7 +47,8 @@
                             android:visibility="gone"/>
                         <com.messenger.ui.widget.AvatarView
                             android:id="@+id/chat_settings_single_chat_avatar_view"
-                            app:riv_oval="true"
+                            app:placeholderImage="@drawable/noavatar_big"
+                            app:roundAsCircle="true"
                             style="@style/SingleChatBigAvatarView"
                             android:visibility="gone"/>
                         <ImageView

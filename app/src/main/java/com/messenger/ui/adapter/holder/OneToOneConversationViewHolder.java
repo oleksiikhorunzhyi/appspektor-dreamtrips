@@ -1,12 +1,11 @@
 package com.messenger.ui.adapter.holder;
 
+import android.net.Uri;
 import android.view.View;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.widget.AvatarView;
-import com.messenger.util.Constants;
-import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -24,11 +23,8 @@ public class OneToOneConversationViewHolder extends BaseConversationViewHolder {
 
     @Override
     protected void setConversationPicture(List<User> participants) {
-            User addressee = participants.get(0);
-            Picasso.with(context)
-                    .load(addressee.getAvatarUrl())
-                    .placeholder(Constants.PLACEHOLDER_USER_AVATAR_BIG)
-                    .into(avatarView);
+        User addressee = participants.get(0);
+        avatarView.setImageURI(Uri.parse(addressee.getAvatarUrl()));
     }
 
     @Override

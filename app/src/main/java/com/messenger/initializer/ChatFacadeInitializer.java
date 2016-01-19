@@ -113,10 +113,9 @@ public class ChatFacadeInitializer implements AppInitializer {
                         u.setOnline(isOnline);
                         u.save();
                     }))
-                    .flatMap(users -> participantsDAO.getParticipants(conversationId)
+                    .flatMap(users -> participantsDAO.getParticipants(conversationId).first()
                             .map(c -> SqlUtils.convertToList(ParticipantsRelationship.class, c))
                             .map(list -> from(list).map(ParticipantsRelationship::getUserId).contains(userId))
-                            .first()
                     )
                     .filter(isAlreadyConnected -> !isAlreadyConnected)
                     .doOnNext(isAlreadyConnected -> {

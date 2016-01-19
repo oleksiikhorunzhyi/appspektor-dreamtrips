@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+       xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/conversation_avatar_1"
         style="@style/SmallSingleChatAvatarView"
-        app:riv_oval="true"
+        app:placeholderImage="@drawable/noavatar_small"
+        app:roundAsCircle="true"
         />
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/conversation_avatar_2"
         style="@style/SmallSingleChatAvatarView"
         android:layout_marginLeft="@dimen/list_item_small_avatar_image_spacing"
-        app:riv_oval="true"
+        android:layout_marginStart="@dimen/list_item_small_avatar_image_spacing"
+        app:placeholderImage="@drawable/noavatar_small"
+        app:roundAsCircle="true"
         />
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/conversation_avatar_3"
-        android:layout_marginTop="@dimen/list_item_small_avatar_image_spacing"
         style="@style/SmallSingleChatAvatarView"
-        app:riv_oval="true"
+        android:layout_marginTop="@dimen/list_item_small_avatar_image_spacing"
+        app:placeholderImage="@drawable/noavatar_small"
+        app:roundAsCircle="true"
         />
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/conversation_avatar_4"
         style="@style/SmallSingleChatAvatarView"
         android:layout_marginLeft="@dimen/list_item_small_avatar_image_spacing"
+        android:layout_marginStart="@dimen/list_item_small_avatar_image_spacing"
         android:layout_marginTop="@dimen/list_item_small_avatar_image_spacing"
-        app:riv_oval="true"
+        app:placeholderImage="@drawable/noavatar_small"
+        app:roundAsCircle="true"
         />
 </merge>

@@ -1,14 +1,12 @@
 package com.messenger.ui.widget.inappnotification.messanger;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import com.messenger.ui.widget.AvatarView;
-import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;
@@ -35,11 +33,8 @@ public class InAppNotificationViewChat extends InAppMessengerNotificationView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setAvatarUrl(String avatarUrl){
-        Picasso.with(getContext())
-                .load(avatarUrl)
-                .placeholder(android.R.drawable.ic_menu_compass)
-                .into(avatarView);
+    public void setAvatarUrl(String avatarUrl) {
+        avatarView.setImageURI(Uri.parse(avatarUrl));
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +12,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.messenger.util.Constants;
-import com.squareup.picasso.Picasso;
-import com.worldventures.dreamtrips.R;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.messenger.model.ChatUser;
+import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.InjectView;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.InjectViews;
 
 public class ChatUsersTypingView extends RelativeLayout {
@@ -29,7 +29,7 @@ public class ChatUsersTypingView extends RelativeLayout {
     public static final int TYPING_ANIM_NEXT_ANIM_DELAY_MS = 300;
 
     @InjectViews({ R.id.chat_typing_avatar_1, R.id.chat_typing_avatar_2, R.id.chat_typing_avatar_3})
-    List<ImageView> avatarImageViews;
+    List<SimpleDraweeView> avatarImageViews;
     @InjectViews({ R.id.chat_typing_circle_1, R.id.chat_typing_circle_2, R.id.chat_typing_circle_3})
     List<ImageView> typingCircles;
     @InjectView(R.id.chat_typing_layout_usernames_textview) TextView chatTypingTextView;
@@ -128,7 +128,7 @@ public class ChatUsersTypingView extends RelativeLayout {
         }
 
         for (int i = 0; i < avatarImageViews.size(); i++) {
-            final ImageView imageView = avatarImageViews.get(i);
+            final SimpleDraweeView imageView = avatarImageViews.get(i);
             if (i <= typingUsers.size() - 1) {
                 if (imageView.getVisibility() != VISIBLE) {
                     imageView.setVisibility(VISIBLE);
@@ -136,9 +136,7 @@ public class ChatUsersTypingView extends RelativeLayout {
                     fadeIn.start();
                 }
                 ChatUser user = typingUsers.get(i);
-                Picasso.with(getContext()).load(user.getAvatarUrl())
-                        .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
-                        .into(imageView);
+                imageView.setImageURI(Uri.parse(user.getAvatarUrl()));
             } else {
                 ObjectAnimator fadeOut = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 0f);
                 fadeOut.start();

@@ -321,10 +321,6 @@ dependencies {
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
 
     // Messenger
-
-    compile 'com.makeramen:roundedimageview:2.2.1'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-
     compile 'com.hannesdorfmann.mosby:mvp:2.0.0'
     compile 'com.hannesdorfmann.mosby:mvp-common:2.0.0'
     compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'

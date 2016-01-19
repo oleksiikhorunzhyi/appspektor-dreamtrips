@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
@@ -35,6 +36,8 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,7 +50,7 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
 
     @InjectView(R.id.conversation_list_content_view)
     ViewGroup contentView;
-    ;
+
     @InjectView(R.id.conversation_list_loading_view)
     View loadingView;
     @InjectView(R.id.conversation_list_error_view)
@@ -59,6 +62,9 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     RecyclerView recyclerView;
     @InjectView(R.id.conversation_conversation_type_spinner)
     Spinner conversationsDropDownSpinner;
+
+    @Inject
+    ParticipantsDAO participantsDAO;
 
     SearchView searchView;
     //
@@ -126,13 +132,13 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
-        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser());
-        adapter.setClickListener(presenter::onConversationSelected);
+        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser(), participantsDAO);
+        adapter.setConversationClickListener(presenter::onConversationSelected);
         adapter.setSwipeButtonsListener(this);
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
-        adapter.setClickListener(conversation -> getPresenter().onConversationSelected(conversation));
+        adapter.setConversationClickListener(conversation -> getPresenter().onConversationSelected(conversation));
         recyclerView.setAdapter(adapter);
     }
 

@@ -2,16 +2,16 @@ package com.messenger.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.model.ChatUser;
-import com.messenger.util.Constants;
-import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class GroupAvatarsView extends GridLayout {
 
     @InjectViews({R.id.conversation_avatar_1, R.id.conversation_avatar_2,
             R.id.conversation_avatar_3, R.id.conversation_avatar_4})
-    List<ImageView> avatarImageViews;
+    List<SimpleDraweeView> avatarImageViews;
 
     public GroupAvatarsView(Context context) {
         super(context);
@@ -82,16 +82,20 @@ public class GroupAvatarsView extends GridLayout {
 
     public void updateAvatars(List<User> chatUsers) {
         for (int i = 0; i < MAX_AVATARS_COUNT; i++) {
-            ImageView avatarImageView = avatarImageViews.get(i);
+            SimpleDraweeView avatarImageView = avatarImageViews.get(i);
             if (i > chatUsers.size() - 1) {
-                avatarImageView.setVisibility(INVISIBLE);
+                changeVisibility(avatarImageView, INVISIBLE);
             } else {
-                avatarImageView.setVisibility(VISIBLE);
+                changeVisibility(avatarImageView, VISIBLE);
                 ChatUser chatUser = chatUsers.get(i);
-                Picasso.with(getContext()).load(chatUser.getAvatarUrl())
-                        .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
-                        .into(avatarImageView);
+                avatarImageView.setImageURI(Uri.parse(chatUser.getAvatarUrl()));
             }
+        }
+    }
+
+    private void changeVisibility(View view, int visible) {
+        if (view.getVisibility() != visible) {
+            view.setVisibility(visible);
         }
     }
 }

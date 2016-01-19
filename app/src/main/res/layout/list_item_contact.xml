@@ -15,7 +15,8 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         style="@style/SmallSingleChatAvatarView"
-        app:riv_oval="true"
+        app:placeholderImage="@drawable/noavatar_big"
+        app:roundAsCircle="true"
         />
 
     <TextView

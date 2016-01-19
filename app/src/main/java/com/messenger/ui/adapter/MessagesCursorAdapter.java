@@ -4,12 +4,11 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
-
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,13 +28,8 @@ import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.ChatTimestampFormatter;
-import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
@@ -320,10 +314,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble_comics
                     : R.drawable.grey_bubble_comics;
             holder.avatarImageView.setVisibility(View.VISIBLE);
-            Picasso.with(context)
-                    .load(userFrom == null ? null : userFrom.getAvatarUrl())
-                    .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
-                    .into(holder.avatarImageView);
+            holder.avatarImageView.setImageURI(userFrom == null ? null : Uri.parse(userFrom.getAvatarUrl()));
 
             holder.avatarImageView.setOnClickListener(v -> {
                 if (avatarClickListener != null) {

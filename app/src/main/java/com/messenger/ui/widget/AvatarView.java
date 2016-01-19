@@ -3,16 +3,17 @@ package com.messenger.ui.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
-import com.makeramen.roundedimageview.RoundedImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 
 /**
  * Class for displaying online status indicator on the top of the rim of the rounded avatar.
  * If no online indicator is needed plain RoundedImageView can be used instead.
  */
-public class AvatarView extends RoundedImageView {
+public class AvatarView extends SimpleDraweeView {
 
     private static final float ONLINE_SIZE_FACTOR = 0.20f;
 
@@ -30,7 +31,7 @@ public class AvatarView extends RoundedImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        onlineIndicatorDrawable = getResources().getDrawable(R.drawable.circle_online_indicator);
+        onlineIndicatorDrawable = ContextCompat.getDrawable(getContext(), R.drawable.circle_online_indicator);
         int onlineIndicatorSize = Math.round(getMeasuredWidth() * Math.abs(1f - getMeasuredWidth() % 1000 / 1000f) * ONLINE_SIZE_FACTOR);
 
         float avatarRadius = getMeasuredWidth() / 2;

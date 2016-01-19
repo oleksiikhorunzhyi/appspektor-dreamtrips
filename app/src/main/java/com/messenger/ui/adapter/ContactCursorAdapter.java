@@ -3,6 +3,7 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,7 @@ import com.messenger.ui.adapter.MessagesCursorAdapter.OnAvatarClickListener;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.messenger.ui.adapter.holder.ContactWithHeaderViewHolder;
-import com.messenger.util.Constants;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 
 import java.util.HashMap;
@@ -193,10 +192,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
     protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, User user) {
         holder.getNameTextView().setText(user.getName());
         holder.getAvatarView().setOnline(user.isOnline());
-        Picasso.with(context)
-                .load(user.getAvatarUrl())
-                .placeholder(Constants.PLACEHOLDER_USER_AVATAR_SMALL)
-                .into(holder.getAvatarView());
+        holder.getAvatarView().setImageURI(Uri.parse(user.getAvatarUrl()));
 
         holder.getAvatarView().setOnClickListener(v -> {
             if (avatarClickListener != null) {

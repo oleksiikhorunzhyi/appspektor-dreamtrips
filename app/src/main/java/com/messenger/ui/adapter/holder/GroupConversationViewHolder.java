@@ -2,8 +2,11 @@ package com.messenger.ui.adapter.holder;
 
 import android.view.View;
 
+import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
+
+import java.util.List;
 
 import butterknife.InjectView;
 
@@ -16,7 +19,8 @@ public class GroupConversationViewHolder extends BaseConversationViewHolder{
         super(itemView);
     }
 
-    public GroupAvatarsView getGroupAvatarsView() {
-        return groupAvatarsView;
+    @Override
+    protected void setConversationPicture(List<User> participants) {
+        groupAvatarsView.updateAvatars(participants);
     }
 }

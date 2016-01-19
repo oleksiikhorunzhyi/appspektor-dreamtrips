@@ -1,34 +1,37 @@
 package com.messenger.notification;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.MessengerInAppNotificationListener;
+import com.messenger.ui.widget.inappnotification.messanger.InAppMessengerNotificationView;
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewChat;
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewGroup;
 import com.messenger.util.OpenedConversationTracker;
-import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
+import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Observable;
 import timber.log.Timber;
 
-import static com.messenger.messengerservers.listeners.GlobalMessageListener.*;
+import static com.messenger.messengerservers.listeners.GlobalMessageListener.SimpleGlobalMessageListener;
 
 public class UnhandledMessageWatcher {
 
@@ -44,17 +47,24 @@ public class UnhandledMessageWatcher {
     private AppNotification appNotification;
     private DreamSpiceManager spiceManager;
     private OpenedConversationTracker openedConversationTracker;
-
-    private MessengerInAppNotificationListener notificationEventListener;
+    private ConversationsDAO conversationsDAO;
+    private ParticipantsDAO participantsDAO;
+    private UsersDAO usersDAO;
 
     public UnhandledMessageWatcher(MessengerServerFacade messengerServerFacade,
                                    AppNotification appNotification,
                                    DreamSpiceManager spiceManager,
-                                   OpenedConversationTracker openedConversationTracker) {
+                                   OpenedConversationTracker openedConversationTracker,
+                                   ConversationsDAO conversationsDAO,
+                                   ParticipantsDAO participantsDAO,
+                                   UsersDAO usersDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.appNotification = appNotification;
         this.spiceManager = spiceManager;
         this.openedConversationTracker = openedConversationTracker;
+        this.conversationsDAO = conversationsDAO;
+        this.participantsDAO = participantsDAO;
+        this.usersDAO = usersDAO;
     }
 
     private GlobalMessageListener messageListener = new SimpleGlobalMessageListener() {
@@ -82,112 +92,108 @@ public class UnhandledMessageWatcher {
         }
     }
 
-    private void onUnhandledMessage(final Activity activity, Message message) {
-        if (message.getConversationId().equals(openedConversationTracker.getOpenedConversationId())) {
-            return;
-        }
-
-        Conversation conversation = new Select()
-                .from(Conversation.class)
-                .byIds(message.getConversationId())
-                .querySingle();
-
-        boolean isSingleChat = isSingleChat(conversation);
-        if (isSingleChat) {
-            composeSingleChatNotification(activity, conversation, message);
-        } else {
-            composeGroupChatNotification(activity, conversation, message);
-        }
+    private void onUnhandledMessage(Activity activity, Message message) {
+        if (isOpenedConversation(message)) return;
+        //
+        WeakReference<Activity> activityRef = new WeakReference<>(activity);
+        conversationsDAO.getConversation(message.getConversationId())
+                .compose(new NonNullFilter<>())
+                .first()
+                .flatMap(conversation -> {
+                    if (isSingleChat(conversation)) return composeSingleChatNotification(conversation, message);
+                    else return composeGroupChatNotification(conversation, message);
+                })
+                .compose(new IoToMainComposer<>())
+                .filter(data -> {
+                    return activityRef.get() != null; // TODO use ActivityEvent (lifecycle) instead
+                })
+                .subscribe(data -> showNotification(activityRef.get(), data),
+                        t -> Timber.e(t, "Can't show inner notification")
+                );
     }
 
-    private boolean isSingleChat(Conversation conversation) {
+    private boolean isOpenedConversation(Message message) {
+        return message.getConversationId().equals(openedConversationTracker.getOpenedConversationId());
+    }
+
+    private void showNotification(Activity activity, NotificationData data) {
+        InAppMessengerNotificationView view;
+        if (data.isGroup) {
+            view = createGroupChatCrouton(activity, data.participants, data.title, data.fromUserName + ": " + data.messageText);
+        } else {
+            view = createSingleChatCrouton(activity, data.participants.get(0).getAvatarUrl(), data.title, data.messageText);
+        }
+        appNotification.show(activity, view, new MessengerInAppNotificationListener(data.conversation.getId()) {
+            @Override
+            public void openConversation(String conversationId) {
+                ChatActivity.startChat(activity, data.conversation);
+            }
+        });
+    }
+
+    private boolean isSingleChat(@NonNull Conversation conversation) {
         return conversation.getType().equalsIgnoreCase(Conversation.Type.CHAT);
     }
 
     //single ava + sender name + sender text
-    private void composeSingleChatNotification(Activity activity, Conversation conversation, Message message) {
-        User fromUser = new Select()
-                .from(User.class)
-                .byIds(message.getFromId())
-                .querySingle();
-
-        String avatarUrl = fromUser.getAvatarUrl();
-        String title = fromUser.getName();
-        String text = message.getText();
-
-        activity.runOnUiThread(() -> showSingleChatCrouton(activity, conversation, avatarUrl, title, text));
+    private  Observable<NotificationData> composeSingleChatNotification(Conversation conversation, Message message) {
+        return usersDAO.getUserById(message.getFromId())
+                .compose(new NonNullFilter<>()).first()
+                .map(user -> new NotificationData(user.getName(), user.getName(), Collections.singletonList(user), message.getText(), conversation, false));
     }
 
     //group 4 avas + group name/user names + last name : last message
-    private void composeGroupChatNotification(Activity activity, Conversation conversation, Message message) {
-        RxContentResolver contentResolver = new RxContentResolver(activity.getContentResolver(),
-                query -> FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
-                        .rawQuery(query.selection, query.selectionArgs));
-
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users u " +
-                                "JOIN ParticipantsRelationship p " +
-                                "ON p.userId = u._id " +
-                                "WHERE p.conversationId = ?"
-                ).withSelectionArgs(new String[]{conversation.getId()}).build();
-
-        contentResolver.query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .map(c -> SqlUtils.convertToList(User.class, c))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .first()
-                .subscribe(users -> {
-                    String lastName = "";
-                    String lastMessage = "";
-
-                    User fromUser = new Select()
-                            .from(User.class)
-                            .byIds(message.getFromId())
-                            .querySingle();
-                    if (fromUser != null) {
-                        lastName = fromUser.getName();
-                        lastMessage = message.getText();
-                    } else {
-                        //download non friend user using spiceManager
-                    }
+    private Observable<NotificationData> composeGroupChatNotification(Conversation conversation, Message message) {
+        return Observable.zip(
+                participantsDAO.getParticipantsEntities(conversation.getId()),
+                usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()),
+                (users, fromUser) -> {
+                    String lastName = fromUser.getName();
+                    String lastMessage = message.getText();
 
                     String groupName = TextUtils.isEmpty(conversation.getSubject()) ?
                             TextUtils.join(", ", Queryable.from(users).map(User::getName).toList()) :
                             conversation.getSubject();
-
-                    showGroupChatCrouton(activity, conversation, users, groupName, lastName + ": " + lastMessage);
-                }, throwable -> Timber.e(throwable, "Error"));
+                    return new NotificationData(groupName, lastName, users, lastMessage, conversation, true);
+        }).first();
     }
 
-    private void showSingleChatCrouton(Activity activity, Conversation conversation, String avaUrl, String title, String text) {
-        notificationEventListener = new MessengerInAppNotificationListener(conversation.getId()) {
-            @Override
-            public void openConversation(String conversationId) {
-                ChatActivity.startChat(activity, conversation);
-            }
-        };
+    private InAppMessengerNotificationView createSingleChatCrouton(Activity activity, String avaUrl, String title, String text) {
         InAppNotificationViewChat view = new InAppNotificationViewChat(activity);
         view.setAvatarUrl(avaUrl);
         view.setTitle(title);
         view.setText(text);
-        appNotification.show(activity, view, notificationEventListener);
+        return view;
     }
 
-    private void showGroupChatCrouton(Activity activity, Conversation conversation, List<User> chatParticipants, String title, String text) {
-        notificationEventListener = new MessengerInAppNotificationListener(conversation.getId()) {
-            @Override
-            public void openConversation(String conversationId) {
-                ChatActivity.startChat(activity, conversation);
-            }
-        };
+    private InAppMessengerNotificationView createGroupChatCrouton(Activity activity, List<User> chatParticipants, String title, String text) {
         InAppNotificationViewGroup view = new InAppNotificationViewGroup(activity);
         view.setChatParticipants(chatParticipants);
         view.setTitle(title);
         view.setText(text);
-        appNotification.show(activity, view, notificationEventListener);
+        return view;
     }
 
     private void dismissAppNotification(Activity activity) {
         appNotification.dismissForActivity(activity);
+    }
+
+    static class NotificationData {
+
+        final String title;
+        final String fromUserName;
+        final List<User> participants;
+        final String messageText;
+        final Conversation conversation;
+        final boolean isGroup;
+
+        public NotificationData(String title, String fromUserName, List<User> participants, String messageText, Conversation conversation, boolean isGroup) {
+            this.title = title;
+            this.fromUserName = fromUserName;
+            this.participants = participants;
+            this.messageText = messageText;
+            this.conversation = conversation;
+            this.isGroup = isGroup;
+        }
     }
 }

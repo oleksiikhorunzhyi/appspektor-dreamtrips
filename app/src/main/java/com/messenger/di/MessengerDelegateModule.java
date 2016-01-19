@@ -4,6 +4,9 @@ import com.messenger.delegate.ChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.notification.UnhandledMessageWatcher;
+import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.RxContentResolver;
@@ -51,8 +54,11 @@ public class MessengerDelegateModule {
             MessengerServerFacade messengerServerFacade,
             AppNotification appNotification,
             DreamSpiceManager spiceManager,
+            ConversationsDAO conversationsDAO,
+            UsersDAO usersDAO,
+            ParticipantsDAO participantsDAO,
             OpenedConversationTracker openedConversationTracker) {
-        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker);
+        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker,  conversationsDAO, participantsDAO, usersDAO);
     }
 
 }

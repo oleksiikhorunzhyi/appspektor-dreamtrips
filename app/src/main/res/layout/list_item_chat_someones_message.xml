@@ -17,13 +17,14 @@
                     android:paddingRight="@dimen/chat_list_item_horizontal_padding"
                     android:background="@color/main_background"
         >
-        <com.makeramen.roundedimageview.RoundedImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/chat_item_avatar"
             android:layout_width="@dimen/chat_avatar_size"
             android:layout_height="@dimen/chat_avatar_size"
             android:scaleType="centerCrop"
-            app:riv_oval="true"
+            app:placeholderImage="@drawable/noavatar_small"
+            app:roundAsCircle="true"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/chat_username"
             />

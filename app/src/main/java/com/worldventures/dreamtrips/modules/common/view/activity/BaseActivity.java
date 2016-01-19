@@ -52,8 +52,8 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         TrackingHelper.onCreate(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

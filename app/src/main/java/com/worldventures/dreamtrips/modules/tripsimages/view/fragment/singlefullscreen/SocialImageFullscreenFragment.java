@@ -94,7 +94,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     public void setContent(IFullScreenObject photo) {
-        if(photo.getUser() == null) return;
+        if (photo.getUser() == null) return;
         //
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
@@ -194,11 +194,13 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     }
 
     protected void hideTagViewGroup() {
+        if (tag == null) return;
         tag.setSelected(false);
         taggableImageHolder.hide();
     }
 
     protected void showTagViewGroup() {
+        if (tag == null) return;
         tag.setSelected(true);
         RectF imageBounds = new RectF();
         ivImage.getHierarchy().getActualImageBounds(imageBounds);
@@ -256,6 +258,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     }
 
     protected void syncTagViewGroupWithGlobalState() {
+        if (ivImage == null) return;
         SocialViewPagerState socialViewPagerState = db.getSocialViewPagerState();
         if (socialViewPagerState != null) {
             if (socialViewPagerState.isTagHolderVisible()) {

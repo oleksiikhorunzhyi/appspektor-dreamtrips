@@ -55,17 +55,22 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
     private void showDatePickerDialog(String tag) {
         Calendar calendar = Calendar.getInstance();
 
-        if (tag.equals(END)) {
+        boolean end = tag.equals(END);
+        if (end) {
             calendar.setTime(getModelObject().getEndDate());
         } else {
             calendar.setTime(getModelObject().getStartDate());
         }
 
+        Calendar startDate = Calendar.getInstance();
+        startDate.setTime(getModelObject().getStartDate());
+        int startYear = startDate.get(Calendar.YEAR);
+
         DatePickerDialog datePickerDialog =
                 DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH), false);
-        datePickerDialog.setYearRange(calendar.get(Calendar.YEAR), calendar.get(Calendar.YEAR) + 5);
+        datePickerDialog.setYearRange(startYear, calendar.get(Calendar.YEAR) + 5);
         datePickerDialog.show(fragmentCompass.getFragmentManager(), tag);
     }
 
@@ -111,6 +116,7 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
     private boolean validateStartDate(Calendar selectedStartDate) {
         return selectedStartDate.getTimeInMillis() < getModelObject().getEndDate().getTime();
     }
+
     @Override
     public void prepareForReuse() {
         //nothing to do here

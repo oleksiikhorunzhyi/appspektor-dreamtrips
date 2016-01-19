@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
-import android.os.Bundle;
+import android.support.annotation.Nullable;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -10,10 +11,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.Map;
-
-import icepick.Icepick;
 
 public class GoogleTracker extends ITracker {
 
@@ -27,15 +25,22 @@ public class GoogleTracker extends ITracker {
 
     @Override
     public void trackEvent(String category, String action, Map<String, Object> data) {
-        if (getTracker() != null) {
-            getTracker().send(new HitBuilders.EventBuilder()
+        Tracker tracker = getTracker();
+        if (tracker != null) {
+            tracker.send(new HitBuilders.EventBuilder()
                     .setCategory(category)
                     .setAction(action)
                     .build());
         }
     }
 
+    @Nullable
     private Tracker getTracker() {
+        if (tracker == null && activity == null) {
+            Crashlytics.logException(new IllegalStateException("GoogleTracker: Activity's weak ref is null where it should not be"));
+            return null;
+        }
+        //
         if (tracker == null && activity.get() != null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(activity.get()
                     .getApplicationContext());

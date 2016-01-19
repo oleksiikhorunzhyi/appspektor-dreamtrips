@@ -29,6 +29,7 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
+import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.ChatScreen;
@@ -158,6 +159,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ConnectableObservable<Conversation> source = conversationDAO.getConversation(conversationId)
                 .onBackpressureLatest()
                 .filter(conversation -> conversation != null)
+                .filter(conversation -> {
+                    if (TextUtils.equals(conversation.getStatus(), Conversation.Status.PRESENT)) {
+                        return true;
+                    } else {
+                        //if we were kicked from conversation
+                        MessengerStartActivity.start(activity);
+                        return false;
+                    }
+                })
                 .compose(bindViewIoToMainComposer())
                 .publish();
 
@@ -171,11 +181,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         conversationObservable
                 .subscribe(conversation -> {
-                                if (!isInitialUnreadMessagesLoading) {
-                                    getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
-                                }
+                            if (!isInitialUnreadMessagesLoading) {
+                                getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
                             }
-                        );
+                        }
+                );
 
         chatObservable = source
                 .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
@@ -258,7 +268,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                             String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
                             if (status == Message.Status.SENT && !id.equals(user.getId())) {
                                 Message m = SqlUtils.convertToModel(true, Message.class, cursor);
-                                if (timeSinceMessagesUiInitialized() < MARK_AS_READ_DELAY_SINCE_MESSAGES_UI_INITIALIZED){
+                                if (timeSinceMessagesUiInitialized() < MARK_AS_READ_DELAY_SINCE_MESSAGES_UI_INITIALIZED) {
                                     long markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceMessagesUiInitialized();
                                     handler.postDelayed(() -> sendAndMarkChatEntities(m), markAsReadDelay);
                                     skipNextMessagesUiDueToPendingChangesInDb = false;
@@ -545,7 +555,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     menu.findItem(R.id.action_settings).setVisible(true);
                 });
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -615,7 +625,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    private void submitOneChatAction(Action1<Chat> action1){
+    private void submitOneChatAction(Action1<Chat> action1) {
         chatObservable
                 .first()
                 .compose(bindView())

@@ -55,7 +55,9 @@ public class ConversationsDAO extends BaseDAO {
     }
 
     public void deleteConversation(String conversationId) {
-        getConversationById(conversationId).delete();
+        //server sends so many packets about kicking as devices with the same user are online
+        Conversation conversation = getConversationById(conversationId);
+        if (conversation != null) conversation.delete();
     }
 
     public int updateDate(String conversationId, long date) {
@@ -109,12 +111,11 @@ public class ConversationsDAO extends BaseDAO {
                 "ON p." + ParticipantsRelationship$Table.CONVERSATIONID + "=c." + Conversation$Table._ID + " "
         );
 
-        String where = "WHERE c." + Conversation$Table.STATUS + " = ? ";
+        query.append("WHERE c." + Conversation$Table.STATUS + " = ? ");
         boolean onlyGroup = type != null && Conversation.Type.GROUP.equals(type);
         if (onlyGroup) {
-            where += "AND c.type not like ?";
+            query.append("AND c.type not like ?");
         }
-        query.append(where);
 
         query.append("GROUP BY c." + Conversation$Table._ID + " " +
                 "HAVING c." + Conversation$Table.TYPE + "=? " +

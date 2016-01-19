@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,8 @@ import icepick.State;
 @MenuResource(R.menu.menu_edit_template)
 public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePresenter, TemplateBundle>
         implements EditTemplatePresenter.View {
+
+    public static final int REQUEST_CODE = 228;
 
     @Inject
     @ForActivity
@@ -82,6 +85,13 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
     public void setFrom(String from) {
         tvFrom.setText(from);
     }
@@ -126,6 +136,12 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
         router.moveTo(Route.PREVIEW_TEMPLATE, NavigationConfigBuilder.forActivity()
                 .data(bundle)
                 .build());
+    }
+
+    @Override
+    public void openShare(Intent intent) {
+        startActivityForResult(Intent.createChooser(intent,
+                getActivity().getString(R.string.action_share)), REQUEST_CODE);
     }
 
     @Override

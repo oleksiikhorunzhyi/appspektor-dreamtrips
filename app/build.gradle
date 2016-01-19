@@ -111,29 +111,29 @@ android {
             dimension "stream"
             //
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-${DTL_CODE}-${versionBuild}"
-            // TODO : generate HOCKEY_APP_ID for every stream and set up here
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            // TODO : need to resolve intersection with config-dimension flavor values here:
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"bf3b066f88a8468298f15cc915105bdf"'
         }
         msgr {
             dimension "stream"
             //
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-${MSGR_CODE}-${versionBuild}"
-            // TODO : generate HOCKEY_APP_ID for every stream and set up here
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            // TODO : need to resolve intersection with config-dimension flavor values here:
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"58cb62f129434d25bf7e442bda61f4cf"'
         }
         social {
             dimension "stream"
             //
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-${SOCIAL_CODE}-${versionBuild}"
-            // TODO : generate HOCKEY_APP_ID for every stream and set up here
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            // TODO : need to resolve intersection with config-dimension flavor values here:
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"bc46745e381940af9f89faf40e9ecbbf"'
         }
         stable {
             dimension "stream"
             //
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-${STABLE_CODE}-${versionBuild}"
-            // TODO : generate HOCKEY_APP_ID for every stream and set up here
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
+            // TODO : need to resolve intersection with config-dimension flavor values here:
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"48de37eaf46ec363d392ae15ae521df6"'
         }
         ///////////////////////////////////////////////////////////////////////////
         // config-dimension flavors

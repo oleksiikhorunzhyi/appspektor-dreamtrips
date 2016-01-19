@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDial
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 
 @Layout(R.layout.fragment_profile)
@@ -30,8 +32,8 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
 
     private MenuItem chatActionItem;
-
-    private DrawableUtil drawableUtil;
+    @Inject
+    protected DrawableUtil drawableUtil;
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
@@ -51,8 +53,6 @@ public class UserFragment extends ProfileFragment<UserPresenter>
             return true;
         });
         showChatButtonForFriend(getPresenter().getUser());
-
-        drawableUtil = new DrawableUtil(getContext());
     }
 
     @Override

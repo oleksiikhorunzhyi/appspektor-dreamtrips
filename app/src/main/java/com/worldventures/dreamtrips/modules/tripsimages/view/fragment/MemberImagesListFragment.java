@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 
@@ -76,8 +75,8 @@ public class MemberImagesListFragment<P extends MemberImagesPresenter> extends T
         if (photoPickerLayout == null) return;
         //
         photoPickerLayout.setup(getChildFragmentManager(), false, getUserVisibleHint());
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter()
-                .attachImages(chosenImages, PickImageDelegate.REQUEST_PICK_PICTURE));
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter()
+                .attachImages(chosenImages, type));
         hidePhotoPicker();
     }
 

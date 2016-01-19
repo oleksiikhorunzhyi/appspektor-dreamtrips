@@ -107,7 +107,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     ////////////////////////////////////////
 
     public void scanReceipt() {
-        eventBus.post(new ImagePickRequestEvent(PickImageDelegate.REQUEST_CAPTURE_PICTURE, REQUESTER_ID));
+        eventBus.post(new ImagePickRequestEvent(PickImageDelegate.CAPTURE_PICTURE, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {

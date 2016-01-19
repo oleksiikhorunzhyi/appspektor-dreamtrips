@@ -1,6 +1,8 @@
 package com.messenger.ui.adapter.holder;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -27,9 +29,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public abstract class BaseConversationViewHolder extends BaseViewHolder {
 
@@ -64,6 +64,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
     private ConversationsCursorAdapter.ConversationClickListener conversationClickListener;
     private Subscription participantsSubscriber;
     private Conversation conversation;
+    private Handler handler = new Handler();
 
     public BaseConversationViewHolder(View itemView) {
         super(itemView);
@@ -140,8 +141,6 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
     }
 
     public void setDate(String date) {
-//        lastMessageDateTextView.setTextColor(ContextCompat
-//                .getColor(context, R.color.conversation_list_last_message_date));
         lastMessageDateTextView.setText(date);
     }
 
@@ -181,27 +180,30 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
 
     protected abstract void setConversationPicture(List<User> participants);
 
-    private void loadParticipants(Conversation conversation) {
+    private void loadParticipants(final Conversation conversation) {
         if (participantsSubscriber != null && !participantsSubscriber.isUnsubscribed()) {
             participantsSubscriber.unsubscribe();
         }
 
         participantsSubscriber = participantsDAO.getParticipants(conversation.getId())
+                .onBackpressureLatest()
                 .map(cursor -> {
                     List<User> result = SqlUtils.convertToList(User.class, cursor);
                     cursor.close();
                     return result;
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.immediate())
                 .compose(RxLifecycle.bindView(itemView))
-                .onErrorReturn(throwable -> {
-                    Timber.e(throwable, "Load participants on ");
-                    return Collections.<User>emptyList();
-                })
-                .subscribe(users -> onParticipantsLoaded(conversation, users));
+                .onErrorReturn(throwable -> Collections.<User>emptyList())
+                .subscribe(users -> {
+                    final Runnable runnable = () -> onParticipantsLoaded(conversation, users);
+                    if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
+                        handler.post(runnable);
+                    } else {
+                        runnable.run();
+                    }
+                });
     }
-
 
     public void setConversationClickListener(ConversationsCursorAdapter.ConversationClickListener conversationClickListener) {
         this.conversationClickListener = conversationClickListener;

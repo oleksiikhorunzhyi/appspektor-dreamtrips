@@ -72,9 +72,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .withSortOrder(userOrder())
                 .build();
 
-        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io());
+        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
     }
 
     public Observable<Cursor> getNewParticipantsCandidates(String conversationId) {

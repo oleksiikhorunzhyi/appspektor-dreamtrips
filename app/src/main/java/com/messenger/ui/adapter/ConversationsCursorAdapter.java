@@ -17,7 +17,9 @@ import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -40,6 +42,7 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
+import timber.log.Timber;
 
 import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 import static com.messenger.messengerservers.entities.Conversation.Type.GROUP;
@@ -101,6 +104,11 @@ public class ConversationsCursorAdapter
 
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
+        Timber.d("onBindViewHolderCursor time %s, position %s, convId %s",
+                System.currentTimeMillis(),
+                cursor.getPosition(),
+                cursor.getString(cursor.getColumnIndex(Conversation$Table._ID)));
+
         Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
 
@@ -119,6 +127,8 @@ public class ConversationsCursorAdapter
         swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
         //// TODO: 1/11/16 enable swipe and use comments below for future functional
         holder.getSwipeLayout().setSwipeEnabled(false);
+
+        Timber.d("onBindViewHolderCursor END time %s", System.currentTimeMillis());
     }
 
     private void setLastMessage(BaseConversationViewHolder holder, Message message, String userName, boolean isGroupConversation) {
@@ -198,16 +208,17 @@ public class ConversationsCursorAdapter
         if (!getCursor().moveToPosition(position)) {
             throw new IllegalStateException("couldn't move cursor to position " + position);
         }
-        Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
+        final String type = cursor.getString(cursor.getColumnIndex(Conversation$Table.TYPE));
+        boolean abandoned = cursor.getInt(cursor.getColumnIndex(Conversation$Table.ABANDONED)) != 0;
         cursor.moveToPosition(previousPosition);
-        switch (conversation.getType()) {
+        switch (type) {
             case CHAT:
                 return VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
             case TRIP:
                 return VIEW_TYPE_TRIP_CONVERSATION;
             case GROUP:
             default:
-                if (conversation.isAbandoned()) return VIEW_TYPE_GROUP_CLOSE_CONVERSATION;
+                if (abandoned) return VIEW_TYPE_GROUP_CLOSE_CONVERSATION;
                 return VIEW_TYPE_GROUP_CONVERSATION;
         }
     }

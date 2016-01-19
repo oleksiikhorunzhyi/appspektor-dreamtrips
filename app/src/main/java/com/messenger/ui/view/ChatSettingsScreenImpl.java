@@ -220,6 +220,6 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
     @Override
     public void prepareViewForOwner(boolean isOwner) {
         if (!isOwner) return;
-        leaveChatButton.setEnabled(false);
+        leaveChatButton.setVisibility(GONE);
     }
 }

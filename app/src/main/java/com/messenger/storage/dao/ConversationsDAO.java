@@ -40,6 +40,7 @@ public class ConversationsDAO extends BaseDAO {
     }
 
     @Deprecated
+    @Nullable
     public static Conversation getConversationById(String conversationId) {
         return new Select()
                 .from(Conversation.class)

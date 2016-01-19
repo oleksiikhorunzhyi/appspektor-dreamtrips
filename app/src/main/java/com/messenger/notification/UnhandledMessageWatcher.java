@@ -1,6 +1,7 @@
 package com.messenger.notification;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -10,6 +11,7 @@ import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.MessengerInAppNotificationListener;
@@ -87,11 +89,8 @@ public class UnhandledMessageWatcher {
             return;
         }
 
-        Conversation conversation = new Select()
-                .from(Conversation.class)
-                .byIds(message.getConversationId())
-                .querySingle();
-
+        Conversation conversation = ConversationsDAO.getConversationById(message.getConversationId());
+        if (conversation == null) return;
         boolean isSingleChat = isSingleChat(conversation);
         if (isSingleChat) {
             composeSingleChatNotification(activity, conversation, message);
@@ -100,7 +99,7 @@ public class UnhandledMessageWatcher {
         }
     }
 
-    private boolean isSingleChat(Conversation conversation) {
+    private boolean isSingleChat(@NonNull Conversation conversation) {
         return conversation.getType().equalsIgnoreCase(Conversation.Type.CHAT);
     }
 

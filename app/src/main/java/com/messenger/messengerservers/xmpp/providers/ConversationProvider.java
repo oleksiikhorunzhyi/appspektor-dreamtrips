@@ -54,6 +54,8 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .id(thread)
                                     .type(type.toLowerCase())
                                     .subject(subject)
+                                    //// TODO: 1/19/16 set status depends on status will be sent in future
+                                    .status(Conversation.Status.PRESENT)
                                     .unreadMessageCount(unreadMessegeCount)
                                     .build();
                             break;

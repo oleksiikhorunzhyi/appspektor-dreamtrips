@@ -104,9 +104,9 @@ public abstract class GlobalEventEmitter {
         onChatLeftListeners.remove(listener);
     }
 
-    protected void notifyOnChatLeftListener(String conversationId, String userId) {
+    protected void notifyOnChatLeftListener(String conversationId, String userId, boolean leave) {
         for (OnChatLeftListener listener : onChatLeftListeners) {
-            listener.onChatLeft(conversationId, userId);
+            listener.onChatLeft(conversationId, userId, leave);
         }
     }
 

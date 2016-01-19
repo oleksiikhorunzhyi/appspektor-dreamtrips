@@ -27,6 +27,7 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.List;
 
@@ -90,6 +91,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     private void connectToConversation(){
         conversationObservable = conversationsDAO
                 .getConversation(conversationId)
+                .compose(new NonNullFilter<>())
                 .first()
                 .compose(bindViewIoToMainComposer())
                 .replay(1)
@@ -157,7 +159,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     private final OnChatLeftListener onChatLeftListener = new OnChatLeftListener() {
         @Override
-        public void onChatLeft(String conversationId, String userId) {
+        public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
                 Intent intent = new Intent(activity, MessengerStartActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

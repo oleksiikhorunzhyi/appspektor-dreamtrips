@@ -40,6 +40,7 @@ public class ChatDelegate {
                 .id(ThreadCreatorHelper.obtainThreadSingleChat(currentUser, participant))
                 .ownerId(currentUser.getUserName())
                 .lastActiveDate(System.currentTimeMillis())
+                .status(Conversation.Status.PRESENT)
                 .build();
     }
 
@@ -49,6 +50,7 @@ public class ChatDelegate {
                 .id(UUID.randomUUID().toString())
                 .ownerId(currentUser.getUserName())
                 .lastActiveDate(System.currentTimeMillis())
+                .status(Conversation.Status.PRESENT)
                 .build();
 
         return setMultiUserChatData(conversation, participans, subject);
@@ -59,6 +61,7 @@ public class ChatDelegate {
             conversation = new Conversation.Builder()
                     .ownerId(currentUser.getId())
                     .type(Conversation.Type.GROUP)
+                    .status(Conversation.Status.PRESENT)
                     .lastActiveDate(System.currentTimeMillis())
                     .id(UUID.randomUUID().toString())
                     .build();

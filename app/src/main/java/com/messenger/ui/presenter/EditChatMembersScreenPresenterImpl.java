@@ -22,6 +22,7 @@ import com.messenger.ui.viewstate.LceViewState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Collections;
 
@@ -87,6 +88,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     private void connectConversation() {
         conversationObservable = conversationsDAO.getConversation(conversationId)
+                .compose(new NonNullFilter<>())
                 .compose(bindViewIoToMainComposer())
                 .replay(1)
                 .autoConnect();

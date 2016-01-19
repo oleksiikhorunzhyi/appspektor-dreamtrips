@@ -7,6 +7,7 @@ import com.messenger.delegate.LoaderDelegate;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
+import java.util.Collections;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -123,7 +125,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .subscribeOn(Schedulers.io())
                     .subscribe();
         });
-        emitter.addOnChatLeftListener((conversationId, userId) -> {
+        emitter.addOnChatLeftListener((conversationId, userId, leave) -> {
             Timber.i("Chat left :: chat=%s , user=%s", conversationId, userId);
             Observable.zip(
                     conversationsDAO.getConversation(conversationId).compose(new NonNullFilter<>()),
@@ -132,12 +134,10 @@ public class ChatFacadeInitializer implements AppInitializer {
             )
                     .subscribeOn(Schedulers.io()).first()
                     .subscribe(pair -> {
-                        if (messengerServerFacade.getOwner().equals(pair.second)) {
-                            conversationsDAO.deleteConversation(pair.first.getId());
-                            participantsDAO.delete(pair.first.getId());
-                        } else {
-                            participantsDAO.delete(pair.first.getId(), pair.second.getId());
-                        }
+                        Conversation conversation = pair.first;
+                        participantsDAO.delete(conversation.getId(), pair.second.getId());
+                        conversation.setStatus(leave ? Conversation.Status.LEFT : Conversation.Status.KICKED);
+                        conversationsDAO.save(Collections.singletonList(conversation));
                     });
         });
     }

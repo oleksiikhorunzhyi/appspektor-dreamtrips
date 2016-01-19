@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
@@ -101,7 +102,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @Override
     protected SuccessStoryDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        story = getArguments().getParcelable(EXTRA_STORY);
+        story = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getParcelable(EXTRA_STORY);
         return new SuccessStoryDetailsPresenter(story, getURL());
     }
 

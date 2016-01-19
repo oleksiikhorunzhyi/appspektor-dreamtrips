@@ -121,7 +121,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     private void createInviteSuccess(InviteTemplate template) {
         getFilledInvitationsTemplateSuccess(template);
 
-        activityRouter.openDefaultShareIntent(getShareIntent());
+        view.openShare(getShareIntent());
         notifyServer();
     }
 
@@ -202,5 +202,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         void hidePhotoUpload();
 
         void openPreviewTemplate(UrlBundle bundle);
+
+        void openShare(Intent intent);
     }
 }

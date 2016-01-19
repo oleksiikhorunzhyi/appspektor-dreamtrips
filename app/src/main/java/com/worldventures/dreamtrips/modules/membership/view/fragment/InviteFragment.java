@@ -225,12 +225,14 @@ public class InviteFragment
     @Override
     public void continueAction2() {
         router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forRemoval()
-                .useDefaults()
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_templates)
                 .build());
         if (isTabletLandscape()) {
             openTemplateView();
         } else {
-            router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity().build());
+            router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity()
+                    .build());
         }
     }
 

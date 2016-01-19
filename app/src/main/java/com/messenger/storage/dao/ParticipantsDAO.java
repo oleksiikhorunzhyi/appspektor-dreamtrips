@@ -75,6 +75,21 @@ public class ParticipantsDAO extends BaseDAO {
         return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
     }
 
+    public Observable<List<User>> getParticipantsEntities(String conversationId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection(participantsSelection("*"))
+                .withSelectionArgs(new String[]{conversationId})
+                .withSortOrder(userOrder())
+                .build();
+
+        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+                .map(cursor -> {
+                    List<User> users = SqlUtils.convertToList(User.class, cursor);
+                    cursor.close();
+                    return users;
+                });
+    }
+
     public Observable<Cursor> getNewParticipantsCandidates(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users " +

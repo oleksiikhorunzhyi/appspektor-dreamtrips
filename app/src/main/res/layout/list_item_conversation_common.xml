@@ -50,7 +50,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             android:visibility="gone"
-            tools:visibility="gone"
+            tools:visibility="visible"
             />
     </RelativeLayout>
 </RelativeLayout>

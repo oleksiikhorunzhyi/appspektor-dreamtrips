@@ -252,7 +252,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                             diff = Math.max(0, count - oldCursor.getCount());
                         }
                         int lastVisiblePosition = getView().getLastVisiblePosition() + diff;
-                        if (oldCursor != null && lastVisiblePosition < count) {
+                        if (lastVisiblePosition >= 0 && oldCursor != null && lastVisiblePosition < count) {
                             cursor.moveToPosition(lastVisiblePosition);
                             int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
                             String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));

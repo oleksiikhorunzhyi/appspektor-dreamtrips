@@ -1,12 +1,19 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.event.OpenFacebookEvent;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View> {
+
+    @Inject
+    DrawableUtil drawableUtil;
 
     @Override
     public void takeView(View view) {
@@ -38,6 +45,12 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
 
     private void resetPickedItems() {
         Queryable.from(photos).filter(photo -> photo.isChecked()).forEachR(photo -> photo.setChecked(false));
+    }
+
+    @Override
+    protected String generateUri(BasePhotoPickerModel model) {
+        return "file://" + drawableUtil
+                .compressAndRotateImage(model.getOriginalPath(), DrawableUtil.THUMBNAIL_BIG);
     }
 
     public interface View extends BasePickerPresenter.View {

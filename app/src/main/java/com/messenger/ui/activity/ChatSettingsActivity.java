@@ -9,7 +9,7 @@ import com.messenger.ui.view.GroupChatSettingsScreenImpl;
 import com.messenger.ui.view.SingleChatSettingsScreenImpl;
 import com.messenger.ui.view.TripChatSettingsScreenImpl;
 
-public class ChatSettingsActivity extends BaseMvpViewActivity<ChatSettingsScreenImpl> {
+public class ChatSettingsActivity extends BaseMvpViewActivity {
     public static final String EXTRA_CHAT_CONVERSATION_ID = "ChatActivity#EXTRA_CHAT_CONVERSATION_ID";
     public static final String EXTRA_CHAT_TYPE = "ChatActivity#EXTRA_CHAT_TYPE";
 

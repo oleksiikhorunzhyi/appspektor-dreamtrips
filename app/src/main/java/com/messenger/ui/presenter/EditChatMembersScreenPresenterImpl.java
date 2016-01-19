@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -173,10 +174,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 });
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Menu
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        activity.getMenuInflater().inflate(R.menu.menu_edit_chat_members, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.menu_edit_chat_members;
     }
 
     @Override

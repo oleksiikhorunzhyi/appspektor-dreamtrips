@@ -62,7 +62,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
                 List<User> selectedUsers = getViewState().getSelectedContacts();

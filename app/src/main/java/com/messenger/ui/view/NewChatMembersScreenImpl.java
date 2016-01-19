@@ -83,6 +83,12 @@ public class NewChatMembersScreenImpl extends MessengerLinearLayout<NewChatMembe
         initUi();
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        inflateToolbarMenu(toolbar);
+    }
+
     @SuppressWarnings("Deprecated")
     private void initUi() {
         setBackgroundColor(getResources().getColor(R.color.main_background));
@@ -224,38 +230,6 @@ public class NewChatMembersScreenImpl extends MessengerLinearLayout<NewChatMembe
     @Override
     public void setTitle(@StringRes int title) {
         toolbarPresenter.setTitle(title);
-    }
-
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity) getContext();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return presenter.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return presenter.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        NewChatScreenPresenter presenter = getPresenter();
-        if (presenter != null) {
-            presenter.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
     }
 
     @Override

@@ -527,13 +527,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        activity.getMenuInflater().inflate(R.menu.chat, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.chat;
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onToolbarMenuPrepared(Menu menu) {
         conversationObservable
                 .lastOrDefault(null)
                 .compose(bindVisibilityIoToMainComposer())
@@ -560,7 +559,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
                 NewChatMembersActivity.startInAddMembersMode(activity, conversationId);

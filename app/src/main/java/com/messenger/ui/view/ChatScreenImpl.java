@@ -115,6 +115,12 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         initUi();
     }
 
+    @NonNull
+    @Override
+    public ChatScreenPresenter createPresenter() {
+        return new ChatScreenPresenterImpl(getContext(), getActivity().getIntent());
+    }
+
     @SuppressWarnings("Deprecated")
     private void initUi() {
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.main_background));
@@ -156,6 +162,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
         messageEditText.addTextChangedListener(messageWatcher);
+        inflateToolbarMenu(toolbar);
     }
 
     protected MessagesCursorAdapter createAdapter() {
@@ -187,37 +194,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     @Override
     public AppCompatActivity getActivity() {
         return (AppCompatActivity) getContext();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return getPresenter().onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        getPresenter().onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return getPresenter().onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
-    }
-
-    @NonNull
-    @Override
-    public ChatScreenPresenter createPresenter() {
-        return new ChatScreenPresenterImpl(getContext(), getActivity().getIntent());
     }
 
     @Override

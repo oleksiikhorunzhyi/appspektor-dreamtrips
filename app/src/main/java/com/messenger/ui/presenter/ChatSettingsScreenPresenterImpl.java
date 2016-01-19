@@ -210,25 +210,23 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Activity related
+    // Menu
     ///////////////////////////////////////////////////////////////////////////
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = activity.getMenuInflater();
-        inflater.inflate(R.menu.menu_chat_settings, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.menu_chat_settings;
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onToolbarMenuPrepared(Menu menu) {
         conversationObservable.subscribe(conversation ->
                 menu.findItem(R.id.action_overflow).setVisible(isUserOwner(conversation)));
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_overflow:
                 // overflow menu click, do nothing, wait for actual actions clicks

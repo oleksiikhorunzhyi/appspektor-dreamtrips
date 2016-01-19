@@ -1,7 +1,6 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -91,6 +90,14 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     public void setPresenter(ConversationListScreenPresenter presenter) {
         super.setPresenter(presenter);
         setAdapters();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (inflateToolbarMenu(toolbar)) {
+            prepareToolbarMenu(toolbar.getMenu());
+        }
     }
 
     private void initUi() {
@@ -227,13 +234,7 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         return (AppCompatActivity) getContext();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return presenter.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    private void prepareToolbarMenu(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
@@ -270,20 +271,5 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
                 }
             });
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return presenter.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        presenter.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onDestroy() {
-        presenter.onDestroy();
     }
 }

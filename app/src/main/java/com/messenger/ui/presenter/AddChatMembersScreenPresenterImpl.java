@@ -134,16 +134,16 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Activity related
+    // Menu
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
                 tryCreateChat();
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 }

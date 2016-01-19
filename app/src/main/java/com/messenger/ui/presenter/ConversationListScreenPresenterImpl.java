@@ -66,7 +66,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
-        dreamSpiceManager.start(getView().getContext());
+        dreamSpiceManager.start(getView().getActivity());
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         applyViewState();
         connectData();
@@ -213,18 +213,17 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Activity related
+    // Menu
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        parentActivity.getMenuInflater().inflate(R.menu.conversation_list, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.conversation_list;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onToolbarMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
             case R.id.action_add:
                 NewChatMembersActivity.startInNewChatMode(parentActivity);
                 return true;

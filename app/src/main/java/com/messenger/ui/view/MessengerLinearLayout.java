@@ -3,6 +3,8 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +108,24 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
             }
             this.lastConnectionStatus = connectionStatus;
         }
+    }
+
+    protected boolean inflateToolbarMenu(Toolbar toolbar) {
+        if (getPresenter().getToolbarMenuRes() <= 0) {
+            return false;
+        }
+        if (toolbar.getMenu() != null) {
+            toolbar.getMenu().clear();
+        }
+        toolbar.inflateMenu(getPresenter().getToolbarMenuRes());
+        getPresenter().onToolbarMenuPrepared(toolbar.getMenu());
+        toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
+        return true;
+    }
+
+    @Override
+    public AppCompatActivity getActivity() {
+        return (AppCompatActivity)getContext();
     }
 
     protected abstract ViewGroup getContentView();

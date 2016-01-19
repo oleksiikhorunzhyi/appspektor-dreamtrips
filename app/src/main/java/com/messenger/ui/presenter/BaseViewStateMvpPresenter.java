@@ -1,10 +1,7 @@
 package com.messenger.ui.presenter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -18,7 +15,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
-        implements ActivityAwareViewStateMvpPresenter<V, S> {
+        implements ViewStateMvpPresenter<V, S> {
 
     @State S state;
 
@@ -54,30 +51,6 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
 
     protected <T> Observable.Transformer<T, T> bindView() {
         return input -> input.compose(RxLifecycle.bindView(((View) getView())));
-    }
-
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return false;
     }
 
     @Override public S getViewState() {

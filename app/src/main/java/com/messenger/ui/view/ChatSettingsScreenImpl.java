@@ -76,6 +76,12 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
         init(context);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        inflateToolbarMenu(toolbar);
+    }
+
     protected void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
         ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.screen_chat_settings,
@@ -158,31 +164,6 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
     @Override
     public AppCompatActivity getActivity() {
         return (AppCompatActivity) getContext();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return getPresenter().onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return getPresenter().onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        getPresenter().onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
     }
 
     protected abstract

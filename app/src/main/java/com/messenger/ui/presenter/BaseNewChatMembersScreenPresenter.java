@@ -170,9 +170,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = activity.getMenuInflater();
-        inflater.inflate(R.menu.new_chat, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.new_chat;
     }
 }

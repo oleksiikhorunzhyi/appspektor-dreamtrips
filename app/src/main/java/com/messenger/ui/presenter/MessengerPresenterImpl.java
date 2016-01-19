@@ -3,6 +3,8 @@ package com.messenger.ui.presenter;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.messenger.synchmechanism.ConnectionStatus;
@@ -43,5 +45,20 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
     @Override
     public void onDisconnectedOverlayClicked() {
         MessengerConnector.getInstance().connect();
+    }
+
+    @Override
+    public int getToolbarMenuRes() {
+        return 0;
+    }
+
+    @Override
+    public void onToolbarMenuPrepared(Menu menu) {
+
+    }
+
+    @Override
+    public boolean onToolbarMenuItemClick(MenuItem item) {
+        return false;
     }
 }

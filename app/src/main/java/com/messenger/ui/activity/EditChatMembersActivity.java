@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.messenger.ui.view.EditChatMembersScreenImpl;
 
-public class EditChatMembersActivity extends BaseMvpViewActivity<EditChatMembersScreenImpl> {
+public class EditChatMembersActivity extends BaseMvpViewActivity {
 
     public static final String EXTRA_CONVERSATION_ID = "EXTRA_CONVERSATION_ID";
 

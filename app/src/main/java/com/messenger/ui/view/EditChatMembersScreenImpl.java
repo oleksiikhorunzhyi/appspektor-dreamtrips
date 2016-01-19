@@ -1,7 +1,6 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -76,6 +75,9 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (inflateToolbarMenu(toolbar)) {
+            prepareOptionsMenu(toolbar.getMenu());
+        }
         getPresenter().requireAdapterInfo();
     }
 
@@ -163,17 +165,7 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
                 .show();
     }
 
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity)getContext();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return presenter.onCreateOptionsMenu(menu);
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu) {
+    public void prepareOptionsMenu(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
@@ -208,20 +200,6 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
             });
         }
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return presenter.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    }
-
-    @Override
-    public void onDestroy() {
-    }
-
     @NonNull
     @Override
     public EditChatMembersScreenPresenter createPresenter() {

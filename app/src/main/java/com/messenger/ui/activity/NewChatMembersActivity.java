@@ -6,7 +6,7 @@ import android.content.Intent;
 import com.messenger.ui.view.NewChatMembersScreenImpl;
 
 
-public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersScreenImpl> {
+public class NewChatMembersActivity extends BaseMvpViewActivity {
 
     public static final String EXTRA_MODE = "EXTRA_MODE";
     public static final String EXTRA_CONVERSATION_ID = "EXTRA_CONVERSATION_ID";

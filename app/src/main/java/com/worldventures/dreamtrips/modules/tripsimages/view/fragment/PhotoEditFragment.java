@@ -141,7 +141,6 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
             } else {
                 hideTagViewGroup();
             }
-            taggableImageHolder.restoreState();
         });
     }
 
@@ -214,6 +213,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     public void setupTaggingHolder(Photo photo) {
         taggableImageHolder.setup(this, photo);
         taggableImageHolder.setCompleteListener(this::finish);
+        showTagViewGroup();
     }
 
     @Override

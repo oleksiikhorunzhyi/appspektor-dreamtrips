@@ -6,5 +6,6 @@ public interface TagCreationActionsListener extends TagActionListener {
 
     void requestFriendList(String query);
 
-    void onTagCreated(CreationTagView newTagView, PhotoTag tag);
+    void onTagCreated(CreationTagView newTagView, SuggestionTagView suggestionTagView, PhotoTag tag);
+
 }

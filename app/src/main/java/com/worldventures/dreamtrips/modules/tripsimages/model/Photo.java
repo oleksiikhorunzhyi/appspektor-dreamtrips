@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     public List<String> getTags() {
-        return tags;
+        return tags == null ? Collections.emptyList() : tags;
     }
 
     public void setTags(List<String> tags) {
@@ -78,7 +79,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     public List<PhotoTag> getPhotoTags() {
-        return photoTags;
+        return photoTags == null ? Collections.emptyList() : photoTags;
     }
 
     public void setPhotoTags(List<PhotoTag> photoTags) {

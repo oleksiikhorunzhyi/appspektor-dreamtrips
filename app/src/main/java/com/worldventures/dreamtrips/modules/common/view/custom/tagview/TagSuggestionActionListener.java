@@ -2,10 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
-public interface TagActionListener {
+public interface TagSuggestionActionListener extends TagActionListener {
 
-    void onTagDeleted(PhotoTag tag);
-
-
-
+    void onFrameClicked(SuggestionTagView suggestionTagView, PhotoTag tag);
 }

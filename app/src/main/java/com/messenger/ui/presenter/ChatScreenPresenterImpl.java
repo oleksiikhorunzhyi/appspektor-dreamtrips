@@ -192,6 +192,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .replay(1).autoConnect();
 
         submitOneChatAction(this::onChatLoaded);
+        connectMembers();
 
         source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
@@ -203,7 +204,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         //
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
         subscribeUnreadMessageCount(conversation);
-        connectMembers(conversation);
         connectMessages(conversation);
         initPagination(conversation);
     }
@@ -234,12 +234,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 );
     }
 
-    protected void connectMembers(Conversation conversation) {
-        participantsDAO.getParticipants(conversationId)
+    protected void connectMembers() {
+        Observable<List<User>> participantCursorObservable = participantsDAO.getParticipants(conversationId)
                 .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
-                .compose(bindViewIoToMainComposer())
-                .subscribe(members -> getView().setTitle(conversation, members));
+                .compose(bindViewIoToMainComposer());
+
+        Observable.combineLatest(conversationObservable, participantCursorObservable,
+                (con, cursor) -> new Pair<>(con, cursor))
+                .subscribe(pair -> getView().setTitle(pair.first, pair.second));
     }
 
     ///////////////////////////////////////////////////////////////////////////

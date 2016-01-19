@@ -487,12 +487,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void retrySendMessage(String messageId) {
-        submitOneChatAction(chat -> {
-            messageDAO.getMessage(messageId)
-                    .flatMap(chat::send)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe();
-        });
+        submitOneChatAction(chat -> messageDAO.getMessage(messageId)
+                .first()
+                .flatMap(chat::send)
+                .subscribeOn(Schedulers.io())
+                .subscribe());
     }
 
     ///////////////////////////////////////////////////////////////////////////

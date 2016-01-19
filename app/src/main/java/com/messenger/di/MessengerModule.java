@@ -4,6 +4,7 @@ import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
@@ -33,6 +34,7 @@ import dagger.Provides;
                 GroupConversationViewHolder.class,
                 OneToOneConversationViewHolder.class,
                 TripConversationViewHolder.class,
+                CloseGroupConversationViewHolder.class,
 
                 ChatFacadeInitializer.class,
                 ChatLeavingDelegate.class,

@@ -23,6 +23,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
+import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
@@ -135,24 +136,6 @@ public class ConversationsCursorAdapter
         holder.setLastMessage(messageText);
     }
 
-
-    // TODO: 1/16/16 add new layout for close conversations
-//    private void setClosedConversationUi(BaseConversationViewHolder holder) {
-//        holder.itemView.setBackgroundColor(
-//                ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
-//        for (int i = 0; i < holder.getContentLayout().getChildCount(); i++) {
-//            View child = holder.getContentLayout().getChildAt(i);
-//            if (child.getId() != R.id.conversation_last_messages_layout) {
-//                child.setAlpha(CLOSED_CONVERSATION_ALPHA);
-//            }
-//        }
-//        holder.getLastMessageDateTextView().setVisibility(View.VISIBLE);
-//        holder.getLastMessageDateTextView().setTextColor(ContextCompat.getColor(context,
-//                R.color.conversation_list_closed_conversation));
-//        holder.getLastMessageDateTextView().setText(R.string.conversation_list_abandoned);
-//        holder.getUnreadMessagesCountTextView().setVisibility(View.GONE);
-//    }
-
     public String formatLastConversationMessage(Date date) {
         Calendar today = ChatDateUtils.getToday();
 
@@ -185,8 +168,9 @@ public class ConversationsCursorAdapter
                         .inflate(R.layout.list_item_conversation_trip, parent, false);
                 return new TripConversationViewHolder(tripChatLayout);
             case VIEW_TYPE_GROUP_CLOSE_CONVERSATION:
-                // TODO: 1/16/16
-                throw new Error("Not implemented");
+                View closeGroupChatLayout = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_conversation_group, parent, false);
+                return new CloseGroupConversationViewHolder(closeGroupChatLayout);
         }
         throw new IllegalStateException("There is no such view type in adapter");
     }

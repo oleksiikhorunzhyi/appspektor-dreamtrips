@@ -120,8 +120,12 @@ public class DtlMerchantsTabsFragment extends BaseFragment<DtlMerchantsTabsPrese
             adapter.notifyDataSetChanged();
         }
         tabStrip.setupWithPagerBadged(pager);
-        //
-        tabStrip.getTabAt(1).select();
+    }
+
+    @Override
+    public void preselectOfferTab(boolean preselectOffer) {
+        if (preselectOffer) tabStrip.getTabAt(0).select();
+        else tabStrip.getTabAt(1).select();
     }
 
     @Override

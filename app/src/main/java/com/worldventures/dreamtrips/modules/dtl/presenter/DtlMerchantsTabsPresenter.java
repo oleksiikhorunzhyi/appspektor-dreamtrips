@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFragment;
 
 import java.util.List;
@@ -68,6 +68,7 @@ public class DtlMerchantsTabsPresenter extends Presenter<DtlMerchantsTabsPresent
     public void setTabs() {
         view.setTypes(dtlMerchantRepository.getDtlMerchantTypes());
         view.updateSelection();
+        view.preselectOfferTab(locationRepository.getCachedSelectedLocation().getPartnerCount() > 0);
     }
 
     public Bundle prepareArgsForTab(int position) {
@@ -106,5 +107,7 @@ public class DtlMerchantsTabsPresenter extends Presenter<DtlMerchantsTabsPresent
         void initToolbar(DtlLocation location);
 
         void openDetails(String merchantId);
+
+        void preselectOfferTab(boolean preselectOffer);
     }
 }

@@ -204,7 +204,7 @@ public class ConversationsCursorAdapter
         }
         //
         if (TextUtils.isEmpty(filter)) {
-            changeCursor(newCursor);
+            closeCursorIfNeed(swapCursor(newCursor));
             return;
         }
         mainSubscription = Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
@@ -216,8 +216,16 @@ public class ConversationsCursorAdapter
                 .compose(new IoToMainComposer<>())
                 .compose(RxLifecycle.bindView(recyclerView))
                 .subscribe(map -> {
-                    changeCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
+                    swapCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
                 });
+    }
+
+    private void closeCursorIfNeed(Cursor oldCursor) {
+        if (oldCursor instanceof FilterCursorWrapper){
+            oldCursor = ((FilterCursorWrapper) oldCursor).getWrappedCursor();
+        }
+
+        if (oldCursor != null && oldCursor != getCursor()) oldCursor.close();
     }
 
     public void setConversationClickListener(ConversationClickListener conversationClickListener) {

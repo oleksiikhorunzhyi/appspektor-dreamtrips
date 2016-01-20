@@ -9,6 +9,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 
 import javax.inject.Inject;
@@ -17,11 +18,23 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
+    @Inject
+    LogoutDelegate logoutDelegate;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         checkGoogleServices();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
+    }
+
+    public void logout() {
+        logoutDelegate.logout();
     }
 
     private void checkGoogleServices() {

@@ -8,7 +8,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.messenger.ui.activity.MessengerStartActivity;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
@@ -195,7 +194,21 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     private void logout() {
-        //
+        new MaterialDialog.Builder(this)
+                .title(getString(R.string.logout_dialog_title))
+                .content(getString(R.string.logout_dialog_message))
+                .positiveText(getString(R.string.logout_dialog_positive_btn))
+                .negativeText(getString(R.string.logout_dialog_negative_btn))
+                .positiveColorRes(R.color.theme_main_darker)
+                .negativeColorRes(R.color.theme_main_darker)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        TrackingHelper.logout();
+                        getPresentationModel().logout();
+                    }
+                }).show();
+
     }
 
     boolean handleBackPressed() {

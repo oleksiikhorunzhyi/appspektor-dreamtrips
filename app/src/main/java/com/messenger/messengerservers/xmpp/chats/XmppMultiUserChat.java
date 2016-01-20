@@ -12,6 +12,7 @@ import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -88,7 +89,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Override
     public Observable<Message> sendReadStatus(Message message) {
         return Observable.just(message)
-                .compose(new StatusMessageTranformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
+                .compose(new StatusMessageTransformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
                         JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat),
                         stanza -> {
                             if (connection != null) {
@@ -167,7 +168,16 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @Override
-    public void setCurrentState(ChatState state) {
+    public void setCurrentState(@ChatState.State String state) {
+        Observable.just(state)
+                .subscribeOn(Schedulers.io())
+                .compose(new ChatStateTransformer(message -> {
+                    if (chat != null) {
+                        chat.sendMessage(message);
+                        return true;
+                    }
+                    return false;
+                })).subscribe();
     }
 
     @Override

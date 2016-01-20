@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.module.dtl.repository;
 
 import android.content.Context;
-import android.location.Location;
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -22,15 +22,17 @@ public class DtlLocationManagerTest {
 
     private DtlLocationManager dtlLocationManager;
     @Mock
+    Injector injector;
+    @Mock
     private Context context;
     @Mock
     private SnappyRepository db;
     @Mock
     private DtlApi dtlApi;
-  
+
     @Before
     public void beforeEachTest() {
-        dtlLocationManager = new DtlLocationManager(context, db, dtlApi);
+        dtlLocationManager = new DtlLocationManager(injector);
     }
 
     @Test

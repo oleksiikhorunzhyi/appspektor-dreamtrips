@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -118,7 +117,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     @SuppressWarnings("Deprecated")
     private void initUi() {
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.main_background));
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.enableUpNavigationButton();
         toolbarPresenter.setTitle("");
         toolbarPresenter.setSubtitle("");
@@ -183,11 +182,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
             messageEditText.getText().clear();
             recyclerView.smoothScrollToPosition(adapter.getItemCount());
         }
-    }
-
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity) getContext();
     }
 
     @Override

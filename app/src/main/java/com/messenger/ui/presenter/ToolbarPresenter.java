@@ -1,5 +1,6 @@
 package com.messenger.ui.presenter;
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,9 +14,12 @@ public class ToolbarPresenter {
     private Toolbar toolbar;
     private AppCompatActivity activity;
 
-    public ToolbarPresenter(Toolbar toolbar, AppCompatActivity activity) {
+    public ToolbarPresenter(Toolbar toolbar, Context context) {
         this.toolbar = toolbar;
-        this.activity = activity;
+        if (! (context instanceof AppCompatActivity)) {
+            throw new IllegalArgumentException("Context should be instance of AppCompatActivity");
+        }
+        this.activity = (AppCompatActivity) context;
 
         toolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.theme_main));
         toolbar.setNavigationOnClickListener(view -> activity.onBackPressed());

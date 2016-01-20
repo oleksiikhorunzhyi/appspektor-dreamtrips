@@ -1,10 +1,8 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Menu;
@@ -74,7 +72,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     OpenedConversationTracker openedConversationTracker;
 
-    private Activity activity;
     protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
@@ -108,7 +105,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     boolean skipNextMessagesUiDueToPendingChangesInDb = false;
 
     public ChatScreenPresenterImpl(Context context, String conversationId) {
-        this.activity = (Activity) context;
+        super(context);
 
         ((Injector) context.getApplicationContext()).inject(this);
 
@@ -163,7 +160,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         return true;
                     } else {
                         //if we were kicked from conversation
-                        MessengerStartActivity.start(activity);
+                        MessengerStartActivity.start(getContext());
                         return false;
                     }
                 })
@@ -199,7 +196,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void onConversationLoadedFirstTime(Conversation conversation) {
         notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
-        ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
         //
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
         subscribeUnreadMessageCount(conversation);
@@ -480,7 +476,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public boolean sendMessage(String message) {
         if (TextUtils.getTrimmedLength(message) == 0) {
-            Toast.makeText(activity, R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -560,7 +556,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInAddMembersMode(activity, conversationId);
+                NewChatMembersActivity.startInAddMembersMode(getContext(), conversationId);
                 return true;
             case R.id.action_settings:
                 conversationObservable
@@ -568,9 +564,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
                             if (conversationHelper.isGroup(conversation)) {
-                                ChatSettingsActivity.startGroupChatSettings(activity, conversationId);
+                                ChatSettingsActivity.startGroupChatSettings(getContext(), conversationId);
                             } else {
-                                ChatSettingsActivity.startSingleChatSettings(activity, conversationId);
+                                ChatSettingsActivity.startSingleChatSettings(getContext(), conversationId);
                             }
                         });
                 return true;
@@ -618,7 +614,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void showContent() {
         ChatScreen screen = getView();
         if (screen == null) return;
-        screen.getActivity().runOnUiThread(screen::showContent);
+        handler.post(screen::showContent);
     }
 
     ///////////////////////////////////////////////////////////////////////////

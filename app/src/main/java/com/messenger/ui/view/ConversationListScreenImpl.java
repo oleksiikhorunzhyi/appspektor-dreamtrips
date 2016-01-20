@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -83,7 +82,7 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     @NonNull
     @Override
     public ConversationListScreenPresenter createPresenter() {
-        return new ConversationListScreenPresenterImpl(getActivity());
+        return new ConversationListScreenPresenterImpl(getContext());
     }
 
     @Override
@@ -107,7 +106,7 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         LayoutInflater.from(getContext()).inflate(R.layout.screen_conversation_list, this, true);
         ButterKnife.inject(this, this);
 
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.enableUpNavigationButton();
         toolbarPresenter.disableTitle();
 
@@ -223,15 +222,6 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     @Override
     protected ViewGroup getContentView() {
         return contentView;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Activity related
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity) getContext();
     }
 
     private void prepareToolbarMenu(Menu menu) {

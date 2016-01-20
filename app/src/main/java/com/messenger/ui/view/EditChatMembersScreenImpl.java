@@ -7,7 +7,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -105,7 +104,7 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     }
 
     private void initUi() {
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.enableUpNavigationButton();
     }
 
@@ -208,6 +207,6 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     @NonNull
     @Override
     public EditChatMembersScreenPresenter createPresenter() {
-        return new EditChatMembersScreenPresenterImpl(getActivity(), conversationId);
+        return new EditChatMembersScreenPresenterImpl(getContext(), conversationId);
     }
 }

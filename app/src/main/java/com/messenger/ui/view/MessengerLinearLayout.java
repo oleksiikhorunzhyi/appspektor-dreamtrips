@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -124,11 +123,6 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
         getPresenter().onToolbarMenuPrepared(toolbar.getMenu());
         toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
         return true;
-    }
-
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity)getContext();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -49,7 +49,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Inject
     ConversationsDAO conversationsDAO;
 
-    private Activity activity;
     private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
@@ -60,13 +59,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private PublishSubject<Void> adapterInitializer = PublishSubject.create();
     private Observable<Void> adapterInitializeObservable;
 
-    public EditChatMembersScreenPresenterImpl(Activity activity, String conversationId) {
-        this.activity = activity;
-        ((Injector) activity.getApplication()).inject(this);
+    public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
+        super(context);
+        ((Injector) context.getApplicationContext()).inject(this);
 
         this.conversationId = conversationId;
 
-        this.profileCrosser = new ProfileCrosser(activity, routeCreator);
+        this.profileCrosser = new ProfileCrosser(context, routeCreator);
     }
 
     @Override
@@ -159,14 +158,14 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 .subscribe(cursor -> {
                     // cause admin of group chat is also participant
                     if (cursor.getCount() <= 1) {
-                        MessengerStartActivity.start(activity);
+                        MessengerStartActivity.start(getContext());
                         return;
                     }
 
                     EditChatMembersScreen view = getView();
                     view.showContent();
                     view.setMembers(cursor, getViewState().getSearchFilter(), User.COLUMN_NAME);
-                    view.setTitle(String.format(activity.getString(R.string.edit_chat_members_title), cursor.getCount()));
+                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), cursor.getCount()));
                 });
     }
 

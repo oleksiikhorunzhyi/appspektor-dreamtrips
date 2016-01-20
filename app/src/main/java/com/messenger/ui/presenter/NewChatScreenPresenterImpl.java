@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -27,8 +27,8 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     private final ConversationHelper conversationHelper;
 
-    public NewChatScreenPresenterImpl(Activity activity) {
-        super(activity);
+    public NewChatScreenPresenterImpl(Context context) {
+        super(context);
         conversationHelper = new ConversationHelper();
     }
 
@@ -68,13 +68,13 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 List<User> selectedUsers = getViewState().getSelectedContacts();
 
                 if (selectedUsers == null || selectedUsers.isEmpty()) {
-                    Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
+                    Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 if (!isConnectionPresent() && selectedUsers.size() != 1) {
-                    showAbsentConnectionMessage(activity);
+                    showAbsentConnectionMessage(getContext());
                     return true;
                 }
 
@@ -89,7 +89,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u, Participant.Affiliation.MEMBER).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                ChatActivity.startChat(activity, conversation);
+                ChatActivity.startChat(getContext(), conversation);
                 return true;
         }
         return false;

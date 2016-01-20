@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -108,7 +107,7 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
     }
 
     protected void initUi() {
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.enableUpNavigationButton();
         // hide the button until we have user story
         clearHistoryButton.setVisibility(View.GONE);
@@ -161,11 +160,6 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
                 .setMessage(getResources().getString(R.string.chat_settings_leave_group_chat, currentSubject))
                 .create()
                 .show();
-    }
-
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity) getContext();
     }
 
     protected abstract

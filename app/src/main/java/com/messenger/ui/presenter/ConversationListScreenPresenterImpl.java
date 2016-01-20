@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.util.Pair;
 import android.view.MenuItem;
@@ -46,26 +46,25 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Inject
     NotificationDelegate notificationDelegate;
 
-    private final Activity parentActivity;
     private final ChatLeavingDelegate chatLeavingDelegate;
     private final ConversationHelper conversationHelper;
     //
     private PublishSubject<String> filterStream;
     private PublishSubject<String> typeStream;
 
-    public ConversationListScreenPresenterImpl(Activity activity) {
-        this.parentActivity = activity;
+    public ConversationListScreenPresenterImpl(Context context) {
+        super(context);
         this.conversationHelper = new ConversationHelper();
 
-        chatLeavingDelegate = new ChatLeavingDelegate((Injector) activity.getApplication(), null);
-        ((Injector) activity.getApplicationContext()).inject(this);
+        chatLeavingDelegate = new ChatLeavingDelegate((Injector) context.getApplicationContext(), null);
+        ((Injector) context.getApplicationContext()).inject(this);
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
-        dreamSpiceManager.start(getView().getActivity());
+        dreamSpiceManager.start(getContext());
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         applyViewState();
         connectData();
@@ -167,7 +166,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        ChatActivity.startChat(parentActivity, conversation);
+        ChatActivity.startChat(getContext(), conversation);
     }
 
     @Override
@@ -180,7 +179,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         if (conversationHelper.isGroup(conversation)) {
             chatLeavingDelegate.leave(conversation);
         } else {
-            Toast.makeText(parentActivity, "Delete not yet implemented", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Delete not yet implemented", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -191,13 +190,13 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onMarkAsUnreadButtonPressed(Conversation conversation) {
-        Toast.makeText(parentActivity, "Mark as unread not yet implemented",
+        Toast.makeText(getContext(), "Mark as unread not yet implemented",
                 Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTurnOffNotificationsButtonPressed(Conversation conversation) {
-        Toast.makeText(parentActivity, "Turn of notifications not yet implemented",
+        Toast.makeText(getContext(), "Turn of notifications not yet implemented",
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -224,7 +223,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public boolean onToolbarMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInNewChatMode(parentActivity);
+                NewChatMembersActivity.startInNewChatMode(getContext());
                 return true;
         }
         return false;

@@ -95,6 +95,6 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     @NonNull
     @Override
     public ChatSettingsScreenPresenter createPresenter() {
-        return new MultiChatSettingsScreenPresenter(getActivity(), conversationId);
+        return new MultiChatSettingsScreenPresenter(getContext(), conversationId);
     }
 }

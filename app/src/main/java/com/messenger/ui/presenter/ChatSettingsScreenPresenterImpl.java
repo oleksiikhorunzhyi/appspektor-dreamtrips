@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,8 +37,6 @@ import rx.Observable;
 public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
 
-    protected Activity activity;
-
     String conversationId;
     Observable<Conversation> conversationObservable;
     Observable<List<User>> participantsObservable;
@@ -59,10 +57,10 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     @Named(MessengerStorageModule.DB_FLOW_RX_RESOLVER)
     RxContentResolver rxContentResolver;
 
-    public ChatSettingsScreenPresenterImpl(Activity activity, String conversationId) {
-        this.activity = activity;
+    public ChatSettingsScreenPresenterImpl(Context context, String conversationId) {
+        super(context);
 
-        Injector injector = (Injector) activity.getApplication();
+        Injector injector = (Injector) context.getApplicationContext();
         injector.inject(this);
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
@@ -159,9 +157,9 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         @Override
         public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
-                Intent intent = new Intent(activity, MessengerStartActivity.class);
+                Intent intent = new Intent(getContext(), MessengerStartActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                activity.startActivity(intent);
+                getContext().startActivity(intent);
             }
         }
     };
@@ -173,7 +171,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onMembersRowClicked() {
-        EditChatMembersActivity.start(activity, conversationId);
+        EditChatMembersActivity.start(getContext(), conversationId);
     }
 
     public void onEditChatName() {

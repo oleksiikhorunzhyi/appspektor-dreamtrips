@@ -1,6 +1,5 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Pair;
 import android.view.MenuItem;
@@ -34,10 +33,6 @@ import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     @Inject
-    @ForApplication
-    Context context;
-
-    @Inject
     ConversationsDAO conversationsDAO;
     @Inject
     ParticipantsDAO participantsDAO;
@@ -46,8 +41,8 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     private Observable<Conversation> conversationStream;
     private PublishSubject<List<User>> selectedStream;
 
-    public AddChatMembersScreenPresenterImpl(Activity activity, String conversationId) {
-        super(activity);
+    public AddChatMembersScreenPresenterImpl(Context context, String conversationId) {
+        super(context);
         this.conversationId = conversationId;
         conversationStream = conversationsDAO.getConversation(conversationId).first().replay().autoConnect();
         selectedStream = PublishSubject.create();
@@ -100,13 +95,13 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     private void tryCreateChat() {
         List<User> newChatUsers = getViewState().getSelectedContacts();
         if (newChatUsers == null || newChatUsers.isEmpty()) {
-            Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
+            Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!isConnectionPresent()) {
-            showAbsentConnectionMessage(activity);
+            showAbsentConnectionMessage(getContext());
             return;
         }
 
@@ -128,7 +123,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(newConversation -> {
-                    ChatActivity.startChat(activity, newConversation);
+                    ChatActivity.startChat(getContext(), newConversation);
                 });
     }
 

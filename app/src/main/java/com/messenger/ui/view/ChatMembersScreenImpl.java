@@ -3,7 +3,6 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -91,7 +90,7 @@ public abstract class ChatMembersScreenImpl extends MessengerLinearLayout<ChatMe
     @SuppressWarnings("Deprecated")
     private void initUi() {
         setBackgroundColor(getResources().getColor(R.color.main_background));
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.enableUpNavigationButton();
 
         adapter = new CheckableContactsCursorAdapter(getContext(), null);
@@ -131,7 +130,7 @@ public abstract class ChatMembersScreenImpl extends MessengerLinearLayout<ChatMe
                     }
                     return;
                 }
-                int spannableColor = getActivity()
+                int spannableColor = getContext()
                         .getResources().getColor(R.color.contact_list_header_selected_contacts);
                 editable.setSpan(new UnderlineSpan(), editable.length() - 1,
                         editable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -18,6 +18,6 @@ public class AddChatMembersScreenImpl extends ChatMembersScreenImpl {
 
     @Override
     public AddChatMembersScreenPresenterImpl createPresenter() {
-        return new AddChatMembersScreenPresenterImpl(getActivity(), conversationId);
+        return new AddChatMembersScreenPresenterImpl(getContext(), conversationId);
     }
 }

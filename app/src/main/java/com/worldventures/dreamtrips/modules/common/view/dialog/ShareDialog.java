@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 
 public class ShareDialog extends MaterialDialog {
 
@@ -13,7 +13,7 @@ public class ShareDialog extends MaterialDialog {
                         .title(R.string.action_share)
                         .items(R.array.share_dialog_items)
                         .itemsCallback((dialog, view, which, text) -> {
-                            String type = which == 0 ? ShareFragment.FB : ShareFragment.TW;
+                            String type = which == 0 ? ShareType.FACEBOOK : ShareType.TWITTER;
                             callback.onShareType(type);
                         })
         );
@@ -24,6 +24,6 @@ public class ShareDialog extends MaterialDialog {
     }
 
     public interface ShareDialogCallback {
-        void onShareType(@ShareFragment.ShareType String type);
+        void onShareType(@ShareType String type);
     }
 }

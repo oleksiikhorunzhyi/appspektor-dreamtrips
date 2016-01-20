@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.PreviewPhotoTaggableHolderViewGroup;
-import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
@@ -36,7 +35,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.Icepick;
-
 
 @Layout(R.layout.fragment_fullscreen_photo)
 public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo> implements SocialImageFullscreenPresenter.View, Flaggable, FullScreenPhotoActionPanelDelegate.ContentVisibilityListener {
@@ -128,12 +126,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         SocialViewPagerState state = getState();
         saveViewState(true, state.isTagHolderVisible());
         syncContentWrapperViewGroupWithGlobalState();
-    }
-
-    @OnClick(R.id.iv_share)
-    public void actionShare() {
-        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
-        new ShareDialog(getActivity(), type -> getPresenter().onShare(type)).show();
     }
 
     @OnClick({R.id.iv_comment, R.id.tv_comments_count})

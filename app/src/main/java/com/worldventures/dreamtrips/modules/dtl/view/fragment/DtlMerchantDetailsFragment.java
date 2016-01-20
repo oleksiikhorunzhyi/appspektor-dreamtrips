@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
@@ -287,7 +287,7 @@ public class DtlMerchantDetailsFragment
                     merchant.getDisplayName()));
             shareBundle.setShareUrl(merchant.getWebsite());
             // don't attach media if website is attached, this image will go nowhere
-            if (TextUtils.isEmpty(merchant.getWebsite()) || type.equals(ShareFragment.TW)) {
+            if (TextUtils.isEmpty(merchant.getWebsite()) || type.equals(ShareType.TWITTER)) {
                 DtlMerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
                 if (media != null) shareBundle.setImageUrl(media.getImagePath());
                 // for twitter: sharing image via web (not official app) currently not supported (android sdk v1.9.1)

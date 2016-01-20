@@ -1,14 +1,17 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+
+import timber.log.Timber;
 
 public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER_VIEW extends FullScreenPresenter.View> extends Presenter<PRESENTER_VIEW> {
 
@@ -59,8 +62,12 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
     public void onDeleteAction() {
     }
 
-    public void onShare(@ShareFragment.ShareType String type) {
-        view.openShare(photo.getFSImage().getUrl(), photo.getFSShareText(), type);
+    public void onShare(@ShareType String type) {
+        if (type.equals(ShareType.EXTERNAL_STORAGE)) {
+            doRequest(new DownloadImageCommand(context, photo.getFSImage().getUrl()));
+        } else {
+            view.openShare(photo.getFSImage().getUrl(), photo.getFSShareText(), type);
+        }
         if (photo instanceof Inspiration) {
             TrackingHelper.insprShare(photo.getFSId(), type);
         }
@@ -70,7 +77,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
         void openUser(UserBundle bundle);
 
-        void openShare(String imageUrl, String text, @ShareFragment.ShareType String type);
+        void openShare(String imageUrl, String text, @ShareType String type);
 
         <T extends IFullScreenObject> void setContent(T photo);
     }

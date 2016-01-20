@@ -16,10 +16,13 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
+import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -30,6 +33,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
 
 public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresenter<T, ? extends FullScreenPresenter.View>, T extends IFullScreenObject>
         extends BaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements FullScreenPresenter.View {
@@ -85,7 +90,6 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
     protected void onImageGlobalLayout() {
     }
 
-
     @Override
     public void onDestroyView() {
         if (ivImage != null && ivImage.getController() != null)
@@ -94,7 +98,7 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
     }
 
     @Override
-    public void openShare(String imageUrl, String text, @ShareFragment.ShareType String type) {
+    public void openShare(String imageUrl, String text, @ShareType String type) {
         ShareBundle data = new ShareBundle();
         data.setImageUrl(imageUrl);
         data.setText(text == null ? "" : text);
@@ -110,5 +114,12 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
                 .data(bundle)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .build());
+    }
+
+    @Optional
+    @OnClick(R.id.iv_share)
+    public void actionShare() {
+        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
+        new PhotosShareDialog(getActivity(), type -> getPresenter().onShare(type)).show();
     }
 }

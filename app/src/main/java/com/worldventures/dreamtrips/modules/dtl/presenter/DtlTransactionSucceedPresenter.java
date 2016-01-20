@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.api.merchant.RateMerchantRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -62,7 +62,7 @@ public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucc
     /**
      * Analytic-related
      */
-    public void trackSharing(@ShareFragment.ShareType String type) {
+    public void trackSharing(@ShareType String type) {
         TrackingHelper.dtlShare(type);
     }
 

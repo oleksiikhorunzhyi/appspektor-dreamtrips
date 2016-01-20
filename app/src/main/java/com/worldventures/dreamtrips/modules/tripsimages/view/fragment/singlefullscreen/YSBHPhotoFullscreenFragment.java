@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.YouShouldBeHerePhotoFullscreenPresenter;
@@ -22,7 +19,6 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_fullscreen_ysbh_photo)
 public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShouldBeHerePhotoFullscreenPresenter, YSBHPhoto> implements YouShouldBeHerePhotoFullscreenPresenter.View {
 
-
     @InjectView(R.id.iv_image)
     ScaleImageView ivImage;
     @InjectView(R.id.tv_description)
@@ -33,7 +29,6 @@ public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShou
     ImageView ivShare;
     @InjectView(R.id.ll_more_info)
     LinearLayout llMoreInfo;
-
 
     @Override
     protected YouShouldBeHerePhotoFullscreenPresenter createPresenter(Bundle savedInstanceState) {
@@ -63,13 +58,4 @@ public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShou
         tvDescription.setVisibility(View.VISIBLE);
         tvSeeMore.setVisibility(View.VISIBLE);
     }
-
-    @OnClick(R.id.iv_share)
-    public void actionShare() {
-        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
-        new ShareDialog(getActivity(), type -> {
-            getPresenter().onShare(type);
-        }).show();
-    }
-
 }

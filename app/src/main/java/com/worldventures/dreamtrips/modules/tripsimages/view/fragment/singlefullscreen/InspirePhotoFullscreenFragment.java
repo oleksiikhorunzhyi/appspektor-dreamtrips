@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InspirationFullscreenPresenter;
@@ -44,14 +41,6 @@ public class InspirePhotoFullscreenFragment extends FullScreenPhotoFragment<Insp
         textViewInspireMeTitle.setText("- " + photo.getFSTitle());
     }
 
-    @OnClick(R.id.iv_share)
-    public void actionShare() {
-        eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
-        new ShareDialog(getActivity(), type -> {
-            getPresenter().onShare(type);
-        }).show();
-    }
-
     @OnClick(R.id.tv_see_more)
     protected void actionSeeMore() {
         actionContainer.setVisibility(View.VISIBLE);
@@ -70,5 +59,4 @@ public class InspirePhotoFullscreenFragment extends FullScreenPhotoFragment<Insp
         tvDescription.setVisibility(View.VISIBLE);
         tvSeeMore.setVisibility(View.VISIBLE);
     }
-
 }

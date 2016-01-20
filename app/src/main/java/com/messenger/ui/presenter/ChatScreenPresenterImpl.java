@@ -109,7 +109,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Handler handler = new Handler();
     boolean skipNextMessagesUiDueToPendingChangesInDb = false;
 
-    public ChatScreenPresenterImpl(Context context, Intent startIntent) {
+    public ChatScreenPresenterImpl(Context context, String conversationId) {
         this.activity = (Activity) context;
 
         ((Injector) context.getApplicationContext()).inject(this);
@@ -118,7 +118,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
 
-        conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        this.conversationId = conversationId;
     }
 
     private Observable<Chat> createChat(ChatManager chatManager, Conversation conversation) {

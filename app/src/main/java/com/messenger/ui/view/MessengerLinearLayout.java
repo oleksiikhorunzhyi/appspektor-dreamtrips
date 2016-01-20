@@ -1,8 +1,10 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.presenter.MessengerPresenter;
 import com.worldventures.dreamtrips.R;
+
+import icepick.Icepick;
 
 public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>>
         extends BaseViewStateLinearLayout<V, P> implements MessengerScreen {
@@ -126,6 +130,16 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
     @Override
     public AppCompatActivity getActivity() {
         return (AppCompatActivity)getContext();
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
 
     protected abstract ViewGroup getContentView();

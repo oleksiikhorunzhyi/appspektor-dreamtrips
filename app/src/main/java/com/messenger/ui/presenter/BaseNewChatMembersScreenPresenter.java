@@ -54,16 +54,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     final private ProfileCrosser profileCrosser;
     final private ContactsHeaderCreator contactsHeaderCreator;
 
-    public static NewChatScreenPresenter createPresenter(Activity activity) {
-        int mode = activity.getIntent().getIntExtra(NewChatMembersActivity.EXTRA_MODE, -1);
-        if (mode == NewChatMembersActivity.MODE_NEW_CHAT) {
-            return new NewChatScreenPresenterImpl(activity);
-        } else if (mode == NewChatMembersActivity.MODE_CHAT_ADD_MEMBERS) {
-            return new AddChatMembersScreenPresenterImpl(activity);
-        }
-        throw new IllegalArgumentException("Cannot find presenter for mode provided");
-    }
-
     public BaseNewChatMembersScreenPresenter(Activity activity) {
         this.activity = activity;
 

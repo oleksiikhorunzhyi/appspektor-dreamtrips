@@ -63,12 +63,11 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private PublishSubject<Void> adapterInitializer = PublishSubject.create();
     private Observable<Void> adapterInitializeObservable;
 
-    public EditChatMembersScreenPresenterImpl(Activity activity) {
+    public EditChatMembersScreenPresenterImpl(Activity activity, String conversationId) {
         this.activity = activity;
         ((Injector) activity.getApplication()).inject(this);
 
-        conversationId = activity.getIntent()
-                .getStringExtra(EditChatMembersActivity.EXTRA_CONVERSATION_ID);
+        this.conversationId = conversationId;
 
         this.profileCrosser = new ProfileCrosser(activity, routeCreator);
     }

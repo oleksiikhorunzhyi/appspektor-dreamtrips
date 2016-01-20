@@ -23,8 +23,8 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
 
     protected final ProfileCrosser profileCrosser;
 
-    public SingleChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
-        super(activity, startIntent);
+    public SingleChatSettingsScreenPresenterImpl(Activity activity, String conversationId) {
+        super(activity, conversationId);
 
         profileCrosser = new ProfileCrosser(activity, routeCreator);
     }

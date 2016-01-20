@@ -30,9 +30,13 @@ import com.worldventures.dreamtrips.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 
 public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatSettingsScreen, ChatSettingsScreenPresenter>
         implements ChatSettingsScreen {
+
+    @State
+    String conversationId;
 
     @InjectView(R.id.chat_settings_content_view)
     ViewGroup contentView;
@@ -66,13 +70,14 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
 
     protected ChatSettingsRow notificationsSettingsRow;
 
-    public ChatSettingsScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public ChatSettingsScreenImpl(Context context, String conversationId) {
+        super(context);
+        this.conversationId = conversationId;
         init(context);
     }
 
-    public ChatSettingsScreenImpl(Context context) {
-        super(context);
+    public ChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+        super(context, attrs);
         init(context);
     }
 

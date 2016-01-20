@@ -17,6 +17,6 @@ public class EditChatMembersActivity extends BaseMvpViewActivity {
 
     @Override
     EditChatMembersScreenImpl createScreen() {
-        return new EditChatMembersScreenImpl(this);
+        return new EditChatMembersScreenImpl(this, getIntent().getStringExtra(EXTRA_CONVERSATION_ID));
     }
 }

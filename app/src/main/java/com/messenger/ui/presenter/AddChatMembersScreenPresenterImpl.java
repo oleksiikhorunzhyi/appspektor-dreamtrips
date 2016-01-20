@@ -47,9 +47,9 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     private Observable<Conversation> conversationStream;
     private PublishSubject<List<User>> selectedStream;
 
-    public AddChatMembersScreenPresenterImpl(Activity activity) {
+    public AddChatMembersScreenPresenterImpl(Activity activity, String conversationId) {
         super(activity);
-        conversationId = activity.getIntent().getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
+        this.conversationId = conversationId;
         conversationStream = conversationsDAO.getConversation(conversationId).first().replay().autoConnect();
         selectedStream = PublishSubject.create();
     }

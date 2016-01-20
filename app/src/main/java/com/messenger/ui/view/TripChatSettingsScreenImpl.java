@@ -11,12 +11,12 @@ import java.util.List;
 
 public class TripChatSettingsScreenImpl extends GroupChatSettingsScreenImpl {
 
-    public TripChatSettingsScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public TripChatSettingsScreenImpl(Context context, String conversationId) {
+        super(context, conversationId);
     }
 
-    public TripChatSettingsScreenImpl(Context context) {
-        super(context);
+    public TripChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     @Override

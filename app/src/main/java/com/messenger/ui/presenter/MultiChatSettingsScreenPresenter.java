@@ -5,8 +5,8 @@ import android.content.Intent;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl {
 
-    public MultiChatSettingsScreenPresenter(Activity activity, Intent startIntent) {
-        super(activity, startIntent);
+    public MultiChatSettingsScreenPresenter(Activity activity, String conversationId) {
+        super(activity, conversationId);
     }
 
     @Override

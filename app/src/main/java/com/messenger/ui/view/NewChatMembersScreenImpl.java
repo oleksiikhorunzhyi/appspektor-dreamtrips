@@ -37,9 +37,13 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.State;
 
-public class NewChatMembersScreenImpl extends MessengerLinearLayout<NewChatMembersScreen, NewChatScreenPresenter>
+public abstract class NewChatMembersScreenImpl extends MessengerLinearLayout<NewChatMembersScreen, NewChatScreenPresenter>
         implements NewChatMembersScreen {
+
+    @State
+    protected String conversationId;
 
     @InjectView(R.id.new_chat_content_view)
     ViewGroup contentView;
@@ -167,11 +171,6 @@ public class NewChatMembersScreenImpl extends MessengerLinearLayout<NewChatMembe
                 .getString(R.string.new_chat_chosen_contacts_header_empty);
         chosenContactsEditText.setText(chosenContactsEditTextStartValue);
         chosenContactsEditText.setSelection(chosenContactsEditTextStartValue.length());
-    }
-
-    @Override
-    public NewChatScreenPresenter createPresenter() {
-        return BaseNewChatMembersScreenPresenter.createPresenter(getActivity());
     }
 
     @Override

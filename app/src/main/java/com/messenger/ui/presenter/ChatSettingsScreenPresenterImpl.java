@@ -61,7 +61,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     @Named(MessengerStorageModule.DB_FLOW_RX_RESOLVER)
     RxContentResolver rxContentResolver;
 
-    public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
+    public ChatSettingsScreenPresenterImpl(Activity activity, String conversationId) {
         this.activity = activity;
 
         Injector injector = (Injector) activity.getApplication();
@@ -69,7 +69,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
 
-        conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        this.conversationId = conversationId;
     }
 
     @Override

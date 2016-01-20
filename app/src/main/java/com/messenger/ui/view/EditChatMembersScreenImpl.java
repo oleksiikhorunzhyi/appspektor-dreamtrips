@@ -31,9 +31,13 @@ import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.State;
 
 public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMembersScreen,
         EditChatMembersScreenPresenter> implements EditChatMembersScreen {
+
+    @State
+    String conversationId;
 
     @InjectView(R.id.edit_chat_members_content_view)
     ViewGroup contentView;
@@ -54,8 +58,9 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
 
     private ActionButtonsContactsCursorAdapter adapter;
 
-    public EditChatMembersScreenImpl(Context context) {
+    public EditChatMembersScreenImpl(Context context, String conversationId) {
         super(context);
+        this.conversationId = conversationId;
         init(context);
     }
 
@@ -203,6 +208,6 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     @NonNull
     @Override
     public EditChatMembersScreenPresenter createPresenter() {
-        return new EditChatMembersScreenPresenterImpl(getActivity());
+        return new EditChatMembersScreenPresenterImpl(getActivity(), conversationId);
     }
 }

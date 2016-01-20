@@ -19,6 +19,6 @@ public class ChatActivity extends BaseMvpViewActivity {
 
     @Override
     ChatScreenImpl createScreen() {
-        return new ChatScreenImpl(this);
+        return new ChatScreenImpl(this, getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID));
     }
 }

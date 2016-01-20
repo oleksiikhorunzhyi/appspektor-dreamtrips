@@ -28,12 +28,12 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     private ChatSettingsRow membersSettingsRow;
     private ConversationHelper conversationHelper;
 
-    public GroupChatSettingsScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public GroupChatSettingsScreenImpl(Context context, String conversationId) {
+        super(context, conversationId);
     }
 
-    public GroupChatSettingsScreenImpl(Context context) {
-        super(context);
+    public GroupChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     @Override
@@ -96,7 +96,6 @@ public class GroupChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     @NonNull
     @Override
     public ChatSettingsScreenPresenter createPresenter() {
-        Activity activity = getActivity();
-        return new MultiChatSettingsScreenPresenter(activity, activity.getIntent());
+        return new MultiChatSettingsScreenPresenter(getActivity(), conversationId);
     }
 }

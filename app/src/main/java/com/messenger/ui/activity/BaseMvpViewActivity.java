@@ -6,12 +6,10 @@ import android.view.View;
 
 public abstract class BaseMvpViewActivity extends AppCompatActivity {
 
-    protected View screen;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        screen = createScreen();
+        View screen = createScreen();
         screen.setId(android.R.id.primary);
         setContentView(screen);
     }

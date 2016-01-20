@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import icepick.State;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -54,6 +55,9 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
 
     private static final int THRESHOLD = 5;
     private static final int POST_DELAY_TIME = 2;
+
+    @State
+    String conversationId;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -99,9 +103,10 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         }
     };
 
-    public ChatScreenImpl(Context context) {
+    public ChatScreenImpl(Context context, String conversationId) {
         super(context);
         init(context);
+        this.conversationId = conversationId;
     }
 
     public ChatScreenImpl(Context context, AttributeSet attrs) {
@@ -118,7 +123,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     @NonNull
     @Override
     public ChatScreenPresenter createPresenter() {
-        return new ChatScreenPresenterImpl(getContext(), getActivity().getIntent());
+        return new ChatScreenPresenterImpl(getContext(), conversationId);
     }
 
     @SuppressWarnings("Deprecated")

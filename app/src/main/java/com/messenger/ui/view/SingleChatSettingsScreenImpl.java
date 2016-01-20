@@ -19,12 +19,12 @@ import butterknife.OnClick;
 
 public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl {
 
-    public SingleChatSettingsScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public SingleChatSettingsScreenImpl(Context context, String conversationId) {
+        super(context, conversationId);
     }
 
-    public SingleChatSettingsScreenImpl(Context context) {
-        super(context);
+    public SingleChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     @Override
@@ -66,7 +66,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl {
     @NonNull
     @Override
     public ChatSettingsScreenPresenter createPresenter() {
-        Activity activity = getActivity();
-        return new SingleChatSettingsScreenPresenterImpl(activity, activity.getIntent());
+        return new SingleChatSettingsScreenPresenterImpl(getActivity(), conversationId);
     }
 }

@@ -14,8 +14,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.activity.NewChatMembersActivity;
-import com.messenger.ui.view.NewChatMembersScreen;
+import com.messenger.ui.view.ChatMembersScreen;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -32,7 +31,7 @@ import rx.subjects.PublishSubject;
 
 import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 
-public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
+public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     @Inject
     @ForApplication
@@ -55,7 +54,7 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     }
 
     @Override
-    public void attachView(NewChatMembersScreen view) {
+    public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.chat_add_new_members_title);
         connectToCandidates();

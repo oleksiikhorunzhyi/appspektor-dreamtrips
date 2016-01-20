@@ -4,12 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.NewChatScreenPresenter;
-import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
 
-import icepick.State;
-
-public class AddChatMembersScreenImpl extends NewChatMembersScreenImpl {
+public class AddChatMembersScreenImpl extends ChatMembersScreenImpl {
 
     public AddChatMembersScreenImpl(Context context, String conversationId) {
         super(context);

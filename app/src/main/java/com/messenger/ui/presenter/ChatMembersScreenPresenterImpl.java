@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 
 import com.messenger.constant.CursorLoaderIds;
@@ -13,8 +11,7 @@ import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.activity.NewChatMembersActivity;
-import com.messenger.ui.view.NewChatMembersScreen;
+import com.messenger.ui.view.ChatMembersScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
 import com.messenger.util.ContactsHeaderCreator;
 import com.techery.spares.module.Injector;
@@ -31,8 +28,8 @@ import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
-public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresenterImpl<NewChatMembersScreen, NewChatLayoutViewState>
-        implements NewChatScreenPresenter {
+public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterImpl<ChatMembersScreen, NewChatLayoutViewState>
+        implements ChatMembersScreenPresenter {
 
     @Inject
     User user;
@@ -54,7 +51,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     final private ProfileCrosser profileCrosser;
     final private ContactsHeaderCreator contactsHeaderCreator;
 
-    public BaseNewChatMembersScreenPresenter(Activity activity) {
+    public ChatMembersScreenPresenterImpl(Activity activity) {
         this.activity = activity;
 
         ((Injector) activity.getApplicationContext()).inject(this);
@@ -67,7 +64,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     }
 
     @Override
-    public void attachView(NewChatMembersScreen view) {
+    public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(activity);
         getView().setConversationNameEditTextVisibility(View.GONE);
@@ -96,7 +93,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     @Override
     public void applyViewState() {
         NewChatLayoutViewState viewState = getViewState();
-        NewChatMembersScreen screen = getView();
+        ChatMembersScreen screen = getView();
         List<User> selectedContacts = viewState.getSelectedContacts();
 
         switch (viewState.getLoadingState()) {

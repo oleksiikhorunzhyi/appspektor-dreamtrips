@@ -9,7 +9,7 @@ import com.messenger.model.ChatUser;
 
 import java.util.List;
 
-public interface NewChatMembersScreen extends MessengerScreen {
+public interface ChatMembersScreen extends MessengerScreen {
     void showLoading();
 
     void showContent();

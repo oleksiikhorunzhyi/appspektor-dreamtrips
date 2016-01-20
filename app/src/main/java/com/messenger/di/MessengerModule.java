@@ -9,7 +9,7 @@ import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
+import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
@@ -41,7 +41,7 @@ import dagger.Provides;
 
 //                presenters
                 ChatScreenPresenterImpl.class,
-                BaseNewChatMembersScreenPresenter.class,
+                ChatMembersScreenPresenterImpl.class,
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,
                 SingleChatSettingsScreenPresenterImpl.class,

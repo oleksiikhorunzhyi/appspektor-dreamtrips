@@ -12,7 +12,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.view.NewChatMembersScreen;
+import com.messenger.ui.view.ChatMembersScreen;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
+public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     @Inject
     UsersDAO usersDAO;
@@ -38,7 +38,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
 
 
     @Override
-    public void attachView(NewChatMembersScreen view) {
+    public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.new_chat_title);
         contactUsers();

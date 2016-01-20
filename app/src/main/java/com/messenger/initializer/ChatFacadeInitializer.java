@@ -135,8 +135,10 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .subscribe(pair -> {
                         Conversation conversation = pair.first;
                         participantsDAO.delete(conversation.getId(), pair.second.getId());
-                        conversation.setStatus(leave ? Conversation.Status.LEFT : Conversation.Status.KICKED);
-                        conversationsDAO.save(Collections.singletonList(conversation));
+                        if (messengerServerFacade.getOwner().equals(pair.second)) { // if it is owner action
+                            conversation.setStatus(leave ? Conversation.Status.LEFT : Conversation.Status.KICKED);
+                            conversationsDAO.save(Collections.singletonList(conversation));
+                        }
                     });
         });
     }

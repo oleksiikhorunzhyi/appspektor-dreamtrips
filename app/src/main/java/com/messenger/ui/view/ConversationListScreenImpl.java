@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
@@ -36,8 +35,6 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.Arrays;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -62,9 +59,6 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     RecyclerView recyclerView;
     @InjectView(R.id.conversation_conversation_type_spinner)
     Spinner conversationsDropDownSpinner;
-
-    @Inject
-    ParticipantsDAO participantsDAO;
 
     SearchView searchView;
     //
@@ -132,7 +126,7 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
-        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser(), participantsDAO);
+        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser(), getPresenter().getParticipantsDao());
         adapter.setConversationClickListener(presenter::onConversationSelected);
         adapter.setSwipeButtonsListener(this);
         recyclerView.setSaveEnabled(true);

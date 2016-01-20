@@ -40,6 +40,7 @@ public class User extends BaseEntity implements Parcelable {
     private double roviaBucks;
     private int tripImagesCount;
     private int bucketListItemsCount;
+    private int friendsCount;
 
     private boolean termsAccepted;
 
@@ -156,6 +157,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public int getBucketListItemsCount() {
         return bucketListItemsCount;
+    }
+
+    public int getFriendsCount() {
+        return friendsCount;
     }
 
     public String getLocation() {

@@ -496,5 +496,7 @@
 
     <string name="user_already_exists">%s already exists</string>
     <string name="photo_tag_title">Tap anywhere to tag people</string>
+    <string name="profile_friend_formatter">%d Friend</string>
+    <string name="profile_friends_formatter">%d Friends</string>
 
 </resources>

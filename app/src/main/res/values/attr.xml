@@ -24,4 +24,15 @@
         <attr name="holdInitialDelay" format="integer"/>
         <attr name="holdRepeatDelay" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="ShowMoreTextView">
+        <!-- 'smtv_' prefix to prevent any possible duplication -->
+        <attr name="smtv_symbolsLimit" format="integer" />
+        <attr name="smtv_captionCollapsed" format="string" />
+        <attr name="smtv_captionExpanded" format="string" />
+        <attr name="smtv_captionColor" format="color" />
+        <attr name="smtv_separatorCollapsed" format="string" />
+        <attr name="smtv_separatorExpanded" format="string" />
+        <!-- Provides bigger (by height) clickable area. Default is false. Turn off if you have problems clicking links with your TextVIew -->
+        <attr name="smtv_extendClickableArea" format="boolean" />
+    </declare-styleable>
 </resources>

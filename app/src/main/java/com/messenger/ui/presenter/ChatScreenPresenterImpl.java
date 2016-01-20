@@ -28,6 +28,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
@@ -412,11 +413,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void sendAndMarkChatEntities(Message firstMessage) {
+        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) return;
+
         chatObservable.first()
                 .flatMap(chat -> chat.sendReadStatus(firstMessage).flatMap(this::markMessagesAsRead))
                 .compose(new IoToMainComposer<>())
                 .doOnNext(m -> Timber.i("Message marked as read %s", m))
-                .subscribe();
+                //// TODO: 1/20/16 it's temporary crutch, that must be replaced with refactoring logic of invoking this method and using rxjava instead of handler
+                .subscribe(message -> {
+                }, throwable -> {
+                    Timber.e(throwable, "Error while marking message as read");
+                });
     }
 
     private Observable<Message> markMessagesAsRead(Message firstIncomingMessage) {

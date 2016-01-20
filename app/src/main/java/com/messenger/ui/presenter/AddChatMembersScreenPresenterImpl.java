@@ -1,6 +1,5 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Pair;
 import android.view.MenuItem;
@@ -14,8 +13,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.activity.NewChatMembersActivity;
-import com.messenger.ui.view.NewChatMembersScreen;
+import com.messenger.ui.view.ChatMembersScreen;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -32,11 +30,7 @@ import rx.subjects.PublishSubject;
 
 import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
 
-public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
-
-    @Inject
-    @ForApplication
-    Context context;
+public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     @Inject
     ConversationsDAO conversationsDAO;
@@ -47,15 +41,15 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     private Observable<Conversation> conversationStream;
     private PublishSubject<List<User>> selectedStream;
 
-    public AddChatMembersScreenPresenterImpl(Activity activity) {
-        super(activity);
-        conversationId = activity.getIntent().getStringExtra(NewChatMembersActivity.EXTRA_CONVERSATION_ID);
+    public AddChatMembersScreenPresenterImpl(Context context, String conversationId) {
+        super(context);
+        this.conversationId = conversationId;
         conversationStream = conversationsDAO.getConversation(conversationId).first().replay().autoConnect();
         selectedStream = PublishSubject.create();
     }
 
     @Override
-    public void attachView(NewChatMembersScreen view) {
+    public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.chat_add_new_members_title);
         connectToCandidates();
@@ -101,13 +95,13 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
     private void tryCreateChat() {
         List<User> newChatUsers = getViewState().getSelectedContacts();
         if (newChatUsers == null || newChatUsers.isEmpty()) {
-            Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
+            Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!isConnectionPresent()) {
-            showAbsentConnectionMessage(activity);
+            showAbsentConnectionMessage(getContext());
             return;
         }
 
@@ -129,21 +123,21 @@ public class AddChatMembersScreenPresenterImpl extends BaseNewChatMembersScreenP
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(newConversation -> {
-                    ChatActivity.startChat(activity, newConversation);
+                    ChatActivity.startChat(getContext(), newConversation);
                 });
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Activity related
+    // Menu
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
                 tryCreateChat();
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 }

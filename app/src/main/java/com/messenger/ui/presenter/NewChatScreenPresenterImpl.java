@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -12,7 +12,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.view.NewChatMembersScreen;
+import com.messenger.ui.view.ChatMembersScreen;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
@@ -20,15 +20,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresenter {
+public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     @Inject
     UsersDAO usersDAO;
 
     private final ConversationHelper conversationHelper;
 
-    public NewChatScreenPresenterImpl(Activity activity) {
-        super(activity);
+    public NewChatScreenPresenterImpl(Context context) {
+        super(context);
         conversationHelper = new ConversationHelper();
     }
 
@@ -38,7 +38,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
 
 
     @Override
-    public void attachView(NewChatMembersScreen view) {
+    public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         getView().setTitle(R.string.new_chat_title);
         contactUsers();
@@ -62,19 +62,19 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
                 List<User> selectedUsers = getViewState().getSelectedContacts();
 
                 if (selectedUsers == null || selectedUsers.isEmpty()) {
-                    Toast.makeText(activity, R.string.new_chat_toast_no_users_selected_error,
+                    Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 if (!isConnectionPresent() && selectedUsers.size() != 1) {
-                    showAbsentConnectionMessage(activity);
+                    showAbsentConnectionMessage(getContext());
                     return true;
                 }
 
@@ -89,7 +89,7 @@ public class NewChatScreenPresenterImpl extends BaseNewChatMembersScreenPresente
 
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u, Participant.Affiliation.MEMBER).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                ChatActivity.startChat(activity, conversation);
+                ChatActivity.startChat(getContext(), conversation);
                 return true;
         }
         return false;

@@ -1,15 +1,13 @@
 package com.messenger.ui.view;
 
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.support.annotation.StringRes;
 
 import com.messenger.messengerservers.entities.User;
-import com.messenger.model.ChatUser;
 
 import java.util.List;
 
-public interface NewChatMembersScreen extends MessengerScreen {
+public interface ChatMembersScreen extends MessengerScreen {
     void showLoading();
 
     void showContent();

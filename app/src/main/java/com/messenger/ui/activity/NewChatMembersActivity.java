@@ -3,10 +3,12 @@ package com.messenger.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.messenger.ui.view.AddChatMembersScreenImpl;
 import com.messenger.ui.view.NewChatMembersScreenImpl;
+import com.messenger.ui.view.ChatMembersScreenImpl;
 
 
-public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersScreenImpl> {
+public class NewChatMembersActivity extends BaseMvpViewActivity {
 
     public static final String EXTRA_MODE = "EXTRA_MODE";
     public static final String EXTRA_CONVERSATION_ID = "EXTRA_CONVERSATION_ID";
@@ -28,7 +30,14 @@ public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersSc
     }
 
     @Override
-    NewChatMembersScreenImpl createScreen() {
-        return new NewChatMembersScreenImpl(this);
+    ChatMembersScreenImpl createScreen() {
+        int mode = getIntent().getIntExtra(NewChatMembersActivity.EXTRA_MODE, -1);
+        if (mode == MODE_NEW_CHAT) {
+            return new NewChatMembersScreenImpl(this);
+        } else if (mode == MODE_CHAT_ADD_MEMBERS) {
+            return new AddChatMembersScreenImpl(this,
+                    getIntent().getStringExtra(EXTRA_CONVERSATION_ID));
+        }
+        throw new IllegalArgumentException("No view for this type");
     }
 }

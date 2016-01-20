@@ -1,8 +1,7 @@
 package com.messenger.ui.presenter;
 
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;
@@ -23,10 +22,10 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
 
     protected final ProfileCrosser profileCrosser;
 
-    public SingleChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
-        super(activity, startIntent);
+    public SingleChatSettingsScreenPresenterImpl(Context context, String conversationId) {
+        super(context, conversationId);
 
-        profileCrosser = new ProfileCrosser(activity, routeCreator);
+        profileCrosser = new ProfileCrosser(context, routeCreator);
     }
 
     @Override

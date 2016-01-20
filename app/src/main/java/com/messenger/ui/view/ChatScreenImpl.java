@@ -1,21 +1,16 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -24,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.MessageHolder;
@@ -34,26 +28,24 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.ui.widget.UnreadMessagesView;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import icepick.State;
 
 public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreenPresenter>
         implements ChatScreen {
 
     private static final int THRESHOLD = 5;
     private static final int POST_DELAY_TIME = 2;
+
+    @State
+    String conversationId;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -99,9 +91,10 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         }
     };
 
-    public ChatScreenImpl(Context context) {
+    public ChatScreenImpl(Context context, String conversationId) {
         super(context);
         init(context);
+        this.conversationId = conversationId;
     }
 
     public ChatScreenImpl(Context context, AttributeSet attrs) {
@@ -115,10 +108,16 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         initUi();
     }
 
+    @NonNull
+    @Override
+    public ChatScreenPresenter createPresenter() {
+        return new ChatScreenPresenterImpl(getContext(), conversationId);
+    }
+
     @SuppressWarnings("Deprecated")
     private void initUi() {
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.main_background));
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.enableUpNavigationButton();
         toolbarPresenter.setTitle("");
         toolbarPresenter.setSubtitle("");
@@ -156,6 +155,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
         messageEditText.addTextChangedListener(messageWatcher);
+        inflateToolbarMenu(toolbar);
     }
 
     protected MessagesCursorAdapter createAdapter() {
@@ -182,42 +182,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
             messageEditText.getText().clear();
             recyclerView.smoothScrollToPosition(adapter.getItemCount());
         }
-    }
-
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity) getContext();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return getPresenter().onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        getPresenter().onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return getPresenter().onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
-    }
-
-    @NonNull
-    @Override
-    public ChatScreenPresenter createPresenter() {
-        return new ChatScreenPresenterImpl(getContext(), getActivity().getIntent());
     }
 
     @Override

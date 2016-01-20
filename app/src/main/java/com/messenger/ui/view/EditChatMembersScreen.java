@@ -5,8 +5,6 @@ import android.support.annotation.StringRes;
 
 import com.messenger.messengerservers.entities.User;
 
-import java.util.List;
-
 public interface EditChatMembersScreen extends MessengerScreen {
     void showLoading();
 

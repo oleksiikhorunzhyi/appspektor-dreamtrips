@@ -1,16 +1,12 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,9 +26,13 @@ import com.worldventures.dreamtrips.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 
 public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatSettingsScreen, ChatSettingsScreenPresenter>
         implements ChatSettingsScreen {
+
+    @State
+    String conversationId;
 
     @InjectView(R.id.chat_settings_content_view)
     ViewGroup contentView;
@@ -66,14 +66,21 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
 
     protected ChatSettingsRow notificationsSettingsRow;
 
+    public ChatSettingsScreenImpl(Context context, String conversationId) {
+        super(context);
+        this.conversationId = conversationId;
+        init(context);
+    }
+
     public ChatSettingsScreenImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public ChatSettingsScreenImpl(Context context) {
-        super(context);
-        init(context);
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        inflateToolbarMenu(toolbar);
     }
 
     protected void init(Context context) {
@@ -100,7 +107,7 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
     }
 
     protected void initUi() {
-        toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
+        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.enableUpNavigationButton();
         // hide the button until we have user story
         clearHistoryButton.setVisibility(View.GONE);
@@ -153,36 +160,6 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
                 .setMessage(getResources().getString(R.string.chat_settings_leave_group_chat, currentSubject))
                 .create()
                 .show();
-    }
-
-    @Override
-    public AppCompatActivity getActivity() {
-        return (AppCompatActivity) getContext();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return getPresenter().onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return getPresenter().onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        getPresenter().onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
     }
 
     protected abstract

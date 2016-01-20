@@ -9,7 +9,7 @@ import com.messenger.ui.view.GroupChatSettingsScreenImpl;
 import com.messenger.ui.view.SingleChatSettingsScreenImpl;
 import com.messenger.ui.view.TripChatSettingsScreenImpl;
 
-public class ChatSettingsActivity extends BaseMvpViewActivity<ChatSettingsScreenImpl> {
+public class ChatSettingsActivity extends BaseMvpViewActivity {
     public static final String EXTRA_CHAT_CONVERSATION_ID = "ChatActivity#EXTRA_CHAT_CONVERSATION_ID";
     public static final String EXTRA_CHAT_TYPE = "ChatActivity#EXTRA_CHAT_TYPE";
 
@@ -34,12 +34,13 @@ public class ChatSettingsActivity extends BaseMvpViewActivity<ChatSettingsScreen
     @Override
     ChatSettingsScreenImpl createScreen() {
         int conversationType = getIntent().getIntExtra(EXTRA_CHAT_TYPE, -1);
+        String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         if (conversationType == CHAT_TYPE_SINGLE) {
-            return new SingleChatSettingsScreenImpl(this);
+            return new SingleChatSettingsScreenImpl(this, conversationId);
         } else if (conversationType == CHAT_TYPE_GROUP) {
-            return new GroupChatSettingsScreenImpl(this);
+            return new GroupChatSettingsScreenImpl(this, conversationId);
         } else if (conversationType == CHAT_TYPE_TRIP) {
-            return new TripChatSettingsScreenImpl(this);
+            return new TripChatSettingsScreenImpl(this, conversationId);
         }
         throw new IllegalStateException("No chat screen for this conversation type");
     }

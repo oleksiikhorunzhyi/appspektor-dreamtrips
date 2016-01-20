@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.messenger.ui.view.ConversationListScreenImpl;
 
-public class MessengerStartActivity extends BaseMvpViewActivity<ConversationListScreenImpl> {
+public class MessengerStartActivity extends BaseMvpViewActivity {
 
     public static void start(Context context){
         Intent intent = new Intent(context, MessengerStartActivity.class);

@@ -6,7 +6,7 @@ import android.content.Intent;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.view.ChatScreenImpl;
 
-public class ChatActivity extends BaseMvpViewActivity<ChatScreenImpl> {
+public class ChatActivity extends BaseMvpViewActivity {
 
     public static final String EXTRA_CHAT_CONVERSATION_ID = "ChatActivity#EXTRA_CHAT_CONVERSATION_ID";
 
@@ -19,6 +19,6 @@ public class ChatActivity extends BaseMvpViewActivity<ChatScreenImpl> {
 
     @Override
     ChatScreenImpl createScreen() {
-        return new ChatScreenImpl(this);
+        return new ChatScreenImpl(this, getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID));
     }
 }

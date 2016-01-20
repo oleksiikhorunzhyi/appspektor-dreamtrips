@@ -1,9 +1,8 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -16,7 +15,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.view.ChatSettingsScreen;
@@ -39,8 +37,6 @@ import rx.Observable;
 public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
 
-    protected Activity activity;
-
     String conversationId;
     Observable<Conversation> conversationObservable;
     Observable<List<User>> participantsObservable;
@@ -61,15 +57,15 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     @Named(MessengerStorageModule.DB_FLOW_RX_RESOLVER)
     RxContentResolver rxContentResolver;
 
-    public ChatSettingsScreenPresenterImpl(Activity activity, Intent startIntent) {
-        this.activity = activity;
+    public ChatSettingsScreenPresenterImpl(Context context, String conversationId) {
+        super(context);
 
-        Injector injector = (Injector) activity.getApplication();
+        Injector injector = (Injector) context.getApplicationContext();
         injector.inject(this);
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
 
-        conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        this.conversationId = conversationId;
     }
 
     @Override
@@ -161,9 +157,9 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         @Override
         public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
-                Intent intent = new Intent(activity, MessengerStartActivity.class);
+                Intent intent = new Intent(getContext(), MessengerStartActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                activity.startActivity(intent);
+                getContext().startActivity(intent);
             }
         }
     };
@@ -175,7 +171,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onMembersRowClicked() {
-        EditChatMembersActivity.start(activity, conversationId);
+        EditChatMembersActivity.start(getContext(), conversationId);
     }
 
     public void onEditChatName() {
@@ -210,25 +206,23 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Activity related
+    // Menu
     ///////////////////////////////////////////////////////////////////////////
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = activity.getMenuInflater();
-        inflater.inflate(R.menu.menu_chat_settings, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.menu_chat_settings;
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onToolbarMenuPrepared(Menu menu) {
         conversationObservable.subscribe(conversation ->
                 menu.findItem(R.id.action_overflow).setVisible(isUserOwner(conversation)));
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_overflow:
                 // overflow menu click, do nothing, wait for actual actions clicks

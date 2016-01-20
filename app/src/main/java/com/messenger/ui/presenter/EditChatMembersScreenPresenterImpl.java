@@ -1,10 +1,9 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -13,7 +12,6 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.view.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -51,7 +49,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Inject
     ConversationsDAO conversationsDAO;
 
-    private Activity activity;
     private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
@@ -62,14 +59,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private PublishSubject<Void> adapterInitializer = PublishSubject.create();
     private Observable<Void> adapterInitializeObservable;
 
-    public EditChatMembersScreenPresenterImpl(Activity activity) {
-        this.activity = activity;
-        ((Injector) activity.getApplication()).inject(this);
+    public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
+        super(context);
+        ((Injector) context.getApplicationContext()).inject(this);
 
-        conversationId = activity.getIntent()
-                .getStringExtra(EditChatMembersActivity.EXTRA_CONVERSATION_ID);
+        this.conversationId = conversationId;
 
-        this.profileCrosser = new ProfileCrosser(activity, routeCreator);
+        this.profileCrosser = new ProfileCrosser(context, routeCreator);
     }
 
     @Override
@@ -162,21 +158,24 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 .subscribe(cursor -> {
                     // cause admin of group chat is also participant
                     if (cursor.getCount() <= 1) {
-                        MessengerStartActivity.start(activity);
+                        MessengerStartActivity.start(getContext());
                         return;
                     }
 
                     EditChatMembersScreen view = getView();
                     view.showContent();
                     view.setMembers(cursor, getViewState().getSearchFilter(), User.COLUMN_NAME);
-                    view.setTitle(String.format(activity.getString(R.string.edit_chat_members_title), cursor.getCount()));
+                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), cursor.getCount()));
                 });
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Menu
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        activity.getMenuInflater().inflate(R.menu.menu_edit_chat_members, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.menu_edit_chat_members;
     }
 
     @Override

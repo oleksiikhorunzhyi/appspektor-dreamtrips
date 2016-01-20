@@ -1,20 +1,15 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 
-import com.messenger.constant.CursorLoaderIds;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.activity.NewChatMembersActivity;
-import com.messenger.ui.view.NewChatMembersScreen;
+import com.messenger.ui.view.ChatMembersScreen;
 import com.messenger.ui.viewstate.NewChatLayoutViewState;
 import com.messenger.util.ContactsHeaderCreator;
 import com.techery.spares.module.Injector;
@@ -31,8 +26,10 @@ import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
-public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresenterImpl<NewChatMembersScreen, NewChatLayoutViewState>
-        implements NewChatScreenPresenter {
+
+
+public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterImpl<ChatMembersScreen, NewChatLayoutViewState>
+        implements ChatMembersScreenPresenter {
 
     @Inject
     User user;
@@ -48,38 +45,27 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
 
     protected Observable<Cursor> cursorObservable;
 
-    protected Activity activity;
     private String textInChosenContactsEditText;
 
     final private ProfileCrosser profileCrosser;
     final private ContactsHeaderCreator contactsHeaderCreator;
 
-    public static NewChatScreenPresenter createPresenter(Activity activity) {
-        int mode = activity.getIntent().getIntExtra(NewChatMembersActivity.EXTRA_MODE, -1);
-        if (mode == NewChatMembersActivity.MODE_NEW_CHAT) {
-            return new NewChatScreenPresenterImpl(activity);
-        } else if (mode == NewChatMembersActivity.MODE_CHAT_ADD_MEMBERS) {
-            return new AddChatMembersScreenPresenterImpl(activity);
-        }
-        throw new IllegalArgumentException("Cannot find presenter for mode provided");
-    }
+    public ChatMembersScreenPresenterImpl(Context context) {
+        super(context);
 
-    public BaseNewChatMembersScreenPresenter(Activity activity) {
-        this.activity = activity;
+        ((Injector) (context.getApplicationContext())).inject(this);
 
-        ((Injector) activity.getApplicationContext()).inject(this);
-
-        textInChosenContactsEditText = activity
+        textInChosenContactsEditText = context
                 .getString(R.string.new_chat_chosen_contacts_header_empty);
 
-        profileCrosser = new ProfileCrosser(activity, routeCreator);
-        contactsHeaderCreator = new ContactsHeaderCreator(activity);
+        profileCrosser = new ProfileCrosser(context, routeCreator);
+        contactsHeaderCreator = new ContactsHeaderCreator(context);
     }
 
     @Override
-    public void attachView(NewChatMembersScreen view) {
+    public void attachView(ChatMembersScreen view) {
         super.attachView(view);
-        dreamSpiceManager.start(activity);
+        dreamSpiceManager.start(getContext());
         getView().setConversationNameEditTextVisibility(View.GONE);
     }
 
@@ -87,7 +73,6 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     public void detachView(boolean retainInstance) {
         super.detachView(retainInstance);
         dreamSpiceManager.shouldStop();
-        ((AppCompatActivity) activity).getSupportLoaderManager().destroyLoader(CursorLoaderIds.CONTACT_LOADER);
     }
 
     @Override
@@ -106,7 +91,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     @Override
     public void applyViewState() {
         NewChatLayoutViewState viewState = getViewState();
-        NewChatMembersScreen screen = getView();
+        ChatMembersScreen screen = getView();
         List<User> selectedContacts = viewState.getSelectedContacts();
 
         switch (viewState.getLoadingState()) {
@@ -170,9 +155,7 @@ public abstract class BaseNewChatMembersScreenPresenter extends MessengerPresent
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = activity.getMenuInflater();
-        inflater.inflate(R.menu.new_chat, menu);
-        return true;
+    public int getToolbarMenuRes() {
+        return R.menu.new_chat;
     }
 }

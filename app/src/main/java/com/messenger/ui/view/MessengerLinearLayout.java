@@ -3,6 +3,8 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.presenter.MessengerPresenter;
 import com.worldventures.dreamtrips.R;
+
+import icepick.Icepick;
 
 public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>>
         extends BaseViewStateLinearLayout<V, P> implements MessengerScreen {
@@ -106,6 +110,29 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
             }
             this.lastConnectionStatus = connectionStatus;
         }
+    }
+
+    protected boolean inflateToolbarMenu(Toolbar toolbar) {
+        if (getPresenter().getToolbarMenuRes() <= 0) {
+            return false;
+        }
+        if (toolbar.getMenu() != null) {
+            toolbar.getMenu().clear();
+        }
+        toolbar.inflateMenu(getPresenter().getToolbarMenuRes());
+        getPresenter().onToolbarMenuPrepared(toolbar.getMenu());
+        toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
+        return true;
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
 
     protected abstract ViewGroup getContentView();

@@ -1,12 +1,11 @@
 package com.messenger.ui.presenter;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl {
 
-    public MultiChatSettingsScreenPresenter(Activity activity, Intent startIntent) {
-        super(activity, startIntent);
+    public MultiChatSettingsScreenPresenter(Context context, String conversationId) {
+        super(context, conversationId);
     }
 
     @Override

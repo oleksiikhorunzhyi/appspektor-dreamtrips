@@ -20,6 +20,7 @@ import com.messenger.ui.view.ConversationListScreenImpl;
 import com.messenger.ui.view.EditChatMembersScreenImpl;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.modules.messenger.MessengerContainerFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -64,7 +65,8 @@ public class MessengerModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMessengerComponent() {
-        return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger, true, null);
+        return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger,
+                true, MessengerContainerFragment.class);
     }
 
 }

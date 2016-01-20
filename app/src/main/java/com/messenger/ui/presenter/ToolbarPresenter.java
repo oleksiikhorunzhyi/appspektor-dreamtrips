@@ -1,13 +1,18 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 
 import com.worldventures.dreamtrips.R;
+
+import butterknife.ButterKnife;
 
 public class ToolbarPresenter {
 
@@ -16,7 +21,7 @@ public class ToolbarPresenter {
 
     public ToolbarPresenter(Toolbar toolbar, Context context) {
         this.toolbar = toolbar;
-        if (! (context instanceof AppCompatActivity)) {
+        if (!(context instanceof AppCompatActivity)) {
             throw new IllegalArgumentException("Context should be instance of AppCompatActivity");
         }
         this.activity = (AppCompatActivity) context;
@@ -53,4 +58,20 @@ public class ToolbarPresenter {
                 typedValue, true);
         toolbar.setNavigationIcon(typedValue.resourceId);
     }
+
+    public void enableDrawerNavigationButton() {
+        DrawerLayout drawerLayout = ButterKnife.findById(activity, R.id.drawer);
+        //drawer is null, enable Back navigation instead
+        if (drawerLayout == null) {
+            enableUpNavigationButton();
+            return;
+        }
+
+        if (activity.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
+            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+        //
+        toolbar.setNavigationOnClickListener(view ->
+                drawerLayout.openDrawer(GravityCompat.START));
+    }
+
 }

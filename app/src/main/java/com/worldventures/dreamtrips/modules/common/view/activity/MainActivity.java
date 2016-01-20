@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -80,7 +81,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         setUpBurger();
         setUpMenu();
         //
-        BaseFragment currentFragment = fragmentCompass.getCurrentFragment();
+        Fragment currentFragment = fragmentCompass.getCurrentFragment();
         if (currentComponent == null && currentFragment != null) {
             currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
         }
@@ -172,10 +173,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     private void itemSelected(ComponentDescription component) {
         //navigate to messenger
-        if (component.getKey().equals("Messenger")) {
+        /*if (component.getKey().equals("Messenger")) {
             MessengerStartActivity.start(this);
             return;
         }
+        */
         currentComponent = component;
         //
         eventBus.post(new MenuPressedEvent());

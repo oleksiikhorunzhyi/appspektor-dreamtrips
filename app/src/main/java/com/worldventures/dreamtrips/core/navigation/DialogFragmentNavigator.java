@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.navigation;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +88,7 @@ public class DialogFragmentNavigator implements Navigator {
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            BaseFragment currentFragment = compass.getCurrentFragment();
+            Fragment currentFragment = compass.getCurrentFragment();
             if (currentFragment != null && currentFragment.getClass().getName().equals(route.getClazzName()))
                 return;
             NavigationBuilder.create()

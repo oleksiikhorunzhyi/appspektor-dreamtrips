@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
@@ -143,7 +144,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     private void restorePostIfNeeded() {
         fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        Fragment baseFragment = fragmentCompass.getCurrentFragment();
         if (baseFragment instanceof PostFragment) {
             fragmentCompass.showContainer();
         }

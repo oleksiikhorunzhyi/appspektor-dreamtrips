@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
@@ -70,7 +71,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     private void restorePostIfNeeded() {
         fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        Fragment baseFragment = fragmentCompass.getCurrentFragment();
         if (baseFragment instanceof PostFragment) {
             showPostContainer();
         }

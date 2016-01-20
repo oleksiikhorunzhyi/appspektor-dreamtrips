@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
@@ -16,7 +17,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlDistanceFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
@@ -62,6 +62,7 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragm
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
+import com.worldventures.dreamtrips.modules.messenger.MessengerContainerFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
@@ -195,17 +196,19 @@ public enum Route {
     BUCKET_PHOTO_FULLSCREEN(BucketPhotoFullscreenFragment.class),
 
     THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),
-    PRESENTATION_VIDEOS(PresentationVideosFragment.class);
+    PRESENTATION_VIDEOS(PresentationVideosFragment.class),
 
-    private Class<? extends BaseFragment> fragmentClass;
+    MESSENGER(MessengerContainerFragment.class);
+
+    private Class<? extends Fragment> fragmentClass;
     @StringRes
     private int titleRes;
 
-    Route(Class<? extends BaseFragment> fragmentClass) {
+    Route(Class<? extends Fragment> fragmentClass) {
         this.fragmentClass = fragmentClass;
     }
 
-    Route(Class<? extends BaseFragment> fragmentClass, @StringRes int titleRes) {
+    Route(Class<? extends Fragment> fragmentClass, @StringRes int titleRes) {
         this(fragmentClass);
         this.titleRes = titleRes;
     }
@@ -224,7 +227,7 @@ public enum Route {
         return fragmentClass.getName();
     }
 
-    public Class<? extends BaseFragment> getClazz() {
+    public Class<? extends Fragment> getClazz() {
         return fragmentClass;
     }
 }

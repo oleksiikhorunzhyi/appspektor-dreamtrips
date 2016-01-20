@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
@@ -15,7 +16,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
@@ -82,7 +82,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
     private void restorePostIfNeeded() {
         fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
+        Fragment baseFragment = fragmentCompass.getCurrentFragment();
         if (baseFragment instanceof PostFragment) {
             showPostContainer();
         }
@@ -102,6 +102,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         if (adapter.getItems().contains(user)) {
             adapter.updateItem(user);
         } else {
+
             adapter.addItem(0, user);
             adapter.notifyItemInserted(0);
         }

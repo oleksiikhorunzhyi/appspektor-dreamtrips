@@ -107,7 +107,7 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         ButterKnife.inject(this, this);
 
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
-        toolbarPresenter.enableUpNavigationButton();
+        toolbarPresenter.enableDrawerNavigationButton();
         toolbarPresenter.disableTitle();
 
         conversationsDropDownSpinner.setAdapter(createSpinnerAdapter());

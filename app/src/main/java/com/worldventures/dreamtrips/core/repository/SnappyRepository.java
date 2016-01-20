@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttrib
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
@@ -69,6 +70,7 @@ public class SnappyRepository {
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
     public static final String DTL_DISTANCE_TOGGLE = "DTL_DISTANCE_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
+    public static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
 
     private Context context;
     private ExecutorService executorService;
@@ -448,6 +450,16 @@ public class SnappyRepository {
     public SocialViewPagerState getSocialViewPagerState() {
         return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
     }
+
+    public List<FeedbackType> getFeedbackTypes() {
+        return readList(FEEDBACK_TYPES, FeedbackType.class);
+    }
+
+    public void setFeedbackTypes(ArrayList<FeedbackType> types) {
+        clearAllForKey(FEEDBACK_TYPES);
+        putList(FEEDBACK_TYPES, types);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // GCM

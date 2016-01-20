@@ -159,4 +159,11 @@
         <item name="holdRepeatDelay">1000</item>
     </style>
 
+
+    <style name="EditTextMessage" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/theme_main_darker</item>
+        <item name="colorControlActivated">@color/theme_main_darker</item>
+        <item name="android:textColorSecondary">@color/theme_main_darker</item>
+    </style>
+
 </resources>

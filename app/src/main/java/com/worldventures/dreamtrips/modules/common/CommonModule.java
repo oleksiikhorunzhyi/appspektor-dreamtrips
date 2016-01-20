@@ -120,6 +120,7 @@ public class CommonModule {
 
         activeComponents.add(InfoModule.FAQ);
         activeComponents.add(InfoModule.TERMS);
+        activeComponents.add(InfoModule.SEND_FEEDBACK);
 
         activeComponents.add(TripsModule.MAP_TRIPS);
 

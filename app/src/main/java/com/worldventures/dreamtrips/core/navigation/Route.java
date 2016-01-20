@@ -55,6 +55,7 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -195,7 +196,8 @@ public enum Route {
     BUCKET_PHOTO_FULLSCREEN(BucketPhotoFullscreenFragment.class),
 
     THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),
-    PRESENTATION_VIDEOS(PresentationVideosFragment.class);
+    PRESENTATION_VIDEOS(PresentationVideosFragment.class),
+    SEND_FEEDBACK(SendFeedbackFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

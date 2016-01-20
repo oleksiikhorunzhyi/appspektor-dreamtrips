@@ -171,12 +171,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     private void itemSelected(ComponentDescription component) {
-        //navigate to messenger
-        /*if (component.getKey().equals("Messenger")) {
-            MessengerStartActivity.start(this);
-            return;
-        }
-        */
         currentComponent = component;
         //
         eventBus.post(new MenuPressedEvent());

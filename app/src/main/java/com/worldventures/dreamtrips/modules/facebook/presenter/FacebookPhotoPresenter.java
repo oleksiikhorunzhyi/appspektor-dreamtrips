@@ -42,8 +42,8 @@ public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPre
     }
 
     public FacebookPhotoPresenter(String albumId) {
+        super();
         this.albumId = albumId;
-        this.photos = new ArrayList<>();
     }
 
     public void scrolled(int totalItemCount, int lastVisible) {

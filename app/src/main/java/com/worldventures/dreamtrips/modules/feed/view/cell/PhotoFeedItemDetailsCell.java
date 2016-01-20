@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -22,7 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -37,7 +36,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
-public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
+public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem> {
 
     @InjectView(R.id.photo)
     SimpleDraweeView photo;
@@ -45,13 +44,11 @@ public class PhotoFeedItemCell extends FeedItemCell<PhotoFeedItem> {
     TextView title;
     @InjectView(R.id.tag)
     protected ImageView tag;
-
-    @Inject
-    ActivityRouter activityRouter;
+    
     @Inject
     Router router;
 
-    public PhotoFeedItemCell(View view) {
+    public PhotoFeedItemDetailsCell(View view) {
         super(view);
     }
 

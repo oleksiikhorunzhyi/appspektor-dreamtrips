@@ -19,10 +19,10 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewDelegate;
+import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -31,7 +31,7 @@ import butterknife.OnClick;
 public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> implements TripMapInfoPresenter.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
-    TripDetailsViewDelegate tripDetailsViewDelegate;
+    TripDetailsViewInjector tripDetailsViewInjector;
 
     @InjectView(R.id.imageViewTripImage)
     protected SimpleDraweeView imageViewTripImage;
@@ -70,7 +70,7 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void afterCreateView(final View rootView) {
         super.afterCreateView(rootView);
-        tripDetailsViewDelegate = new TripDetailsViewDelegate(rootView);
+        tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
 
         ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -105,7 +105,7 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     }
 
     @Override
-    public void openDetails(FeedItemDetailsBundle bundle) {
+    public void openDetails(FeedDetailsBundle bundle) {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(bundle)
                 .build());
@@ -133,7 +133,7 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
 
     @Override
     public void setup(TripModel tripModel) {
-        tripDetailsViewDelegate.initTripData(tripModel, getPresenter().getAccount());
+        tripDetailsViewInjector.initTripData(tripModel, getPresenter().getAccount());
         addToBucketView.setChecked(tripModel.isInBucketList());
         addToBucketView.setEnabled(!tripModel.isInBucketList());
         likeView.setChecked(tripModel.isLiked());

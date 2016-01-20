@@ -61,6 +61,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     @Optional
     @InjectView(R.id.title)
     protected TextView header;
+    @InjectView(R.id.input_container)
+    View inputContainer;
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
@@ -68,10 +70,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     protected LinearLayoutManager layout;
     //
     private LikersPanelHelper likersPanelHelper;
-    private NavigationWrapper likersNaviagtionWrapper;
-
-    @InjectView(R.id.input_container)
-    View inputContainer;
+    private NavigationWrapper likersNavigationWrapper;
 
     @Inject
     @Named(RouteCreatorModule.PROFILE)
@@ -99,7 +98,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         stateDelegate.onCreate(savedInstanceState);
         //
         likersPanelHelper = new LikersPanelHelper(View.GONE);
-        likersNaviagtionWrapper = new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
+        likersNavigationWrapper = new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
                 router, getFragmentManager(), tabletAnalytic
         );
     }
@@ -162,9 +161,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     public void setLikersPanel(FeedEntity entity) {
         if (likersPanel == null || !getArgs().showLikersPanel()) return;
         likersPanelHelper.setup(likersPanel, entity);
-        likersPanel.setOnClickListener(v -> {
-            likersNaviagtionWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid()));
-        });
+        likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid())));
     }
 
     @Override

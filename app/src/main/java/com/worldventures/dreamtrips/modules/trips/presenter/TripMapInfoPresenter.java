@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import com.worldventures.dreamtrips.core.utils.events.MapInfoReadyEvent;
 import com.worldventures.dreamtrips.core.utils.events.ShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
@@ -33,7 +33,7 @@ public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter
     }
 
     public void onClick() {
-        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(trip, appSessionHolder.get().get().getUser()));
+        FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(trip, appSessionHolder.get().get().getUser()));
         if (tabletAnalytic.isTabletLandscape()) {
             bundle.setSlave(true);
         }
@@ -45,6 +45,6 @@ public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter
 
         void setImage(String url);
 
-        void openDetails(FeedItemDetailsBundle bundle);
+        void openDetails(FeedDetailsBundle bundle);
     }
 }

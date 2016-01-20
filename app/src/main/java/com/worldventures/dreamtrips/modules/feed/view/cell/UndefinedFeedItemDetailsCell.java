@@ -5,12 +5,12 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 
 @Layout(R.layout.adapter_item_feed_undefined_event)
-public class UndefinedFeedItemCell extends FeedItemCell<TripFeedItem> {
+public class UndefinedFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem> {
 
-    public UndefinedFeedItemCell(View view) {
+    public UndefinedFeedItemDetailsCell(View view) {
         super(view);
     }
 

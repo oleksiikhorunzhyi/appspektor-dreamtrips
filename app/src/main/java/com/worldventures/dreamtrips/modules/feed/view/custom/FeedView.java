@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -18,11 +17,12 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
-import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
@@ -61,12 +61,12 @@ public class FeedView extends EmptyRecyclerView {
         adapter.registerCell(User.class, ProfileCell.class);
         adapter.registerCell(ReloadFeedModel.class, ReloadFeedCell.class);
 
-        adapter.registerCell(PhotoFeedItem.class, PhotoFeedItemCell.class);
-        adapter.registerCell(TripFeedItem.class, TripFeedItemCell.class);
-        adapter.registerCell(BucketFeedItem.class, BucketFeedItemCell.class);
-        adapter.registerCell(PostFeedItem.class, PostFeedItemCell.class);
+        adapter.registerCell(PhotoFeedItem.class, FeedItemCell.class);
+        adapter.registerCell(TripFeedItem.class, FeedItemCell.class);
+        adapter.registerCell(BucketFeedItem.class, FeedItemCell.class);
+        adapter.registerCell(PostFeedItem.class, FeedItemCell.class);
 
-        adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemCell.class);
+        adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemDetailsCell.class);
         adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
         layoutManager = new LinearLayoutManager(getContext());

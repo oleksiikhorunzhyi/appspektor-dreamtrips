@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 
 import javax.inject.Inject;
 
@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_post_event)
-public class PostFeedItemCell extends FeedItemCell<PostFeedItem> {
+public class PostFeedItemDetailsCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @InjectView(R.id.post)
     TextView post;
@@ -30,7 +30,7 @@ public class PostFeedItemCell extends FeedItemCell<PostFeedItem> {
     @Inject
     Activity activity;
 
-    public PostFeedItemCell(View view) {
+    public PostFeedItemDetailsCell(View view) {
         super(view);
     }
 

@@ -49,7 +49,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
@@ -357,7 +357,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void openDetails(BucketItem bucketItem) {
-        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
+        FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
 
         if (isTabletLandscape()) {
             router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forFragment()

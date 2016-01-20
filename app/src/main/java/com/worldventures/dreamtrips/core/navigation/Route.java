@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbum
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
@@ -74,7 +75,6 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragm
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDetailsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -154,9 +154,9 @@ public enum Route {
 
     DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
     FEED_DETAILS_PHOTO(PhotoDetailsFeedFragment.class, R.string.empty),
-    DETAILS_TRIP_WITH_SOCIAL(TripWithSocialDetailsFragment.class, R.string.empty),
 
     FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
+    FEED_ENTITY_DETAILS(FeedEntityDetailsFragment.class, R.string.empty),
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
     FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty),
 

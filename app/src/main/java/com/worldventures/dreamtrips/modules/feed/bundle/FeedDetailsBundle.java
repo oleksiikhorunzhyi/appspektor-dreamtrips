@@ -5,15 +5,15 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
-public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable {
+public class FeedDetailsBundle extends CommentsBundle implements Parcelable {
 
-    public static final Creator<FeedItemDetailsBundle> CREATOR = new Creator<FeedItemDetailsBundle>() {
-        public FeedItemDetailsBundle createFromParcel(Parcel source) {
-            return new FeedItemDetailsBundle(source);
+    public static final Creator<FeedDetailsBundle> CREATOR = new Creator<FeedDetailsBundle>() {
+        public FeedDetailsBundle createFromParcel(Parcel source) {
+            return new FeedDetailsBundle(source);
         }
 
-        public FeedItemDetailsBundle[] newArray(int size) {
-            return new FeedItemDetailsBundle[size];
+        public FeedDetailsBundle[] newArray(int size) {
+            return new FeedDetailsBundle[size];
         }
     };
 
@@ -21,22 +21,22 @@ public class FeedItemDetailsBundle extends CommentsBundle implements Parcelable 
     boolean slave;
     boolean showAdditionalInfo;
 
-    public FeedItemDetailsBundle(FeedItem feedItem) {
+    public FeedDetailsBundle(FeedItem feedItem) {
         this(feedItem, false);
     }
 
-    public FeedItemDetailsBundle(FeedItem feedItem, boolean slave) {
+    public FeedDetailsBundle(FeedItem feedItem, boolean slave) {
         this(feedItem, slave, true);
     }
 
-    public FeedItemDetailsBundle(FeedItem feedItem, boolean slave, boolean showAdditionalInfo) {
+    public FeedDetailsBundle(FeedItem feedItem, boolean slave, boolean showAdditionalInfo) {
         super(feedItem.getItem());
         this.feedItem = feedItem;
         this.slave = slave;
         this.showAdditionalInfo = showAdditionalInfo;
     }
 
-    protected FeedItemDetailsBundle(Parcel in) {
+    protected FeedDetailsBundle(Parcel in) {
         super(in);
         this.feedItem = in.readParcelable(FeedItem.class.getClassLoader());
         this.slave = in.readByte() != 0;

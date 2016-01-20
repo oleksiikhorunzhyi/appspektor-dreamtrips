@@ -5,39 +5,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
 
 import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_comments_with_details)
-public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetailsPresenter, FeedItemDetailsBundle> implements FeedItemDetailsPresenter.View {
+public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetailsPresenter> implements FeedItemDetailsPresenter.View {
 
+    @Optional
+    @InjectView(R.id.feedDetailsLeftSpace)
+    protected View feedDetailsLeftSpace;
+    @Optional
+    @InjectView(R.id.feedDetailsRightSpace)
+    protected View feedDetailsRightSpace;
     @Optional
     @InjectView(R.id.comments_additional_info_container)
     ViewGroup additionalContainer;
-    @Optional
-    @InjectView(R.id.feedDetailsLeftSpace)
-    View feedDetailsLeftSpace;
-    @Optional
-    @InjectView(R.id.feedDetailsRightSpace)
-    View feedDetailsRightSpace;
-
-    private int loadMoreOffset;
 
     @Override
     protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -52,35 +50,25 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
                 additionalContainer.setVisibility(View.GONE);
             }
         }
-        adapter.registerCell(PostFeedItem.class, FeedItemDetailsCell.class);
-        adapter.registerCell(BucketFeedItem.class, FeedItemDetailsCell.class);
-        adapter.registerCell(PhotoFeedItem.class, FeedItemDetailsCell.class);
+    }
+
+    @Override
+    protected void registerCells() {
+        adapter.registerCell(PostFeedItem.class, PostFeedItemDetailsCell.class);
+        adapter.registerCell(BucketFeedItem.class, BucketFeedItemDetailsCell.class);
+        adapter.registerCell(PhotoFeedItem.class, PhotoFeedItemDetailsCell.class);
         adapter.registerCell(TripFeedItem.class, TripFeedItemDetailsCell.class);
     }
 
     @Override
-    public void onDestroyView() {
-        FragmentHelper.resetChildFragmentManagerField(this);
-        //
-        super.onDestroyView();
-    }
-
-    @Override
     public void setFeedItem(FeedItem feedItem) {
-        adapter.addItem(0, feedItem);
-        adapter.notifyItemInserted(0);
-        loadMoreOffset = 1;
+        super.setFeedItem(feedItem);
         //todo until Trip becomes as all normal entities
         if (feedItem instanceof TripFeedItem) {
             if (additionalContainer != null) additionalContainer.setVisibility(View.GONE);
             if (feedDetailsLeftSpace != null) feedDetailsLeftSpace.setVisibility(View.VISIBLE);
             if (feedDetailsRightSpace != null) feedDetailsRightSpace.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void updateFeedItem(FeedItem feedItem) {
-        adapter.updateItem(feedItem);
     }
 
     @Override
@@ -98,15 +86,5 @@ public class FeedItemDetailsFragment extends CommentableFragment<FeedItemDetails
     private boolean isShowAdditionalInfo() {
         return getActivity().getSupportFragmentManager().findFragmentById(R.id.comments_additional_info_container) == null
                 && getArgs().isShowAdditionalInfo();
-    }
-
-    @Override
-    protected int getAdditionalItemsCount() {
-        return super.getAdditionalItemsCount() + loadMoreOffset;
-    }
-
-    @Override
-    protected int getLoadMorePosition() {
-        return super.getLoadMorePosition() + loadMoreOffset;
     }
 }

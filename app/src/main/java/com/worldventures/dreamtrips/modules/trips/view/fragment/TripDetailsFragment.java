@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
-import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewDelegate;
+import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     @InjectView(R.id.toolbar_actionbar_landscape)
     protected Toolbar toolbarLandscape;
 
-    TripDetailsViewDelegate tripDetailsViewDelegate;
+    TripDetailsViewInjector tripDetailsViewInjector;
 
     @Override
     protected TripDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -71,7 +71,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        tripDetailsViewDelegate.initMenuItems(menu);
+        tripDetailsViewInjector.initMenuItems(menu);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -91,7 +91,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        tripDetailsViewDelegate = new TripDetailsViewDelegate(rootView);
+        tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -104,11 +104,11 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
             toolbarLandscape.getBackground().setAlpha(255);
         }
 
-        tripDetailsViewDelegate.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
+        tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
     }
 
     public void onEvent(ImageClickedEvent event) {
-        getPresenter().onItemClick(tripDetailsViewDelegate.getCurrentActivePhotoPosition());
+        getPresenter().onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition());
     }
 
     @Override
@@ -153,7 +153,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @Override
     public void setup(TripModel tripModel) {
-        tripDetailsViewDelegate.initTripData(tripModel, getPresenter().getAccount());
+        tripDetailsViewInjector.initTripData(tripModel, getPresenter().getAccount());
         if (toolbarLandscape != null)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
     }

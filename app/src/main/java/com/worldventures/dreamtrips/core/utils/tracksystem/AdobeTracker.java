@@ -1,25 +1,20 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import icepick.Icepick;
-import icepick.State;
-
-public class AdobeTracker extends ITracker{
+public class AdobeTracker extends ITracker {
 
     @Override
     public void onCreate(BaseActivity activity) {
-        Config.setDebugLogging(true);
+        Config.setDebugLogging(BuildConfig.DEBUG);
         Config.setContext(activity.getApplicationContext());
     }
 
@@ -39,5 +34,4 @@ public class AdobeTracker extends ITracker{
         if (headerData != null) data.putAll(headerData);
         Analytics.trackAction(action, data);
     }
-
 }

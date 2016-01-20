@@ -3,7 +3,6 @@ package com.messenger.ui.presenter;
 import android.app.Activity;
 import android.database.Cursor;
 import android.util.Pair;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;

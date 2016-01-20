@@ -1,6 +1,5 @@
 package com.messenger.ui.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;

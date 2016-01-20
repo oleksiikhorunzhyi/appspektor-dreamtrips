@@ -1,7 +1,6 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -12,10 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -24,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.MessageHolder;
@@ -34,21 +29,15 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.ui.widget.UnreadMessagesView;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import icepick.State;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreenPresenter>
         implements ChatScreen {

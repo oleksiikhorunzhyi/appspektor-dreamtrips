@@ -22,8 +22,8 @@ import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
-import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
+import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.techery.spares.module.Injector;

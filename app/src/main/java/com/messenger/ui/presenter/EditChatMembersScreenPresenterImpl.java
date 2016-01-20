@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -14,7 +12,6 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.view.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;

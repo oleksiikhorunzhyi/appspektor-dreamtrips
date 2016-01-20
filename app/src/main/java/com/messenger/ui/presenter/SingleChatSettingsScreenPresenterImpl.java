@@ -2,7 +2,6 @@ package com.messenger.ui.presenter;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;

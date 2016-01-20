@@ -2,7 +2,6 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +27,6 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.activity.NewChatMembersActivity;

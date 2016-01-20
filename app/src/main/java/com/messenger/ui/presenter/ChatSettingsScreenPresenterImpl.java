@@ -3,7 +3,6 @@ package com.messenger.ui.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -16,7 +15,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
 import com.messenger.ui.view.ChatSettingsScreen;

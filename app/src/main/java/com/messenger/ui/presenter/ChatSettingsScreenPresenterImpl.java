@@ -2,6 +2,7 @@ package com.messenger.ui.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -224,7 +225,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         conversationObservable.subscribe(conversation ->
-                menu.findItem(R.id.action_overflow).setVisible(isUserOwner(conversation)));
+                menu.findItem(R.id.action_overflow).setVisible(!isSingleChat(conversation) && isUserOwner(conversation)));
     }
 
     @Override
@@ -245,6 +246,10 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     ////////////////////////////////////////////////////
 
     private boolean isUserOwner(Conversation conversation) {
-        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
+        return TextUtils.equals(conversation.getOwnerId(), user.getId());
+    }
+
+    private boolean isSingleChat(Conversation conversation) {
+        return TextUtils.equals(conversation.getType(), Conversation.Type.CHAT);
     }
 }

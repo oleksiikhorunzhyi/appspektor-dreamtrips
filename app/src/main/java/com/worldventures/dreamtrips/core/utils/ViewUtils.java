@@ -9,8 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.Display;
 import android.view.View;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class ViewUtils {
 
     private ViewUtils() {
@@ -45,8 +43,8 @@ public class ViewUtils {
         return result;
     }
 
-    public static boolean isLandscapeOrientation(Activity activity) {
-        int orientation = activity.getResources().getConfiguration().orientation;
+    public static boolean isLandscapeOrientation(Context context) {
+        int orientation = context.getResources().getConfiguration().orientation;
         return Configuration.ORIENTATION_LANDSCAPE == orientation;
 
     }

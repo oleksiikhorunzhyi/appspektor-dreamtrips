@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -112,7 +111,7 @@ public class FragmentCompass {
         } else {
             String clazzName = route.getClazzName();
             //
-            BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
+            Fragment fragment = Fragment.instantiate(activity, clazzName);
             setArgsToFragment(fragment, bundle);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             //
@@ -160,7 +159,7 @@ public class FragmentCompass {
         }
     }
 
-    private void setArgsToFragment(BaseFragment fragment, Bundle bundle) {
+    private void setArgsToFragment(Fragment fragment, Bundle bundle) {
         fragment.setArguments(bundle);
     }
 
@@ -173,8 +172,8 @@ public class FragmentCompass {
         return activity != null && !activity.isFinishing();
     }
 
-    public BaseFragment getCurrentFragment() {
-        return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
+    public Fragment getCurrentFragment() {
+        return activity.getSupportFragmentManager().findFragmentById(containerId);
     }
 
     public boolean empty() {

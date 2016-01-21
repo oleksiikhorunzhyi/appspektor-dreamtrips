@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer;
 
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +12,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -38,9 +36,6 @@ public class NavigationDrawerFragment
         implements NavigationDrawerPresenter.View, NavigationDrawerListener {
 
     @Inject
-    @ForApplication
-    Injector injector;
-    @Inject
     protected SessionHolder<UserSession> appSessionHolder;
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
@@ -49,20 +44,15 @@ public class NavigationDrawerFragment
     protected RecyclerView recyclerView;
     @InjectView(R.id.version)
     protected TextView version;
+    //
     protected NavigationDrawerAdapter adapter;
     private NavigationDrawerListener targetDrawerListener;
-
+    //
     private ComponentDescription currentComponent;
 
     @Override
     protected NavigationDrawerPresenter createPresenter(Bundle savedInstanceState) {
         return new NavigationDrawerPresenter();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.targetDrawerListener = (NavigationDrawerListener) activity;
     }
 
     @Override
@@ -102,6 +92,10 @@ public class NavigationDrawerFragment
 
     public void onEventMainThread(UpdateUserInfoEvent event) {
         setHeaderIfNeeded();
+    }
+
+    public void setTargetDrawerListener(NavigationDrawerListener targetDrawerListener) {
+        this.targetDrawerListener = targetDrawerListener;
     }
 
     @Override

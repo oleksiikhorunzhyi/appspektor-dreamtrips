@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -127,7 +127,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
     }
 
     @Override
-    public void openShare(String url, @ShareFragment.ShareType String type) {
+    public void openShare(String url, @ShareType String type) {
         ShareBundle data = new ShareBundle();
         data.setShareUrl(url);
         data.setShareType(type);

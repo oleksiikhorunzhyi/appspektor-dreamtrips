@@ -65,10 +65,7 @@ public class ImageUtils {
             }
 
             @Override
-            public void onFailureImpl(DataSource dataSource) {
-                Throwable throwable = dataSource.getFailureCause();
-
-
+            protected void onFailureImpl(DataSource<CloseableReference<CloseableBitmap>> dataSource) {
             }
         };
         getBitmap(context, uri, width, height, dataSubscriber);

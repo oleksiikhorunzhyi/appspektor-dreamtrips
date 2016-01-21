@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
@@ -180,7 +180,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     /**
      * Analytic-related
      */
-    public void trackSharing(@ShareFragment.ShareType String type) {
+    public void trackSharing(@ShareType String type) {
         TrackingHelper.dtlShare(type);
     }
 

@@ -7,7 +7,7 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.File;
@@ -16,9 +16,9 @@ import java.io.InputStream;
 public class SharePresenter extends Presenter<SharePresenter.View> {
 
     public void create(String imageUrl, String shareLink, String text, String type) {
-        if (type.equals(ShareFragment.FB)) {
+        if (type.equals(ShareType.FACEBOOK)) {
             view.shareFBDialog(imageUrl, shareLink, text);
-        } else if (type.equals(ShareFragment.TW)) {
+        } else if (type.equals(ShareType.TWITTER)) {
             if (TextUtils.isEmpty(imageUrl)) {
                 view.shareTwitterDialog(null, shareLink, text);
             } else {

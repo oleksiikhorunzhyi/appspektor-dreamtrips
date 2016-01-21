@@ -18,6 +18,10 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
 
     private int pickLimit;
 
+    public BasePickerPresenter() {
+        this.photos = new ArrayList<>();
+    }
+
     public void onEvent(PhotoPickedEvent event) {
         if (!view.isVisibleOnScreen() || !view.isResumed()) return;
         //

@@ -6,12 +6,15 @@ import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.listeners.OnChatCreatedListener;
 import com.messenger.messengerservers.listeners.OnChatJoinedListener;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
+import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
 import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import timber.log.Timber;
 
 public abstract class GlobalEventEmitter {
     protected List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
@@ -22,6 +25,7 @@ public abstract class GlobalEventEmitter {
     protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatCreatedListener> onChatCreatedListeners = new CopyOnWriteArrayList<>();
+    protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
 
     public void addGlobalMessageListener(GlobalMessageListener listener) {
         globalMessageListeners.add(listener);
@@ -135,6 +139,21 @@ public abstract class GlobalEventEmitter {
     protected void notifyOnChatCreatedListener(String conversationId, boolean createLocally) {
         for (OnChatCreatedListener listener : onChatCreatedListeners) {
             listener.onChatCreated(conversationId, createLocally);
+        }
+    }
+
+    public void addOnChatStateChangedListener(OnChatStateChangedListener listener) {
+        onChatStateChangedListeners.add(listener);
+    }
+
+    public void removeOnChatStateChangedListener(OnChatStateChangedListener listener) {
+        onChatStateChangedListeners.remove(listener);
+    }
+
+    protected void notifyOnChatStateChangedListener(String conversationId, String userId, @ChatState.State String state) {
+        Timber.d("TEST_STATUSES conv %s, user %s, state %s", conversationId, userId, state);
+        for (OnChatStateChangedListener listener : onChatStateChangedListeners) {
+            listener.onChatStateChanged(conversationId, userId, state);
         }
     }
 }

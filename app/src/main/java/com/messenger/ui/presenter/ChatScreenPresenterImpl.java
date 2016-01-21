@@ -16,14 +16,16 @@ import android.widget.Toast;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.ChatManager;
-import com.messenger.messengerservers.ChatState;
+import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.notification.MessengerNotificationFactory;
+import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -54,6 +56,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
@@ -64,6 +67,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private final static int MAX_MESSAGE_PER_PAGE = 20;
     private static final int MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS = 2000;
     private static final int MARK_AS_READ_DELAY_SINCE_MESSAGES_UI_INITIALIZED = 2000;
+    private final GlobalEventEmitter messengerGlobalEmitter;
 
     @Inject
     User user;
@@ -106,6 +110,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private Observable<Chat> chatObservable;
     private Observable<Conversation> conversationObservable;
+    private PublishSubject<ChatChangeStateEvent> subject = PublishSubject.<ChatChangeStateEvent>create();
 
     private Handler handler = new Handler();
     boolean skipNextMessagesUiDueToPendingChangesInDb = false;
@@ -115,6 +120,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         ((Injector) context.getApplicationContext()).inject(this);
 
+        messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
@@ -211,24 +217,24 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onChatLoaded(Chat chat) {
-        Observable.<Pair<ChatState, String>>create(subscriber ->
-                chat.addOnChatStateListener((state, userId) -> {
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(new Pair<>(state, userId));
-                        subscriber.onCompleted();
-                    }
-                }))
+        final OnChatStateChangedListener listener = (conversationId, userId, state) -> {
+            subject.onNext(new ChatChangeStateEvent(userId, conversationId, state));
+        };
+        messengerGlobalEmitter.addOnChatStateChangedListener(listener);
+
+                subject
+                .doOnUnsubscribe(() -> messengerGlobalEmitter.removeOnChatStateChangedListener(listener))
                 .compose(bindVisibilityIoToMainComposer())
-                .subscribe(chatStateStringPair ->
-                                usersDAO.getUserById(chatStateStringPair.second)
+                .subscribe(stateEvent ->
+                                usersDAO.getUserById(stateEvent.userId)
                                         .first()
                                         .compose(bindVisibilityIoToMainComposer())
                                         .subscribe(user -> {
-                                            switch (chatStateStringPair.first) {
-                                                case Composing:
+                                            switch (stateEvent.state) {
+                                                case ChatState.COMPOSING:
                                                     getView().addTypingUser(user);
                                                     break;
-                                                case Paused:
+                                                case ChatState.PAUSE:
                                                     getView().removeTypingUser(user);
                                                     break;
                                             }
@@ -478,10 +484,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         submitOneChatAction(chat -> {
             if (!typing && length > 0) {
                 typing = true;
-                chat.setCurrentState(ChatState.Composing);
+                chat.setCurrentState(ChatState.COMPOSING);
             } else if (length == 0) {
                 typing = false;
-                chat.setCurrentState(ChatState.Paused);
+                chat.setCurrentState(ChatState.PAUSE);
             }
         });
     }
@@ -644,5 +650,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private long timeSinceMessagesUiInitialized() {
         return System.currentTimeMillis() - messagesUiWasInitializedTimestamp;
+    }
+
+    private static class ChatChangeStateEvent {
+        private final String userId;
+        private final String conversationId;
+        private final String state;
+
+        private ChatChangeStateEvent(String userId, String conversationId, String state) {
+            this.userId = userId;
+            this.conversationId = conversationId;
+            this.state = state;
+        }
     }
 }

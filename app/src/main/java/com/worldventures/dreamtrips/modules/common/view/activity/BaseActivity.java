@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.membership.MembershipModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
+import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
@@ -129,6 +130,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new FriendsModule());
         modules.add(new FeedModule());
         modules.add(new DtlModule());
+        modules.add(new SettingsModule());
         return modules;
     }
 

@@ -514,4 +514,6 @@
 
     <string name="years_ago">%d years ago</string>
 
+    <string name="settings">Settings</string>
+
 </resources>

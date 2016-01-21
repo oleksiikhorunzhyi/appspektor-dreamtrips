@@ -12,7 +12,6 @@ import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -177,7 +176,9 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
                         return true;
                     }
                     return false;
-                })).subscribe();
+                }))
+                .doOnError(throwable -> Timber.e(throwable, "setCurrentState %s", state))
+                .subscribe();
     }
 
     @Override

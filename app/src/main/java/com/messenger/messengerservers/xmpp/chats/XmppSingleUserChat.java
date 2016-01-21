@@ -7,7 +7,6 @@ import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.SingleUserChat;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
@@ -18,6 +17,7 @@ import org.jivesoftware.smack.chat.ChatManager;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
     private final String companionId;
@@ -48,7 +48,9 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
                         return true;
                     }
                     return false;
-                })).subscribe();
+                }))
+                .doOnError(throwable -> Timber.e(throwable, "setCurrentState %s", state))
+                .subscribe();
     }
 
     @Override

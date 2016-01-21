@@ -150,7 +150,7 @@ public abstract class GlobalEventEmitter {
         onChatStateChangedListeners.remove(listener);
     }
 
-    protected void notifyOnChatStateChangedListener(String conversationId, String userId, String state) {
+    protected void notifyOnChatStateChangedListener(String conversationId, String userId, @ChatState.State String state) {
         Timber.d("TEST_STATUSES conv %s, user %s, state %s", conversationId, userId, state);
         for (OnChatStateChangedListener listener : onChatStateChangedListeners) {
             listener.onChatStateChanged(conversationId, userId, state);

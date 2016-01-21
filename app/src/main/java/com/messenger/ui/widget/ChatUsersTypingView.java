@@ -3,17 +3,20 @@ package com.messenger.ui.widget;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.messenger.model.ChatUser;
+import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
@@ -37,6 +40,9 @@ public class ChatUsersTypingView extends RelativeLayout {
     private AnimatorSet typingAnimatorSet = new AnimatorSet();
     private boolean cancelTypingAnimation;
 
+    private ValueAnimator showViewAnimator;
+    private ValueAnimator hideViewAnimator;
+
     private List<ChatUser> typingUsers = new ArrayList<>();
 
     public ChatUsersTypingView(Context context) {
@@ -53,6 +59,9 @@ public class ChatUsersTypingView extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.widget_chat_users_typing, this, true);
         ButterKnife.inject(this, this);
         initTypingAnimator();
+        int verticalPadding = getResources().getDimensionPixelSize(R.dimen.chat_typing_vertical_margin);
+        int horizontalPadding = getResources().getDimensionPixelSize(R.dimen.chat_list_item_horizontal_padding);
+        setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
     }
 
     private void initTypingAnimator() {
@@ -60,7 +69,7 @@ public class ChatUsersTypingView extends RelativeLayout {
         ObjectAnimator firstDotAnimator = getFadeInAnimator(0, TYPING_ANIM_NEXT_ANIM_DELAY_MS);
         ObjectAnimator secondDotAnimator = getFadeInAnimator(1, TYPING_ANIM_NEXT_ANIM_DELAY_MS);
         ObjectAnimator thirdDotAnimator = getFadeInAnimator(2, TYPING_ANIM_NEXT_ANIM_DELAY_MS);
-        typingAnimatorSet.addListener(new SimpleAnimationListener() {
+        typingAnimatorSet.addListener(new SimpleAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 if (cancelTypingAnimation) {
@@ -85,14 +94,21 @@ public class ChatUsersTypingView extends RelativeLayout {
         super.onDetachedFromWindow();
         cancelTypingAnimation = true;
         typingAnimatorSet.cancel();
-        typingAnimatorSet = null;
+        if (showViewAnimator != null) {
+            showViewAnimator.cancel();
+            showViewAnimator = null;
+        }
+        if (hideViewAnimator != null) {
+            hideViewAnimator.cancel();
+            hideViewAnimator = null;
+        }
     }
 
     private ObjectAnimator getFadeInAnimator(int index, int delay) {
         final View view = typingCircles.get(index);
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
         animator.setDuration(TYPING_ANIM_FADE_IN_MS);
-        animator.addListener(new SimpleAnimationListener() {
+        animator.addListener(new SimpleAnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
                 view.setVisibility(View.VISIBLE);
@@ -105,23 +121,21 @@ public class ChatUsersTypingView extends RelativeLayout {
     public void addTypingUser(ChatUser typingUser) {
         this.typingUsers.add(typingUser);
         updateUI();
-        // update UI later along with animation loop
     }
 
     public void removeTypingUser(ChatUser typingUser) {
         this.typingUsers.remove(typingUser);
         updateUI();
-        // update UI later along with animation loop
     }
 
     private void updateUI() {
         if (typingUsers.isEmpty()) {
-            setVisibility(GONE);
+            hideView();
             typingAnimatorSet.cancel();
             return;
         }
 
-        setVisibility(VISIBLE);
+        showView();
 
         if (!typingAnimatorSet.isStarted()) {
             typingAnimatorSet.start();
@@ -140,8 +154,9 @@ public class ChatUsersTypingView extends RelativeLayout {
             } else {
                 ObjectAnimator fadeOut = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 0f);
                 fadeOut.start();
-                fadeOut.addListener(new SimpleAnimationListener() {
-                    @Override public void onAnimationEnd(Animator animator) {
+                fadeOut.addListener(new SimpleAnimatorListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
                         imageView.setVisibility(GONE);
                     }
                 });
@@ -158,17 +173,51 @@ public class ChatUsersTypingView extends RelativeLayout {
         }
     }
 
-    private class SimpleAnimationListener implements Animator.AnimatorListener {
-        @Override public void onAnimationStart(Animator animator) {
+    private void hideView() {
+        if (showViewAnimator != null) {
+            return;
         }
+        ValueAnimator animator = ValueAnimator.ofFloat(0, -getMeasuredHeight());
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+        animator.addUpdateListener(valueAnimator -> {
+            float margin = (Float)valueAnimator.getAnimatedValue();
+            params.bottomMargin = (int)margin;
+            requestLayout();
+        });
+        animator.addListener(new SimpleAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                setVisibility(View.GONE);
+                showViewAnimator = null;
+            }
+        });
+        animator.start();
+        showViewAnimator = animator;
+    }
 
-        @Override public void onAnimationEnd(Animator animator) {
+    private void showView() {
+        if (hideViewAnimator != null) {
+            return;
         }
-
-        @Override public void onAnimationCancel(Animator animator) {
+        setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+        if (getMeasuredHeight() == 0) {
+            measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         }
-
-        @Override public void onAnimationRepeat(Animator animator) {
-        }
+        ValueAnimator animator = ValueAnimator.ofFloat(-getMeasuredHeight(), 0);
+        animator.addUpdateListener(valueAnimator -> {
+            float margin = (Float) valueAnimator.getAnimatedValue();
+            params.bottomMargin = (int) margin;
+            requestLayout();
+        });
+        animator.addListener(new SimpleAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                hideViewAnimator = null;
+            }
+        });
+        animator.start();
+        hideViewAnimator = animator;
     }
 }

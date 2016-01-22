@@ -48,7 +48,7 @@ public class DtlFilterData implements Parcelable {
         result.setAmenities(this.amenities);
         result.setSelectedAmenities(filterData.getSelectedAmenities());
         result.setDistanceType(filterData.getDistanceType());
-        result.setPrice(filterData.getMinPrice(), getMaxPrice());
+        result.setPrice(filterData.getMinPrice(), filterData.getMaxPrice());
         result.setMaxDistance(filterData.getMaxDistance());
         return result;
     }

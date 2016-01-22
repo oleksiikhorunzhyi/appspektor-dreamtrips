@@ -1,6 +1,7 @@
 package com.messenger.delegate;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.Conversation;
@@ -51,6 +52,7 @@ public class ChatDelegate {
                 .ownerId(currentUser.getUserName())
                 .lastActiveDate(System.currentTimeMillis())
                 .status(Conversation.Status.PRESENT)
+                .subject(TextUtils.isEmpty(subject)? null : subject)
                 .build();
 
         return setMultiUserChatData(conversation, participans, subject);
@@ -91,11 +93,7 @@ public class ChatDelegate {
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(multiUserChat1 -> {
-                    if (!StringUtils.isEmpty(subject)) conversation.setSubject(subject);
-                    //
-                    ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                });
+                .subscribe();
 
         return conversation;
     }

@@ -6,12 +6,14 @@ import android.os.Looper;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
@@ -28,6 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
@@ -54,6 +57,8 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
 
     @Inject
     ParticipantsDAO participantsDAO;
+    @Inject
+    User user;
 
     protected final ConversationHelper conversationHelper = new ConversationHelper();
     protected final View.OnClickListener onClickListener = this::onClick;
@@ -185,13 +190,15 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
             participantsSubscriber.unsubscribe();
         }
 
-        participantsSubscriber = participantsDAO.getParticipants(conversation.getId())
+        Observable<List<User>> participantsObservable;
+        if (TextUtils.equals(conversation.getType(), Conversation.Type.CHAT)) {
+            participantsObservable = participantsDAO.getParticipant(conversation.getId(), user.getId())
+                    .map(Collections::singletonList);
+        } else {
+            participantsObservable = participantsDAO.getParticipantsEntities(conversation.getId());
+        }
+        participantsSubscriber = participantsObservable
                 .onBackpressureLatest()
-                .map(cursor -> {
-                    List<User> result = SqlUtils.convertToList(User.class, cursor);
-                    cursor.close();
-                    return result;
-                })
                 .subscribeOn(Schedulers.immediate())
                 .compose(RxLifecycle.bindView(itemView))
                 .onErrorReturn(throwable -> Collections.<User>emptyList())

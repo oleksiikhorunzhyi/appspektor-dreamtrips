@@ -17,6 +17,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.EditChatMembersActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
@@ -187,6 +188,8 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onLeaveButtonClick() {
+        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) return;
+
         conversationObservable
                 .map(conversation -> conversation.getSubject())
                 .subscribe(subject -> getView().showLeaveChatDialog(subject));

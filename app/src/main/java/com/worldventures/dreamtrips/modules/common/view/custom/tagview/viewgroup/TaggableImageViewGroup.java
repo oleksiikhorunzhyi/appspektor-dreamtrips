@@ -84,6 +84,7 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     public void show(RectF imageBounds) {
         this.imageBounds = imageBounds;
         setVisibility(View.VISIBLE);
+        if (presenter == null) return;
         presenter.showExistingTags();
         isShown = true;
     }

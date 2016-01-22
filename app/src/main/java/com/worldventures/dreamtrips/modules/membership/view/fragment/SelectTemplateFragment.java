@@ -99,7 +99,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     @Override
     public void openTemplate(TemplateBundle templateBundle) {
         router.moveTo(Route.EDIT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(true)
+                .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_main)
                 .data(templateBundle)

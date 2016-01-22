@@ -1,11 +1,47 @@
 package com.worldventures.dreamtrips.modules.settings.model;
 
-public class Settings<T> {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private int id;
-    private String name;
-    private Type type;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class Settings<T extends Serializable> implements Parcelable, Serializable {
+
+    protected int id;
+    protected String name;
+    protected Type type;
     protected T value;
+
+    public Settings() {
+
+    }
+
+    public Settings(String name, Type type, T value) {
+        this.name = name;
+        this.type = type;
+        this.value = value;
+    }
+
+    protected Settings(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        type = (Type) in.readSerializable();
+        value = (T) in.readSerializable();
+    }
+
+    public static final Creator<Settings> CREATOR = new Creator<Settings>() {
+        @Override
+        public Settings createFromParcel(Parcel in) {
+            return new Settings(in);
+        }
+
+        @Override
+        public Settings[] newArray(int size) {
+            return new Settings[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -23,7 +59,58 @@ public class Settings<T> {
         return value;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeSerializable(type);
+        dest.writeSerializable(value);
+    }
+
     public enum Type {
-        FLAG, SELECT, UNKNOWN
+        @SerializedName("flag")
+        FLAG,
+        @SerializedName("select")
+        SELECT,
+        UNKNOWN
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Settings<?> settings = (Settings<?>) o;
+
+        return name.equals(settings.name) && type == settings.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + value.hashCode();
+        return result;
     }
 }

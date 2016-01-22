@@ -6,9 +6,20 @@ import android.os.Parcelable;
 public class SettingsGroup implements Parcelable {
 
     private String title;
+    private Type type;
+
+    public SettingsGroup() {
+
+    }
+
+    public SettingsGroup(Type type, String title) {
+        this.type = type;
+        this.title = title;
+    }
 
     protected SettingsGroup(Parcel in) {
         title = in.readString();
+        type = (Type) in.readSerializable();
     }
 
     public static final Creator<SettingsGroup> CREATOR = new Creator<SettingsGroup>() {
@@ -31,6 +42,10 @@ public class SettingsGroup implements Parcelable {
         this.title = title;
     }
 
+    public Type getType() {
+        return type;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -39,5 +54,10 @@ public class SettingsGroup implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
+        dest.writeSerializable(type);
+    }
+
+    public enum Type {
+        GENERAL, NOTIFICATIONS,
     }
 }

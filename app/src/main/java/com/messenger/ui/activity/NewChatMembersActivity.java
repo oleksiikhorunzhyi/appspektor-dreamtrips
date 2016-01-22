@@ -17,6 +17,7 @@ public class NewChatMembersActivity extends BaseMvpViewActivity<NewChatMembersSc
     public static void startInNewChatMode(Context context) {
         Intent intent = new Intent(context, NewChatMembersActivity.class);
         intent.putExtra(EXTRA_MODE, MODE_NEW_CHAT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         context.startActivity(intent);
     }
 

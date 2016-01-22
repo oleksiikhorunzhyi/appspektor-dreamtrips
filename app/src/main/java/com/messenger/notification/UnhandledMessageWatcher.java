@@ -98,6 +98,7 @@ public class UnhandledMessageWatcher {
         WeakReference<Activity> activityRef = new WeakReference<>(activity);
         conversationsDAO.getConversation(message.getConversationId())
                 .compose(new NonNullFilter<>())
+                .filter(conversation -> TextUtils.equals(conversation.getStatus(), Conversation.Status.PRESENT))
                 .first()
                 .flatMap(conversation -> {
                     if (isSingleChat(conversation)) return composeSingleChatNotification(conversation, message);

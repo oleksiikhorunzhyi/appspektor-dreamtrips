@@ -80,9 +80,9 @@ public abstract class GlobalEventEmitter {
         invitationListeners.remove(listener);
     }
 
-    protected void notifyReceiveInvite(User userInviter, String roomId, String password) {
+    protected void notifyReceiveInvite(String roomId) {
         for (InvitationListener listener : invitationListeners) {
-            listener.receiveInvite(userInviter, roomId, password);
+            listener.receiveInvite(roomId);
         }
     }
 

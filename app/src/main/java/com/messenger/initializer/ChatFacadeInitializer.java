@@ -101,6 +101,17 @@ public class ChatFacadeInitializer implements AppInitializer {
                     })
                     .subscribe();
         });
+        emitter.addInvitationListener((conversationId) -> {
+            Timber.i("Chat invited :: chat=%s", conversationId);
+            conversationsDAO.getConversation(conversationId).first()
+                    .filter(conversation -> conversation != null // in other case addOnChatCreatedListener will be called
+                            && !TextUtils.equals(conversation.getStatus(), Conversation.Status.PRESENT))
+                    .flatMap(conversation -> {
+                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO, participantsDAO, messageDAO, usersDAO);
+                        return loaderDelegate.loadConversations();
+                    })
+                    .subscribe();
+        });
         emitter.addOnChatJoinedListener((conversationId, userId, isOnline) -> {
             Timber.i("Chat joined :: chat=%s , user=%s", conversationId, userId);
             usersDAO.getUserById(userId)

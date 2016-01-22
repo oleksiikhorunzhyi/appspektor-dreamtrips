@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.messenger.messengerservers.entities.Conversation$Table;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.ParticipantsRelationship$Adapter;
 import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
@@ -13,8 +14,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import java.util.List;
 
@@ -141,9 +140,13 @@ public class ParticipantsDAO extends BaseDAO {
     }
 
     public void deleteBySyncTime(long time) {
-        new Delete().from(ParticipantsRelationship.class)
-                .where(Condition.column(ParticipantsRelationship$Table.SYNCTIME).lessThan(time))
-                .and(Condition.column(ParticipantsRelationship$Table.SYNCTIME).isNot(0))
-                .queryClose();
+        getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
+                        ParticipantsRelationship$Table.SYNCTIME + " < " + time +
+                        " AND " + ParticipantsRelationship$Table.SYNCTIME + " NOT IN " +
+                            "(SELECT " + Conversation$Table.TABLE_NAME + "." + Conversation$Table.SYNCTIME +
+                            " FROM " + Conversation$Table.TABLE_NAME +
+                            " WHERE " + Conversation$Table.TABLE_NAME + "." + Conversation$Table._ID + " = " +
+                                ParticipantsRelationship$Table.TABLE_NAME + "." + ParticipantsRelationship$Table.CONVERSATIONID + ")",
+                null);
     }
 }

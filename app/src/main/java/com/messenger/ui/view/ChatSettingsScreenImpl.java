@@ -66,20 +66,20 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
 
     protected ChatSettingsRow notificationsSettingsRow;
 
-    public ChatSettingsScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
     public ChatSettingsScreenImpl(Context context) {
         super(context);
         init(context);
     }
 
+    public ChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
     protected void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
-        ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.screen_chat_settings,
-                this, true));
+        LayoutInflater.from(context).inflate(R.layout.screen_chat_settings, this, true);
+        ButterKnife.inject(this, this);
         addSettingsRows(ButterKnife.findById(this, R.id.char_settings_rows_parent));
         initUi();
     }

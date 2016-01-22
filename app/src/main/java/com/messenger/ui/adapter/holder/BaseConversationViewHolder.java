@@ -13,16 +13,15 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.SwipeClickListener;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Collections;
 import java.util.List;
@@ -193,6 +192,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
         Observable<List<User>> participantsObservable;
         if (TextUtils.equals(conversation.getType(), Conversation.Type.CHAT)) {
             participantsObservable = participantsDAO.getParticipant(conversation.getId(), user.getId())
+                    .compose(new NonNullFilter<>())
                     .map(Collections::singletonList);
         } else {
             participantsObservable = participantsDAO.getParticipantsEntities(conversation.getId());

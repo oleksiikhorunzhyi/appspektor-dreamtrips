@@ -6,7 +6,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
@@ -27,8 +26,8 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
     private boolean loading = true;
     private boolean canLoadMore = true;
 
-    public FeedListAdditionalInfoPresenter(FeedAdditionalInfoBundle args) {
-        super(args);
+    public FeedListAdditionalInfoPresenter(User user) {
+        super(user);
     }
 
     @Override

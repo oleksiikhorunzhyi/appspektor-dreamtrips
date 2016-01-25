@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
@@ -26,6 +26,8 @@ import javax.inject.Named;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+
+import static com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder.forActivity;
 
 @Layout(R.layout.fragment_feed_item_additional_info)
 public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPresenter> extends BaseFragmentWithArgs<P, FeedAdditionalInfoBundle> implements FeedItemAdditionalInfoPresenter.View {
@@ -49,7 +51,8 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
 
     @Override
     protected P createPresenter(Bundle savedInstanceState) {
-        return (P) new FeedItemAdditionalInfoPresenter(getArgs());
+        FeedItemAdditionalInfoPresenter presenter = new FeedItemAdditionalInfoPresenter(getArgs() != null ? getArgs().getUser() : null);
+        return (P) presenter;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
     }
 
     @Override
-    public void setUser(User user) {
+    public void setupView(User user) {
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
         userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
         userName.setText(user.getFullName());
@@ -70,10 +73,20 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
     @Optional
     @OnClick({R.id.user_cover, R.id.view_profile})
     protected void onUserClick() {
-        router.moveTo(routeCreator.createRoute(getArgs().getUser().getId()), NavigationConfigBuilder.forActivity()
+        router.moveTo(routeCreator.createRoute(getArgs().getUser().getId()), forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(new UserBundle(getArgs().getUser()))
                 .build());
+    }
+
+    public void onEventMainThread(UpdateUserInfoEvent event) {
+        if (getArgs() != null) {
+            User user = getArgs().getUser();
+            if (user != null && event.user.getId() == user.getId()) {
+                getPresenter().setUser(event.user);
+                setupView(event.user);
+            }
+        }
     }
 
 }

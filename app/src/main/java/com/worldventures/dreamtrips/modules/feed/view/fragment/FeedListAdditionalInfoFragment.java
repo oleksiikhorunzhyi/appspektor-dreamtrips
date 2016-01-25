@@ -67,7 +67,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
 
     @Override
     protected FeedListAdditionalInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new FeedListAdditionalInfoPresenter(getArgs());
+        return new FeedListAdditionalInfoPresenter(getArgs() == null ? null : getArgs().getUser());
     }
 
     @Override
@@ -215,8 +215,8 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     }
 
     @Override
-    public void setUser(User user) {
-        super.setUser(user);
+    public void setupView(User user) {
+        super.setupView(user);
         details.setVisibility(View.VISIBLE);
         viewProfile.setVisibility(View.GONE);
         accountType.setText(user.getCompany());

@@ -114,7 +114,7 @@ public class UnhandledMessageWatcher {
     }
 
     private boolean isOpenedConversation(Message message) {
-        return message.getConversationId().equals(openedConversationTracker.getOpenedConversationId());
+        return openedConversationTracker.containsOpenedConversationId(message.getConversationId());
     }
 
     private void showNotification(Activity activity, NotificationData data) {

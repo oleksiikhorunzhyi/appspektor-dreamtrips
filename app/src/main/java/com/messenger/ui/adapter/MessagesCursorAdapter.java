@@ -314,7 +314,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble_comics
                     : R.drawable.grey_bubble_comics;
             holder.avatarImageView.setVisibility(View.VISIBLE);
-            holder.avatarImageView.setImageURI(userFrom == null ? null : Uri.parse(userFrom.getAvatarUrl()));
+            holder.avatarImageView.setImageURI(userFrom == null || userFrom.getAvatarUrl() == null ? null : Uri.parse(userFrom.getAvatarUrl()));
 
             holder.avatarImageView.setOnClickListener(v -> {
                 if (avatarClickListener != null) {

@@ -95,6 +95,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         viewDelegate.setContent((Photo) photo);
         taggableImageHolder.setup(this, (Photo) photo);
         taggableImageHolder.setOnTagDeletedAction(() -> getPresenter().loadEntity());
+        syncTagViewGroupWithGlobalState();
     }
 
     @Override

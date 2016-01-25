@@ -8,6 +8,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSettings;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
 import butterknife.InjectView;
 
@@ -19,14 +20,17 @@ public class SettingsSelectCell extends AbstractDelegateCell<SelectSettings, Cel
     @InjectView(R.id.settings_value)
     TextView settingsValue;
 
+    private SettingsManager settingsManager;
+
     public SettingsSelectCell(View view) {
         super(view);
+        settingsManager = new SettingsManager();
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        settingsTitle.setText(getModelObject().getName());
-        settingsValue.setText(getModelObject().getValue());
+        settingsTitle.setText(settingsManager.getLocalizedTitleResource(getModelObject().getName()));
+        settingsValue.setText(settingsManager.getLocalizedOptionResource(getModelObject().getValue()));
     }
 
     @Override

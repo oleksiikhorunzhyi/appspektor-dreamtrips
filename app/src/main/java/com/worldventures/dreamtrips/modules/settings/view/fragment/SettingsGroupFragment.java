@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
-import com.worldventures.dreamtrips.modules.settings.bundle.SettingDetailsBundle;
+import com.worldventures.dreamtrips.modules.settings.bundle.SettingsBundle;
 import com.worldventures.dreamtrips.modules.settings.model.Settings;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsGroupCell;
@@ -60,7 +60,7 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
     public void openSettings(Route route, SettingsGroup model, List<Settings> settingsList) {
         router.moveTo(route, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new SettingDetailsBundle(model, settingsList))
+                .data(new SettingsBundle(model, settingsList))
                 .build());
     }
 

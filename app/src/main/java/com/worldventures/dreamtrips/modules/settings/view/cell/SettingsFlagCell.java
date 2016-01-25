@@ -9,6 +9,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSettings;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
 import butterknife.InjectView;
 
@@ -20,13 +21,16 @@ public class SettingsFlagCell extends AbstractDelegateCell<FlagSettings, CellDel
     @InjectView(R.id.flag_checkbox)
     CheckBox flag;
 
+    private SettingsManager settingsManager;
+
     public SettingsFlagCell(View view) {
         super(view);
+        settingsManager = new SettingsManager();
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        settingsTitle.setText(getModelObject().getName());
+        settingsTitle.setText(settingsManager.getLocalizedTitleResource(getModelObject().getName()));
         flag.setChecked(getModelObject().getValue());
     }
 

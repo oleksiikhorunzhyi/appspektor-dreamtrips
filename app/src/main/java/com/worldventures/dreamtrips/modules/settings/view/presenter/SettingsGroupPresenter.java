@@ -41,7 +41,7 @@ public class SettingsGroupPresenter extends Presenter<SettingsGroupPresenter.Vie
                 break;
         }
         //
-        if (route != null && settingsList != null) view.openSettings(route, model, settingsList);
+        if (route != null && settingsList.size() > 0) view.openSettings(route, model, settingsList);
     }
 
     public interface View extends Presenter.View {

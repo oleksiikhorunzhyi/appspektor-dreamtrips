@@ -10,31 +10,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingDetailsBundle implements Parcelable, Serializable {
+public class SettingsBundle implements Parcelable, Serializable {
 
     public final SettingsGroup settingsGroup;
     public final List<Settings> settingsList;
 
-    public SettingDetailsBundle(SettingsGroup settingsGroup, List<Settings> settingsList) {
+    public SettingsBundle(SettingsGroup settingsGroup, List<Settings> settingsList) {
         this.settingsGroup = settingsGroup;
         this.settingsList = settingsList;
     }
 
-    protected SettingDetailsBundle(Parcel in) {
+    protected SettingsBundle(Parcel in) {
         settingsGroup = in.readParcelable(SettingsGroup.class.getClassLoader());
         settingsList = new ArrayList<>();
         in.readList(settingsList, Settings.class.getClassLoader());
     }
 
-    public static final Creator<SettingDetailsBundle> CREATOR = new Creator<SettingDetailsBundle>() {
+    public static final Creator<SettingsBundle> CREATOR = new Creator<SettingsBundle>() {
         @Override
-        public SettingDetailsBundle createFromParcel(Parcel in) {
-            return new SettingDetailsBundle(in);
+        public SettingsBundle createFromParcel(Parcel in) {
+            return new SettingsBundle(in);
         }
 
         @Override
-        public SettingDetailsBundle[] newArray(int size) {
-            return new SettingDetailsBundle[size];
+        public SettingsBundle[] newArray(int size) {
+            return new SettingsBundle[size];
         }
     };
 

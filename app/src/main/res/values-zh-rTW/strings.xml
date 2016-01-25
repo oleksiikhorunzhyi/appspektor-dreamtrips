@@ -519,4 +519,14 @@
 
     <string name="what_notifications_get">What notifications you get</string>
 
+    <string name="settings_distance_units">Distance Units</string>
+    <string name="settings_friend_requests">Friend Requests</string>
+    <string name="settings_new_posts">New Posts</string>
+    <string name="settings_likes_and_comments">Likes and Comments</string>
+    <string name="settings_new_message">New Message</string>
+    <string name="settings_photo_tagging">Photo Tagging</string>
+
+    <string name="abbreviated_miles">mi</string>
+    <string name="abbreviated_kilometers">km</string>
+
 </resources>

@@ -12,7 +12,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.settings.bundle.SettingDetailsBundle;
+import com.worldventures.dreamtrips.modules.settings.bundle.SettingsBundle;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSettings;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSettings;
 import com.worldventures.dreamtrips.modules.settings.model.Settings;
@@ -25,7 +25,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_settings)
-public class SettingsFragment extends BaseFragmentWithArgs<SettingsPresenter, SettingDetailsBundle>
+public class SettingsFragment extends BaseFragmentWithArgs<SettingsPresenter, SettingsBundle>
         implements SettingsPresenter.View, CellDelegate<Settings> {
 
     @InjectView(R.id.settings_list)

@@ -10,6 +10,9 @@ import java.util.List;
 
 public class SettingsFactory {
 
+    ////////////////////////////
+    // Settings titles
+    ////////////////////////////
     public static final String DISTANCE_UNITS = "distance_measurement_unit";
     //
     public static final String FRIEND_REQUEST = "receive_friend_request_notifications";
@@ -18,13 +21,11 @@ public class SettingsFactory {
     public static final String NEW_MESSAGE = "receive_new_message_notifications";
     public static final String PHOTO_TAGGING = "receive_tagged_on_photo_notifications";
 
-    public List<Settings> createAllSettings() {
-        List<Settings> settingsList = new ArrayList<>();
-        settingsList.addAll(createGeneralSettings());
-        settingsList.addAll(createNotificationSettings());
-
-        return settingsList;
-    }
+    ////////////////////////////
+    // Settings select options
+    ////////////////////////////
+    public static final String MILES = "miles";
+    public static final String KILOMETERS = "kilometers";
 
     public List<Settings> createSettings(SettingsGroup group) {
         switch (group.getType()) {
@@ -37,17 +38,17 @@ public class SettingsFactory {
         }
     }
 
-    public List<Settings> createGeneralSettings() {
+    private List<Settings> createGeneralSettings() {
         List<Settings> settingsList = new ArrayList<>();
         List<String> options = new ArrayList<>();
-        options.add("kilometers");
-        options.add("miles");
-        settingsList.add(new SelectSettings(DISTANCE_UNITS, Settings.Type.SELECT, "kilometers", options));
+        options.add(MILES);
+        options.add(KILOMETERS);
+        settingsList.add(new SelectSettings(DISTANCE_UNITS, Settings.Type.SELECT, MILES, options));
 
         return settingsList;
     }
 
-    public List<Settings> createNotificationSettings() {
+    private List<Settings> createNotificationSettings() {
         List<Settings> settingsList = new ArrayList<>();
         settingsList.add(new FlagSettings(FRIEND_REQUEST, Settings.Type.FLAG, true));
         settingsList.add(new FlagSettings(NEW_POSTS, Settings.Type.FLAG, true));

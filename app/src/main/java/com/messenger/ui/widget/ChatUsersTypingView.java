@@ -135,7 +135,13 @@ public class ChatUsersTypingView extends RelativeLayout {
             return;
         }
 
-        showView();
+        boolean hideViewAnimatorRunning = hideViewAnimator != null && hideViewAnimator.isRunning();
+        if (getVisibility() != VISIBLE || hideViewAnimatorRunning) {
+            if (hideViewAnimatorRunning) {
+                hideViewAnimator.cancel();
+            }
+            showView();
+        }
 
         if (!typingAnimatorSet.isStarted()) {
             typingAnimatorSet.start();
@@ -174,50 +180,47 @@ public class ChatUsersTypingView extends RelativeLayout {
     }
 
     private void hideView() {
-        if (showViewAnimator != null) {
-            return;
-        }
+        if (hideViewAnimator != null) return;
+
         ValueAnimator animator = ValueAnimator.ofFloat(0, -getMeasuredHeight());
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
-        animator.addUpdateListener(valueAnimator -> {
-            float margin = (Float)valueAnimator.getAnimatedValue();
-            params.bottomMargin = (int)margin;
-            requestLayout();
-        });
+        animator.addUpdateListener(this::animatorUpdateListener);
         animator.addListener(new SimpleAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 setVisibility(View.GONE);
-                showViewAnimator = null;
-            }
-        });
-        animator.start();
-        showViewAnimator = animator;
-    }
-
-    private void showView() {
-        if (hideViewAnimator != null) {
-            return;
-        }
-        setVisibility(View.VISIBLE);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
-        if (getMeasuredHeight() == 0) {
-            measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        }
-        ValueAnimator animator = ValueAnimator.ofFloat(-getMeasuredHeight(), 0);
-        animator.addUpdateListener(valueAnimator -> {
-            float margin = (Float) valueAnimator.getAnimatedValue();
-            params.bottomMargin = (int) margin;
-            requestLayout();
-        });
-        animator.addListener(new SimpleAnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
                 hideViewAnimator = null;
             }
         });
         animator.start();
         hideViewAnimator = animator;
+    }
+
+    private void showView() {
+        if (showViewAnimator != null) return;
+
+        setVisibility(View.VISIBLE);
+        if (getMeasuredHeight() == 0) {
+            int x = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            measure(x, x);
+        }
+
+        ValueAnimator animator = ValueAnimator.ofFloat(-getMeasuredHeight(), 0);
+        animator.addUpdateListener(this::animatorUpdateListener);
+        animator.addListener(new SimpleAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                showViewAnimator = null;
+            }
+        });
+
+        animator.start();
+        showViewAnimator = animator;
+    }
+
+    private void animatorUpdateListener(ValueAnimator valueAnimator){
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+        float margin = (Float) valueAnimator.getAnimatedValue();
+        params.bottomMargin = (int) margin;
+        requestLayout();
     }
 }

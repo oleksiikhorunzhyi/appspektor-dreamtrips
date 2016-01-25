@@ -151,8 +151,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
-        openedConversationTracker.setOpenedConversation(visibility == View.VISIBLE ? conversationId : null);
-        if (visibility == View.GONE) {
+        if (visibility == View.VISIBLE){
+            openedConversationTracker.addOpenedConversation(conversationId);
+        } else {
+            openedConversationTracker.removeOpenedConversation(conversationId);
             handler.removeCallbacksAndMessages(null);
         }
     }

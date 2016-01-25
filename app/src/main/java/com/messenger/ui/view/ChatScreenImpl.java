@@ -9,10 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,8 +20,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.MessageHolder;
@@ -34,20 +32,15 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.ui.widget.UnreadMessagesView;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreenPresenter>
         implements ChatScreen {
@@ -83,21 +76,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     private MessagesCursorAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
-
-    private final TextWatcher messageWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            getPresenter().messageTextChanged(s.length());
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -155,7 +133,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         conversationHelper = new ConversationHelper();
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
-        messageEditText.addTextChangedListener(messageWatcher);
     }
 
     protected MessagesCursorAdapter createAdapter() {
@@ -302,6 +279,10 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     }
 
     @Override
+    public Observable<TextViewTextChangeEvent> getEditMessageObservable() {
+        return RxTextView.textChangeEvents(messageEditText);
+    }
+    @Override
     public void smoothScrollToPosition(int position) {
         recyclerView.smoothScrollToPosition(position);
     }
@@ -333,7 +314,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        messageEditText.removeTextChangedListener(messageWatcher);
     }
 
     @Override

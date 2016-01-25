@@ -16,16 +16,16 @@ import android.widget.Toast;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.ChatManager;
+import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.entities.Message$Table;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
+import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -48,6 +48,7 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -156,7 +157,38 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         } else {
             openedConversationTracker.removeOpenedConversation(conversationId);
             handler.removeCallbacksAndMessages(null);
+            return;
         }
+
+        connectTypingStartAction();
+        connectTypingStopAction();
+    }
+
+    private void connectTypingStartAction() {
+        getView().getEditMessageObservable()
+                .skip(1)
+                .filter(textViewTextChangeEvent -> textViewTextChangeEvent.count() > 0)
+                .compose(bindVisibility())
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .filter(textViewTextChangeEvent -> !typing)
+                .flatMap(textViewTextChangeEvent -> chatObservable.first())
+                .subscribe(chat -> {
+                    typing = true;
+                    chat.setCurrentState(ChatState.COMPOSING);
+                });
+    }
+
+
+    private void connectTypingStopAction() {
+        getView().getEditMessageObservable()
+                .compose(bindVisibility())
+                .skip(1)
+                .debounce(2, TimeUnit.SECONDS)
+                .flatMap(textViewTextChangeEvent -> chatObservable.first())
+                .subscribe(chat -> {
+                    typing = false;
+                    chat.setCurrentState(ChatState.PAUSE);
+                });
     }
 
     @Override
@@ -478,21 +510,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
     // New message
     ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void messageTextChanged(int length) {
-        if (!isConnectionPresent()) return;
-
-        submitOneChatAction(chat -> {
-            if (!typing && length > 0) {
-                typing = true;
-                chat.setCurrentState(ChatState.COMPOSING);
-            } else if (length == 0) {
-                typing = false;
-                chat.setCurrentState(ChatState.PAUSE);
-            }
-        });
-    }
 
     @Override
     public boolean sendMessage(String message) {

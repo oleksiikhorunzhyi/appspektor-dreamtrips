@@ -67,6 +67,6 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
         selectedContacts = new ArrayList<>();
         in.readList(selectedContacts, User.class.getClassLoader());
         searchFilter = in.readString();
-        isChatNameEditTextVisible = in.readInt() == 1 ? true : false;
+        isChatNameEditTextVisible = in.readInt() == 1;
     }
 }

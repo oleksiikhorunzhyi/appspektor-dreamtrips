@@ -64,7 +64,6 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
         }
     }
 
-
     @Override
     public void dropView() {
         gpsLocationDelegate.detachListener(this);
@@ -154,7 +153,7 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
                 .onProgress(this::onSearchStarted)
                 .onError(this::onSearchError)
                 .onSuccess(this::onSearchFinished);
-
+        //
         if (status == Status.SEARCH) dtlLocationManager.searchLocations(query);
     }
 

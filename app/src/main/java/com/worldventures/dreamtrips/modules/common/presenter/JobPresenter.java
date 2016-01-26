@@ -29,8 +29,4 @@ public class JobPresenter<VT extends RxView> extends Presenter<VT> {
         ).subscribe(subscriber);
         return subscriber;
     }
-
-
-
-
 }

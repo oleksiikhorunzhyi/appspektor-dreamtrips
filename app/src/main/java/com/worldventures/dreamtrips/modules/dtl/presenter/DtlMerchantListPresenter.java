@@ -5,17 +5,11 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class DtlMerchantListPresenter extends DtlMerchantsPresenter<DtlMerchantListPresenter.View> {
-
-    @Inject
-    DtlLocationManager locationRepository;
 
     public DtlMerchantListPresenter(DtlMerchantType dtlMerchantType) {
         this.dtlMerchantType = dtlMerchantType;

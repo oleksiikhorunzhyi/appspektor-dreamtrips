@@ -12,17 +12,17 @@ import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.view.ChatMembersScreen;
+import com.messenger.ui.view.add_member.ChatMembersScreen;
+import com.messenger.ui.view.chat.ChatPath;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import flow.Flow;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -123,7 +123,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(newConversation -> {
-                    ChatActivity.startChat(getContext(), newConversation);
+                    Flow.get(getContext()).set(new ChatPath(newConversation.getId()));
                 });
     }
 

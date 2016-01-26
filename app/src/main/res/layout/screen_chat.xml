@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
+<com.messenger.ui.view.chat.ChatScreenImpl
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/main_background"
     >
 
     <android.support.v7.widget.Toolbar
@@ -152,4 +155,4 @@
             android:layout_marginTop="@dimen/new_chat_progress_bar_margin_top"
             />
     </FrameLayout>
-</merge>
+</com.messenger.ui.view.chat.ChatScreenImpl>

@@ -3,8 +3,9 @@ package com.messenger.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.messenger.ui.view.EditChatMembersScreenImpl;
+import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
 
+@Deprecated
 public class EditChatMembersActivity extends BaseMvpViewActivity {
 
     public static final String EXTRA_CONVERSATION_ID = "EXTRA_CONVERSATION_ID";
@@ -17,6 +18,6 @@ public class EditChatMembersActivity extends BaseMvpViewActivity {
 
     @Override
     EditChatMembersScreenImpl createScreen() {
-        return new EditChatMembersScreenImpl(this, getIntent().getStringExtra(EXTRA_CONVERSATION_ID));
+        return new EditChatMembersScreenImpl(this);
     }
 }

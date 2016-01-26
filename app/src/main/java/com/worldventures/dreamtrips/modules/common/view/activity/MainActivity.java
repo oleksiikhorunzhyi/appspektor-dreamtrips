@@ -6,9 +6,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.messenger.di.MessengerModule;
+import com.messenger.ui.activity.MessengerActivity;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -30,6 +33,8 @@ import icepick.State;
 @Layout(R.layout.activity_main)
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         implements MainActivityPresenter.View {
+
+    public static final String COMPONENT_KEY = "MainActivity$ComponentKey";
 
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
@@ -76,6 +81,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
+        //
+        String keyComponent = null;
+        if (getIntent().getExtras() != null)
+            keyComponent = getIntent().getExtras().getString(COMPONENT_KEY);
+        //
         setSupportActionBar(this.toolbar);
         setUpBurger();
         setUpMenu();
@@ -83,6 +93,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         Fragment currentFragment = fragmentCompass.getCurrentFragment();
         if (currentComponent == null && currentFragment != null) {
             currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
+        }
+        if (!TextUtils.isEmpty(keyComponent)) {
+            currentComponent = rootComponentsProvider.getComponentByKey(keyComponent);
         }
         if (currentComponent == null) {
             currentComponent = rootComponentsProvider.getActiveComponents().get(0);
@@ -171,6 +184,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     private void itemSelected(ComponentDescription component) {
+        if (component.getKey().equals(MessengerModule.MESSENGER)) {
+            MessengerActivity.startMessenger(this);
+            return;
+        }
+        //
         currentComponent = component;
         //
         eventBus.post(new MenuPressedEvent());

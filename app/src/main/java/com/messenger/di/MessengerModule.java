@@ -3,7 +3,6 @@ package com.messenger.di;
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
-import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
@@ -16,11 +15,11 @@ import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
 import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
-import com.messenger.ui.view.ConversationListScreenImpl;
-import com.messenger.ui.view.EditChatMembersScreenImpl;
+import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.view.conversation.ConversationListScreenImpl;
+import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.modules.messenger.MessengerContainerFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,9 +52,9 @@ import dagger.Provides;
 //                screen
                 ConversationListScreenImpl.class,
                 EditChatMembersScreenImpl.class,
-                ChatActivity.class,
 
                 MessengerNotificationPreSyncService.class,
+                ToolbarPresenter.class,
         },
         complete = false, library = true
 )
@@ -66,7 +65,7 @@ public class MessengerModule {
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideMessengerComponent() {
         return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger,
-                true, MessengerContainerFragment.class);
+                true, null);
     }
 
 }

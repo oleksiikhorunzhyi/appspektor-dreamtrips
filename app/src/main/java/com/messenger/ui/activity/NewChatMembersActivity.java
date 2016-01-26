@@ -3,11 +3,11 @@ package com.messenger.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.messenger.ui.view.AddChatMembersScreenImpl;
-import com.messenger.ui.view.NewChatMembersScreenImpl;
-import com.messenger.ui.view.ChatMembersScreenImpl;
+import com.messenger.ui.view.add_member.AddChatMembersScreenImpl;
+import com.messenger.ui.view.add_member.ChatMembersScreenImpl;
+import com.messenger.ui.view.add_member.NewChatMembersScreenImpl;
 
-
+@Deprecated
 public class NewChatMembersActivity extends BaseMvpViewActivity {
 
     public static final String EXTRA_MODE = "EXTRA_MODE";
@@ -35,8 +35,7 @@ public class NewChatMembersActivity extends BaseMvpViewActivity {
         if (mode == MODE_NEW_CHAT) {
             return new NewChatMembersScreenImpl(this);
         } else if (mode == MODE_CHAT_ADD_MEMBERS) {
-            return new AddChatMembersScreenImpl(this,
-                    getIntent().getStringExtra(EXTRA_CONVERSATION_ID));
+            return new AddChatMembersScreenImpl(this);
         }
         throw new IllegalArgumentException("No view for this type");
     }

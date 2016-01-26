@@ -1,7 +1,7 @@
 package com.messenger.ui.presenter;
 
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.view.ChatScreen;
+import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 
 public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, ChatLayoutViewState> {

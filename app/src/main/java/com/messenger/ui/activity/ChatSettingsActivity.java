@@ -4,11 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.messenger.ui.view.ChatSettingsScreenImpl;
-import com.messenger.ui.view.GroupChatSettingsScreenImpl;
-import com.messenger.ui.view.SingleChatSettingsScreenImpl;
-import com.messenger.ui.view.TripChatSettingsScreenImpl;
+import com.messenger.ui.view.settings.ChatSettingsScreenImpl;
+import com.messenger.ui.view.settings.GroupChatSettingsScreenImpl;
+import com.messenger.ui.view.settings.SingleChatSettingsScreenImpl;
+import com.messenger.ui.view.settings.TripChatSettingsScreenImpl;
 
+@Deprecated
 public class ChatSettingsActivity extends BaseMvpViewActivity {
     public static final String EXTRA_CHAT_CONVERSATION_ID = "ChatActivity#EXTRA_CHAT_CONVERSATION_ID";
     public static final String EXTRA_CHAT_TYPE = "ChatActivity#EXTRA_CHAT_TYPE";
@@ -36,12 +37,13 @@ public class ChatSettingsActivity extends BaseMvpViewActivity {
         int conversationType = getIntent().getIntExtra(EXTRA_CHAT_TYPE, -1);
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         if (conversationType == CHAT_TYPE_SINGLE) {
-            return new SingleChatSettingsScreenImpl(this, conversationId);
+            return new SingleChatSettingsScreenImpl(this);
         } else if (conversationType == CHAT_TYPE_GROUP) {
-            return new GroupChatSettingsScreenImpl(this, conversationId);
+            return new GroupChatSettingsScreenImpl(this);
         } else if (conversationType == CHAT_TYPE_TRIP) {
-            return new TripChatSettingsScreenImpl(this, conversationId);
+            return new TripChatSettingsScreenImpl(this);
         }
         throw new IllegalStateException("No chat screen for this conversation type");
     }
+
 }

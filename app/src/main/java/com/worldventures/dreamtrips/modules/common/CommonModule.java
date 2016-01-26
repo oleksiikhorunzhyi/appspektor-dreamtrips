@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
@@ -72,6 +73,7 @@ import dagger.Provides;
                 NavigationDrawerFragment.class,
                 DownloadVideoListener.class,
                 PresentationVideosPresenter.class,
+                MessengerActivity.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,

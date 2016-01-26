@@ -3,8 +3,9 @@ package com.messenger.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.messenger.ui.view.ConversationListScreenImpl;
+import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 
+@Deprecated
 public class MessengerStartActivity extends BaseMvpViewActivity {
 
     public static void start(Context context){

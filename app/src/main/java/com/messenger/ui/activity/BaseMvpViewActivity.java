@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+@Deprecated
 public abstract class BaseMvpViewActivity extends AppCompatActivity {
 
     @Override

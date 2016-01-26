@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.synchmechanism.MessengerConnector;
-import com.messenger.ui.view.MessengerScreen;
+import com.messenger.ui.view.layout.MessengerScreen;
 import com.worldventures.dreamtrips.R;
 
 import java.util.concurrent.TimeUnit;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extends Parcelable>
         extends BaseViewStateMvpPresenter<V, S> implements MessengerPresenter<V, S> {
 
-    private Context context;
+    protected Context context;
 
     protected ConnectionStatus currentConnectivityStatus = ConnectionStatus.DISCONNECTED;
 
@@ -39,11 +39,11 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
                 });
     }
 
-    protected boolean isConnectionPresent(){
+    protected boolean isConnectionPresent() {
         return currentConnectivityStatus == ConnectionStatus.CONNECTED;
     }
 
-    protected void showAbsentConnectionMessage(Context context){
+    protected void showAbsentConnectionMessage(Context context) {
         Toast.makeText(context, R.string.warning_no_internet_connection,
                 Toast.LENGTH_SHORT).show();
     }

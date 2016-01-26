@@ -16,6 +16,10 @@
         android:focusableInTouchMode="true"
         >
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
         <FrameLayout
             android:id="@+id/chat_settings_content_view"
             android:layout_width="match_parent"
@@ -29,17 +33,11 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/chat_settings_chat_info_vertical_margin"
-                    android:layout_marginBottom="@dimen/chat_settings_chat_info_vertical_margin"
-                    android:layout_marginLeft="@dimen/chat_settings_chat_info_horizontal_margin"
-                    android:layout_marginRight="@dimen/chat_settings_chat_info_vertical_margin"
-                    android:layout_weight="0">
+                    android:layout_weight="0"
+                    style="@style/MessengerChatInfoSettingsContainer">
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_gravity="center_vertical"
                         >
                         <com.messenger.ui.widget.GroupAvatarsView
                             android:id="@+id/chat_settings_group_avatars_view"
@@ -58,14 +56,14 @@
                             android:visibility="gone"/>
                     </FrameLayout>
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/chat_settings_chat_name_textview_left_margin">
                         <TextView
                             android:id="@+id/chat_settings_chat_name_text_view"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/chat_settings_chat_name_textview_text_size"
                             android:textColor="@color/chat_settings_chat_name_title_textview"
@@ -136,6 +134,7 @@
             </LinearLayout>
 
         </FrameLayout>
+        </ScrollView>
 
         <TextView
             android:id="@+id/chat_settings_error_view"

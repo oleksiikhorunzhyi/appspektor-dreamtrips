@@ -2,6 +2,7 @@ package com.messenger.ui.view;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.ui.widget.UnreadMessagesView;
+import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -75,6 +77,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     private MessagesCursorAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
+    private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private final TextWatcher messageWatcher = new TextWatcher() {
         @Override
@@ -105,6 +108,11 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
         ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.screen_chat, this, true));
+    }
+
+    @Override
+    public void setPresenter(ChatScreenPresenter presenter) {
+        super.setPresenter(presenter);
         initUi();
     }
 
@@ -122,7 +130,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         toolbarPresenter.setTitle("");
         toolbarPresenter.setSubtitle("");
 
-        recyclerView.setSaveEnabled(true);
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -142,6 +149,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
             }
         });
         recyclerView.setItemAnimator(null);
+        scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
         unreadMessagesView.setCloseButtonClickListener((view -> unreadMessagesView.hide()));
         unreadMessagesView.setUnreadMessagesClickListener((view -> {
@@ -303,5 +311,10 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     @Override
     public ViewGroup getContentView() {
         return contentView;
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return scrollStatePersister.saveScrollState(super.onSaveInstanceState(), linearLayoutManager);
     }
 }

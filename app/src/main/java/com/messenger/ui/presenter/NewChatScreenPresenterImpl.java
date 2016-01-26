@@ -55,9 +55,9 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     public void onSelectedUsersStateChanged(List<User> selectedContacts) {
         super.onSelectedUsersStateChanged(selectedContacts);
         if (selectedContacts.size() <= 1) {
-            getView().slideOutConversationNameEditText();
+            slideOutConversationNameEditText();
         } else {
-            getView().slideInConversationNameEditText();
+            slideInConversationNameEditText();
         }
     }
 

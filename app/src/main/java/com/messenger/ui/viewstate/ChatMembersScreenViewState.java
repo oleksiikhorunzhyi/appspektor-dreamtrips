@@ -8,14 +8,15 @@ import com.messenger.model.ChatUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
+public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
 
-    public NewChatLayoutViewState() {
+    public ChatMembersScreenViewState() {
 
     }
 
     private List<User> selectedContacts = new ArrayList<>();
     private String searchFilter;
+    private boolean isChatNameEditTextVisible;
 
     public List<User> getSelectedContacts() {
         return selectedContacts;
@@ -33,6 +34,14 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
         this.searchFilter = searchFilter;
     }
 
+    public boolean isChatNameEditTextVisible() {
+        return isChatNameEditTextVisible;
+    }
+
+    public void setChatNameEditTextVisible(boolean chatNameEditTextVisible) {
+        isChatNameEditTextVisible = chatNameEditTextVisible;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
@@ -42,20 +51,22 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
         parcel.writeList(getData());
         parcel.writeList(selectedContacts);
         parcel.writeString(searchFilter);
+        parcel.writeInt(isChatNameEditTextVisible ? 1 : 0);
     }
 
-    public static final Parcelable.Creator<NewChatLayoutViewState> CREATOR = new Parcelable.Creator<NewChatLayoutViewState>() {
-        public NewChatLayoutViewState createFromParcel(Parcel source) {return new NewChatLayoutViewState(source);}
+    public static final Parcelable.Creator<ChatMembersScreenViewState> CREATOR = new Parcelable.Creator<ChatMembersScreenViewState>() {
+        public ChatMembersScreenViewState createFromParcel(Parcel source) {return new ChatMembersScreenViewState(source);}
 
-        public NewChatLayoutViewState[] newArray(int size) {return new NewChatLayoutViewState[size];}
+        public ChatMembersScreenViewState[] newArray(int size) {return new ChatMembersScreenViewState[size];}
     };
 
-    public NewChatLayoutViewState(Parcel in) {
+    public ChatMembersScreenViewState(Parcel in) {
         super(in);
         setData(new ArrayList<>());
         in.readList(getData(), User.class.getClassLoader());
         selectedContacts = new ArrayList<>();
         in.readList(selectedContacts, User.class.getClassLoader());
         searchFilter = in.readString();
+        isChatNameEditTextVisible = in.readInt() == 1;
     }
 }

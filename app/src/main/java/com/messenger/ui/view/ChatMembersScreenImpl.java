@@ -2,6 +2,7 @@ package com.messenger.ui.view;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import com.messenger.ui.presenter.ChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.widget.SelectionListenerEditText;
+import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -61,6 +63,8 @@ public abstract class ChatMembersScreenImpl extends MessengerLinearLayout<ChatMe
     private ToolbarPresenter toolbarPresenter;
 
     private CheckableContactsCursorAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
+    private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private WeightSlideAnimator conversationNameAnimator;
 
@@ -101,10 +105,11 @@ public abstract class ChatMembersScreenImpl extends MessengerLinearLayout<ChatMe
         });
 
         recyclerView.setSaveEnabled(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new VerticalDivider(getResources()
                 .getDrawable(R.drawable.divider_list)));
+        scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
         final String chosenContactsEditTextStartValue
                 = getContext().getString(R.string.new_chat_chosen_contacts_header_empty);
@@ -228,5 +233,11 @@ public abstract class ChatMembersScreenImpl extends MessengerLinearLayout<ChatMe
     @Override
     public String getConversationName() {
         return conversationNameEditText.getText().toString();
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return scrollStatePersister.saveScrollState(super.onSaveInstanceState(),
+                linearLayoutManager);
     }
 }

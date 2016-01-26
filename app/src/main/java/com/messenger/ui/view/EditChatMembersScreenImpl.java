@@ -2,6 +2,7 @@ package com.messenger.ui.view;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,7 @@ import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
+import com.messenger.util.ScrollStatePersister;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
@@ -56,6 +58,8 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     private String savedSearchFilter;
 
     private ActionButtonsContactsCursorAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
+    private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     public EditChatMembersScreenImpl(Context context, String conversationId) {
         super(context);
@@ -97,10 +101,11 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
         adapter.setUserClickListener(presenter::onUserClicked);
 
         recyclerView.setSaveEnabled(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new VerticalDivider(
                 ContextCompat.getDrawable(context, R.drawable.divider_list)));
+        scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
     }
 
     private void initUi() {
@@ -204,9 +209,16 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
             });
         }
     }
+
     @NonNull
     @Override
     public EditChatMembersScreenPresenter createPresenter() {
         return new EditChatMembersScreenPresenterImpl(getContext(), conversationId);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return scrollStatePersister.saveScrollState(super.onSaveInstanceState(),
+                linearLayoutManager);
     }
 }

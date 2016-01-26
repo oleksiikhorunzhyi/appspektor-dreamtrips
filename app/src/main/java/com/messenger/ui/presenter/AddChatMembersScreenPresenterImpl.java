@@ -79,9 +79,9 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                     // show conversation name edit text only for single chats that will turn to become group chats
                     if (!pair.first.getType().equals(CHAT)) return;
                     if (pair.second.isEmpty()) {
-                        getView().slideOutConversationNameEditText();
+                        slideOutConversationNameEditText();
                     } else {
-                        getView().slideInConversationNameEditText();
+                        slideInConversationNameEditText();
                     }
                 });
     }

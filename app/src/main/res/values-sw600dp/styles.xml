@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="MessengerChatInfoSettingsContainer" parent="BaseMessengerChatInfoSettingsContainer">
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+</resources>

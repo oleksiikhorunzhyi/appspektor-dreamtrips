@@ -10,7 +10,7 @@ import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.view.ChatMembersScreen;
-import com.messenger.ui.viewstate.NewChatLayoutViewState;
+import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.util.ContactsHeaderCreator;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -28,7 +28,7 @@ import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFIL
 
 
 
-public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterImpl<ChatMembersScreen, NewChatLayoutViewState>
+public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterImpl<ChatMembersScreen, ChatMembersScreenViewState>
         implements ChatMembersScreenPresenter {
 
     @Inject
@@ -66,7 +66,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(getContext());
-        getView().setConversationNameEditTextVisibility(View.GONE);
     }
 
     @Override
@@ -77,10 +76,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
     @Override
     public void onNewViewState() {
-        state = new NewChatLayoutViewState();
-        state.setLoadingState(NewChatLayoutViewState.LoadingState.LOADING);
-
-        getView().showLoading();
+        state = new ChatMembersScreenViewState();
+        state.setLoadingState(ChatMembersScreenViewState.LoadingState.LOADING);
+        applyViewState();
     }
 
     @Override
@@ -90,7 +88,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
     @Override
     public void applyViewState() {
-        NewChatLayoutViewState viewState = getViewState();
+        ChatMembersScreenViewState viewState = getViewState();
         ChatMembersScreen screen = getView();
         List<User> selectedContacts = viewState.getSelectedContacts();
 
@@ -110,6 +108,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
             screen.setSelectedContacts(selectedContacts);
             refreshSelectedContactsHeader();
         }
+        int conversationNameVisibility = getViewState()
+                .isChatNameEditTextVisible() ? View.VISIBLE : View.GONE;
+        getView().setConversationNameEditTextVisibility(conversationNameVisibility);
     }
 
     @Override
@@ -149,9 +150,19 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     protected void showContacts(Cursor cursor) {
         if (!isViewAttached()) return;
 
-        getViewState().setLoadingState(NewChatLayoutViewState.LoadingState.CONTENT);
+        getViewState().setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
         getView().setContacts(cursor);
         getView().showContent();
+    }
+
+    protected void slideInConversationNameEditText() {
+        getView().slideInConversationNameEditText();
+        getViewState().setChatNameEditTextVisible(true);
+    }
+
+    protected void slideOutConversationNameEditText() {
+        getView().slideOutConversationNameEditText();
+        getViewState().setChatNameEditTextVisible(false);
     }
 
     @Override

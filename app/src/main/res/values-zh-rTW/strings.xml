@@ -496,6 +496,10 @@
 
     <string name="user_already_exists">%s already exists</string>
 
+    <!-- messenger-->
+
+    <string name="messenger">消息</string>
+
     <!---->
     <!--Conversation List -->
     <!---->
@@ -599,5 +603,7 @@
     <string name="disconnected_overlay_connecting_message">連線中</string>
 
     <string name="warning_no_internet_connection">無法連線</string>
+
+    <!-- messenger ends-->
 
 </resources>

@@ -346,7 +346,8 @@ public class ConversationsCursorAdapter
         }
 
         private String getOneToOneConversationName(Conversation conversation, List<User> participants) {
-            return participants.get(0).getName();
+            if (participants.isEmpty()) return "";
+            else return participants.get(0).getName();
         }
 
         @Override

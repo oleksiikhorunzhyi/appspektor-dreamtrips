@@ -529,5 +529,8 @@
 
     <string name="abbreviated_miles">mi</string>
     <string name="abbreviated_kilometers">km</string>
+    <string name="show_distance_in">Show distance in:</string>
+    <string name="settings_kilometers">Kilometers</string>
+    <string name="settings_miles">Miles</string>
 
 </resources>

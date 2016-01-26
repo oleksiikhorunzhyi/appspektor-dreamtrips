@@ -60,6 +60,7 @@ public class LoaderDelegate {
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
                     List<Message> messages = from(data).map(c -> c.lastMessage).notNulls().toList();
                     List<ParticipantsRelationship> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
+                            .filter(d -> !d.participants.isEmpty())
                             .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p.getUser(), p.getAffiliation())))
                             .toList();
                     from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
@@ -70,7 +71,9 @@ public class LoaderDelegate {
                     participantsDAO.deleteBySyncTime(syncTime);
 
 
-                    List<User> users = data.isEmpty() ? Collections.emptyList() : from(data).mapMany(d -> d.participants).map((elem, idx) -> elem.getUser()).distinct().toList();
+                    List<User> users = data.isEmpty() ? Collections.emptyList() : from(data)
+                            .filter(d -> !d.participants.isEmpty())
+                            .mapMany(d -> d.participants).map((elem, idx) -> elem.getUser()).distinct().toList();
                     return users;
 
                 }

@@ -4,7 +4,6 @@ package com.messenger.messengerservers.xmpp.providers;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
@@ -21,11 +20,9 @@ import java.io.IOException;
 public class ConversationParticipantsProvider extends IQProvider<ConversationParticipants> {
 
     private final String userId;
-    private final Conversation conversation;
 
-    public ConversationParticipantsProvider(String userJid, Conversation conversation) {
+    public ConversationParticipantsProvider(String userJid) {
         this.userId = JidCreatorHelper.obtainId(userJid);
-        this.conversation = conversation;
     }
 
     @Override
@@ -43,10 +40,12 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
             switch (eventType) {
                 case XmlPullParser.START_TAG:
                     elementName = parser.getName();
-                    if (StringUtils.equalsIgnoreCase(elementName, "item")) {
-                        affiliation = parser.getAttributeValue("", "affiliation");
-                        jid = parser.getAttributeValue("", "jid");
-                        user = TextUtils.isEmpty(jid) ? null : JidCreatorHelper.obtainUser(jid);
+                    switch (elementName) {
+                        case "item":
+                            affiliation = parser.getAttributeValue("", "affiliation");
+                            jid = parser.getAttributeValue("", "jid");
+                            user = TextUtils.isEmpty(jid) ? null : JidCreatorHelper.obtainUser(jid);
+                            break;
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -54,7 +53,7 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
                     switch (elementName) {
                         case "item":
                             if (user == null) continue;
-                            Participant participant = new Participant(user, affiliation.toLowerCase(), conversation.getId());
+                            Participant participant = new Participant(user, affiliation.toLowerCase(), null);
 
                             if (StringUtils.equalsIgnoreCase(affiliation, Participant.Affiliation.OWNER)) {
                                 conversationParticipants.setOwner(participant);

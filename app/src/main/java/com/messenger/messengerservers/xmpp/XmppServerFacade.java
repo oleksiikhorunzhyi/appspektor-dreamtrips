@@ -33,13 +33,14 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
 public class XmppServerFacade implements MessengerServerFacade {
 
-    private static final int PACKET_REPLAY_TIMEOUT = 15000;
-    private static final int TIME_PING_INTERVAL = 45;
+    private static final long PACKET_REPLAY_TIMEOUT = TimeUnit.SECONDS.toMillis(15L);
+    private static final int TIME_PING_INTERVAL = 45; // secs
 
     private Context context;
     private XmppServerParams serverParams;

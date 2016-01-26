@@ -78,20 +78,19 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
 
     protected void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
-        LayoutInflater.from(context).inflate(R.layout.screen_chat_settings, this, true);
-        ButterKnife.inject(this, this);
-        addSettingsRows(ButterKnife.findById(this, R.id.char_settings_rows_parent));
+        ButterKnife.inject(this, LayoutInflater.from(getContext()).inflate(R.layout.screen_chat_settings, this, true));
+        // TODO: 1/2/16  hide for RC version
+        // addSettingsRows(ButterKnife.findById(this, R.id.char_settings_rows_parent));
         initUi();
     }
 
     protected void addSettingsRows(ViewGroup parent) {
-        // TODO: 1/2/16  hide for RC version
         notificationsSettingsRow = new ChatSettingsRow(getContext());
         notificationsSettingsRow.setIcon(R.drawable.ic_notifications_black_24_px);
         notificationsSettingsRow.setTitle(R.string.chat_settings_row_notifications);
         notificationsSettingsRow.enableSwitch(((compoundButton, b)
                 -> getPresenter().onNotificationsSwitchClicked(b)));
-//        parent.addView(notificationsSettingsRow);
+        parent.addView(notificationsSettingsRow);
     }
 
     @Override

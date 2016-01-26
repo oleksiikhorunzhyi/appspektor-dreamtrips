@@ -504,12 +504,12 @@
     <string name="profile_friend_formatter">%d Friend</string>
     <string name="profile_friends_formatter">%d Friends</string>
 
-    <string name="send_feedback">Send feedback</string>
+    <string name="send_feedback">Send Feedback</string>
     <string name="working_hard">We\'re working hard to make DreamTrips better. Please help us to improve.</string>
     <string name="feedback_message_hint">Please, type your message here</string>
     <string name="message_can_not_be_empty">Message can\'t be empty</string>
-    <string name="feedback_has_been_sent">Your feedback has been sent</string>
+    <string name="feedback_has_been_sent">Your feedback is sent. Thank you</string>
     <string name="feedback_send_btn">Send</string>
-    <string name="feedback_select_category">Select category</string>
+    <string name="feedback_select_category">Choose Reason</string>
 
 </resources>

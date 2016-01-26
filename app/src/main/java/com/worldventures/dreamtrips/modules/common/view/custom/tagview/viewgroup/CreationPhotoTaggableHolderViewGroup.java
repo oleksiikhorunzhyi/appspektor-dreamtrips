@@ -40,7 +40,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
     private GestureDetector gestureDetector;
     private TaggableCompleteListener completeListener;
-    private CreationPhotoTaggableHolderViewDelegate delegate;
 
     public CreationPhotoTaggableHolderViewGroup(Context context) {
         this(context, null);
@@ -53,8 +52,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     public CreationPhotoTaggableHolderViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater.from(getContext()).inflate(R.layout.photo_tag_title, this, true);
-        gestureDetector = new GestureDetector(getContext(), new CreationPhotoTaggableHolderViewDelegate.SingleTapConfirm(this));
-        delegate = new CreationPhotoTaggableHolderViewDelegate(this);
+        gestureDetector = new GestureDetector(getContext(), new PhotoTaggableHolderViewDelegate.SingleTapConfirm(this));
     }
 
     @NonNull
@@ -67,7 +65,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     public void addTags(List<PhotoTag> tags) {
         super.addTags(Queryable.from(tags)
                 .filter(element -> !locallyDeletedTags.contains(element))
-                .filter((photoTag) -> !delegate.isExistingViewExist(photoTag)).toList());
+                .toList());
     }
 
     protected void addSuggestionTagView(PhotoTag photoTag) {

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen;
 
 import android.app.Dialog;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -83,19 +82,16 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         super.onStart();
         //it is ok sync and send message to sync
         syncContentWrapperViewGroupWithGlobalState();
-        syncTagViewGroupWithGlobalState();
         eventBus.post(new SocialViewPagerStateChangedEvent());
     }
 
     @Override
     public void setContent(IFullScreenObject photo) {
         if (photo.getUser() == null) return;
-
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
         taggableImageHolder.setup(this, (Photo) photo);
         taggableImageHolder.setOnTagDeletedAction(() -> getPresenter().loadEntity());
-        syncTagViewGroupWithGlobalState();
     }
 
     @Override
@@ -185,10 +181,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     protected void showTagViewGroup() {
         tag.setSelected(true);
-        RectF imageBounds = new RectF();
-        ivImage.getHierarchy().getActualImageBounds(imageBounds);
-        taggableImageHolder.removeAllViews();
-        taggableImageHolder.show(imageBounds);
+        taggableImageHolder.show(ivImage);
     }
 
     private void deletePhoto() {
@@ -207,10 +200,9 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     protected void onImageGlobalLayout() {
-        if (isImageLoaded) {
+        if (isResumed()) {
             syncTagViewGroupWithGlobalState();
         }
-        isImageLoaded = true; //for listening second callback
     }
 
     @Override

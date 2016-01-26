@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
@@ -33,18 +35,21 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     @State
     boolean isShown;
 
-    protected RectF imageBounds;
+    protected RectF imageBounds = new RectF();
+    protected PhotoTaggableHolderViewDelegate delegate;
 
     public TaggableImageViewGroup(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public TaggableImageViewGroup(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public TaggableImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        delegate = new PhotoTaggableHolderViewDelegate(this);
+
     }
 
     public void setup(Injector injector, Photo photo) {
@@ -81,10 +86,12 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         isShown = false;
     }
 
-    public void show(RectF imageBounds) {
-        this.imageBounds = imageBounds;
-        setVisibility(View.VISIBLE);
+    public void show(SimpleDraweeView imageView) {
         if (presenter == null) return;
+
+        imageView.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+        imageView.getHierarchy().getActualImageBounds(imageBounds);
+        setVisibility(View.VISIBLE);
         presenter.showExistingTags();
         isShown = true;
     }
@@ -160,7 +167,9 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
 
     @Override
     public void addTags(List<PhotoTag> tags) {
-        Queryable.from(tags).forEachR(this::addExistsTagView);
+        Queryable.from(tags)
+                .filter((photoTag) -> !delegate.isExistingViewExist(photoTag))
+                .forEachR(this::addExistsTagView);
     }
 
     @Override

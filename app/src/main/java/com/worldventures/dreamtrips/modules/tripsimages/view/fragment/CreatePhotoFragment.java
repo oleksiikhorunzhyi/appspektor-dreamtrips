@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.app.Activity;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -111,25 +109,8 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        taggableImageHolder.post(() -> {
-            if (taggableImageHolder.isShown()) {
-                showTagViewGroup();
-            } else {
-                hideTagViewGroup();
-            }
-        });
-    }
-
-    @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
     }
 
     @OnClick(R.id.btn_save)
@@ -140,7 +121,6 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     @OnClick(R.id.tag)
     public void onTag() {
         if (!taggableImageHolder.isSetuped()) return;
-        //
         if (taggableImageHolder.isShown()) {
             hideTagViewGroup();
         } else {
@@ -149,11 +129,8 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     }
 
     protected void showTagViewGroup() {
-        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         tag.setSelected(true);
-        RectF imageBounds = new RectF();
-        ivImage.getHierarchy().getActualImageBounds(imageBounds);
-        taggableImageHolder.show(imageBounds);
+        taggableImageHolder.show(ivImage);
     }
 
     protected void hideTagViewGroup() {

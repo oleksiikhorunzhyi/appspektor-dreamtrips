@@ -72,7 +72,7 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
         int width = pointerTop.getMeasuredWidth();
         int pointerMargin = (int) (tagPosition - leftMargin - (width / 2));
         int absoluteWidth = (int) (absoluteTagPosition.getBottomRight().getX() - absoluteTagPosition.getTopLeft().getX());
-        space.getLayoutParams().width = pointerMargin +  absoluteWidth /2;
+        space.getLayoutParams().width = pointerMargin + absoluteWidth / 2;
 
         int y = (int) absoluteTagPosition.getTopLeft().getY();
         if (y > topMargin + this.getHeight()) {
@@ -89,6 +89,7 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
     }
 
     public Size getSize() {
+        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();

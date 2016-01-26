@@ -12,11 +12,11 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreationPhotoTaggableHolderViewDelegate {
+public class PhotoTaggableHolderViewDelegate {
 
-    CreationPhotoTaggableHolderViewGroup viewGroup;
+    TaggableImageViewGroup viewGroup;
 
-    public CreationPhotoTaggableHolderViewDelegate(CreationPhotoTaggableHolderViewGroup viewGroup) {
+    public PhotoTaggableHolderViewDelegate(TaggableImageViewGroup viewGroup) {
         this.viewGroup = viewGroup;
     }
 

@@ -235,6 +235,20 @@
         <item name="android:drawablePadding">@dimen/messenger_swappable_action_button_drawable_padding</item>
     </style>
 
+    <style name="BaseMessengerChatInfoSettingsContainer">
+        <item name="android:layout_marginTop">@dimen/chat_settings_chat_info_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/chat_settings_chat_info_vertical_margin
+        </item>
+        <item name="android:layout_marginLeft">@dimen/chat_settings_chat_info_horizontal_margin
+        </item>
+        <item name="android:layout_marginRight">@dimen/chat_settings_chat_info_vertical_margin
+        </item>
+    </style>
+
+    <style name="MessengerChatInfoSettingsContainer" parent="BaseMessengerChatInfoSettingsContainer">
+        <item name="android:gravity">left</item>
+    </style>
+
     <!--end messenger-->
 
     <!--in app notifications-->

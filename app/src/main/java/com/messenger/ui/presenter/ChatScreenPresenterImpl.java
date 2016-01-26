@@ -135,7 +135,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         switch (conversation.getType()) {
             case Conversation.Type.CHAT:
                 return participantsDAO
-                        .getParticipant(conversation.getId(), user.getId()).first()
+                        .getParticipant(conversation.getId(), user.getId()).compose(new NonNullFilter<>()).first()
                         .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));
             case Conversation.Type.GROUP:
             default:

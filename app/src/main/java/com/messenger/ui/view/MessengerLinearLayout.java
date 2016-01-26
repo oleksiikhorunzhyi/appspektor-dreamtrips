@@ -1,6 +1,7 @@
 package com.messenger.ui.view;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -28,6 +29,8 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
     public MessengerLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
+    private Bundle lastRestoredInstanceState;
 
     @Override
     protected void onDetachedFromWindow() {
@@ -132,7 +135,12 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
+        lastRestoredInstanceState = (Bundle) state;
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+    }
+
+    public Bundle getLastRestoredInstanceState() {
+        return lastRestoredInstanceState;
     }
 
     protected abstract ViewGroup getContentView();

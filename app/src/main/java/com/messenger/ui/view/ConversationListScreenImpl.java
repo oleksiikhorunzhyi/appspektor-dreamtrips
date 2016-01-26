@@ -3,6 +3,7 @@ package com.messenger.ui.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -30,6 +31,7 @@ import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
+import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
 
 import java.util.Arrays;
@@ -67,7 +69,10 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
     SearchView searchView;
     //
     private ToolbarPresenter toolbarPresenter;
+
     private ConversationsCursorAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
+    private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     public ConversationListScreenImpl(Context context) {
         super(context);
@@ -141,11 +146,11 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser(), participantsDAO);
         adapter.setConversationClickListener(presenter::onConversationSelected);
         adapter.setSwipeButtonsListener(this);
-        recyclerView.setSaveEnabled(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         adapter.setConversationClickListener(conversation -> getPresenter().onConversationSelected(conversation));
         recyclerView.setAdapter(adapter);
+        scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
     }
 
     @Override
@@ -261,5 +266,11 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
                 }
             });
         }
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return scrollStatePersister.saveScrollState(super.onSaveInstanceState(),
+                linearLayoutManager);
     }
 }

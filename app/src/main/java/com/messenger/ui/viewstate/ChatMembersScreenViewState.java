@@ -8,9 +8,9 @@ import com.messenger.model.ChatUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
+public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
 
-    public NewChatLayoutViewState() {
+    public ChatMembersScreenViewState() {
 
     }
 
@@ -44,13 +44,13 @@ public class NewChatLayoutViewState extends LceViewState<List<ChatUser>> {
         parcel.writeString(searchFilter);
     }
 
-    public static final Parcelable.Creator<NewChatLayoutViewState> CREATOR = new Parcelable.Creator<NewChatLayoutViewState>() {
-        public NewChatLayoutViewState createFromParcel(Parcel source) {return new NewChatLayoutViewState(source);}
+    public static final Parcelable.Creator<ChatMembersScreenViewState> CREATOR = new Parcelable.Creator<ChatMembersScreenViewState>() {
+        public ChatMembersScreenViewState createFromParcel(Parcel source) {return new ChatMembersScreenViewState(source);}
 
-        public NewChatLayoutViewState[] newArray(int size) {return new NewChatLayoutViewState[size];}
+        public ChatMembersScreenViewState[] newArray(int size) {return new ChatMembersScreenViewState[size];}
     };
 
-    public NewChatLayoutViewState(Parcel in) {
+    public ChatMembersScreenViewState(Parcel in) {
         super(in);
         setData(new ArrayList<>());
         in.readList(getData(), User.class.getClassLoader());

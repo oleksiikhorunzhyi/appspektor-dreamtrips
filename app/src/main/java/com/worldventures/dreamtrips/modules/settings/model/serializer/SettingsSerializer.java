@@ -22,6 +22,7 @@ public class SettingsSerializer implements JsonSerializer<Settings> {
                 break;
             case SELECT:
                 jsonObject.addProperty("value", ((SelectSettings) src).getValue());
+                break;
         }
         return jsonObject;
     }

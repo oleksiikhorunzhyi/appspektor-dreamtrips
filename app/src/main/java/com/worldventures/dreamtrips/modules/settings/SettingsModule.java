@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.settings;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.settings.dialog.SelectDialog;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsFlagCell;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsGroupCell;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsSelectCell;
@@ -27,6 +28,7 @@ import dagger.Provides;
                 SettingsFlagCell.class,
                 SettingsSelectCell.class,
 
+                SelectDialog.class
         },
         complete = false,
         library = true

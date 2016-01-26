@@ -39,6 +39,7 @@ public class SettingsFlagCell extends AbstractDelegateCell<FlagSettings, CellDel
     void onCellClicked() {
         getModelObject().setValue(!getModelObject().getValue());
         flag.setChecked(getModelObject().getValue());
+        cellDelegate.onCellClicked(getModelObject());
     }
 
     @Override

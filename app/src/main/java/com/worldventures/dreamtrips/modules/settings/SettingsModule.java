@@ -37,6 +37,6 @@ public class SettingsModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideSettingsComponent() {
-        return new ComponentDescription(Route.SETTINGS.name(), R.string.settings, R.string.settings, R.drawable.ic_membership, SettingsGroupFragment.class);
+        return new ComponentDescription(Route.SETTINGS.name(), R.string.settings, R.string.settings, R.drawable.ic_settings_menu, SettingsGroupFragment.class);
     }
 }

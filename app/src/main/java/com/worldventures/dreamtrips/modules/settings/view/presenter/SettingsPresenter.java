@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.settings.view.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.settings.api.UpdateSettingsCommand;
 import com.worldventures.dreamtrips.modules.settings.model.Settings;
@@ -13,16 +14,21 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.State;
+
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
     private List<Settings> settingsList;
-    private List<Settings> immutableSettingsList;
+    @State
+    ArrayList<Settings> immutableSettingsList;
 
     public SettingsPresenter(SettingsGroup group, List<Settings> settingsList) {
         SettingsManager settingsManager = new SettingsManager();
         SettingsFactory settingsFactory = new SettingsFactory();
         this.settingsList = settingsManager.merge(settingsList, settingsFactory.createSettings(group));
-        immutableSettingsList = cloneList(settingsList);
+        //
+        if (immutableSettingsList == null)
+            immutableSettingsList = cloneList(this.settingsList);
     }
 
     @Override
@@ -31,23 +37,51 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
         view.setSettings(settingsList);
     }
 
-    private List<Settings> cloneList(List<Settings> settingsList) {
-        List<Settings> cloneList = new ArrayList<>();
+    private ArrayList<Settings> cloneList(List<Settings> settingsList) {
+        ArrayList<Settings> cloneList = new ArrayList<>();
         Queryable.from(settingsList).forEachR(setting -> cloneList.add(SerializationUtils.clone(setting)));
         return cloneList;
     }
 
-    public void applyChanges() {
-        List<Settings> changes = Queryable.from(settingsList).filter(setting ->
+    private List<Settings> getChanges() {
+        return Queryable.from(settingsList).filter(setting ->
                 Queryable.from(immutableSettingsList)
-                        .filter(changeSetting -> changeSetting.equals(setting) && setting.getValue() != changeSetting.getValue())
+                        .filter(changeSetting -> changeSetting.equals(setting) &&
+                                !setting.getValue().equals(changeSetting.getValue()))
                         .firstOrDefault() != null).toList();
-        //
-        if (changes.size() > 0) doRequest(new UpdateSettingsCommand(changes));
+    }
+
+    public boolean isSettingsChanged() {
+        return getChanges().size() > 0;
+    }
+
+    public void applyChanges() {
+        if (isSettingsChanged()) {
+            view.showLoading();
+            doRequest(new UpdateSettingsCommand(getChanges()),
+                    aVoid -> {
+                        immutableSettingsList = cloneList(this.settingsList);
+                        //
+                        view.hideLoading();
+                        view.close();
+                    });
+        }
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.hideLoading();
     }
 
     public interface View extends Presenter.View {
 
         void setSettings(List<Settings> settingsList);
+
+        void showLoading();
+
+        void hideLoading();
+
+        void close();
     }
 }

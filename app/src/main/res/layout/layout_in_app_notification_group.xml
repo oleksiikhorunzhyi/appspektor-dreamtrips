@@ -36,28 +36,31 @@
                 android:paddingLeft="@dimen/in_app_notification_horizontal_padding"
                 android:paddingTop="@dimen/in_app_notification_vertical_padding">
 
-                <com.messenger.ui.widget.GroupAvatarsView
-                    android:id="@+id/in_app_notif_avatar_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    app:gav_avatar_size="@dimen/in_app_notification_small_avatar_image_suze"/>
+                <RelativeLayout
+                    style="@style/InAppNotificationUiElementsContainer">
 
-                <TextView
-                    android:id="@+id/in_app_notif_title"
-                    style="@style/InAppNotificationTitle"
-                    android:layout_alignTop="@id/in_app_notif_avatar_group"
-                    android:layout_toLeftOf="@id/in_app_notif_close_btn"
-                    android:layout_toRightOf="@id/in_app_notif_avatar_group"
-                    tools:text="Title"/>
+                    <com.messenger.ui.widget.GroupAvatarsView
+                        android:id="@+id/in_app_notif_avatar_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        app:gav_avatar_size="@dimen/in_app_notification_small_avatar_image_suze"/>
 
-                <TextView
-                    android:id="@+id/in_app_notif_text"
-                    style="@style/InAppNotificationText"
-                    android:layout_below="@id/in_app_notif_title"
-                    android:layout_toLeftOf="@id/in_app_notif_close_btn"
-                    android:layout_toRightOf="@id/in_app_notif_avatar_group"
-                    tools:text="Description"/>
+                    <TextView
+                        android:id="@+id/in_app_notif_title"
+                        style="@style/InAppNotificationTitle"
+                        android:layout_alignTop="@id/in_app_notif_avatar_group"
+                        android:layout_toRightOf="@id/in_app_notif_avatar_group"
+                        tools:text="Title"/>
+
+                    <TextView
+                        android:id="@+id/in_app_notif_text"
+                        style="@style/InAppNotificationText"
+                        android:layout_below="@id/in_app_notif_title"
+                        android:layout_toRightOf="@id/in_app_notif_avatar_group"
+                        tools:text="Description"/>
+
+                </RelativeLayout>
 
                 <ImageView
                     android:id="@+id/in_app_notif_close_btn"

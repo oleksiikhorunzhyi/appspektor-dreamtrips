@@ -252,6 +252,16 @@
     <!--end messenger-->
 
     <!--in app notifications-->
+    <style name="BaseInAppNotificationUiElementsContainer">
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InAppNotificationUiElementsContainer" parent="BaseInAppNotificationUiElementsContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:layout_toLeftOf">@+id/in_app_notif_close_btn</item>
+    </style>
+
     <style name="InAppNotificationSingleChatAvatarView">
         <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
         <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>

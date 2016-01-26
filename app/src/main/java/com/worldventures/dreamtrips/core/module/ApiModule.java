@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDese
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.Settings;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
+import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -103,6 +104,7 @@ public class ApiModule {
                 .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
                 .registerTypeAdapter(DtlOffer.class, new DtlOfferDeserializer())
                 .registerTypeAdapter(Settings.class, new SettingsDeserializer<>())
+                .registerTypeAdapter(Settings.class, new SettingsSerializer())
                 .create();
     }
 

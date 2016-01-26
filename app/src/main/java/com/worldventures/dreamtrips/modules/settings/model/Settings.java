@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 public class Settings<T extends Serializable> implements Parcelable, Serializable {
 
-    protected int id;
     protected String name;
     protected Type type;
     protected T value;
@@ -25,7 +24,6 @@ public class Settings<T extends Serializable> implements Parcelable, Serializabl
     }
 
     protected Settings(Parcel in) {
-        id = in.readInt();
         name = in.readString();
         type = (Type) in.readSerializable();
         value = (T) in.readSerializable();
@@ -43,10 +41,6 @@ public class Settings<T extends Serializable> implements Parcelable, Serializabl
         }
     };
 
-    public int getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
@@ -57,10 +51,6 @@ public class Settings<T extends Serializable> implements Parcelable, Serializabl
 
     public T getValue() {
         return value;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setName(String name) {
@@ -82,7 +72,6 @@ public class Settings<T extends Serializable> implements Parcelable, Serializabl
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(name);
         dest.writeSerializable(type);
         dest.writeSerializable(value);
@@ -110,7 +99,6 @@ public class Settings<T extends Serializable> implements Parcelable, Serializabl
     public int hashCode() {
         int result = name.hashCode();
         result = 31 * result + type.hashCode();
-        result = 31 * result + value.hashCode();
         return result;
     }
 }

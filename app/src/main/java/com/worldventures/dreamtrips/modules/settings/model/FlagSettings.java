@@ -5,7 +5,6 @@ import android.os.Parcel;
 public class FlagSettings extends Settings<Boolean> {
 
     protected FlagSettings(Parcel in) {
-        id = in.readInt();
         name = in.readString();
         type = (Type) in.readSerializable();
         value = (Boolean) in.readSerializable();
@@ -34,7 +33,6 @@ public class FlagSettings extends Settings<Boolean> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(name);
         dest.writeSerializable(type);
         dest.writeSerializable(value);

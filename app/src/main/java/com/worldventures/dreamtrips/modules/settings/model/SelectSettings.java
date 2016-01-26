@@ -27,7 +27,6 @@ public class SelectSettings extends Settings<String> {
     }
 
     protected SelectSettings(Parcel in) {
-        id = in.readInt();
         name = in.readString();
         type = (Type) in.readSerializable();
         value = (String) in.readSerializable();
@@ -49,7 +48,6 @@ public class SelectSettings extends Settings<String> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(name);
         dest.writeSerializable(type);
         dest.writeSerializable(value);

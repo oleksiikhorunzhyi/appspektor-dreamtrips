@@ -46,6 +46,12 @@ public class SettingsFragment extends BaseFragmentWithArgs<SettingsPresenter, Se
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getPresenter().applyChanges();
+    }
+
     protected void registerCells() {
         adapter.registerCell(FlagSettings.class, SettingsFlagCell.class);
         adapter.registerCell(SelectSettings.class, SettingsSelectCell.class);

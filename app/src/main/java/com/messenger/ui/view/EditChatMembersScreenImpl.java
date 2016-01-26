@@ -100,6 +100,7 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     private void initUi() {
         toolbarPresenter = new ToolbarPresenter(toolbar, (AppCompatActivity) getContext());
         toolbarPresenter.enableUpNavigationButton();
+        toolbarPresenter.setTitle(null);
     }
 
     @Override

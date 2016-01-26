@@ -66,7 +66,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(getContext());
-        getView().setConversationNameEditTextVisibility(View.GONE);
     }
 
     @Override
@@ -79,8 +78,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public void onNewViewState() {
         state = new ChatMembersScreenViewState();
         state.setLoadingState(ChatMembersScreenViewState.LoadingState.LOADING);
-
-        getView().showLoading();
+        applyViewState();
     }
 
     @Override
@@ -110,6 +108,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
             screen.setSelectedContacts(selectedContacts);
             refreshSelectedContactsHeader();
         }
+        int conversationNameVisibility = getViewState()
+                .isChatNameEditTextVisible() ? View.VISIBLE : View.GONE;
+        getView().setConversationNameEditTextVisibility(conversationNameVisibility);
     }
 
     @Override
@@ -152,6 +153,16 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         getViewState().setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
         getView().setContacts(cursor);
         getView().showContent();
+    }
+
+    protected void slideInConversationNameEditText() {
+        getView().slideInConversationNameEditText();
+        getViewState().setChatNameEditTextVisible(true);
+    }
+
+    protected void slideOutConversationNameEditText() {
+        getView().slideOutConversationNameEditText();
+        getViewState().setChatNameEditTextVisible(false);
     }
 
     @Override

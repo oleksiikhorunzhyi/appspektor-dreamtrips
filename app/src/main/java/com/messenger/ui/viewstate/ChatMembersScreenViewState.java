@@ -16,6 +16,7 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
 
     private List<User> selectedContacts = new ArrayList<>();
     private String searchFilter;
+    private boolean isChatNameEditTextVisible;
 
     public List<User> getSelectedContacts() {
         return selectedContacts;
@@ -33,6 +34,14 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
         this.searchFilter = searchFilter;
     }
 
+    public boolean isChatNameEditTextVisible() {
+        return isChatNameEditTextVisible;
+    }
+
+    public void setChatNameEditTextVisible(boolean chatNameEditTextVisible) {
+        isChatNameEditTextVisible = chatNameEditTextVisible;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
@@ -42,6 +51,7 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
         parcel.writeList(getData());
         parcel.writeList(selectedContacts);
         parcel.writeString(searchFilter);
+        parcel.writeInt(isChatNameEditTextVisible ? 1 : 0);
     }
 
     public static final Parcelable.Creator<ChatMembersScreenViewState> CREATOR = new Parcelable.Creator<ChatMembersScreenViewState>() {
@@ -57,5 +67,6 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
         selectedContacts = new ArrayList<>();
         in.readList(selectedContacts, User.class.getClassLoader());
         searchFilter = in.readString();
+        isChatNameEditTextVisible = in.readInt() == 1 ? true : false;
     }
 }

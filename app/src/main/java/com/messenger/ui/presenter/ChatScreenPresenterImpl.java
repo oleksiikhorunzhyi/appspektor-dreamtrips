@@ -30,7 +30,6 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.activity.ChatSettingsActivity;
 import com.messenger.ui.activity.MessengerStartActivity;
@@ -44,6 +43,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.List;
@@ -54,6 +54,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
@@ -111,13 +112,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private Observable<Chat> chatObservable;
     private Observable<Conversation> conversationObservable;
-    private PublishSubject<ChatChangeStateEvent> subject = PublishSubject.<ChatChangeStateEvent>create();
+    private PublishSubject<ChatChangeStateEvent> chatStateStream;
 
     private Handler handler = new Handler();
     boolean skipNextMessagesUiDueToPendingChangesInDb = false;
 
     public ChatScreenPresenterImpl(Context context, Intent startIntent) {
         this.activity = (Activity) context;
+        conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
 
         ((Injector) context.getApplicationContext()).inject(this);
 
@@ -126,7 +128,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
 
-        conversationId = startIntent.getStringExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID);
+        chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
     }
 
     private Observable<Chat> createChat(ChatManager chatManager, Conversation conversation) {
@@ -152,7 +154,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE){
+        if (visibility == View.VISIBLE) {
             openedConversationTracker.addOpenedConversation(conversationId);
         } else {
             openedConversationTracker.removeOpenedConversation(conversationId);
@@ -222,15 +224,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(this::onConversationLoadedFirstTime);
 
         conversationObservable
-                .subscribe(conversation -> {
-                            if (!isInitialUnreadMessagesLoading) {
-                                getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
-                            }
-                        }
-                );
+                .filter(c -> !isInitialUnreadMessagesLoading)
+                .map(c -> c.getUnreadMessageCount())
+                .subscribe(value -> getView().showUnreadMessageCount(value));
 
         chatObservable = source
-                .flatMap(conv -> createChat(messengerServerFacade.getChatManager(), conv))
+                .flatMap(c -> createChat(messengerServerFacade.getChatManager(), c).subscribeOn(Schedulers.io()))
                 .replay(1).autoConnect();
 
         submitOneChatAction(this::onChatLoaded);
@@ -252,28 +251,27 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void onChatLoaded(Chat chat) {
         final OnChatStateChangedListener listener = (conversationId, userId, state) -> {
-            subject.onNext(new ChatChangeStateEvent(userId, conversationId, state));
+            chatStateStream.onNext(new ChatChangeStateEvent(userId, conversationId, state));
         };
         messengerGlobalEmitter.addOnChatStateChangedListener(listener);
 
-                subject
-                .doOnUnsubscribe(() -> messengerGlobalEmitter.removeOnChatStateChangedListener(listener))
-                .compose(bindVisibilityIoToMainComposer())
+        chatStateStream.asObservable()
                 .filter(chatChangeStateEvent -> TextUtils.equals(chatChangeStateEvent.conversationId, conversationId))
-                .subscribe(stateEvent ->
-                                usersDAO.getUserById(stateEvent.userId)
-                                        .first()
-                                        .compose(bindVisibilityIoToMainComposer())
-                                        .subscribe(user -> {
-                                            switch (stateEvent.state) {
-                                                case ChatState.COMPOSING:
-                                                    getView().addTypingUser(user);
-                                                    break;
-                                                case ChatState.PAUSE:
-                                                    getView().removeTypingUser(user);
-                                                    break;
-                                            }
-                                        })
+                .compose(bindVisibilityIoToMainComposer())
+                .doOnUnsubscribe(() -> messengerGlobalEmitter.removeOnChatStateChangedListener(listener))
+                .subscribe(stateEvent -> usersDAO.getUserById(stateEvent.userId)
+                        .first().compose(new NonNullFilter<>())
+                        .compose(bindVisibilityIoToMainComposer())
+                        .subscribe(user -> {
+                            switch (stateEvent.state) {
+                                case ChatState.COMPOSING:
+                                    getView().addTypingUser(user);
+                                    break;
+                                case ChatState.PAUSE:
+                                    getView().removeTypingUser(user);
+                                    break;
+                            }
+                        })
                 );
     }
 
@@ -454,7 +452,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void sendAndMarkChatEntities(Message firstMessage) {
-        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) return;
+        if (!isConnectionPresent()) return;
 
         chatObservable.first()
                 .flatMap(chat -> chat.sendReadStatus(firstMessage).flatMap(this::markMessagesAsRead))
@@ -469,9 +467,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private Observable<Message> markMessagesAsRead(Message firstIncomingMessage) {
         //message does not contain toId
-        return messageDAO.markMessagesAsRead(conversationId,
-                user.getId(), firstIncomingMessage.getDate().getTime())
-                .map(integer -> firstIncomingMessage);
+        return messageDAO
+                .markMessagesAsRead(conversationId, user.getId(), firstIncomingMessage.getDate().getTime())
+                .map(integer -> firstIncomingMessage)
+                .first();
     }
 
     @Override
@@ -499,8 +498,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 } while (cursor.moveToNext());
             }
             subscriber.onNext(result);
-        })
-        .compose(new IoToMainComposer<>());
+        }).compose(new IoToMainComposer<>());
     }
 
     private static class UnreadMessagesSearchResult {
@@ -521,10 +519,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         submitOneChatAction(chat -> {
             chat.send(new Message.Builder()
-                            .locale(Locale.getDefault())
-                            .text(message)
-                            .from(user.getId())
-                            .build()
+                    .locale(Locale.getDefault())
+                    .text(message)
+                    .from(user.getId())
+                    .build()
             )
                     .subscribeOn(Schedulers.io())
                     .subscribe();
@@ -662,8 +660,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void submitOneChatAction(Action1<Chat> action1) {
-        chatObservable
-                .first()
+        chatObservable.first()
+                .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(action1);
     }

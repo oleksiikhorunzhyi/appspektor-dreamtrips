@@ -141,12 +141,12 @@ public class ParticipantsDAO extends BaseDAO {
 
     public void deleteBySyncTime(long time) {
         getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
-                        ParticipantsRelationship$Table.SYNCTIME + " < " + time +
+                ParticipantsRelationship$Table.SYNCTIME + " < " + "?" +
                         " AND " + ParticipantsRelationship$Table.SYNCTIME + " NOT IN " +
-                            "(SELECT " + Conversation$Table.TABLE_NAME + "." + Conversation$Table.SYNCTIME +
-                            " FROM " + Conversation$Table.TABLE_NAME +
-                            " WHERE " + Conversation$Table.TABLE_NAME + "." + Conversation$Table._ID + " = " +
-                                ParticipantsRelationship$Table.TABLE_NAME + "." + ParticipantsRelationship$Table.CONVERSATIONID + ")",
-                null);
+                        "(SELECT " + Conversation$Table.TABLE_NAME + "." + Conversation$Table.SYNCTIME +
+                        " FROM " + Conversation$Table.TABLE_NAME +
+                        " WHERE " + Conversation$Table.TABLE_NAME + "." + Conversation$Table._ID + " = " +
+                        ParticipantsRelationship$Table.TABLE_NAME + "." + ParticipantsRelationship$Table.CONVERSATIONID + ")",
+                new String[]{String.valueOf(time)});
     }
 }

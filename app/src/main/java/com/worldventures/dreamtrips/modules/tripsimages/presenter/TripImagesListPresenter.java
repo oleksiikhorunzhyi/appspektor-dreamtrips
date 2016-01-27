@@ -240,7 +240,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     private void uploadTags(String id) {
-        if (photoTags == null) return;
+        if (photoTags == null || photoTags.isEmpty()) return;
         doRequest(new AddPhotoTagsCommand(id, photoTags));
     }
 

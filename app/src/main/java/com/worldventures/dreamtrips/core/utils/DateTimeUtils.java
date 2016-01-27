@@ -300,17 +300,16 @@ public class DateTimeUtils {
         } else if (deltaMinutes < (24 * 60 * 14)) {
             return res.getString(R.string.last_week);
         } else if (deltaMinutes < (24 * 60 * 31)) {
-            return res.getString(R.string.weeks_ago, (int) Math.floor(deltaSeconds / (60 * 24 * 7)));
+            return res.getString(R.string.weeks_ago, (int) Math.floor(deltaMinutes / (60 * 24 * 7)));
         } else if (deltaMinutes < (24 * 60 * 61)) {
             return res.getString(R.string.last_month);
         } else if (deltaMinutes < (24 * 60 * 365.25)) {
-            return res.getString(R.string.month_ago, (int) Math.floor(deltaSeconds / (60 * 24 * 30)));
+            return res.getString(R.string.month_ago, (int) Math.floor(deltaMinutes / (60 * 24 * 30)));
         } else if (deltaMinutes < (24 * 60 * 731)) {
             return res.getString(R.string.last_year);
         }
 
-        return res.getString(R.string.weeks_ago, (int) Math.floor(deltaSeconds / (60 * 24 * 365)));
+        return res.getString(R.string.weeks_ago, (int) Math.floor(deltaMinutes / (60 * 24 * 365)));
     }
-
 
 }

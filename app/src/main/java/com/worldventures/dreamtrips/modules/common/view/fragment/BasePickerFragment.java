@@ -68,7 +68,6 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        photoPickerDelegate.attachScrollableView(null);
         photoPickerDelegate.setSelectedPhotosProvider(null);
     }
 

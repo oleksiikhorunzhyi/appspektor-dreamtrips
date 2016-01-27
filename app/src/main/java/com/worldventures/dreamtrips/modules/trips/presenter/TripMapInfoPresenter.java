@@ -33,7 +33,7 @@ public class TripMapInfoPresenter extends BaseTripPresenter<TripMapInfoPresenter
     }
 
     public void onClick() {
-        FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(trip, appSessionHolder.get().get().getUser()));
+        FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(trip, null));
         if (tabletAnalytic.isTabletLandscape()) {
             bundle.setSlave(true);
         }

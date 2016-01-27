@@ -195,7 +195,7 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
                 searchItem.expandActionView();
                 searchView.setQuery(savedSearchFilter, false);
             }
-            searchView.setQueryHint(getContext().getString(R.string.conversation_list_search_hint));
+            searchView.setQueryHint(getContext().getString(R.string.edit_chat_members_search_hint));
             searchView.setOnCloseListener(() -> false);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override public boolean onQueryTextSubmit(String query) {

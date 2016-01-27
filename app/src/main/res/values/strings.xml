@@ -545,7 +545,7 @@
     <!---->
     <string name="chat_subtitle_format_single_chat_online">Online</string>
     <string name="chat_subtitle_format_single_chat_offline">Offline</string>
-    <string name="chat_subtitle_format_group_chat_format">%d online</string>
+    <string name="chat_subtitle_format_group_chat_format">%1$d members, %2$d online</string>
     <string name="chat_subtitle_format_group_chat_offline">No users online</string>
     <string name="chat_message_edittext_hint">Your message</string>
     <string name="chat_message_send_button_text">Send</string>

@@ -69,7 +69,7 @@ public class ConversationHelper {
             case Conversation.Type.GROUP:
             default:
                 int online = Queryable.from(members).count(User::isOnline);
-                subtitle = target.getResources().getString(R.string.chat_subtitle_format_group_chat_format, online);
+                subtitle = target.getResources().getString(R.string.chat_subtitle_format_group_chat_format, members.size(), online);
                 break;
         }
         target.setText(subtitle);

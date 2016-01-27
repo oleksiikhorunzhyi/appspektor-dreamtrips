@@ -21,7 +21,8 @@ import icepick.State;
 
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
-    private List<Settings> settingsList;
+    @State
+    ArrayList<Settings> settingsList;
     @State
     ArrayList<Settings> immutableSettingsList;
 
@@ -39,7 +40,9 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
         super.takeView(view);
         SettingsManager settingsManager = new SettingsManager();
         SettingsFactory settingsFactory = new SettingsFactory();
-        this.settingsList = settingsManager.merge(db.getSettings(), settingsFactory.createSettings(group));
+        if (this.settingsList == null)
+            this.settingsList = (ArrayList<Settings>) settingsManager.merge(db.getSettings(),
+                    settingsFactory.createSettings(group));
         //
         if (immutableSettingsList == null)
             immutableSettingsList = cloneList(this.settingsList);

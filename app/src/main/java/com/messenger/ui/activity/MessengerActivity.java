@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
@@ -92,7 +93,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        flowActivityHelper.onSaveState(outState);
+        flowActivityHelper.onSaveState(outState, (View) container);
     }
 
     @Override

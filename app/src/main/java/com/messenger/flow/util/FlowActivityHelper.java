@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 
 import java.lang.ref.WeakReference;
 
@@ -63,8 +64,8 @@ public class FlowActivityHelper {
         flowSupport.onNewIntent(intent);
     }
 
-    public void onSaveState(Bundle outState) {
-        flowSupport.onSaveInstanceState(outState);
+    public void onSaveState(Bundle outState, View container) {
+        flowSupport.onSaveInstanceState(outState, container);
     }
 
     public void onResume() {

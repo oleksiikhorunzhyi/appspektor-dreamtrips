@@ -204,7 +204,7 @@
         <item name="android:ellipsize">marquee</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/conversation_list_name</item>
-        <item name="android:textSize">@dimen/list_item_title_text_size</item>
+        <item name="android:textSize">@dimen/conversation_list_item_conversation_name_text_size</item>
     </style>
 
     <style name="ConversationListLastMessageTextView">

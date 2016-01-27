@@ -1,6 +1,7 @@
 package com.messenger.messengerservers.xmpp;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.UserProcessor;
@@ -14,6 +15,7 @@ import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
+import com.messenger.util.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
@@ -82,6 +84,8 @@ public class XmppServerFacade implements MessengerServerFacade {
                 .build());
         connection.setPacketReplyTimeout(PACKET_REPLAY_TIMEOUT);
         connection.addConnectionListener(connectionListener);
+        connection.addAsyncStanzaListener(packet -> CrashlyticsTracker.trackError(new SmackException(packet.toString())),
+                stanza -> stanza != null && stanza.getError() != null && !TextUtils.isEmpty(stanza.getError().toString()));
         return connection;
     }
 

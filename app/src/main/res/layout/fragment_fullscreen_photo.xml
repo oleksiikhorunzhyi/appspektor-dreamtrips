@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@drawable/black_gradient_inspire_me"
+        android:background="@drawable/black_gradient_social_photo"
         android:orientation="vertical"
         android:paddingTop="24dp">
 

@@ -89,8 +89,8 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
     }
 
     public Size getSize() {
-        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+        setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        measure(MeasureSpec.EXACTLY, MeasureSpec.EXACTLY);
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         return new Size(width, height);

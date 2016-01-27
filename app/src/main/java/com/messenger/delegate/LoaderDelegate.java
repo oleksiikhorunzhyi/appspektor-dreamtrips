@@ -55,13 +55,14 @@ public class LoaderDelegate {
             conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<ConversationData, User>(subscriber) {
                 @Override
                 protected List<User> process(List<ConversationData> data) {
+                    data = from(data).filter(cd -> !cd.participants.isEmpty()).toList();
+                    //
                     final long syncTime = System.currentTimeMillis();
                     List<Conversation> convs = from(data).map(d -> d.conversation).toList();
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
                     List<Message> messages = from(data).map(c -> c.lastMessage).notNulls().toList();
                     List<ParticipantsRelationship> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
-                            .filter(d -> !d.participants.isEmpty())
-                            .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(d.conversation.getId(), p.getUser(), p.getAffiliation())))
+                            .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(p.getConversationId(), p.getUser(), p.getAffiliation())))
                             .toList();
                     from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
                     conversationsDAO.save(convs);
@@ -72,7 +73,6 @@ public class LoaderDelegate {
 
 
                     List<User> users = data.isEmpty() ? Collections.emptyList() : from(data)
-                            .filter(d -> !d.participants.isEmpty())
                             .mapMany(d -> d.participants).map((elem, idx) -> elem.getUser()).distinct().toList();
                     return users;
 

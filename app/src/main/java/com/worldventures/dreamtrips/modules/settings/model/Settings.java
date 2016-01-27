@@ -92,13 +92,11 @@ public class Settings<T extends Serializable> implements Parcelable, Serializabl
 
         Settings<?> settings = (Settings<?>) o;
 
-        return name.equals(settings.name) && type == settings.type;
+        return name.equals(settings.name);
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + type.hashCode();
-        return result;
+        return name.hashCode();
     }
 }

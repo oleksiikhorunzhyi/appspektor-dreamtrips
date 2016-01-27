@@ -13,17 +13,13 @@ import java.util.List;
 public class SettingsBundle implements Parcelable, Serializable {
 
     public final SettingsGroup settingsGroup;
-    public final List<Settings> settingsList;
 
-    public SettingsBundle(SettingsGroup settingsGroup, List<Settings> settingsList) {
+    public SettingsBundle(SettingsGroup settingsGroup) {
         this.settingsGroup = settingsGroup;
-        this.settingsList = settingsList;
     }
 
     protected SettingsBundle(Parcel in) {
         settingsGroup = in.readParcelable(SettingsGroup.class.getClassLoader());
-        settingsList = new ArrayList<>();
-        in.readList(settingsList, Settings.class.getClassLoader());
     }
 
     public static final Creator<SettingsBundle> CREATOR = new Creator<SettingsBundle>() {
@@ -46,6 +42,5 @@ public class SettingsBundle implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(settingsGroup, flags);
-        dest.writeList(settingsList);
     }
 }

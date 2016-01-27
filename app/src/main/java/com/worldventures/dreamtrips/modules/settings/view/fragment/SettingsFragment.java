@@ -90,23 +90,26 @@ public class SettingsFragment extends BaseFragmentWithArgs<SettingsPresenter, Se
         toolbar.setTitle(getArgs().settingsGroup.getTitle());
         toolbar.setNavigationOnClickListener(v -> {
             if (getPresenter().isSettingsChanged()) {
-                new MaterialDialog.Builder(getContext())
-                        .title("Tralala")
-                        .positiveText("Yes")
-                        .negativeText("No")
-                        .onPositive((materialDialog, dialogAction) -> {
-                            getPresenter().applyChanges();
-                        })
-                        .show();
+                showChangesDialog();
             } else {
                 close();
             }
         });
     }
 
+    private void showChangesDialog() {
+        new MaterialDialog.Builder(getContext())
+                .title(R.string.save_changes_before_proceed)
+                .positiveText(R.string.save)
+                .negativeText(R.string.discard)
+                .onPositive((materialDialog, dialogAction) -> getPresenter().applyChanges())
+                .onNegative((materialDialog1, dialogAction1) -> close())
+                .show();
+    }
+
     @Override
     protected SettingsPresenter createPresenter(Bundle savedInstanceState) {
-        return new SettingsPresenter(getArgs().settingsGroup, getArgs().settingsList);
+        return new SettingsPresenter(getArgs().settingsGroup);
     }
 
     @Override

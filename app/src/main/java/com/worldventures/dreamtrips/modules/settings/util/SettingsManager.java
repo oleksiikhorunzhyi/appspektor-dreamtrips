@@ -11,7 +11,11 @@ import static com.worldventures.dreamtrips.modules.settings.util.SettingsFactory
 public class SettingsManager {
 
     public List<Settings> merge(List<Settings> fromServer, List<Settings> local) {
-        return Queryable.from(fromServer).filter(local::contains).toList();
+        return Queryable.from(fromServer).filter(local::contains).map(setting -> {
+            Settings localSetting = Queryable.from(local).firstOrDefault(setting::equals);
+            if (localSetting != null) setting.setType(localSetting.getType());
+            return setting;
+        }).toList();
     }
 
     public int getLocalizedTitleResource(String title) {

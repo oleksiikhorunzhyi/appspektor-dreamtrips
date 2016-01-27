@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.modules.settings.bundle.SettingsBundle;
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsGroupCell;
 import com.worldventures.dreamtrips.modules.settings.view.presenter.SettingsGroupPresenter;
@@ -43,6 +42,7 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
         adapter.registerCell(SettingsGroup.class, SettingsGroupCell.class);
         adapter.registerDelegate(SettingsGroup.class, this);
         recyclerView.setAdapter(adapter);
+        getPresenter().loadSettings();
     }
 
     @Override
@@ -57,10 +57,10 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
     }
 
     @Override
-    public void openSettings(Route route, SettingsGroup model, List<Settings> settingsList) {
+    public void openSettings(Route route, SettingsGroup model) {
         router.moveTo(route, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new SettingsBundle(model, settingsList))
+                .data(new SettingsBundle(model))
                 .build());
     }
 

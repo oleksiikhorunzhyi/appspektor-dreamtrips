@@ -532,4 +532,7 @@
     <string name="settings_kilometers">Kilometers</string>
     <string name="settings_miles">Miles</string>
 
+    <string name="save_changes_before_proceed">Do you want to save changes before you proceed?</string>
+    <string name="discard">Discard</string>
+
 </resources>

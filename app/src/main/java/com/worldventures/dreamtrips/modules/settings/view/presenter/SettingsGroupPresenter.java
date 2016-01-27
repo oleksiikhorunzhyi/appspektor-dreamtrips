@@ -1,30 +1,35 @@
 package com.worldventures.dreamtrips.modules.settings.view.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsGroupFactory;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class SettingsGroupPresenter extends Presenter<SettingsGroupPresenter.View> {
 
-    private List<Settings> settingsList;
+    @Inject
+    SnappyRepository db;
+
+    private boolean settingsLoaded;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         SettingsGroupFactory settingsGroupFactory = new SettingsGroupFactory(context);
         view.setSettings(settingsGroupFactory.createSettingsGroups());
-        settingsList = new ArrayList<>();
-        loadSettings();
     }
 
-    private void loadSettings() {
-        doRequest(new GetSettingsQuery(), this.settingsList::addAll);
+    public void loadSettings() {
+        doRequest(new GetSettingsQuery(), settings -> {
+            db.saveSettings(settings);
+            settingsLoaded = true;
+        });
     }
 
     public void handleCellClick(SettingsGroup model) {
@@ -41,13 +46,13 @@ public class SettingsGroupPresenter extends Presenter<SettingsGroupPresenter.Vie
                 break;
         }
         //
-        if (route != null && settingsList.size() > 0) view.openSettings(route, model, settingsList);
+        if (route != null && settingsLoaded) view.openSettings(route, model);
     }
 
     public interface View extends Presenter.View {
 
         void setSettings(List<SettingsGroup> settings);
 
-        void openSettings(Route route, SettingsGroup model, List<Settings> settingsList);
+        void openSettings(Route route, SettingsGroup model);
     }
 }

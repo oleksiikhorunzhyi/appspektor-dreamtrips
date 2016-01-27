@@ -21,6 +21,9 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
+import com.worldventures.dreamtrips.modules.settings.model.FlagSettings;
+import com.worldventures.dreamtrips.modules.settings.model.SelectSettings;
+import com.worldventures.dreamtrips.modules.settings.model.Settings;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
@@ -47,6 +50,7 @@ public class SnappyRepository {
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
     public static final String TRIP_KEY = "trip_rezopia_v2";
+    public static final String SETTINGS_KEY = "settings";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
@@ -276,6 +280,33 @@ public class SnappyRepository {
     public CachedEntity getDownloadVideoEntity(String id) {
         return actWithResult(db -> db.get(VIDEO_UPLOAD_ENTITY + id, CachedEntity.class))
                 .orNull();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Settings
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveSettings(List<Settings> settingsList) {
+        act(db -> {
+            for (Settings settings : settingsList) {
+                db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
+            }
+        });
+    }
+
+    public List<Settings> getSettings() {
+        return actWithResult(db -> {
+            List<Settings> settingsList = new ArrayList<>();
+            String[] keys = db.findKeys(SETTINGS_KEY);
+            for (String key : keys) {
+                if (key.contains(Settings.Type.FLAG.name())) {
+                    settingsList.add(db.get(key, FlagSettings.class));
+                } else if (key.contains(Settings.Type.SELECT.name())) {
+                    settingsList.add(db.get(key, SelectSettings.class));
+                }
+            }
+            return settingsList;
+        }).or(Collections.emptyList());
     }
 
     ///////////////////////////////////////////////////////////////////////////

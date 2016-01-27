@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.settings.view.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.settings.api.UpdateSettingsCommand;
 import com.worldventures.dreamtrips.modules.settings.model.Settings;
@@ -14,6 +15,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import icepick.State;
 
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
@@ -22,18 +25,25 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
     @State
     ArrayList<Settings> immutableSettingsList;
 
-    public SettingsPresenter(SettingsGroup group, List<Settings> settingsList) {
-        SettingsManager settingsManager = new SettingsManager();
-        SettingsFactory settingsFactory = new SettingsFactory();
-        this.settingsList = settingsManager.merge(settingsList, settingsFactory.createSettings(group));
-        //
-        if (immutableSettingsList == null)
-            immutableSettingsList = cloneList(this.settingsList);
+    @Inject
+    SnappyRepository db;
+
+    private SettingsGroup group;
+
+    public SettingsPresenter(SettingsGroup group) {
+        this.group = group;
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        SettingsManager settingsManager = new SettingsManager();
+        SettingsFactory settingsFactory = new SettingsFactory();
+        this.settingsList = settingsManager.merge(db.getSettings(), settingsFactory.createSettings(group));
+        //
+        if (immutableSettingsList == null)
+            immutableSettingsList = cloneList(this.settingsList);
+        //
         view.setSettings(settingsList);
     }
 
@@ -58,8 +68,10 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
     public void applyChanges() {
         if (isSettingsChanged()) {
             view.showLoading();
-            doRequest(new UpdateSettingsCommand(getChanges()),
+            List<Settings> changes = getChanges();
+            doRequest(new UpdateSettingsCommand(changes),
                     aVoid -> {
+                        db.saveSettings(changes);
                         immutableSettingsList = cloneList(this.settingsList);
                         //
                         view.hideLoading();

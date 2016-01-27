@@ -4,6 +4,10 @@ import android.os.Parcel;
 
 public class FlagSettings extends Settings<Boolean> {
 
+    public FlagSettings() {
+
+    }
+
     protected FlagSettings(Parcel in) {
         name = in.readString();
         type = (Type) in.readSerializable();

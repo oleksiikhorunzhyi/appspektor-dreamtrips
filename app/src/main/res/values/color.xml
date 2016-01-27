@@ -108,7 +108,8 @@
     <!-- Conversation list screen -->
     <color name="conversation_list_action_bar_spinner_item_normal">@color/white</color>
     <color name="conversation_list_action_bar_spinner_item_pressed">#EEEEEE</color>
-    <color name="conversation_list_unread_conversation_bg">#EBF7FF</color>
+    <color name="conversation_list_unread_conversation_bg">#EBF5FF</color>
+    <color name="conversation_list_selected_conversation_bg">#F0F0F0</color>
     <color name="conversation_list_read_conversation_bg">@android:color/white</color>
     <color name="conversation_list_name">#222222</color>
     <color name="conversation_list_message">@color/chat_grey_color</color>

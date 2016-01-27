@@ -73,7 +73,7 @@ public class ConversationsCursorAdapter
     private Subscription mainSubscription;
 
     public interface ConversationClickListener {
-        void onConversationClick(Conversation conversation);
+        void onConversationClick(Conversation conversation, int adapterPosition);
     }
 
     public interface SwipeButtonsListener {

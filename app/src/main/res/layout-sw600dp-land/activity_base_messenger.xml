@@ -27,7 +27,7 @@
         <View
             android:layout_width="0.5dp"
             android:layout_height="match_parent"
-            android:background="@color/theme_main_darker"
+            android:background="@color/list_item_divider_color"
             />
 
         <com.messenger.flow.container.DetailContainerView
@@ -35,6 +35,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"/>
-    </com.messenger.flow.container.TabletMasterDetailRoot>
+    </com.messenger.flow.container.TabletMasterDetailRoot>в
 
 </android.support.v4.widget.DrawerLayout>

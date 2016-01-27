@@ -96,6 +96,12 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     @Override
+    protected void onDestroy() {
+        flowActivityHelper = null;
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
         if (!flowActivityHelper.handleBack())
             super.onBackPressed();

@@ -45,7 +45,7 @@ import static com.messenger.ui.adapter.ConversationsCursorAdapter.SwipeButtonsLi
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem;
 
 public class ConversationListScreenImpl extends MessengerPathLayout<ConversationListScreen,
-        ConversationListScreenPresenter, ConversationPath> implements ConversationListScreen, SwipeButtonsListener {
+        ConversationListScreenPresenter, ConversationsPath> implements ConversationListScreen, SwipeButtonsListener {
 
     @InjectView(R.id.conversation_list_content_view)
     ViewGroup contentView;

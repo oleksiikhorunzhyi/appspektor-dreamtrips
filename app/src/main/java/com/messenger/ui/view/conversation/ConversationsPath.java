@@ -5,7 +5,7 @@ import com.messenger.flow.container.Layout;
 import com.worldventures.dreamtrips.R;
 
 @Layout(R.layout.screen_conversation_list)
-public class ConversationPath extends StyledPath {
+public class ConversationsPath extends StyledPath {
 
     @Override
     public PathAttrs getAttrs() {

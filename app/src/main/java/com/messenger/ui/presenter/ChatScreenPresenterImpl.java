@@ -28,7 +28,7 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
-import com.messenger.ui.view.conversation.ConversationPath;
+import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.settings.GroupSettingsPath;
 import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -162,7 +162,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         return true;
                     } else {
                         //if we were kicked from conversation
-                        Flow.get(getContext()).set(new ConversationPath());
+                        Flow.get(getContext()).set(new ConversationsPath());
                         return false;
                     }
                 })

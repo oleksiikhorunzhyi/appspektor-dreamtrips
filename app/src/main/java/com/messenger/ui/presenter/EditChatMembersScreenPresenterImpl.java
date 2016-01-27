@@ -12,7 +12,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.view.conversation.ConversationPath;
+import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
@@ -159,7 +159,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 .subscribe(cursor -> {
                     // cause admin of group chat is also participant
                     if (cursor.getCount() <= 1) {
-                        Flow.get(getContext()).set(new ConversationPath());
+                        Flow.get(getContext()).set(new ConversationsPath());
                         return;
                     }
 

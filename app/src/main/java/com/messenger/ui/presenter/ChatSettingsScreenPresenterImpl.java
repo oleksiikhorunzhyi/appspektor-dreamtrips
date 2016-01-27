@@ -14,7 +14,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.view.conversation.ConversationPath;
+import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -157,7 +157,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         @Override
         public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
-                Flow.get(getContext()).set(new ConversationPath());
+                Flow.get(getContext()).set(new ConversationsPath());
             }
         }
     };

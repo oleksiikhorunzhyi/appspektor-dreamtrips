@@ -14,7 +14,7 @@ import com.messenger.flow.GsonParceler;
 import com.messenger.flow.StyledPath;
 import com.messenger.flow.container.FramePathContainerView;
 import com.messenger.ui.view.chat.ChatPath;
-import com.messenger.ui.view.conversation.ConversationPath;
+import com.messenger.ui.view.conversation.ConversationsPath;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -132,7 +132,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     private Path provideDefaultScreen() {
-        return new ConversationPath();
+        return new ConversationsPath();
     }
 
     private void itemSelected(ComponentDescription component) {
@@ -192,7 +192,6 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
         SoftInputUtil.hideSoftInputMethod(this);
         //
         Path path = traversal.destination.top();
-        //
         setNavigation(path);
         //
         container.dispatch(traversal, callback);

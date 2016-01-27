@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.settings.dialog.SelectDialog;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsFlagCell;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsGroupCell;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsSelectCell;
+import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.SettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.SettingsGroupFragment;
@@ -21,6 +22,7 @@ import dagger.Provides;
                 SettingsGroupPresenter.class,
                 SettingsGroupFragment.class,
                 NotificationsSettingsFragment.class,
+                GeneralSettingsFragment.class,
                 SettingsPresenter.class,
                 SettingsFragment.class,
 

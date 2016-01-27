@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.settings.dialog.SelectDialog;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSettings;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
+import com.worldventures.dreamtrips.modules.settings.view.cell.delegate.SettingsSelectCellDelegate;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_settings_select)
-public class SettingsSelectCell extends AbstractDelegateCell<SelectSettings, CellDelegate<SelectSettings>> {
+public class SettingsSelectCell extends AbstractDelegateCell<SelectSettings, SettingsSelectCellDelegate> {
 
     @InjectView(R.id.settings_title)
     TextView settingsTitle;
@@ -71,7 +72,7 @@ public class SettingsSelectCell extends AbstractDelegateCell<SelectSettings, Cel
         SelectDialog dialog = SelectDialog.newInstance(titleId, items, selectedPosition);
         dialog.setSelectionListener((position, value) -> {
             getModelObject().setValue(getModelObject().getOptions().get(position));
-            cellDelegate.onCellClicked(getModelObject());
+            cellDelegate.onValueSelected();
             syncUIStateWithModel();
         });
         dialog.show(fragmentManager);

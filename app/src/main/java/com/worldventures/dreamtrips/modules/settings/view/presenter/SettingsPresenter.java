@@ -65,7 +65,7 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
         return getChanges().size() > 0;
     }
 
-    public void applyChanges() {
+    public void applyChanges(boolean withClose) {
         if (isSettingsChanged()) {
             view.showLoading();
             List<Settings> changes = getChanges();
@@ -75,7 +75,8 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
                         immutableSettingsList = cloneList(this.settingsList);
                         //
                         view.hideLoading();
-                        view.close();
+                        if (withClose)
+                            view.close();
                     });
         }
     }

@@ -3,7 +3,6 @@ package com.messenger.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 
@@ -13,8 +12,8 @@ import com.messenger.di.MessengerModule;
 import com.messenger.flow.FlowActivityHelper;
 import com.messenger.flow.GsonParceler;
 import com.messenger.flow.StyledPath;
-import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.flow.container.FramePathContainerView;
+import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationPath;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -91,8 +90,8 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         flowActivityHelper.onSaveState(outState);
     }
 

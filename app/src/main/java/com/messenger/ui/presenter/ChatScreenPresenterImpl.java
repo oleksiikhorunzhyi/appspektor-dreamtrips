@@ -25,11 +25,12 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.activity.ChatSettingsActivity;
-import com.messenger.ui.activity.MessengerStartActivity;
-import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.view.ChatScreen;
+import com.messenger.ui.view.add_member.ExistingChatPath;
+import com.messenger.ui.view.chat.ChatScreen;
+import com.messenger.ui.view.conversation.ConversationsPath;
+import com.messenger.ui.view.settings.GroupSettingsPath;
+import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -45,6 +46,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import flow.Flow;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
@@ -76,7 +78,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
 
-    protected final String conversationId;
+    protected String conversationId;
 
     @Inject
     ConversationsDAO conversationDAO;
@@ -112,7 +114,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
-
+        //
         this.conversationId = conversationId;
     }
 
@@ -160,7 +162,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         return true;
                     } else {
                         //if we were kicked from conversation
-                        MessengerStartActivity.start(getContext());
+                        Flow.get(getContext()).set(new ConversationsPath());
                         return false;
                     }
                 })
@@ -446,7 +448,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             }
             subscriber.onNext(result);
         })
-        .compose(new IoToMainComposer<>());
+                .compose(new IoToMainComposer<>());
     }
 
     private static class UnreadMessagesSearchResult {
@@ -556,7 +558,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInAddMembersMode(getContext(), conversationId);
+                Flow.get(getContext()).set(new ExistingChatPath(conversationId));
                 return true;
             case R.id.action_settings:
                 conversationObservable
@@ -564,9 +566,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
                             if (conversationHelper.isGroup(conversation)) {
-                                ChatSettingsActivity.startGroupChatSettings(getContext(), conversationId);
+                                Flow.get(getContext()).set(new GroupSettingsPath(conversationId));
                             } else {
-                                ChatSettingsActivity.startSingleChatSettings(getContext(), conversationId);
+                                Flow.get(getContext()).set(new SingleSettingsPath(conversationId));
                             }
                         });
                 return true;

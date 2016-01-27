@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import com.messenger.ui.view.ChatSettingsScreen;
+import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 
 public interface ChatSettingsScreenPresenter extends MessengerPresenter<ChatSettingsScreen,

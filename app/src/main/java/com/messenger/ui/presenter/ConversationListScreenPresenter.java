@@ -4,7 +4,7 @@ import android.support.annotation.StringDef;
 
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.view.ConversationListScreen;
+import com.messenger.ui.view.conversation.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 
 public interface ConversationListScreenPresenter extends MessengerPresenter<ConversationListScreen,

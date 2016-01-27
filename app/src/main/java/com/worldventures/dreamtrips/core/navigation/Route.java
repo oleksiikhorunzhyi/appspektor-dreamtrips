@@ -62,7 +62,6 @@ import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragm
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
-import com.worldventures.dreamtrips.modules.messenger.MessengerContainerFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
@@ -196,9 +195,7 @@ public enum Route {
     BUCKET_PHOTO_FULLSCREEN(BucketPhotoFullscreenFragment.class),
 
     THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),
-    PRESENTATION_VIDEOS(PresentationVideosFragment.class),
-
-    MESSENGER(MessengerContainerFragment.class);
+    PRESENTATION_VIDEOS(PresentationVideosFragment.class);
 
     private Class<? extends Fragment> fragmentClass;
     @StringRes

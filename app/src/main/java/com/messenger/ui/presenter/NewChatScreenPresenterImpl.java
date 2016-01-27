@@ -10,15 +10,17 @@ import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.activity.ChatActivity;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.view.ChatMembersScreen;
+import com.messenger.ui.view.add_member.ChatMembersScreen;
+import com.messenger.ui.view.chat.ChatPath;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import flow.Flow;
 
 public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
@@ -89,7 +91,8 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u, Participant.Affiliation.MEMBER).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                ChatActivity.startChat(getContext(), conversation);
+                //
+                Flow.get(getContext()).set(new ChatPath(conversation.getId()));
                 return true;
         }
         return false;

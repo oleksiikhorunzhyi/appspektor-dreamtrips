@@ -112,32 +112,11 @@
 
         <!--Chat activities-->
         <activity
-            android:screenOrientation="sensorPortrait"
-            android:name="com.messenger.ui.activity.MessengerStartActivity">
+            android:name="com.messenger.ui.activity.MessengerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity" />
         </activity>
-
-        <activity
-            android:screenOrientation="sensorPortrait"
-            android:name="com.messenger.ui.activity.ChatActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.messenger.ui.activity.MessengerStartActivity" />
-        </activity>
-
-        <activity
-            android:screenOrientation="sensorPortrait"
-            android:name="com.messenger.ui.activity.NewChatMembersActivity"/>
-
-        <activity
-            android:screenOrientation="sensorPortrait"
-            android:name="com.messenger.ui.activity.ChatSettingsActivity"/>
-
-        <activity
-            android:screenOrientation="sensorPortrait"
-            android:name="com.messenger.ui.activity.EditChatMembersActivity"/>
 
         <!--For result activities-->
 

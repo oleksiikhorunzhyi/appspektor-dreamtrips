@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
 
-import com.messenger.ui.activity.MessengerStartActivity;
+import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
@@ -99,7 +99,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     public void onUnreadConversationsClick() {
-        MessengerStartActivity.start(activityRouter.getContext());
+        MessengerActivity.startMessenger(activityRouter.getContext());
     }
 
     public void onEventMainThread(HeaderCountChangedEvent event) {

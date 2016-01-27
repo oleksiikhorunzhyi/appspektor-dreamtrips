@@ -12,8 +12,8 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.activity.MessengerStartActivity;
-import com.messenger.ui.view.EditChatMembersScreen;
+import com.messenger.ui.view.conversation.ConversationsPath;
+import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 import com.messenger.ui.viewstate.LceViewState;
@@ -27,6 +27,7 @@ import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import flow.Flow;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -158,7 +159,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 .subscribe(cursor -> {
                     // cause admin of group chat is also participant
                     if (cursor.getCount() <= 1) {
-                        MessengerStartActivity.start(getContext());
+                        Flow.get(getContext()).set(new ConversationsPath());
                         return;
                     }
 

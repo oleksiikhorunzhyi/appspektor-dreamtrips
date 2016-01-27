@@ -7,7 +7,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.activity.MessengerActivity;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -117,7 +117,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             ContentUtils.insert(Conversation.CONTENT_URI, conversation);
         }
 
-        ChatActivity.startChat(activityRouter.getContext(), conversation);
+        MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId());
+        //ChatActivity.startChat(activityRouter.getContext(), conversation);
     }
 
     public void addFriendClicked() {

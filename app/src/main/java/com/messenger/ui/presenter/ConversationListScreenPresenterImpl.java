@@ -12,10 +12,10 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.ui.activity.ChatActivity;
-import com.messenger.ui.activity.NewChatMembersActivity;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.view.ConversationListScreen;
+import com.messenger.ui.view.chat.ChatPath;
+import com.messenger.ui.view.conversation.ConversationListScreen;
+import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.viewstate.ConversationListViewState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import flow.Flow;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -166,7 +167,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        ChatActivity.startChat(getContext(), conversation);
+        Flow.get(getContext()).set(new ChatPath(conversation.getId()));
     }
 
     @Override
@@ -223,7 +224,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public boolean onToolbarMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_add:
-                NewChatMembersActivity.startInNewChatMode(getContext());
+                Flow.get(getContext()).set(new NewChatPath());
                 return true;
         }
         return false;

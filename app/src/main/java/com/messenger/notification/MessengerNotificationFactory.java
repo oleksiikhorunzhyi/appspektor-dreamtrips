@@ -8,7 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
-import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 
@@ -48,12 +48,12 @@ public class MessengerNotificationFactory extends NotificationFactory {
     }
 
     private PendingIntent createMessengerIntent(String conversationId, boolean forAction) {
-        Intent resultIntent = new Intent(context, ChatActivity.class);
+        Intent resultIntent = new Intent(context, MessengerActivity.class);
         //set args to pending intent
-        resultIntent.putExtra(ChatActivity.EXTRA_CHAT_CONVERSATION_ID, conversationId);
+        resultIntent.putExtra(MessengerActivity.EXTRA_CHAT_CONVERSATION_ID, conversationId);
         //
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(ChatActivity.class);
+        stackBuilder.addParentStack(MessengerActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         //
         return stackBuilder.getPendingIntent(0, forAction ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_CANCEL_CURRENT);

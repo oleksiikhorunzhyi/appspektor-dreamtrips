@@ -13,7 +13,7 @@ import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.activity.ChatActivity;
+import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.MessengerInAppNotificationListener;
 import com.messenger.ui.widget.inappnotification.messanger.InAppMessengerNotificationView;
@@ -126,7 +126,8 @@ public class UnhandledMessageWatcher {
         appNotification.show(activity, view, new MessengerInAppNotificationListener(data.conversation.getId()) {
             @Override
             public void openConversation(String conversationId) {
-                ChatActivity.startChat(activity, data.conversation);
+                MessengerActivity.startMessengerWithConversation(activity, data.conversation.getId());
+                //ChatActivity.startChat(activity, data.conversation);
             }
         });
     }

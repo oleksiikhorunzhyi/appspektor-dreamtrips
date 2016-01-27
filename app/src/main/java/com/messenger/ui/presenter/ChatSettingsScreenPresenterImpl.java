@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,9 +14,9 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.activity.EditChatMembersActivity;
-import com.messenger.ui.activity.MessengerStartActivity;
-import com.messenger.ui.view.ChatSettingsScreen;
+import com.messenger.ui.view.conversation.ConversationsPath;
+import com.messenger.ui.view.edit_member.EditChatPath;
+import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.util.RxContentResolver;
@@ -32,6 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import flow.Flow;
 import rx.Observable;
 
 public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
@@ -157,9 +157,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         @Override
         public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
-                Intent intent = new Intent(getContext(), MessengerStartActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                getContext().startActivity(intent);
+                Flow.get(getContext()).set(new ConversationsPath());
             }
         }
     };
@@ -171,7 +169,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onMembersRowClicked() {
-        EditChatMembersActivity.start(getContext(), conversationId);
+        Flow.get(getContext()).set(new EditChatPath(conversationId));
     }
 
     public void onEditChatName() {

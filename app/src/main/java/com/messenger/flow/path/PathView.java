@@ -1,4 +1,4 @@
-package com.messenger.flow;
+package com.messenger.flow.path;
 
 import flow.path.Path;
 

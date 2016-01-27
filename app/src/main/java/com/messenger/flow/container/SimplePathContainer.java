@@ -24,7 +24,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.flow.PathView;
+import com.messenger.flow.path.PathView;
+import com.messenger.flow.util.Layout;
+import com.messenger.flow.util.Utils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

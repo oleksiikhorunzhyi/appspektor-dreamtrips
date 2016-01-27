@@ -1,4 +1,4 @@
-package com.messenger.flow;
+package com.messenger.flow.util;
 
 import android.app.Activity;
 import android.content.Intent;

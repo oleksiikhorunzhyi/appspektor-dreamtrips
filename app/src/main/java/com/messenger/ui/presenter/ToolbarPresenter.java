@@ -7,7 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 
-import com.messenger.flow.StyledPath;
+import com.messenger.flow.path.StyledPath;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 

@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Spinner;
 
+import com.messenger.flow.path.StyledPath;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
@@ -45,7 +46,7 @@ import static com.messenger.ui.adapter.ConversationsCursorAdapter.SwipeButtonsLi
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem;
 
 public class ConversationListScreenImpl extends MessengerPathLayout<ConversationListScreen,
-        ConversationListScreenPresenter, ConversationsPath> implements ConversationListScreen, SwipeButtonsListener {
+        ConversationListScreenPresenter, StyledPath> implements ConversationListScreen, SwipeButtonsListener {
 
     @InjectView(R.id.conversation_list_content_view)
     ViewGroup contentView;
@@ -66,8 +67,6 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     ParticipantsDAO participantsDAO;
 
     SearchView searchView;
-    //
-    private ToolbarPresenter toolbarPresenter;
 
     private ConversationsCursorAdapter adapter;
     private LinearLayoutManager linearLayoutManager;

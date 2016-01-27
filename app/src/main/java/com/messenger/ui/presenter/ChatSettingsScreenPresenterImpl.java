@@ -157,7 +157,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         @Override
         public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
-                Flow.get(getContext()).set(new ConversationsPath());
+                Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
             }
         }
     };

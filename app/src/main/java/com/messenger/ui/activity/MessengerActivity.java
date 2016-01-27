@@ -9,10 +9,9 @@ import android.text.TextUtils;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 import com.messenger.di.MessengerModule;
-import com.messenger.flow.FlowActivityHelper;
-import com.messenger.flow.GsonParceler;
-import com.messenger.flow.StyledPath;
-import com.messenger.flow.container.FramePathContainerView;
+import com.messenger.flow.path.StyledPath;
+import com.messenger.flow.util.FlowActivityHelper;
+import com.messenger.flow.util.GsonParceler;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.techery.spares.annotations.Layout;
@@ -30,6 +29,7 @@ import butterknife.InjectView;
 import flow.Flow;
 import flow.History;
 import flow.path.Path;
+import flow.path.PathContainerView;
 
 @Layout(R.layout.activity_base_messenger)
 public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
@@ -48,7 +48,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     @InjectView(R.id.drawer_layout)
     protected NavigationDrawerViewImpl navDrawer;
     @InjectView(R.id.root_container)
-    protected FramePathContainerView container;
+    protected PathContainerView container;
 
     private FlowActivityHelper flowActivityHelper;
 
@@ -132,7 +132,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     private Path provideDefaultScreen() {
-        return new ConversationsPath();
+        return ConversationsPath.MASTER_PATH;
     }
 
     private void itemSelected(ComponentDescription component) {

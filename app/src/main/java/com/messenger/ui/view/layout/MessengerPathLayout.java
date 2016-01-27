@@ -3,8 +3,8 @@ package com.messenger.ui.view.layout;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.messenger.flow.PathView;
-import com.messenger.flow.StyledPath;
+import com.messenger.flow.path.PathView;
+import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.presenter.MessengerPresenter;
 
 import flow.path.Path;

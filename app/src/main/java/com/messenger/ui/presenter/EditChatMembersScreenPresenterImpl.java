@@ -159,7 +159,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 .subscribe(cursor -> {
                     // cause admin of group chat is also participant
                     if (cursor.getCount() <= 1) {
-                        Flow.get(getContext()).set(new ConversationsPath());
+                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
                         return;
                     }
 

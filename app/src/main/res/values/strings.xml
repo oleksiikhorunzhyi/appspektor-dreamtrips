@@ -512,4 +512,6 @@
     <string name="feedback_send_btn">Send</string>
     <string name="feedback_select_category">Choose Reason</string>
 
+    <string name="years_ago">%d years ago</string>
+
 </resources>

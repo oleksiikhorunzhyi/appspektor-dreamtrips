@@ -41,7 +41,7 @@ import timber.log.Timber;
 
 public class XmppServerFacade implements MessengerServerFacade {
 
-    private static final long PACKET_REPLAY_TIMEOUT = TimeUnit.SECONDS.toMillis(15L);
+    private static final long PACKET_REPLAY_TIMEOUT = TimeUnit.SECONDS.toMillis(60L);
     private static final int TIME_PING_INTERVAL = 45; // secs
 
     private Context context;

@@ -104,6 +104,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         super.onDetachedFromWindow();
         ButterKnife.reset(this);
         photoPickerDelegate.setupPhotoPickerLayout(null);
+        setScrollableView(null);
     }
 
     @Override

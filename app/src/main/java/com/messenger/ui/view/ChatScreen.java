@@ -34,6 +34,8 @@ public interface ChatScreen extends MessengerScreen {
 
     int getLastVisiblePosition();
 
+    int getTotalShowingMessageCount();
+
     Observable<TextViewTextChangeEvent> getEditMessageObservable();
 
     Cursor getCurrentMessagesCursor();

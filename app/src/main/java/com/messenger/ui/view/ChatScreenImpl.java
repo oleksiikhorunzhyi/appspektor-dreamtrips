@@ -124,6 +124,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
 
         unreadMessagesView.setCloseButtonClickListener((view -> unreadMessagesView.hide()));
         unreadMessagesView.setUnreadMessagesClickListener((view -> {
+            unreadMessagesView.setEnabled(false);
             getPresenter().onUnreadMessagesHeaderClicked();
         }));
     }
@@ -226,6 +227,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     public void showUnreadMessageCount(int unreadMessagesCount) {
         if (unreadMessagesCount > 0) {
             unreadMessagesView.updateCount(unreadMessagesCount);
+            unreadMessagesView.setEnabled(true);
             unreadMessagesView.show();
         } else {
             unreadMessagesView.hide();
@@ -285,6 +287,7 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     @Override
     public void smoothScrollToPosition(int position) {
         recyclerView.smoothScrollToPosition(position);
+        unreadMessagesView.setEnabled(true);
     }
 
     @Override
@@ -309,6 +312,11 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
             return null;
         }
         return adapter.getCursor();
+    }
+
+    @Override
+    public int getTotalShowingMessageCount() {
+        return adapter == null? 0 : adapter.getItemCount();
     }
 
     @Override

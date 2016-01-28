@@ -475,35 +475,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onUnreadMessagesHeaderClicked() {
-        searchUnreadMessages(getView().getCurrentMessagesCursor())
-                .filter(result -> result.count > 0)
+        messageDAO.countFromFirstUnreadMessage(conversationId, user.getId())
+                .first()
+                .filter(result -> result > 0)
+                .compose(new IoToMainComposer<>())
                 .subscribe(result -> {
-                    getView().smoothScrollToPosition(result.firstUnreadMessagePosition);
+                    int total = getView().getTotalShowingMessageCount();
+                    int firstUnreadMessagePosition = total - result;
+                    getView().smoothScrollToPosition(firstUnreadMessagePosition < 0 ? 0 : firstUnreadMessagePosition);
                 });
-    }
-
-    private Observable<UnreadMessagesSearchResult> searchUnreadMessages(Cursor cursor) {
-        return Observable.<UnreadMessagesSearchResult>create(subscriber -> {
-            UnreadMessagesSearchResult result = new UnreadMessagesSearchResult();
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-                    if (!user.getId().equals(message.getFromId())
-                            && message.getStatus() == Message.Status.SENT) {
-                        if (result.count == 0) {
-                            result.firstUnreadMessagePosition = cursor.getPosition();
-                        }
-                        result.count++;
-                    }
-                } while (cursor.moveToNext());
-            }
-            subscriber.onNext(result);
-        }).compose(new IoToMainComposer<>());
-    }
-
-    private static class UnreadMessagesSearchResult {
-        private int count;
-        private int firstUnreadMessagePosition;
     }
 
     ///////////////////////////////////////////////////////////////////////////

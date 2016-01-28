@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.fragment.FragmentUtil;
@@ -54,6 +56,7 @@ import butterknife.OnCheckedChanged;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.layout_bucket_item_details)
+@MenuResource(R.menu.menu_bucket_edit)
 public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragmentWithArgs<T, BucketBundle>
         implements BucketItemDetailsPresenter.View {
 
@@ -231,6 +234,19 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
             Intent intent = IntentUtils.callIntnet(diningPhone.getText().toString());
             FragmentUtil.startSafely(this, intent);
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                getPresenter().onEdit();
+                break;
+            case R.id.action_delete:
+                getPresenter().onDelete();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

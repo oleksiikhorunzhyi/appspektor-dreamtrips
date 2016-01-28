@@ -1,7 +1,9 @@
 package com.messenger.ui.view.settings;
 
-import com.messenger.flow.StyledPath;
-import com.messenger.flow.container.Layout;
+import com.messenger.flow.path.MasterDetailPath;
+import com.messenger.flow.path.StyledPath;
+import com.messenger.flow.util.Layout;
+import com.messenger.ui.view.conversation.ConversationsPath;
 import com.worldventures.dreamtrips.R;
 
 @Layout(R.layout.screen_group_settings)
@@ -14,5 +16,10 @@ public class GroupSettingsPath extends StyledPath {
 
     public String getConversationId() {
         return conversationId;
+    }
+
+    @Override
+    public MasterDetailPath getMaster() {
+        return ConversationsPath.MASTER_PATH;
     }
 }

@@ -36,7 +36,7 @@ public class FramePathContainerView extends FrameLayout implements PathContainer
 
   @SuppressWarnings("UnusedDeclaration") // Used by layout inflation, of course!
   public FramePathContainerView(Context context, AttributeSet attrs) {
-    this(context, attrs, new SimplePathContainer(R.id.screen_switcher_tag, Path.contextFactory()));
+    this(context, attrs, new SimplePathContainer(context, R.id.screen_switcher_tag, Path.contextFactory()));
   }
 
   /**

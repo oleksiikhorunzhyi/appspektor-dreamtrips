@@ -23,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -123,7 +124,11 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(newConversation -> {
-                    Flow.get(getContext()).set(new ChatPath(newConversation.getId()));
+                    History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
+                    history.pop();
+                    history.pop();
+                    history.push(new ChatPath(newConversation.getId()));
+                    Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
                 });
     }
 

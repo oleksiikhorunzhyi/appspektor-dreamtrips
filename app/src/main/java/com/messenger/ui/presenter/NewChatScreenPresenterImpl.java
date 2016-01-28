@@ -21,6 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 
 public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
@@ -92,7 +93,10 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u, Participant.Affiliation.MEMBER).save());
                 ContentUtils.insert(Conversation.CONTENT_URI, conversation);
                 //
-                Flow.get(getContext()).set(new ChatPath(conversation.getId()));
+                History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
+                history.pop();
+                history.push(new ChatPath(conversation.getId()));
+                Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
                 return true;
         }
         return false;

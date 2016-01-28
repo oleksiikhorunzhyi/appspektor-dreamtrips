@@ -21,6 +21,8 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.selectable.SelectableCell;
+import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +33,7 @@ import butterknife.InjectView;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseConversationViewHolder extends BaseViewHolder {
+public abstract class BaseConversationViewHolder extends BaseViewHolder implements SelectableCell {
 
     @InjectView(R.id.conversation_item_view)
     ViewGroup contentLayout;
@@ -113,6 +115,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
         this.conversation = conversation;
         loadParticipants(conversation);
         setUnreadMessageCount(conversation.getUnreadMessageCount());
+        applySelection();
     }
 
     protected void onClickDeleteButton() {
@@ -124,7 +127,8 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
     }
 
     protected void onItemClick() {
-        if (conversationClickListener != null) conversationClickListener.onConversationClick(conversation);
+        if (conversationClickListener != null)
+            conversationClickListener.onConversationClick(conversation, getAdapterPosition());
     }
 
     protected void onClick(View view) {
@@ -211,5 +215,24 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
 
     public void setSwipeButtonsListener(ConversationsCursorAdapter.SwipeButtonsListener swipeButtonsListener) {
         this.swipeButtonsListener = swipeButtonsListener;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Selection
+    ///////////////////////////////////////////////////////////////////////////
+
+    private SelectableDelegate selectableDelegate;
+
+    private void applySelection() {
+        if (!selectableDelegate.isSelected(getAdapterPosition())) {
+            contentLayout.setBackgroundColor(context.getResources().getColor(R.color.conversation_list_read_conversation_bg));
+        } else {
+            contentLayout.setBackgroundColor(context.getResources().getColor(R.color.conversation_list_selected_conversation_bg));
+        }
+    }
+
+    @Override
+    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+        this.selectableDelegate = selectableDelegate;
     }
 }

@@ -15,14 +15,8 @@ import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
 import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
-import com.messenger.ui.presenter.ToolbarPresenter;
-import com.messenger.ui.view.conversation.ConversationListScreenImpl;
-import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
         includes = {
@@ -49,23 +43,11 @@ import dagger.Provides;
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,
 
-//                screen
-                ConversationListScreenImpl.class,
-                EditChatMembersScreenImpl.class,
-
                 MessengerNotificationPreSyncService.class,
-                ToolbarPresenter.class,
         },
         complete = false, library = true
 )
 public class MessengerModule {
 
-    public static final String MESSENGER = "Messenger";
-
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideMessengerComponent() {
-        return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger,
-                true, null);
-    }
 
 }

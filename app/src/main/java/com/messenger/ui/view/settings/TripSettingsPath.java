@@ -1,6 +1,6 @@
 package com.messenger.ui.view.settings;
 
-import com.messenger.flow.container.Layout;
+import com.messenger.flow.util.Layout;
 import com.worldventures.dreamtrips.R;
 
 @Layout(R.layout.screen_trip_settings)

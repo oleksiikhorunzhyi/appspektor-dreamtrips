@@ -162,8 +162,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         return true;
                     } else {
                         //if we were kicked from conversation
-                        Flow.get(getContext()).set(new ConversationsPath());
-                        return false;
+                       Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
+                       return false;
                     }
                 })
                 .compose(bindViewIoToMainComposer())

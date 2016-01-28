@@ -36,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import flow.path.PathContext;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
         implements ChatScreen {
@@ -114,6 +115,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         //
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
+        toolbarPresenter.hideBackButtonInLandscape();
         toolbarPresenter.setTitle("");
         toolbarPresenter.setSubtitle("");
 

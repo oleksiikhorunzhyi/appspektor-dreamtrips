@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
+import com.messenger.di.MessengerActivityModule;
 import com.messenger.di.MessengerModule;
-import com.messenger.flow.FlowActivityHelper;
-import com.messenger.flow.GsonParceler;
-import com.messenger.flow.StyledPath;
-import com.messenger.flow.container.FramePathContainerView;
+import com.messenger.flow.path.StyledPath;
+import com.messenger.flow.util.FlowActivityHelper;
+import com.messenger.flow.util.GsonParceler;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.techery.spares.annotations.Layout;
@@ -30,6 +31,7 @@ import butterknife.InjectView;
 import flow.Flow;
 import flow.History;
 import flow.path.Path;
+import flow.path.PathContainerView;
 
 @Layout(R.layout.activity_base_messenger)
 public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
@@ -48,7 +50,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     @InjectView(R.id.drawer_layout)
     protected NavigationDrawerViewImpl navDrawer;
     @InjectView(R.id.root_container)
-    protected FramePathContainerView container;
+    protected PathContainerView container;
 
     private FlowActivityHelper flowActivityHelper;
 
@@ -62,7 +64,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
         initFlow(conversationId);
         //
         navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider
-                .getComponentByKey(MessengerModule.MESSENGER));
+                .getComponentByKey(MessengerActivityModule.MESSENGER));
     }
 
     @Override
@@ -92,7 +94,13 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        flowActivityHelper.onSaveState(outState);
+        flowActivityHelper.onSaveState(outState, (View) container);
+    }
+
+    @Override
+    protected void onDestroy() {
+        flowActivityHelper = null;
+        super.onDestroy();
     }
 
     @Override
@@ -107,9 +115,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     private void initNavDrawer() {
-        navigationDrawerPresenter = new NavigationDrawerPresenter();
-        inject(navigationDrawerPresenter);
-        navigationDrawerPresenter.attachView(navDrawer, rootComponentsProvider.getActiveComponents());
+        navigationDrawerPresenter.attachView(drawerLayout, navDrawer, rootComponentsProvider.getActiveComponents());
         navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
         navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
         navigationDrawerPresenter.setOnLogout(this::logout);
@@ -132,7 +138,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     private Path provideDefaultScreen() {
-        return new ConversationsPath();
+        return ConversationsPath.MASTER_PATH;
     }
 
     private void itemSelected(ComponentDescription component) {

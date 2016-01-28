@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
+import com.messenger.di.MessengerActivityModule;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
@@ -26,7 +27,6 @@ import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.friends.FriendsModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.membership.MembershipModule;
-import com.messenger.di.MessengerModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
@@ -134,7 +134,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new FriendsModule());
         modules.add(new FeedModule());
         modules.add(new DtlModule());
-        modules.add(new MessengerModule());
+        modules.add(new MessengerActivityModule());
         return modules;
     }
 

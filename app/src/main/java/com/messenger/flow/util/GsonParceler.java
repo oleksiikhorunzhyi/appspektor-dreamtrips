@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.messenger.flow;
+package com.messenger.flow.util;
 
 import android.os.Parcel;
 import android.os.Parcelable;

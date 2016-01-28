@@ -7,9 +7,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 
-import com.messenger.flow.StyledPath;
+import com.messenger.flow.path.StyledPath;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+
+import javax.inject.Inject;
 
 import flow.Flow;
 
@@ -17,6 +21,9 @@ public class ToolbarPresenter {
 
     private Toolbar toolbar;
     private Context context;
+
+    @Inject
+    NavigationDrawerPresenter navigationDrawerPresenter;
 
     public ToolbarPresenter(Toolbar toolbar, Context context) {
         this.context = context;
@@ -60,6 +67,13 @@ public class ToolbarPresenter {
         else enableUpNavigationButton();
     }
 
+    public void hideBackButtonInLandscape() {
+        if (ViewUtils.isLandscapeOrientation(context) && ViewUtils.isTablet(context)) {
+            toolbar.setNavigationIcon(null);
+            toolbar.setNavigationOnClickListener(null);
+        }
+    }
+
     private void enableUpNavigationButton() {
         TypedValue typedValue = new TypedValue();
         context.getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.homeAsUpIndicator,
@@ -71,8 +85,12 @@ public class ToolbarPresenter {
     private void enableDrawerNavigationButton() {
         if (context.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-        //
-        // toolbar.setNavigationOnClickListener(view -> openDrawer());
+
+         toolbar.setNavigationOnClickListener(view -> openDrawer());
+    }
+
+    private void openDrawer() {
+        if (navigationDrawerPresenter != null) navigationDrawerPresenter.openDrawer();
     }
 
 }

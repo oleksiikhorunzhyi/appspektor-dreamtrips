@@ -25,7 +25,6 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;
@@ -61,12 +60,6 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     public EditChatMembersScreenImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        ((Injector) getContext().getApplicationContext()).inject(this);
     }
 
     @Override

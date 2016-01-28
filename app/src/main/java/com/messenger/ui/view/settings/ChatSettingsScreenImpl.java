@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.messenger.flow.StyledPath;
+import com.messenger.flow.path.StyledPath;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;

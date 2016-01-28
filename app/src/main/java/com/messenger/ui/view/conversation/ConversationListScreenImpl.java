@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Spinner;
 
+import com.messenger.flow.path.StyledPath;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
@@ -32,6 +33,8 @@ import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.selectable.SelectionManager;
+import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +48,7 @@ import static com.messenger.ui.adapter.ConversationsCursorAdapter.SwipeButtonsLi
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem;
 
 public class ConversationListScreenImpl extends MessengerPathLayout<ConversationListScreen,
-        ConversationListScreenPresenter, ConversationsPath> implements ConversationListScreen, SwipeButtonsListener {
+        ConversationListScreenPresenter, StyledPath> implements ConversationListScreen, SwipeButtonsListener {
 
     @InjectView(R.id.conversation_list_content_view)
     ViewGroup contentView;
@@ -66,12 +69,13 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     ParticipantsDAO participantsDAO;
 
     SearchView searchView;
-    //
-    private ToolbarPresenter toolbarPresenter;
 
     private ConversationsCursorAdapter adapter;
+
     private LinearLayoutManager linearLayoutManager;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
+
+    private SelectionManager selectionManager;
 
     public ConversationListScreenImpl(Context context) {
         super(context);
@@ -109,8 +113,11 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
     private void initUi() {
         ButterKnife.inject(this);
+        injector.inject(this);
         //
         ToolbarPresenter toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
+        injector.inject(toolbarPresenter);
+        //
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
         toolbarPresenter.disableTitle();
 
@@ -126,6 +133,9 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
             }
         });
+        //
+        selectionManager = new SingleSelectionManager(recyclerView);
+        selectionManager.setEnabled(true);
     }
 
     protected BaseAdapter createSpinnerAdapter() {
@@ -143,13 +153,18 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
         ConversationListScreenPresenter presenter = getPresenter();
 
         adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser(), participantsDAO);
-        adapter.setConversationClickListener(presenter::onConversationSelected);
         adapter.setSwipeButtonsListener(this);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
-        adapter.setConversationClickListener(conversation -> getPresenter().onConversationSelected(conversation));
-        recyclerView.setAdapter(adapter);
+        adapter.setConversationClickListener(this::onConversationSelected);
+        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
+        //
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
+    }
+
+    private void onConversationSelected(Conversation conversation, int adapterPosition) {
+        getPresenter().onConversationSelected(conversation);
+        selectionManager.toggleSelection(adapterPosition);
     }
 
     @Override

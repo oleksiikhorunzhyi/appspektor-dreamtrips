@@ -1,9 +1,6 @@
-package com.messenger.flow;
+package com.messenger.flow.path;
 
-import flow.path.Path;
-
-
-public class StyledPath extends Path {
+public abstract class StyledPath extends MasterDetailPath {
 
     public PathAttrs getAttrs() {
         return WITHOUT_DRAWER;

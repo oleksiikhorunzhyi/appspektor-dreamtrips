@@ -13,9 +13,10 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationListScreen;
-import com.messenger.ui.view.add_member.NewChatPath;
+import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.viewstate.ConversationListViewState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -167,7 +169,20 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        Flow.get(getContext()).set(new ChatPath(conversation.getId()));
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory()
+                .buildUpon();
+        //
+        Object object = historyBuilder.pop();
+        Flow.Direction direction;
+        if (object instanceof ConversationsPath) {
+            historyBuilder.push(object);
+            direction = Flow.Direction.FORWARD;
+        } else {
+            direction = Flow.Direction.REPLACE;
+        }
+        historyBuilder.push(new ChatPath(conversation.getId()));
+        //
+        Flow.get(getContext()).setHistory(historyBuilder.build(), direction);
     }
 
     @Override

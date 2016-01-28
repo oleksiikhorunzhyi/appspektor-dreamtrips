@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.messenger.flow.container;
+package com.messenger.flow.util;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

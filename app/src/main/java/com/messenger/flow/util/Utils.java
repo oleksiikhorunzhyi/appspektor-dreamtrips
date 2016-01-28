@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.messenger.flow.container;
+package com.messenger.flow.util;
 
 import android.view.View;
 import android.view.ViewTreeObserver;

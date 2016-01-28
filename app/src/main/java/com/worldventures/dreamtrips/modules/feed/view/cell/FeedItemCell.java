@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsC
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -86,9 +88,8 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
     @Override
     protected void syncUIStateWithModel() {
         if (commentCellHelper != null) {
-            Comment comment = getModelObject().getItem().getComments() == null ? null :
-                    Queryable.from(getModelObject().getItem().getComments())
-                            .firstOrDefault();
+            List<Comment> commentList = getModelObject().getItem().getComments();
+            Comment comment = commentList.isEmpty() ? null : Queryable.from(commentList).lastOrDefault();
             if (comment != null) {
                 commentCellHelper.showContainer();
                 commentCellHelper.set(comment);
@@ -104,8 +105,7 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
 
     private void hideLikersPanel() {
         View likersPanel = itemView.findViewById(R.id.likers_panel);
-        if (likersPanel != null)
-            itemView.findViewById(R.id.likers_panel).setVisibility(View.GONE);
+        if (likersPanel != null) likersPanel.setVisibility(View.GONE);
     }
 
     @Override

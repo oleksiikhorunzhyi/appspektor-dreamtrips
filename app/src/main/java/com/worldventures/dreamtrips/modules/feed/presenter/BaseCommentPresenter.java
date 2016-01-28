@@ -41,8 +41,8 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
+
     @State
     FeedEntity feedEntity;
     @State
@@ -65,7 +65,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         super.takeView(view);
         view.setDraftComment(draftComment);
         view.setLikersPanel(feedEntity);
-        checkCommentsAndLikesToLoad();
+        //
+        if (isNeedCheckCommentsWhenStart())
+            checkCommentsAndLikesToLoad();
     }
 
     @Override
@@ -86,6 +88,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             loadLikes();
             loadInitiated = true;
         }
+    }
+
+    protected boolean isNeedCheckCommentsWhenStart() {
+        return true;
     }
 
     private void loadComments() {
@@ -111,7 +117,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             case ADDED:
                 if (event.getSpiceException() == null) {
                     view.addComment(event.getComment());
-                    feedEntity.getComments().add(0, event.getComment());
+                    feedEntity.getComments().add(event.getComment());
                     feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
                     sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
                 } else {
@@ -242,7 +248,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     @Override
     public void handleError(SpiceException error) {
-
         super.handleError(error);
         view.setLoading(false);
     }

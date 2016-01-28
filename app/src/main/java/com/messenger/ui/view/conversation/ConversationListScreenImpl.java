@@ -33,8 +33,6 @@ import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.selectable.SelectionManager;
-import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,8 +72,6 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
     private LinearLayoutManager linearLayoutManager;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
-
-    private SelectionManager selectionManager;
 
     public ConversationListScreenImpl(Context context) {
         super(context);
@@ -133,9 +129,11 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
             }
         });
-        //
-        selectionManager = new SingleSelectionManager(recyclerView);
-        selectionManager.setEnabled(true);
+    }
+
+    @Override
+    public void setSelectedConversationId(String conversationId) {
+        adapter.setSelectedConversationId(conversationId);
     }
 
     protected BaseAdapter createSpinnerAdapter() {
@@ -156,15 +154,10 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
         adapter.setSwipeButtonsListener(this);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
-        adapter.setConversationClickListener(this::onConversationSelected);
-        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
+        adapter.setConversationClickListener(getPresenter()::onConversationSelected);
+        recyclerView.setAdapter(adapter);
         //
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
-    }
-
-    private void onConversationSelected(Conversation conversation, int adapterPosition) {
-        getPresenter().onConversationSelected(conversation);
-        selectionManager.toggleSelection(adapterPosition);
     }
 
     @Override

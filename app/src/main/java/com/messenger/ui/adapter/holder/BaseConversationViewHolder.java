@@ -21,8 +21,6 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.selectable.SelectableCell;
-import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +31,7 @@ import butterknife.InjectView;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseConversationViewHolder extends BaseViewHolder implements SelectableCell {
+public abstract class BaseConversationViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.conversation_item_view)
     ViewGroup contentLayout;
@@ -111,11 +109,11 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder implemen
         return moreButton;
     }
 
-    public void bindConversation(@NonNull Conversation conversation) {
+    public void bindConversation(@NonNull Conversation conversation, String selectedConversationId) {
         this.conversation = conversation;
         loadParticipants(conversation);
         setUnreadMessageCount(conversation.getUnreadMessageCount());
-        applySelection();
+        applySelection(selectedConversationId);
     }
 
     protected void onClickDeleteButton() {
@@ -128,7 +126,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder implemen
 
     protected void onItemClick() {
         if (conversationClickListener != null)
-            conversationClickListener.onConversationClick(conversation, getAdapterPosition());
+            conversationClickListener.onConversationClick(conversation);
     }
 
     protected void onClick(View view) {
@@ -221,18 +219,12 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder implemen
     // Selection
     ///////////////////////////////////////////////////////////////////////////
 
-    private SelectableDelegate selectableDelegate;
-
-    private void applySelection() {
-        if (!selectableDelegate.isSelected(getAdapterPosition())) {
+    private void applySelection(String conversationId) {
+        if (!conversation.getId().equals(conversationId)) {
             contentLayout.setBackgroundColor(context.getResources().getColor(R.color.conversation_list_read_conversation_bg));
         } else {
             contentLayout.setBackgroundColor(context.getResources().getColor(R.color.conversation_list_selected_conversation_bg));
         }
     }
 
-    @Override
-    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
-        this.selectableDelegate = selectableDelegate;
-    }
 }

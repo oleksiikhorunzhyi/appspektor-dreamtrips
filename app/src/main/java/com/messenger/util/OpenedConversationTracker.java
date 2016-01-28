@@ -1,14 +1,22 @@
 package com.messenger.util;
 
+import rx.Observable;
+import rx.subjects.ReplaySubject;
+
 public class OpenedConversationTracker {
 
-    private String openedConversationId;
+    private ReplaySubject<String> replaySubject = ReplaySubject.create(1);
 
     public void setOpenedConversation(String openedConversationId) {
-        this.openedConversationId = openedConversationId;
+        replaySubject.onNext(openedConversationId);
     }
 
     public String getOpenedConversationId() {
-        return openedConversationId;
+        return replaySubject.getValue();
     }
+
+    public Observable<String> watchOpenedConversationId() {
+        return replaySubject.asObservable();
+    }
+
 }

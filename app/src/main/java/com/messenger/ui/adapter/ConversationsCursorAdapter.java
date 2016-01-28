@@ -72,8 +72,11 @@ public class ConversationsCursorAdapter
     private ParticipantsDAO participantsDAO;
     private Subscription mainSubscription;
 
+    //
+    private String selectedConversationId;
+
     public interface ConversationClickListener {
-        void onConversationClick(Conversation conversation, int adapterPosition);
+        void onConversationClick(Conversation conversation);
     }
 
     public interface SwipeButtonsListener {
@@ -106,7 +109,7 @@ public class ConversationsCursorAdapter
         Conversation conversation = SqlUtils.convertToModel(true, Conversation.class, cursor);
         Message message = SqlUtils.convertToModel(true, Message.class, cursor);
 
-        holder.bindConversation(conversation);
+        holder.bindConversation(conversation, selectedConversationId);
         holder.setConversationClickListener(conversationClickListener);
         holder.setSwipeButtonsListener(swipeButtonsListener);
 
@@ -121,6 +124,11 @@ public class ConversationsCursorAdapter
         swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
         //// TODO: 1/11/16 enable swipe and use comments below for future functional
         holder.getSwipeLayout().setSwipeEnabled(false);
+    }
+
+    public void setSelectedConversationId(String selectedConversationId) {
+        this.selectedConversationId = selectedConversationId;
+        notifyDataSetChanged();
     }
 
     private void setLastMessage(BaseConversationViewHolder holder, Message message, String userName, boolean isGroupConversation) {

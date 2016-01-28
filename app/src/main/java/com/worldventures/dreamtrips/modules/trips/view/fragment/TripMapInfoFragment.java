@@ -7,30 +7,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckedTextView;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapInfoBundle;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_trip_pin)
-public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> implements TripMapInfoPresenter.View {
+public class TripMapInfoFragment extends BaseFragmentWithArgs<TripMapInfoPresenter, TripMapInfoBundle> implements TripMapInfoPresenter.View {
 
-    public static final String EXTRA_TRIP = "EXTRA_TRIP";
     TripDetailsViewInjector tripDetailsViewInjector;
 
     @InjectView(R.id.imageViewTripImage)
@@ -39,30 +37,12 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
     protected CheckedTextView addToBucketView;
     @InjectView(R.id.imageViewLike)
     protected CheckedTextView likeView;
-    @InjectView(R.id.textViewName)
-    protected TextView textViewName;
-    @InjectView(R.id.textViewPlace)
-    protected TextView textViewPlace;
-    @InjectView(R.id.sold_out)
-    protected ImageView soldOut;
-    @InjectView(R.id.textViewPrice)
-    protected TextView textViewPrice;
-    @InjectView(R.id.textViewDate)
-    protected TextView textViewDate;
-    @InjectView(R.id.textViewPoints)
-    protected TextView textViewPoints;
-    @InjectView(R.id.textViewDescription)
-    protected TextView textViewDescription;
     @InjectView(R.id.itemLayout)
     protected RelativeLayout itemLayout;
-    @InjectView(R.id.pointsCountLayout)
-    protected FrameLayout pointsCountLayout;
-    @InjectView(R.id.textViewFeatured)
-    protected TextView textViewFeatured;
 
     @Override
     protected TripMapInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripMapInfoPresenter((TripModel) getArguments().getSerializable(EXTRA_TRIP));
+        return new TripMapInfoPresenter(getArgs().tripModel);
     }
 
     @Override
@@ -106,7 +86,8 @@ public class TripMapInfoFragment extends BaseFragment<TripMapInfoPresenter> impl
 
     @Override
     public void openDetails(FeedDetailsBundle bundle) {
-        router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+        router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(bundle)
                 .build());
     }

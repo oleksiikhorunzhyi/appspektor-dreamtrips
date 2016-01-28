@@ -20,12 +20,12 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.presenter.SuggestRestaurantBasePresenter;
@@ -43,7 +43,7 @@ import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.fragment_suggest_merchant)
 public abstract class SuggestRestaurantBaseFragment<T extends SuggestRestaurantBasePresenter>
-        extends BaseFragmentWithArgs<T, MerchantIdBundle>
+        extends RxBaseFragmentWithArgs<T, MerchantIdBundle>
         implements SuggestRestaurantBasePresenter.View, DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
 

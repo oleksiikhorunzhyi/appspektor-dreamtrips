@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.api.merchant.SuggestRestaurantCommand;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -13,7 +12,7 @@ public class DtlSuggestMerchantPresenter extends SuggestRestaurantBasePresenter<
 
     private String merchantId;
     private DtlMerchant dtlMerchant;
-
+    //
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
 
@@ -35,8 +34,14 @@ public class DtlSuggestMerchantPresenter extends SuggestRestaurantBasePresenter<
     }
 
     @Override
+    public void onLeadSuggested() {
+        TrackingHelper.dtlSuggestMerchant(dtlMerchant);
+        view.hideProgress();
+        view.merchantSubmitted();
+    }
+
+    @Override
     public void submitClicked() {
-        view.showProgress();
         DtlLead.Builder leadBuilder = new DtlLead.Builder()
                 .merchant(new DtlLead.Merchant(dtlMerchant.getId(), dtlMerchant.getDisplayName(), dtlMerchant.getCity()))
                 .contact(new DtlLead.Contact(view.getContactName(), view.getPhone(),
@@ -46,22 +51,11 @@ public class DtlSuggestMerchantPresenter extends SuggestRestaurantBasePresenter<
                 .rating(DtlLead.Rating.CLEANLINESS, view.getCleanlinessRating())
                 .rating(DtlLead.Rating.UNIQUENESS, view.getUniquenessRating())
                 .comment(view.getAdditionalInfo());
-
-        doRequest(new SuggestRestaurantCommand(leadBuilder.build()),
-                aVoid -> {
-                    TrackingHelper.dtlSuggestMerchant(dtlMerchant);
-                    view.hideProgress();
-                    view.merchantSubmitted();
-                },
-                spiceException -> {
-                    super.handleError(spiceException);
-                    view.hideProgress();
-                });
+        //
+        jobManager.suggestLeadExecutor.createJobWith(leadBuilder.build()).subscribe();
     }
 
     public interface View extends SuggestRestaurantBasePresenter.View {
-
         void syncUiWithMerchant(DtlMerchant merchant);
-
     }
 }

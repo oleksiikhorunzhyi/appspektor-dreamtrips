@@ -22,6 +22,8 @@ public interface ChatScreen extends MessengerScreen {
 
     void showUnreadMessageCount(int unreadMessage);
 
+    void hideUnreadMessageCount();
+
     void addTypingUser(User user);
 
     void removeTypingUser(User uxzser);

@@ -113,12 +113,17 @@ public class ImageUtils {
                     for (int i = 0; i < faceSparseArray.size(); i++) {
                         Face face = faceSparseArray.get(faceSparseArray.keyAt(i));
                         PointF position = face.getPosition();
-                        float absoluteX = Math.max(position.x, 0);
-                        float absoluteY = Math.max(position.y, 0);
+                        float absoluteX = Math.max(position.x, 0.0f);
+                        float absoluteY = Math.max(position.y, 0.0f);
                         PhotoTag.TagPosition absolute = new PhotoTag.TagPosition(
-                                (int) absoluteX, (int) absoluteY,
-                                (int) absoluteX + (int) face.getWidth(), (int) absoluteY + (int) face.getHeight());
+                                (int) absoluteX,
+                                (int) absoluteY,
+                                (int) absoluteX + (int) face.getWidth(),
+                                (int) absoluteY + (int) face.getHeight());
                         PhotoTag.TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
+                        float bottomXProportional = Math.min(0.95f, proportional.getBottomRight().getX());
+                        float bottomYProportional = Math.min(0.95f, proportional.getBottomRight().getY());
+                        proportional = new PhotoTag.TagPosition(proportional.getTopLeft(), new PhotoTag.Position(bottomXProportional, bottomYProportional));
                         result.add(new PhotoTag(proportional, new User()));
                     }
                     return result;

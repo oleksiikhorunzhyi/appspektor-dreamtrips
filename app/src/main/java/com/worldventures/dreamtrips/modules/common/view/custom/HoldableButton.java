@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -44,21 +43,6 @@ public class HoldableButton extends Button {
         }
     };
 
-    //region Setters
-    public void setOnClickHoldListener(OnClickHoldListener OnClickHoldListener) {
-        this.onClickHoldListener = OnClickHoldListener;
-    }
-
-    public void setHoldInitialDelay(int holdInitialDelay) {
-        this.holdInitialDelay = holdInitialDelay;
-    }
-
-    public void setHoldRepeatDelay(int holdRepeatDelay) {
-        this.holdRepeatDelay = holdRepeatDelay;
-    }
-    //endregion
-
-    //region Constructors
     public HoldableButton(Context context) {
         super(context);
     }
@@ -78,9 +62,19 @@ public class HoldableButton extends Button {
         super(context, attrs, defStyleAttr, defStyleRes);
         initializeWithAttrs(attrs);
     }
-    //endregion
 
-    //region Private methods
+    public void setOnClickHoldListener(OnClickHoldListener OnClickHoldListener) {
+        this.onClickHoldListener = OnClickHoldListener;
+    }
+
+    public void setHoldInitialDelay(int holdInitialDelay) {
+        this.holdInitialDelay = holdInitialDelay;
+    }
+
+    public void setHoldRepeatDelay(int holdRepeatDelay) {
+        this.holdRepeatDelay = holdRepeatDelay;
+    }
+
     private void initializeWithAttrs(AttributeSet attrs) {
         TypedArray arr = getContext().obtainStyledAttributes(attrs, R.styleable.HoldableButton);
         holdInitialDelay = arr.getInt(R.styleable.HoldableButton_holdInitialDelay, DEFAULT_HOLD_INITIAL_DELAY);
@@ -93,30 +87,25 @@ public class HoldableButton extends Button {
         if (onClickHoldListener != null) {
             onClickHoldListener.onClick(this);
         }
-        Log.d("pajero", "onClick");
     }
 
     private void onHoldStart(){
         if (onClickHoldListener != null) {
             onClickHoldListener.onHoldStart(this);
         }
-        Log.d("pajero", "onHoldStart");
     }
 
     private void onHold() {
         if (onClickHoldListener != null) {
             onClickHoldListener.onHold(this);
         }
-        Log.d("pajero", "onHold");
     }
 
     private void onHoldFinish(int holdEventCount){
         if (onClickHoldListener != null) {
             onClickHoldListener.onHoldEnd(this, holdEventCount);
         }
-        Log.d("pajero", "onHoldFinish" + holdEventCount);
     }
-    //endregion
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

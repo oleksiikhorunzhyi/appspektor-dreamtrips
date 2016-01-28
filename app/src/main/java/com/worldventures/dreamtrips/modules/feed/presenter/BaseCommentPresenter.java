@@ -132,7 +132,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         }
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
-
     }
 
     public void onEvent(LoadMoreEvent event) {

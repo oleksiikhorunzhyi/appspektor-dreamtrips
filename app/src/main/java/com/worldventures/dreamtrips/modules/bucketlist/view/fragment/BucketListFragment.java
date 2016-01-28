@@ -360,7 +360,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
 
         if (isTabletLandscape()) {
-            router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forFragment()
+            router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(false)
                     .containerId(R.id.detail_container)
                     .fragmentManager(getChildFragmentManager())
@@ -369,7 +369,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
             showDetailsContainer();
         } else {
             hideDetailContainer();
-            router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+            router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
                     .data(bundle)
                     .build());
         }

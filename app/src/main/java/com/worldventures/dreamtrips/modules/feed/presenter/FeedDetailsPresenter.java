@@ -62,6 +62,11 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
         handler.removeCallbacksAndMessages(null);
     }
 
+    @Override
+    protected boolean isNeedCheckCommentsWhenStart() {
+        return false;
+    }
+
     private void loadFullEventInfo() {
         doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
             updateFullEventInfo(feedEntityHolder);
@@ -71,6 +76,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
     protected void updateFullEventInfo(FeedEntityHolder feedEntityHolder) {
         surviveNeedfulFields(feedEntity, feedEntityHolder);
         feedEntity = feedEntityHolder.getItem();
+        feedEntity.setComments(null);
         feedItem.setItem(feedEntity);
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
         checkCommentsAndLikesToLoad();

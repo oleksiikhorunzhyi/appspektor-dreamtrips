@@ -136,4 +136,9 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
             adapter.setNotificationCount(count);
     }
 
+    @Override
+    public void setUnreadMessagesCount(int count) {
+        if (adapter != null)
+            adapter.setUnreadMessageCount(count);
+    }
 }

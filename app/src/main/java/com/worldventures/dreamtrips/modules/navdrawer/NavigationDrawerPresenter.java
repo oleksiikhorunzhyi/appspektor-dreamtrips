@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.navdrawer;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
+import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
@@ -17,6 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 
@@ -29,9 +31,13 @@ public class NavigationDrawerPresenter {
     @Inject
     @Global
     protected EventBus eventBus;
+    @Inject
+    protected UnreadConversationObservable unreadObservable;
 
     private NavigationDrawerView navigationDrawerView;
     private DrawerLayout drawerLayout;
+
+    private Subscription unreadConversationSubscription;
 
     public NavigationDrawerPresenter() {
     }
@@ -53,6 +59,10 @@ public class NavigationDrawerPresenter {
         navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
 
         eventBus.register(this);
+
+        unreadConversationSubscription = unreadObservable
+                .subscribe(navigationDrawerView::setUnreadMessagesCount);
+
     }
 
     public void detach() {
@@ -61,6 +71,9 @@ public class NavigationDrawerPresenter {
         onItemSelected = null;
         onLogout = null;
         eventBus.unregister(this);
+        if (unreadConversationSubscription != null &&
+                !unreadConversationSubscription.isUnsubscribed())
+            unreadConversationSubscription.unsubscribe();
     }
 
     public void onEventMainThread(UpdateUserInfoEvent event) {

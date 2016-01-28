@@ -44,6 +44,7 @@ public class TripViewInjector {
         if (!TextUtils.isEmpty(reward) && !"0".equals(reward)) {
             textViewPoints.setText(String.valueOf(reward));
             pointsCountLayout.setVisibility(View.VISIBLE);
+            textViewPoints.setVisibility(View.VISIBLE);
         } else {
             textViewPoints.setVisibility(View.GONE);
             pointsCountLayout.setVisibility(View.GONE);

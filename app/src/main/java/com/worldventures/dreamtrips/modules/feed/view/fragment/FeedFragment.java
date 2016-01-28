@@ -84,18 +84,21 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(friendsItem);
         setRequestsCount(getPresenter().getFriendsRequestsCount());
         friendsBadge.setOnClickListener(v -> {
-                    NavigationBuilder.create()
-                            .with(activityRouter)
-                            .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                            .attach(Route.FRIENDS);
-                    TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
-                });
+            NavigationBuilder.create()
+                    .with(activityRouter)
+                    .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+                    .attach(Route.FRIENDS);
+            TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
+        });
 
         MenuItem conversationItem = menu.findItem(R.id.action_unread_conversation);
-        unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
-        unreadConversationBadge.setImage(R.drawable.ic_action_message);
-        unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
-        unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
+        if (conversationItem != null) {
+            unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
+            unreadConversationBadge.setImage(R.drawable.ic_action_message);
+            unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
+            unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
+
+        }
     }
 
     @Override

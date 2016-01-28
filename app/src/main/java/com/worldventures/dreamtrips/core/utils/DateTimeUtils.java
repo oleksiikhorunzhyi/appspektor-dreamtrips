@@ -307,9 +307,9 @@ public class DateTimeUtils {
             return res.getString(R.string.month_ago, (int) Math.floor(deltaMinutes / (60 * 24 * 30)));
         } else if (deltaMinutes < (24 * 60 * 731)) {
             return res.getString(R.string.last_year);
+        } else {
+            return res.getString(R.string.years_ago, (int) Math.floor(deltaMinutes / (60 * 24 * 365.25)));
         }
-
-        return res.getString(R.string.weeks_ago, (int) Math.floor(deltaMinutes / (60 * 24 * 365)));
     }
 
 }

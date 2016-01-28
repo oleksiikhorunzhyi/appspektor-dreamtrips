@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import icepick.State;
 
-
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     @Inject

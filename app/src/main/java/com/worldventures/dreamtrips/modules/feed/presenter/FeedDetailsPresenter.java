@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -109,7 +110,14 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
     public void onEvent(EntityLikedEvent event) {
         feedEntity.syncLikeState(event.getFeedEntity());
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
+    }
 
+    public void onEvent(FeedEntityCommentedEvent event) {
+        if (event.getFeedEntity().equals(feedItem.getItem())) {
+            feedItem.setItem(event.getFeedEntity());
+            feedEntity = event.getFeedEntity();
+            view.updateFeedItem(feedItem);
+        }
     }
 
     public void onEvent(LoadFlagEvent event) {

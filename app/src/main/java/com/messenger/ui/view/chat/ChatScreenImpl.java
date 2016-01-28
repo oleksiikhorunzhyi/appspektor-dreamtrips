@@ -115,6 +115,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         //
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
+        toolbarPresenter.hideBackButtonInLandscape();
         toolbarPresenter.setTitle("");
         toolbarPresenter.setSubtitle("");
 

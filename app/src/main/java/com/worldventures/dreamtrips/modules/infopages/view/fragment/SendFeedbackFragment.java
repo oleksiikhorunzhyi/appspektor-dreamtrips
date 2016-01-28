@@ -80,7 +80,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
     }
 
     protected void validateSendButton() {
-        menuItemSend.setEnabled(!isMessageEmpty() && isReasonTypeSelected());
+        if (menuItemSend != null)
+            menuItemSend.setEnabled(!isMessageEmpty() && isReasonTypeSelected());
     }
 
     @Override

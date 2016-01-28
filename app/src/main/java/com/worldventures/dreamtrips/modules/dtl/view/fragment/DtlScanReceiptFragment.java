@@ -15,10 +15,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
@@ -40,7 +39,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.fragment_scan_receipt)
 @MenuResource(R.menu.menu_mock)
-public class DtlScanReceiptFragment extends BaseFragmentWithArgs<DtlScanReceiptPresenter, MerchantIdBundle>
+public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceiptPresenter, MerchantIdBundle>
         implements DtlScanReceiptPresenter.View {
 
     @InjectView(R.id.verify)

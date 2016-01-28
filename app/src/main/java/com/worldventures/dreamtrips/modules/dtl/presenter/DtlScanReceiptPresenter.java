@@ -5,17 +5,18 @@ import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.merchant.EstimatePointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -23,7 +24,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.View> {
+public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
 
     public static final int REQUESTER_ID = -3;
 
@@ -35,6 +36,9 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     SnappyRepository snapper;
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
+    @Inject
+    DtlJobManager jobManager;
+    //
     private DtlMerchant dtlMerchant;
     private DtlTransaction dtlTransaction;
 
@@ -67,6 +71,8 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         checkVerification();
         //
         view.showCurrency(dtlMerchant.getDefaultCurrency());
+        //
+        bindApiJob();
     }
 
     public void onAmountChanged(String amount) {
@@ -80,15 +86,19 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         else view.disableVerification();
     }
 
+    private void bindApiJob() {
+        bindJobCached(jobManager.estimatePointsExecutor)
+                .onProgress(view::showProgress)
+                .onSuccess(dataHolder -> attachDtPoints(dataHolder.getPoints()))
+                .onError(apiErrorPresenter::handleError);
+    }
+
     public void verify() {
-        view.showProgress();
-        //
         dtlTransaction.setBillTotal(Double.parseDouble(amount));
         TrackingHelper.dtlVerifyAmountUser(amount);
-
-        doRequest(new EstimatePointsRequest(merchantId, dtlMerchant.getDefaultCurrency().getCode(),
-                        dtlTransaction.getBillTotal()),
-                this::attachDtPoints);
+        //
+        jobManager.estimatePointsExecutor.createJobWith(merchantId, dtlTransaction.getBillTotal(),
+                dtlMerchant.getDefaultCurrency().getCode()).subscribe();
     }
 
     private void attachDtPoints(Double points) {
@@ -140,7 +150,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         checkVerification();
     }
 
-    public interface View extends ApiErrorView {
+    public interface View extends RxView, ApiErrorView {
         void openVerify(DtlTransaction dtlTransaction);
 
         void hideScanButton();

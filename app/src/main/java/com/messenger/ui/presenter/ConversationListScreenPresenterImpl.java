@@ -173,10 +173,16 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
                 .buildUpon();
         //
         Object object = historyBuilder.pop();
-        if (object instanceof ConversationsPath) historyBuilder.push(object);
+        Flow.Direction direction;
+        if (object instanceof ConversationsPath) {
+            historyBuilder.push(object);
+            direction = Flow.Direction.FORWARD;
+        } else {
+            direction = Flow.Direction.REPLACE;
+        }
         historyBuilder.push(new ChatPath(conversation.getId()));
         //
-        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+        Flow.get(getContext()).setHistory(historyBuilder.build(), direction);
     }
 
     @Override

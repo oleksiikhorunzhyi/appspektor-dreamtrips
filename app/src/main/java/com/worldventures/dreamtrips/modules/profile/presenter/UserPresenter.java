@@ -1,14 +1,8 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import com.innahema.collections.query.functions.Action1;
-import com.messenger.converter.UserConverter;
-import com.messenger.delegate.ChatDelegate;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.storage.dao.UsersDAO;
+import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
@@ -34,7 +28,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -48,7 +41,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     @Inject
     NotificationDelegate notificationDelegate;
     @Inject
-    ChatDelegate chatDelegate;
+    StartChatDelegate startSingleChatDelegate;
 
     public UserPresenter(UserBundle userBundle) {
         super(userBundle.getUser());
@@ -99,26 +92,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     public void onStartChatClicked() {
-        if (user.getUsername() == null) return; // if user isn't loaded yet
-
-        com.messenger.messengerservers.entities.User participant =
-                UsersDAO.getUser(user.getUsername());
-
-        if (participant == null) {
-            participant = UserConverter.convert(user);
-            participant.save();
-        }
-
-        Conversation conversation = chatDelegate.getExistingSingleConverastion(participant);
-        if (conversation == null) {
-            conversation = chatDelegate.createNewConversation(Collections.singletonList(participant), "");
-            //there is no owners in single chat
-            new ParticipantsRelationship(conversation.getId(), participant, Participant.Affiliation.MEMBER).save();
-            ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-        }
-
-        MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId());
-        //ChatActivity.startChat(activityRouter.getContext(), conversation);
+        startSingleChatDelegate.startSingleChat(user, conversation ->
+                MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId()));
     }
 
     public void addFriendClicked() {

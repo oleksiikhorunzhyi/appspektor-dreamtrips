@@ -10,9 +10,12 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
+import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -53,14 +56,29 @@ public class FeedActionPanelViewActionHandler {
         actionView.setOnCommentIconClickListener(feedItem -> eventBus.post(new CommentIconClickedEvent(feedItem)));
 
         actionView.setOnShareClickListener(feedItem -> {
-            new ShareDialog(actionView.getContext(), type -> {
-                share(actionView.getContext(), feedItem, type);
-            }).show();
+            ShareDialog.ShareDialogCallback callback = type -> onShare(actionView.getContext(), feedItem, type);
+            if (feedItem.getType() == FeedEntityHolder.Type.PHOTO) {
+                new PhotosShareDialog(actionView.getContext(), callback).show();
+            } else {
+                new ShareDialog(actionView.getContext(), callback).show();
+            }
         });
 
         actionView.setOnFlagClickListener(feedItem -> eventBus.post(new LoadFlagEvent(actionView)));
         actionView.setOnFlagDialogClickListener((feedItem, flagReasonId, reason) ->
                 eventBus.post(new ItemFlaggedEvent(feedItem.getItem(), flagReasonId, reason)));
+    }
+
+    private void onShare(Context context, FeedItem feedItem, String shareType) {
+        if (shareType.equals(ShareType.EXTERNAL_STORAGE)) {
+            downloadPhoto(feedItem);
+        } else {
+            share(context, feedItem, shareType);
+        }
+    }
+
+    private void downloadPhoto(FeedItem feedItem) {
+        eventBus.post(new DownloadPhotoEvent(((Photo) feedItem.getItem()).getFSImage().getUrl()));
     }
 
     private void share(Context context, FeedItem feedItem, String shareType) {
@@ -92,5 +110,4 @@ public class FeedActionPanelViewActionHandler {
                 .data(data)
                 .build());
     }
-
 }

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.di.MessengerActivityModule;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
@@ -32,6 +33,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private NavigationDrawerListener navigationDrawerListener;
     private int selectedComponent;
     private int notificationCount;
+    private int unreadMessageCount;
 
     public NavigationDrawerAdapter(List<ComponentDescription> data) {
         componentDescriptions = data;
@@ -95,8 +97,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             navigationDrawerListener.onNavigationDrawerItemSelected(item);
         });
 
-
-        if (item.getNavMenuTitle() == R.string.notifications_title && notificationCount > 0) {
+        if (item.getKey().equals(MessengerActivityModule.MESSENGER) && unreadMessageCount > 0) {
+            holder.badgeView.setVisibility(View.VISIBLE);
+            holder.badgeView.setBadgeBackgroundColor(holder.itemView.getResources().getColor(R.color.bucket_red));
+            holder.badgeView.setText(String.valueOf(unreadMessageCount));
+        } else if (item.getNavMenuTitle() == R.string.notifications_title && notificationCount > 0) {
             holder.badgeView.setVisibility(View.VISIBLE);
             holder.badgeView.setBadgeBackgroundColor(holder.itemView.getResources().getColor(R.color.bucket_red));
             holder.badgeView.setText(String.valueOf(notificationCount));
@@ -156,6 +161,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void setNotificationCount(int notificationCount) {
         if (this.notificationCount != notificationCount) {
             this.notificationCount = notificationCount;
+            notifyDataSetChanged();
+        }
+    }
+
+    public void setUnreadMessageCount(int unreadMessageCount) {
+        if (this.unreadMessageCount != unreadMessageCount) {
+            this.unreadMessageCount = unreadMessageCount;
             notifyDataSetChanged();
         }
     }

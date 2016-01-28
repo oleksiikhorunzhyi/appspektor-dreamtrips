@@ -15,5 +15,7 @@ public interface NavigationDrawerView {
 
     void setNotificationCount(int count);
 
+    void setUnreadMessagesCount(int count);
+
     void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter);
 }

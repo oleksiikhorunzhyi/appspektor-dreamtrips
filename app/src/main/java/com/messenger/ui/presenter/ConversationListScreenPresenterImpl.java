@@ -18,6 +18,7 @@ import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationListScreen;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.viewstate.ConversationListViewState;
+import com.messenger.util.OpenedConversationTracker;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -48,6 +49,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     ConversationsDAO conversationsDAO;
     @Inject
     NotificationDelegate notificationDelegate;
+    @Inject
+    OpenedConversationTracker openedConversationTracker;
 
     private final ChatLeavingDelegate chatLeavingDelegate;
     private final ConversationHelper conversationHelper;
@@ -99,6 +102,15 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         connectFilterStream();
         connectTypeStream();
         connectCursor();
+        connectToOpenedConversation();
+    }
+
+    private void connectToOpenedConversation() {
+        openedConversationTracker
+                .watchOpenedConversationId()
+                .compose(new IoToMainComposer<>())
+                .compose(bindView())
+                .subscribe(getView()::setSelectedConversationId);
     }
 
     private void connectFilterStream() {

@@ -9,6 +9,7 @@ public interface ConversationListScreen extends MessengerScreen {
     void showLoading();
     void showContent();
     void showError(Throwable e);
+    void setSelectedConversationId(String conversationId);
     void showConversations(Cursor cursor);
     void showConversations(Cursor cursor, String searchFilter);
     void showConversationDeletionConfirmationDialog(Conversation conversation);

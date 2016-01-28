@@ -28,7 +28,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     public static final int REQUESTER_ID = -3;
 
     private final String merchantId;
-
+    //
     @State
     String amount;
     @Inject
@@ -36,7 +36,6 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
     private DtlMerchant dtlMerchant;
-
     private DtlTransaction dtlTransaction;
 
     public DtlScanReceiptPresenter(String merchantId) {
@@ -54,19 +53,19 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         super.takeView(view);
         apiErrorPresenter.setView(view);
         dtlTransaction = snapper.getDtlTransaction(merchantId);
-
+        //
         if (dtlTransaction.getUploadTask() != null) {
             view.hideScanButton();
             view.attachReceipt(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
         }
-
+        //
         if (dtlTransaction.getBillTotal() != 0d) {
             view.preSetBillAmount(dtlTransaction.getBillTotal());
             this.amount = String.valueOf(dtlTransaction.getBillTotal());
         }
-
+        //
         checkVerification();
-
+        //
         view.showCurrency(dtlMerchant.getDefaultCurrency());
     }
 
@@ -76,8 +75,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     }
 
     private void checkVerification() {
-        if (!TextUtils.isEmpty(amount) &&
-                dtlTransaction.getUploadTask() != null)
+        if (!TextUtils.isEmpty(amount) && dtlTransaction.getUploadTask() != null)
             view.enableVerification();
         else view.disableVerification();
     }
@@ -102,9 +100,9 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
         view.openVerify(dtlTransaction);
     }
 
-    ////////////////////////////////////////
-    /////// Photo picking
-    ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    // Photo picking
+    ///////////////////////////////////////////////////////////////////////////
 
     public void scanReceipt() {
         eventBus.post(new ImagePickRequestEvent(PickImageDelegate.REQUEST_CAPTURE_PICTURE, REQUESTER_ID));
@@ -130,16 +128,15 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
     private void attachPhoto(String filePath) {
         TrackingHelper.dtlCaptureReceipt(filePath);
         view.attachReceipt(Uri.parse(filePath));
-
+        //
         UploadTask uploadTask = new UploadTask();
         uploadTask.setFilePath(filePath);
         TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
         uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
+        //
         dtlTransaction.setUploadTask(uploadTask);
-
         snapper.saveDtlTransaction(merchantId, dtlTransaction);
-
+        //
         checkVerification();
     }
 

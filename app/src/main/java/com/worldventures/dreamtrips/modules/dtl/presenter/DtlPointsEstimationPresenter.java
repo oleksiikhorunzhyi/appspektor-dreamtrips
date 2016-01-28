@@ -21,7 +21,7 @@ public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationP
 
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
-
+    //
     private DtlMerchant dtlMerchant;
 
     public DtlPointsEstimationPresenter(String merchantId) {

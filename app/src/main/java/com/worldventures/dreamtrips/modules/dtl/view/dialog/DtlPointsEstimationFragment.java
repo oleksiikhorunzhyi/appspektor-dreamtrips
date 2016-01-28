@@ -133,5 +133,4 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         progressBar.setVisibility(View.INVISIBLE);
         calculateButton.setVisibility(View.VISIBLE);
     }
-
 }

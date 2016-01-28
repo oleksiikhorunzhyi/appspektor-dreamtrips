@@ -209,7 +209,6 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
                     return true;
                 }
 
-                //
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     getPresenter().searchClosed();
@@ -224,7 +223,6 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
                     return false;
                 }
 
-                //
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     getPresenter().search(newText.toLowerCase());

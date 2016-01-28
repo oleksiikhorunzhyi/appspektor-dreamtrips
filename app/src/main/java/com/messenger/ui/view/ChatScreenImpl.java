@@ -225,13 +225,14 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
     }
 
     public void showUnreadMessageCount(int unreadMessagesCount) {
-        if (unreadMessagesCount > 0) {
-            unreadMessagesView.updateCount(unreadMessagesCount);
-            unreadMessagesView.setEnabled(true);
-            unreadMessagesView.show();
-        } else {
-            unreadMessagesView.hide();
-        }
+        unreadMessagesView.updateCount(unreadMessagesCount);
+        unreadMessagesView.setEnabled(true);
+        if (!unreadMessagesView.isShown()) unreadMessagesView.show();
+    }
+
+    @Override
+    public void hideUnreadMessageCount() {
+        unreadMessagesView.hide();
     }
 
     @Override

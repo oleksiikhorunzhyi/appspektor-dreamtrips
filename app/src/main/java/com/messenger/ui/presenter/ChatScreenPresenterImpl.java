@@ -107,6 +107,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected boolean typing;
     private long messagesUiWasInitializedTimestamp;
 
+    // // TODO: 1/28/16 replace this fields with new logic based on synctime
+    private boolean unreadMessagesCounterShown = false;
     private boolean isInitialUnreadMessagesLoading = false;
     private int initialConversationUnreadMessagesCount;
 
@@ -223,20 +225,31 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .subscribe(this::onConversationLoadedFirstTime);
 
-        conversationObservable
-                .filter(c -> !isInitialUnreadMessagesLoading)
-                .map(c -> c.getUnreadMessageCount())
-                .subscribe(value -> getView().showUnreadMessageCount(value));
-
         chatObservable = source
                 .flatMap(c -> createChat(messengerServerFacade.getChatManager(), c).subscribeOn(Schedulers.io()))
                 .replay(1).autoConnect();
 
+        initUnreadMessageCounterObservables();
         submitOneChatAction(this::onChatLoaded);
         connectMembers();
 
         source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
+    }
+
+    private void initUnreadMessageCounterObservables(){
+        Observable <Integer> unreadMessageCounterObservable = conversationObservable.map(c -> c.getUnreadMessageCount());
+
+        unreadMessageCounterObservable
+                .filter(count -> !isInitialUnreadMessagesLoading && !unreadMessagesCounterShown)
+                .subscribe(value -> {
+                    unreadMessagesCounterShown = true;
+                    getView().showUnreadMessageCount(value);
+                });
+
+        unreadMessageCounterObservable
+                .filter(count -> unreadMessagesCounterShown && count == 0)
+                .subscribe(value -> getView().hideUnreadMessageCount());
     }
 
     private void onConversationLoadedFirstTime(Conversation conversation) {
@@ -415,17 +428,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Unread and Mark as read
     ///////////////////////////////////////////////////////////////////////////
 
-    private void showUnreadMessageCount(int unreadMessageCount) {
-        conversationObservable
-                .first()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(conversation -> {
-                    if (!isInitialUnreadMessagesLoading) {
-                        getView().showUnreadMessageCount(conversation.getUnreadMessageCount());
-                    }
-                });
-    }
-
     private void subscribeUnreadMessageCount(Conversation conversation) {
         messageDAO.unreadCount(conversationId, user.getId())
                 .onBackpressureLatest()
@@ -436,7 +438,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         conversation.save();
                     }
                 })
-                .subscribe(this::showUnreadMessageCount);
+                .subscribe();
     }
 
     private void markAsReadWithMessagePosition(Cursor cursor, int position, long delay) {

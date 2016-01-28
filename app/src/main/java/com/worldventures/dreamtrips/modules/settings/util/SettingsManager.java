@@ -1,16 +1,24 @@
 package com.worldventures.dreamtrips.modules.settings.util;
 
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.settings.dialog.SelectDialogModel;
 import com.worldventures.dreamtrips.modules.settings.model.Settings;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.worldventures.dreamtrips.modules.settings.util.SettingsFactory.*;
 
 public class SettingsManager {
 
-    public List<Settings> merge(List<Settings> fromServer, List<Settings> local) {
+    private SettingsManager() {
+    }
+
+    public static List<Settings> merge(List<Settings> fromServer, List<Settings> local) {
         return Queryable.from(fromServer).filter(local::contains).map(setting -> {
             Settings localSetting = Queryable.from(local).firstOrDefault(setting::equals);
             if (localSetting != null) setting.setType(localSetting.getType());
@@ -18,7 +26,7 @@ public class SettingsManager {
         }).toList();
     }
 
-    public int getLocalizedTitleResource(String title) {
+    public static int getLocalizedTitleResource(String title) {
         switch (title) {
             case DISTANCE_UNITS:
                 return R.string.settings_distance_units;
@@ -37,7 +45,7 @@ public class SettingsManager {
         }
     }
 
-    public int getLocalizedOptionResource(String option) {
+    public static int getLocalizedOptionResource(String option) {
         switch (option) {
             case MILES:
                 return R.string.abbreviated_miles;
@@ -46,5 +54,43 @@ public class SettingsManager {
             default:
                 return 0;
         }
+    }
+
+    public static SelectDialogModel getSelectDialogModel(@NonNull Resources res,
+                                                         @NonNull String title,
+                                                         @NonNull List<String> options,
+                                                         String value){
+        SelectDialogModel model = new SelectDialogModel();
+        //title
+        switch (title){
+            case DISTANCE_UNITS:
+                model.setTitleId(R.string.show_distance_in);
+                break;
+            default:
+                break;
+        }
+        //items
+        int optionsSize = options.size();
+        ArrayList<String> items = new ArrayList<>(optionsSize);
+        for (String s : options){
+            switch (s){
+                case MILES:
+                    items.add(res.getString(R.string.settings_miles));
+                    break;
+                case KILOMETERS:
+                    items.add(res.getString(R.string.settings_kilometers));
+                    break;
+            }
+        }
+        model.setItems(items);
+        //checked position
+        int selectedPosition = -1;
+        for (int i = 0; i < optionsSize; i++) {
+            if (options.get(i).equals(value)) {
+                selectedPosition = i;
+            }
+        }
+        model.setSelectedPosition(selectedPosition);
+        return model;
     }
 }

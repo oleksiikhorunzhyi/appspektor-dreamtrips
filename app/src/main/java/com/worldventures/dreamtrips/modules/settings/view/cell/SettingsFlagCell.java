@@ -22,16 +22,13 @@ public class SettingsFlagCell extends AbstractDelegateCell<FlagSettings, CellDel
     @InjectView(R.id.flag_checkbox)
     CheckBox flag;
 
-    private SettingsManager settingsManager;
-
     public SettingsFlagCell(View view) {
         super(view);
-        settingsManager = new SettingsManager();
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        settingsTitle.setText(settingsManager.getLocalizedTitleResource(getModelObject().getName()));
+        settingsTitle.setText(SettingsManager.getLocalizedTitleResource(getModelObject().getName()));
         flag.setChecked(getModelObject().getValue());
     }
 

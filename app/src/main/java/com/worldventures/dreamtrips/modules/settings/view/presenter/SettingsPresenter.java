@@ -38,10 +38,9 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        SettingsManager settingsManager = new SettingsManager();
         SettingsFactory settingsFactory = new SettingsFactory();
         if (this.settingsList == null)
-            this.settingsList = (ArrayList<Settings>) settingsManager.merge(db.getSettings(),
+            this.settingsList = (ArrayList<Settings>) SettingsManager.merge(db.getSettings(),
                     settingsFactory.createSettings(group));
         //
         if (immutableSettingsList == null)

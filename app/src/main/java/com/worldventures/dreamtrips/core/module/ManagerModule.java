@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
@@ -49,6 +50,7 @@ import de.greenrobot.event.EventBus;
                 //
                 DtlFilterDelegate.class,
                 DtlLocationManager.class,
+                DtlJobManager.class,
         },
         library = true, complete = false
 )
@@ -110,6 +112,12 @@ public class ManagerModule {
     @Provides
     DtlMerchantRepository dtlMerchantDelegate(SnappyRepository snappyRepository) {
         return new DtlMerchantRepository(snappyRepository);
+    }
+
+    @Singleton
+    @Provides
+    DtlJobManager provideDtlJobManager(@ForApplication Injector injector) {
+        return new DtlJobManager(injector);
     }
 
     @Singleton

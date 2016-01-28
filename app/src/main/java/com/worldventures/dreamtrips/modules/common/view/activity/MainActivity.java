@@ -10,13 +10,14 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.messenger.di.MessengerModule;
+import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -84,7 +85,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         //
         String keyComponent = null;
         if (getIntent().getExtras() != null)
-            keyComponent = getIntent().getExtras().getString(COMPONENT_KEY);
+            keyComponent = getIntent()
+                    .getBundleExtra(ActivityRouter.EXTRA_BUNDLE)
+                    .getString(COMPONENT_KEY);
         //
         setSupportActionBar(this.toolbar);
         setUpBurger();
@@ -184,7 +187,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     private void itemSelected(ComponentDescription component) {
-        if (component.getKey().equals(MessengerModule.MESSENGER)) {
+        if (component.getKey().equals(MessengerActivityModule.MESSENGER)) {
             MessengerActivity.startMessenger(this);
             return;
         }

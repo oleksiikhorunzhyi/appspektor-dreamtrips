@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
+import com.messenger.di.MessengerActivityModule;
 import com.messenger.di.MessengerModule;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
@@ -63,7 +64,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
         initFlow(conversationId);
         //
         navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider
-                .getComponentByKey(MessengerModule.MESSENGER));
+                .getComponentByKey(MessengerActivityModule.MESSENGER));
     }
 
     @Override

@@ -113,8 +113,11 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
     private void initUi() {
         ButterKnife.inject(this);
+        injector.inject(this);
         //
         ToolbarPresenter toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
+        injector.inject(toolbarPresenter);
+        //
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
         toolbarPresenter.disableTitle();
 

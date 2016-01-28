@@ -10,7 +10,7 @@ import com.messenger.ui.presenter.MessengerPresenter;
 import flow.path.Path;
 
 public abstract class MessengerPathLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>, T extends StyledPath>
-        extends MessengerLinearLayout<V, P> implements PathView<T> {
+        extends MessengerInjectingLayout<V, P> implements PathView<T> {
 
     private Path path;
 

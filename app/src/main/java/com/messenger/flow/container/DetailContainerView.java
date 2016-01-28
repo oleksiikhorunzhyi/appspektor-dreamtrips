@@ -14,7 +14,8 @@ public class DetailContainerView extends FramePathContainerView {
 
     public DetailContainerView(Context context, AttributeSet attrs) {
         super(context, attrs, null);
-        DetailPathContainer container = new DetailPathContainer(R.id.screen_switcher_tag, Path.contextFactory(), getEmptyPath());
+        DetailPathContainer container = new DetailPathContainer(context,
+                R.id.screen_switcher_tag, Path.contextFactory(), getEmptyPath());
         setContainer(container);
     }
 
@@ -22,8 +23,8 @@ public class DetailContainerView extends FramePathContainerView {
 
         private Path emptyPath;
 
-        DetailPathContainer(int tagKey, PathContextFactory contextFactory, Path emptyPath) {
-            super(tagKey, contextFactory);
+        DetailPathContainer(Context context, int tagKey, PathContextFactory contextFactory, Path emptyPath) {
+            super(context,tagKey, contextFactory);
             this.emptyPath = emptyPath;
         }
 

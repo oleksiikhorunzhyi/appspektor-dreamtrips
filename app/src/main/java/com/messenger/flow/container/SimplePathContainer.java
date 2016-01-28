@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ import android.view.ViewGroup;
 import com.messenger.flow.path.PathView;
 import com.messenger.flow.util.Layout;
 import com.messenger.flow.util.Utils;
+import com.messenger.ui.view.layout.MessengerInjectingLayout;
+import com.techery.spares.module.Injector;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,9 +49,11 @@ import static flow.Flow.Direction.REPLACE;
 public class SimplePathContainer extends PathContainer {
     private static final Map<Class, Integer> PATH_LAYOUT_CACHE = new LinkedHashMap<>();
     private final PathContextFactory contextFactory;
+    private Context context;
 
-    public SimplePathContainer(int tagKey, PathContextFactory contextFactory) {
+    public SimplePathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
         super(tagKey);
+        this.context = context;
         this.contextFactory = contextFactory;
     }
 
@@ -57,7 +62,7 @@ public class SimplePathContainer extends PathContainer {
                                     final TraversalState traversalState, final Flow.Direction direction,
                                     final Flow.TraversalCallback callback) {
 
-        final PathContext context;
+        final PathContext pathContext;
         final PathContext oldPath;
         if (containerView.getChildCount() > 0) {
             oldPath = PathContext.get(containerView.getChildAt(0).getContext());
@@ -68,14 +73,18 @@ public class SimplePathContainer extends PathContainer {
         Path to = traversalState.toPath();
 
         View newView;
-        context = PathContext.create(oldPath, to, contextFactory);
+        pathContext = PathContext.create(oldPath, to, contextFactory);
         int layout = getLayout(to);
         newView =
-                LayoutInflater.from(context).cloneInContext(context).inflate(layout, containerView, false);
+                LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, containerView, false);
 
-        if (newView instanceof PathView) {
-            ((PathView) newView).setPath(to);
+        if (newView instanceof MessengerInjectingLayout
+                && context instanceof Injector) {
+            ((MessengerInjectingLayout) newView).setInjector((Injector) context);
         }
+
+        if (newView instanceof PathView)
+            ((PathView) newView).setPath(to);
 
         View fromView = null;
         if (traversalState.fromPath() != null) {
@@ -87,7 +96,7 @@ public class SimplePathContainer extends PathContainer {
         if (fromView == null || direction == REPLACE) {
             containerView.removeAllViews();
             containerView.addView(newView);
-            oldPath.destroyNotIn(context, contextFactory);
+            oldPath.destroyNotIn(pathContext, contextFactory);
             callback.onTraversalCompleted();
         } else {
             containerView.addView(newView);
@@ -99,7 +108,7 @@ public class SimplePathContainer extends PathContainer {
                         @Override
                         public void onTraversalCompleted() {
                             containerView.removeView(finalFromView);
-                            oldPath.destroyNotIn(context, contextFactory);
+                            oldPath.destroyNotIn(pathContext, contextFactory);
                             callback.onTraversalCompleted();
                         }
                     });

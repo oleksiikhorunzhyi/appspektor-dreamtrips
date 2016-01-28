@@ -115,9 +115,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     private void initNavDrawer() {
-        navigationDrawerPresenter = new NavigationDrawerPresenter();
-        inject(navigationDrawerPresenter);
-        navigationDrawerPresenter.attachView(navDrawer, rootComponentsProvider.getActiveComponents());
+        navigationDrawerPresenter.attachView(drawerLayout, navDrawer, rootComponentsProvider.getActiveComponents());
         navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
         navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
         navigationDrawerPresenter.setOnLogout(this::logout);

@@ -9,14 +9,13 @@ import com.worldventures.dreamtrips.R;
 
 import flow.Flow;
 import flow.path.Path;
-import flow.path.PathContainer;
 import flow.path.PathContextFactory;
 
 
 public class MasterPathContainerView extends FramePathContainerView {
 
   public MasterPathContainerView(Context context, AttributeSet attrs) {
-    super(context, attrs, new MasterPathContainer(R.id.screen_switcher_tag, Path.contextFactory()));
+    super(context, attrs, new MasterPathContainer(context, R.id.screen_switcher_tag, Path.contextFactory()));
   }
 
   @Override
@@ -40,8 +39,8 @@ public class MasterPathContainerView extends FramePathContainerView {
 
   static class MasterPathContainer extends SimplePathContainer {
 
-    MasterPathContainer(int tagKey, PathContextFactory contextFactory) {
-      super(tagKey, contextFactory);
+    MasterPathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
+      super(context, tagKey, contextFactory);
     }
 
     @Override protected int getLayout(Path path) {

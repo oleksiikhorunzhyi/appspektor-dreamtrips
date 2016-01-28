@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.modules.navdrawer;
 
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+
+import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -27,11 +31,21 @@ public class NavigationDrawerPresenter {
     protected EventBus eventBus;
 
     private NavigationDrawerView navigationDrawerView;
+    private DrawerLayout drawerLayout;
 
     public NavigationDrawerPresenter() {
     }
 
+    public NavigationDrawerPresenter(Injector injector) {
+        injector.inject(this);
+    }
+
     public void attachView(NavigationDrawerView navigationDrawerView, List<ComponentDescription> components) {
+        attachView(null, navigationDrawerView, components);
+    }
+
+    public void attachView(DrawerLayout drawerLayout, NavigationDrawerView navigationDrawerView, List<ComponentDescription> components) {
+        this.drawerLayout = drawerLayout;
         this.navigationDrawerView = navigationDrawerView;
         //
         navigationDrawerView.setNavigationDrawerPresenter(this);
@@ -74,6 +88,10 @@ public class NavigationDrawerPresenter {
         this.onItemReselected = onItemReselected;
     }
 
+    public void openDrawer() {
+        if (drawerLayout != null) drawerLayout.openDrawer(GravityCompat.START);
+    }
+
     public void setOnLogout(Action0 onLogout) {
         this.onLogout = onLogout;
     }
@@ -89,4 +107,5 @@ public class NavigationDrawerPresenter {
     void onLogout() {
         if (onLogout != null) onLogout.call();
     }
+
 }

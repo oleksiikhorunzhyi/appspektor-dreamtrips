@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.modules.feed.FeedModule;
 
 import java.util.List;
 
@@ -101,7 +102,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             holder.badgeView.setVisibility(View.VISIBLE);
             holder.badgeView.setBadgeBackgroundColor(holder.itemView.getResources().getColor(R.color.bucket_red));
             holder.badgeView.setText(String.valueOf(unreadMessageCount));
-        } else if (item.getNavMenuTitle() == R.string.notifications_title && notificationCount > 0) {
+        } else if (item.getKey().equals(FeedModule.NOTIFICATIONS) && notificationCount > 0) {
             holder.badgeView.setVisibility(View.VISIBLE);
             holder.badgeView.setBadgeBackgroundColor(holder.itemView.getResources().getColor(R.color.bucket_red));
             holder.badgeView.setText(String.valueOf(notificationCount));

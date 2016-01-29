@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import flow.Flow;
+import flow.History;
 import rx.Observable;
 
 public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
@@ -159,7 +160,11 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         @Override
         public void onChatLeft(String conversationId, String userId, boolean leave) {
             if (userId.equals(user.getId())) {
-                Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
+                Flow flow = Flow.get(getContext());
+                History newHistory = flow.getHistory()
+                        .buildUpon().clear().push(ConversationsPath.MASTER_PATH)
+                        .build();
+                flow.setHistory(newHistory, Flow.Direction.FORWARD);
             }
         }
     };

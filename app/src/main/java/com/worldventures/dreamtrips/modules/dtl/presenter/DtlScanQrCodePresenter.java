@@ -52,7 +52,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         //
         dtlTransaction = snapper.getDtlTransaction(dtlMerchant.getId());
         view.setMerchant(dtlMerchant);
-
+        //
         if (!TextUtils.isEmpty(dtlTransaction.getCode()))
             checkReceiptUploading();
     }
@@ -101,17 +101,16 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         view.finish();
     }
 
-
-    //////////////////////////////////////////////////
-    /////////// Receipt uploading
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    // Receipt uploading
+    ///////////////////////////////////////////////////////////////////////////
 
     private void checkReceiptUploading() {
         UploadTask uploadTask = dtlTransaction.getUploadTask();
-
+        //
         transferObserver =
                 photoUploadingSpiceManager.getTransferById(uploadTask.getAmazonTaskId());
-
+        //
         switch (transferObserver.getState()) {
             case FAILED:
                 //restart upload if failed
@@ -129,7 +128,6 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                 view.noConnection();
                 break;
         }
-
     }
 
     private void setListener() {

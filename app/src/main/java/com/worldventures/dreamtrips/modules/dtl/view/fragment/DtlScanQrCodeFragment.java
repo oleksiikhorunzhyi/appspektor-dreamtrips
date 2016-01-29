@@ -47,29 +47,20 @@ import timber.log.Timber;
 public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle>
         implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
-    @InjectView(R.id.scanner_view)
-    ZXingScannerView scanner;
-
     @Inject
     @Named(RouteCreatorModule.DTL_TRANSACTION)
     RouteCreator<DtlTransaction> routeCreator;
-
+    //
     @InjectView(R.id.name)
     TextView name;
     @InjectView(R.id.address)
     TextView address;
     @InjectView(R.id.merchant_image)
     SimpleDraweeView merchantImage;
-
-    DtlMerchantHelper helper;
-
+    @InjectView(R.id.scanner_view)
+    ZXingScannerView scanner;
+    //
     private DtlEnrollWizard dtlEnrollWizard;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        helper = new DtlMerchantHelper(activity);
-    }
 
     @Override
     protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
@@ -104,7 +95,6 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
     void showDeniedForCamera() {
         Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
     }
-
 
     @Override
     public void setMerchant(DtlMerchant dtlMerchant) {
@@ -187,7 +177,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
 
     private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
         if (alertDialog != null && alertDialog.isShowing()) return;
-
+        //
         alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                 .setTitleText(getString(R.string.alert))
                 .setContentText(getString(R.string.dtl_photo_upload_error))
@@ -232,7 +222,7 @@ public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePre
             alertDialog.show();
             return true;
         }
-
+        //
         return false;
     }
 }

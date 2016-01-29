@@ -127,7 +127,7 @@ public enum Route {
     USER_IMAGES(MemberImagesListFragment.class),
     BASE_IMAGES(BaseImageFragment.class),
     MEMBERSHIP(MembershipFragment.class),
-    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
+    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
     INVITE(InviteFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
     BUCKET_TABS(BucketTabsFragment.class, R.string.bucket_list),

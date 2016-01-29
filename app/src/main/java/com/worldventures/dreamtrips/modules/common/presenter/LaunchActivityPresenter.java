@@ -31,6 +31,8 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -101,6 +103,15 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
         localeStorage.put(locales);
+        loadSettings();
+    }
+
+    private void loadSettings() {
+        doRequest(new GetSettingsQuery(), this::onSettingsLoaded);
+    }
+
+    private void onSettingsLoaded(List<Setting> settings) {
+        snappyRepository.saveSettings(settings);
         loadStaticPagesContent();
     }
 

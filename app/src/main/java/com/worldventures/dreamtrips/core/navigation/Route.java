@@ -71,6 +71,9 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryD
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryListFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuggestRestaurantFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
+import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettingsFragment;
+import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
+import com.worldventures.dreamtrips.modules.settings.view.fragment.SettingsGroupFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
@@ -197,7 +200,11 @@ public enum Route {
 
     THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),
     PRESENTATION_VIDEOS(PresentationVideosFragment.class),
-    SEND_FEEDBACK(SendFeedbackFragment.class);
+    SEND_FEEDBACK(SendFeedbackFragment.class),
+
+    SETTINGS(SettingsGroupFragment.class, R.string.settings),
+    SETTINGS_NOTIFICATIONS(NotificationsSettingsFragment.class),
+    SETTINGS_GENERAL(GeneralSettingsFragment.class);
 
     private Class<? extends BaseFragment> fragmentClass;
     @StringRes

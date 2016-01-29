@@ -110,6 +110,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
         //
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
         toolbarPresenter.disableTitle();
+        toolbarPresenter.hideBackButtonInLandscape();
 
         conversationsDropDownSpinner.setAdapter(createSpinnerAdapter());
         conversationsDropDownSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

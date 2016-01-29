@@ -1,9 +1,7 @@
 package com.messenger.messengerservers.xmpp;
 
-
 import com.messenger.messengerservers.PaginationManager;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.messengerservers.xmpp.paginations.XmppConversationHistoryPaginator;
 
@@ -16,7 +14,7 @@ public class XmppPaginationManager implements PaginationManager {
     }
 
     @Override
-    public PagePagination<Message> getConversationHistoryPagination(Conversation conversation, int pageSize) {
-        return new XmppConversationHistoryPaginator(facade.getConnection(), conversation.getId(), pageSize);
+    public PagePagination<Message> getConversationHistoryPagination(String conversationId, int pageSize) {
+        return new XmppConversationHistoryPaginator(facade.getConnection(), conversationId, pageSize);
     }
 }

@@ -1,7 +1,7 @@
 package com.messenger.ui.presenter;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 

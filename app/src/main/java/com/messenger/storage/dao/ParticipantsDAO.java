@@ -6,12 +6,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.messenger.messengerservers.entities.Conversation$Table;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.ParticipantsRelationship$Adapter;
-import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.Conversation$Table;
+import com.messenger.entities.ParticipantsRelationship;
+import com.messenger.entities.ParticipantsRelationship$Adapter;
+import com.messenger.entities.ParticipantsRelationship$Table;
+import com.messenger.entities.User;
+import com.messenger.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 

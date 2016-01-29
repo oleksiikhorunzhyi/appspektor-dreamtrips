@@ -7,10 +7,10 @@ import android.view.View;
 
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
+import com.messenger.entities.User;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
+import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.util.ContactsHeaderCreator;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;

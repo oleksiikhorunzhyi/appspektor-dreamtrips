@@ -1,6 +1,6 @@
 package com.messenger.messengerservers.xmpp.packets;
 
-import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.model.Message;
 
 import org.jivesoftware.smack.packet.IQ;
 

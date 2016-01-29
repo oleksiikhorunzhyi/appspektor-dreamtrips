@@ -1,6 +1,6 @@
 package com.messenger.converter;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.common.model.User.Relationship;
 

@@ -3,7 +3,7 @@ package com.messenger.ui.adapter.holder;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;

@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.conversation.ConversationsPath;
@@ -212,9 +212,9 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Override
     public void onDeleteUserFromChatConfirmed(User user) {
         chatObservable.subscribe(chat -> {
-            chat.kick(Collections.singletonList(user))
+            chat.kick(Collections.singletonList(user.getId()))
                     .map(users -> users.get(0))
-                    .doOnNext(member -> participantsDAO.delete(conversationId, member.getId()))
+                    .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))
                     .doOnError(e -> Timber.e(e, ""))
                     .subscribe();
         });

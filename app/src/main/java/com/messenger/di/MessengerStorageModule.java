@@ -3,7 +3,7 @@ package com.messenger.di;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;

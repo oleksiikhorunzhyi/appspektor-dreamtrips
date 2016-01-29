@@ -3,7 +3,7 @@ package com.messenger.ui.viewstate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.entities.Conversation;
 
 public class ChatLayoutViewState extends LceViewState<Conversation> {
 

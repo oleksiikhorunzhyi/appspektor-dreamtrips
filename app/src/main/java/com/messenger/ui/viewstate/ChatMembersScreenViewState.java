@@ -2,7 +2,7 @@ package com.messenger.ui.viewstate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.model.ChatUser;
 
 import java.util.ArrayList;

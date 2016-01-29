@@ -6,15 +6,17 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Conversation$Adapter;
-import com.messenger.messengerservers.entities.Conversation$Table;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Message$Table;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.Conversation$Adapter;
+import com.messenger.entities.Conversation$Table;
+import com.messenger.entities.Message;
+import com.messenger.entities.Message$Table;
+import com.messenger.entities.ParticipantsRelationship;
+import com.messenger.entities.ParticipantsRelationship$Table;
+import com.messenger.entities.User;
+import com.messenger.entities.User$Table;
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -62,7 +64,7 @@ public class ConversationsDAO extends BaseDAO {
                 });
     }
 
-    public List<Conversation> getConversationsList(@Conversation.Type.ConversationType String type) {
+    public List<Conversation> getConversationsList(@ConversationType.Type String type) {
         return new Select()
                 .from(Conversation.class)
                 .where(Condition.column(Conversation$Table.TYPE).is(type))
@@ -105,7 +107,7 @@ public class ConversationsDAO extends BaseDAO {
                 .queryClose();
     }
 
-    public Observable<Cursor> selectConversationsList(@Nullable @Conversation.Type.ConversationType String type) {
+    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type) {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + Message$Table.TEXT + " as " + Message$Table.TEXT + ", " +
                 "m." + Message$Table.FROMID + " as " + Message$Table.FROMID + ", " +
@@ -124,7 +126,7 @@ public class ConversationsDAO extends BaseDAO {
         );
 
         query.append("WHERE c." + Conversation$Table.STATUS + " = ? ");
-        boolean onlyGroup = type != null && Conversation.Type.GROUP.equals(type);
+        boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
             query.append("AND c.type not like ?");
         }
@@ -141,9 +143,9 @@ public class ConversationsDAO extends BaseDAO {
 
         String[] args;
         if (onlyGroup) {
-            args = new String[]{Conversation.Status.PRESENT, Conversation.Type.CHAT, Conversation.Type.CHAT};
+            args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT, ConversationType.CHAT};
         } else {
-            args = new String[]{Conversation.Status.PRESENT, Conversation.Type.CHAT};
+            args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT};
         }
         queryBuilder.withSelectionArgs(args);
         return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
@@ -174,7 +176,7 @@ public class ConversationsDAO extends BaseDAO {
                         + " GROUP BY con." + Conversation$Table._ID
                         + " HAVING con." + Conversation$Table.TYPE + "=? "
                         + " OR COUNT(par." + ParticipantsRelationship$Table.ID + ")>1 ";
-        String[] args = new String[] {Conversation.Status.PRESENT, Conversation.Type.CHAT};
+        String[] args = new String[] {ConversationStatus.PRESENT, ConversationType.CHAT};
 
         RxContentResolver.Query query = new RxContentResolver.Query.Builder(null).withSelection(selection)
                                             .withSelectionArgs(args).build();

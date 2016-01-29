@@ -2,7 +2,7 @@ package com.messenger.ui.view.edit_member;
 
 import android.database.Cursor;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 public interface EditChatMembersScreen extends MessengerScreen {

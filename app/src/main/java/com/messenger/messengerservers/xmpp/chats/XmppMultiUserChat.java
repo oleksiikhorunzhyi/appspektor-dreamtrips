@@ -3,14 +3,12 @@ package com.messenger.messengerservers.xmpp.chats;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
@@ -32,9 +30,6 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient {
-
-    private static final String TAG = "MultiUserChat";
-
     @Nullable
     private org.jivesoftware.smackx.muc.MultiUserChat chat;
 
@@ -86,9 +81,9 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @Override
-    public Observable<Message> sendReadStatus(Message message) {
-        return Observable.just(message)
-                .compose(new StatusMessageTransformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
+    public Observable<String> sendReadStatus(String messageId) {
+        return Observable.just(messageId)
+                .compose(new StatusMessageTranformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
                         JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat),
                         stanza -> {
                             if (connection != null) {
@@ -100,40 +95,40 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @Override
-    public void invite(List<User> users) {
+    public void invite(List<String> usersId) {
         if (!isOwner)
             throw new IllegalAccessError("You are not owner of chat");
 
         if (!initializedAndConnected()) return;
 
         try {
-            for (User user : users) {
-                chat.invite(JidCreatorHelper.obtainUserJid(user.getId()), null);
+            for (String user : usersId) {
+                chat.invite(JidCreatorHelper.obtainUserJid(user), null);
             }
         } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, "Error ", e);
+            Timber.e(e, "Error when invite users");
         }
     }
 
     @Override
-    public Observable<List<User>> kick(List<User> users) {
+    public Observable<List<String>> kick(List<String> userIds) {
         if (!isOwner)
             throw new IllegalAccessError("You are not owner of chat. You cannot kick someone");
-        return Observable.<List<User>>create(subscriber -> {
+        return Observable.<List<String>>create(subscriber -> {
             subscriber.onStart();
 
             try {
                 if (initializedAndConnected()) {
                     chat.revokeMembership(Queryable
-                            .from(users)
-                            .map(element -> JidCreatorHelper.obtainUserJid(element.getId()))
+                            .from(userIds)
+                            .map(id -> JidCreatorHelper.obtainUserJid(id))
                             .toList());
 
-                    subscriber.onNext(users);
+                    subscriber.onNext(userIds);
                 }
                 subscriber.onCompleted();
             } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException | SmackException.NotConnectedException e) {
-                Log.e(TAG, "Error ", e);
+                Timber.e(e, "Error");
                 subscriber.onError(e);
             }
 
@@ -141,12 +136,12 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     }
 
     @Override
-    public void join(User user) {
+    public void join(String userId) {
         try {
             if (!initializedAndConnected()) return;
-            chat.join(user.getId());
+            chat.join(userId);
         } catch (SmackException | XMPPException.XMPPErrorException e) {
-            Log.e(TAG, "Error ", e);
+            Timber.e(e, "Error");
         }
     }
 
@@ -162,7 +157,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
             leavePresence.setTo(chat.getRoom() + "/" + chat.getNickname());
             connection.sendStanza(leavePresence);
         } catch (SmackException.NotConnectedException e) {
-            Log.e(TAG, "Error ", e);
+            Timber.e(e, "Error");
         }
     }
 
@@ -237,7 +232,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
 
                 setListeners();
             } catch (XMPPException.XMPPErrorException | SmackException e) {
-                Log.e(TAG, "Error ", e);
+                Timber.e(e, "Error");
             }
         }
     }

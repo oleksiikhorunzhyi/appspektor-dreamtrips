@@ -2,14 +2,16 @@ package com.messenger.ui.presenter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.messenger.delegate.ChatLeavingDelegate;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -139,10 +141,10 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     private void connectCursor() {
         Observable<Cursor> cursorObs = typeStream.asObservable().startWith(ALL_CHATS).distinctUntilChanged()
                 .flatMap(type -> {
-                    String convType = type == GROUP_CHATS ? Conversation.Type.GROUP : null;
+                    String convType = TextUtils.equals(type, GROUP_CHATS) ? ConversationType.GROUP : null;
                     return conversationsDAO.selectConversationsList(convType)
                             .onBackpressureLatest()
-                            .throttleLast(200l, TimeUnit.MILLISECONDS);
+                            .throttleLast(200L, TimeUnit.MILLISECONDS);
                 });
         Observable<String> filterObs = filterStream.asObservable()
                 .startWith(getViewState().getSearchFilter())

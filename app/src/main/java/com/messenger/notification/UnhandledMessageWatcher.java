@@ -6,9 +6,11 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.Message;
+import com.messenger.entities.User;
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -69,8 +71,8 @@ public class UnhandledMessageWatcher {
 
     private GlobalMessageListener messageListener = new SimpleGlobalMessageListener() {
         @Override
-        public void onReceiveMessage(Message message) {
-            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, message);
+        public void onReceiveMessage(com.messenger.messengerservers.model.Message message) {
+            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, new Message(message));
         }
     };
 
@@ -98,7 +100,7 @@ public class UnhandledMessageWatcher {
         WeakReference<Activity> activityRef = new WeakReference<>(activity);
         conversationsDAO.getConversation(message.getConversationId())
                 .compose(new NonNullFilter<>())
-                .filter(conversation -> TextUtils.equals(conversation.getStatus(), Conversation.Status.PRESENT))
+                .filter(conversation -> TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
                 .first()
                 .flatMap(conversation -> {
                     if (isSingleChat(conversation)) return composeSingleChatNotification(conversation, message);
@@ -134,7 +136,7 @@ public class UnhandledMessageWatcher {
     }
 
     private boolean isSingleChat(@NonNull Conversation conversation) {
-        return conversation.getType().equalsIgnoreCase(Conversation.Type.CHAT);
+        return conversation.getType().equalsIgnoreCase(ConversationType.CHAT);
     }
 
     //single ava + sender name + sender text

@@ -3,7 +3,7 @@ package com.messenger.ui.view.add_member;
 import android.database.Cursor;
 import android.support.annotation.StringRes;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 import java.util.List;

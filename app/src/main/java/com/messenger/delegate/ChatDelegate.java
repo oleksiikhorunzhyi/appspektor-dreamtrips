@@ -3,15 +3,13 @@ package com.messenger.delegate;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.messenger.entities.Conversation;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.worldventures.dreamtrips.BuildConfig;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,76 +18,71 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class ChatDelegate {
+    private final String currentUserId;
+    private final MessengerServerFacade messengerServerFacade;
 
-    User currentUser;
-    MessengerServerFacade messengerServerFacade;
-
-    public ChatDelegate(User currentUser, MessengerServerFacade messengerServerFacade) {
-        this.currentUser = currentUser;
+    public ChatDelegate(String currentUserId, MessengerServerFacade messengerServerFacade) {
+        this.currentUserId = currentUserId;
         this.messengerServerFacade = messengerServerFacade;
     }
 
-    public Conversation createNewConversation(List<User> participants, @Nullable String subject) {
-    if (BuildConfig.DEBUG && participants.size() < 1) throw new RuntimeException();
-        return participants.size() == 1 ?
-                createSingleChat(participants.get(0)) : createMultiUserChat(participants, subject);
+    public Conversation createNewConversation(List<String> participantIds, @Nullable String subject) {
+    if (BuildConfig.DEBUG && participantIds.size() < 1) throw new RuntimeException();
+        return participantIds.size() == 1 ?
+                createSingleChat(participantIds.get(0)) : createMultiUserChat(participantIds, subject);
     }
 
-    private Conversation createSingleChat(User participant) {
+    private Conversation createSingleChat(String participantId) {
         return new Conversation.Builder()
-                .type(Conversation.Type.CHAT)
-                .id(ThreadCreatorHelper.obtainThreadSingleChat(currentUser, participant))
-                .ownerId(currentUser.getUserName())
+                .type(ConversationType.CHAT)
+                .id(ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId))
+                .ownerId(currentUserId)
                 .lastActiveDate(System.currentTimeMillis())
-                .status(Conversation.Status.PRESENT)
+                .status(ConversationStatus.PRESENT)
                 .build();
     }
 
-    private Conversation createMultiUserChat(List<User> participans, @Nullable String subject){
+    private Conversation createMultiUserChat(List<String> participans, @Nullable String subject){
         Conversation conversation = new Conversation.Builder()
-                .type(Conversation.Type.GROUP)
+                .type(ConversationType.GROUP)
                 .id(UUID.randomUUID().toString())
-                .ownerId(currentUser.getUserName())
+                .ownerId(currentUserId)
                 .lastActiveDate(System.currentTimeMillis())
-                .status(Conversation.Status.PRESENT)
+                .status(ConversationStatus.PRESENT)
                 .subject(TextUtils.isEmpty(subject)? null : subject)
                 .build();
 
         return setMultiUserChatData(conversation, participans, subject);
     }
 
-    public Conversation modifyConversation(Conversation conversation, List<User> existParticipants,  List<User> newChatUsers, @Nullable String subject) {
-        if (conversation.getType().equals(Conversation.Type.CHAT)) {
+    public Conversation modifyConversation(Conversation conversation, List<String> existParticipantIds,  List<String> newChatUserIds, @Nullable String subject) {
+        if (conversation.getType().equals(ConversationType.CHAT)) {
             conversation = new Conversation.Builder()
-                    .ownerId(currentUser.getId())
-                    .type(Conversation.Type.GROUP)
-                    .status(Conversation.Status.PRESENT)
+                    .ownerId(currentUserId)
+                    .type(ConversationType.GROUP)
+                    .status(ConversationStatus.PRESENT)
                     .lastActiveDate(System.currentTimeMillis())
                     .id(UUID.randomUUID().toString())
                     .build();
             // since we create new group chat
             // make sure to invite original participant (addressee) from old single chat
-            newChatUsers.addAll(existParticipants);
-            newChatUsers.add(currentUser);
+            newChatUserIds.addAll(existParticipantIds);
+            newChatUserIds.add(currentUserId);
         }
 
-        return setMultiUserChatData(conversation, newChatUsers, subject);
+        return setMultiUserChatData(conversation, newChatUserIds, subject);
     }
 
-    public Conversation getExistingSingleConverastion(User participant) {
-        String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(currentUser, participant);
-        Conversation existingConversation = new Select()
-                .from(Conversation.class)
-                .byIds(conversationId)
-                .querySingle();
-
+    public Conversation getExistingSingleConverastion(String participantId) {
+        String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId);
+        Conversation existingConversation = ConversationsDAO.getConversationById(conversationId);
         return existingConversation;
     }
 
-    public Conversation setMultiUserChatData(Conversation conversation, List<User> newParticipants, @Nullable String subject) {
+    public Conversation setMultiUserChatData(Conversation conversation, List<String> newParticipantIds, @Nullable String subject) {
         messengerServerFacade.getChatManager()
-                .createMultiUserChatObservable(conversation.getId(), currentUser.getId())
-                .doOnNext(multiUserChat -> multiUserChat.invite(newParticipants))
+                .createMultiUserChatObservable(conversation.getId(), currentUserId)
+                .doOnNext(multiUserChat -> multiUserChat.invite(newParticipantIds))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

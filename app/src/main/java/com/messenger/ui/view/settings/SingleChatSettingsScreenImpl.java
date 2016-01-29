@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
 import com.worldventures.dreamtrips.R;

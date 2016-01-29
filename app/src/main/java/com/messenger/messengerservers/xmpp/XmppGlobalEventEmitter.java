@@ -22,6 +22,7 @@ import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
+import java.util.List;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
@@ -64,10 +65,16 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         notifyReceiveInvite(JidCreatorHelper.obtainId(room.getRoom()));
     }
 
-    public void interceptOutgoingMessages(com.messenger.messengerservers.entities.Message message) {
+    public void interceptOutgoingMessages(com.messenger.messengerservers.model.Message message) {
         // TODO: 1/7/16 set fromId in chat
-        message.setFromId(facade.getOwner().getId());
-        notifyGlobalMessage(message, false);
+        message.setFromId(facade.getOwnerId());
+        notifyGlobalMessage(message, EVENT_OUTGOING);
+    }
+
+    public void interceptPreOutgoingMessages(com.messenger.messengerservers.model.Message message) {
+        // TODO: 1/7/16 set fromId in chat
+        message.setFromId(facade.getOwnerId());
+        notifyGlobalMessage(message, EVENT_PRE_OUTGOING);
     }
 
     private void interceptIncomingMessage(Stanza packet) {
@@ -88,8 +95,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 }
                 break;
             case MESSAGE:
-                com.messenger.messengerservers.entities.Message message = messageConverter.convert(messageXMPP);
-                notifyGlobalMessage(message, true);
+                com.messenger.messengerservers.model.Message message = messageConverter.convert(messageXMPP);
+                notifyGlobalMessage(message, EVENT_INCOMING);
                 notifyNewUnhandledMessage(message); // TODO remove unhandled listeners
                 break;
             case SUBJECT:
@@ -140,4 +147,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         return ownMessage || delayed;
     }
 
+    @Override
+    public void notifyOnUserStatusChangedListener(String userId, boolean online) {
+        super.notifyOnUserStatusChangedListener(userId, online);
+    }
+
+    @Override
+    public void notifyOnFriendsChangedListener(List<String> userIds, boolean isFriend) {
+        super.notifyOnFriendsChangedListener(userIds, isFriend);
+    }
 }

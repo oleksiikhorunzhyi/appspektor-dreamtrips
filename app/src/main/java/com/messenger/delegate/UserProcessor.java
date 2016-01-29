@@ -1,10 +1,11 @@
 package com.messenger.delegate;
 
+import android.util.Pair;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.api.GetShortProfilesQuery;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.storage.dao.UsersDAO;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 
@@ -12,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -19,14 +22,16 @@ import timber.log.Timber;
 import static com.innahema.collections.query.queriables.Queryable.from;
 
 public class UserProcessor {
+    private Subscription subscription;
+    private final UsersDAO usersDAO;
+    private final DreamSpiceManager requester;
 
-    private DreamSpiceManager requester;
-
-    public UserProcessor(DreamSpiceManager requester) {
+    public UserProcessor(UsersDAO usersDAO, DreamSpiceManager requester) {
+        this.usersDAO = usersDAO;
         this.requester = requester;
     }
 
-    public Observable<List<User>> connectToUserProvider(Observable<List<User>> provider) {
+    public Observable<List<User>> connectToUserProvider(Observable<List<com.messenger.messengerservers.model.User>> provider) {
         ConnectableObservable<List<User>> observable = provider
                 .compose(updateWithSocialData())
                 .subscribeOn(Schedulers.io()).observeOn(Schedulers.trampoline())
@@ -36,44 +41,73 @@ public class UserProcessor {
         return observable.asObservable();
     }
 
-    private Observable.Transformer<List<User>, List<User>> updateWithSocialData() {
-        return listObservable -> listObservable.flatMap(users -> {
-            if (users.isEmpty()) return Observable.just(Collections.emptyList());
+    private Observable.Transformer<List<com.messenger.messengerservers.model.User>, List<User>> updateWithSocialData() {
+        return listObservable -> listObservable.flatMap(messengerUsers -> {
+            if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
             //
-            List<String> usernames = from(users).map(User::getId).toList();
+            List<String> usernames = from(messengerUsers).map(com.messenger.messengerservers.model.User::getName).toList();
             return Observable.create(subscriber -> {
+                // SpiceManager post result on MainThread
                 requester.execute(new GetShortProfilesQuery(usernames), userz -> {
-                    Collections.sort(users, (lhs, rhs) -> lhs.getId().compareTo(rhs.getId()));
-                    Collections.sort(userz, (lhs, rhs) -> lhs.getUsername().compareTo(rhs.getUsername()));
-                    List<String> socialUsernames = Queryable.from(userz).map(z -> z.getUsername()).toList();
-                    List<User> result = from(users).filter(u -> socialUsernames.contains(u.getId())).zip(userz, (u, z) -> {
-                        u.setSocialId(z.getId());
-                        u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));
-                        User storedUser = UsersDAO.getUser(u.getId());
-                        // TODO: 1/5/16 when social API will return relationship, use: u.setFriend(z.getRelationship() == Relationship.FRIEND);
-                        if (storedUser != null) {
-                            if (storedUser.isFriendSet() && !u.isFriendSet()) {
-                                u.setFriend(storedUser.isFriend());
-                            }
-                            if (storedUser.isOnline() && !u.isOnline()) {
-                                u.setOnline(true);
-                            }
+                    syncCashedUser(messengerUsers, userz, users -> {
+                        if (!subscriber.isUnsubscribed()) {
+                            subscriber.onNext(users);
+                            subscriber.onCompleted();
                         }
-                        u.setAvatarUrl(z.getAvatar() == null ? null : z.getAvatar().getThumb());
-                        return u;
-                    }).toList();
-                    ContentUtils.bulkInsert(User.CONTENT_URI, User.class, result);
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(result);
-                        subscriber.onCompleted();
-                    }
+                    });
                 }, spiceException -> {
-                    Timber.w(spiceException, "Can't get users by usernames");
                     if (!subscriber.isUnsubscribed()) {
                         subscriber.onError(spiceException);
                     }
                 });
             });
         });
+    }
+
+    private void syncCashedUser(List<com.messenger.messengerservers.model.User> messengerUsers,
+                                List<com.worldventures.dreamtrips.modules.common.model.User> socialUser,
+                                Action1<List<User>> resultAction) {
+        if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
+
+        subscription = Observable.just(messengerUsers)
+                .subscribeOn(Schedulers.io())
+                .flatMap(Observable::from)
+                .map(user -> new Pair<>(user, UsersDAO.getUser(user.getName())))
+                .toList()
+                .map(pairs -> {
+                    Collections.sort(pairs, (lhs, rhs) -> lhs.first.getName().compareTo(rhs.first.getName()));
+                    Collections.sort(socialUser, (lhs, rhs) -> lhs.getUsername().compareTo(rhs.getUsername()));
+                    List<String> socialUsernames = Queryable.from(socialUser).map(z -> z.getUsername()).toList();
+
+                    List<User> result = from(pairs)
+                            .filter(pair -> socialUsernames.contains(pair.first.getName()))
+                            .zip(socialUser, (pair, z) -> {
+                                User storedUser = pair.second;
+                                com.messenger.messengerservers.model.User loadedUser = pair.first;
+                                User u = new User();
+                                u.setId(loadedUser.getName());
+                                u.setSocialId(z.getId());
+                                u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));
+                                u.setOnline(loadedUser.isOnline());
+                                u.setFriend(loadedUser.getType() != null ? true : null);
+
+                                if (storedUser != null) {
+                                    if (storedUser.isFriendSet() && !u.isFriendSet()) {
+                                        u.setFriend(storedUser.isFriend());
+                                    }
+                                    if (storedUser.isOnline() && !u.isOnline()) {
+                                        u.setOnline(true);
+                                    }
+                                }
+                                u.setAvatarUrl(z.getAvatar() == null ? null : z.getAvatar().getThumb());
+                                return u;
+                            })
+                            .toList();
+                    return result;
+                })
+                .doOnNext(usersDAO::save)
+                .subscribe(resultAction, throwable -> {
+                    Timber.e(throwable, "User processor ERROR");
+                });
     }
 }

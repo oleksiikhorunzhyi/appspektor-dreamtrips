@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.worldventures.dreamtrips.R;

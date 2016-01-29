@@ -1,7 +1,8 @@
-package com.messenger.messengerservers.entities;
+package com.messenger.entities;
 
 import android.net.Uri;
 import android.os.Parcel;
+import android.provider.BaseColumns;
 
 import com.messenger.model.ChatUser;
 import com.messenger.storage.MessengerDatabase;
@@ -25,7 +26,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     @PrimaryKey
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @Column String _id;
+    @Column(name = BaseColumns._ID) String id;
     @Column int socialId;
     @Column String userName;
     @Column boolean online;
@@ -35,8 +36,13 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     public User() {
     }
 
+    public User(com.messenger.messengerservers.model.User user) {
+        this(user.getName());
+        setOnline(user.isOnline());
+    }
+
     public User(String userId) {
-        this._id = userId;
+        this.id = userId;
         this.userName = userId;
     }
 
@@ -44,9 +50,13 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         return userName;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public String getId() {
-        return _id;
+        return id;
     }
 
     public int getSocialId() {
@@ -111,18 +121,18 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
         User user = (User) o;
 
-        return !(_id != null ? !_id.equals(user._id) : user._id != null);
+        return !(id != null ? !id.equals(user.id) : user.id != null);
     }
 
     @Override
     public int hashCode() {
-        return _id.hashCode();
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "_id='" + _id + '\'' +
+                "_id='" + id + '\'' +
                 '}';
     }
 
@@ -153,7 +163,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this._id);
+        dest.writeString(this.id);
         dest.writeInt(this.socialId);
         dest.writeString(this.userName);
         dest.writeByte(online ? (byte) 1 : (byte) 0);
@@ -162,7 +172,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     }
 
     protected User(Parcel in) {
-        this._id = in.readString();
+        this.id = in.readString();
         this.socialId = in.readInt();
         this.userName = in.readString();
         this.online = in.readByte() != 0;

@@ -10,7 +10,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.model.ChatUser;
 import com.worldventures.dreamtrips.R;
 

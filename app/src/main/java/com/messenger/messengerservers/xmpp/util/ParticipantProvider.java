@@ -1,9 +1,9 @@
 package com.messenger.messengerservers.xmpp.util;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.User;
+
+import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationParticipants;
 import com.messenger.messengerservers.xmpp.providers.ConversationParticipantsProvider;
@@ -37,10 +37,8 @@ public class ParticipantProvider {
 
     public List<Participant> getSingleChatParticipants(Conversation conversation) {
         ArrayList<Participant> participants = new ArrayList<>();
-        String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, connection.getUser());
-        User user = new User(JidCreatorHelper.obtainId(companionJid));
-        Participant companion = new Participant(user, Participant.Affiliation.MEMBER, conversation.getId());
-
+        String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation.getId(), connection.getUser());
+        Participant companion = new Participant(JidCreatorHelper.obtainId(companionJid), Participant.Affiliation.MEMBER, conversation.getId());
         participants.add(companion);
         return participants;
     }

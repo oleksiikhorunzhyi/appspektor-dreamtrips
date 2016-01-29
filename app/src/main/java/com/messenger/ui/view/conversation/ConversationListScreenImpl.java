@@ -22,8 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Spinner;
 
+import com.messenger.entities.Conversation;
 import com.messenger.flow.path.StyledPath;
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;

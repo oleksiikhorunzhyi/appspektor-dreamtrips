@@ -1,9 +1,10 @@
-package com.messenger.messengerservers.entities;
+package com.messenger.entities;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.support.annotation.IntDef;
 
+import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -15,7 +16,6 @@ import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.util.Date;
-import java.util.Locale;
 
 @TableEndpoint(name = Message.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = Message.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
@@ -32,10 +32,10 @@ public class Message extends BaseProviderModel<Message> {
     @Column String text;
     @Column Date date;
     @Column String conversationId;
-    @Status.MessageStatus @Column int status;
+    @MessageStatus.Status @Column int status;
 
     // TODO: 1/9/16 store this column
-    private Locale locale;
+    private String locale;
 
     public Message() {
     }
@@ -45,6 +45,21 @@ public class Message extends BaseProviderModel<Message> {
         this.toId = to;
         this.text = text;
         this.id = id;
+    }
+
+    public Message(com.messenger.messengerservers.model.Message message) {
+        setId(message.getId());
+        setConversationId(message.getConversationId());
+        setFromId(message.getFromId());
+        setToId(message.getToId());
+        setStatus(message.getStatus());
+        setDate(new Date(message.getDate()));
+
+        MessageBody body = message.getMessageBody();
+        if (body != null) {
+            setText(body.getText());
+            setLocale(body.getLocale());
+        }
     }
 
     private Message(Builder builder) {
@@ -106,11 +121,11 @@ public class Message extends BaseProviderModel<Message> {
         this.date = date;
     }
 
-    public Locale getLocale() {
+    public String getLocale() {
         return locale;
     }
 
-    public void setLocale(Locale locale) {
+    public void setLocale(String locale) {
         this.locale = locale;
     }
 
@@ -118,7 +133,7 @@ public class Message extends BaseProviderModel<Message> {
         return status;
     }
 
-    public void setStatus(@Status.MessageStatus int status) {
+    public void setStatus(@MessageStatus.Status int status) {
         this.status = status;
     }
 
@@ -154,7 +169,7 @@ public class Message extends BaseProviderModel<Message> {
         private String to;
         private String text;
         private Date date;
-        private Locale locale;
+        private String locale;
         private int status;
 
         public Builder() {
@@ -190,12 +205,12 @@ public class Message extends BaseProviderModel<Message> {
             return this;
         }
 
-        public Builder locale(Locale val) {
+        public Builder locale(String val) {
             locale = val;
             return this;
         }
 
-        public Builder status(@Status.MessageStatus int val) {
+        public Builder status(@MessageStatus.Status int val) {
             status = val;
             return this;
         }
@@ -205,13 +220,14 @@ public class Message extends BaseProviderModel<Message> {
         }
     }
 
-    public static class Status {
-        public static final int ERROR = -1;
-        public static final int SENDING = 0;
-        public static final int SENT = 1;
-        public static final int READ = 2;
-
-        @IntDef({ERROR, SENDING, SENT, READ})
-        @interface MessageStatus {}
+    public com.messenger.messengerservers.model.Message toChatMessage() {
+        MessageBody body = new MessageBody(text, locale, null);
+        return new com.messenger.messengerservers.model.Message.Builder()
+                .fromId(fromId)
+                .toId(toId)
+                .id(id)
+                .messageBody(body)
+                .status(status)
+                .build();
     }
 }

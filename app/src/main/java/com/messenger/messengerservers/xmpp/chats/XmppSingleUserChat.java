@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.SingleUserChat;
-import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -54,7 +54,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     }
 
     @Override
-    public Observable<com.messenger.messengerservers.entities.Message> send(com.messenger.messengerservers.entities.Message message) {
+    public Observable<Message> send(Message message) {
         return Observable.just(message)
                 .doOnNext(msg -> msg.setConversationId(roomId))
                 .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), smackMsg -> {
@@ -68,9 +68,9 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     }
 
     @Override
-    public Observable<Message> sendReadStatus(Message message) {
-        return Observable.just(message)
-                .compose(new StatusMessageTransformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
+    public Observable<String> sendReadStatus(String messageId) {
+        return Observable.just(messageId)
+                .compose(new StatusMessageTranformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
                         JidCreatorHelper.obtainUserJid(companionId), org.jivesoftware.smack.packet.Message.Type.chat),
                         stanza -> {
                             if (connection != null) {
@@ -93,7 +93,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         }
         if (roomId == null) {
             if (companionJid == null) throw new Error();
-            roomId = ThreadCreatorHelper.obtainThreadSingleChat(userJid, companionJid);
+            roomId = ThreadCreatorHelper.obtainThreadSingleChatFromJids(userJid, companionJid);
         }
 
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
@@ -101,11 +101,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
 
         if (existingChat == null) {
             if (companionJid == null) {
-                companionJid = JidCreatorHelper
-                        .obtainUserJid(
-                                roomId
-                                        .replace(userJid.split("@")[0], "")
-                                        .replace("_", ""));
+                companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(roomId, userJid);
             }
             chat = chatManager.createChat(companionJid, roomId, null);
         } else {

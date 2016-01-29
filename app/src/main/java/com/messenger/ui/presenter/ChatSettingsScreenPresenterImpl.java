@@ -10,8 +10,9 @@ import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.di.MessengerStorageModule;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -250,6 +251,6 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     }
 
     private boolean isSingleChat(Conversation conversation) {
-        return TextUtils.equals(conversation.getType(), Conversation.Type.CHAT);
+        return TextUtils.equals(conversation.getType(), ConversationType.CHAT);
     }
 }

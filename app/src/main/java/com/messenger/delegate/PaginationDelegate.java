@@ -1,37 +1,38 @@
 package com.messenger.delegate;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
+import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.Message;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.paginations.PagePagination;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
+import com.messenger.storage.dao.MessageDAO;
 
 import java.util.List;
 
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
 public class PaginationDelegate {
+    private final MessengerServerFacade messengerServerFacade;
+    private final MessageDAO messageDAO;
+    private final int pageSize;
 
-    Context context;
-    MessengerServerFacade messengerServerFacade;
-    final int pageSize;
-
-    PagePagination<Message> messagePagePagination;
+    private PagePagination<com.messenger.messengerservers.model.Message> messagePagePagination;
 
     public interface PageLoadedListener {
-        void onPageLoaded(int loadedPage, List<Message> loadedMessage);
+        void onPageLoaded(int loadedPage, List<com.messenger.messengerservers.model.Message> loadedMessage);
     }
 
     public interface PageErrorListener {
         void onPageError();
     }
 
-    public PaginationDelegate(Context context, MessengerServerFacade messengerServerFacade, int pageSize) {
-        this.context = context;
+    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, int pageSize) {
         this.messengerServerFacade = messengerServerFacade;
+        this.messageDAO = messageDAO;
         this.pageSize = pageSize;
     }
 
@@ -39,13 +40,18 @@ public class PaginationDelegate {
                                             @Nullable PageLoadedListener loadedListener, @Nullable PageErrorListener errorListener) {
         if (messagePagePagination == null) {
             messagePagePagination = messengerServerFacade.getPaginationManager()
-                    .getConversationHistoryPagination(conversation, pageSize);
+                    .getConversationHistoryPagination(conversation.getId(), pageSize);
         }
 
-        messagePagePagination.setPersister(messages -> ContentUtils.bulkInsert(Message.CONTENT_URI, Message.class, messages));
-        messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
+        messagePagePagination.setPersister(
+                messages -> Observable.just(messages)
+                .subscribeOn(Schedulers.io())
+                .map(serverMessages -> Queryable.from(serverMessages).map(Message::new).toList())
+                .subscribe(messageDAO::save))
+        ;
+        messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<com.messenger.messengerservers.model.Message>() {
             @Override
-            public void onLoaded(List<Message> entities) {
+            public void onLoaded(List<com.messenger.messengerservers.model.Message> entities) {
                 if (loadedListener == null) return;
                 loadedListener.onPageLoaded(page, entities);
             }

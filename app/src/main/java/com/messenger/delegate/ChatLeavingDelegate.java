@@ -2,8 +2,8 @@ package com.messenger.delegate;
 
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.ui.helper.ConversationHelper;
 import com.techery.spares.module.Injector;

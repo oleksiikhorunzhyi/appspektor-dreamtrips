@@ -4,11 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Message$Adapter;
-import com.messenger.messengerservers.entities.Message$Table;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.Message;
+import com.messenger.entities.Message$Adapter;
+import com.messenger.entities.Message$Table;
+import com.messenger.entities.User;
+import com.messenger.entities.User$Table;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
@@ -64,11 +65,11 @@ public class MessageDAO extends BaseDAO {
                     + "AND " + Message$Table.FROMID + " <> ? "
                     + "AND " + Message$Table.STATUS + " = ? ";
             ContentValues cv = new ContentValues(1);
-            cv.put(Message$Table.STATUS, Message.Status.READ);
+            cv.put(Message$Table.STATUS, MessageStatus.READ);
             try {
                 subscriber.onNext(getContentResolver().update(Message.CONTENT_URI, cv, clause,
                         new String[]{conversationId, String.valueOf(visibleTime),
-                                userId, String.valueOf(Message.Status.SENT)})
+                                userId, String.valueOf(MessageStatus.SENT)})
                 );
                 subscriber.onCompleted();
             } catch (Exception e) {
@@ -83,7 +84,7 @@ public class MessageDAO extends BaseDAO {
                         "WHERE " + Message$Table.CONVERSATIONID + " = ? "
                         + "AND " + Message$Table.FROMID + " <> ? "
                         + "AND " + Message$Table.STATUS + " = ? ")
-                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(Message.Status.SENT)})
+                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
                 .build();
 
         return query(q, Message.CONTENT_URI)
@@ -106,7 +107,7 @@ public class MessageDAO extends BaseDAO {
                         "( SELECT MIN(" + Message$Table.DATE + ") FROM " + Message.TABLE_NAME + " "
                         + "WHERE " + Message$Table.FROMID + " <> ? "
                         + "AND " + Message$Table.STATUS + " = ? )")
-                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(Message.Status.SENT)})
+                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
                 .build();
 
         return query(q, Message.CONTENT_URI)
@@ -119,5 +120,16 @@ public class MessageDAO extends BaseDAO {
 
     public void save(List<Message> messages) {
         bulkInsert(messages, new Message$Adapter(), Message.CONTENT_URI);
+    }
+
+    public void save(Message message) {
+        message.save();
+    }
+
+    public void updateStatus(String msgId, int messageStatus, long time) {
+        ContentValues contentValues = new ContentValues(2);
+        contentValues.put(Message$Table.STATUS, messageStatus);
+        contentValues.put(Message$Table.DATE, time);
+        getContentResolver().update(Message.CONTENT_URI, contentValues, Message$Table._ID +"=?", new String[] {msgId});
     }
 }

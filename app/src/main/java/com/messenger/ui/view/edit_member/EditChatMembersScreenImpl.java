@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;

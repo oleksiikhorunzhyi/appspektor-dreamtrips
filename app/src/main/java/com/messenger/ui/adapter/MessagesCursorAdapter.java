@@ -17,10 +17,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Message$Table;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.Message;
+import com.messenger.entities.Message$Table;
+import com.messenger.entities.User;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
@@ -262,7 +263,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
         holder.setMessageId(cursor.getString(cursor.getColumnIndex(Message$Table._ID)));
         holder.setOnRepeatMessageSend(onRepeatMessageSend);
-        holder.visibleError(cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS)) == Message.Status.ERROR);
+        holder.visibleError(cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS)) == MessageStatus.ERROR);
         holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message$Table.TEXT)));
 
         int position = cursor.getPosition();
@@ -324,7 +325,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         }
         holder.messageTextView.setBackgroundResource(backgroundResource);
 
-        if (message.getStatus() == Message.Status.SENT) {
+        if (message.getStatus() == MessageStatus.SENT) {
             holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_unread_background);
         } else {
             holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);

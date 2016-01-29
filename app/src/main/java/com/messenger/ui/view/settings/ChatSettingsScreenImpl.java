@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.messenger.entities.Conversation;
 import com.messenger.flow.path.StyledPath;
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.view.layout.MessengerPathLayout;

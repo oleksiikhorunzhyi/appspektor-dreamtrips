@@ -4,9 +4,10 @@ import android.content.Context;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
@@ -85,13 +86,17 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 };
 
                 if (selectedUsers.size() == 1) {
-                    startChatDelegate.startSingleChat(selectedUsers.get(0), action1);
+                    startChatDelegate.startSingleChat(convertToIds(selectedUsers).get(0), action1);
                 } else {
-                    startChatDelegate.startNewGroupChat(user, selectedUsers, getView().getConversationName(), action1);
+                    startChatDelegate.startNewGroupChat(user.getId(), convertToIds(selectedUsers), getView().getConversationName(), action1);
                 }
 
                 return true;
         }
         return false;
+    }
+
+    private List<String> convertToIds(List<User> users) {
+        return Queryable.from(users).map(User::getId).toList();
     }
 }

@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.RxContentResolver;
 import com.messenger.util.RxContentResolver.Query;

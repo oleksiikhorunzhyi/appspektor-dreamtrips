@@ -3,7 +3,7 @@ package com.messenger.di;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -33,7 +33,7 @@ public class MessengerDelegateModule {
 
     @Provides
     ChatDelegate provideChatDelegate(User user, MessengerServerFacade messengerServerFacade) {
-        return new ChatDelegate(user, messengerServerFacade);
+        return new ChatDelegate(user.getId(), messengerServerFacade);
     }
 
     @Provides

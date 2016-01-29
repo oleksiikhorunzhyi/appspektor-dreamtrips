@@ -2,9 +2,9 @@ package com.messenger.delegate;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.converter.UserConverter;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
+import com.messenger.entities.Conversation;
+import com.messenger.messengerservers.model.Participant;
+import com.messenger.entities.ParticipantsRelationship;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -44,15 +44,15 @@ public class StartChatDelegate {
                         usersDAO.save(Collections.singletonList(participant));
                     }
                     return participant;
-                }).subscribe(participant -> startSingleChat(participant, crossingAction));
+                }).subscribe(participant -> startSingleChat(participant.getId(), crossingAction));
     }
 
-    public void startSingleChat(com.messenger.messengerservers.entities.User participant, @NotNull Action1<Conversation> crossingAction){
-        Conversation conversation = chatDelegate.getExistingSingleConverastion(participant);
+    public void startSingleChat(String participantId, @NotNull Action1<Conversation> crossingAction){
+        Conversation conversation = chatDelegate.getExistingSingleConverastion(participantId);
         if (conversation == null){
-            conversation = chatDelegate.createNewConversation(Collections.singletonList(participant), "");
+            conversation = chatDelegate.createNewConversation(Collections.singletonList(participantId), "");
             //there is no owners in single chat
-            ParticipantsRelationship relationship = new ParticipantsRelationship(conversation.getId(), participant, Participant.Affiliation.MEMBER);
+            ParticipantsRelationship relationship = new ParticipantsRelationship(conversation.getId(), participantId, Participant.Affiliation.MEMBER);
 
             participantsDAO.save(Collections.singletonList(relationship));
             conversationsDAO.save(Collections.singletonList(conversation));
@@ -60,16 +60,16 @@ public class StartChatDelegate {
         crossingAction.call(conversation);
     }
 
-    public void startNewGroupChat(com.messenger.messengerservers.entities.User owner,
-                                  List<com.messenger.messengerservers.entities.User> participants,
+    public void startNewGroupChat(String ownerId,
+                                  List<String> participantIds,
                                   @Nullable String subject, @NotNull Action1<Conversation> crossingAction) {
-        Conversation conversation = chatDelegate.createNewConversation(participants, subject);
-        conversation.setOwnerId(owner.getId());
+        Conversation conversation = chatDelegate.createNewConversation(participantIds, subject);
+        conversation.setOwnerId(ownerId);
 
-        List<ParticipantsRelationship> relationships = Queryable.from(participants).map(u ->
-                new ParticipantsRelationship(conversation.getId(), u, Participant.Affiliation.MEMBER)).toList();
+        List<ParticipantsRelationship> relationships = Queryable.from(participantIds).map(userId ->
+                new ParticipantsRelationship(conversation.getId(), userId, Participant.Affiliation.MEMBER)).toList();
         // we are participants too and if conversation is group then we're owner otherwise we're member
-        relationships.add(new ParticipantsRelationship(conversation.getId(), owner, Participant.Affiliation.OWNER));
+        relationships.add(new ParticipantsRelationship(conversation.getId(), ownerId, Participant.Affiliation.OWNER));
 
         participantsDAO.save(relationships);
         conversationsDAO.save(Collections.singletonList(conversation));

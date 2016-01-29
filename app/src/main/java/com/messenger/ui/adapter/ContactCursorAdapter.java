@@ -4,15 +4,17 @@ package com.messenger.ui.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AlphabetIndexer;
 import android.widget.SectionIndexer;
 
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.ParticipantsRelationship$Table;
+import com.messenger.entities.User;
+import com.messenger.entities.User$Table;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.ui.adapter.MessagesCursorAdapter.OnAvatarClickListener;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
@@ -65,9 +67,9 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
             if (adminSectionEnabled) {
                 if (cursor.moveToFirst()) {
                     do {
-                        Participant participant = Participant.from(cursor);
-                        if (participant.getAffiliation().equals(Participant.Affiliation.OWNER)) {
-                            admin = participant.getUser();
+                        if (TextUtils.equals(Participant.Affiliation.OWNER,
+                                cursor.getString(cursor.getColumnIndex(ParticipantsRelationship$Table.AFFILIATION)))) {
+                            admin = SqlUtils.convertToModel(true, com.messenger.entities.User.class, cursor);
                             adminPositionInCursor = cursor.getPosition();
                         }
                     } while (cursor.moveToNext());

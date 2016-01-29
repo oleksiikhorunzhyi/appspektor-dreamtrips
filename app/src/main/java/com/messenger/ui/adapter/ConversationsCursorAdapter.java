@@ -16,11 +16,11 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Conversation$Table;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.Conversation$Table;
+import com.messenger.entities.Message;
+import com.messenger.entities.User;
+import com.messenger.entities.User$Table;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
@@ -43,9 +43,9 @@ import java.util.Map;
 import rx.Observable;
 import rx.Subscription;
 
-import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
-import static com.messenger.messengerservers.entities.Conversation.Type.GROUP;
-import static com.messenger.messengerservers.entities.Conversation.Type.TRIP;
+import static com.messenger.messengerservers.constant.ConversationType.CHAT;
+import static com.messenger.messengerservers.constant.ConversationType.GROUP;
+import static com.messenger.messengerservers.constant.ConversationType.TRIP;
 
 public class ConversationsCursorAdapter
         extends CursorRecyclerViewAdapter<BaseConversationViewHolder>

@@ -2,10 +2,10 @@ package com.messenger.ui.presenter;
 
 import android.support.annotation.StringDef;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.ui.view.conversation.ConversationListScreen;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.ui.view.conversation.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 
 public interface ConversationListScreenPresenter extends MessengerPresenter<ConversationListScreen,
@@ -35,7 +35,8 @@ public interface ConversationListScreenPresenter extends MessengerPresenter<Conv
         public static final String GROUP_CHATS = "group";
 
         @StringDef({ALL_CHATS, GROUP_CHATS})
-        public @interface ChatsType {}
+        public @interface ChatsType {
+        }
 
         private String title;
         private String type;

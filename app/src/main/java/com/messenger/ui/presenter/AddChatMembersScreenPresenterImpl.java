@@ -6,18 +6,19 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.ParticipantsRelationship;
+import com.messenger.entities.User;
+import com.messenger.entities.User$Table;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +30,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
-import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
+import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 
 public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
@@ -105,17 +106,25 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
             showAbsentConnectionMessage(getContext());
             return;
         }
-
+        // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
+        List<String> newChatUserIds = Queryable.from(newChatUsers).map(u -> u.getId()).toList();
         conversationStream
                 .flatMap(conversation -> participantsDAO
                         .getParticipants(conversation.getId()).first()
-                        .map(cursor -> SqlUtils.convertToList(User.class, cursor))
+                        .map(cursor -> {
+                            List<String> userIds = new ArrayList<>(cursor.getCount());
+                            while (cursor.moveToFirst()) {
+                                userIds.add(cursor.getString(cursor.getColumnIndex(User$Table._ID)));
+                            }
+                            cursor.close();
+                            return userIds;
+                        })
                         .map(currentUsers -> {
                             Conversation newConversation = chatDelegate.modifyConversation(
-                                    conversation, currentUsers, newChatUsers, getView().getConversationName()
+                                    conversation, currentUsers, newChatUserIds, getView().getConversationName()
                             );
                             Queryable.from(newChatUsers).forEachR(u ->
-                                            new ParticipantsRelationship(newConversation.getId(), u, Participant.Affiliation.MEMBER).save()
+                                            new ParticipantsRelationship(newConversation.getId(), u.getId(), Participant.Affiliation.MEMBER).save()
                             );
                             ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
                             return newConversation;

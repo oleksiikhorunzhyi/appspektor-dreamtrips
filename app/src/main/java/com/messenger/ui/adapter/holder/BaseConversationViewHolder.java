@@ -12,8 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.helper.ConversationHelper;
@@ -192,7 +193,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
         }
 
         Observable<List<User>> participantsObservable;
-        if (TextUtils.equals(conversation.getType(), Conversation.Type.CHAT)) {
+        if (TextUtils.equals(conversation.getType(), ConversationType.CHAT)) {
             participantsObservable = participantsDAO.getParticipant(conversation.getId(), user.getId())
                     .compose(new NonNullFilter<>())
                     .map(Collections::singletonList);

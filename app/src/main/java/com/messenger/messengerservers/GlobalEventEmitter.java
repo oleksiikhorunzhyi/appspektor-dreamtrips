@@ -1,14 +1,15 @@
 package com.messenger.messengerservers;
 
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.listeners.OnChatCreatedListener;
 import com.messenger.messengerservers.listeners.OnChatJoinedListener;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
+import com.messenger.messengerservers.listeners.OnFriendsChangedListener;
 import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
+import com.messenger.messengerservers.listeners.OnUserStatusChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
 
 import java.util.List;
@@ -17,6 +18,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import timber.log.Timber;
 
 public abstract class GlobalEventEmitter {
+    protected static final int EVENT_PRE_OUTGOING = 0x777;
+    protected static final int EVENT_OUTGOING = 0x778;
+    protected static final int EVENT_INCOMING = 0x779;
     protected List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
     protected List<PresenceListener> presenceListeners = new CopyOnWriteArrayList<>();
     protected List<InvitationListener> invitationListeners = new CopyOnWriteArrayList<>();
@@ -26,6 +30,8 @@ public abstract class GlobalEventEmitter {
     protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatCreatedListener> onChatCreatedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
+    protected List<OnUserStatusChangedListener> onUserStatusChangedListeners = new CopyOnWriteArrayList<>();
+    protected List<OnFriendsChangedListener> onFriendsChangedListeners = new CopyOnWriteArrayList<>();
 
     public void addGlobalMessageListener(GlobalMessageListener listener) {
         globalMessageListeners.add(listener);
@@ -35,12 +41,19 @@ public abstract class GlobalEventEmitter {
         globalMessageListeners.remove(listener);
     }
 
-    protected void notifyGlobalMessage(Message message, boolean incoming) {
-        for (GlobalMessageListener listener : globalMessageListeners) {
-            if (incoming)
-                listener.onReceiveMessage(message);
-            else
-                listener.onSendMessage(message);
+    protected void notifyGlobalMessage(Message message, int eventType) {
+        switch (eventType) {
+            case EVENT_PRE_OUTGOING:
+                for (GlobalMessageListener listener : globalMessageListeners) listener.onPreSendMessage(message);
+                break;
+            case EVENT_OUTGOING:
+                for (GlobalMessageListener listener : globalMessageListeners) listener.onSendMessage(message);
+                break;
+            case EVENT_INCOMING:
+                for (GlobalMessageListener listener : globalMessageListeners) listener.onReceiveMessage(message);
+                break;
+            default:
+                break;
         }
     }
 
@@ -128,6 +141,7 @@ public abstract class GlobalEventEmitter {
         }
     }
 
+
     public void addOnChatCreatedListener(OnChatCreatedListener listener) {
         onChatCreatedListeners.add(listener);
     }
@@ -154,6 +168,35 @@ public abstract class GlobalEventEmitter {
         Timber.d("TEST_STATUSES conv %s, user %s, state %s", conversationId, userId, state);
         for (OnChatStateChangedListener listener : onChatStateChangedListeners) {
             listener.onChatStateChanged(conversationId, userId, state);
+        }
+    }
+
+    public void addOnUserStatusChangedListener(OnUserStatusChangedListener listener) {
+        onUserStatusChangedListeners.add(listener);
+    }
+
+    public void removeOnUserStatusChangedListener(OnUserStatusChangedListener listener) {
+        onUserStatusChangedListeners.remove(listener);
+    }
+
+    protected void notifyOnUserStatusChangedListener(String userId, boolean online) {
+        for (OnUserStatusChangedListener listener : onUserStatusChangedListeners) {
+            listener.onUserStatusChanged(userId, online);
+        }
+    }
+
+
+    public void addOnFriendsChangedListener(OnFriendsChangedListener listener) {
+        onFriendsChangedListeners.add(listener);
+    }
+
+    public void removeOnFriendsChangedListener(OnFriendsChangedListener listener) {
+        onFriendsChangedListeners.remove(listener);
+    }
+
+    protected void notifyOnFriendsChangedListener(List<String> userIds, boolean isFriend) {
+        for (OnFriendsChangedListener listener : onFriendsChangedListeners) {
+            listener.onFriendsChangedListener(userIds, isFriend);
         }
     }
 }

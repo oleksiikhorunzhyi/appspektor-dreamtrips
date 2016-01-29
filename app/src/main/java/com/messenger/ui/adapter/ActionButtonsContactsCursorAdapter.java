@@ -11,11 +11,12 @@ import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.messenger.util.SwipeClickListener;
 import com.worldventures.dreamtrips.R;
+
 import java.util.List;
 
 import butterknife.InjectView;

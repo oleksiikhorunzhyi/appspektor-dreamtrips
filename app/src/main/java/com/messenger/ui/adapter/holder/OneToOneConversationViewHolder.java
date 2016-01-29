@@ -3,8 +3,8 @@ package com.messenger.ui.adapter.holder;
 import android.net.Uri;
 import android.view.View;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
 import com.messenger.ui.widget.AvatarView;
 import com.worldventures.dreamtrips.R;
 

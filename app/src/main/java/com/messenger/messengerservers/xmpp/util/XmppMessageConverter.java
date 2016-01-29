@@ -1,12 +1,10 @@
 package com.messenger.messengerservers.xmpp.util;
 
 import com.google.gson.Gson;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.xmpp.entities.MessageBody;
+import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.model.MessageBody;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-
-import java.util.Locale;
 
 public final class XmppMessageConverter {
 
@@ -17,13 +15,7 @@ public final class XmppMessageConverter {
     }
 
     public org.jivesoftware.smack.packet.Message convert(Message message) {
-        Locale locale = message.getLocale() ;
-        MessageBody messageBody = new MessageBody.Builder()
-                //// // TODO: 1/9/16 remove this checking!!!
-                .locale(locale == null ? Locale.getDefault().toString() : locale.toString())
-                .text(message.getText())
-                .build();
-        String bodyJson = new Gson().toJson(messageBody);
+        String bodyJson = gson.toJson(message.getMessageBody());
 
         org.jivesoftware.smack.packet.Message smackMessage = new org.jivesoftware.smack.packet.Message();
         smackMessage.setStanzaId(message.getId());
@@ -37,18 +29,16 @@ public final class XmppMessageConverter {
     public Message convert(org.jivesoftware.smack.packet.Message message) {
         String body = StringEscapeUtils.unescapeXml(message.getBody());
         MessageBody stanzaMessageBody = gson.fromJson(body, MessageBody.class);
-
         Message.Builder builder = new Message.Builder()
-                .text(stanzaMessageBody.getText())
+                .messageBody(stanzaMessageBody)
                 .conversationId(message.getThread())
-                .id(message.getStanzaId())
-                .locale(new Locale(stanzaMessageBody.getLocale()));
+                .id(message.getStanzaId());
 
         if (message.getTo() != null) {
-            builder.to(JidCreatorHelper.obtainId(message.getTo()));
+            builder.toId(JidCreatorHelper.obtainId(message.getTo()));
         }
         if (message.getFrom() != null) {
-            builder.from(parseUserId(message));
+            builder.fromId(parseUserId(message));
         }
 
         return builder.build();

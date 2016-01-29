@@ -1,13 +1,11 @@
 package com.messenger.ui.widget.inappnotification.messanger;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
 

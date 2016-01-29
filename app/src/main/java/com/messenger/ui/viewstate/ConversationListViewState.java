@@ -2,7 +2,7 @@ package com.messenger.ui.viewstate;
 
 import android.os.Parcel;
 
-import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.entities.Conversation;
 import com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.ChatsType;
 
 import java.util.List;

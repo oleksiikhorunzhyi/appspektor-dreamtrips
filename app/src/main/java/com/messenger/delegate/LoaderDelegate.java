@@ -1,24 +1,25 @@
 package com.messenger.delegate;
 
+import com.messenger.entities.Conversation;
+import com.messenger.entities.Message;
+import com.messenger.entities.ParticipantsRelationship;
+import com.messenger.entities.User;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.ConversationData;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.raizlabs.android.dbflow.annotation.NotNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
 
@@ -50,46 +51,56 @@ public class LoaderDelegate {
     }
 
     public Observable<Void> loadConversations() {
-        Observable<List<User>> loader = Observable.<List<User>>create(subscriber -> {
-            Loader<ConversationData> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
-            conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<ConversationData, User>(subscriber) {
+        Observable<List<com.messenger.messengerservers.model.User>> loader = Observable.<List<com.messenger.messengerservers.model.User>>create(subscriber -> {
+            Loader<com.messenger.messengerservers.model.Conversation> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
+            conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<com.messenger.messengerservers.model.Conversation, com.messenger.messengerservers.model.User>(subscriber) {
                 @Override
-                protected List<User> process(List<ConversationData> data) {
-                    data = from(data).filter(cd -> !cd.participants.isEmpty()).toList();
-                    //
+                protected List<com.messenger.messengerservers.model.User> process(List<com.messenger.messengerservers.model.Conversation> data) {
                     final long syncTime = System.currentTimeMillis();
-                    List<Conversation> convs = from(data).map(d -> d.conversation).toList();
+                    List<Conversation> convs = from(data).map(Conversation::new).toList();
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
-                    List<Message> messages = from(data).map(c -> c.lastMessage).notNulls().toList();
+
+                    List<Message> messages = from(data)
+                            .filter(c -> c.getLastMessage() != null)
+                            .map(c -> new Message(c.getLastMessage())).notNulls().toList();
+
                     List<ParticipantsRelationship> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
-                            .mapMany(d -> from(d.participants).map(p -> new ParticipantsRelationship(p.getConversationId(), p.getUser(), p.getAffiliation())))
+                            .filter(c -> c.getParticipants() != null)
+                            .mapMany(d -> from(d.getParticipants()).map(ParticipantsRelationship::new))
                             .toList();
                     from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
+
                     conversationsDAO.save(convs);
                     conversationsDAO.deleteBySyncTime(syncTime);
                     messageDAO.save(messages);
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
 
-
-                    List<User> users = data.isEmpty() ? Collections.emptyList() : from(data)
-                            .mapMany(d -> d.participants).map((elem, idx) -> elem.getUser()).distinct().toList();
+                    List<com.messenger.messengerservers.model.User> users = data.isEmpty() ? Collections.emptyList() : from(relationships)
+                            .map((elem, idx) -> new com.messenger.messengerservers.model.User(elem.getUserId()))
+                            .distinct()
+                            .toList();
+                    Timber.d("ConversationLoader %s", users);
                     return users;
 
                 }
             });
             conversationLoader.load();
         });
-        return userProcessor.connectToUserProvider(loader).map(users -> (Void) null);
+        return userProcessor.connectToUserProvider(loader).map(users -> {
+            Timber.d("ConversationLoader %s", users);
+            return (Void) null;
+        });
     }
 
     public Observable<List<User>> loadContacts() {
-        Observable<List<User>> loader = Observable.<List<User>>create(subscriber -> {
-            Loader<User> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
-            contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<User, User>(subscriber) {
+        Observable<List<com.messenger.messengerservers.model.User>> loader = Observable.<List<com.messenger.messengerservers.model.User>>create(subscriber -> {
+            Loader<com.messenger.messengerservers.model.User> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
+            contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<com.messenger.messengerservers.model.User, com.messenger.messengerservers.model.User>(subscriber) {
                 @Override
-                protected List<User> process(List<User> entities) {
+                protected List<com.messenger.messengerservers.model.User> process(List<com.messenger.messengerservers.model.User> entities) {
                     usersDAO.deleteFriends();
+                    Timber.d("ContactLoader %s", entities);
                     return entities;
                 }
             });

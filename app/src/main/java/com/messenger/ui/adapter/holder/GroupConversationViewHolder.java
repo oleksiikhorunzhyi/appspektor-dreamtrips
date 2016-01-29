@@ -2,7 +2,7 @@ package com.messenger.ui.adapter.holder;
 
 import android.view.View;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
 

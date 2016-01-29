@@ -5,8 +5,9 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.Conversation;
+import com.messenger.entities.User;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -19,10 +20,10 @@ public class ConversationHelper {
         }
         String initialTitle;
         switch (conversation.getType()) {
-            case Conversation.Type.CHAT:
+            case ConversationType.CHAT:
                 initialTitle = members.get(0).getName();
                 break;
-            case Conversation.Type.GROUP:
+            case ConversationType.GROUP:
             default:
                 initialTitle = conversation.getSubject();
                 if (TextUtils.isEmpty(initialTitle)) {
@@ -62,11 +63,11 @@ public class ConversationHelper {
         }
         CharSequence subtitle;
         switch (conversation.getType()) {
-            case Conversation.Type.CHAT:
+            case ConversationType.CHAT:
                 int substringRes = members.get(0).isOnline() ? R.string.chat_subtitle_format_single_chat_online : R.string.chat_subtitle_format_single_chat_offline;
                 subtitle = target.getResources().getText(substringRes);
                 break;
-            case Conversation.Type.GROUP:
+            case ConversationType.GROUP:
             default:
                 int online = Queryable.from(members).count(User::isOnline);
                 subtitle = target.getResources().getString(R.string.chat_subtitle_format_group_chat_format, members.size(), online);
@@ -76,7 +77,7 @@ public class ConversationHelper {
     }
 
     public boolean isGroup(Conversation conversation) {
-        return conversation.getType() != null && !conversation.getType().equals(Conversation.Type.CHAT);
+        return conversation.getType() != null && !conversation.getType().equals(ConversationType.CHAT);
     }
 
     public boolean isOwner(Conversation conversation, User user) {

@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 

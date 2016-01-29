@@ -1,10 +1,9 @@
 package com.messenger.messengerservers.xmpp.chats;
 
-import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppGlobalEventEmitter;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
-
-import org.jivesoftware.smack.SmackException;
 
 import java.util.UUID;
 
@@ -24,16 +23,16 @@ class SendMessageTransformer implements Observable.Transformer<Message, Message>
 
     @Override
     public Observable<Message> call(Observable<Message> messageObservable) {
-        return messageObservable.doOnNext(message -> message.setStatus(Message.Status.SENDING))
+        return messageObservable.doOnNext(message -> message.setStatus(MessageStatus.SENDING))
                 .doOnNext(message -> {
                     if (message.getId() == null) message.setId(UUID.randomUUID().toString());
-                    emitter.interceptOutgoingMessages(message);
+                    emitter.interceptPreOutgoingMessages(message);
                 })
-                .flatMap(message -> Observable.<com.messenger.messengerservers.entities.Message>create(subscriber -> {
-                    int status = Message.Status.ERROR;
+                .flatMap(message -> Observable.<Message>create(subscriber -> {
+                    int status = MessageStatus.ERROR;
                     try {
                         org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
-                        status = sendAction.call(stanzaPacket) ? Message.Status.SENT : Message.Status.ERROR;
+                        status = sendAction.call(stanzaPacket) ? MessageStatus.SENT : MessageStatus.ERROR;
                     } catch (Throwable throwable) {
                         Timber.e(throwable, "send message");
                     } finally {

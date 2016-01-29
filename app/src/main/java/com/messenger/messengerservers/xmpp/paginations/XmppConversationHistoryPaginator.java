@@ -1,8 +1,7 @@
 package com.messenger.messengerservers.xmpp.paginations;
 
-import android.util.Log;
-
-import com.messenger.messengerservers.entities.Message;
+import com.google.gson.Gson;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
 import com.messenger.messengerservers.xmpp.packets.ObtainMessageListPacket;
@@ -13,6 +12,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 
 public class XmppConversationHistoryPaginator extends PagePagination<Message> {
@@ -33,10 +34,10 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         packet.setConversationId(conversationId);
         packet.setPage(page);
         packet.setSinceSec(sinceSecs);
-        Log.i("Send XMPP Packet: ", packet.toString());
+        Timber.i("Send XMPP Packet: %s", packet.toString());
 
         try {
-            ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider());
+            ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider(new Gson()));
             connection.sendStanzaWithResponseCallback(packet,
                     stanza -> stanza instanceof MessagePagePacket,
                     stanzaPacket -> {
@@ -44,11 +45,11 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
                         ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);
                     },
                     exception -> {
-                        Log.e("Error!!!", Log.getStackTraceString(exception));
+                        Timber.e(exception, getClass().getName());
                         notifyError(exception);
                     });
         } catch (SmackException.NotConnectedException e) {
-            Log.i("XmppMessagePagePaginate", "Loading error", e);
+            Timber.i(e, "%s, Loading error", getClass().getSimpleName());
         }
     }
 

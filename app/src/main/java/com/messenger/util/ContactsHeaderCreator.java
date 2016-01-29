@@ -7,7 +7,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.User;
 import com.messenger.model.ChatUser;
 import com.worldventures.dreamtrips.R;
 

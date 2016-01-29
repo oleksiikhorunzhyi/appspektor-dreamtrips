@@ -17,8 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.messenger.entities.User;
 import com.messenger.flow.path.StyledPath;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.CheckableContactsCursorAdapter;
 import com.messenger.ui.anim.WeightSlideAnimator;
 import com.messenger.ui.presenter.ChatMembersScreenPresenter;

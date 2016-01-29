@@ -3,14 +3,19 @@ package com.messenger.storage.dao;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Adapter;
-import com.messenger.messengerservers.entities.User$Table;
+import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.entities.User;
+import com.messenger.entities.User$Adapter;
+import com.messenger.entities.User$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.builder.ConditionQueryBuilder;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -57,11 +62,24 @@ public class UsersDAO extends BaseDAO {
                 .subscribeOn(Schedulers.io());
     }
 
-    public void save(List<User> friends) {
-        bulkInsert(friends, new User$Adapter(), User.CONTENT_URI);
-    }
-
     public void deleteFriends() {
         new Delete().from(User.class).where(Condition.column(User$Table.FRIEND).is(true)).queryClose();
+    }
+
+    public void markUserAsFriend(List<String> ids, boolean isFriend) {
+        if (ids.isEmpty()) return;
+        //
+        String first = ids.get(0);
+        String[] other = Queryable.from(ids).skip(1).toArray(String.class);
+
+        new Update<>(User.class)
+                .set(Condition.column(User$Table.FRIEND).eq(isFriend))
+                .where(new ConditionQueryBuilder<>(User.class, Condition.column(User$Table._ID).in(first, other)))
+                .queryClose();
+        getContext().getContentResolver().notifyChange(User.CONTENT_URI, null);
+    }
+
+    public void save(List<User> users) {
+        bulkInsert(users, new User$Adapter(), User.CONTENT_URI);
     }
 }

@@ -65,8 +65,8 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
             feedItemDetailsCell.itemView.setOnClickListener(view -> feedItemDetailsCell.openItemDetails());
         }
         //
-        super.fillWithItem(item);
         feedItemDetailsCell.fillWithItem(item);
+        super.fillWithItem(item);
     }
 
     private FeedItemDetailsCell createCell(ITEM item) {

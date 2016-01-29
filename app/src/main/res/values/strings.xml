@@ -513,6 +513,8 @@
     <string name="feedback_select_category">Choose Reason</string>
 
     <string name="years_ago">%d years ago</string>
+    <string name="invitation_template">Select template</string>
+
 
     <string name="settings">Settings</string>
     <string name="notifications">Notifications</string>

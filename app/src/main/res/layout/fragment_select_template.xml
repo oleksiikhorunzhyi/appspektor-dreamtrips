@@ -6,16 +6,6 @@
               android:background="@android:color/white"
               android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:padding="16dp"
-        android:text="@string/invitation_select_template"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"/>
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"

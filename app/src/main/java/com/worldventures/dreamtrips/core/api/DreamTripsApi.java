@@ -97,6 +97,11 @@ public interface DreamTripsApi {
     @GET("/api/activities")
     List<ActivityModel> getActivities();
 
+    /* *** PHOTOS *****************************/
+
+    /**
+     * Photo of all members
+     */
     @GET("/api/photos")
     ArrayList<Photo> getMembersPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
@@ -109,8 +114,6 @@ public interface DreamTripsApi {
     @GET("/api/ysbh_photos")
     ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
-    @GET("/api/success_stories")
-    ArrayList<SuccessStory> getSuccessStores();
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")
@@ -119,20 +122,21 @@ public interface DreamTripsApi {
     @DELETE("/api/photos/{id}")
     JsonObject deletePhoto(@Path("id") String photoId);
 
-    @POST("/api/success_stories/{id}/like")
-    JsonObject likeSS(@Path("id") int photoId);
-
-    @DELETE("/api/success_stories/{id}/like")
-    JsonObject unlikeSS(@Path("id") int photoId);
-
-    @POST("/api/photos")
-    Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
-
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body UploadTask uploadTask);
 
     @PUT("/api/photos/{uid}")
     Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
+    /* *** END PHOTOS *****************************/
+
+    @GET("/api/success_stories")
+    ArrayList<SuccessStory> getSuccessStores();
+
+    @POST("/api/success_stories/{id}/like")
+    JsonObject likeSS(@Path("id") int photoId);
+
+    @DELETE("/api/success_stories/{id}/like")
+    JsonObject unlikeSS(@Path("id") int photoId);
 
     @POST("/api/bucket_list_items/{uid}/photos")
     BucketPhoto uploadBucketPhoto(@Path("uid") String uid, @Body BucketPhoto bucketPhoto);

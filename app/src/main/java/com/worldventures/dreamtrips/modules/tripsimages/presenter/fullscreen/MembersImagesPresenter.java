@@ -19,15 +19,18 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemberImagesPresenter extends TripImagesListPresenter<MemberImagesPresenter.View> {
+/**
+ * ALL MEMBERS PHOTOS. 1 TAB in Trip Images page.
+ */
+public class MembersImagesPresenter extends TripImagesListPresenter<MembersImagesPresenter.View> {
 
     public static final int REQUESTER_ID = -10;
 
-    public MemberImagesPresenter() {
+    public MembersImagesPresenter() {
         this(TripImagesType.MEMBERS_IMAGES, 0);
     }
 
-    public MemberImagesPresenter(TripImagesType type, int userId) {
+    public MembersImagesPresenter(TripImagesType type, int userId) {
         super(type, userId);
     }
 

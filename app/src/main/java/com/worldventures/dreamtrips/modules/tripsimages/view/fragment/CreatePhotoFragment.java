@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -73,13 +76,19 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         ViewGroup.LayoutParams lp = ivImage.getLayoutParams();
         lp.height = ViewUtils.getMinSideSize(getActivity());//but by material style guide 3:2
 
-        ivImage.setController(GraphicUtils.provideFrescoResizingController(uri, ivImage.getController()));
+        PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(uri, ivImage.getController());
+        draweeController.addControllerListener(new BaseControllerListener() {
+            @Override
+            public void onFinalImageSet(String id, Object imageInfo, Animatable animatable) {
+                ivImage.post(() -> showTagViewGroup());
+            }
+        });
+        ivImage.setController(draweeController);
         Photo photo = new Photo();
         Image images = new Image();
         images.setUrl(uri.toString());
         photo.setImages(images);
         taggableImageHolder.setup(this, photo);
-        showTagViewGroup();
     }
 
 

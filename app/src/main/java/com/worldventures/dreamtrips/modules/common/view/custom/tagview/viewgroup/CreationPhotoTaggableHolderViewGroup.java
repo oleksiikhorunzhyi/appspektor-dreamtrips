@@ -192,9 +192,12 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
                 .subscribe(this::addSuggestionTagView);
     }
 
+
     protected boolean isIntersectedWithPhotoTags(PhotoTag suggestion) {
+        ArrayList<PhotoTag> existed = new ArrayList<>(presenter.getPhoto().getPhotoTags());
+        existed.removeAll(locallyDeletedTags);
         return !Queryable.from(locallyAddedTags)
-                .concat(presenter.getPhoto().getPhotoTags())
+                .concat(existed)
                 .any(element -> element.getProportionalPosition().intersected(suggestion.getProportionalPosition()));
     }
 

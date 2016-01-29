@@ -87,8 +87,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     }
 
     public void show(SimpleDraweeView imageView) {
-        if (presenter == null) return;
-
         imageView.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         imageView.getHierarchy().getActualImageBounds(imageBounds);
         setVisibility(View.VISIBLE);

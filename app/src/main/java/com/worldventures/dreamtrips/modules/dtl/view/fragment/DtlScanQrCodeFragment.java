@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,10 +20,9 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -44,7 +42,7 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
 @RuntimePermissions
-public class DtlScanQrCodeFragment extends BaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle>
+public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle>
         implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
     @Inject

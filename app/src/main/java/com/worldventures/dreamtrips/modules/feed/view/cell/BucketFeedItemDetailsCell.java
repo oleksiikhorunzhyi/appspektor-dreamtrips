@@ -40,14 +40,6 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
     TextView textViewDate;
     @InjectView(R.id.textViewPlace)
     TextView textViewPlace;
-    @InjectView(R.id.textViewFriends)
-    TextView textViewFriends;
-    @InjectView(R.id.textViewTags)
-    TextView textViewTags;
-    @InjectView(R.id.bucket_tags_container)
-    View bucketTags;
-    @InjectView(R.id.bucket_who_container)
-    View bucketWho;
 
     @Inject
     BucketItemManager bucketItemManager;
@@ -87,18 +79,6 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
             textViewPlace.setText(BucketItemInfoUtil.getPlace(bucketItem));
         }
         textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
-        if (!TextUtils.isEmpty(bucketItem.getFriends())) {
-            bucketWho.setVisibility(View.VISIBLE);
-            textViewFriends.setText(bucketItem.getFriends());
-        } else {
-            bucketWho.setVisibility(View.GONE);
-        }
-        if (!TextUtils.isEmpty(bucketItem.getBucketTags())) {
-            bucketTags.setVisibility(View.VISIBLE);
-            textViewTags.setText(bucketItem.getBucketTags());
-        } else {
-            bucketTags.setVisibility(View.GONE);
-        }
     }
 
 
@@ -131,7 +111,7 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
         getEventBus().post(new EditBucketEvent(getModelObject().getItem().getUid(), bucketType));
     }
 
-    @OnClick({R.id.bucket_meta, R.id.bucket_main})
+    @OnClick(R.id.bucket_main)
     void openBucketEntityDetails() {
         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new FeedDetailsBundle(getModelObject()))

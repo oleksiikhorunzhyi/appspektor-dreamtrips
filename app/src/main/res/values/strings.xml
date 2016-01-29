@@ -8,7 +8,6 @@
     <string name="trip_images">Trip Images</string>
     <string name="bucket_list">Bucket List</string>
     <string name="dtl">Discover</string>
-    <string name="messenger">Messenger</string>
     <string name="my_profile">My Profile</string>
     <string name="terms">Terms</string>
     <string name="terms_of_service">Terms of Service</string>
@@ -498,6 +497,9 @@
     <string name="user_already_exists">%s already exists</string>
 
     <!-- messenger-->
+
+    <string name="messenger">Messenger</string>
+
     <!---->
     <!--Conversation List -->
     <!---->
@@ -543,7 +545,7 @@
     <!---->
     <string name="chat_subtitle_format_single_chat_online">Online</string>
     <string name="chat_subtitle_format_single_chat_offline">Offline</string>
-    <string name="chat_subtitle_format_group_chat_format">%d online</string>
+    <string name="chat_subtitle_format_group_chat_format">%1$d members, %2$d online</string>
     <string name="chat_subtitle_format_group_chat_offline">No users online</string>
     <string name="chat_message_edittext_hint">Your message</string>
     <string name="chat_message_send_button_text">Send</string>

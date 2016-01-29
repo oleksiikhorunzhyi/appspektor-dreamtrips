@@ -101,6 +101,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
         //
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
+        toolbarPresenter.setTitle(null);
     }
 
     @Override
@@ -180,7 +181,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
                 searchItem.expandActionView();
                 searchView.setQuery(savedSearchFilter, false);
             }
-            searchView.setQueryHint(getContext().getString(R.string.conversation_list_search_hint));
+            searchView.setQueryHint(getContext().getString(R.string.edit_chat_members_search_hint));
             searchView.setOnCloseListener(() -> false);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override

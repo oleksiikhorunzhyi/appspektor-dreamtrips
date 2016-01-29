@@ -2,10 +2,12 @@ package com.messenger.messengerservers.xmpp;
 
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
+import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
@@ -13,9 +15,13 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.muc.MUCRole;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
+import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
@@ -42,6 +48,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingMessage, StanzaTypeFilter.MESSAGE);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
             ChatManager.getInstanceFor(abstractXMPPConnection).addChatListener(XmppGlobalEventEmitter.this::onChatCreated);
+            ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT, ChatStateExtension.NAMESPACE, new ChatStateExtension.Provider());
+            MultiUserChatManager.getInstanceFor(abstractXMPPConnection).addInvitationListener(XmppGlobalEventEmitter.this::onChatInvited);
         }
     };
 
@@ -50,6 +58,10 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     private void onChatCreated(Chat chat, boolean createdLocally) {
         notifyOnChatCreatedListener(chat.getThreadID(), createdLocally);
+    }
+
+    private void onChatInvited(XMPPConnection conn, MultiUserChat room, String inviter, String reason, String password, Message message) {
+        notifyReceiveInvite(JidCreatorHelper.obtainId(room.getRoom()));
     }
 
     public void interceptOutgoingMessages(com.messenger.messengerservers.entities.Message message) {
@@ -64,6 +76,17 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         Message messageXMPP = (Message) packet;
         if (isMessageIgnored(messageXMPP)) return;
         switch (stanzaType(packet)) {
+            case EXTENTION_STATUS:
+                ChatStateExtension extension = (ChatStateExtension) messageXMPP.getExtension(ChatStateExtension.NAMESPACE);
+                String from = messageXMPP.getFrom();
+                if (((Message) packet).getType() == Message.Type.chat) {
+                    notifyOnChatStateChangedListener(messageXMPP.getThread(),
+                            JidCreatorHelper.obtainId(from), extension.getChatState());
+                } else {
+                    notifyOnChatStateChangedListener(JidCreatorHelper.obtainId(from),
+                            JidCreatorHelper.obtainUserIdFromGroupJid(from), extension.getChatState());
+                }
+                break;
             case MESSAGE:
                 com.messenger.messengerservers.entities.Message message = messageConverter.convert(messageXMPP);
                 notifyGlobalMessage(message, true);

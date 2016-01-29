@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,10 +18,10 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.SwipeClickListener;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
@@ -54,6 +56,8 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
 
     @Inject
     ParticipantsDAO participantsDAO;
+    @Inject
+    User user;
 
     protected final ConversationHelper conversationHelper = new ConversationHelper();
     protected final View.OnClickListener onClickListener = this::onClick;
@@ -187,13 +191,16 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
             participantsSubscriber.unsubscribe();
         }
 
-        participantsSubscriber = participantsDAO.getParticipants(conversation.getId())
+        Observable<List<User>> participantsObservable;
+        if (TextUtils.equals(conversation.getType(), Conversation.Type.CHAT)) {
+            participantsObservable = participantsDAO.getParticipant(conversation.getId(), user.getId())
+                    .compose(new NonNullFilter<>())
+                    .map(Collections::singletonList);
+        } else {
+            participantsObservable = participantsDAO.getParticipantsEntities(conversation.getId());
+        }
+        participantsSubscriber = participantsObservable
                 .onBackpressureLatest()
-                .map(cursor -> {
-                    List<User> result = SqlUtils.convertToList(User.class, cursor);
-                    cursor.close();
-                    return result;
-                })
                 .subscribeOn(Schedulers.immediate())
                 .compose(RxLifecycle.bindView(itemView))
                 .onErrorReturn(throwable -> Collections.<User>emptyList())

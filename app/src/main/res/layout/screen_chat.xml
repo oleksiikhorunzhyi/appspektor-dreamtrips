@@ -68,17 +68,6 @@
                         android:layout_height="match_parent"
                         />
 
-                    <com.messenger.ui.widget.ChatUsersTypingView
-                        android:id="@+id/chat_users_typing_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:paddingBottom="@dimen/chat_typing_vertical_margin"
-                        android:paddingLeft="@dimen/chat_list_item_horizontal_padding"
-                        android:paddingRight="@dimen/chat_list_item_horizontal_padding"
-                        android:paddingTop="@dimen/chat_typing_vertical_margin"
-                        />
-
                     <com.messenger.ui.widget.UnreadMessagesView
                         android:id="@+id/chat_users_unread_messages_view"
                         android:layout_width="match_parent"
@@ -86,6 +75,14 @@
                         android:visibility="gone"/>
 
                 </FrameLayout>
+
+                <com.messenger.ui.widget.ChatUsersTypingView
+                    android:id="@+id/chat_users_typing_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="0"
+                    />
 
                 <View
                     android:layout_width="match_parent"
@@ -97,6 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:background="@color/white"
                     android:orientation="horizontal"
                     >
 
@@ -105,10 +103,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="0"
                         android:padding="5dp"
                         android:src="@drawable/ic_attachment_black_24_px"
+                        android:visibility="gone"
                         />
 
                     <EditText
@@ -116,6 +115,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:hint="@string/chat_message_edittext_hint"
                         android:imeOptions="actionGo"

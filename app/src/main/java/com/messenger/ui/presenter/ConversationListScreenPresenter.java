@@ -5,11 +5,14 @@ import android.support.annotation.StringDef;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.view.conversation.ConversationListScreen;
+import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.viewstate.ConversationListViewState;
 
 public interface ConversationListScreenPresenter extends MessengerPresenter<ConversationListScreen,
         ConversationListViewState> {
     User getUser();
+
+    ParticipantsDAO getParticipantsDao();
 
     void onConversationSelected(Conversation conversation);
 

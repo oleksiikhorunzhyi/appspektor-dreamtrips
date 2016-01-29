@@ -12,6 +12,7 @@ import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
@@ -47,6 +48,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     DreamSpiceManager dreamSpiceManager;
     @Inject
     ConversationsDAO conversationsDAO;
+    @Inject
+    ParticipantsDAO participantsDAO;
     @Inject
     NotificationDelegate notificationDelegate;
     @Inject
@@ -96,6 +99,11 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Override
     public User getUser() {
         return user;
+    }
+
+    @Override
+    public ParticipantsDAO getParticipantsDao() {
+        return participantsDAO;
     }
 
     private void connectData() {

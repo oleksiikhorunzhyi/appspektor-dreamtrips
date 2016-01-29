@@ -31,6 +31,10 @@ public class XmppConversationLoader extends Loader<ConversationData> {
 
     public XmppConversationLoader(XmppServerFacade facade) {
         this.facade = facade;
+        ProviderManager.addIQProvider(
+                ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE,
+                new ConversationProvider()
+        );
     }
 
     @Override
@@ -39,7 +43,6 @@ public class XmppConversationLoader extends Loader<ConversationData> {
         packet.setMax(MAX_CONVERSATIONS);
         packet.setType(IQ.Type.get);
 
-        ProviderManager.addIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE, new ConversationProvider());
         try {
             facade.getConnection().sendStanzaWithResponseCallback(packet,
                     (stanza) -> stanza instanceof ConversationsPacket,
@@ -49,7 +52,6 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                                 .subscribe(conversationWithParticipants -> {
                                     Timber.i("Conversations loaded: %s", conversations);
                                     notifyListeners(conversationWithParticipants);
-                                    ProviderManager.removeIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE);
                                 });
                     });
         } catch (SmackException.NotConnectedException e) {
@@ -67,6 +69,7 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                         List<Participant> participants = provider.getSingleChatParticipants(conversation);
                         if (subscriber.isUnsubscribed()) return;
                         if (singleChatInvalid(conversation, facade.getOwner())) {
+                            Timber.w("Single Conversation is invalid: %s", conversation);
                             subscriber.onCompleted();
                             return;
                         }
@@ -76,7 +79,8 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
                             if (subscriber.isUnsubscribed()) return;
-                            if (groupChatInvalid(conversation, owner)) {
+                            if (XmppConversationLoader.this.groupChatInvalid(conversation, owner, members)) {
+                                Timber.w("Group Conversation is invalid: %s", conversation);
                                 subscriber.onCompleted();
                                 return;
                             }
@@ -94,9 +98,10 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                 .toList();
     }
 
-    private boolean groupChatInvalid(Conversation conversation, Participant owner) {
+    private boolean groupChatInvalid(Conversation conversation, Participant owner, List<Participant> members) {
         boolean withoutOwner = owner == null && (conversation.getType().equals(Conversation.Type.CHAT) || conversation.getType().equals(Conversation.Type.GROUP));
-        return withoutOwner;
+        boolean noParticipants = owner == null && (members == null || members.isEmpty());
+        return withoutOwner || noParticipants;
     }
 
     private boolean singleChatInvalid(Conversation conversation, User user) {

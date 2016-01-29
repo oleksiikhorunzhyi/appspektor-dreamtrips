@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.messenger.flow.path.StyledPath;
@@ -84,6 +85,7 @@ public abstract class ChatSettingsScreenImpl<P extends StyledPath>
     }
 
     protected void init() {
+        setOrientation(LinearLayout.VERTICAL);
         ButterKnife.inject(this);
         //
         // TODO: 1/2/16  hide for RC version

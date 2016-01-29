@@ -7,8 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import flow.path.PathContext;
+import rx.Observable;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
         implements ChatScreen {
@@ -73,21 +73,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
-
-    private final TextWatcher messageWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            getPresenter().messageTextChanged(s.length());
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -142,6 +127,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
         unreadMessagesView.setCloseButtonClickListener((view -> unreadMessagesView.hide()));
         unreadMessagesView.setUnreadMessagesClickListener((view -> {
+            unreadMessagesView.setEnabled(false);
             getPresenter().onUnreadMessagesHeaderClicked();
         }));
     }
@@ -151,7 +137,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         conversationHelper = new ConversationHelper();
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
-        messageEditText.addTextChangedListener(messageWatcher);
         inflateToolbarMenu(toolbar);
     }
 
@@ -203,17 +188,19 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void setTitle(Conversation conversation, List<User> members) {
-        conversationHelper.setTitle(title, conversation, members, true);
+        conversationHelper.setTitle(title, conversation, members, false);
         conversationHelper.setSubtitle(subtitle, conversation, members);
     }
 
     public void showUnreadMessageCount(int unreadMessagesCount) {
-        if (unreadMessagesCount > 0) {
-            unreadMessagesView.updateCount(unreadMessagesCount);
-            unreadMessagesView.show();
-        } else {
-            unreadMessagesView.hide();
-        }
+        unreadMessagesView.updateCount(unreadMessagesCount);
+        unreadMessagesView.setEnabled(true);
+        if (!unreadMessagesView.isShown()) unreadMessagesView.show();
+    }
+
+    @Override
+    public void hideUnreadMessageCount() {
+        unreadMessagesView.hide();
     }
 
     @Override
@@ -263,8 +250,14 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
+    public Observable<TextViewTextChangeEvent> getEditMessageObservable() {
+        return RxTextView.textChangeEvents(messageEditText);
+    }
+
+    @Override
     public void smoothScrollToPosition(int position) {
         recyclerView.smoothScrollToPosition(position);
+        unreadMessagesView.setEnabled(true);
     }
 
     @Override
@@ -292,9 +285,13 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
+    public int getTotalShowingMessageCount() {
+        return adapter == null ? 0 : adapter.getItemCount();
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        messageEditText.removeTextChangedListener(messageWatcher);
     }
 
     @Override

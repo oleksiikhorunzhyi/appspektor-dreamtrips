@@ -1,5 +1,6 @@
 package com.messenger.messengerservers.xmpp.util;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
@@ -28,6 +29,10 @@ public class ParticipantProvider {
 
     public ParticipantProvider(AbstractXMPPConnection connection) {
         this.connection = connection;
+        ProviderManager.addIQProvider(
+                ConversationParticipants.ELEMENT_QUERY, ConversationParticipants.NAMESPACE,
+                new ConversationParticipantsProvider(connection.getUser())
+        );
     }
 
     public List<Participant> getSingleChatParticipants(Conversation conversation) {
@@ -44,24 +49,30 @@ public class ParticipantProvider {
         ObtainConversationParticipants participantsPacket = new ObtainConversationParticipants();
         participantsPacket.setTo(JidCreatorHelper.obtainGroupJid(conversation.getId()));
         participantsPacket.setFrom(connection.getUser());
-        ProviderManager.addIQProvider(ConversationParticipants.ELEMENT_QUERY, ConversationParticipants.NAMESPACE,
-                new ConversationParticipantsProvider(connection.getUser(), conversation));
 
         try {
             connection.sendStanzaWithResponseCallback(participantsPacket,
                     stanza -> stanza instanceof ConversationParticipants
                             && conversation.getId().equals(JidCreatorHelper.obtainId(stanza.getFrom())),
                     packet -> {
-                        if (packet == null) {
-                            // TODO should we throw exception?
-                            listener.onLoaded(null, null, false);
-                            return;
-                        }
-                        Timber.d("HANDLE PACKAGE + " + packet.hashCode());
                         ConversationParticipants conversationParticipants = (ConversationParticipants) packet;
-                        listener.onLoaded(conversationParticipants.getOwner(), conversationParticipants.getParticipants(), conversationParticipants.isAbandoned());
+                        //
+                        Participant owner = conversationParticipants.getOwner();
+                        if (owner != null) {
+                            owner = new Participant(owner, conversation.getId());
+                        }
+                        List<Participant> participants = conversationParticipants.getParticipants();
+                        if (participants != null) {
+                            participants = Queryable.from(participants).map(p -> new Participant(p, conversation.getId())).toList();
+                        }
+                        boolean abandoned = conversationParticipants.isAbandoned();
+                        //
+                        listener.onLoaded(owner, participants, abandoned);
+                    },
+                    exception -> {
+                        Timber.w(exception, "Can't get participants for conversation: %s", conversation);
+                        listener.onLoaded(null, Collections.emptyList(), false);
                     }
-                    , exception -> listener.onLoaded(null, Collections.emptyList(), false)
             );
         } catch (SmackException.NotConnectedException e) {
             Timber.e(e, "XMPP Exception");

@@ -212,7 +212,7 @@ public class ConversationsCursorAdapter
         }
         //
         if (TextUtils.isEmpty(filter)) {
-            changeCursor(newCursor);
+            closeCursorIfNeed(swapCursor(newCursor));
             return;
         }
         mainSubscription = Observable.from(SqlUtils.convertToList(Conversation.class, newCursor))
@@ -224,8 +224,16 @@ public class ConversationsCursorAdapter
                 .compose(new IoToMainComposer<>())
                 .compose(RxLifecycle.bindView(recyclerView))
                 .subscribe(map -> {
-                    changeCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
+                    swapCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
                 });
+    }
+
+    private void closeCursorIfNeed(Cursor oldCursor) {
+        if (oldCursor instanceof FilterCursorWrapper){
+            oldCursor = ((FilterCursorWrapper) oldCursor).getWrappedCursor();
+        }
+
+        if (oldCursor != null && oldCursor != getCursor()) oldCursor.close();
     }
 
     public void setConversationClickListener(ConversationClickListener conversationClickListener) {
@@ -346,7 +354,8 @@ public class ConversationsCursorAdapter
         }
 
         private String getOneToOneConversationName(Conversation conversation, List<User> participants) {
-            return participants.get(0).getName();
+            if (participants.isEmpty()) return "";
+            else return participants.get(0).getName();
         }
 
         @Override

@@ -10,41 +10,23 @@ import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
-import com.messenger.messengerservers.xmpp.util.XmppUtils;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
-import org.jivesoftware.smackx.chatstates.ChatStateListener;
-import org.jivesoftware.smackx.chatstates.ChatStateManager;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
-
-    private static final String TAG = "SingleUserChat";
     private final String companionId;
     private String roomId;
 
     @Nullable
-    private ChatStateManager chatStateManager;
-    @Nullable
     private Chat chat;
     private AbstractXMPPConnection connection;
     private XmppServerFacade facade;
-
-    private final ChatStateListener messageListener = new ChatStateListener() {
-        @Override
-        public void stateChanged(Chat chat, org.jivesoftware.smackx.chatstates.ChatState state) {
-            handleChangeState(XmppUtils.convertState(state), companionId);
-        }
-
-        @Override
-        public void processMessage(Chat chat, org.jivesoftware.smack.packet.Message message) {
-        }
-    };
 
     public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String roomId) {
         this.facade = facade;
@@ -57,13 +39,18 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     }
 
     @Override
-    public void setCurrentState(ChatState state) {
-        if (chatStateManager == null) return;
-        try {
-            chatStateManager.setCurrentState(XmppUtils.convertState(state), chat);
-        } catch (SmackException.NotConnectedException e) {
-            Timber.e(e, "Send status error");
-        }
+    public void setCurrentState(@ChatState.State String state) {
+        Observable.just(state)
+                .subscribeOn(Schedulers.io())
+                .compose(new ChatStateTransformer(message -> {
+                    if (chat != null) {
+                        chat.sendMessage(message);
+                        return true;
+                    }
+                    return false;
+                }))
+                .doOnError(throwable -> Timber.e(throwable, "setCurrentState %s", state))
+                .subscribe();
     }
 
     @Override
@@ -83,7 +70,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     @Override
     public Observable<Message> sendReadStatus(Message message) {
         return Observable.just(message)
-                .compose(new StatusMessageTranformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
+                .compose(new StatusMessageTransformer(new StatusMessagePacket(message.getId(), Status.DISPLAYED,
                         JidCreatorHelper.obtainUserJid(companionId), org.jivesoftware.smack.packet.Message.Type.chat),
                         stanza -> {
                             if (connection != null) {
@@ -95,16 +82,8 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     }
 
     @Override
-    public void close() {
-        super.close();
-        if (chat == null) return;
-        chat.removeMessageListener(messageListener);
-    }
-
-    @Override
     public void setConnection(@NonNull AbstractXMPPConnection connection) {
         this.connection = connection;
-        chatStateManager = ChatStateManager.getInstance(connection);
 
         String userJid = connection.getUser().split("/")[0];
         String companionJid = null;
@@ -126,15 +105,11 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
                         .obtainUserJid(
                                 roomId
                                         .replace(userJid.split("@")[0], "")
-                                        .replace("_", "")
-                                                //// TODO: 12/15/15  remove after implemented social graph
-                                        .replace("yu", "y_u"));
+                                        .replace("_", ""));
             }
             chat = chatManager.createChat(companionJid, roomId, null);
         } else {
             chat = existingChat;
         }
-
-        chat.addMessageListener(messageListener);
     }
 }

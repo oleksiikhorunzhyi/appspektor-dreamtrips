@@ -496,6 +496,10 @@
 
     <string name="user_already_exists">%s already exists</string>
 
+    <!-- messenger-->
+
+    <string name="messenger">消息</string>
+
     <!---->
     <!--Conversation List -->
     <!---->
@@ -541,7 +545,7 @@
     <!---->
     <string name="chat_subtitle_format_single_chat_online">线上</string>
     <string name="chat_subtitle_format_single_chat_offline">离线</string>
-    <string name="chat_subtitle_format_group_chat_format">%d上线 </string>
+    <string name="chat_subtitle_format_group_chat_format">%1$d 会员, %2$d 上线</string>
     <string name="chat_subtitle_format_group_chat_offline">目前无人在线上</string>
     <string name="chat_message_edittext_hint">您的讯息</string>
     <string name="chat_message_send_button_text">寄送</string>
@@ -599,5 +603,7 @@
     <string name="disconnected_overlay_connecting_message">连线中</string>
 
     <string name="warning_no_internet_connection">无法连线</string>
+
+    <!-- messenger ends-->
 
 </resources>

@@ -98,6 +98,7 @@ public class UnhandledMessageWatcher {
         WeakReference<Activity> activityRef = new WeakReference<>(activity);
         conversationsDAO.getConversation(message.getConversationId())
                 .compose(new NonNullFilter<>())
+                .filter(conversation -> TextUtils.equals(conversation.getStatus(), Conversation.Status.PRESENT))
                 .first()
                 .flatMap(conversation -> {
                     if (isSingleChat(conversation)) return composeSingleChatNotification(conversation, message);
@@ -113,7 +114,7 @@ public class UnhandledMessageWatcher {
     }
 
     private boolean isOpenedConversation(Message message) {
-        return message.getConversationId().equals(openedConversationTracker.getOpenedConversationId());
+        return openedConversationTracker.containsOpenedConversationId(message.getConversationId());
     }
 
     private void showNotification(Activity activity, NotificationData data) {

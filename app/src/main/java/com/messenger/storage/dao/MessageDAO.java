@@ -94,6 +94,29 @@ public class MessageDAO extends BaseDAO {
                 });
     }
 
+    /**
+     *
+     * @return observable, which emits int values which includes first unread message
+     */
+    public Observable<Integer> countFromFirstUnreadMessage(String conversationId, String userId){
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT COUNT(_id) FROM " + Message.TABLE_NAME + " " +
+                        "WHERE " + Message$Table.CONVERSATIONID + " = ? "
+                        + "AND " + Message$Table.DATE + " >=  " +
+                        "( SELECT MIN(" + Message$Table.DATE + ") FROM " + Message.TABLE_NAME + " "
+                        + "WHERE " + Message$Table.FROMID + " <> ? "
+                        + "AND " + Message$Table.STATUS + " = ? )")
+                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(Message.Status.SENT)})
+                .build();
+
+        return query(q, Message.CONTENT_URI)
+                .map(cursor -> {
+                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
+                    cursor.close();
+                    return res;
+                });
+    }
+
     public void save(List<Message> messages) {
         bulkInsert(messages, new Message$Adapter(), Message.CONTENT_URI);
     }

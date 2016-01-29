@@ -82,7 +82,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             try {
                                 stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
                             } catch (JsonSyntaxException e) {
-                                Timber.e("Parce error", e);
+                                Timber.e(e, "Parce error");
                             }
 
                             if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null) {

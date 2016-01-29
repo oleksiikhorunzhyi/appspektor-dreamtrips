@@ -2,9 +2,6 @@ buildscript {
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
-        maven {
-            url 'https://repos.zeroturnaround.com/nexus/content/repositories/zt-public-releases'
-        }
     }
 
     dependencies {
@@ -15,8 +12,6 @@ buildscript {
         classpath "de.felixschulze.gradle:gradle-hockeyapp-plugin:3.2"
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
         classpath 'io.fabric.tools:gradle:1.21.2'
-        //
-        classpath 'com.zeroturnaround.jrebel.android:jr-android-gradle:1.0.+'
     }
 
     ///////////////////////////////////

@@ -1,6 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
@@ -84,7 +86,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         // getView().setNotificationSettingStatus();
     }
 
-    private void connectToConversation(){
+    private void connectToConversation() {
         conversationObservable = conversationsDAO
                 .getConversation(conversationId)
                 .compose(new NonNullFilter<>())
@@ -102,7 +104,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         });
     }
 
-    private void connectToParticipants(Conversation conversation){
+    private void connectToParticipants(Conversation conversation) {
         participantsObservable = participantsDAO.getParticipants(conversationId)
                 .onBackpressureLatest()
                 .map(c -> SqlUtils.convertToList(User.class, c))
@@ -180,6 +182,8 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onLeaveButtonClick() {
+        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) return;
+
         conversationObservable
                 .map(conversation -> conversation.getSubject())
                 .subscribe(subject -> getView().showLeaveChatDialog(subject));
@@ -216,7 +220,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     @Override
     public void onToolbarMenuPrepared(Menu menu) {
         conversationObservable.subscribe(conversation ->
-                menu.findItem(R.id.action_overflow).setVisible(isUserOwner(conversation)));
+                menu.findItem(R.id.action_overflow).setVisible(!isSingleChat(conversation) && isUserOwner(conversation)));
     }
 
     @Override
@@ -237,6 +241,10 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     ////////////////////////////////////////////////////
 
     private boolean isUserOwner(Conversation conversation) {
-        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
+        return TextUtils.equals(conversation.getOwnerId(), user.getId());
+    }
+
+    private boolean isSingleChat(Conversation conversation) {
+        return TextUtils.equals(conversation.getType(), Conversation.Type.CHAT);
     }
 }

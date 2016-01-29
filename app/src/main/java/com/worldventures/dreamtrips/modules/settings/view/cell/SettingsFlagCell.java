@@ -8,14 +8,14 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.settings.model.FlagSettings;
+import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_settings_flag)
-public class SettingsFlagCell extends AbstractDelegateCell<FlagSettings, CellDelegate<FlagSettings>> {
+public class SettingsFlagCell extends AbstractDelegateCell<FlagSetting, CellDelegate<FlagSetting>> {
 
     @InjectView(R.id.settings_title)
     TextView settingsTitle;

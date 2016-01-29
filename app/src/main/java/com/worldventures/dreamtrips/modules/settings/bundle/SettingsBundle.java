@@ -3,12 +3,9 @@ package com.worldventures.dreamtrips.modules.settings.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SettingsBundle implements Parcelable, Serializable {
 

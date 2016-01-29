@@ -8,19 +8,19 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.settings.model.FlagSettings;
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
+import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 
 @Layout(R.layout.fragment_settings_notifications)
 @MenuResource(R.menu.menu_settings)
-public class NotificationsSettingsFragment extends SettingsFragment implements CellDelegate<Settings> {
+public class NotificationsSettingsFragment extends SettingsFragment implements CellDelegate<Setting> {
 
     private MenuItem buttonDone;
 
     @Override
     protected void registerCells() {
         super.registerCells();
-        adapter.registerDelegate(FlagSettings.class, this);
+        adapter.registerDelegate(FlagSetting.class, this);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class NotificationsSettingsFragment extends SettingsFragment implements C
     }
 
     @Override
-    public void onCellClicked(Settings model) {
+    public void onCellClicked(Setting model) {
         validateDoneButton();
     }
 }

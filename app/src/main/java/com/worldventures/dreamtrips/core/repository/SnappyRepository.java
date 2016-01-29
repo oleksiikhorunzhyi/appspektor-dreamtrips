@@ -21,9 +21,9 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.settings.model.FlagSettings;
-import com.worldventures.dreamtrips.modules.settings.model.SelectSettings;
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
+import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
+import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
@@ -286,23 +286,23 @@ public class SnappyRepository {
     // Settings
     ///////////////////////////////////////////////////////////////////////////
 
-    public void saveSettings(List<Settings> settingsList) {
+    public void saveSettings(List<Setting> settingsList) {
         act(db -> {
-            for (Settings settings : settingsList) {
+            for (Setting settings : settingsList) {
                 db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
             }
         });
     }
 
-    public List<Settings> getSettings() {
+    public List<Setting> getSettings() {
         return actWithResult(db -> {
-            List<Settings> settingsList = new ArrayList<>();
+            List<Setting> settingsList = new ArrayList<>();
             String[] keys = db.findKeys(SETTINGS_KEY);
             for (String key : keys) {
-                if (key.contains(Settings.Type.FLAG.name())) {
-                    settingsList.add(db.get(key, FlagSettings.class));
-                } else if (key.contains(Settings.Type.SELECT.name())) {
-                    settingsList.add(db.get(key, SelectSettings.class));
+                if (key.contains(Setting.Type.FLAG.name())) {
+                    settingsList.add(db.get(key, FlagSetting.class));
+                } else if (key.contains(Setting.Type.SELECT.name())) {
+                    settingsList.add(db.get(key, SelectSetting.class));
                 }
             }
             return settingsList;

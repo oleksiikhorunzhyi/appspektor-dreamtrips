@@ -42,7 +42,6 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
         adapter.registerCell(SettingsGroup.class, SettingsGroupCell.class);
         adapter.registerDelegate(SettingsGroup.class, this);
         recyclerView.setAdapter(adapter);
-        getPresenter().loadSettings();
     }
 
     @Override

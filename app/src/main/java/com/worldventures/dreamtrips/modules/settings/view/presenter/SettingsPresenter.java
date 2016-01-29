@@ -5,7 +5,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.settings.api.UpdateSettingsCommand;
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
@@ -22,9 +22,9 @@ import icepick.State;
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
     @State
-    ArrayList<Settings> settingsList;
+    ArrayList<Setting> settingsList;
     @State
-    ArrayList<Settings> immutableSettingsList;
+    ArrayList<Setting> immutableSettingsList;
 
     @Inject
     SnappyRepository db;
@@ -40,7 +40,7 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
         super.takeView(view);
         SettingsFactory settingsFactory = new SettingsFactory();
         if (this.settingsList == null)
-            this.settingsList = (ArrayList<Settings>) SettingsManager.merge(db.getSettings(),
+            this.settingsList = (ArrayList<Setting>) SettingsManager.merge(db.getSettings(),
                     settingsFactory.createSettings(group));
         //
         if (immutableSettingsList == null)
@@ -49,13 +49,13 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
         view.setSettings(settingsList);
     }
 
-    private ArrayList<Settings> cloneList(List<Settings> settingsList) {
-        ArrayList<Settings> cloneList = new ArrayList<>();
+    private ArrayList<Setting> cloneList(List<Setting> settingsList) {
+        ArrayList<Setting> cloneList = new ArrayList<>();
         Queryable.from(settingsList).forEachR(setting -> cloneList.add(SerializationUtils.clone(setting)));
         return cloneList;
     }
 
-    private List<Settings> getChanges() {
+    private List<Setting> getChanges() {
         return Queryable.from(settingsList).filter(setting ->
                 Queryable.from(immutableSettingsList)
                         .filter(changeSetting -> changeSetting.equals(setting) &&
@@ -70,7 +70,7 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
     public void applyChanges(boolean withClose) {
         if (isSettingsChanged()) {
             view.showLoading();
-            List<Settings> changes = getChanges();
+            List<Setting> changes = getChanges();
             doRequest(new UpdateSettingsCommand(changes),
                     aVoid -> {
                         db.saveSettings(changes);
@@ -91,7 +91,7 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
     public interface View extends Presenter.View {
 
-        void setSettings(List<Settings> settingsList);
+        void setSettings(List<Setting> settingsList);
 
         void showLoading();
 

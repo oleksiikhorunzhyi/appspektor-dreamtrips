@@ -12,9 +12,9 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.settings.bundle.SettingsBundle;
-import com.worldventures.dreamtrips.modules.settings.model.FlagSettings;
-import com.worldventures.dreamtrips.modules.settings.model.SelectSettings;
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
+import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
+import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsFlagCell;
 import com.worldventures.dreamtrips.modules.settings.view.cell.SettingsSelectCell;
 import com.worldventures.dreamtrips.modules.settings.view.presenter.SettingsPresenter;
@@ -51,8 +51,8 @@ public abstract class SettingsFragment extends BaseFragmentWithArgs<SettingsPres
     }
 
     protected void registerCells() {
-        adapter.registerCell(FlagSettings.class, SettingsFlagCell.class);
-        adapter.registerCell(SelectSettings.class, SettingsSelectCell.class);
+        adapter.registerCell(FlagSetting.class, SettingsFlagCell.class);
+        adapter.registerCell(SelectSetting.class, SettingsSelectCell.class);
     }
 
     protected void setupToolbar() {
@@ -67,7 +67,7 @@ public abstract class SettingsFragment extends BaseFragmentWithArgs<SettingsPres
     }
 
     @Override
-    public void setSettings(List<Settings> settingsList) {
+    public void setSettings(List<Setting> settingsList) {
         adapter.setItems(settingsList);
         adapter.notifyDataSetChanged();
     }

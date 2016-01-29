@@ -7,37 +7,37 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Settings<T extends Serializable> implements Parcelable, Serializable {
+public class Setting<T extends Serializable> implements Parcelable, Serializable {
 
     protected String name;
     protected Type type;
     protected T value;
 
-    public Settings() {
+    public Setting() {
 
     }
 
-    public Settings(String name, Type type, T value) {
+    public Setting(String name, Type type, T value) {
         this.name = name;
         this.type = type;
         this.value = value;
     }
 
-    protected Settings(Parcel in) {
+    protected Setting(Parcel in) {
         name = in.readString();
         type = (Type) in.readSerializable();
         value = (T) in.readSerializable();
     }
 
-    public static final Creator<Settings> CREATOR = new Creator<Settings>() {
+    public static final Creator<Setting> CREATOR = new Creator<Setting>() {
         @Override
-        public Settings createFromParcel(Parcel in) {
-            return new Settings(in);
+        public Setting createFromParcel(Parcel in) {
+            return new Setting(in);
         }
 
         @Override
-        public Settings[] newArray(int size) {
-            return new Settings[size];
+        public Setting[] newArray(int size) {
+            return new Setting[size];
         }
     };
 
@@ -90,7 +90,7 @@ public class Settings<T extends Serializable> implements Parcelable, Serializabl
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Settings<?> settings = (Settings<?>) o;
+        Setting<?> settings = (Setting<?>) o;
 
         return name.equals(settings.name);
     }

@@ -2,19 +2,19 @@ package com.worldventures.dreamtrips.modules.settings.model;
 
 import android.os.Parcel;
 
-public class FlagSettings extends Settings<Boolean> {
+public class FlagSetting extends Setting<Boolean> {
 
-    public FlagSettings() {
+    public FlagSetting() {
 
     }
 
-    protected FlagSettings(Parcel in) {
+    protected FlagSetting(Parcel in) {
         name = in.readString();
         type = (Type) in.readSerializable();
         value = (Boolean) in.readSerializable();
     }
 
-    public FlagSettings(String name, Type type, boolean value) {
+    public FlagSetting(String name, Type type, boolean value) {
         super(name, type, value);
     }
 
@@ -23,15 +23,15 @@ public class FlagSettings extends Settings<Boolean> {
         return value == null ? false : value;
     }
 
-    public static final Creator<FlagSettings> CREATOR = new Creator<FlagSettings>() {
+    public static final Creator<FlagSetting> CREATOR = new Creator<FlagSetting>() {
         @Override
-        public FlagSettings createFromParcel(Parcel in) {
-            return new FlagSettings(in);
+        public FlagSetting createFromParcel(Parcel in) {
+            return new FlagSetting(in);
         }
 
         @Override
-        public FlagSettings[] newArray(int size) {
-            return new FlagSettings[size];
+        public FlagSetting[] newArray(int size) {
+            return new FlagSetting[size];
         }
     };
 

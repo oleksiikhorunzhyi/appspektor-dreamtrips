@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.settings.view.cell;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
@@ -10,7 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.settings.dialog.SelectDialog;
-import com.worldventures.dreamtrips.modules.settings.model.SelectSettings;
+import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 import com.worldventures.dreamtrips.modules.settings.view.cell.delegate.SettingsSelectCellDelegate;
 
@@ -20,7 +19,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_settings_select)
-public class SettingsSelectCell extends AbstractDelegateCell<SelectSettings, SettingsSelectCellDelegate> {
+public class SettingsSelectCell extends AbstractDelegateCell<SelectSetting, SettingsSelectCellDelegate> {
 
     @InjectView(R.id.settings_title)
     TextView settingsTitle;
@@ -50,7 +49,7 @@ public class SettingsSelectCell extends AbstractDelegateCell<SelectSettings, Set
     }
 
     private void showSingleChoiceDialog(Context context) {
-        SelectSettings model = getModelObject();
+        SelectSetting model = getModelObject();
         SelectDialog dialog = SelectDialog.newInstance(SettingsManager.getSelectDialogModel(
                 context.getResources(),
                 model.getName(),

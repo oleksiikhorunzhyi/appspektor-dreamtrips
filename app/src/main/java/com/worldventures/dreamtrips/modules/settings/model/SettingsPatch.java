@@ -4,17 +4,17 @@ import java.util.List;
 
 public class SettingsPatch {
 
-    private List<Settings> settings;
+    private List<Setting> settings;
 
-    public SettingsPatch(List<Settings> settings) {
+    public SettingsPatch(List<Setting> settings) {
         this.settings = settings;
     }
 
-    public List<Settings> getSettings() {
+    public List<Setting> getSettings() {
         return settings;
     }
 
-    public void setSettings(List<Settings> settings) {
+    public void setSettings(List<Setting> settings) {
         this.settings = settings;
     }
 }

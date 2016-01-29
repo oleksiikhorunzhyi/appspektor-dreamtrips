@@ -5,7 +5,7 @@ import android.os.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectSettings extends Settings<String> {
+public class SelectSetting extends Setting<String> {
 
     private List<String> options;
 
@@ -17,16 +17,16 @@ public class SelectSettings extends Settings<String> {
         this.options = options;
     }
 
-    public SelectSettings() {
+    public SelectSetting() {
 
     }
 
-    public SelectSettings(String name, Type type, String value, List<String> options) {
+    public SelectSetting(String name, Type type, String value, List<String> options) {
         super(name, type, value);
         this.options = options;
     }
 
-    protected SelectSettings(Parcel in) {
+    protected SelectSetting(Parcel in) {
         name = in.readString();
         type = (Type) in.readSerializable();
         value = (String) in.readSerializable();
@@ -34,15 +34,15 @@ public class SelectSettings extends Settings<String> {
         in.readStringList(options);
     }
 
-    public static final Creator<SelectSettings> CREATOR = new Creator<SelectSettings>() {
+    public static final Creator<SelectSetting> CREATOR = new Creator<SelectSetting>() {
         @Override
-        public SelectSettings createFromParcel(Parcel in) {
-            return new SelectSettings(in);
+        public SelectSetting createFromParcel(Parcel in) {
+            return new SelectSetting(in);
         }
 
         @Override
-        public SelectSettings[] newArray(int size) {
-            return new SelectSettings[size];
+        public SelectSetting[] newArray(int size) {
+            return new SelectSetting[size];
         }
     };
 
@@ -60,7 +60,7 @@ public class SelectSettings extends Settings<String> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        SelectSettings that = (SelectSettings) o;
+        SelectSetting that = (SelectSetting) o;
 
         return options != null && that.options != null && options.containsAll(that.options)
                 && that.options.containsAll(options);

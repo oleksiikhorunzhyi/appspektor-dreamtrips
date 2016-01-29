@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.settings.dialog.SelectDialogModel;
-import com.worldventures.dreamtrips.modules.settings.model.Settings;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +18,9 @@ public class SettingsManager {
     private SettingsManager() {
     }
 
-    public static List<Settings> merge(List<Settings> fromServer, List<Settings> local) {
+    public static List<Setting> merge(List<Setting> fromServer, List<Setting> local) {
         return Queryable.from(fromServer).filter(local::contains).map(setting -> {
-            Settings localSetting = Queryable.from(local).firstOrDefault(setting::equals);
+            Setting localSetting = Queryable.from(local).firstOrDefault(setting::equals);
             if (localSetting != null) setting.setType(localSetting.getType());
             return setting;
         }).toList();

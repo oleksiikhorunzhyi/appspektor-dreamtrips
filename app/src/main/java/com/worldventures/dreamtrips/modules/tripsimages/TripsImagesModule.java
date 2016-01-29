@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggab
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetMembersPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
@@ -19,7 +18,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPrese
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BucketFullscreenPresenter;
@@ -56,7 +55,7 @@ import dagger.Provides;
                 TripImagesListPresenter.class,
                 InspireMePresenter.class,
                 AccountImagesPresenter.class,
-                MemberImagesPresenter.class,
+                MembersImagesPresenter.class,
                 YSBHPresenter.class,
                 FullScreenPhotoFragment.class,
                 CreatePhotoParentPresenter.class,
@@ -78,7 +77,6 @@ import dagger.Provides;
                 PhotoCell.class,
                 PhotoUploadCell.class,
 
-                GetMembersPhotosQuery.class,
                 FullScreenPhotoWrapperFragment.class,
                 GetUserPhotosQuery.class,
                 AccountImagesListFragment.class,

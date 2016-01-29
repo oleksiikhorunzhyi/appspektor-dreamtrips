@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
@@ -28,15 +27,14 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesB
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View>
         extends Presenter<VT> implements TransferListener {
@@ -69,8 +67,11 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
         TripImagesListPresenter presenter;
         switch (type) {
+            /**
+             * ALL MEMBERS PHOTOS
+             */
             case MEMBERS_IMAGES:
-                presenter = new MemberImagesPresenter();
+                presenter = new MembersImagesPresenter();
                 break;
             case ACCOUNT_IMAGES:
                 presenter = new AccountImagesPresenter(TripImagesType.ACCOUNT_IMAGES, userId);
@@ -165,7 +166,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                     startUpload((UploadTask) obj);
                 }
             } else {
-                if (this instanceof MemberImagesPresenter) {
+                if (this instanceof MembersImagesPresenter) {
                     IFullScreenObject screenObject = photos.get(position);
                     eventBus.post(new TripImageAnalyticEvent(screenObject.getFSId(), TrackingHelper.ATTRIBUTE_VIEW));
                 }
@@ -321,7 +322,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 if (spiceException == null) {
                     if (loadType.equals(RoboSpiceAdapterController.LoadType.RELOAD)) {
                         UploadTask uploadTask = null;
-                        if(photos.size() > 0 && photos.get(0) instanceof UploadTask)
+                        if (photos.size() > 0 && photos.get(0) instanceof UploadTask)
                             uploadTask = (UploadTask) photos.get(0);
                         //
                         photos.clear();
@@ -395,19 +396,11 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         if (type != TripImagesType.ACCOUNT_IMAGES) {
             getAdapterController().reload();
         } else {
-            savePhotoIfNeeded(event.getUploadTask());
+            uploadPhoto(event.getUploadTask());
         }
     }
 
-    private void savePhotoIfNeeded(UploadTask uploadTask) {
-        doRequest(new CopyFileCommand(context, uploadTask.getFilePath()), filePath ->
-                uploadPhoto(uploadTask, filePath));
-    }
-
-    private void uploadPhoto(UploadTask uploadTask, String filePath) {
-        uploadTask.setFilePath(filePath);
-        uploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
-
+    private void uploadPhoto(UploadTask uploadTask) {
         photos.add(0, uploadTask);
         view.add(0, uploadTask);
         db.savePhotoEntityList(type, userId, photos);

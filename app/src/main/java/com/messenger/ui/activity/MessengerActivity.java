@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
 import com.google.gson.Gson;
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.di.MessengerModule;
@@ -53,6 +54,8 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     protected PathContainerView container;
 
     private FlowActivityHelper flowActivityHelper;
+
+    private WeakHandler weakHandler = new WeakHandler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +203,7 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
         Path path = traversal.destination.top();
         setNavigation(path);
         //
-        container.dispatch(traversal, callback);
+        weakHandler.post(() -> container.dispatch(traversal, callback));
     }
 
     void setNavigation(Path path) {

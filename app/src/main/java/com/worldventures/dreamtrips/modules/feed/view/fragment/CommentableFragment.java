@@ -128,7 +128,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         if (getArgs().isOpenKeyboard()) {
-            SoftInputUtil.showSoftInputMethod(input);
+            showKeyboard();
         }
         restorePostIfNeeded();
         showHeaderIfNeeded();
@@ -143,6 +143,10 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     private void restorePostIfNeeded() {
 
+    }
+
+    private void showKeyboard(){
+        input.post(() -> SoftInputUtil.showSoftInputMethod(input));
     }
 
     @Override

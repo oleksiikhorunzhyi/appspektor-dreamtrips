@@ -34,6 +34,9 @@ public class DtlJobManager {
     public final Job1Executor<DtlLead, Void> suggestLeadExecutor =
             new Job1Executor<>(this::suggestLead);
 
+    public final Job3Executor<String, Integer, String, Void> rateExecutor =
+            new Job3Executor<>(this::rate);
+
     ///////////////////////////////////////////////////////////////////////////
     // Essential private methods
     ///////////////////////////////////////////////////////////////////////////
@@ -47,5 +50,9 @@ public class DtlJobManager {
 
     private Observable<Void> suggestLead(DtlLead leadData) {
         return apiFactory.composeApiCall(() -> dtlApi.suggestLead(leadData));
+    }
+
+    private Observable<Void> rate(String merchantId, Integer stars, String transactionId) {
+        return apiFactory.composeApiCall(() -> dtlApi.rate(merchantId, stars, transactionId));
     }
 }

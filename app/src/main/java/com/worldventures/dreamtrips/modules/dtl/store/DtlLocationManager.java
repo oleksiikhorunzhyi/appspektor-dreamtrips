@@ -34,8 +34,6 @@ public class DtlLocationManager {
 
     public DtlLocationManager(Injector injector) {
         injector.inject(this);
-        buildNearbyExecutor();
-        buildSearchExecutor();
     }
 
     public DtlLocationManager(DtlApi dtlApi, SnappyRepository db, RxApiFactory rxApiFactory) {
@@ -48,15 +46,12 @@ public class DtlLocationManager {
     // Nearby
     ///////////////////////////////////////////////////////////////////////////
 
-    public Job1Executor<Location, List<DtlLocation>> nearbyLocationExecutor;
+    public final Job1Executor<Location, List<DtlLocation>> nearbyLocationExecutor =
+            new Job1Executor<>(this::loadNearby);
     private Subscription nearbySubscription;
 
     public void loadNearbyLocations(Location userLocation) {
         nearbySubscription = nearbyLocationExecutor.createJobWith(userLocation).subscribe();
-    }
-
-    private void buildNearbyExecutor() {
-        nearbyLocationExecutor = new Job1Executor<>(this::loadNearby);
     }
 
     private Observable<List<DtlLocation>> loadNearby(Location location) {
@@ -71,7 +66,7 @@ public class DtlLocationManager {
 
     private static final int API_SEARCH_QUERY_LENGHT = 3;
 
-    public Job0Executor<List<DtlLocation>> searchLocationExecutor;
+    public final Job0Executor<List<DtlLocation>> searchLocationExecutor = new Job0Executor<>(this::search);
 
     private Subscription searchSubscription;
 
@@ -92,10 +87,6 @@ public class DtlLocationManager {
             nearbySubscription.unsubscribe();
         //
         searchSubscription = searchLocationExecutor.createJob().subscribe();
-    }
-
-    private void buildSearchExecutor() {
-        searchLocationExecutor = new Job0Executor<>(this::search);
     }
 
     private Observable<List<DtlLocation>> search() {

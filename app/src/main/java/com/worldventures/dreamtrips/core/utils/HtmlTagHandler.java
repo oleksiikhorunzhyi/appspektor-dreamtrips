@@ -21,12 +21,13 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.style.BulletSpan;
 import android.text.style.LeadingMarginSpan;
-import android.util.Log;
 
 import org.xml.sax.XMLReader;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
+import timber.log.Timber;
 
 /**
  * Implements support for ordered and unordered lists in to Android TextView.
@@ -159,7 +160,7 @@ public class HtmlTagHandler implements Html.TagHandler {
             }
         } else {
             if (opening) {
-                Log.d("TagHandler", "Found an unsupported tag " + tag);
+                Timber.d("Found an unsupported tag", tag);
             }
         }
     }

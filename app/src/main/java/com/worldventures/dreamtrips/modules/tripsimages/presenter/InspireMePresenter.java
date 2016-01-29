@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import android.util.Log;
-
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetInspireMePhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
     protected double randomSeed;
@@ -28,7 +28,7 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
 
             @Override
             public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-                Log.d("LoadNext", "count:" + currentCount + "; page: " + ((currentCount / PER_PAGE) + 1));
+                Timber.d("LoadNext", "count:" + currentCount + "; page: " + ((currentCount / PER_PAGE) + 1));
                 return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
             }
         };

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
@@ -23,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 
 import butterknife.InjectView;
+import timber.log.Timber;
 
 import static android.text.TextUtils.isEmpty;
 import static com.facebook.widget.FacebookDialog.ShareDialogFeature.SHARE_DIALOG;
@@ -129,7 +129,7 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
             loginButton.setFragment(this);
             loginButton.setReadPermissions("user_photos");
             loginButton.setSessionStatusCallback((s, state, exception) -> {
-                Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
+                Timber.w(exception, "Session callback:", s, state);
                 if (session != null && session.isOpened()) {
                     getActivity().runOnUiThread(() -> new Handler().postDelayed(() -> {
                         ShareBundle data = new ShareBundle();

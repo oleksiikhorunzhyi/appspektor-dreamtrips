@@ -14,7 +14,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -192,34 +191,34 @@ public class Player360Activity extends BaseActivity implements PFAssetObserver {
         mediaControls.onStatusMessage(asset, status);
         switch (status) {
             case LOADED:
-                Log.d("SimplePlayer", "Loaded");
+                Timber.d("Loaded");
                 pfAsset.play();
                 break;
             case DOWNLOADING:
-                Log.d("SimplePlayer", "Downloading 360� movie: " + pfAsset.getDownloadProgress() + " percent complete");
+                Timber.d("Downloading 360� movie: \" + pfAsset.getDownloadProgress() + \" percent complete");
                 break;
             case DOWNLOADED:
-                Log.d("SimplePlayer", "Downloaded to " + asset.getUrl());
+                Timber.d("Downloaded to " + asset.getUrl());
                 break;
             case DOWNLOADCANCELLED:
-                Log.d("SimplePlayer", "Download cancelled");
+                Timber.d("Download cancelled");
                 break;
             case PLAYING:
-                Log.d("SimplePlayer", "Playing");
+                Timber.d("Playing");
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 break;
             case PAUSED:
-                Log.d("SimplePlayer", "Paused");
+                Timber.d("Paused");
                 break;
             case STOPPED:
-                Log.d("SimplePlayer", "Stopped");
+                Timber.d("Stopped");
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 break;
             case COMPLETE:
-                Log.d("SimplePlayer", "Complete");
+                Timber.d("Complete");
                 break;
             case ERROR:
-                Log.d("SimplePlayer", "Error");
+                Timber.d("Error");
                 break;
         }
     }

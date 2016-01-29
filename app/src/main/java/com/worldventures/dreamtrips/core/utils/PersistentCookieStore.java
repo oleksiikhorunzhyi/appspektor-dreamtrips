@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.core.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -168,7 +167,7 @@ public class PersistentCookieStore implements CookieStore {
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
             outputStream.writeObject(cookie);
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in encodeCookie", e);
+            Timber.e(e, "IOException in encodeCookie");
             return null;
         }
 
@@ -189,9 +188,9 @@ public class PersistentCookieStore implements CookieStore {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             cookie = ((SerializableHttpCookie) objectInputStream.readObject()).getCookie();
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in decodeCookie", e);
+            Timber.e(e, "IOException in decodeCookie");
         } catch (ClassNotFoundException e) {
-            Log.d(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
+            Timber.e(e, "ClassNotFoundException in decodeCookie");
         }
 
         return cookie;

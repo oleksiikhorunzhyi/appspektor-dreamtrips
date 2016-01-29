@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.apptentive.android.sdk.Log;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
@@ -18,6 +17,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_bucket_photo_cell)
 public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
@@ -66,12 +66,12 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
                                 showDeleteDialog(view.getContext());
                                 break;
                             default:
-                                Log.v(this.getClass().getSimpleName(), "default");
+                                Timber.d("default");
                                 break;
                         }
                     }).show();
         } catch (Exception e) {
-            Log.e("", "", e);
+            Timber.e(e, "");
         }
     }
 

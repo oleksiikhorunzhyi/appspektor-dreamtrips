@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.store;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.api.merchant.GetNearbyMerchantsRequest;
@@ -23,8 +24,8 @@ public class DtlMerchantRepository extends RequestingCachingBaseStore {
     //
     private List<MerchantUpdatedListener> listeners = new ArrayList<>();
 
-    public DtlMerchantRepository(SnappyRepository db) {
-        super(db);
+    public DtlMerchantRepository(Injector injector) {
+        injector.inject(this);
         dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
     }
 

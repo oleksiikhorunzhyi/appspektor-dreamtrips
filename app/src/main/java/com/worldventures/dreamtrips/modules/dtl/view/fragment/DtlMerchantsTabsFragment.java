@@ -75,13 +75,13 @@ public class DtlMerchantsTabsFragment extends BaseFragment<DtlMerchantsTabsPrese
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
-            //
+
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
                 getPresenter().trackTabChange(position);
             }
-            //
+
             @Override
             public void onPageScrollStateChanged(int state) {
             }

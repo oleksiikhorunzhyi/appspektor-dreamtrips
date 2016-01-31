@@ -1,13 +1,12 @@
 package com.worldventures.dreamtrips.module.dtl.repository;
 
 import com.octo.android.robospice.request.SpiceRequest;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
-
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.junit.Before;
@@ -28,35 +27,32 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class DtlMerchantRepositoryTest {
 
-    private DtlMerchantRepository dtlMerchantRepository;
     @Mock
     private RequestingPresenter requestingPresenter;
     @Mock
-    private SnappyRepository db;
-
+    private Injector injector;
+    //
     private DtlLocation defaultLocation = getDefaultLocation();
+    private DtlMerchantRepository dtlMerchantRepository;
 
     @Before
     public void beforeEachTest() {
-        dtlMerchantRepository = new DtlMerchantRepository(db);
-        dtlMerchantRepository.setRequestingPresenter(requestingPresenter);
+        dtlMerchantRepository = new DtlMerchantRepository(injector);
     }
 
     @Test
     public void loadMerchants_MerchantsLoaded() {
         List<DtlMerchant> items = new ArrayList<>(asList(mock(DtlMerchant.class),
                 mock(DtlMerchant.class)));
-
         doAnswer(invocation -> {
             ((DreamSpiceManager.SuccessListener<List<DtlMerchant>>) invocation.getArguments()[1])
                     .onRequestSuccess(items);
             return null;
         }).when(requestingPresenter).doRequest(any(SpiceRequest.class),
                 any(DreamSpiceManager.SuccessListener.class));
-
-
+        //
         dtlMerchantRepository.loadMerchants(defaultLocation);
-
+        //
         assertThat(dtlMerchantRepository.getMerchants()).isEqualTo(items);
     }
 
@@ -66,5 +62,4 @@ public class DtlMerchantRepositoryTest {
         dtlLocation.setCoordinates(location);
         return dtlLocation;
     }
-
 }

@@ -50,6 +50,7 @@ import de.greenrobot.event.EventBus;
                 //
                 DtlFilterDelegate.class,
                 DtlLocationManager.class,
+                DtlMerchantRepository.class,
                 DtlJobManager.class,
         },
         library = true, complete = false
@@ -110,8 +111,8 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlMerchantRepository dtlMerchantDelegate(SnappyRepository snappyRepository) {
-        return new DtlMerchantRepository(snappyRepository);
+    DtlMerchantRepository dtlMerchantDelegate(@ForApplication Injector injector) {
+        return new DtlMerchantRepository(injector);
     }
 
     @Singleton

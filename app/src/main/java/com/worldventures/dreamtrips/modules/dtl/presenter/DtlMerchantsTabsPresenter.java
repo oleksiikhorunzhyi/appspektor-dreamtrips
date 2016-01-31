@@ -3,8 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.os.Bundle;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
@@ -20,7 +21,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public class DtlMerchantsTabsPresenter extends Presenter<DtlMerchantsTabsPresenter.View> {
+public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPresenter.View> {
 
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
@@ -33,22 +34,17 @@ public class DtlMerchantsTabsPresenter extends Presenter<DtlMerchantsTabsPresent
     boolean initialized;
 
     @Override
-    public void onInjected() {
-        super.onInjected();
-        dtlMerchantRepository.setRequestingPresenter(this);
-    }
-
-    @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
         view.initToolbar(locationRepository.getCachedSelectedLocation());
         setTabs();
         //
-        if (!initialized)
-            loadMerchants();
-        //
+        if (!initialized) loadMerchants();
         initialized = true;
+        //
+        bindJobCached(dtlMerchantRepository.getMerchantsExecutor)
+                .onError(apiErrorPresenter::handleError);
     }
 
     public void applySearch(String query) {
@@ -92,13 +88,7 @@ public class DtlMerchantsTabsPresenter extends Presenter<DtlMerchantsTabsPresent
         }
     }
 
-    @Override
-    public void dropView() {
-        dtlMerchantRepository.detachRequestingPresenter();
-        super.dropView();
-    }
-
-    public interface View extends ApiErrorView {
+    public interface View extends RxView, ApiErrorView {
 
         void setTypes(List<DtlMerchantType> types);
 

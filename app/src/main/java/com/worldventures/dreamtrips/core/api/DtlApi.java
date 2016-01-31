@@ -26,9 +26,6 @@ public interface DtlApi {
     @GET("/api/dtl/v2/locations")
     List<DtlLocation> searchLocations(@Query("query") String query);
 
-    @GET("/api/dtl/v2/locations/{id}/merchants")
-    ArrayList<DtlMerchant> getDtlMerchants(@Path("id") String locationId);
-
     @GET("/api/dtl/v2/merchants")
     ArrayList<DtlMerchant> getNearbyDtlMerchants(@Query("ll") String ll);
 

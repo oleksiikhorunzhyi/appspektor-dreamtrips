@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
@@ -26,10 +26,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit.http.HEAD;
 import rx.Observable;
 import timber.log.Timber;
 
-public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter<VT> implements
+public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresenter<VT> implements
         DtlFilterDelegate.FilterListener, DtlMerchantRepository.MerchantUpdatedListener,
         DtlSearchDelegate.SearchListener {
 
@@ -96,7 +97,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
                             .asAndroidLocation()))
                     .flatMap(location -> mapToMerchantList(location, query))
                     .doOnNext(merchants -> track(merchants, query))
-                    .compose(new IoToMainComposer<>())
+                    .compose(IoToMainComposer.get())
             ).subscribe(this::merchantsPrepared, this::onError);
     }
 

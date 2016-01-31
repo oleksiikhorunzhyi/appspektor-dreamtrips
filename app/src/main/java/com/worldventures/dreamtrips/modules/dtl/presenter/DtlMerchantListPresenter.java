@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -18,9 +19,10 @@ public class DtlMerchantListPresenter extends DtlMerchantsPresenter<DtlMerchantL
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.showProgress();
         //
         if (dtlMerchantType == DtlMerchantType.OFFER) view.setComingSoon();
+        //
+        bindJobCached(dtlMerchantRepository.getMerchantsExecutor).onProgress(view::showProgress);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class DtlMerchantListPresenter extends DtlMerchantsPresenter<DtlMerchantL
         view.toggleSelection(event.getDtlMerchant());
     }
 
-    public interface View extends RxView {
+    public interface View extends RxView, ApiErrorView {
 
         void setItems(List<DtlMerchant> dtlMerchants);
 

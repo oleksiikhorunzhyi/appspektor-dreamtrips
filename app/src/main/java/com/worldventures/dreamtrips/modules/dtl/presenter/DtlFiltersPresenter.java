@@ -36,7 +36,7 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
         //
         if (dtlFilterData == null) {
             dtlFilterData = DtlFilterData.createDefault();
-            dtlFilterData.setDistanceType(db.getDistanceType());
+            dtlFilterData.setDistanceType(db.getMerchantsDistanceType());
             dtlFilterData.setAmenities(db.getAmenities());
             dtlFilterData.selectAllAmenities();
         }

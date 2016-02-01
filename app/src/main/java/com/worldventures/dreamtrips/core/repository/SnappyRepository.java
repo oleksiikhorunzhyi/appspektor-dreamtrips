@@ -502,6 +502,11 @@ public class SnappyRepository {
         clearAllForKey(DTL_TRANSACTION_PREFIX);
     }
 
+    //TODO add implementation
+    public DtlFilterData.DistanceType getMerchantsDistanceType(){
+        return DtlFilterData.DistanceType.MILES;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // DTL Transaction
     ///////////////////////////////////////////////////////////////////////////

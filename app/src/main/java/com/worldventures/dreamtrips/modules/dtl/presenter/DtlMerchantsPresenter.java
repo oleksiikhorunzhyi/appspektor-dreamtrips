@@ -5,6 +5,7 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -41,6 +42,8 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     DtlLocationManager locationRepository;
     @Inject
     DtlSearchDelegate dtlSearchDelegate;
+    @Inject
+    SnappyRepository snappyRepository;
     //
     protected DtlMerchantType dtlMerchantType;
 
@@ -105,7 +108,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         DtlFilterData dtlFilterData = dtlFilterDelegate.getDtlFilterData();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {
-            dtlMerchant.setDistanceType(dtlFilterDelegate.getDistanceType());
+            dtlMerchant.setDistanceType(snappyRepository.getMerchantsDistanceType());
             dtlMerchant.setDistance(dtlLocationHelper.calculateDistance(
                     currentLatLng, dtlMerchant.getCoordinates().asLatLng()));
         }

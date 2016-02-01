@@ -94,33 +94,12 @@
             >
 
             <TextView
+                android:id="@+id/distance_filter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/dtl_distance"
                 android:textColor="@color/black"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="@string/mi"/>
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/switchView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/spacing_small"
-                android:paddingRight="@dimen/spacing_small"
-                materialdesign:check="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_marginRight="@dimen/spacing_large"
-                android:layout_marginEnd="@dimen/spacing_large"
-                android:text="@string/km"/>
 
 
         </LinearLayout>

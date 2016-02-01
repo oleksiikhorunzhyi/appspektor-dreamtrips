@@ -17,7 +17,7 @@
     <string name="dtl_field_validation_empty_input_error">不能是空白！</string>
     <string name="dtl_points_estimation_negative_input_error">不能少於0！</string>
     <string name="dtl_price">價格 ($)</string>
-    <string name="dtl_distance">距離</string>
+    <string name="dtl_distance">距離, %s</string>
     <string name="dtl_receipt_hint">輸入金額</string>
     <string name="dtl_receipt_note">&lt;b&gt;備註:&lt;/b&gt; 金額應是賬單的總數，不包括小費和稅</string>
     <string name="dtl_receipt_scan">捕捉收據</string>

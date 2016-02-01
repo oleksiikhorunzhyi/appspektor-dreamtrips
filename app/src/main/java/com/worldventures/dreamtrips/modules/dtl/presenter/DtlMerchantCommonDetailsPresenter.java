@@ -30,8 +30,7 @@ public class DtlMerchantCommonDetailsPresenter<T extends DtlMerchantCommonDetail
     }
 
     public interface View extends Presenter.View {
-        void setMerchant(DtlMerchant merchant);
 
-        void distanceTypeChanged(DtlMerchant merchant);
+        void setMerchant(DtlMerchant merchant);
     }
 }

@@ -74,7 +74,6 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     public void onFilter() {
         if (view != null) {
             merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-            view.distanceTypeChanged(merchant);
         }
     }
 

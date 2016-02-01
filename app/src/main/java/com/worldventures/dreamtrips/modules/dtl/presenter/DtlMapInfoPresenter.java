@@ -34,7 +34,6 @@ public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMa
     public void onFilter() {
         if (view != null) {
             merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-            view.distanceTypeChanged(merchant);
         }
     }
 

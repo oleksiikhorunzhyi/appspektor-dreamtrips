@@ -167,11 +167,6 @@ public class DtlMerchantDetailsFragment
         setMap(merchant);
     }
 
-    @Override
-    public void distanceTypeChanged(DtlMerchant merchant) {
-        merchantInfoInflater.apply(merchant);
-    }
-
     private void setType(DtlMerchant DtlMerchant) {
         earnWrapper.setVisibility(DtlMerchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
         merchantWrapper.setVisibility(DtlMerchant.hasNoOffers() ? View.VISIBLE : View.GONE);

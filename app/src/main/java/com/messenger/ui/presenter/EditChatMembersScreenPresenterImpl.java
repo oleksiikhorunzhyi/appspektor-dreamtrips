@@ -88,6 +88,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     private void connectConversation() {
         conversationObservable = conversationsDAO.getConversation(conversationId)
+                .onBackpressureLatest()
                 .compose(new NonNullFilter<>())
                 .compose(bindViewIoToMainComposer())
                 .replay(1)

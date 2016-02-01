@@ -103,7 +103,11 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
         localeStorage.put(locales);
-        loadSettings();
+        UserSession userSession = appSessionHolder.get().get();
+        if (userSession != null && userSession.getApiToken() != null)
+            loadSettings();
+        else
+            done();
     }
 
     private void loadSettings() {

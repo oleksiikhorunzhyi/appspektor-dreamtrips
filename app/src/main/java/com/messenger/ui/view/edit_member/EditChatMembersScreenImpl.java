@@ -147,6 +147,11 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
+    public void invalidateAllSwipedLayouts() {
+        adapter.closeAllItems();
+    }
+
+    @Override
     public void showDeletionConfirmationDialog(User user) {
         new AlertDialog.Builder(getContext())
                 .setNegativeButton(android.R.string.cancel, (dialogInterface, i)

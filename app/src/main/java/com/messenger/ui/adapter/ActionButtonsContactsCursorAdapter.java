@@ -76,6 +76,18 @@ public class ActionButtonsContactsCursorAdapter
     }
 
     @Override
+    public Cursor swapCursor(Cursor cursor, String filter, String column) {
+        if (mItemManger != null) mItemManger.closeAllItems(); // cause sometime there is magic NullPointerException
+        return super.swapCursor(cursor, filter, column);
+    }
+
+    @Override
+    public void changeCursor(Cursor cursor) {
+        if (mItemManger != null) mItemManger.closeAllItems(); // cause sometime there is magic NullPointerException
+        super.changeCursor(cursor);
+    }
+
+    @Override
     public int getSwipeLayoutResourceId(int position) {
         return R.id.swipe;
     }

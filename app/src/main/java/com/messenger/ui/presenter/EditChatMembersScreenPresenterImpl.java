@@ -21,6 +21,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import java.util.Collections;
 
@@ -49,6 +50,9 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     ParticipantsDAO participantsDAO;
     @Inject
     ConversationsDAO conversationsDAO;
+
+    @Inject
+    ActivityWatcher activityWatcher;
 
     private final ProfileCrosser profileCrosser;
 
@@ -81,10 +85,19 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         connectParticipants();
 
         adapterInitializeObservable = adapterInitializer.replay(1).autoConnect();
+
+        activityWatcher.addOnStartStopListener(startStopAppListener);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        activityWatcher.removeOnStartStopListener(startStopAppListener);
     }
 
     private void connectConversation() {
         conversationObservable = conversationsDAO.getConversation(conversationId)
+                .onBackpressureLatest()
                 .compose(new NonNullFilter<>())
                 .compose(bindViewIoToMainComposer())
                 .replay(1)
@@ -112,6 +125,17 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
             showContent();
         });
     }
+
+    ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
+        @Override
+        public void onStartApplication() {
+        }
+
+        @Override
+        public void onStopApplication() {
+            if (getView() != null) getView().invalidateAllSwipedLayouts();
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {

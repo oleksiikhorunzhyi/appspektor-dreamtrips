@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
@@ -32,6 +33,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,7 +44,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import icepick.State;
-
 
 public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extends Presenter<V> {
 
@@ -272,6 +273,12 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         if (view.isVisibleOnScreen())
             uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
                     event.getFlagReasonId(), event.getNameOfReason()));
+    }
+
+
+    public void onEvent(DownloadPhotoEvent event) {
+        if (view.isVisibleOnScreen())
+            doRequest(new DownloadImageCommand(context, event.url));
     }
 
     public interface View extends Presenter.View {

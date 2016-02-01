@@ -8,6 +8,7 @@ import com.messenger.messengerservers.entities.User;
 import java.util.List;
 
 public interface EditChatMembersScreen extends MessengerScreen {
+
     void showLoading();
 
     void showContent();
@@ -23,6 +24,8 @@ public interface EditChatMembersScreen extends MessengerScreen {
     void setMembers(Cursor cursor);
 
     void setMembers(Cursor cursor, String query, String queryColumn);
+
+    void invalidateAllSwipedLayouts();
 
     void showDeletionConfirmationDialog(User user);
 }

@@ -11,9 +11,7 @@ import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
-import com.messenger.messengerservers.entities.Participant;
 import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.messenger.util.SwipeClickListener;
@@ -75,6 +73,18 @@ public class ActionButtonsContactsCursorAdapter
 
     public void setUserClickListener(UserClickListener userClickListener) {
         this.userClickListener = userClickListener;
+    }
+
+    @Override
+    public Cursor swapCursor(Cursor cursor, String filter, String column) {
+        if (mItemManger != null) mItemManger.closeAllItems(); // cause sometime there is magic NullPointerException
+        return super.swapCursor(cursor, filter, column);
+    }
+
+    @Override
+    public void changeCursor(Cursor cursor) {
+        if (mItemManger != null) mItemManger.closeAllItems(); // cause sometime there is magic NullPointerException
+        super.changeCursor(cursor);
     }
 
     @Override

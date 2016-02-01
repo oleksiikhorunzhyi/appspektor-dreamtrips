@@ -151,6 +151,11 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
     }
 
     @Override
+    public void invalidateAllSwipedLayouts() {
+        adapter.closeAllItems();
+    }
+
+    @Override
     public void showDeletionConfirmationDialog(User user) {
         new AlertDialog.Builder(getContext())
                 .setNegativeButton(android.R.string.cancel, (dialogInterface, i)
@@ -217,10 +222,6 @@ public class EditChatMembersScreenImpl extends MessengerLinearLayout<EditChatMem
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    }
-
-    @Override
-    public void onDestroy() {
     }
 
     @NonNull

@@ -187,11 +187,6 @@ public class ChatScreenImpl extends MessengerLinearLayout<ChatScreen, ChatScreen
         getPresenter().onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
-    }
-
     @NonNull
     @Override
     public ChatScreenPresenter createPresenter() {

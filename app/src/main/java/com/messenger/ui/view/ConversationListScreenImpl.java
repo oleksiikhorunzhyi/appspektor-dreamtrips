@@ -276,8 +276,4 @@ public class ConversationListScreenImpl extends MessengerLinearLayout<Conversati
         presenter.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onDestroy() {
-        presenter.onDestroy();
-    }
 }

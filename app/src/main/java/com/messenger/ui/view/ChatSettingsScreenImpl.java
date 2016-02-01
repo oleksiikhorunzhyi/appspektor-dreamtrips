@@ -179,14 +179,7 @@ public abstract class ChatSettingsScreenImpl extends MessengerLinearLayout<ChatS
         getPresenter().onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
-    }
-
-    protected abstract
-    @StringRes
-    int getLeaveChatButtonStringRes();
+    protected abstract @StringRes int getLeaveChatButtonStringRes();
 
     @Override
     public void showSubjectDialog(String currentSubject) {

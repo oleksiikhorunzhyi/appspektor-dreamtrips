@@ -19,4 +19,8 @@ public interface ActivityAwareViewStateMvpPresenter<V extends MvpView, S extends
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
     void onDestroy();
+
+    void onStart();
+
+    void onStop();
 }

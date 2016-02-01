@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.CheckableContactsCursorAdapter;
-import com.messenger.ui.adapter.ContactCursorAdapter;
 import com.messenger.ui.anim.WeightSlideAnimator;
 import com.messenger.ui.presenter.BaseNewChatMembersScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenter;
@@ -251,11 +250,6 @@ public class NewChatMembersScreenImpl extends MessengerLinearLayout<NewChatMembe
         if (presenter != null) {
             presenter.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        getPresenter().onDestroy();
     }
 
     @Override

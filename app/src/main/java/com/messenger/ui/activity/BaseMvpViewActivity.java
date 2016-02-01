@@ -21,6 +21,18 @@ public abstract class BaseMvpViewActivity<T extends View & ActivityAwareScreen> 
         setContentView(screen);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        screen.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        screen.onStop();
+    }
+
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         return screen.onCreateOptionsMenu(menu);
     }

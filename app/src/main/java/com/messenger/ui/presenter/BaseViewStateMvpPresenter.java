@@ -57,6 +57,16 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onStop() {
+
+    }
+
+    @Override
     public void onDestroy() {
 
     }

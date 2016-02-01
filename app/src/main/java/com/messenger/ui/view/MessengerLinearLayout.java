@@ -32,6 +32,21 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
     }
 
     @Override
+    public void onStart() {
+        if (getPresenter() != null) getPresenter().onStart();
+    }
+
+    @Override
+    public void onStop() {
+        getPresenter().onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        getPresenter().onDestroy();
+    }
+
+    @Override
     public void onConnectionChanged(ConnectionStatus connectionStatus) {
         overlayHandler.processOverlayConnectionStatus(connectionStatus);
     }

@@ -9,11 +9,22 @@ import android.view.MenuItem;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 public interface ActivityAwareScreen extends MvpView {
+
     AppCompatActivity getActivity();
+
     Context getContext();
+
     boolean onCreateOptionsMenu(Menu menu);
+
     boolean onOptionsItemSelected(MenuItem item);
+
     void onPrepareOptionsMenu(Menu menu);
+
     void onActivityResult(int requestCode, int resultCode, Intent data);
+
+    void onStart();
+
+    void onStop();
+
     void onDestroy();
 }

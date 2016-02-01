@@ -117,6 +117,12 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        getView().invalidateAllSwipedLayouts();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle bundle) {
         //if presenter is recreated and view has previous state with LOADING status,
         //in applyViewState method all observables will be null cause onAttachedToWindow method calls after one

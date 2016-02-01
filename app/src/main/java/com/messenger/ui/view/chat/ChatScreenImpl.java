@@ -2,8 +2,10 @@ package com.messenger.ui.view.chat;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,11 +18,13 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.PhotoPickerLayoutHelper;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -29,8 +33,11 @@ import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.ui.widget.UnreadMessagesView;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -43,6 +50,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     private static final int THRESHOLD = 5;
     private static final int POST_DELAY_TIME = 2;
+
+    @Inject
+    FragmentManager fragmentManager;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -63,6 +73,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     UnreadMessagesView unreadMessagesView;
     @InjectView(R.id.chat_users_typing_view)
     ChatUsersTypingView chatUsersTypingView;
+    @InjectView(R.id.chat_photo_picker)
+    PhotoPickerLayout photoPickerLayout;
 
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
@@ -73,6 +85,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
+    private PhotoPickerLayoutHelper photoPickerLayoutHelper;
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -130,6 +143,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             unreadMessagesView.setEnabled(false);
             getPresenter().onUnreadMessagesHeaderClicked();
         }));
+
+        initPhotoPicker();
     }
 
     @Override
@@ -138,6 +153,13 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
         inflateToolbarMenu(toolbar);
+        photoPickerLayoutHelper.subscribe(this::onImagesPicked);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        photoPickerLayoutHelper.unsubscribe();
     }
 
     protected MessagesCursorAdapter createAdapter() {
@@ -164,6 +186,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             messageEditText.getText().clear();
             recyclerView.smoothScrollToPosition(adapter.getItemCount());
         }
+    }
+
+    @OnClick(R.id.chat_message_add_button)
+    protected void onAttachmentButtonClicked() {
+        photoPickerLayout.showPanel();
     }
 
     @Override
@@ -290,11 +317,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-    }
-
-    @Override
     public ViewGroup getContentView() {
         return contentView;
     }
@@ -302,5 +324,46 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     public Parcelable onSaveInstanceState() {
         return scrollStatePersister.saveScrollState(super.onSaveInstanceState(), linearLayoutManager);
+    }
+
+    ////////////////////////////////////////
+    /////// Photo picking
+    ////////////////////////////////////////
+
+    private void initPhotoPicker() {
+        injector.inject(this);
+        injector.inject(photoPickerLayout);
+
+        photoPickerLayout.setup(fragmentManager, false);
+        photoPickerLayout.hidePanel();
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
+
+        photoPickerLayoutHelper = new PhotoPickerLayoutHelper();
+        injector.inject(photoPickerLayoutHelper);
+    }
+
+    public void onImagesPicked(List<ChosenImage> photos) {
+        if (photos.size() == 0) {
+            return;
+        }
+
+        photoPickerLayout.hidePanel();
+
+        String fileThumbnail = photos.get(0).getFileThumbnail();
+        String filePath = Uri.parse(fileThumbnail).toString();
+        getPresenter().sendImageMessage(filePath);
+    }
+
+    ////////////////////////////////////////
+    /////// Navigation handling
+    ////////////////////////////////////////
+
+    @Override
+    public boolean onBackPressed() {
+        if (photoPickerLayout.isPanelVisible()) {
+            photoPickerLayout.hidePanel();
+            return true;
+        }
+        return false;
     }
 }

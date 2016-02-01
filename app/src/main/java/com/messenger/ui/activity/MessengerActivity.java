@@ -21,7 +21,9 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
@@ -34,10 +36,13 @@ import flow.path.Path;
 import flow.path.PathContainerView;
 
 @Layout(R.layout.activity_base_messenger)
-public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
+// This activity is extending ActivityWithPresenter to be able to access image picking code in it
+public class MessengerActivity extends ActivityWithPresenter<MessengerActivity.DummyPresenter> implements Flow.Dispatcher {
 
     public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
+    @Inject
+    BackStackDelegate backStackDelegate;
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
     @Inject
@@ -100,15 +105,16 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         flowActivityHelper = null;
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        if (!flowActivityHelper.handleBack())
-            super.onBackPressed();
+        if (backStackDelegate.handleBackPressed()) return;
+        if (flowActivityHelper.handleBack()) return;
+        super.onBackPressed();
     }
 
     @Override
@@ -217,4 +223,52 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
                 DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Activity with presenter
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * This activity is extending ActivityWithPresenter to be able to access image picking code in it.
+     * We must return empty presenter.
+     */
+    public static class DummyPresenter extends ActivityPresenter<DummyPresenterView> {
+    }
+
+    @Override
+    protected DummyPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new DummyPresenter();
+    }
+
+    private static class DummyPresenterView implements ActivityPresenter.View {
+
+        @Override
+        public void showTermsDialog() {
+
+        }
+
+        @Override
+        public void informUser(int stringId) {
+
+        }
+
+        @Override
+        public void informUser(String string) {
+
+        }
+
+        @Override
+        public void alert(String s) {
+
+        }
+
+        @Override
+        public boolean isVisibleOnScreen() {
+            return false;
+        }
+
+        @Override
+        public boolean isTabletLandscape() {
+            return false;
+        }
+    }
 }

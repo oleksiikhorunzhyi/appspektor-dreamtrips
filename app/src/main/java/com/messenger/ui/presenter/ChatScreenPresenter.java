@@ -6,6 +6,7 @@ import com.messenger.ui.viewstate.ChatLayoutViewState;
 
 public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, ChatLayoutViewState> {
     boolean sendMessage(String message);
+    void sendImageMessage(String filepath);
     void retrySendMessage(String messageId);
 
     User getUser();

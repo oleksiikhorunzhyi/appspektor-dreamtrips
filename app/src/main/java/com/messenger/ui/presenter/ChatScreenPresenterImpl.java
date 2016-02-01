@@ -38,6 +38,7 @@ import com.messenger.util.OpenedConversationTracker;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
@@ -74,6 +75,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
+    @Inject
+    BackStackDelegate backStackDelegate;
     @Inject
     NotificationDelegate notificationDelegate;
     @Inject
@@ -123,6 +126,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ((Injector) context.getApplicationContext()).inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
+        backStackDelegate.setListener(() -> isViewAttached() && getView().onBackPressed());
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
@@ -506,6 +510,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     .subscribe();
         });
         return true;
+    }
+
+    @Override
+    public void sendImageMessage(String filepath) {
+        // remove this log when implemented
+        Timber.d("Chat - new message image selected with path: %s", filepath);
     }
 
     @Override

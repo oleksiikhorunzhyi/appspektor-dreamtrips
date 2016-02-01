@@ -39,6 +39,11 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
     }
 
     @Override
+    public boolean onBackPressed() {
+        return false;
+    }
+
+    @Override
     public void onConnectionChanged(ConnectionStatus connectionStatus) {
         overlayHandler.processOverlayConnectionStatus(connectionStatus);
     }

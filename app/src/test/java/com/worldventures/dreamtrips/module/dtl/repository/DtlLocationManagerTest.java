@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.module.dtl.repository;
 
-import android.content.Context;
-
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DtlApi;
+import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
@@ -20,27 +18,26 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class DtlLocationManagerTest {
 
+    @Mock
+    DtlApi dtlApi;
+    @Mock
+    SnappyRepository db;
+    @Mock
+    RxApiFactory rxApiFactory;
+    //
     private DtlLocationManager dtlLocationManager;
-    @Mock
-    Injector injector;
-    @Mock
-    private Context context;
-    @Mock
-    private SnappyRepository db;
-    @Mock
-    private DtlApi dtlApi;
 
     @Before
     public void beforeEachTest() {
-        dtlLocationManager = new DtlLocationManager(injector);
+        dtlLocationManager = new DtlLocationManager(dtlApi, db, rxApiFactory);
     }
 
     @Test
     public void persistLocation_LocationPersisted() {
         DtlLocation location = mock(DtlLocation.class);
-
+        //
         dtlLocationManager.persistLocation(location);
-
+        //
         assertThat(dtlLocationManager.getSelectedLocation()).isEqualTo(location);
     }
 
@@ -49,11 +46,11 @@ public class DtlLocationManagerTest {
         DtlLocation locationOld = new DtlLocation();
         locationOld.setId("oldId");
         dtlLocationManager.persistLocation(locationOld);
-
+        //
         DtlLocation locationNew = new DtlLocation();
         locationNew.setId("newId");
         dtlLocationManager.persistLocation(locationNew);
-
+        //
         assertThat(dtlLocationManager.getSelectedLocation()).isEqualTo(locationNew);
     }
 }

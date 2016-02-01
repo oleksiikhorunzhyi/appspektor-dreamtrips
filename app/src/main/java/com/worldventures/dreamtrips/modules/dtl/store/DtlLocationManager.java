@@ -38,6 +38,12 @@ public class DtlLocationManager {
         buildSearchExecutor();
     }
 
+    public DtlLocationManager(DtlApi dtlApi, SnappyRepository db, RxApiFactory rxApiFactory) {
+        this.dtlApi = dtlApi;
+        this.db = db;
+        this.rxApiFactory = rxApiFactory;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Nearby
     ///////////////////////////////////////////////////////////////////////////

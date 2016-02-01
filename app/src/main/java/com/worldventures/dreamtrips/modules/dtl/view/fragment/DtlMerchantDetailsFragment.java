@@ -240,13 +240,6 @@ public class DtlMerchantDetailsFragment
         });
     }
 
-    @OnClick(R.id.distance_holder)
-    public void onDistanceClicked() {
-        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
-                .fragmentManager(getChildFragmentManager())
-                .build());
-    }
-
     @Override
     public void showEstimationDialog(PointsEstimationDialogBundle data) {
         getPresenter().trackPointEstimator();

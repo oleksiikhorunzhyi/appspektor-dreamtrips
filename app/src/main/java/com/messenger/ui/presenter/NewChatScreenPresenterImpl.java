@@ -4,16 +4,13 @@ import android.content.Context;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.StartChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -22,11 +19,14 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import rx.functions.Action1;
 
 public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     @Inject
     UsersDAO usersDAO;
+    @Inject
+    StartChatDelegate startSingleChatDelegate;
 
     private final ConversationHelper conversationHelper;
 
@@ -81,22 +81,19 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                     return true;
                 }
 
-                Conversation conversation = chatDelegate.createNewConversation(selectedUsers, getView().getConversationName());
-                // we are participants too and if conversation is group then we're owner otherwise we're member
-                if (!conversationHelper.isGroup(conversation)) {
-                    new ParticipantsRelationship(conversation.getId(), user, Participant.Affiliation.MEMBER).save();
+                Action1<Conversation> action1 = conversation -> {
+                    History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
+                    history.pop();
+                    history.push(new ChatPath(conversation.getId()));
+                    Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
+                };
+
+                if (selectedUsers.size() == 1) {
+                    startSingleChatDelegate.startSingleChat(selectedUsers.get(0), action1);
                 } else {
-                    new ParticipantsRelationship(conversation.getId(), user, Participant.Affiliation.OWNER).save();
-                    conversation.setOwnerId(user.getId());
+                    startSingleChatDelegate.startNewGroupChat(user, selectedUsers, getView().getConversationName(), action1);
                 }
 
-                Queryable.from(selectedUsers).forEachR(u -> new ParticipantsRelationship(conversation.getId(), u, Participant.Affiliation.MEMBER).save());
-                ContentUtils.insert(Conversation.CONTENT_URI, conversation);
-                //
-                History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
-                history.pop();
-                history.push(new ChatPath(conversation.getId()));
-                Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
                 return true;
         }
         return false;

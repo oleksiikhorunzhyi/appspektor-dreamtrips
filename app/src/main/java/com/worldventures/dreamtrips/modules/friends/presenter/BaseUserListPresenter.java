@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import com.innahema.collections.query.functions.Action1;
+import com.messenger.delegate.StartChatDelegate;
+import com.messenger.ui.activity.MessengerActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -18,6 +20,7 @@ import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
+import com.worldventures.dreamtrips.modules.friends.events.StartSingleChatEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -39,6 +42,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
     @Inject
     SnappyRepository snappyRepository;
+    @Inject
+    StartChatDelegate startSingleChatDelegate;
 
     private boolean loadUsersRequestLocked;
 
@@ -180,6 +185,11 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
     public void onEvent(OpenFriendPrefsEvent event) {
         view.openFriendPrefs(new UserBundle(event.getFriend()));
+    }
+
+    public void onEvent(StartSingleChatEvent event) {
+        startSingleChatDelegate.startSingleChat(event.getFriend(), conversation ->
+                MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId()));
     }
 
     public void onEvent(AddUserRequestEvent event) {

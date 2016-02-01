@@ -39,7 +39,7 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    StartChatDelegate provideStartSingleChatDelegate(UsersDAO usersDAO, ParticipantsDAO participantsDAO,
+    StartChatDelegate provideSingleChatDelegate(UsersDAO usersDAO, ParticipantsDAO participantsDAO,
                                                            ConversationsDAO conversationsDAO, ChatDelegate chatDelegate){
         return new StartChatDelegate(usersDAO, participantsDAO, conversationsDAO, chatDelegate);
     }

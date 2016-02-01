@@ -43,7 +43,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     @Inject
     SnappyRepository snappyRepository;
     @Inject
-    StartChatDelegate startSingleChatDelegate;
+    StartChatDelegate startChatDelegate;
 
     private boolean loadUsersRequestLocked;
 
@@ -188,7 +188,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void onEvent(StartSingleChatEvent event) {
-        startSingleChatDelegate.startSingleChat(event.getFriend(), conversation ->
+        startChatDelegate.startSingleChat(event.getFriend(), conversation ->
                 MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId()));
     }
 

@@ -8,7 +8,6 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.messengerservers.entities.User;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
 import com.worldventures.dreamtrips.R;
@@ -26,13 +25,10 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     @Inject
     UsersDAO usersDAO;
     @Inject
-    StartChatDelegate startSingleChatDelegate;
-
-    private final ConversationHelper conversationHelper;
+    StartChatDelegate startChatDelegate;
 
     public NewChatScreenPresenterImpl(Context context) {
         super(context);
-        conversationHelper = new ConversationHelper();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -89,9 +85,9 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 };
 
                 if (selectedUsers.size() == 1) {
-                    startSingleChatDelegate.startSingleChat(selectedUsers.get(0), action1);
+                    startChatDelegate.startSingleChat(selectedUsers.get(0), action1);
                 } else {
-                    startSingleChatDelegate.startNewGroupChat(user, selectedUsers, getView().getConversationName(), action1);
+                    startChatDelegate.startNewGroupChat(user, selectedUsers, getView().getConversationName(), action1);
                 }
 
                 return true;

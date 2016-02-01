@@ -129,7 +129,7 @@ public class ConversationsCursorAdapter
             messageText = message.getText();
             if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
                 messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
-            } else if (isGroupConversation) {
+            } else if (isGroupConversation && !TextUtils.isEmpty(userName)) {
                 messageText = userName + ": " + messageText;
             }
         }

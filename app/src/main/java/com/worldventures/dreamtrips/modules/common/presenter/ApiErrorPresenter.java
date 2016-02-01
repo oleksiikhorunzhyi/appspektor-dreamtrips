@@ -27,16 +27,19 @@ public class ApiErrorPresenter {
     }
 
     public void handleError(Throwable exception) {
-        if (!hasView()) return;
-
+        if (!hasView()) {
+            Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
+            return;
+        }
+        //
         apiErrorView.onApiCallFailed();
-
+        //
         DtApiException dtApiException = null;
         if (exception instanceof DtApiException)
             dtApiException = (DtApiException) exception;
         if (exception.getCause() instanceof DtApiException)
             dtApiException = (DtApiException) exception.getCause();
-
+        //
         if (dtApiException != null) {
             ErrorResponse errorResponse = dtApiException.getErrorResponse();
             if (errorResponse == null || errorResponse.getErrors() == null

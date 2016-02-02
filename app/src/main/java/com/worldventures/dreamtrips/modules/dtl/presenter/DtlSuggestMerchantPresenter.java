@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
@@ -14,7 +14,7 @@ public class DtlSuggestMerchantPresenter extends SuggestRestaurantBasePresenter<
     private DtlMerchant dtlMerchant;
     //
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
 
     public DtlSuggestMerchantPresenter(MerchantIdBundle data) {
         merchantId = data.getMerchantId();
@@ -23,7 +23,7 @@ public class DtlSuggestMerchantPresenter extends SuggestRestaurantBasePresenter<
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
+        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     @Override

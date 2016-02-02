@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
@@ -23,7 +23,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     @Inject
     DtlJobManager jobManager;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
     //
     private DtlMerchant dtlMerchant;
 
@@ -34,7 +34,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
+        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     @Override

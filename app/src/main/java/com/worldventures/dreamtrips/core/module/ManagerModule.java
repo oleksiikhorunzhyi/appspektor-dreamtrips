@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
@@ -50,7 +50,7 @@ import de.greenrobot.event.EventBus;
                 //
                 DtlFilterDelegate.class,
                 DtlLocationManager.class,
-                DtlMerchantRepository.class,
+                DtlMerchantManager.class,
                 DtlJobManager.class,
         },
         library = true, complete = false
@@ -111,8 +111,8 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlMerchantRepository dtlMerchantDelegate(@ForApplication Injector injector) {
-        return new DtlMerchantRepository(injector);
+    DtlMerchantManager dtlMerchantDelegate(@ForApplication Injector injector) {
+        return new DtlMerchantManager(injector);
     }
 
     @Singleton

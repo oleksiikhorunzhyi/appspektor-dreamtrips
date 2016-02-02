@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFragment;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import icepick.State;
 public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPresenter.View> {
 
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager locationRepository;
     @Inject
@@ -42,7 +42,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         if (!initialized) loadMerchants();
         initialized = true;
         //
-        bindJobCached(dtlMerchantRepository.getMerchantsExecutor)
+        bindJobCached(dtlMerchantManager.getMerchantsExecutor)
                 .onError(apiErrorPresenter::handleError);
     }
 
@@ -51,18 +51,18 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     }
 
     private void loadMerchants() {
-        dtlMerchantRepository.loadMerchants(locationRepository.getCachedSelectedLocation());
+        dtlMerchantManager.loadMerchants(locationRepository.getCachedSelectedLocation());
     }
 
     public void setTabs() {
-        view.setTypes(dtlMerchantRepository.getDtlMerchantTypes());
+        view.setTypes(dtlMerchantManager.getDtlMerchantTypes());
         view.updateSelection();
         view.preselectOfferTab(locationRepository.getCachedSelectedLocation().getPartnerCount() > 0);
     }
 
     public Bundle prepareArgsForTab(int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DtlMerchantsListFragment.EXTRA_TYPE, dtlMerchantRepository.getDtlMerchantTypes().get(position));
+        bundle.putSerializable(DtlMerchantsListFragment.EXTRA_TYPE, dtlMerchantManager.getDtlMerchantTypes().get(position));
         return bundle;
     }
 
@@ -70,7 +70,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        String newTabName = dtlMerchantRepository.getDtlMerchantTypes().get(newPosition).equals(DtlMerchantType.OFFER) ?
+        String newTabName = dtlMerchantManager.getDtlMerchantTypes().get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
         TrackingHelper.dtlMerchantsTab(newTabName);
     }

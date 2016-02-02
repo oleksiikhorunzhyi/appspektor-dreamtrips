@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
@@ -18,7 +18,7 @@ public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> 
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
 
     @Override
     public void takeView(View view) {
@@ -26,10 +26,9 @@ public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> 
         //
         view.attachFilterData(dtlFilterDelegate.getFilterData());
         //
-        bindJobCached(dtlMerchantRepository.getMerchantsExecutor)
+        bindJobCached(dtlMerchantManager.getMerchantsExecutor)
                 .onSuccess(dtlMerchants -> attachAmenities());
     }
-
 
     /**
      * Request filter parameters that are currently applied. To use in view to update itself

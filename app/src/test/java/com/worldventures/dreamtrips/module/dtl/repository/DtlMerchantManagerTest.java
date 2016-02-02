@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.junit.Before;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DtlMerchantRepositoryTest {
+public class DtlMerchantManagerTest {
 
     @Mock
     private RequestingPresenter requestingPresenter;
@@ -33,11 +33,11 @@ public class DtlMerchantRepositoryTest {
     private Injector injector;
     //
     private DtlLocation defaultLocation = getDefaultLocation();
-    private DtlMerchantRepository dtlMerchantRepository;
+    private DtlMerchantManager dtlMerchantManager;
 
     @Before
     public void beforeEachTest() {
-        dtlMerchantRepository = new DtlMerchantRepository(injector);
+        dtlMerchantManager = new DtlMerchantManager(injector);
     }
 
     @Test
@@ -51,9 +51,9 @@ public class DtlMerchantRepositoryTest {
         }).when(requestingPresenter).doRequest(any(SpiceRequest.class),
                 any(DreamSpiceManager.SuccessListener.class));
         //
-        dtlMerchantRepository.loadMerchants(defaultLocation);
+        dtlMerchantManager.loadMerchants(defaultLocation);
         //
-        assertThat(dtlMerchantRepository.getMerchants()).isEqualTo(items);
+        assertThat(dtlMerchantManager.getMerchants()).isEqualTo(items);
     }
 
     public static DtlLocation getDefaultLocation() {

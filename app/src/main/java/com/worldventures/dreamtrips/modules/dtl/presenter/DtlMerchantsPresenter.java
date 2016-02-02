@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
@@ -56,7 +56,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
     }
 
     protected JobSubscriber bindApiJob() {
-        return bindJobCached(dtlMerchantRepository.getMerchantsExecutor)
+        return bindJobCached(dtlMerchantManager.getMerchantsExecutor)
                 .onSuccess(dtlMerchants -> onMerchantsLoaded());
     }
 
@@ -98,7 +98,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
     }
 
     protected Observable<List<DtlMerchant>> mapToMerchantList(Location location, String query) {
-        List<DtlMerchant> dtlMerchants = dtlMerchantRepository.getMerchants();
+        List<DtlMerchant> dtlMerchants = dtlMerchantManager.getMerchants();
         //
         DtlLocationHelper dtlLocationHelper = new DtlLocationHelper();
         LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location,

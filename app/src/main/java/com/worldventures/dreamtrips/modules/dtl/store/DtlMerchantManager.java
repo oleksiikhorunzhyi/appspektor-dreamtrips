@@ -22,7 +22,7 @@ import rx.Observable;
 import techery.io.library.Job1Executor;
 import timber.log.Timber;
 
-public class DtlMerchantRepository {
+public class DtlMerchantManager {
 
     @Inject
     SnappyRepository db;
@@ -37,7 +37,7 @@ public class DtlMerchantRepository {
     public final Job1Executor<String, ArrayList<DtlMerchant>> getMerchantsExecutor =
             new Job1Executor<>(this::getMerchants);
 
-    public DtlMerchantRepository(Injector injector) {
+    public DtlMerchantManager(Injector injector) {
         injector.inject(this);
         dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
     }

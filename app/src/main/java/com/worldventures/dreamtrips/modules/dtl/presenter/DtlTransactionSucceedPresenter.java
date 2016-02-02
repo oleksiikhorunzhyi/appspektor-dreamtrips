@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
@@ -25,7 +25,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     @Inject
     SnappyRepository snapper;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlJobManager jobManager;
 
@@ -39,7 +39,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
+        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     public void rate(int stars) {

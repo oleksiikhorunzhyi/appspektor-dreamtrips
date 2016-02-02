@@ -85,25 +85,15 @@
             custom:tickInterval="10"
             custom:tickStart="10"/>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/distance_filter_caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_weight="1"
             android:paddingLeft="25dp"
             android:paddingTop="15dp"
-            >
-
-            <TextView
-                android:id="@+id/distance_filter"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dtl_distance"
-                android:textColor="@color/black"/>
-
-
-        </LinearLayout>
-
+            android:text="@string/dtl_distance"
+            android:textColor="@color/black"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -38,8 +38,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     protected RangeBar rangeBarDistance;
     @InjectView(R.id.range_bar_price)
     protected RangeBar rangeBarPrice;
-    @InjectView(R.id.distance_filter)
-    protected TextView distanceView;
+    @InjectView(R.id.distance_filter_caption)
+    protected TextView distanceCaption;
     @InjectView(R.id.recyclerViewFilters)
     protected RecyclerView recyclerView;
     //
@@ -135,8 +135,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     public void syncUi(DtlFilterData filterData) {
         rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
-        distanceView.setText(distanceView.getResources().getString(R.string.dtl_distance,
-                distanceView.getResources().getString(filterData.getDistanceType() == DtlFilterData.DistanceType.MILES ?
+        distanceCaption.setText(distanceCaption.getResources().getString(R.string.dtl_distance,
+                distanceCaption.getResources().getString(filterData.getDistanceType().equals(DtlFilterData.DistanceType.MILES) ?
                         R.string.mi : R.string.km)));
         updateSelection(filterData);
         drawHeaderSelection();

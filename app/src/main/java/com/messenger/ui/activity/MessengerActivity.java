@@ -21,7 +21,9 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
@@ -34,10 +36,12 @@ import flow.path.Path;
 import flow.path.PathContainerView;
 
 @Layout(R.layout.activity_base_messenger)
-public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
+public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> implements Flow.Dispatcher {
 
     public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
+    @Inject
+    BackStackDelegate backStackDelegate;
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
     @Inject
@@ -100,15 +104,16 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         flowActivityHelper = null;
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        if (!flowActivityHelper.handleBack())
-            super.onBackPressed();
+        if (backStackDelegate.handleBackPressed()) return;
+        if (flowActivityHelper.handleBack()) return;
+        super.onBackPressed();
     }
 
     @Override
@@ -215,6 +220,11 @@ public class MessengerActivity extends BaseActivity implements Flow.Dispatcher {
         drawerLayout.setDrawerLockMode(enabled ?
                 DrawerLayout.LOCK_MODE_UNLOCKED :
                 DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    @Override
+    protected ActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new ActivityPresenter<>();
     }
 
 }

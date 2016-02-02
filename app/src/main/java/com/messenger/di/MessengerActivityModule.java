@@ -1,5 +1,6 @@
 package com.messenger.di;
 
+import com.messenger.ui.view.chat.ChatScreenImpl;
 import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
 import com.worldventures.dreamtrips.R;
@@ -13,6 +14,7 @@ import dagger.Provides;
         injects = {
                 ConversationListScreenImpl.class,
                 EditChatMembersScreenImpl.class,
+                ChatScreenImpl.class,
 },
         complete = false, library = true
 )public class MessengerActivityModule {

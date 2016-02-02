@@ -33,6 +33,8 @@ public interface ChatScreen extends MessengerScreen {
 
     void smoothScrollToPosition(int position);
 
+    boolean onBackPressed();
+
     int getFirstVisiblePosition();
 
     int getLastVisiblePosition();

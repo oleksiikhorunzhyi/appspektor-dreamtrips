@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.ChatManager;
@@ -28,6 +29,7 @@ import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.view.conversation.ConversationsPath;
@@ -38,6 +40,7 @@ import com.messenger.util.OpenedConversationTracker;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
@@ -74,6 +77,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
+    @Inject
+    BackStackDelegate backStackDelegate;
     @Inject
     NotificationDelegate notificationDelegate;
     @Inject
@@ -116,6 +121,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Handler handler = new Handler();
     boolean skipNextMessagesUiDueToPendingChangesInDb = false;
 
+    private PhotoPickerDelegate photoPickerDelegate;
+
     public ChatScreenPresenterImpl(Context context, String conversationId) {
         super(context);
         this.conversationId = conversationId;
@@ -123,6 +130,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ((Injector) context.getApplicationContext()).inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
+        backStackDelegate.setListener(() -> isViewAttached() && getView().onBackPressed());
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
@@ -147,6 +155,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         connectConversation();
+        connectToPhotoPicker();
         messagesUiWasInitializedTimestamp = System.currentTimeMillis();
     }
 
@@ -196,6 +205,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
+        disconnectFromPhotoPicker();
     }
 
     private void connectConversation() {
@@ -497,10 +507,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         submitOneChatAction(chat -> {
             chat.send(new Message.Builder()
-                    .locale(Locale.getDefault())
-                    .text(message)
-                    .from(user.getId())
-                    .build()
+                            .locale(Locale.getDefault())
+                            .text(message)
+                            .from(user.getId())
+                            .build()
             )
                     .subscribeOn(Schedulers.io())
                     .subscribe();
@@ -587,6 +597,34 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 return true;
         }
         return false;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Photo picking
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void connectToPhotoPicker() {
+        photoPickerDelegate = new PhotoPickerDelegate();
+        ((Injector) context.getApplicationContext()).inject(photoPickerDelegate);
+        //
+        photoPickerDelegate.register();
+        photoPickerDelegate
+                .watchChosenImages()
+                .compose(new IoToMainComposer<>())
+                .compose(bindView())
+                .subscribe(this::onImagesPicked,
+                        e -> Timber.e(e, "Error while image picking"));
+
+    }
+
+    @Override
+    public void onImagesPicked(List<ChosenImage> photos) {
+        //TODO process picked images
+    }
+
+
+    private void disconnectFromPhotoPicker() {
+        photoPickerDelegate.unregister();
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -76,7 +76,6 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="6dp"
             custom:connectingLineColor="#54B5FC"
             custom:pinColor="#54B5FC"
             custom:rangeBar="false"

@@ -24,4 +24,19 @@ public class ChatPath extends StyledPath {
         return ConversationsPath.MASTER_PATH;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChatPath chatPath = (ChatPath) o;
+
+        return !(conversationId != null ? !conversationId.equals(chatPath.conversationId) : chatPath.conversationId != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return conversationId != null ? conversationId.hashCode() : 0;
+    }
 }

@@ -130,7 +130,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ((Injector) context.getApplicationContext()).inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
-        backStackDelegate.setListener(() -> isViewAttached() && getView().onBackPressed());
+        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
         paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
@@ -205,6 +205,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
+        backStackDelegate.setListener(null);
         disconnectFromPhotoPicker();
     }
 

@@ -2,7 +2,6 @@ package com.messenger.ui.view.chat;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -24,7 +23,6 @@ import com.messenger.messengerservers.entities.User;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.helper.PhotoPickerLayoutHelper;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -85,7 +83,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
-    private PhotoPickerLayoutHelper photoPickerLayoutHelper;
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -110,6 +107,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @SuppressWarnings("Deprecated")
     private void initUi() {
         ButterKnife.inject(this);
+        injector.inject(this);
         //
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
@@ -153,14 +151,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
         inflateToolbarMenu(toolbar);
-        photoPickerLayoutHelper.subscribe(this::onImagesPicked);
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        photoPickerLayoutHelper.unsubscribe();
-    }
 
     protected MessagesCursorAdapter createAdapter() {
         MessagesCursorAdapter adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null);
@@ -331,33 +323,24 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ////////////////////////////////////////
 
     private void initPhotoPicker() {
-        injector.inject(this);
         injector.inject(photoPickerLayout);
 
         photoPickerLayout.setup(fragmentManager, false);
         photoPickerLayout.hidePanel();
         photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
-
-        photoPickerLayoutHelper = new PhotoPickerLayoutHelper();
-        injector.inject(photoPickerLayoutHelper);
     }
 
-    public void onImagesPicked(List<ChosenImage> photos) {
-        if (photos.size() == 0) {
-            return;
-        }
-
+    private void onImagesPicked(List<ChosenImage> images) {
         photoPickerLayout.hidePanel();
-
-        String fileThumbnail = photos.get(0).getFileThumbnail();
-        String filePath = Uri.parse(fileThumbnail).toString();
-        getPresenter().sendImageMessage(filePath);
+        //
+        getPresenter().onImagesPicked(images);
     }
 
     ////////////////////////////////////////
     /////// Back pressure handling
     ////////////////////////////////////////
 
+    @Override
     public boolean onBackPressed() {
         if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();

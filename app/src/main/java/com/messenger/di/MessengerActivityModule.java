@@ -1,6 +1,5 @@
 package com.messenger.di;
 
-import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.view.chat.ChatScreenImpl;
 import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
@@ -16,7 +15,6 @@ import dagger.Provides;
                 ConversationListScreenImpl.class,
                 EditChatMembersScreenImpl.class,
                 ChatScreenImpl.class,
-                MessengerActivity.DummyPresenter.class
 },
         complete = false, library = true
 )public class MessengerActivityModule {

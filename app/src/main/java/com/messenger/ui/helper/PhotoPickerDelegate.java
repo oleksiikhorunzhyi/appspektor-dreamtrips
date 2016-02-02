@@ -6,22 +6,24 @@ import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
-import com.worldventures.dreamtrips.util.Action;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.subjects.ReplaySubject;
 
-public class PhotoPickerLayoutHelper {
+public class PhotoPickerDelegate {
 
     public static final int REQUESTER_ID = -3;
 
     @Inject
     @Global
     EventBus eventBus;
-    private Action<List<ChosenImage>> imageAction;
+
+    private ReplaySubject<List<ChosenImage>> stream = ReplaySubject.create(1);
 
     public void onEvent(AttachPhotoEvent event) {
         if (event.getRequestType() != -1) {
@@ -35,18 +37,19 @@ public class PhotoPickerLayoutHelper {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
 
-            if (imageAction != null) {
-                imageAction.action(Queryable.from(event.getImages()).toList());
-            }
+            stream.onNext(Queryable.from(event.getImages()).toList());
         }
     }
 
-    public void subscribe(Action<List<ChosenImage>> imagesAction) {
-        eventBus.register(this);
-        this.imageAction = imagesAction;
+    public Observable<List<ChosenImage>> watchChosenImages() {
+        return stream.asObservable();
     }
 
-    public void unsubscribe() {
+    public void register() {
+        eventBus.register(this);
+    }
+
+    public void unregister() {
         eventBus.unregister(this);
     }
 }

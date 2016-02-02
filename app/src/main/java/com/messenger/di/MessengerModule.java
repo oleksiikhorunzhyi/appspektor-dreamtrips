@@ -7,7 +7,7 @@ import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
-import com.messenger.ui.helper.PhotoPickerLayoutHelper;
+import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
@@ -44,7 +44,7 @@ import dagger.Module;
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,
 
-                PhotoPickerLayoutHelper.class,
+                PhotoPickerDelegate.class,
 
                 MessengerNotificationPreSyncService.class,
         },

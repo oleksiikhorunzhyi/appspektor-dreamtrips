@@ -355,10 +355,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     ////////////////////////////////////////
-    /////// Navigation handling
+    /////// Back pressure handling
     ////////////////////////////////////////
 
-    @Override
     public boolean onBackPressed() {
         if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();

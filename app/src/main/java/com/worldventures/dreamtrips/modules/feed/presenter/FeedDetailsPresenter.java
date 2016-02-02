@@ -26,7 +26,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
 
     private static final String TAG = FeedItemDetailsPresenter.class.getSimpleName();
 
-    private FeedItem feedItem;
+    protected FeedItem feedItem;
     //
     private UidItemDelegate uidItemDelegate;
     private WeakHandler handler = new WeakHandler();

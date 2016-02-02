@@ -199,6 +199,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
             //don't show message if it exists
             return;
         } else if (oldPath instanceof ConversationsPath) {
+            historyBuilder.push(oldPath);
             direction = Flow.Direction.FORWARD;
         } else {
             direction = Flow.Direction.REPLACE;

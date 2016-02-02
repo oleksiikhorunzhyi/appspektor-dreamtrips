@@ -90,12 +90,12 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     protected void performFiltering(String query) {
         if (view != null)
             view.bind(locationDelegate
-                            .getLastKnownLocation()
-                            .onErrorResumeNext(Observable.just(locationRepository.getCachedSelectedLocation()
-                                    .asAndroidLocation()))
-                            .flatMap(location -> mapToMerchantList(location, query))
-                            .doOnNext(merchants -> track(merchants, query))
-                            .compose(new IoToMainComposer<>())
+                    .getLastKnownLocation()
+                    .onErrorResumeNext(Observable.just(locationRepository.getCachedSelectedLocation()
+                            .asAndroidLocation()))
+                    .flatMap(location -> mapToMerchantList(location, query))
+                    .doOnNext(merchants -> track(merchants, query))
+                    .compose(new IoToMainComposer<>())
             ).subscribe(this::merchantsPrepared, this::onError);
     }
 
@@ -103,14 +103,13 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         List<DtlMerchant> dtlMerchants = dtlMerchantRepository.getMerchants();
         //
         DtlLocationHelper dtlLocationHelper = new DtlLocationHelper();
-        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location,
-                locationRepository.getCachedSelectedLocation());
+        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location, locationRepository.getCachedSelectedLocation());
         DtlFilterData dtlFilterData = dtlFilterDelegate.getDtlFilterData();
+        DtlFilterData.DistanceType distanceType = snappyRepository.getMerchantsDistanceType();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {
-            dtlMerchant.setDistanceType(snappyRepository.getMerchantsDistanceType());
-            dtlMerchant.setDistance(dtlLocationHelper.calculateDistance(
-                    currentLatLng, dtlMerchant.getCoordinates().asLatLng()));
+            dtlMerchant.setDistanceType(distanceType);
+            dtlMerchant.setDistance(dtlLocationHelper.calculateDistance(currentLatLng, dtlMerchant.getCoordinates().asLatLng()));
         }
         //
         List<DtlMerchant> merchants = Queryable

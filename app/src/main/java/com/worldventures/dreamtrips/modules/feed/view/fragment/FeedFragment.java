@@ -97,7 +97,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
             unreadConversationBadge.setImage(R.drawable.ic_action_message);
             unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
             unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
-
         }
     }
 

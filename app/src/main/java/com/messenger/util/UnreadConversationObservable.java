@@ -1,32 +1,22 @@
 package com.messenger.util;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Conversation$Table;
-import com.messenger.util.RxContentResolver.Query.Builder;
+import com.messenger.storage.dao.ConversationsDAO;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class UnreadConversationObservable {
 
     private Observable<Integer> observable;
 
-    public UnreadConversationObservable(RxContentResolver contentResolver) {
-        String query = "SELECT COUNT(*) AS UNREAD_CONV FROM " + Conversation.TABLE_NAME
-                + " WHERE " + Conversation$Table.UNREADMESSAGECOUNT + ">0 ";
-        Builder queryBuilder = new Builder(Conversation.CONTENT_URI).withSelection(query);
-
-        observable = contentResolver
-                .query(queryBuilder.build())
+    public UnreadConversationObservable(ConversationsDAO conversationsDAO) {
+        observable = conversationsDAO.getUnreadConversationsCount()
                 .onBackpressureLatest()
-                .map(cursor -> cursor.moveToFirst() ? cursor.getInt(0) : 0)
                 .distinctUntilChanged()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(new IoToMainComposer<>());
     }
 
     public Subscription subscribe(Action1<Integer> action) {

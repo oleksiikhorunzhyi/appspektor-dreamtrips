@@ -192,15 +192,18 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         History.Builder historyBuilder = Flow.get(getContext()).getHistory()
                 .buildUpon();
         //
-        Object object = historyBuilder.pop();
+        Object oldPath = historyBuilder.pop();
+        ChatPath chatPath = new ChatPath(conversation.getId());
         Flow.Direction direction;
-        if (object instanceof ConversationsPath) {
-            historyBuilder.push(object);
+        if (oldPath.equals(chatPath)) {
+            //don't show message if it exists
+            return;
+        } else if (oldPath instanceof ConversationsPath) {
             direction = Flow.Direction.FORWARD;
         } else {
             direction = Flow.Direction.REPLACE;
         }
-        historyBuilder.push(new ChatPath(conversation.getId()));
+        historyBuilder.push(chatPath);
         //
         Flow.get(getContext()).setHistory(historyBuilder.build(), direction);
     }

@@ -33,6 +33,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
@@ -360,6 +361,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
 
         if (isTabletLandscape()) {
+            bundle.setSlave(true);
             router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(false)
                     .containerId(R.id.detail_container)
@@ -370,6 +372,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         } else {
             hideDetailContainer();
             router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .data(bundle)
                     .build());
         }

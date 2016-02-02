@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
-import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
@@ -30,8 +29,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -45,9 +42,6 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem>
     @InjectView(R.id.tag)
     protected ImageView tag;
     
-    @Inject
-    Router router;
-
     public PhotoFeedItemDetailsCell(View view) {
         super(view);
     }

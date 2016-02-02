@@ -109,6 +109,20 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_actionbar"
+                    style="@style/ToolBarStyle"
+                    android:layout_width="match_parent"/>
+
+                <ImageView
+                    android:id="@+id/edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_bucket_edit"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_alignParentRight="true"/>
+
             </RelativeLayout>
 
             <include layout="@layout/include_bucket_item_meta"/>

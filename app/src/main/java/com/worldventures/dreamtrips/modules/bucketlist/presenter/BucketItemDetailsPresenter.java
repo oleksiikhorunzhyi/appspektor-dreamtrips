@@ -35,7 +35,19 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
     public void onDelete() {
         eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_DELETE));
-        view.showDeletionDialog(bucketItem);
+        //
+        view.showProgressDialog();
+        getBucketItemManager().deleteBucketItem(bucketItem, type,
+                jsonObject -> {
+                    view.dismissProgressDialog();
+                    view.done();
+                    eventBus.post(new BucketItemUpdatedEvent(bucketItem));
+                    eventBus.post(new FeedEntityDeletedEvent(bucketItem));
+                },
+                spiceException -> {
+                    BucketItemDetailsPresenter.super.handleError(spiceException);
+                    view.dismissProgressDialog();
+                });
     }
 
     public void deleteBucketItem(BucketItem bucketItem) {
@@ -129,8 +141,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void enableMarkAsDone();
 
         void setupDiningView(DiningItem diningItem);
-
-        void showDeletionDialog(BucketItem bucketItem);
 
         void showProgressDialog();
 

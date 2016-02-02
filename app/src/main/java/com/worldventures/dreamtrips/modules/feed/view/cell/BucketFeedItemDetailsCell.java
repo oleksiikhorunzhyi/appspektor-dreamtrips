@@ -12,6 +12,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -114,6 +115,7 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
     @OnClick(R.id.bucket_main)
     void openBucketEntityDetails() {
         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(new FeedDetailsBundle(getModelObject()))
                 .build());
     }

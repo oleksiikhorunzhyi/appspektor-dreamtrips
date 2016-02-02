@@ -36,8 +36,7 @@ import flow.path.Path;
 import flow.path.PathContainerView;
 
 @Layout(R.layout.activity_base_messenger)
-// This activity is extending ActivityWithPresenter to be able to access image picking code in it
-public class MessengerActivity extends ActivityWithPresenter<MessengerActivity.DummyPresenter> implements Flow.Dispatcher {
+public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> implements Flow.Dispatcher {
 
     public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
@@ -223,52 +222,9 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivity.D
                 DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Activity with presenter
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * This activity is extending ActivityWithPresenter to be able to access image picking code in it.
-     * We must return empty presenter.
-     */
-    public static class DummyPresenter extends ActivityPresenter<DummyPresenterView> {
-    }
-
     @Override
-    protected DummyPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new DummyPresenter();
+    protected ActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new ActivityPresenter<>();
     }
 
-    private static class DummyPresenterView implements ActivityPresenter.View {
-
-        @Override
-        public void showTermsDialog() {
-
-        }
-
-        @Override
-        public void informUser(int stringId) {
-
-        }
-
-        @Override
-        public void informUser(String string) {
-
-        }
-
-        @Override
-        public void alert(String s) {
-
-        }
-
-        @Override
-        public boolean isVisibleOnScreen() {
-            return false;
-        }
-
-        @Override
-        public boolean isTabletLandscape() {
-            return false;
-        }
-    }
 }

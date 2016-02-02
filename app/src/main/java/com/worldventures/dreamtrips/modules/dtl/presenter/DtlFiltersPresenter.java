@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
@@ -12,8 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import javax.inject.Inject;
 
-public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
-        DtlMerchantRepository.MerchantUpdatedListener {
+public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> {
 
     @Inject
     LocationDelegate locationDelegate;
@@ -25,26 +23,13 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlMerchantRepository.attachListener(this);
         //
         view.attachFilterData(dtlFilterDelegate.getFilterData());
+        //
+        bindJobCached(dtlMerchantRepository.getMerchantsExecutor)
+                .onSuccess(dtlMerchants -> attachAmenities());
     }
 
-    @Override
-    public void dropView() {
-        dtlMerchantRepository.detachListener(this);
-        super.dropView();
-    }
-
-    @Override
-    public void onMerchantsUploaded() {
-        attachAmenities();
-    }
-
-    @Override
-    public void onMerchantsFailed(SpiceException spiceException) {
-        //nothing to do here
-    }
 
     /**
      * Request filter parameters that are currently applied. To use in view to update itself

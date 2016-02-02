@@ -4,7 +4,6 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -26,13 +25,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit.http.HEAD;
 import rx.Observable;
+import techery.io.library.JobSubscriber;
 import timber.log.Timber;
 
 public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresenter<VT> implements
-        DtlFilterDelegate.FilterListener, DtlMerchantRepository.MerchantUpdatedListener,
-        DtlSearchDelegate.SearchListener {
+        DtlFilterDelegate.FilterListener, DtlSearchDelegate.SearchListener {
 
     @Inject
     LocationDelegate locationDelegate;
@@ -52,27 +50,25 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
     @Override
     public void takeView(VT view) {
         super.takeView(view);
-        dtlMerchantRepository.attachListener(this);
         dtlFilterDelegate.addListener(this);
         dtlSearchDelegate.addListener(this);
+        bindApiJob();
     }
 
-    @Override
-    public void dropView() {
-        dtlMerchantRepository.detachListener(this);
-        dtlFilterDelegate.removeListener(this);
-        dtlSearchDelegate.removeListener(this);
-        super.dropView();
+    protected JobSubscriber bindApiJob() {
+        return bindJobCached(dtlMerchantRepository.getMerchantsExecutor)
+                .onSuccess(dtlMerchants -> onMerchantsLoaded());
     }
 
-    @Override
-    public void onMerchantsUploaded() {
+    protected void onMerchantsLoaded() {
         performFiltering();
     }
 
     @Override
-    public void onMerchantsFailed(SpiceException exception) {
-        //
+    public void dropView() {
+        dtlFilterDelegate.removeListener(this);
+        dtlSearchDelegate.removeListener(this);
+        super.dropView();
     }
 
     @Override

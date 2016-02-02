@@ -1,13 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.store;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
@@ -37,8 +34,6 @@ public class DtlMerchantRepository {
     private List<DtlMerchantType> dtlMerchantTypes;
     private List<DtlMerchant> merchants;
     //
-    private List<MerchantUpdatedListener> listeners = new ArrayList<>();
-    //
     public final Job1Executor<String, ArrayList<DtlMerchant>> getMerchantsExecutor =
             new Job1Executor<>(this::getMerchants);
 
@@ -63,13 +58,6 @@ public class DtlMerchantRepository {
         this.merchants = dtlMerchants;
         db.saveDtlMerhants(merchants);
         saveAmenities(dtlMerchants);
-        //
-        notifyListeners();
-    }
-
-    private void notifyListeners() {
-        checkListeners(listeners);
-        Queryable.from(listeners).forEachR(MerchantUpdatedListener::onMerchantsUploaded);
     }
 
     private void saveAmenities(List<DtlMerchant> dtlMerchants) {
@@ -85,7 +73,6 @@ public class DtlMerchantRepository {
 
     private Observable<ArrayList<DtlMerchant>> getMerchants(String ll) {
         return apiFactory.composeApiCall(() -> dtlApi.getNearbyDtlMerchants(ll))
-                .compose(IoToMainComposer.get())
                 .doOnNext(this::onMerchantsLoaded);
     }
 
@@ -98,40 +85,12 @@ public class DtlMerchantRepository {
     }
 
     /**
-     * should be called in {@link Presenter#handleError(SpiceException)} to notify listeners about
-     * failed merchant loading
-     * @param spiceException actual exception
-     */
-    public void onMerchantLoadingError(SpiceException spiceException) {
-        checkListeners(listeners);
-        Queryable.from(listeners).forEachR(listener -> listener.onMerchantsFailed(spiceException));
-    }
-
-    /**
      * Return loaded merchants or empty arrayList {@link ArrayList}
      * @return list of current merchants
      */
     public List<DtlMerchant> getMerchants() {
         if (merchants == null) getCachedMerchants();
         return merchants;
-    }
-
-    /**
-     * Attach listener to {@link DtlMerchantRepository} to notify about changes
-     * should be called in {@link Presenter#onInjected()}
-     * @param merchantUpdatedListener listener
-     */
-    public void attachListener(MerchantUpdatedListener merchantUpdatedListener) {
-        listeners.add(merchantUpdatedListener);
-    }
-
-    /**
-     * Detach listener from {@link DtlMerchantRepository}
-     * should be called in {@link Presenter#dropView()}
-     * @param merchantUpdatedListener listener
-     */
-    public void detachListener(MerchantUpdatedListener merchantUpdatedListener) {
-        listeners.remove(merchantUpdatedListener);
     }
 
     /**
@@ -157,11 +116,5 @@ public class DtlMerchantRepository {
             if (list.isEmpty())
                 Timber.w("Checking store listeners: no registered listener of desired type! Check your setup.");
         }
-    }
-
-    public interface MerchantUpdatedListener {
-        void onMerchantsUploaded();
-
-        void onMerchantsFailed(SpiceException spiceException);
     }
 }

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.os.Bundle;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
@@ -53,12 +52,6 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
 
     private void loadMerchants() {
         dtlMerchantRepository.loadMerchants(locationRepository.getCachedSelectedLocation());
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        dtlMerchantRepository.onMerchantLoadingError(error);
     }
 
     public void setTabs() {

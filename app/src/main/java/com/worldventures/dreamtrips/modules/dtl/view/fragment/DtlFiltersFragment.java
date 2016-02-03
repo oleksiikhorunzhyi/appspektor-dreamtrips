@@ -136,8 +136,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     public void syncUi(DtlFilterData filterData) {
         rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
-        distanceCaption.setText(distanceCaption.getResources().getString(R.string.dtl_distance,
-                distanceCaption.getResources().getString(filterData.getDistanceType().equals(DistanceType.MILES) ?
+        distanceCaption.setText(getString(R.string.dtl_distance,
+                getString(filterData.getDistanceType() == DistanceType.MILES ?
                         R.string.mi : R.string.km)));
         updateSelection(filterData);
         drawHeaderSelection();

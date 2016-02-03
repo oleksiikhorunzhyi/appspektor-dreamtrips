@@ -8,9 +8,8 @@ import java.util.List;
 public class DtlFilterDelegate {
 
     private DtlFilterData dtlFilterData;
-
+    //
     private List<FilterListener> filterListeners = new ArrayList<>();
-    private List<FilterChangedListener> filterDataChangedListener = new ArrayList<>();
 
     public void setDtlFilterData(DtlFilterData dtlFilterData) {
         this.dtlFilterData = dtlFilterData;
@@ -34,19 +33,7 @@ public class DtlFilterDelegate {
         }
     }
 
-    public void addDataChangedListener(FilterChangedListener filterListener) {
-        filterDataChangedListener.add(filterListener);
-    }
-
-    public void removeDataChangedListener(FilterChangedListener filterListener) {
-        filterDataChangedListener.remove(filterListener);
-    }
-
     public interface FilterListener {
         void onFilter();
-    }
-
-    public interface FilterChangedListener {
-        void onFilterDataChanged();
     }
 }

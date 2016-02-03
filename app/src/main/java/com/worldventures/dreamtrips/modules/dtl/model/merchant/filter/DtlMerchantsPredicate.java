@@ -124,5 +124,4 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
                     merchantType);
         }
     }
-
 }

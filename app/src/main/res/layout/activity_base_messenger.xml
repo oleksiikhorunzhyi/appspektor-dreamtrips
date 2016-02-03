@@ -7,11 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.messenger.flow.container.FramePathContainerView
-        android:id="@+id/root_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
     <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
         android:id="@+id/drawer_layout"
         android:layout_width="@dimen/navigation_drawer_width"
@@ -19,5 +14,24 @@
         android:layout_gravity="start"
         app:layout="@layout/fragment_navigation_drawer"
         tools:layout="@layout/fragment_navigation_drawer"/>
+
+
+    <com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
+        android:id="@+id/chat_photo_picker"
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoOverlay="true"
+        sothree:umanoPanelHeight="@dimen/picker_panel_height"
+        sothree:umanoParallaxOffset="0dp"
+        sothree:umanoShadowHeight="4dp">
+
+        <com.messenger.flow.container.FramePathContainerView
+            android:id="@+id/root_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout>
 
 </android.support.v4.widget.DrawerLayout>

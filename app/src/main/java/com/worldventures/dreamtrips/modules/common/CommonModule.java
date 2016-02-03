@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
@@ -141,6 +142,12 @@ public class CommonModule {
     @Singleton
     NavigationDrawerPresenter provideNavDrawerPresenter(@ForApplication Injector injector) {
         return new NavigationDrawerPresenter(injector);
+    }
+
+    @Provides
+    @Singleton
+    PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate() {
+        return new PhotoPickerLayoutDelegate();
     }
 
 }

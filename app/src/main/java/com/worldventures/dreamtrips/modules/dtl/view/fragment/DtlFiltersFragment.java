@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
@@ -136,7 +137,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
         distanceCaption.setText(distanceCaption.getResources().getString(R.string.dtl_distance,
-                distanceCaption.getResources().getString(filterData.getDistanceType().equals(DtlFilterData.DistanceType.MILES) ?
+                distanceCaption.getResources().getString(filterData.getDistanceType().equals(DistanceType.MILES) ?
                         R.string.mi : R.string.km)));
         updateSelection(filterData);
         drawHeaderSelection();

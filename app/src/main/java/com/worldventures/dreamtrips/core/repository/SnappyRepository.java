@@ -11,6 +11,7 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
@@ -503,8 +504,8 @@ public class SnappyRepository {
     }
 
     //TODO add implementation
-    public DtlFilterData.DistanceType getMerchantsDistanceType(){
-        return DtlFilterData.DistanceType.MILES;
+    public DistanceType getMerchantsDistanceType(){
+        return DistanceType.KMS;
     }
 
     ///////////////////////////////////////////////////////////////////////////

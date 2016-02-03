@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
 import java.util.ArrayList;
@@ -120,26 +121,6 @@ public class DtlFilterData implements Parcelable {
 
     public DistanceType getDistanceType() {
         return distanceType;
-    }
-
-    public enum DistanceType {
-        MILES("ml", true), KMS("km", false);
-
-        boolean selected;
-        String analyticsTypeName;
-
-        DistanceType(String analyticsTypeName, boolean selected) {
-            this.analyticsTypeName = analyticsTypeName;
-            this.selected = selected;
-        }
-
-        public boolean isSelected() {
-            return selected;
-        }
-
-        public String getTypeNameForAnalytics() {
-            return analyticsTypeName;
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

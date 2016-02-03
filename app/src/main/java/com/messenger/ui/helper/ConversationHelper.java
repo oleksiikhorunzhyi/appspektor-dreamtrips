@@ -76,11 +76,11 @@ public class ConversationHelper {
         target.setText(subtitle);
     }
 
-    public boolean isGroup(DataConversation conversation) {
+    public static boolean isGroup(DataConversation conversation) {
         return conversation.getType() != null && !conversation.getType().equals(ConversationType.CHAT);
     }
 
-    public boolean isOwner(DataConversation conversation, DataUser user) {
+    public static boolean isOwner(DataConversation conversation, DataUser user) {
         return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 

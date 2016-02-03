@@ -12,12 +12,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/chat_list_item_vertical_padding"
-        android:paddingLeft="@dimen/chat_list_item_horizontal_padding"
-        android:paddingRight="@dimen/chat_list_item_horizontal_padding"
-        android:paddingTop="@dimen/chat_list_item_vertical_padding"
-        android:background="@color/main_background"
-        >
+        style="@style/ChatMessageContainerStyle">
 
         <TextView
             android:id="@+id/chat_message"
@@ -43,7 +38,6 @@
             android:paddingEnd="@dimen/spacing_small"
             android:paddingRight="@dimen/spacing_small"
             android:paddingTop="@dimen/spacing_tiny"
-
             android:visibility="gone"
             tools:visibility="visible">
 

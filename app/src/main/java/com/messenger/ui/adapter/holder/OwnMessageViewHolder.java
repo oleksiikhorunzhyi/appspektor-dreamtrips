@@ -2,15 +2,16 @@ package com.messenger.ui.adapter.holder;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
-public class OwnMessageViewHolder extends MessageHolder {
-    private String messageId;
+public class OwnMessageViewHolder extends TextMessageViewHolder implements MessageHolder.OwnMessageHolder {
     private MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSend;
 
     @InjectView(R.id.iv_message_error)
@@ -23,7 +24,7 @@ public class OwnMessageViewHolder extends MessageHolder {
         switch (view.getId()) {
             case R.id.iv_message_error:
                 if (onRepeatMessageSend != null) {
-                    onRepeatMessageSend.onRepeatMessageSend(messageId);
+                    onRepeatMessageSend.onRepeatMessageSend(message.getId());
                     viewSwitcher.showNext();
                 }
                 break;
@@ -38,7 +39,26 @@ public class OwnMessageViewHolder extends MessageHolder {
                 params.bottomMargin);
     }
 
-    public void visibleError(boolean visible) {
+    ///////////////////////////////////////////////////////////////////////////
+    // General messages logic
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void setBubbleBackground() {
+        int backgroundResource;
+        if (isPreviousMessageFromTheSameUser) {
+            itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
+            backgroundResource = isSelected? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
+        } else {
+            itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
+            backgroundResource = isSelected? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
+        }
+        messageTextView.setBackgroundResource(backgroundResource);
+    }
+
+    @Override
+    public void updateMessageStatusUi() {
+        boolean visible = message.getStatus() == MessageStatus.ERROR;
         int viewVisible = visible ? View.VISIBLE : View.GONE;
         if (viewVisible != viewSwitcher.getVisibility()) {
             viewSwitcher.setVisibility(viewVisible);
@@ -48,11 +68,12 @@ public class OwnMessageViewHolder extends MessageHolder {
         }
     }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Own messages logic
+    ///////////////////////////////////////////////////////////////////////////
 
-    public void setOnRepeatMessageSend(MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSend) {
-        this.onRepeatMessageSend = onRepeatMessageSend;
+    @Override
+    public void setOnRepeatMessageListener(MessagesCursorAdapter.OnRepeatMessageSend listener) {
+        this.onRepeatMessageSend = listener;
     }
 }

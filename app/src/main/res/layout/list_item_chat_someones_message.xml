@@ -8,26 +8,17 @@
 
     <RelativeLayout
         android:id="@+id/chat_message_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/chat_list_item_vertical_padding"
-                    android:paddingBottom="@dimen/chat_list_item_vertical_padding"
-                    android:paddingLeft="@dimen/chat_list_item_horizontal_padding"
-                    android:paddingRight="@dimen/chat_list_item_horizontal_padding"
-                    android:background="@color/main_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/ChatMessageContainerStyle"
         >
         <com.facebook.drawee.view.SimpleDraweeView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/chat_item_avatar"
-            android:layout_width="@dimen/chat_avatar_size"
-            android:layout_height="@dimen/chat_avatar_size"
-            android:scaleType="centerCrop"
             app:placeholderImage="@drawable/noavatar_small"
             app:roundAsCircle="true"
-            android:layout_alignParentLeft="true"
             android:layout_below="@+id/chat_username"
-            />
+            style="@style/ChatAvatarImageView"/>
 
         <TextView
             android:id="@+id/chat_message"
@@ -43,12 +34,7 @@
 
         <TextView
             android:id="@+id/chat_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/chat_color_username"
-            android:textSize="@dimen/chat_list_username_text_size"
             android:layout_alignLeft="@id/chat_message"
-            android:layout_marginBottom="@dimen/chat_list_username_bottom_margin"
-            />
+            style="@style/ChatUsernameTextView"/>
     </RelativeLayout>
 </LinearLayout>

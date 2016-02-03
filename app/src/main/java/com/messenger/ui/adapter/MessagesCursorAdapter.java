@@ -22,32 +22,34 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.AttachmentType;
+import com.messenger.ui.adapter.holder.ImageMessageViewHolder;
 import com.messenger.ui.adapter.holder.MessageHolder;
+import com.messenger.ui.adapter.holder.OwnImageMessageViewHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
+import com.messenger.ui.adapter.holder.TextMessageViewHolder;
+import com.messenger.ui.adapter.holder.UserImageMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
 import com.messenger.ui.anim.SimpleAnimatorListener;
-import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.ChatTimestampFormatter;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.worldventures.dreamtrips.R;
 
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
-    private static final int VIEW_TYPE_OWN_MESSAGE = 1;
-    private static final int VIEW_TYPE_SOMEONES_MESSAGE = 2;
+    private static final int VIEW_TYPE_OWN_TEXT_MESSAGE = 1;
+    private static final int VIEW_TYPE_SOMEONES_TEXT_MESSAGE = 2;
+    private static final int VIEW_TYPE_OWN_IMAGE_MESSAGE = 3;
+    private static final int VIEW_TYPE_SOMEONES_IMAGE_MESSAGE = 4;
 
     private final DataUser user;
     private final Context context;
-    private final ConversationHelper conversationHelper;
     private final ChatTimestampFormatter timestampFormatter;
     private DataConversation conversation;
 
     private OnAvatarClickListener avatarClickListener;
     private OnRepeatMessageSend onRepeatMessageSend;
     private OnMessageClickListener messageClickListener;
-
-    private final int rowVerticalMargin;
 
     private int manualTimestampPositionToAdd = -1;
     private int manualTimestampPosition = -1;
@@ -70,26 +72,20 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.context = context;
         this.user = user;
 
-        this.conversationHelper = new ConversationHelper();
         this.timestampFormatter = new ChatTimestampFormatter(context);
-
-        rowVerticalMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.chat_list_item_row_vertical_padding);
     }
 
     @Override
     public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VIEW_TYPE_OWN_MESSAGE: {
-                View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_own_messsage,
-                        parent, false);
-                return new OwnMessageViewHolder(itemRow);
-            }
-            case VIEW_TYPE_SOMEONES_MESSAGE: {
-                View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_chat_someones_message,
-                        parent, false);
-                return new UserMessageViewHolder(itemRow);
-            }
+            case VIEW_TYPE_OWN_TEXT_MESSAGE:
+                return new OwnMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_own_messsage));
+            case VIEW_TYPE_SOMEONES_TEXT_MESSAGE:
+                return new UserMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_someones_message));
+            case VIEW_TYPE_OWN_IMAGE_MESSAGE:
+                return new OwnImageMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_own_image_message));
+            case VIEW_TYPE_SOMEONES_IMAGE_MESSAGE:
+                return new UserImageMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_someones_image_message));
         }
         throw new IllegalArgumentException("No such view type in adapter");
     }
@@ -97,77 +93,148 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     @Override
     public void onBindViewHolderCursor(MessageHolder holder, Cursor cursor) {
         switch (getItemViewType(cursor.getPosition())) {
-            case VIEW_TYPE_OWN_MESSAGE:
-                bindOwnMessageHolder((OwnMessageViewHolder) holder, cursor);
+            case VIEW_TYPE_OWN_TEXT_MESSAGE:
+                bindOwnTextMessageHolder((OwnMessageViewHolder) holder, cursor);
                 break;
-            case VIEW_TYPE_SOMEONES_MESSAGE:
-                bindUserMessageHolder((UserMessageViewHolder) holder, cursor);
+            case VIEW_TYPE_SOMEONES_TEXT_MESSAGE:
+                bindUserTextMessageHolder((UserMessageViewHolder) holder, cursor);
+                break;
+            case VIEW_TYPE_OWN_IMAGE_MESSAGE:
+                bindOwnImageMessageHolder((OwnImageMessageViewHolder) holder, cursor);
+                break;
+            case VIEW_TYPE_SOMEONES_IMAGE_MESSAGE:
+                bindUserImageMessageHolder((UserImageMessageViewHolder) holder, cursor);
                 break;
         }
     }
 
-    private void bindMessageHolder(MessageHolder holder, int position, Cursor cursor, DataMessage message) {
-        boolean manualTimestamp = manualTimestampPosition == position
-                || manualTimestampPositionToAdd == position
-                || manualTimestampPositionToRemove == position;
-        String dateDivider;
-        if (manualTimestamp) {
-            dateDivider = timestampFormatter.getMessageDateManualTimestamp(cursor
-                    .getLong(cursor.getColumnIndex(DataMessage$Table.DATE)));
+    ///////////////////////////////////////////////////////////////////////////
+    // All Messages
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void bindMessageHolder(MessageHolder holder, Cursor cursor) {
+        int position = cursor.getPosition();
+        DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
+        holder.setMessage(message);
+        holder.setPreviousMessageFromTheSameUser(previousMessageIsFromSameUser(cursor));
+        bindTimeStampIfNeeded(holder, cursor, position, message);
+        holder.setSelected(position == manualTimestampPosition);
+        holder.setBubbleBackground();
+        holder.updateMessageStatusUi();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Text Messages
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void bindTextMessageHolder(TextMessageViewHolder holder, Cursor cursor) {
+        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT)));
+    }
+
+    private void bindOwnTextMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
+        bindMessageHolder(holder, cursor);
+        bindTextMessageHolder(holder, cursor);
+        bindOwnUserMessageHolder(holder, cursor);
+    }
+
+    private void bindUserTextMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
+        bindMessageHolder(holder, cursor);
+        bindTextMessageHolder(holder, cursor);
+        bindSomeoneUserMessageHolder(holder, cursor);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Image Messages
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void bindOwnImageMessageHolder(OwnImageMessageViewHolder holder, Cursor cursor) {
+        bindMessageHolder(holder, cursor);
+        bindOwnUserMessageHolder(holder, cursor);
+        bindImageMessageHolder(holder, cursor);
+    }
+
+    public void bindUserImageMessageHolder(UserImageMessageViewHolder holder, Cursor cursor) {
+        bindMessageHolder(holder, cursor);
+        bindSomeoneUserMessageHolder(holder, cursor);
+        bindImageMessageHolder(holder, cursor);
+    }
+
+    public void bindImageMessageHolder(ImageMessageViewHolder holder, Cursor cursor) {
+        String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
+        holder.showImageMessage(TextUtils.isEmpty(imageUrl) ? null : Uri.parse(imageUrl));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Own and Someones messages
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void bindOwnUserMessageHolder(MessageHolder.OwnMessageHolder holder, Cursor cursor) {
+        holder.setOnRepeatMessageListener(onRepeatMessageSend);
+    }
+
+    public void bindSomeoneUserMessageHolder(MessageHolder.SomeoneUserMessageHolder holder, Cursor cursor) {
+        DataUser userFrom = SqlUtils.convertToModel(true, DataUser.class, cursor);
+        holder.setAuthor(userFrom);
+
+        holder.setAvatarClickListener(avatarClickListener);
+        holder.updateAvatar();
+        holder.updateName(conversation);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Cursor cursor = getCursor();
+        cursor.moveToPosition(position);
+        boolean ownMessage = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID))
+                .equals(user.getId());
+        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
+        boolean imageMessage = AttachmentType.IMAGE.equals(attachmentType);
+        if (!imageMessage) {
+            return ownMessage ? VIEW_TYPE_OWN_TEXT_MESSAGE : VIEW_TYPE_SOMEONES_TEXT_MESSAGE;
         } else {
-            dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
-        }
-        boolean clickableTimestamp = manualTimestamp || TextUtils.isEmpty(dateDivider);
-        holder.messageTextView
-                .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(),
-                        message, clickableTimestamp));
-
-        TextView dateTextView = holder.dateTextView;
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();
-        if (manualTimestampPositionToAdd == position) {
-            manualTimestampPositionToAdd = -1;
-            manualTimestampPosition = position;
-
-            holder.dateTextView.setVisibility(View.VISIBLE);
-            dateTextView.setText(dateDivider);
-
-            if (dateTextView.getMeasuredHeight() == 0) {
-                dateTextView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            }
-            ValueAnimator animator = ValueAnimator.ofFloat(-dateTextView.getMeasuredHeight(), 0);
-            animator.addUpdateListener(valueAnimator -> {
-                float margin = (Float) valueAnimator.getAnimatedValue();
-                params.bottomMargin = (int) margin;
-                dateTextView.requestLayout();
-            });
-            animator.start();
-        } else if (manualTimestampPositionToRemove == position){
-            manualTimestampPositionToRemove = -1;
-            manualTimestampPosition = -1;
-            ValueAnimator animator = ValueAnimator.ofFloat(0, -dateTextView.getMeasuredHeight());
-            animator.addUpdateListener(valueAnimator -> {
-                float margin = (Float)valueAnimator.getAnimatedValue();
-                params.bottomMargin = (int)margin;
-                dateTextView.requestLayout();
-            });
-            animator.addListener(new SimpleAnimatorListener() {
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    dateTextView.setVisibility(View.GONE);
-                }
-            });
-            animator.start();
-        } else {
-            params.bottomMargin = 0;
-            if (!TextUtils.isEmpty(dateDivider)) {
-                dateTextView.setVisibility(View.VISIBLE);
-                dateTextView.setText(dateDivider);
-            } else {
-                dateTextView.setVisibility(View.GONE);
-            }
+            return ownMessage ? VIEW_TYPE_OWN_IMAGE_MESSAGE : VIEW_TYPE_SOMEONES_IMAGE_MESSAGE;
         }
     }
+
+    public void setConversation(DataConversation conversation) {
+        this.conversation = conversation;
+    }
+
+    public void setAvatarClickListener(@Nullable OnAvatarClickListener avatarClickListener) {
+        this.avatarClickListener = avatarClickListener;
+    }
+
+    public void setOnRepeatMessageSend(OnRepeatMessageSend onRepeatMessageSend) {
+        this.onRepeatMessageSend = onRepeatMessageSend;
+    }
+
+    public void setMessageClickListener(OnMessageClickListener messageClickListener) {
+        this.messageClickListener = messageClickListener;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Util and helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    private View inflateRow (ViewGroup parent, int layoutId) {
+        return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+    }
+
+    private boolean previousMessageIsFromSameUser(Cursor cursor) {
+        String currentId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
+        boolean moveCursorToPrev = cursor.moveToPrevious();
+        if (!moveCursorToPrev) {
+            cursor.moveToNext();
+            return false;
+        }
+        String prevId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
+        cursor.moveToNext();
+        return prevId.equals(currentId);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Message timestamps
+    ///////////////////////////////////////////////////////////////////////////
 
     private class TextSelectableClickListener
             implements View.OnTouchListener, GestureDetector.OnGestureListener {
@@ -226,6 +293,87 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         }
     }
 
+    private void showManualTimestampForPosition(int position) {
+        if (position == manualTimestampPosition) {
+            manualTimestampPositionToRemove = manualTimestampPosition;
+            notifyItemChanged(position);
+        } else {
+            int prevPosition = manualTimestampPosition;
+            manualTimestampPositionToAdd = position;
+            manualTimestampPositionToRemove = prevPosition;
+            notifyItemChanged(prevPosition);
+            notifyItemChanged(manualTimestampPositionToAdd);
+        }
+    }
+
+    private void bindTimeStampIfNeeded(MessageHolder holder, Cursor cursor, int position, DataMessage message) {
+        boolean manualTimestamp = manualTimestampPosition == position
+                || manualTimestampPositionToAdd == position
+                || manualTimestampPositionToRemove == position;
+        String dateDivider;
+        if (manualTimestamp) {
+            dateDivider = timestampFormatter.getMessageDateManualTimestamp(cursor
+                    .getLong(cursor.getColumnIndex(DataMessage$Table.DATE)));
+        } else {
+            dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
+        }
+        boolean clickableTimestamp = manualTimestamp || TextUtils.isEmpty(dateDivider);
+        if (holder instanceof TextMessageViewHolder) {
+            holder.getViewForClickableTimestamp()
+                    .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(),
+                            message, clickableTimestamp));
+        } else {
+            holder.getViewForClickableTimestamp()
+                    .setOnClickListener(view -> showManualTimestampForPosition(position));
+        }
+
+        TextView dateTextView = holder.dateTextView;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();
+        if (manualTimestampPositionToAdd == position) {
+            manualTimestampPositionToAdd = -1;
+            manualTimestampPosition = position;
+
+            holder.dateTextView.setVisibility(View.VISIBLE);
+            dateTextView.setText(dateDivider);
+
+            if (dateTextView.getMeasuredHeight() == 0) {
+                dateTextView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            }
+            ValueAnimator animator = ValueAnimator.ofFloat(-dateTextView.getMeasuredHeight(), 0);
+            animator.addUpdateListener(valueAnimator -> {
+                float margin = (Float) valueAnimator.getAnimatedValue();
+                params.bottomMargin = (int) margin;
+                dateTextView.requestLayout();
+            });
+            animator.start();
+        } else if (manualTimestampPositionToRemove == position){
+            manualTimestampPositionToRemove = -1;
+            manualTimestampPosition = -1;
+            ValueAnimator animator = ValueAnimator.ofFloat(0, -dateTextView.getMeasuredHeight());
+            animator.addUpdateListener(valueAnimator -> {
+                float margin = (Float)valueAnimator.getAnimatedValue();
+                params.bottomMargin = (int)margin;
+                dateTextView.requestLayout();
+            });
+            animator.addListener(new SimpleAnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    dateTextView.setVisibility(View.GONE);
+                }
+            });
+            animator.start();
+        } else {
+            params.bottomMargin = 0;
+            if (!TextUtils.isEmpty(dateDivider)) {
+                dateTextView.setVisibility(View.VISIBLE);
+                dateTextView.setText(dateDivider);
+            } else {
+                dateTextView.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private String getMessageTimestampBetweenMessagesIfNeeded(Cursor cursor) {
         int dateColumnIndex = cursor.getColumnIndex(DataMessage$Table.DATE);
         long currentDate = cursor.getLong(dateColumnIndex);
@@ -250,130 +398,4 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         return null;
     }
 
-    private boolean previousMessageIsFromSameUser(Cursor cursor) {
-        String currentId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
-        boolean moveCursorToPrev = cursor.moveToPrevious();
-        if (!moveCursorToPrev) {
-            return false;
-        }
-        String prevId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
-        cursor.moveToNext();
-        return prevId.equals(currentId);
-    }
-
-    private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
-        holder.setMessageId(cursor.getString(cursor.getColumnIndex(DataMessage$Table._ID)));
-        holder.setOnRepeatMessageSend(onRepeatMessageSend);
-        holder.visibleError(cursor.getInt(cursor.getColumnIndex(DataMessage$Table.STATUS)) == MessageStatus.ERROR);
-
-        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
-        String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
-        String msgText = cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT));
-        holder.messageTextView.setText(attachmentType == null ? msgText : String.format("%s\n%s", msgText, imageUrl));
-
-        int position = cursor.getPosition();
-        DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
-
-        bindMessageHolder(holder, position, cursor, message);
-
-        int backgroundResource;
-        View itemView = holder.itemView;
-        boolean selectedMessage = position == manualTimestampPosition;
-        if (previousMessageIsFromSameUser(cursor)) {
-            itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = selectedMessage? R.drawable.dark_blue_bubble: R.drawable.blue_bubble;
-        } else {
-            itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = selectedMessage? R.drawable.dark_blue_bubble_comics: R.drawable.blue_bubble_comics;
-        }
-        holder.messageTextView.setBackgroundResource(backgroundResource);
-    }
-
-    private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
-        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
-        String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
-
-        int position = cursor.getPosition();
-        DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
-        DataUser userFrom = SqlUtils.convertToModel(true, DataUser.class, cursor);
-
-        bindMessageHolder(holder, position, cursor, message);
-
-        boolean isPreviousMessageFromTheSameUser = previousMessageIsFromSameUser(cursor);
-        if (conversationHelper.isGroup(conversation) && userFrom != null
-                && !isPreviousMessageFromTheSameUser) {
-            holder.nameTextView.setVisibility(View.VISIBLE);
-            holder.nameTextView.setText(userFrom.getName());
-        } else {
-            holder.nameTextView.setVisibility(View.GONE);
-        }
-
-        holder.messageTextView.setText(attachmentType == null ? message.getText() : String.format("%s\n%s", message.getText(), imageUrl));
-
-        int backgroundResource;
-        View itemView = holder.itemView;
-        boolean selectedMessage = position == manualTimestampPosition;
-        if (isPreviousMessageFromTheSameUser) {
-            itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            holder.avatarImageView.setVisibility(View.INVISIBLE);
-            backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble
-                    : R.drawable.grey_bubble;
-        } else {
-            itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = selectedMessage ? R.drawable.dark_grey_bubble_comics
-                    : R.drawable.grey_bubble_comics;
-            holder.avatarImageView.setVisibility(View.VISIBLE);
-            holder.avatarImageView.setImageURI(userFrom == null || userFrom.getAvatarUrl() == null ? null : Uri.parse(userFrom.getAvatarUrl()));
-
-            holder.avatarImageView.setOnClickListener(v -> {
-                if (avatarClickListener != null) {
-                    avatarClickListener.onAvatarClick(userFrom);
-                }
-            });
-        }
-        holder.messageTextView.setBackgroundResource(backgroundResource);
-
-        if (message.getStatus() == MessageStatus.SENT) {
-            holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_unread_background);
-        } else {
-            holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
-        }
-    }
-
-    public void showManualTimestampForPosition(int position) {
-        if (position == manualTimestampPosition) {
-            manualTimestampPositionToRemove = manualTimestampPosition;
-            notifyItemChanged(position);
-        } else {
-            int prevPosition = manualTimestampPosition;
-            manualTimestampPositionToAdd = position;
-            manualTimestampPositionToRemove = prevPosition;
-            notifyItemChanged(prevPosition);
-            notifyItemChanged(manualTimestampPositionToAdd);
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        Cursor cursor = getCursor();
-        cursor.moveToPosition(position);
-        return cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID))
-                .equals(user.getId()) ? VIEW_TYPE_OWN_MESSAGE : VIEW_TYPE_SOMEONES_MESSAGE;
-    }
-
-    public void setConversation(DataConversation conversation) {
-        this.conversation = conversation;
-    }
-
-    public void setAvatarClickListener(@Nullable OnAvatarClickListener avatarClickListener) {
-        this.avatarClickListener = avatarClickListener;
-    }
-
-    public void setOnRepeatMessageSend(OnRepeatMessageSend onRepeatMessageSend) {
-        this.onRepeatMessageSend = onRepeatMessageSend;
-    }
-
-    public void setMessageClickListener(OnMessageClickListener messageClickListener) {
-        this.messageClickListener = messageClickListener;
-    }
 }

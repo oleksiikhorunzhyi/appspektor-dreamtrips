@@ -104,6 +104,8 @@
     <color name="chat_typing_dot_3">#CECECE</color>
     <color name="chat_list_item_read_unread_background">#EBF7FF</color>
     <color name="chat_list_item_read_read_background">@color/white</color>
+    <color name="chat_list_item_image_post_blue_loading_background">#DCF0FE</color>
+    <color name="chat_list_item_image_post_grey_loading_background">#F8F8F8</color>
 
     <!-- Conversation list screen -->
     <color name="conversation_list_action_bar_spinner_item_normal">@color/white</color>

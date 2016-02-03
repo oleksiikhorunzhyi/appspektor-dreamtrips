@@ -72,7 +72,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     UnreadMessagesView unreadMessagesView;
     @InjectView(R.id.chat_users_typing_view)
     ChatUsersTypingView chatUsersTypingView;
-    @Optional
     @InjectView(R.id.chat_photo_picker)
     PhotoPickerLayout photoPickerLayout;
 
@@ -325,21 +324,15 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ////////////////////////////////////////
 
     private void initPhotoPicker() {
-        if (photoPickerLayout != null) {
-            injector.inject(photoPickerLayout);
+        injector.inject(photoPickerLayout);
 
-            photoPickerLayout.setup(fragmentManager, false);
-            photoPickerLayout.hidePanel();
-            photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
-        }
-    }
-
-    private void hidePanel() {
-        if (photoPickerLayout != null) photoPickerLayout.hidePanel();
+        photoPickerLayout.setup(fragmentManager, false);
+        photoPickerLayout.hidePanel();
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
     }
 
     private void onImagesPicked(List<ChosenImage> images) {
-        hidePanel();
+        photoPickerLayout.hidePanel();
         //
         getPresenter().onImagesPicked(images);
     }
@@ -350,7 +343,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public boolean onBackPressed() {
-        if (photoPickerLayout != null && photoPickerLayout.isPanelVisible()) {
+        if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();
             return true;
         }

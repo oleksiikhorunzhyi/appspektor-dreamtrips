@@ -6,6 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Use match_parent for width with inverse weights so that PhotoPickerLayout will get
+     MeasureSpec.EXACTLY during measure. It throws exception if MeasureSpec.UNSPECIFIED
+    provided in case of having 0 dp and non-reverted weights. -->
     <com.messenger.flow.container.TabletMasterDetailRoot
         android:id="@+id/root_container"
         android:layout_width="match_parent"
@@ -20,9 +23,9 @@
 
         <com.messenger.flow.container.MasterPathContainerView
             android:id="@id/master_container"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="2"/>
 
         <View
             android:layout_width="0.5dp"
@@ -32,9 +35,9 @@
 
         <com.messenger.flow.container.DetailContainerView
             android:id="@id/details_container"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"/>
-    </com.messenger.flow.container.TabletMasterDetailRoot>в
+            android:layout_weight="1"/>
+    </com.messenger.flow.container.TabletMasterDetailRoot>
 
 </android.support.v4.widget.DrawerLayout>

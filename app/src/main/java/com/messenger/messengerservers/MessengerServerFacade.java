@@ -34,8 +34,6 @@ public interface MessengerServerFacade {
 
     GlobalEventEmitter getGlobalEventEmitter();
 
-    @Deprecated
-    User getOwner();
-    String getOwnerId();
+    String getUsername();
 
 }

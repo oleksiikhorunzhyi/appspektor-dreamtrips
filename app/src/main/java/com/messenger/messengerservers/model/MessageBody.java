@@ -4,20 +4,20 @@ import java.util.List;
 
 public class MessageBody {
     private String text;
-    private String locale;
+    private String localeName;
     private List<AttachmentHolder> attachments;
 
     public MessageBody() {
     }
 
-    public MessageBody(String text, String locale, List<AttachmentHolder> attachments) {
+    public MessageBody(String text, String localeName, List<AttachmentHolder> attachments) {
         this.text = text;
-        this.locale = locale;
+        this.localeName = localeName;
         this.attachments = attachments;
     }
 
-    public MessageBody(String locale) {
-        this.locale = locale;
+    public MessageBody(String localeName) {
+        this.localeName = localeName;
     }
 
     public String getText() {
@@ -28,12 +28,12 @@ public class MessageBody {
         this.text = text;
     }
 
-    public String getLocale() {
-        return locale;
+    public String getLocaleName() {
+        return localeName;
     }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
+    public void setLocaleName(String localeName) {
+        this.localeName = localeName;
     }
 
     public List<AttachmentHolder> getAttachments() {

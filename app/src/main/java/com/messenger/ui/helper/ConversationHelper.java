@@ -5,8 +5,8 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.worldventures.dreamtrips.R;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ConversationHelper {
 
-    public void setTitle(final TextView target, Conversation conversation, List<User> members, boolean withGroupSize) {
+    public void setTitle(final TextView target, DataConversation conversation, List<DataUser> members, boolean withGroupSize) {
         if (members == null || members.isEmpty()) {
             return;
         }
@@ -57,7 +57,7 @@ public class ConversationHelper {
         }
     }
 
-    public void setSubtitle(TextView target, Conversation conversation, List<User> members) {
+    public void setSubtitle(TextView target, DataConversation conversation, List<DataUser> members) {
         if (members == null || members.isEmpty()) {
             return;
         }
@@ -69,18 +69,18 @@ public class ConversationHelper {
                 break;
             case ConversationType.GROUP:
             default:
-                int online = Queryable.from(members).count(User::isOnline);
+                int online = Queryable.from(members).count(DataUser::isOnline);
                 subtitle = target.getResources().getString(R.string.chat_subtitle_format_group_chat_format, members.size(), online);
                 break;
         }
         target.setText(subtitle);
     }
 
-    public boolean isGroup(Conversation conversation) {
+    public boolean isGroup(DataConversation conversation) {
         return conversation.getType() != null && !conversation.getType().equals(ConversationType.CHAT);
     }
 
-    public boolean isOwner(Conversation conversation, User user) {
+    public boolean isOwner(DataConversation conversation, DataUser user) {
         return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 }

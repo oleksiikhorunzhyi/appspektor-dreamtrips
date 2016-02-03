@@ -5,9 +5,10 @@ import android.util.Pair;
 
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.delegate.UserProcessor;
-import com.messenger.entities.Attachment;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.ParticipantsRelationship;
+import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataParticipant;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -74,9 +75,9 @@ public class ChatFacadeInitializer implements AppInitializer {
                 long time = System.currentTimeMillis();
                 message.setDate(time);
                 message.setStatus(MessageStatus.SENT);
-                List<Attachment> attachments = Attachment.fromMessage(message);
+                List<DataAttachment> attachments = DataAttachment.fromMessage(message);
                 if (attachments != null) attachmentDAO.save(attachments);
-                messageDAO.save(new com.messenger.entities.Message(message));
+                messageDAO.save(new DataMessage(message));
                 conversationsDAO.incrementUnreadField(message.getConversationId());
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
@@ -92,9 +93,9 @@ public class ChatFacadeInitializer implements AppInitializer {
             public void onSendMessage(Message message) {
                 long time = System.currentTimeMillis();
                 message.setDate(time);
-                List<Attachment> attachments = Attachment.fromMessage(message);
+                List<DataAttachment> attachments = DataAttachment.fromMessage(message);
                 if (attachments != null) attachmentDAO.save(attachments);
-                messageDAO.save(new com.messenger.entities.Message(message));
+                messageDAO.save(new DataMessage(message));
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
         });
@@ -143,12 +144,12 @@ public class ChatFacadeInitializer implements AppInitializer {
                         u.save();
                     }))
                     .flatMap(users -> participantsDAO.getParticipants(conversationId).first()
-                            .map(c -> SqlUtils.convertToList(ParticipantsRelationship.class, c))
-                            .map(list -> from(list).map(ParticipantsRelationship::getUserId).contains(userId))
+                            .map(c -> SqlUtils.convertToList(DataParticipant.class, c))
+                            .map(list -> from(list).map(DataParticipant::getUserId).contains(userId))
                     )
                     .filter(isAlreadyConnected -> !isAlreadyConnected)
                     .doOnNext(isAlreadyConnected -> {
-                        new ParticipantsRelationship(conversationId, userId, MEMBER).save();
+                        new DataParticipant(conversationId, userId, MEMBER).save();
                     })
                     .subscribeOn(Schedulers.io())
                     .subscribe();
@@ -162,9 +163,9 @@ public class ChatFacadeInitializer implements AppInitializer {
             )
                     .subscribeOn(Schedulers.io()).first()
                     .subscribe(pair -> {
-                        Conversation conversation = pair.first;
+                        DataConversation conversation = pair.first;
                         participantsDAO.delete(conversation.getId(), pair.second.getId());
-                        if (TextUtils.equals(messengerServerFacade.getOwnerId(), pair.second.getId())) { // if it is owner action
+                        if (TextUtils.equals(messengerServerFacade.getUsername(), pair.second.getId())) { // if it is owner action
                             conversation.setStatus(leave ? ConversationStatus.LEFT : ConversationStatus.KICKED);
                             conversationsDAO.save(Collections.singletonList(conversation));
                         }

@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.conversation.ConversationsPath;
@@ -44,7 +44,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Inject
     MessengerServerFacade messengerServerFacade;
     @Inject
-    User user;
+    DataUser user;
 
     @Inject
     ParticipantsDAO participantsDAO;
@@ -57,7 +57,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
-    private Observable<Conversation> conversationObservable;
+    private Observable<DataConversation> conversationObservable;
     private Observable<MultiUserChat> chatObservable;
     private Observable<Cursor> membersCursorObservable;
 
@@ -190,7 +190,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
                     EditChatMembersScreen view = getView();
                     view.showContent();
-                    view.setMembers(cursor, getViewState().getSearchFilter(), User.COLUMN_NAME);
+                    view.setMembers(cursor, getViewState().getSearchFilter(), DataUser.COLUMN_NAME);
                     view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), cursor.getCount()));
                 });
     }
@@ -205,12 +205,12 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     @Override
-    public void onDeleteUserFromChat(User user) {
+    public void onDeleteUserFromChat(DataUser user) {
         getView().showDeletionConfirmationDialog(user);
     }
 
     @Override
-    public void onDeleteUserFromChatConfirmed(User user) {
+    public void onDeleteUserFromChatConfirmed(DataUser user) {
         chatObservable.subscribe(chat -> {
             chat.kick(Collections.singletonList(user.getId()))
                     .map(users -> users.get(0))
@@ -221,7 +221,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     @Override
-    public void onUserClicked(User user) {
+    public void onUserClicked(DataUser user) {
         profileCrosser.crossToProfile(user);
     }
 
@@ -239,7 +239,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     ////   Helpers
     ////////////////////////////////////////////////////////
 
-    private boolean isOwner(Conversation conversation) {
+    private boolean isOwner(DataConversation conversation) {
         return TextUtils.equals(user.getId(), conversation.getOwnerId());
     }
 }

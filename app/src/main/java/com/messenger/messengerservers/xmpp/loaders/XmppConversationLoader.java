@@ -68,7 +68,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
                         // TODO: 2/1/16  participants has jid
                         List<Participant> participants = provider.getSingleChatParticipants(conversation);
                         if (subscriber.isUnsubscribed()) return;
-                        if (singleChatInvalid(conversation, facade.getOwnerId())) {
+                        if (singleChatInvalid(conversation, facade.getUsername())) {
                             Timber.w("Single Conversation is invalid: %s", conversation);
                             subscriber.onCompleted();
                             return;

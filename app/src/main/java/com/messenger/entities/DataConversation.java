@@ -14,9 +14,9 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
-@TableEndpoint(name = Conversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-@Table(tableName = Conversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class Conversation extends BaseProviderModel<Conversation> {
+@TableEndpoint(name = DataConversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = DataConversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class DataConversation extends BaseProviderModel<DataConversation> {
     public static final String TABLE_NAME = "Conversations";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
@@ -33,9 +33,9 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column long syncTime;
     @Column long lastActiveDate;
 
-    public Conversation() {}
+    public DataConversation() {}
 
-    public Conversation(com.messenger.messengerservers.model.Conversation conversation) {
+    public DataConversation(com.messenger.messengerservers.model.Conversation conversation) {
         setId(conversation.getId());
         setOwnerId(conversation.getOwnerId());
         setSubject(conversation.getSubject());
@@ -46,7 +46,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         setLastActiveDate(conversation.getLastActiveDate());
     }
 
-    private Conversation(Builder builder) {
+    private DataConversation(Builder builder) {
         setId(builder.id);
         setOwnerId(builder.ownerId);
         setSubject(builder.subject);
@@ -136,7 +136,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Conversation that = (Conversation) o;
+        DataConversation that = (DataConversation) o;
 
         return _id != null ? _id.equals(that._id) : that._id == null;
 
@@ -233,8 +233,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
             return this;
         }
 
-        public Conversation build() {
-            return new Conversation(this);
+        public DataConversation build() {
+            return new DataConversation(this);
         }
     }
 }

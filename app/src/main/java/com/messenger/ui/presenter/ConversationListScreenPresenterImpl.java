@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.messenger.delegate.ChatLeavingDelegate;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -45,7 +45,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         ConversationListViewState> implements ConversationListScreenPresenter {
 
     @Inject
-    User user;
+    DataUser user;
     @Inject
     DreamSpiceManager dreamSpiceManager;
     @Inject
@@ -99,7 +99,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     @Override
-    public User getUser() {
+    public DataUser getUser() {
         return user;
     }
 
@@ -190,7 +190,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onConversationSelected(Conversation conversation) {
+    public void onConversationSelected(DataConversation conversation) {
         History.Builder historyBuilder = Flow.get(getContext()).getHistory()
                 .buildUpon();
         //
@@ -212,12 +212,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     @Override
-    public void onDeleteButtonPressed(Conversation conversation) {
+    public void onDeleteButtonPressed(DataConversation conversation) {
         getView().showConversationDeletionConfirmationDialog(conversation);
     }
 
     @Override
-    public void onDeletionConfirmed(Conversation conversation) {
+    public void onDeletionConfirmed(DataConversation conversation) {
         if (conversationHelper.isGroup(conversation)) {
             chatLeavingDelegate.leave(conversation);
         } else {
@@ -226,18 +226,18 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     @Override
-    public void onMoreOptionsButtonPressed(Conversation conversation) {
+    public void onMoreOptionsButtonPressed(DataConversation conversation) {
         getView().showConversationMoreActionsDialog(conversation);
     }
 
     @Override
-    public void onMarkAsUnreadButtonPressed(Conversation conversation) {
+    public void onMarkAsUnreadButtonPressed(DataConversation conversation) {
         Toast.makeText(getContext(), "Mark as unread not yet implemented",
                 Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onTurnOffNotificationsButtonPressed(Conversation conversation) {
+    public void onTurnOffNotificationsButtonPressed(DataConversation conversation) {
         Toast.makeText(getContext(), "Turn of notifications not yet implemented",
                 Toast.LENGTH_SHORT).show();
     }

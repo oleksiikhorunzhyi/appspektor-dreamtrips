@@ -2,12 +2,12 @@ package com.messenger.ui.viewstate;
 
 import android.os.Parcel;
 
-import com.messenger.entities.Conversation;
+import com.messenger.entities.DataConversation;
 import com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.ChatsType;
 
 import java.util.List;
 
-public class ConversationListViewState extends LceViewState<List<Conversation>> {
+public class ConversationListViewState extends LceViewState<List<DataConversation>> {
 
     private String chatType;
     private String searchFilter;

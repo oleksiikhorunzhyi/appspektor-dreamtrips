@@ -22,9 +22,9 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.util.List;
 
-@Table(tableName = Attachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-@TableEndpoint(name = Attachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-public class Attachment extends BaseProviderModel<Attachment> {
+@Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+@TableEndpoint(name = DataAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+public class DataAttachment extends BaseProviderModel<DataAttachment> {
     public static final String TABLE_NAME = "Attachments";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
@@ -36,10 +36,10 @@ public class Attachment extends BaseProviderModel<Attachment> {
     @Column String type;
     @Column String url;
 
-    public Attachment() {
+    public DataAttachment() {
     }
 
-    protected Attachment(@NonNull AttachmentHolder attachment, String messageId, int index) {
+    protected DataAttachment(@NonNull AttachmentHolder attachment, String messageId, int index) {
         this.id = createId(messageId, index);
         this.messageId = messageId;
         String type = this.type = attachment.getType();
@@ -58,13 +58,13 @@ public class Attachment extends BaseProviderModel<Attachment> {
     }
 
     @Nullable
-    public static List<Attachment> fromMessage(@NonNull com.messenger.messengerservers.model.Message message) {
+    public static List<DataAttachment> fromMessage(@NonNull com.messenger.messengerservers.model.Message message) {
         MessageBody body = message.getMessageBody();
         List<AttachmentHolder> attachmentHolders;
         if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) return null;
 
         return Queryable.from(attachmentHolders)
-                .map((elem, idx) -> new Attachment(elem, message.getId(), idx))
+                .map((elem, idx) -> new DataAttachment(elem, message.getId(), idx))
                 .toList();
     }
 

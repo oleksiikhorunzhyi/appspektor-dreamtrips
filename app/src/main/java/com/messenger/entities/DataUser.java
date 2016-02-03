@@ -15,9 +15,9 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
-@TableEndpoint(name = User.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-@Table(tableName = User.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class User extends BaseProviderModel<User> implements ChatUser {
+@TableEndpoint(name = DataUser.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = DataUser.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     public static final String TABLE_NAME = "Users";
     public static final String COLUMN_NAME = "userName";
 
@@ -33,15 +33,15 @@ public class User extends BaseProviderModel<User> implements ChatUser {
     @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
     @Column Boolean friend;
 
-    public User() {
+    public DataUser() {
     }
 
-    public User(com.messenger.messengerservers.model.User user) {
+    public DataUser(com.messenger.messengerservers.model.User user) {
         this(user.getName());
         setOnline(user.isOnline());
     }
 
-    public User(String userId) {
+    public DataUser(String userId) {
         this.id = userId;
         this.userName = userId;
     }
@@ -119,7 +119,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        DataUser user = (DataUser) o;
 
         return !(id != null ? !id.equals(user.id) : user.id != null);
     }
@@ -171,7 +171,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         dest.writeValue(this.friend);
     }
 
-    protected User(Parcel in) {
+    protected DataUser(Parcel in) {
         this.id = in.readString();
         this.socialId = in.readInt();
         this.userName = in.readString();
@@ -180,13 +180,13 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         this.friend = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        public User createFromParcel(Parcel source) {
-            return new User(source);
+    public static final Creator<DataUser> CREATOR = new Creator<DataUser>() {
+        public DataUser createFromParcel(Parcel source) {
+            return new DataUser(source);
         }
 
-        public User[] newArray(int size) {
-            return new User[size];
+        public DataUser[] newArray(int size) {
+            return new DataUser[size];
         }
     };
 }

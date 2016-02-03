@@ -67,13 +67,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     public void interceptOutgoingMessages(com.messenger.messengerservers.model.Message message) {
         // TODO: 1/7/16 set fromId in chat
-        message.setFromId(facade.getOwnerId());
+        message.setFromId(facade.getUsername());
         notifyGlobalMessage(message, EVENT_OUTGOING);
     }
 
     public void interceptPreOutgoingMessages(com.messenger.messengerservers.model.Message message) {
         // TODO: 1/7/16 set fromId in chat
-        message.setFromId(facade.getOwnerId());
+        message.setFromId(facade.getUsername());
         notifyGlobalMessage(message, EVENT_PRE_OUTGOING);
     }
 

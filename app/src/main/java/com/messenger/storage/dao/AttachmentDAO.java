@@ -2,8 +2,8 @@ package com.messenger.storage.dao;
 
 import android.content.Context;
 
-import com.messenger.entities.Attachment;
-import com.messenger.entities.Attachment$Adapter;
+import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataAttachment$Adapter;
 import com.messenger.util.RxContentResolver;
 
 import java.util.List;
@@ -14,11 +14,11 @@ public class AttachmentDAO extends BaseDAO {
         super(context, rxContentResolver);
     }
 
-    public void save(List<Attachment> attachments) {
-        bulkInsert(attachments, new Attachment$Adapter(), Attachment.CONTENT_URI);
+    public void save(List<DataAttachment> attachments) {
+        bulkInsert(attachments, new DataAttachment$Adapter(), DataAttachment.CONTENT_URI);
     }
 
-    public void save(Attachment attachment) {
+    public void save(DataAttachment attachment) {
         attachment.save();
     }
 }

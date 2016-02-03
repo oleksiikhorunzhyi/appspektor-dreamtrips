@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.worldventures.dreamtrips.R;
@@ -17,17 +17,17 @@ import java.util.List;
 public class CheckableContactsCursorAdapter extends ContactCursorAdapter {
 
     public interface SelectionListener {
-        void onSelectionStateChanged(List<User> selectedContacts);
+        void onSelectionStateChanged(List<DataUser> selectedContacts);
     }
 
-    private List<User> selectedContacts = new ArrayList<>();
+    private List<DataUser> selectedContacts = new ArrayList<>();
     private SelectionListener selectionListener;
 
     public CheckableContactsCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
     }
 
-    public void setSelectedContacts(List<User> selectedContacts) {
+    public void setSelectedContacts(List<DataUser> selectedContacts) {
         this.selectedContacts = selectedContacts;
         notifyDataSetChanged();
     }
@@ -37,7 +37,7 @@ public class CheckableContactsCursorAdapter extends ContactCursorAdapter {
     }
 
     @Override
-    protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, User user) {
+    protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, DataUser user) {
         super.onBindUserHolder(holder, cursor, user);
         holder.getTickImageView().setVisibility(View.VISIBLE);
         holder.getTickImageView().setSelected(selectedContacts.contains(user));

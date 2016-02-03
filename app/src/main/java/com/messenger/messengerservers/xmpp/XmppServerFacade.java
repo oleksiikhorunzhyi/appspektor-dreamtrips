@@ -15,12 +15,11 @@ import com.messenger.messengerservers.PaginationManager;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.messengerservers.model.AttachmentHolder;
-import com.messenger.messengerservers.model.User;
 import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
-import com.messenger.util.CrashlyticsTracker;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.util.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
@@ -209,14 +208,8 @@ public class XmppServerFacade implements MessengerServerFacade {
         return globalEventEmitter;
     }
 
-    @Deprecated
     @Override
-    public User getOwner() {
-        return new User(connection.getUser().split("@")[0]);
-    }
-
-    @Override
-    public String getOwnerId() {
+    public String getUsername() {
         return connection.getUser().split("@")[0];
     }
 

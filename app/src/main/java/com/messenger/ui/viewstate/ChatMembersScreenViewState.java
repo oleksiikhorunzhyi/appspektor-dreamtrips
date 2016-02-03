@@ -2,7 +2,7 @@ package com.messenger.ui.viewstate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.model.ChatUser;
 
 import java.util.ArrayList;
@@ -14,15 +14,15 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
 
     }
 
-    private List<User> selectedContacts = new ArrayList<>();
+    private List<DataUser> selectedContacts = new ArrayList<>();
     private String searchFilter;
     private boolean isChatNameEditTextVisible;
 
-    public List<User> getSelectedContacts() {
+    public List<DataUser> getSelectedContacts() {
         return selectedContacts;
     }
 
-    public void setSelectedContacts(List<User> selectedContacts) {
+    public void setSelectedContacts(List<DataUser> selectedContacts) {
         this.selectedContacts = selectedContacts;
     }
 
@@ -63,9 +63,9 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
     public ChatMembersScreenViewState(Parcel in) {
         super(in);
         setData(new ArrayList<>());
-        in.readList(getData(), User.class.getClassLoader());
+        in.readList(getData(), DataUser.class.getClassLoader());
         selectedContacts = new ArrayList<>();
-        in.readList(selectedContacts, User.class.getClassLoader());
+        in.readList(selectedContacts, DataUser.class.getClassLoader());
         searchFilter = in.readString();
         isChatNameEditTextVisible = in.readInt() == 1;
     }

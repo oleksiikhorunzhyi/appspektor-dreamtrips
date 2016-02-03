@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
@@ -77,7 +77,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
         getPresenter().requireAdapterInfo();
     }
 
-    public void setAdapterWithInfo(User user, boolean isOwner) {
+    public void setAdapterWithInfo(DataUser user, boolean isOwner) {
         Context context = getContext();
         EditChatMembersScreenPresenter presenter = getPresenter();
 
@@ -152,7 +152,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
-    public void showDeletionConfirmationDialog(User user) {
+    public void showDeletionConfirmationDialog(DataUser user) {
         new AlertDialog.Builder(getContext())
                 .setNegativeButton(android.R.string.cancel, (dialogInterface, i)
                         -> adapter.closeAllItems())

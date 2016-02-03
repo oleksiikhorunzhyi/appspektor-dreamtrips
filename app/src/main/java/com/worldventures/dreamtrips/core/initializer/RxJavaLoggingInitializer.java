@@ -10,6 +10,6 @@ public class RxJavaLoggingInitializer implements AppInitializer {
 
     @Override
     public void initialize(Injector injector) {
-//        RxJavaPlugins.getInstance().registerObservableExecutionHook(new TimberDebugHook());
+        RxJavaPlugins.getInstance().registerObservableExecutionHook(new TimberDebugHook());
     }
 }

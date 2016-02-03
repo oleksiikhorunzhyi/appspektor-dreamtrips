@@ -14,10 +14,10 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
-@Table(databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-@TableEndpoint(name = ParticipantsRelationship.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRelationship> {
-    public static final String TABLE_NAME = "ParticipantsRelationship";
+@Table(tableName = DataParticipant.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+@TableEndpoint(name = DataParticipant.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+public class DataParticipant extends BaseProviderModel<DataParticipant> {
+    public static final String TABLE_NAME = "Participants";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -30,7 +30,7 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
     @Column long syncTime;
     @Column String affiliation;
 
-    public ParticipantsRelationship(Participant participant) {
+    public DataParticipant(Participant participant) {
         affiliation = participant.getAffiliation();
         String conversationId = this.conversationId = participant.getConversationId();
         String userId = this.userId = participant.getUserId();
@@ -38,11 +38,11 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
     }
 
     @Deprecated
-    public ParticipantsRelationship(String conversationId, User user, @AffiliationType String affiliation) {
+    public DataParticipant(String conversationId, DataUser user, @AffiliationType String affiliation) {
         this(conversationId, user.getId(), affiliation);
     }
 
-    public ParticipantsRelationship(String conversationId, String userId, @AffiliationType String affiliation) {
+    public DataParticipant(String conversationId, String userId, @AffiliationType String affiliation) {
         this.id = createId(conversationId, userId);
         this.conversationId = conversationId;
         this.userId = userId;
@@ -53,7 +53,7 @@ public class ParticipantsRelationship extends BaseProviderModel<ParticipantsRela
         return String.format("%s_%s", conversationId, userId);
     }
 
-    public ParticipantsRelationship() {
+    public DataParticipant() {
     }
 
     public String getId() {

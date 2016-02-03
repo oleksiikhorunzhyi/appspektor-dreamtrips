@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
@@ -58,7 +58,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
     @Inject
     ParticipantsDAO participantsDAO;
     @Inject
-    User user;
+    DataUser user;
 
     protected final ConversationHelper conversationHelper = new ConversationHelper();
     protected final View.OnClickListener onClickListener = this::onClick;
@@ -68,7 +68,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
     private ConversationsCursorAdapter.SwipeButtonsListener swipeButtonsListener;
     private ConversationsCursorAdapter.ConversationClickListener conversationClickListener;
     private Subscription participantsSubscriber;
-    private Conversation conversation;
+    private DataConversation conversation;
     private Handler handler = new Handler();
 
     public BaseConversationViewHolder(View itemView) {
@@ -114,7 +114,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
         return moreButton;
     }
 
-    public void bindConversation(@NonNull Conversation conversation, String selectedConversationId) {
+    public void bindConversation(@NonNull DataConversation conversation, String selectedConversationId) {
         this.conversation = conversation;
         loadParticipants(conversation);
         setUnreadMessageCount(conversation.getUnreadMessageCount());
@@ -178,21 +178,21 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
         if (deleteButton.getVisibility() != viewVisible) deleteButton.setVisibility(viewVisible);
     }
 
-    protected void onParticipantsLoaded(Conversation conversation, List<User> participants) {
+    protected void onParticipantsLoaded(DataConversation conversation, List<DataUser> participants) {
         if (participants == null || participants.size() == 0) return;
 
         conversationHelper.setTitle(nameTextView, conversation, participants, true);
         setConversationPicture(participants);
     }
 
-    protected abstract void setConversationPicture(List<User> participants);
+    protected abstract void setConversationPicture(List<DataUser> participants);
 
-    private void loadParticipants(final Conversation conversation) {
+    private void loadParticipants(final DataConversation conversation) {
         if (participantsSubscriber != null && !participantsSubscriber.isUnsubscribed()) {
             participantsSubscriber.unsubscribe();
         }
 
-        Observable<List<User>> participantsObservable;
+        Observable<List<DataUser>> participantsObservable;
         if (TextUtils.equals(conversation.getType(), ConversationType.CHAT)) {
             participantsObservable = participantsDAO.getParticipant(conversation.getId(), user.getId())
                     .compose(new NonNullFilter<>())
@@ -204,7 +204,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.immediate())
                 .compose(RxLifecycle.bindView(itemView))
-                .onErrorReturn(throwable -> Collections.<User>emptyList())
+                .onErrorReturn(throwable -> Collections.<DataUser>emptyList())
                 .subscribe(users -> {
                     final Runnable runnable = () -> onParticipantsLoaded(conversation, users);
                     if (Thread.currentThread() != Looper.getMainLooper().getThread()) {

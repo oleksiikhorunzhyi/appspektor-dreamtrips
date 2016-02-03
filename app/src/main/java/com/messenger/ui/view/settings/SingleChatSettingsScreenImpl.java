@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.messenger.entities.Conversation;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
 import com.worldventures.dreamtrips.R;
@@ -40,15 +40,15 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<SingleS
     }
 
     @Override
-    public void setConversation(Conversation conversation) {
+    public void setConversation(DataConversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_single_chat);
     }
 
     @Override
-    public void setParticipants(Conversation conversation, List<User> participants) {
+    public void setParticipants(DataConversation conversation, List<DataUser> participants) {
         singleChatAvatarView.setVisibility(VISIBLE);
-        User addressee = participants.get(0);
+        DataUser addressee = participants.get(0);
         singleChatAvatarView.setImageURI(Uri.parse(addressee.getAvatarUrl()));
         chatNameTextView.setText(addressee.getName());
         chatDescriptionTextView.setText(addressee.isOnline()

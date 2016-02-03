@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
@@ -22,7 +22,7 @@ public class ProfileCrosser {
         this.profileRouteCreator = profileRouteCreator;
     }
 
-    public void crossToProfile(User user) {
+    public void crossToProfile(DataUser user) {
         com.worldventures.dreamtrips.modules.common.model.User socialUser =
                 new com.worldventures.dreamtrips.modules.common.model.User(user.getSocialId());
 

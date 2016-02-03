@@ -4,7 +4,7 @@ import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.api.GetShortProfilesQuery;
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
@@ -31,8 +31,8 @@ public class UserProcessor {
         this.requester = requester;
     }
 
-    public Observable<List<User>> connectToUserProvider(Observable<List<com.messenger.messengerservers.model.User>> provider) {
-        ConnectableObservable<List<User>> observable = provider
+    public Observable<List<DataUser>> connectToUserProvider(Observable<List<com.messenger.messengerservers.model.User>> provider) {
+        ConnectableObservable<List<DataUser>> observable = provider
                 .compose(updateWithSocialData())
                 .subscribeOn(Schedulers.io()).observeOn(Schedulers.trampoline())
                 .publish();
@@ -41,7 +41,7 @@ public class UserProcessor {
         return observable.asObservable();
     }
 
-    private Observable.Transformer<List<com.messenger.messengerservers.model.User>, List<User>> updateWithSocialData() {
+    private Observable.Transformer<List<com.messenger.messengerservers.model.User>, List<DataUser>> updateWithSocialData() {
         return listObservable -> listObservable.flatMap(messengerUsers -> {
             if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
             //
@@ -66,7 +66,7 @@ public class UserProcessor {
 
     private void syncCashedUser(List<com.messenger.messengerservers.model.User> messengerUsers,
                                 List<com.worldventures.dreamtrips.modules.common.model.User> socialUser,
-                                Action1<List<User>> resultAction) {
+                                Action1<List<DataUser>> resultAction) {
         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
 
         subscription = Observable.just(messengerUsers)
@@ -79,12 +79,12 @@ public class UserProcessor {
                     Collections.sort(socialUser, (lhs, rhs) -> lhs.getUsername().compareTo(rhs.getUsername()));
                     List<String> socialUsernames = Queryable.from(socialUser).map(z -> z.getUsername()).toList();
 
-                    List<User> result = from(pairs)
+                    List<DataUser> result = from(pairs)
                             .filter(pair -> socialUsernames.contains(pair.first.getName()))
                             .zip(socialUser, (pair, z) -> {
-                                User storedUser = pair.second;
+                                DataUser storedUser = pair.second;
                                 com.messenger.messengerservers.model.User loadedUser = pair.first;
-                                User u = new User();
+                                DataUser u = new DataUser();
                                 u.setId(loadedUser.getName());
                                 u.setSocialId(z.getId());
                                 u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));

@@ -2,29 +2,29 @@ package com.messenger.ui.presenter;
 
 import android.support.annotation.StringDef;
 
-import com.messenger.entities.Conversation;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.conversation.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 
 public interface ConversationListScreenPresenter extends MessengerPresenter<ConversationListScreen,
         ConversationListViewState> {
-    User getUser();
+    DataUser getUser();
 
     ParticipantsDAO getParticipantsDao();
 
-    void onConversationSelected(Conversation conversation);
+    void onConversationSelected(DataConversation conversation);
 
-    void onDeleteButtonPressed(Conversation conversation);
+    void onDeleteButtonPressed(DataConversation conversation);
 
-    void onDeletionConfirmed(Conversation conversation);
+    void onDeletionConfirmed(DataConversation conversation);
 
-    void onMoreOptionsButtonPressed(Conversation conversation);
+    void onMoreOptionsButtonPressed(DataConversation conversation);
 
-    void onMarkAsUnreadButtonPressed(Conversation conversation);
+    void onMarkAsUnreadButtonPressed(DataConversation conversation);
 
-    void onTurnOffNotificationsButtonPressed(Conversation conversation);
+    void onTurnOffNotificationsButtonPressed(DataConversation conversation);
 
     void onConversationsDropdownSelected(ChatTypeItem selectedItem);
 

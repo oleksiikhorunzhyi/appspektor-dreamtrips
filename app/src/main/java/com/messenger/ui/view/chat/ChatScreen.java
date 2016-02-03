@@ -3,8 +3,8 @@ package com.messenger.ui.view.chat;
 import android.database.Cursor;
 
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 import java.util.List;
@@ -19,17 +19,17 @@ public interface ChatScreen extends MessengerScreen {
 
     void showError(Throwable e);
 
-    void setTitle(Conversation conversation, List<User> users);
+    void setTitle(DataConversation conversation, List<DataUser> users);
 
     void showUnreadMessageCount(int unreadMessage);
 
     void hideUnreadMessageCount();
 
-    void addTypingUser(User user);
+    void addTypingUser(DataUser user);
 
-    void removeTypingUser(User uxzser);
+    void removeTypingUser(DataUser uxzser);
 
-    void showMessages(Cursor cursor, Conversation conversation, boolean pendingScroll);
+    void showMessages(Cursor cursor, DataConversation conversation, boolean pendingScroll);
 
     void smoothScrollToPosition(int position);
 

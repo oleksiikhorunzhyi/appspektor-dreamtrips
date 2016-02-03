@@ -17,9 +17,9 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.util.Date;
 
-@TableEndpoint(name = Message.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-@Table(tableName = Message.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class Message extends BaseProviderModel<Message> {
+@TableEndpoint(name = DataMessage.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = DataMessage.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class DataMessage extends BaseProviderModel<DataMessage> {
     public static final String TABLE_NAME = "Messages";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
@@ -37,17 +37,17 @@ public class Message extends BaseProviderModel<Message> {
     // TODO: 1/9/16 store this column
     private String locale;
 
-    public Message() {
+    public DataMessage() {
     }
 
-    public Message(String from, String to, String text, String id) {
+    public DataMessage(String from, String to, String text, String id) {
         this.fromId = from;
         this.toId = to;
         this.text = text;
         this.id = id;
     }
 
-    public Message(com.messenger.messengerservers.model.Message message) {
+    public DataMessage(com.messenger.messengerservers.model.Message message) {
         setId(message.getId());
         setConversationId(message.getConversationId());
         setFromId(message.getFromId());
@@ -58,11 +58,11 @@ public class Message extends BaseProviderModel<Message> {
         MessageBody body = message.getMessageBody();
         if (body != null) {
             setText(body.getText());
-            setLocale(body.getLocale());
+            setLocale(body.getLocaleName());
         }
     }
 
-    private Message(Builder builder) {
+    private DataMessage(Builder builder) {
         setId(builder.id);
         setConversationId(builder.conversationId);
         setFromId(builder.from);
@@ -215,8 +215,8 @@ public class Message extends BaseProviderModel<Message> {
             return this;
         }
 
-        public Message build() {
-            return new Message(this);
+        public DataMessage build() {
+            return new DataMessage(this);
         }
     }
 

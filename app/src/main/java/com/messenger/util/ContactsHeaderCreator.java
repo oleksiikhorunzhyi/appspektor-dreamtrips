@@ -7,7 +7,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.model.ChatUser;
 import com.worldventures.dreamtrips.R;
 
@@ -23,7 +23,7 @@ public class ContactsHeaderCreator {
     }
 
     //todo refactor logic in future
-    public SpannableString createHeader(List<User> contacts) {
+    public SpannableString createHeader(List<DataUser> contacts) {
         StringBuilder sb = new StringBuilder();
         sb.append(context.getString(R.string.new_chat_chosen_contacts_header_contacts_list_start_value));
         if (!contacts.isEmpty()) {

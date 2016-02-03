@@ -95,7 +95,9 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                     switch (elementName) {
                         case "chat":
                             if (conversationBuilder == null) break;
-                            Conversation conversation = conversationBuilder.lastMessage(messageBuilder != null ? messageBuilder.conversationId(thread).build() : null).build();
+                            Conversation conversation = conversationBuilder
+                                    .lastMessage(messageBuilder != null ? messageBuilder.conversationId(thread).build() : null)
+                                    .build();
                             //noinspection all // conversationBuilder cannot be null
                             conversationsPacket.addConversation(conversation);
                             messageBuilder = null;

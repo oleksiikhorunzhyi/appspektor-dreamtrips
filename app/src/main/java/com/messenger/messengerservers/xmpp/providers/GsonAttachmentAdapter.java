@@ -26,9 +26,6 @@ public class GsonAttachmentAdapter implements JsonSerializer<AttachmentHolder>, 
             case AttachmentType.IMAGE:
                 clazz = ImageAttachment.class;
                 break;
-            case AttachmentType.LOCATION:
-            case AttachmentType.BUCKET_LIST:
-            case AttachmentType.MERCHAN:
             default:
                 return null;
         }

@@ -1,6 +1,6 @@
 package com.messenger.ui.presenter;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 
@@ -9,11 +9,11 @@ public interface EditChatMembersScreenPresenter extends MessengerPresenter<EditC
 
     void onSearchFilterSelected(String search);
 
-    void onDeleteUserFromChat(User user);
+    void onDeleteUserFromChat(DataUser user);
 
-    void onDeleteUserFromChatConfirmed(User user);
+    void onDeleteUserFromChatConfirmed(DataUser user);
 
-    void onUserClicked(User user);
+    void onUserClicked(DataUser user);
 
     void requireAdapterInfo();
 }

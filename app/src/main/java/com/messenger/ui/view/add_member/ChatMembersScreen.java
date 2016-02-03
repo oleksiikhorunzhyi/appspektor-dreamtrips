@@ -3,7 +3,7 @@ package com.messenger.ui.view.add_member;
 import android.database.Cursor;
 import android.support.annotation.StringRes;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface ChatMembersScreen extends MessengerScreen {
 
     void setContacts(Cursor cursor, String query, String queryColumn);
 
-    void setSelectedContacts(List<User> selectedContacts);
+    void setSelectedContacts(List<DataUser> selectedContacts);
 
     void setSelectedUsersHeaderText(CharSequence text);
 

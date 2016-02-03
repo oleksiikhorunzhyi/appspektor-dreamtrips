@@ -4,10 +4,10 @@ package com.messenger.synchmechanism;
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.Message;
-import com.messenger.entities.ParticipantsRelationship;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataParticipant;
+import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -33,10 +33,10 @@ public class MessengerCacheSynchronizer {
     }
 
     public void clearCache() {
-        deleteTable(Message.class);
-        deleteTable(Conversation.class);
-        deleteTable(User.class);
-        deleteTable(ParticipantsRelationship.class);
+        deleteTable(DataMessage.class);
+        deleteTable(DataConversation.class);
+        deleteTable(DataUser.class);
+        deleteTable(DataParticipant.class);
     }
 
     private void deleteTable(Class entityClass) {

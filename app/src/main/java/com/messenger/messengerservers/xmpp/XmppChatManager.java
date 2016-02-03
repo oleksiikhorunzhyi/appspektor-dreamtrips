@@ -25,7 +25,7 @@ public class XmppChatManager implements ChatManager {
 
     @Override
     public MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId) {
-        boolean isOwner = ownerId != null && ownerId.equals(facade.getOwner().getId());
+        boolean isOwner = ownerId != null && ownerId.equals(facade.getUsername());
         return createMultiUserChat(roomId, ownerId, isOwner);
     }
 

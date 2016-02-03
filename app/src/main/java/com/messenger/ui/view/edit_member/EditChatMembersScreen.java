@@ -2,7 +2,7 @@ package com.messenger.ui.view.edit_member;
 
 import android.database.Cursor;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 public interface EditChatMembersScreen extends MessengerScreen {
@@ -15,7 +15,7 @@ public interface EditChatMembersScreen extends MessengerScreen {
 
     void setTitle(String title);
 
-    void setAdapterWithInfo(User user, boolean isOwner);
+    void setAdapterWithInfo(DataUser user, boolean isOwner);
 
     void setMembers(Cursor cursor);
 
@@ -23,5 +23,5 @@ public interface EditChatMembersScreen extends MessengerScreen {
 
     void invalidateAllSwipedLayouts();
 
-    void showDeletionConfirmationDialog(User user);
+    void showDeletionConfirmationDialog(DataUser user);
 }

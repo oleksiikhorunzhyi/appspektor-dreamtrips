@@ -1,6 +1,6 @@
 package com.messenger.initializer;
 
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.storage.dao.UsersDAO;
@@ -31,19 +31,19 @@ public class PresenceListenerInitializer implements AppInitializer {
                     .filter(user -> user != null)
                     .subscribe(user -> {
                         user.setOnline(isOnline);
-                        user.save();
+                        usersDAO.save(user);
                     });
         });
 
         emiter.addOnUserStatusChangedListener((userId, online) -> {
-            User user = new User(userId);
+            DataUser user = new DataUser(userId);
             user.setOnline(online);
             //
-            User cachedUser = new Select().from(User.class).byIds(userId).querySingle();
-            if (cachedUser == null) user.save();
+            DataUser cachedUser = UsersDAO.getUser(userId);
+            if (cachedUser == null) usersDAO.save(user);
             else {
                 cachedUser.setOnline(online);
-                cachedUser.save();
+                usersDAO.save(cachedUser);
             }
         });
 

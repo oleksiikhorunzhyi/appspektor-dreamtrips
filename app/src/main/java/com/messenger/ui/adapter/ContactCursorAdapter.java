@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.AlphabetIndexer;
 import android.widget.SectionIndexer;
 
-import com.messenger.entities.ParticipantsRelationship$Table;
-import com.messenger.entities.User;
-import com.messenger.entities.User$Table;
+import com.messenger.entities.DataParticipant$Table;
+import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.ui.adapter.MessagesCursorAdapter.OnAvatarClickListener;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
@@ -47,7 +47,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
     private Map<Integer, Integer> sectionToOffset;
     private Map<Integer, Integer> sectionToPosition;
 
-    protected User admin;
+    protected DataUser admin;
     protected boolean adminSectionEnabled;
 
     public ContactCursorAdapter(Context context, Cursor cursor) {
@@ -68,8 +68,8 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
                 if (cursor.moveToFirst()) {
                     do {
                         if (TextUtils.equals(Participant.Affiliation.OWNER,
-                                cursor.getString(cursor.getColumnIndex(ParticipantsRelationship$Table.AFFILIATION)))) {
-                            admin = SqlUtils.convertToModel(true, com.messenger.entities.User.class, cursor);
+                                cursor.getString(cursor.getColumnIndex(DataParticipant$Table.AFFILIATION)))) {
+                            admin = SqlUtils.convertToModel(true, DataUser.class, cursor);
                             adminPositionInCursor = cursor.getPosition();
                         }
                     } while (cursor.moveToNext());
@@ -100,7 +100,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
             return true;
         }
         indexer = new AlphabetIndexer(getCursor(), getCursor()
-                .getColumnIndexOrThrow(User$Table.USERNAME),
+                .getColumnIndexOrThrow(DataUser$Table.USERNAME),
                 " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         sectionToPosition = new TreeMap<>();
         sectionToOffset = new HashMap<>();
@@ -187,11 +187,11 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
     @Override
     public void onBindViewHolderCursor(BaseViewHolder h, Cursor cursor) {
         ContactViewHolder holder = (ContactViewHolder) h;
-        User user = SqlUtils.convertToModel(true, User.class, cursor);
+        DataUser user = SqlUtils.convertToModel(true, DataUser.class, cursor);
         onBindUserHolder(holder, cursor, user);
     }
 
-    protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, User user) {
+    protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, DataUser user) {
         holder.getNameTextView().setText(user.getName());
         holder.getAvatarView().setOnline(user.isOnline());
         holder.getAvatarView().setImageURI(Uri.parse(user.getAvatarUrl()));

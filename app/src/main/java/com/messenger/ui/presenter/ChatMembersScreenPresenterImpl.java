@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
@@ -32,7 +32,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         implements ChatMembersScreenPresenter {
 
     @Inject
-    User user;
+    DataUser user;
     @Inject
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
@@ -82,7 +82,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     }
 
     @Override
-    public void openUserProfile(User user) {
+    public void openUserProfile(DataUser user) {
         profileCrosser.crossToProfile(user);
     }
 
@@ -90,7 +90,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public void applyViewState() {
         ChatMembersScreenViewState viewState = getViewState();
         ChatMembersScreen screen = getView();
-        List<User> selectedContacts = viewState.getSelectedContacts();
+        List<DataUser> selectedContacts = viewState.getSelectedContacts();
 
         switch (viewState.getLoadingState()) {
             case LOADING:
@@ -114,13 +114,13 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     }
 
     @Override
-    public void onSelectedUsersStateChanged(List<User> selectedContacts) {
+    public void onSelectedUsersStateChanged(List<DataUser> selectedContacts) {
         getViewState().setSelectedContacts(selectedContacts);
         refreshSelectedContactsHeader();
     }
 
     private void refreshSelectedContactsHeader() {
-        List<User> selectedContacts = getViewState().getSelectedContacts();
+        List<DataUser> selectedContacts = getViewState().getSelectedContacts();
         SpannableString spannableString = contactsHeaderCreator.createHeader(selectedContacts);
         textInChosenContactsEditText = spannableString.toString();
         getView().setSelectedUsersHeaderText(spannableString);
@@ -132,7 +132,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         int textLength = text.length();
 
         if (textInChosenContactsLength > textLength) {
-            List<User> selectedContacts = getViewState().getSelectedContacts();
+            List<DataUser> selectedContacts = getViewState().getSelectedContacts();
             if (selectedContacts != null && !selectedContacts.isEmpty()) {
                 selectedContacts.remove(selectedContacts.size() - 1);
                 getView().setSelectedContacts(selectedContacts);
@@ -144,7 +144,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         getViewState().setSearchFilter(searchQuery);
 
         cursorObservable.subscribe(cursor ->
-                getView().setContacts(cursor, searchQuery, User.COLUMN_NAME));
+                getView().setContacts(cursor, searchQuery, DataUser.COLUMN_NAME));
     }
 
     protected void showContacts(Cursor cursor) {

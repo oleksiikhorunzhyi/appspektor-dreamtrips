@@ -3,7 +3,7 @@ package com.messenger.delegate;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.messenger.entities.Conversation;
+import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
@@ -26,14 +26,14 @@ public class ChatDelegate {
         this.messengerServerFacade = messengerServerFacade;
     }
 
-    public Conversation createNewConversation(List<String> participantIds, @Nullable String subject) {
+    public DataConversation createNewConversation(List<String> participantIds, @Nullable String subject) {
     if (BuildConfig.DEBUG && participantIds.size() < 1) throw new RuntimeException();
         return participantIds.size() == 1 ?
                 createSingleChat(participantIds.get(0)) : createMultiUserChat(participantIds, subject);
     }
 
-    private Conversation createSingleChat(String participantId) {
-        return new Conversation.Builder()
+    private DataConversation createSingleChat(String participantId) {
+        return new DataConversation.Builder()
                 .type(ConversationType.CHAT)
                 .id(ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId))
                 .ownerId(currentUserId)
@@ -42,8 +42,8 @@ public class ChatDelegate {
                 .build();
     }
 
-    private Conversation createMultiUserChat(List<String> participans, @Nullable String subject){
-        Conversation conversation = new Conversation.Builder()
+    private DataConversation createMultiUserChat(List<String> participans, @Nullable String subject){
+        DataConversation conversation = new DataConversation.Builder()
                 .type(ConversationType.GROUP)
                 .id(UUID.randomUUID().toString())
                 .ownerId(currentUserId)
@@ -55,9 +55,9 @@ public class ChatDelegate {
         return setMultiUserChatData(conversation, participans, subject);
     }
 
-    public Conversation modifyConversation(Conversation conversation, List<String> existParticipantIds,  List<String> newChatUserIds, @Nullable String subject) {
+    public DataConversation modifyConversation(DataConversation conversation, List<String> existParticipantIds, List<String> newChatUserIds, @Nullable String subject) {
         if (conversation.getType().equals(ConversationType.CHAT)) {
-            conversation = new Conversation.Builder()
+            conversation = new DataConversation.Builder()
                     .ownerId(currentUserId)
                     .type(ConversationType.GROUP)
                     .status(ConversationStatus.PRESENT)
@@ -73,13 +73,13 @@ public class ChatDelegate {
         return setMultiUserChatData(conversation, newChatUserIds, subject);
     }
 
-    public Conversation getExistingSingleConverastion(String participantId) {
+    public DataConversation getExistingSingleConverastion(String participantId) {
         String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId);
-        Conversation existingConversation = ConversationsDAO.getConversationById(conversationId);
+        DataConversation existingConversation = ConversationsDAO.getConversationById(conversationId);
         return existingConversation;
     }
 
-    public Conversation setMultiUserChatData(Conversation conversation, List<String> newParticipantIds, @Nullable String subject) {
+    public DataConversation setMultiUserChatData(DataConversation conversation, List<String> newParticipantIds, @Nullable String subject) {
         messengerServerFacade.getChatManager()
                 .createMultiUserChatObservable(conversation.getId(), currentUserId)
                 .doOnNext(multiUserChat -> multiUserChat.invite(newParticipantIds))

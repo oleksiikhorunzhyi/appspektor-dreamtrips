@@ -1,7 +1,7 @@
 package com.messenger.ui.presenter;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.messenger.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 
@@ -12,13 +12,13 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void retrySendMessage(String messageId);
 
-    User getUser();
+    DataUser getUser();
 
     void onNextPageReached();
 
     void onLastVisibleMessageChanged(int position);
 
-    void openUserProfile(User user);
+    void openUserProfile(DataUser user);
 
     void onUnreadMessagesHeaderClicked();
 

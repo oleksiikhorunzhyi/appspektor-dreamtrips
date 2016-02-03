@@ -6,12 +6,13 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.entities.Conversation;
-import com.messenger.entities.Message;
-import com.messenger.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -71,8 +72,8 @@ public class UnhandledMessageWatcher {
 
     private GlobalMessageListener messageListener = new SimpleGlobalMessageListener() {
         @Override
-        public void onReceiveMessage(com.messenger.messengerservers.model.Message message) {
-            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, new Message(message));
+        public void onReceiveMessage(Message message) {
+            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, new DataMessage(message));
         }
     };
 
@@ -94,7 +95,7 @@ public class UnhandledMessageWatcher {
         }
     }
 
-    private void onUnhandledMessage(Activity activity, Message message) {
+    private void onUnhandledMessage(Activity activity, DataMessage message) {
         if (isOpenedConversation(message)) return;
         //
         WeakReference<Activity> activityRef = new WeakReference<>(activity);
@@ -115,7 +116,7 @@ public class UnhandledMessageWatcher {
                 );
     }
 
-    private boolean isOpenedConversation(Message message) {
+    private boolean isOpenedConversation(DataMessage message) {
         return openedConversationTracker.containsOpenedConversationId(message.getConversationId());
     }
 
@@ -135,19 +136,19 @@ public class UnhandledMessageWatcher {
         });
     }
 
-    private boolean isSingleChat(@NonNull Conversation conversation) {
+    private boolean isSingleChat(@NonNull DataConversation conversation) {
         return conversation.getType().equalsIgnoreCase(ConversationType.CHAT);
     }
 
     //single ava + sender name + sender text
-    private  Observable<NotificationData> composeSingleChatNotification(Conversation conversation, Message message) {
+    private  Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message) {
         return usersDAO.getUserById(message.getFromId())
                 .compose(new NonNullFilter<>()).first()
                 .map(user -> new NotificationData(user.getName(), user.getName(), Collections.singletonList(user), message.getText(), conversation, false));
     }
 
     //group 4 avas + group name/user names + last name : last message
-    private Observable<NotificationData> composeGroupChatNotification(Conversation conversation, Message message) {
+    private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message) {
         return Observable.zip(
                 participantsDAO.getParticipantsEntities(conversation.getId()),
                 usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()),
@@ -156,7 +157,7 @@ public class UnhandledMessageWatcher {
                     String lastMessage = message.getText();
 
                     String groupName = TextUtils.isEmpty(conversation.getSubject()) ?
-                            TextUtils.join(", ", Queryable.from(users).map(User::getName).toList()) :
+                            TextUtils.join(", ", Queryable.from(users).map(DataUser::getName).toList()) :
                             conversation.getSubject();
                     return new NotificationData(groupName, lastName, users, lastMessage, conversation, true);
         }).first();
@@ -170,7 +171,7 @@ public class UnhandledMessageWatcher {
         return view;
     }
 
-    private InAppMessengerNotificationView createGroupChatCrouton(Activity activity, List<User> chatParticipants, String title, String text) {
+    private InAppMessengerNotificationView createGroupChatCrouton(Activity activity, List<DataUser> chatParticipants, String title, String text) {
         InAppNotificationViewGroup view = new InAppNotificationViewGroup(activity);
         view.setChatParticipants(chatParticipants);
         view.setTitle(title);
@@ -186,12 +187,12 @@ public class UnhandledMessageWatcher {
 
         final String title;
         final String fromUserName;
-        final List<User> participants;
+        final List<DataUser> participants;
         final String messageText;
-        final Conversation conversation;
+        final DataConversation conversation;
         final boolean isGroup;
 
-        public NotificationData(String title, String fromUserName, List<User> participants, String messageText, Conversation conversation, boolean isGroup) {
+        public NotificationData(String title, String fromUserName, List<DataUser> participants, String messageText, DataConversation conversation, boolean isGroup) {
             this.title = title;
             this.fromUserName = fromUserName;
             this.participants = participants;

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.messenger.entities.Conversation;
+import com.messenger.entities.DataConversation;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -193,7 +193,7 @@ public abstract class ChatSettingsScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public void setConversation(Conversation conversation) {
+    public void setConversation(DataConversation conversation) {
     }
 
     @Override

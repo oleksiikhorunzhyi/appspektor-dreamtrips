@@ -17,19 +17,10 @@ public class DtlDistancePresenter extends Presenter<DtlDistancePresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.attachDistance(Arrays.asList(DtlFilterData.DistanceType.values()),
-                dtlFilterDelegate.getDistanceType().ordinal());
-    }
-
-    public void onDistanceChanged(DtlFilterData.DistanceType distanceType) {
-        dtlFilterDelegate.setDistanceType(distanceType);
-        view.attachDistance(Arrays.asList(DtlFilterData.DistanceType.values()),
-                dtlFilterDelegate.getDistanceType().ordinal());
-        dtlFilterDelegate.onFilterDataChanged();
-        dtlFilterDelegate.performFiltering();
+        view.attachDistance(Arrays.asList(DtlFilterData.DistanceType.values()));
     }
 
     public interface View extends Presenter.View {
-        void attachDistance(List<DtlFilterData.DistanceType> distanceTypes, int selectedItem);
+        void attachDistance(List<DtlFilterData.DistanceType> distanceTypes);
     }
 }

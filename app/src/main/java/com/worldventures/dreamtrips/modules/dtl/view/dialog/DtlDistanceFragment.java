@@ -59,7 +59,6 @@ public class DtlDistanceFragment extends BaseFragment<DtlDistancePresenter> impl
 
     @Override
     public void onCellClicked(DtlFilterData.DistanceType model) {
-        getPresenter().onDistanceChanged(model);
         eventBus.post(new CloseDialogEvent());
     }
 
@@ -69,9 +68,8 @@ public class DtlDistanceFragment extends BaseFragment<DtlDistancePresenter> impl
     }
 
     @Override
-    public void attachDistance(List<DtlFilterData.DistanceType> distanceTypes, int selectedItem) {
+    public void attachDistance(List<DtlFilterData.DistanceType> distanceTypes) {
         distanceAdapter.setItems(distanceTypes);
-        selectionManager.toggleSelection(selectedItem);
     }
 
     @Override

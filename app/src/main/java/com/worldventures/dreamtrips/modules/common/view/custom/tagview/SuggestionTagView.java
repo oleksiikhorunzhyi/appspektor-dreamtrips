@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.LinearLayout;
+import android.view.View;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
@@ -15,7 +15,7 @@ import butterknife.OnClick;
 public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
 
     @InjectView(R.id.suggestion_frame_container)
-    LinearLayout suggestionFrameContainer;
+    View suggestionFrameContainer;
 
     int additionalSize;
 

@@ -511,15 +511,6 @@ public class SnappyRepository {
     // DTL Transaction
     ///////////////////////////////////////////////////////////////////////////
 
-    public void saveDistanceToggle(DtlFilterData.DistanceType distanceType) {
-        act(db -> db.put(DTL_DISTANCE_TOGGLE, distanceType));
-    }
-
-    public DtlFilterData.DistanceType getDistanceType() {
-        return actWithResult(db -> db.get(DTL_DISTANCE_TOGGLE, DtlFilterData.DistanceType.class))
-                .or(DtlFilterData.DistanceType.MILES);
-    }
-
     public DtlTransaction getDtlTransaction(String id) {
         return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();
     }

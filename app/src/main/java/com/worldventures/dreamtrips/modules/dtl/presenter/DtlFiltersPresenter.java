@@ -88,7 +88,6 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     public void apply(DtlFilterData data) {
         this.dtlFilterData = dtlFilterData.mutateFrom(data);
         TrackingHelper.dtlMerchantFilter(dtlFilterData);
-        db.saveDistanceToggle(dtlFilterData.getDistanceType());
         dtlFilterDelegate.setDtlFilterData(dtlFilterData);
         dtlFilterDelegate.performFiltering();
     }

@@ -7,8 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEve
 
 import javax.inject.Inject;
 
-public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMapInfoPresenter.View>
-        implements DtlFilterDelegate.FilterListener {
+public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMapInfoPresenter.View> {
 
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
@@ -20,21 +19,7 @@ public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMa
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlFilterDelegate.addListener(this);
         view.hideLayout();
-    }
-
-    @Override
-    public void dropView() {
-        dtlFilterDelegate.removeListener(this);
-        super.dropView();
-    }
-
-    @Override
-    public void onFilter() {
-        if (view != null) {
-            merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-        }
     }
 
     public void onEvent(DtlShowMapInfoEvent event) {

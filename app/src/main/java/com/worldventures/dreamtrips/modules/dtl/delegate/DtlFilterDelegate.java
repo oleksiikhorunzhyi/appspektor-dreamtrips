@@ -20,14 +20,6 @@ public class DtlFilterDelegate {
         return dtlFilterData;
     }
 
-    public DtlFilterData.DistanceType getDistanceType() {
-        return dtlFilterData.getDistanceType();
-    }
-
-    public void setDistanceType(DtlFilterData.DistanceType distanceType) {
-        dtlFilterData.setDistanceType(distanceType);
-    }
-
     public void addListener(FilterListener filterListener) {
         filterListeners.add(filterListener);
     }
@@ -48,12 +40,6 @@ public class DtlFilterDelegate {
 
     public void removeDataChangedListener(FilterChangedListener filterListener) {
         filterDataChangedListener.remove(filterListener);
-    }
-
-    public void onFilterDataChanged() {
-        for (FilterChangedListener filterListener : filterDataChangedListener) {
-            filterListener.onFilterDataChanged();
-        }
     }
 
     public interface FilterListener {

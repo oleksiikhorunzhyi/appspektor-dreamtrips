@@ -10,13 +10,11 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.util.OpenedConversationTracker;
-import com.messenger.util.RxContentResolver;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -46,8 +44,8 @@ public class MessengerDelegateModule {
 
     @Singleton
     @Provides
-    UnreadConversationObservable provideUnreadConversationObservable(@Named(MessengerStorageModule.DB_FLOW_RX_RESOLVER) RxContentResolver resolver) {
-        return new UnreadConversationObservable(resolver);
+    UnreadConversationObservable provideUnreadConversationObservable(ConversationsDAO conversationsDAO) {
+        return new UnreadConversationObservable(conversationsDAO);
     }
 
     @Singleton

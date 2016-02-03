@@ -48,6 +48,20 @@ public class ConversationsDAO extends BaseDAO {
                 .querySingle();
     }
 
+    public Observable<Conversation> getConversation(String conversationId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection(new Select().from(Conversation.class).byIds(conversationId).toString())
+                .build();
+        return query(q, Conversation.CONTENT_URI)
+                .onBackpressureLatest()
+                .subscribeOn(Schedulers.io())
+                .map(cursor -> {
+                    Conversation conversation = SqlUtils.convertToModel(false, Conversation.class, cursor);
+                    cursor.close();
+                    return conversation;
+                });
+    }
+
     public List<Conversation> getConversationsList(@Conversation.Type.ConversationType String type) {
         return new Select()
                 .from(Conversation.class)
@@ -55,17 +69,14 @@ public class ConversationsDAO extends BaseDAO {
                 .queryList();
     }
 
+    public void save(List<Conversation> conversations) {
+        bulkInsert(conversations, new Conversation$Adapter(), Conversation.CONTENT_URI);
+    }
+
     public void deleteConversation(String conversationId) {
         //server sends so many packets about kicking as devices with the same user are online
         Conversation conversation = getConversationById(conversationId);
         if (conversation != null) conversation.delete();
-    }
-
-    public int updateDate(String conversationId, long date) {
-        ContentValues contentValues = new ContentValues(1);
-        contentValues.put(Conversation$Table.LASTACTIVEDATE, date);
-        return getContentResolver().update(Conversation.CONTENT_URI, contentValues,
-                Conversation$Table._ID + "=?", new String[] {conversationId});
     }
 
     @Deprecated
@@ -138,29 +149,37 @@ public class ConversationsDAO extends BaseDAO {
         return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
     }
 
-    public Observable<Conversation> getConversation(String conversationId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection(new Select().from(Conversation.class).byIds(conversationId).toString())
-                .build();
-        return query(q, Conversation.CONTENT_URI)
-                .onBackpressureLatest()
-                .subscribeOn(Schedulers.io())
-                .map(cursor -> {
-                    Conversation conversation = SqlUtils.convertToModel(false, Conversation.class, cursor);
-                    cursor.close();
-                    return conversation;
-                });
+    public int updateDate(String conversationId, long date) {
+        ContentValues contentValues = new ContentValues(1);
+        contentValues.put(Conversation$Table.LASTACTIVEDATE, date);
+        return getContentResolver().update(Conversation.CONTENT_URI, contentValues,
+                Conversation$Table._ID + "=?", new String[]{conversationId});
     }
 
     public void incrementUnreadField(String conversationId) {
         new Update<>(Conversation.class)
-                .set(Conversation$Table.UNREADMESSAGECOUNT + "=" + Conversation$Table.UNREADMESSAGECOUNT + "+1")
+                .set(Conversation$Table.UNREADMESSAGECOUNT + " = " + Conversation$Table.UNREADMESSAGECOUNT + " +1 ")
                 .where(Condition.column(Conversation$Table._ID).is(conversationId))
                 .queryClose();
         getContentResolver().notifyChange(Conversation.CONTENT_URI, null);
     }
 
-    public void save(List<Conversation> conversations) {
-        bulkInsert(conversations, new Conversation$Adapter(), Conversation.CONTENT_URI);
+    public Observable<Integer> getUnreadConversationsCount() {
+        String selection = "SELECT con." + Conversation$Table._ID // cause Count(con._id) is interpreted as field for every id
+                + " FROM " + Conversation.TABLE_NAME + " con"
+                        + " LEFT JOIN " + ParticipantsRelationship.TABLE_NAME + " par"
+                        + " ON par." + ParticipantsRelationship$Table.CONVERSATIONID + "=con." + Conversation$Table._ID
+                        + " WHERE " + Conversation$Table.UNREADMESSAGECOUNT + ">0"
+                        + " AND " + Conversation$Table.STATUS + " like ? "
+                        + " GROUP BY con." + Conversation$Table._ID
+                        + " HAVING con." + Conversation$Table.TYPE + "=? "
+                        + " OR COUNT(par." + ParticipantsRelationship$Table.ID + ")>1 ";
+        String[] args = new String[] {Conversation.Status.PRESENT, Conversation.Type.CHAT};
+
+        RxContentResolver.Query query = new RxContentResolver.Query.Builder(null).withSelection(selection)
+                                            .withSelectionArgs(args).build();
+
+        return query(query, Conversation.CONTENT_URI)
+                .map(cursor -> cursor.getCount()); // BUG!!! because query is interpreted as object list with one field COUNT(*)
     }
 }

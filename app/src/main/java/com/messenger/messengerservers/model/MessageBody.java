@@ -1,17 +1,19 @@
 package com.messenger.messengerservers.model;
 
+import java.util.List;
+
 public class MessageBody {
     private String text;
     private String locale;
-    private Attachment attachment;
+    private List<AttachmentHolder> attachments;
 
     public MessageBody() {
     }
 
-    public MessageBody(String text, String locale, Attachment attachment) {
+    public MessageBody(String text, String locale, List<AttachmentHolder> attachments) {
         this.text = text;
         this.locale = locale;
-        this.attachment = attachment;
+        this.attachments = attachments;
     }
 
     public MessageBody(String locale) {
@@ -34,11 +36,11 @@ public class MessageBody {
         this.locale = locale;
     }
 
-    public Attachment getAttachment() {
-        return attachment;
+    public List<AttachmentHolder> getAttachments() {
+        return attachments;
     }
 
-    public void setAttachment(Attachment attachment) {
-        this.attachment = attachment;
+    public void setAttachments(List<AttachmentHolder> attachments) {
+        this.attachments = attachments;
     }
 }

@@ -27,12 +27,13 @@ public class XmppConversationLoader extends Loader<Conversation> {
 
     private static final int MAX_CONVERSATIONS = 512;
     private final XmppServerFacade facade;
-
+    private Gson gson;
     public XmppConversationLoader(XmppServerFacade facade) {
         this.facade = facade;
+        gson = facade.getGson();
         ProviderManager.addIQProvider(
                 ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE,
-                new ConversationProvider(new Gson())
+                new ConversationProvider(gson)
         );
     }
 
@@ -42,8 +43,6 @@ public class XmppConversationLoader extends Loader<Conversation> {
         packet.setMax(MAX_CONVERSATIONS);
         packet.setType(IQ.Type.get);
 
-
-        ProviderManager.addIQProvider(ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE, new ConversationProvider(new Gson()));
         try {
             facade.getConnection().sendStanzaWithResponseCallback(packet,
                     (stanza) -> stanza instanceof ConversationsPacket,

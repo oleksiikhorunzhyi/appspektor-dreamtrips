@@ -1,5 +1,4 @@
 package com.messenger.messengerservers.model;
 
-public class Attachment {
-
+public interface Attachment {
 }

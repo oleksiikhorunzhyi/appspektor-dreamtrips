@@ -76,7 +76,7 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                         case "from":
                             if (messageBuilder == null) continue;
                             Message message = messageBuilder.build();
-                            if (TextUtils.isEmpty(message.getId())) continue;
+                            if (TextUtils.isEmpty(message.getId()) || message.getMessageBody() == null) continue;
                             messagePagePacket.add(message);
                             break;
                         case "chat":

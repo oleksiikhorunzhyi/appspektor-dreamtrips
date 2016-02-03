@@ -3,6 +3,7 @@ package com.messenger.messengerservers.xmpp.paginations;
 import com.google.gson.Gson;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
+import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
 import com.messenger.messengerservers.xmpp.packets.ObtainMessageListPacket;
 import com.messenger.messengerservers.xmpp.providers.MessagePageProvider;
@@ -19,11 +20,13 @@ import timber.log.Timber;
 public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     private AbstractXMPPConnection connection;
     private String conversationId;
+    private Gson gson;
 
-    public XmppConversationHistoryPaginator(AbstractXMPPConnection connection, String conversationId,
+    public XmppConversationHistoryPaginator(XmppServerFacade facade, String conversationId,
                                             int pageSize) {
         super(pageSize);
-        this.connection = connection;
+        this.gson = facade.getGson();
+        this.connection = facade.getConnection();
         this.conversationId = conversationId;
     }
 
@@ -37,7 +40,7 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         Timber.i("Send XMPP Packet: %s", packet.toString());
 
         try {
-            ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider(new Gson()));
+            ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider(gson));
             connection.sendStanzaWithResponseCallback(packet,
                     stanza -> stanza instanceof MessagePagePacket,
                     stanzaPacket -> {

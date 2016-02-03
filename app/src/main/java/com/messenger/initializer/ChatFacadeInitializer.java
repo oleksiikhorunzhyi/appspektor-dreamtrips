@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.delegate.UserProcessor;
+import com.messenger.entities.Attachment;
 import com.messenger.entities.Conversation;
 import com.messenger.entities.ParticipantsRelationship;
 import com.messenger.messengerservers.constant.ConversationStatus;
@@ -14,6 +15,7 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.User;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -26,6 +28,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,6 +53,8 @@ public class ChatFacadeInitializer implements AppInitializer {
     UsersDAO usersDAO;
     @Inject
     MessageDAO messageDAO;
+    @Inject
+    AttachmentDAO attachmentDAO;
     //
     @Inject
     DreamSpiceManager spiceManager;
@@ -69,6 +74,8 @@ public class ChatFacadeInitializer implements AppInitializer {
                 long time = System.currentTimeMillis();
                 message.setDate(time);
                 message.setStatus(MessageStatus.SENT);
+                List<Attachment> attachments = Attachment.fromMessage(message);
+                if (attachments != null) attachmentDAO.save(attachments);
                 messageDAO.save(new com.messenger.entities.Message(message));
                 conversationsDAO.incrementUnreadField(message.getConversationId());
                 conversationsDAO.updateDate(message.getConversationId(), time);
@@ -85,6 +92,8 @@ public class ChatFacadeInitializer implements AppInitializer {
             public void onSendMessage(Message message) {
                 long time = System.currentTimeMillis();
                 message.setDate(time);
+                List<Attachment> attachments = Attachment.fromMessage(message);
+                if (attachments != null) attachmentDAO.save(attachments);
                 messageDAO.save(new com.messenger.entities.Message(message));
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }

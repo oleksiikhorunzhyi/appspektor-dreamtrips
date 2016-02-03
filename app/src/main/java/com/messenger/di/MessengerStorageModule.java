@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.messenger.entities.User;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -65,4 +66,9 @@ public class MessengerStorageModule {
         return new MessageDAO(rxContentResolver, context);
     }
 
+    @Provides
+    @Singleton
+    AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new AttachmentDAO(context, rxContentResolver);
+    }
 }

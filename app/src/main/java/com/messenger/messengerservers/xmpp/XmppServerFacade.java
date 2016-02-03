@@ -3,6 +3,8 @@ package com.messenger.messengerservers.xmpp;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.ChatManager;
@@ -12,7 +14,9 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
+import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
 import com.messenger.util.CrashlyticsTracker;
@@ -60,8 +64,10 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final XmppGlobalEventEmitter globalEventEmitter;
     private final ChatManager chatManager;
     private final RosterManager rosterManager;
+    private final Gson gson;
 
     public XmppServerFacade(XmppServerParams serverParams, Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
+        gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
         this.context = context;
         this.serverParams = serverParams;
         this.requester = requester;
@@ -71,6 +77,7 @@ public class XmppServerFacade implements MessengerServerFacade {
         globalEventEmitter = new XmppGlobalEventEmitter(this);
         chatManager = new XmppChatManager(this);
         rosterManager = new RosterManager(new UserProcessor(usersDAO, requester), globalEventEmitter);
+
     }
 
     private MessengerConnection createConnection() {
@@ -217,4 +224,7 @@ public class XmppServerFacade implements MessengerServerFacade {
         return connection;
     }
 
+    public Gson getGson() {
+        return gson;
+    }
 }

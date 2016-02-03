@@ -226,13 +226,6 @@
                     app:met_primaryColor="#2196F3"
                     />
             </LinearLayout>
-
         </LinearLayout>
-
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:id="@+id/imageView"/>
-
     </RelativeLayout>
 </ScrollView>

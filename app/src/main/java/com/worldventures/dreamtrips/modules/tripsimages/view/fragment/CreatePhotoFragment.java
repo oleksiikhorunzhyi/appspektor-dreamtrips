@@ -62,8 +62,6 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
     protected CreationPhotoTaggableHolderViewGroup taggableImageHolder;
     @InjectView(R.id.tag)
     protected ImageView tag;
-    @InjectView(R.id.imageView)
-    ImageView imageView;
     private Uri uri;
 
     @Override

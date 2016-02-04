@@ -1,10 +1,12 @@
 package com.messenger.ui.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
@@ -15,24 +17,47 @@ import com.worldventures.dreamtrips.R;
  */
 public class AvatarView extends SimpleDraweeView {
 
-    private static final float ONLINE_SIZE_FACTOR = 0.20f;
+    private static final float ONLINE_INDICATOR_SIZE_DEFAULT_DP = 8;
 
     private Drawable onlineIndicatorDrawable;
+    private int onlineIndicatorSize;
     private boolean isOnline;
 
     public AvatarView(Context context) {
         super(context);
+        init(null);
     }
 
     public AvatarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(attrs);
+    }
+
+    private void init(AttributeSet attrs) {
+        if (attrs == null) {
+            return;
+        }
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.AvatarView, 0, 0);
+        try {
+            if (!a.hasValue(R.styleable.AvatarView_av_online_indicator_size)) {
+                return;
+            }
+            onlineIndicatorSize = a.getDimensionPixelSize(R.styleable.AvatarView_av_online_indicator_size, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            a.recycle();
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (onlineIndicatorSize == 0) {
+            onlineIndicatorSize = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    ONLINE_INDICATOR_SIZE_DEFAULT_DP, getResources().getDisplayMetrics()));
+        }
         onlineIndicatorDrawable = ContextCompat.getDrawable(getContext(), R.drawable.circle_online_indicator);
-        int onlineIndicatorSize = Math.round(getMeasuredWidth() * Math.abs(1f - getMeasuredWidth() % 1000 / 1000f) * ONLINE_SIZE_FACTOR);
 
         float avatarRadius = getMeasuredWidth() / 2;
         // Use following circle equation to calculate margins:

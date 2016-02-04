@@ -159,8 +159,8 @@
     <dimen name="action_bar_spinner_dropdown_item_vertical_padding">8dp</dimen>
 
     <!-- Misc -->
-    <dimen name="online_indicator_size_inner_ring">5dp</dimen>
-    <dimen name="online_indicator_size">7dp</dimen>
+    <dimen name="online_indicator_size_inner_ring">7dp</dimen>
+    <dimen name="online_indicator_size">8dp</dimen>
 
     <dimen name="list_item_avatar_image_view_size">60dp</dimen>
     <dimen name="list_item_small_avatar_image_spacing">2dp</dimen>

@@ -35,6 +35,12 @@ public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPrese
         tryShowSlave();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        showDtlFilters();
+    }
+
     private void showMaster() {
         Fragment merchantsTabsFragment = getChildFragmentManager().findFragmentById(R.id.dtl_master_container);
         if (merchantsTabsFragment != null && merchantsTabsFragment.getClass().getName()
@@ -62,6 +68,18 @@ public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPrese
             removeDetails();
             landscapeSlave.setVisibility(View.GONE);
         }
+    }
+
+    private void showDtlFilters() {
+        Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
+        if (filtersFragment != null && filtersFragment.getClass().getName()
+                .equals(Route.DTL_FILTERS.getClazzName())) return;
+
+        router.moveTo(Route.DTL_FILTERS, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .containerId(R.id.container_filters)
+                .fragmentManager(getParentFragment().getFragmentManager())
+                .build());
     }
 
     private void removeDetails() {

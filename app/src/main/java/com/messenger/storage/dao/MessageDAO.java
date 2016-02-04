@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Adapter;
 import com.messenger.entities.DataMessage$Table;
@@ -30,17 +32,25 @@ public class MessageDAO extends BaseDAO {
 
     public Observable<Cursor> getMessages(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT m.*, u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME +
-                        ", u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL +
-                        ", u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID +
+                .withSelection("SELECT m.*, " +
+                        "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
+                        "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
+                        "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
-                        " FROM " + DataMessage.TABLE_NAME + " m LEFT JOIN " + DataUser$Table.TABLE_NAME + " u" +
-                        " ON m." + DataMessage$Table.FROMID + " = u." + DataUser$Table._ID +
-                        " WHERE " + DataMessage$Table.CONVERSATIONID + " = ?" +
-                        " ORDER BY " + DataMessage$Table.DATE)
+                        "a." +  DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
+                        "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + " " +
+
+                        "FROM " + DataMessage.TABLE_NAME + " m " +
+                        "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
+                        "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
+                        "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
+                        "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
+
+                        "WHERE " + DataMessage$Table.CONVERSATIONID + "=? " +
+                        "ORDER BY " + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId}).build();
 
-        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI);
+        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI);
     }
 
     public Observable<DataMessage> getMessage(String messageId) {

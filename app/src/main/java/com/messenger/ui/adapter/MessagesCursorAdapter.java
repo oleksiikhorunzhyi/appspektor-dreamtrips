@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
@@ -285,6 +286,9 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
+        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
+        String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
+
         int position = cursor.getPosition();
         DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
         DataUser userFrom = SqlUtils.convertToModel(true, DataUser.class, cursor);

@@ -116,6 +116,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     private void connectParticipants() {
         membersCursorObservable = participantsDAO.getParticipants(conversationId)
+                .onBackpressureLatest()
                 .compose(bindViewIoToMainComposer())
                 .replay(1)
                 .autoConnect();
@@ -226,10 +227,12 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Override
     public void requireAdapterInfo() {
-        conversationObservable.subscribe(conversation -> {
-            getView().setAdapterWithInfo(user, isOwner(conversation));
-            adapterInitializer.onNext(null);
-        });
+        conversationObservable
+                .distinctUntilChanged()
+                .subscribe(conversation -> {
+                    getView().setAdapterWithInfo(user, isOwner(conversation));
+                    adapterInitializer.onNext(null);
+                });
     }
 
     ////////////////////////////////////////////////////////

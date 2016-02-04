@@ -75,7 +75,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     }
 
     @Override
-    public void onFilter() {
+    public void onFilter(DtlFilterData filterData) {
         performFiltering();
     }
 

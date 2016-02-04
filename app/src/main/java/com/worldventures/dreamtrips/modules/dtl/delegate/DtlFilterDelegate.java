@@ -29,11 +29,11 @@ public class DtlFilterDelegate {
 
     public void performFiltering() {
         for (FilterListener filterListener : filterListeners) {
-            filterListener.onFilter();
+            filterListener.onFilter(filterData);
         }
     }
 
     public interface FilterListener {
-        void onFilter();
+        void onFilter(DtlFilterData filterData);
     }
 }

@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,6 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -73,7 +72,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     void onApply() {
         //TODO Think about drawers without dependency of MainActivity
         ((MainActivity) getActivity()).closeRightDrawer();
-        getPresenter().apply(composeFilterData());
+        getPresenter().apply();
     }
 
     @OnClick(R.id.reset)
@@ -108,22 +107,11 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         selectionManager.setSelection(0, allSelected);
     }
 
-    /**
-     * Compose new filter data from current views' state
-     *
-     * @return actual filter data
-     */
-    private DtlFilterData composeFilterData() {
-        DtlFilterData data = DtlFilterData.createDefault();
-        data.setPrice(Integer.valueOf(rangeBarPrice.getLeftValue()), Integer.valueOf(rangeBarPrice.getRightValue()));
-        data.setMaxDistance(Integer.valueOf(rangeBarDistance.getRightValue()));
-        //
+    private List<DtlMerchantAttribute> obtainSelectedAmenities() {
         List<Integer> positions = selectionManager
                 .getSelectedPositions(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
-        List selectedItems = Queryable.from(baseDelegateAdapter.getItems())
+        return Queryable.from(baseDelegateAdapter.getItems())
                 .filter((element, index) -> positions.contains(index)).toList();
-        data.setSelectedAmenities(selectedItems);
-        return data;
     }
 
     @Override
@@ -153,6 +141,16 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
     private void setupAttributesHeader(DtlFilterData filterData) {
         baseDelegateAdapter.clearAndUpdateItems(filterData.getAmenities());
         baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getString(R.string.dtl_amenities), true));
+    }
+
+    @Override
+    public DtlFilterParameters getFilterParameters() {
+        return DtlFilterParameters.Builder.create()
+                .price(Integer.valueOf(rangeBarPrice.getLeftValue()),
+                        Integer.valueOf(rangeBarPrice.getRightValue()))
+                .maxDistance(Integer.valueOf(rangeBarDistance.getRightValue()))
+                .selectedAmenities(obtainSelectedAmenities())
+                .build();
     }
 
     @Override

@@ -7,11 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-    public static final int MIN_PRICE = 1;
-    public static final int MAX_PRICE = 5;
-    public static final int MAX_DISTANCE = 50;
-    // TODO : current MAX_DISTANCE assumes miles - wrong
 public class DtlFilterData {
 
     private int minPrice;
@@ -28,36 +23,21 @@ public class DtlFilterData {
     }
 
     public static DtlFilterData createDefault() {
-        DtlFilterData dtlFilterData = new DtlFilterData();
-        dtlFilterData.reset();
-        return dtlFilterData;
+        return new DtlFilterData().from(DtlFilterParameters.createDefault());
     }
 
-    /**
-     * Create new filter data model based on current and given as parameter.
-     * To be used to update presenter and delegate filter state from UI
-     * @param filterData filter data constructed from UI
-     * @return mutated instance
-     * <br /><br />
-     * TODO : think about using proper immutable mechanism here
-     */
-    public DtlFilterData mutateFrom(DtlFilterData filterData) {
-        DtlFilterData result = new DtlFilterData();
-        result.setAmenities(this.amenities);
-        result.setSelectedAmenities(filterData.getSelectedAmenities());
-        result.setDistanceType(filterData.getDistanceType());
-        result.setPrice(filterData.getMinPrice(), filterData.getMaxPrice());
-        result.setMaxDistance(filterData.getMaxDistance());
-        return result;
+    public DtlFilterData from(DtlFilterParameters filterParameters) {
+        this.minPrice = filterParameters.getMinPrice();
+        this.maxPrice = filterParameters.getMaxPrice();
+        this.maxDistance = filterParameters.getMaxDistance();
+        this.selectedAmenities = filterParameters.getSelectedAmenities();
+        return this;
     }
 
     public void reset() {
         selectedAmenities.clear();
         selectedAmenities.addAll(amenities);
-        minPrice = MIN_PRICE;
-        maxPrice = MAX_PRICE;
-        maxDistance = MAX_DISTANCE;
-        distanceType = DistanceType.MILES;
+        from(DtlFilterParameters.createDefault());
     }
 
     public int getMinPrice() {
@@ -66,12 +46,6 @@ public class DtlFilterData {
 
     public int getMaxPrice() {
         return maxPrice;
-    }
-
-    public void setPrice(int minPrice, int maxPrice) {
-        // monkey-patch for unusual crashes with values out of bounds for rangebar
-        this.minPrice = minPrice < MIN_PRICE ? MIN_PRICE : minPrice;
-        this.maxPrice = maxPrice > MAX_PRICE ? MAX_PRICE : maxPrice;
     }
 
     public void setAmenities(List<DtlMerchantAttribute> amenities) {
@@ -92,11 +66,6 @@ public class DtlFilterData {
         return selectedAmenities;
     }
 
-    public void setSelectedAmenities(List<DtlMerchantAttribute> selectedAmenities) {
-        this.selectedAmenities.clear();
-        this.selectedAmenities.addAll(selectedAmenities);
-    }
-
     public void selectAllAmenities() {
         this.selectedAmenities.clear();
         this.selectedAmenities.addAll(amenities);
@@ -107,8 +76,7 @@ public class DtlFilterData {
     }
 
     public void setMaxDistance(int maxDistance) {
-        // monkey-patch for unusual crashes with values out of bounds for rangebar
-        this.maxDistance = maxDistance > MAX_DISTANCE ? MAX_DISTANCE : maxDistance;
+        this.maxDistance = maxDistance;
     }
 
 

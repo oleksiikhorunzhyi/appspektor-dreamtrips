@@ -105,8 +105,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         //
         DtlLocationHelper dtlLocationHelper = new DtlLocationHelper();
         LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location, locationRepository.getCachedSelectedLocation());
-        DtlFilterData dtlFilterData = dtlFilterDelegate.getDtlFilterData();
-        DistanceType distanceType = snappyRepository.getMerchantsDistanceType();
+        DistanceType distanceType = dtlFilterDelegate.getFilterData().getDistanceType();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {
             dtlMerchant.setDistanceType(distanceType);
@@ -117,7 +116,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
                 .from(dtlMerchants)
                 .filter(DtlMerchantsPredicate.Builder.create()
                         .withMerchantType(dtlMerchantType)
-                        .withDtlFilterData(dtlFilterData)
+                        .withDtlFilterData(dtlFilterDelegate.getFilterData())
                         .withLatLng(currentLatLng)
                         .withQuery(query)
                         .build())
@@ -141,5 +140,4 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     }
 
     protected abstract void merchantsPrepared(List<DtlMerchant> dtlMerchants);
-
 }

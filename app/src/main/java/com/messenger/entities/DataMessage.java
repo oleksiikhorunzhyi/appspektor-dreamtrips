@@ -34,9 +34,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @Column String conversationId;
     @MessageStatus.Status @Column int status;
 
-    // TODO: 1/9/16 store this column
-    private String locale;
-
     public DataMessage() {
     }
 
@@ -58,7 +55,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         MessageBody body = message.getMessageBody();
         if (body != null) {
             setText(body.getText());
-            setLocale(body.getLocaleName());
         }
     }
 
@@ -69,7 +65,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setToId(builder.to);
         setText(builder.text);
         setDate(builder.date);
-        setLocale(builder.locale);
         setStatus(builder.status);
     }
 
@@ -119,14 +114,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
     }
 
     public int getStatus() {
@@ -221,7 +208,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     }
 
     public com.messenger.messengerservers.model.Message toChatMessage() {
-        MessageBody body = new MessageBody(text, locale, null);
+        MessageBody body = new MessageBody(text,null, null);
         return new com.messenger.messengerservers.model.Message.Builder()
                 .fromId(fromId)
                 .toId(toId)

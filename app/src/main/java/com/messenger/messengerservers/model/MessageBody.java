@@ -1,9 +1,12 @@
 package com.messenger.messengerservers.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class MessageBody {
     private String text;
+    @SerializedName("locale")
     private String localeName;
     private List<AttachmentHolder> attachments;
 

@@ -5,6 +5,7 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -13,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
@@ -41,6 +43,8 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     DtlLocationManager locationRepository;
     @Inject
     DtlSearchDelegate dtlSearchDelegate;
+    @Inject
+    SnappyRepository snappyRepository;
     //
     protected DtlMerchantType dtlMerchantType;
 
@@ -71,7 +75,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     }
 
     @Override
-    public void onFilter() {
+    public void onFilter(DtlFilterData filterData) {
         performFiltering();
     }
 
@@ -87,12 +91,12 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     protected void performFiltering(String query) {
         if (view != null)
             view.bind(locationDelegate
-                            .getLastKnownLocation()
-                            .onErrorResumeNext(Observable.just(locationRepository.getCachedSelectedLocation()
-                                    .asAndroidLocation()))
-                            .flatMap(location -> mapToMerchantList(location, query))
-                            .doOnNext(merchants -> track(merchants, query))
-                            .compose(new IoToMainComposer<>())
+                    .getLastKnownLocation()
+                    .onErrorResumeNext(Observable.just(locationRepository.getCachedSelectedLocation()
+                            .asAndroidLocation()))
+                    .flatMap(location -> mapToMerchantList(location, query))
+                    .doOnNext(merchants -> track(merchants, query))
+                    .compose(new IoToMainComposer<>())
             ).subscribe(this::merchantsPrepared, this::onError);
     }
 
@@ -100,21 +104,19 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         List<DtlMerchant> dtlMerchants = dtlMerchantRepository.getMerchants();
         //
         DtlLocationHelper dtlLocationHelper = new DtlLocationHelper();
-        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location,
-                locationRepository.getCachedSelectedLocation());
-        DtlFilterData dtlFilterData = dtlFilterDelegate.getDtlFilterData();
+        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location, locationRepository.getCachedSelectedLocation());
+        DistanceType distanceType = dtlFilterDelegate.getFilterData().getDistanceType();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {
-            dtlMerchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-            dtlMerchant.setDistance(dtlLocationHelper.calculateDistance(
-                    currentLatLng, dtlMerchant.getCoordinates().asLatLng()));
+            dtlMerchant.setDistanceType(distanceType);
+            dtlMerchant.setDistance(dtlLocationHelper.calculateDistance(currentLatLng, dtlMerchant.getCoordinates().asLatLng()));
         }
         //
         List<DtlMerchant> merchants = Queryable
                 .from(dtlMerchants)
                 .filter(DtlMerchantsPredicate.Builder.create()
                         .withMerchantType(dtlMerchantType)
-                        .withDtlFilterData(dtlFilterData)
+                        .withDtlFilterData(dtlFilterDelegate.getFilterData())
                         .withLatLng(currentLatLng)
                         .withQuery(query)
                         .build())
@@ -138,5 +140,4 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     }
 
     protected abstract void merchantsPrepared(List<DtlMerchant> dtlMerchants);
-
 }

@@ -1,61 +1,39 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import javax.inject.Inject;
 
-import icepick.State;
-
 public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
-        DtlMerchantRepository.MerchantUpdatedListener, DtlFilterDelegate.FilterChangedListener {
+        DtlMerchantRepository.MerchantUpdatedListener {
 
     @Inject
     LocationDelegate locationDelegate;
     @Inject
-    SnappyRepository db;
-    @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
-    //
-    @State
-    DtlFilterData dtlFilterData;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         dtlMerchantRepository.attachListener(this);
         //
-        if (dtlFilterData == null) {
-            dtlFilterData = DtlFilterData.createDefault();
-            dtlFilterData.setDistanceType(db.getDistanceType());
-            dtlFilterData.setAmenities(db.getAmenities());
-            dtlFilterData.selectAllAmenities();
-        }
-        //
-        dtlFilterDelegate.addDataChangedListener(this);
-        dtlFilterDelegate.setDtlFilterData(dtlFilterData);
-        view.attachFilterData(dtlFilterData);
+        view.attachFilterData(dtlFilterDelegate.getFilterData());
     }
 
     @Override
     public void dropView() {
-        dtlFilterDelegate.removeDataChangedListener(this);
         dtlMerchantRepository.detachListener(this);
         super.dropView();
-    }
-
-    @Override
-    public void onFilterDataChanged() {
-        view.syncUi(dtlFilterData);
     }
 
     @Override
@@ -72,37 +50,34 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
      * Request filter parameters that are currently applied. To use in view to update itself
      */
     public void requestActualFilterData() {
-        view.syncUi(dtlFilterData);
+        view.syncUi(dtlFilterDelegate.getFilterData());
     }
 
     private void attachAmenities() {
-        dtlFilterData.setAmenities(db.getAmenities());
-        dtlFilterData.selectAllAmenities();
-        view.attachFilterData(dtlFilterData);
+        dtlFilterDelegate.obtainAmenities();
+        dtlFilterDelegate.selectAll();
+        view.attachFilterData(dtlFilterDelegate.getFilterData());
     }
 
     /**
      * Apply selected filter parameters
      * @param data new filter parameters
      */
-    public void apply(DtlFilterData data) {
-        this.dtlFilterData = dtlFilterData.mutateFrom(data);
-        TrackingHelper.dtlMerchantFilter(dtlFilterData);
-        db.saveDistanceToggle(dtlFilterData.getDistanceType());
-        dtlFilterDelegate.setDtlFilterData(dtlFilterData);
-        dtlFilterDelegate.performFiltering();
+    public void apply() {
+        dtlFilterDelegate.applyNewFilter(view.getFilterParameters());
+        TrackingHelper.dtlMerchantFilter(dtlFilterDelegate.getFilterData());
     }
 
     /**
-     * Reset filter parameters to default and update view
+     * Reset filter parameters to default
      */
     public void resetAll() {
-        dtlFilterData.reset();
-        dtlFilterDelegate.performFiltering();
-        view.attachFilterData(dtlFilterData);
+        dtlFilterDelegate.reset();
     }
 
     public interface View extends RxView {
+
+        DtlFilterParameters getFilterParameters();
 
         /**
          * Fully update UI state with given filter parameters, <br />

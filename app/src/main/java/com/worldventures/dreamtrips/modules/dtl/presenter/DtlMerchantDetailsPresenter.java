@@ -29,8 +29,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View>
-        implements DtlFilterDelegate.FilterListener {
+public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View> {
 
     private DtlTransaction dtlTransaction;
 
@@ -58,24 +57,9 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlFilterDelegate.addListener(this);
         if (merchant.hasNoOffers())
             featureManager.with(Feature.REP_SUGGEST_MERCHANT, () -> view.setSuggestMerchantButtonAvailable(true),
                     () -> view.setSuggestMerchantButtonAvailable(false));
-    }
-
-    @Override
-    public void dropView() {
-        dtlFilterDelegate.removeListener(this);
-        super.dropView();
-    }
-
-    @Override
-    public void onFilter() {
-        if (view != null) {
-            merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-            view.distanceTypeChanged(merchant);
-        }
     }
 
     private void processTransaction() {

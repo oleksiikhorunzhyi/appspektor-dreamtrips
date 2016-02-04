@@ -47,6 +47,7 @@ import de.greenrobot.event.EventBus;
 
                 LogoutDelegate.class,
                 //
+                DtlFilterDelegate.class,
                 DtlLocationManager.class,
         },
         library = true, complete = false
@@ -89,8 +90,8 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlFilterDelegate dtlFilterDelegate() {
-        return new DtlFilterDelegate();
+    DtlFilterDelegate dtlFilterDelegate(@ForApplication Injector injector) {
+        return new DtlFilterDelegate(injector);
     }
 
     @Singleton

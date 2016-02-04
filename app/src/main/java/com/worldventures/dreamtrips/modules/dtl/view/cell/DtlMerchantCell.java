@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
@@ -13,12 +14,11 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommo
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.view.custom.MerchantCellDelegate;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_merchant)
-public class DtlMerchantCell extends AbstractDelegateCell<DtlMerchant, MerchantCellDelegate> implements SelectableCell {
+public class DtlMerchantCell extends AbstractDelegateCell<DtlMerchant, CellDelegate<DtlMerchant>> implements SelectableCell {
 
     DtlMerchantCommonDataInflater commonDataInflater;
     DtlMerchantInfoInflater categoryDataInflater;
@@ -47,11 +47,6 @@ public class DtlMerchantCell extends AbstractDelegateCell<DtlMerchant, MerchantC
             selectableDelegate.toggleSelection(getAdapterPosition());
         //
         getEventBus().post(new MerchantClickedEvent(getModelObject().getId()));
-    }
-
-    @OnClick(R.id.distance_holder)
-    void distanceClicked() {
-        cellDelegate.onDistanceClicked();
     }
 
     @Override

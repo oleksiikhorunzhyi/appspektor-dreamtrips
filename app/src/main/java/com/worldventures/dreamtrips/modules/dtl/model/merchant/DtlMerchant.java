@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
@@ -214,23 +215,23 @@ public class DtlMerchant implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     private transient double distance;
-    private transient DtlFilterData.DistanceType distanceType;
+    private transient DistanceType distanceType;
 
     public void setDistance(double distance) {
         this.distance = distance;
     }
 
-    public void setDistanceType(DtlFilterData.DistanceType distanceType) {
+    public void setDistanceType(DistanceType distanceType) {
         this.distanceType = distanceType;
     }
 
     public double getDistance() {
-        return distanceType == DtlFilterData.DistanceType.KMS ?
+        return distanceType == DistanceType.KMS ?
                 DtlLocationHelper.metresToKilometers(distance) :
                 DtlLocationHelper.metresToMiles(distance);
     }
 
-    public DtlFilterData.DistanceType getDistanceType() {
+    public DistanceType getDistanceType() {
         return distanceType;
     }
 

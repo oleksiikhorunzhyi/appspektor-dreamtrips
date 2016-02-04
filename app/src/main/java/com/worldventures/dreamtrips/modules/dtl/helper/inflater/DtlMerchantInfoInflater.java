@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
@@ -40,7 +41,7 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
         if (merchant.getDistance() != 0.0d) {
             distance.setVisibility(View.VISIBLE);
             distance.setText(distance.getResources().getString(
-                    merchant.getDistanceType() == DtlFilterData.DistanceType.MILES ?
+                    merchant.getDistanceType() == DistanceType.MILES ?
                             R.string.distance_miles : R.string.distance_kms,
                     merchant.getDistance()));
         } else distance.setVisibility(View.GONE);

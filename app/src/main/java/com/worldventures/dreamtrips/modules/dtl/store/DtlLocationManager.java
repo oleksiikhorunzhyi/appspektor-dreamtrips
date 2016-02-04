@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.rx.transfromer.ListSorter;
 import com.worldventures.dreamtrips.core.api.DtlApi;
+import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.transfromer.ListFilter;
-import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
+import com.worldventures.dreamtrips.core.rx.transfromer.ListSorter;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 import java.util.Collections;
@@ -34,8 +34,6 @@ public class DtlLocationManager {
 
     public DtlLocationManager(Injector injector) {
         injector.inject(this);
-        buildNearbyExecutor();
-        buildSearchExecutor();
     }
 
     public DtlLocationManager(DtlApi dtlApi, SnappyRepository db, RxApiFactory rxApiFactory) {
@@ -48,15 +46,12 @@ public class DtlLocationManager {
     // Nearby
     ///////////////////////////////////////////////////////////////////////////
 
-    public Job1Executor<Location, List<DtlLocation>> nearbyLocationExecutor;
+    public final Job1Executor<Location, List<DtlLocation>> nearbyLocationExecutor =
+            new Job1Executor<>(this::loadNearby);
     private Subscription nearbySubscription;
 
     public void loadNearbyLocations(Location userLocation) {
         nearbySubscription = nearbyLocationExecutor.createJobWith(userLocation).subscribe();
-    }
-
-    private void buildNearbyExecutor() {
-        nearbyLocationExecutor = new Job1Executor<>(this::loadNearby);
     }
 
     private Observable<List<DtlLocation>> loadNearby(Location location) {
@@ -71,7 +66,7 @@ public class DtlLocationManager {
 
     private static final int API_SEARCH_QUERY_LENGHT = 3;
 
-    public Job0Executor<List<DtlLocation>> searchLocationExecutor;
+    public final Job0Executor<List<DtlLocation>> searchLocationExecutor = new Job0Executor<>(this::search);
 
     private Subscription searchSubscription;
 
@@ -81,9 +76,9 @@ public class DtlLocationManager {
     public void searchLocations(String query) {
         this.query = query;
         // don't do anything if users enter 'local-search' query and searchLocations is still null
-        // if (performLocalSearch() && searchLocations == null) return;
+        // if (shouldPerformLocalSearch() && searchLocations == null) return;
         // cancel if user enters new 'non-local-search' query
-        if (!performLocalSearch()
+        if (!shouldPerformLocalSearch()
                 && searchSubscription != null
                 && !searchSubscription.isUnsubscribed())
             searchSubscription.unsubscribe();
@@ -94,10 +89,6 @@ public class DtlLocationManager {
         searchSubscription = searchLocationExecutor.createJob().subscribe();
     }
 
-    private void buildSearchExecutor() {
-        searchLocationExecutor = new Job0Executor<>(this::search);
-    }
-
     private Observable<List<DtlLocation>> search() {
         return Observable.concat(emptySearch(), localSearch(), apiSearch())
                 .first()
@@ -105,20 +96,20 @@ public class DtlLocationManager {
     }
 
     private Observable<List<DtlLocation>> emptySearch() {
-        return performEmptySearch()
+        return shouldPerformEmptySearch()
                 ? Observable.from(Collections.<DtlLocation>emptyList()).toList().doOnNext(locations -> cleanCache())
                 : Observable.empty();
     }
 
     private Observable<List<DtlLocation>> apiSearch() {
-        return performApiSearch()
+        return shouldPerformApiSearch()
                 ? rxApiFactory.composeApiCall(() -> this.dtlApi.searchLocations(query))
                 .doOnNext(this::cacheInMemory)
                 : Observable.empty();
     }
 
     private Observable<List<DtlLocation>> localSearch() {
-        return performLocalSearch() || (performApiSearch() && searchLocations != null)
+        return shouldPerformLocalSearch() || (shouldPerformApiSearch() && searchLocations != null)
                 ? Observable.from(searchLocations).toList()
                 : Observable.empty();
     }
@@ -138,15 +129,15 @@ public class DtlLocationManager {
                 .compose(new ListSorter<>(comparator::compare));
     }
 
-    private boolean performEmptySearch() {
+    private boolean shouldPerformEmptySearch() {
         return query.length() < API_SEARCH_QUERY_LENGHT;
     }
 
-    private boolean performApiSearch() {
+    private boolean shouldPerformApiSearch() {
         return query.length() == API_SEARCH_QUERY_LENGHT;
     }
 
-    private boolean performLocalSearch() {
+    private boolean shouldPerformLocalSearch() {
         return query.length() > API_SEARCH_QUERY_LENGHT;
     }
 

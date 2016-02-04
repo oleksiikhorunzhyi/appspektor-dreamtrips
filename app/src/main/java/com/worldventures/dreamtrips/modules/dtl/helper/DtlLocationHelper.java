@@ -5,7 +5,7 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 
 public class DtlLocationHelper {
 
@@ -23,7 +23,7 @@ public class DtlLocationHelper {
         LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         LatLng cityLatLng = dtlLocation.getCoordinates().asLatLng();
 
-        return checkLocation(DtlFilterData.MAX_DISTANCE, deviceLatLng, cityLatLng, DistanceType.MILES)
+        return checkLocation(DtlFilterParameters.MAX_DISTANCE, deviceLatLng, cityLatLng, DistanceType.MILES)
                 ? deviceLatLng
                 : cityLatLng;
     }

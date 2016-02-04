@@ -8,6 +8,10 @@ public class EstimationPointsHolder {
         return points;
     }
 
+    public int getPointsInteger() {
+        return ((Double) points).intValue();
+    }
+
     public void setPoints(double points) {
         this.points = points;
     }

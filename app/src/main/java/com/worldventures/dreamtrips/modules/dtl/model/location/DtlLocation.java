@@ -64,6 +64,10 @@ public class DtlLocation implements Parcelable {
         return location;
     }
 
+    public String asStringLatLong() {
+        return coordinates.getLat() + "," + coordinates.getLng();
+    }
+
     public int getPartnerCount() {
         return partnerCount;
     }

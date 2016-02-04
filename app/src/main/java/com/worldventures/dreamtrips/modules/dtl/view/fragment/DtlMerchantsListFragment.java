@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -15,6 +14,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
@@ -41,7 +41,7 @@ public class DtlMerchantsListFragment
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-
+    //
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
@@ -57,12 +57,9 @@ public class DtlMerchantsListFragment
     //
     SelectionManager selectionManager;
 
-    private WeakHandler weakHandler;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -101,7 +98,7 @@ public class DtlMerchantsListFragment
 
     @Override
     public void onCellClicked(DtlMerchant model) {
-        //TODO
+        // TODO
     }
 
     @Override
@@ -114,16 +111,12 @@ public class DtlMerchantsListFragment
 
     @Override
     public void showProgress() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
+        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void hideProgress() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
+        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override
@@ -144,4 +137,12 @@ public class DtlMerchantsListFragment
         super.onDestroyView();
     }
 
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
+    }
 }

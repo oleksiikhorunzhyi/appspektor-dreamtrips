@@ -35,9 +35,8 @@ public class DtlFilterData {
     }
 
     public void reset() {
-        selectedAmenities.clear();
-        selectedAmenities.addAll(amenities);
         from(DtlFilterParameters.createDefault());
+        selectAllAmenities();
     }
 
     public int getMinPrice() {

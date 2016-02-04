@@ -15,22 +15,16 @@ public class JobPresenter<VT extends RxView> extends Presenter<VT> {
 
     public <T> JobSubscriber<T> bindJob(JobExecutor<T> executor) {
         JobSubscriber<T> subscriber = new JobSubscriber<>();
-        view.bind(executor.connect()
-                        .compose(new IoToMainComposer<>())
-        ).subscribe(subscriber);
+        view.bind(executor.connect().compose(IoToMainComposer.get())).subscribe(subscriber);
         return subscriber;
     }
 
     public <T> JobSubscriber<T> bindJobCached(JobExecutor<T> executor) {
         JobSubscriber<T> subscriber = new JobSubscriber<>();
         view.bind(executor.connectWithCache()
-                        .compose(new IoToMainComposer<>())
-                        .compose(new JobCacheWiper<>(executor))
+                .compose(IoToMainComposer.get())
+                .compose(new JobCacheWiper<>(executor))
         ).subscribe(subscriber);
         return subscriber;
     }
-
-
-
-
 }

@@ -4,12 +4,11 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
@@ -20,27 +19,27 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import techery.io.library.JobSubscriber;
 import timber.log.Timber;
 
-public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter<VT> implements
-        DtlFilterDelegate.FilterListener, DtlMerchantRepository.MerchantUpdatedListener,
-        DtlSearchDelegate.SearchListener {
+public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresenter<VT> implements
+        DtlFilterDelegate.FilterListener, DtlSearchDelegate.SearchListener {
 
     @Inject
     LocationDelegate locationDelegate;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
     @Inject
-    DtlLocationManager locationRepository;
+    DtlLocationManager dtlLocationManager;
     @Inject
     DtlSearchDelegate dtlSearchDelegate;
     @Inject
@@ -51,27 +50,25 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
     @Override
     public void takeView(VT view) {
         super.takeView(view);
-        dtlMerchantRepository.attachListener(this);
         dtlFilterDelegate.addListener(this);
         dtlSearchDelegate.addListener(this);
+        bindApiJob();
     }
 
-    @Override
-    public void dropView() {
-        dtlMerchantRepository.detachListener(this);
-        dtlFilterDelegate.removeListener(this);
-        dtlSearchDelegate.removeListener(this);
-        super.dropView();
+    protected JobSubscriber bindApiJob() {
+        return bindJobCached(dtlMerchantManager.getMerchantsExecutor)
+                .onSuccess(dtlMerchants -> onMerchantsLoaded());
     }
 
-    @Override
-    public void onMerchantsUploaded() {
+    protected void onMerchantsLoaded() {
         performFiltering();
     }
 
     @Override
-    public void onMerchantsFailed(SpiceException exception) {
-        //
+    public void dropView() {
+        dtlFilterDelegate.removeListener(this);
+        dtlSearchDelegate.removeListener(this);
+        super.dropView();
     }
 
     @Override
@@ -92,20 +89,22 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends Presenter
         if (view != null)
             view.bind(locationDelegate
                     .getLastKnownLocation()
-                    .onErrorResumeNext(Observable.just(locationRepository.getCachedSelectedLocation()
+                    .onErrorResumeNext(Observable.just(dtlLocationManager.getCachedSelectedLocation()
                             .asAndroidLocation()))
                     .flatMap(location -> mapToMerchantList(location, query))
                     .doOnNext(merchants -> track(merchants, query))
-                    .compose(new IoToMainComposer<>())
+                    .compose(IoToMainComposer.get())
             ).subscribe(this::merchantsPrepared, this::onError);
     }
 
     protected Observable<List<DtlMerchant>> mapToMerchantList(Location location, String query) {
-        List<DtlMerchant> dtlMerchants = dtlMerchantRepository.getMerchants();
+        List<DtlMerchant> dtlMerchants = dtlMerchantManager.getMerchants();
         //
         DtlLocationHelper dtlLocationHelper = new DtlLocationHelper();
-        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location, locationRepository.getCachedSelectedLocation());
+        LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location,
+                dtlLocationManager.getCachedSelectedLocation());
         DistanceType distanceType = dtlFilterDelegate.getFilterData().getDistanceType();
+        DtlFilterData dtlFilterData = dtlFilterDelegate.getFilterData();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {
             dtlMerchant.setDistanceType(distanceType);

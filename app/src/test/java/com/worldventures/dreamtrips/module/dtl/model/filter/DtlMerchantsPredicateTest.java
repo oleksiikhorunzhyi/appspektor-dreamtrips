@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.module.dtl.model.filter;
 
 import com.worldventures.dreamtrips.module.dtl.constants.TestConstants;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -210,7 +211,7 @@ public class DtlMerchantsPredicateTest {
                 .build();
 
         DtlMerchant dtlMerchant = new DtlMerchant();
-        dtlMerchant.setDistanceType(DtlFilterData.DistanceType.KMS);
+        dtlMerchant.setDistanceType(DistanceType.KMS);
         dtlMerchant.setDistance(38000d);
 
         boolean result = predicate.checkDistance(dtlMerchant);

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
     @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
     @Inject
     LocationDelegate gpsLocationDelegate;
     //
@@ -63,7 +63,6 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
             view.hideProgress();
         }
     }
-
 
     @Override
     public void dropView() {
@@ -141,7 +140,7 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
     public void onLocationSelected(DtlLocation location) {
         trackLocationSelection(dtlLocationManager.getSelectedLocation(), location);
         dtlLocationManager.persistLocation(location);
-        dtlMerchantRepository.clean();
+        dtlMerchantManager.clean();
         view.navigateToMerchants();
     }
 
@@ -154,7 +153,7 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
                 .onProgress(this::onSearchStarted)
                 .onError(this::onSearchError)
                 .onSuccess(this::onSearchFinished);
-
+        //
         if (status == Status.SEARCH) dtlLocationManager.searchLocations(query);
     }
 

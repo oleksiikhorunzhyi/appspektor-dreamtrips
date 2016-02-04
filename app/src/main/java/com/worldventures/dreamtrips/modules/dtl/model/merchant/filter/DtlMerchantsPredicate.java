@@ -74,7 +74,7 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
      * @return true if merchant passes filter
      */
     public boolean checkDistance(DtlMerchant dtlMerchant) {
-        return dtlFilterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
+        return dtlFilterData.getMaxDistance() == DtlFilterParameters.MAX_DISTANCE
                 || currentLatLng == null
                 || dtlMerchant.getDistance() < dtlFilterData.getMaxDistance();
     }

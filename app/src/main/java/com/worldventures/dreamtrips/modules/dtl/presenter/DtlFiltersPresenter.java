@@ -1,49 +1,33 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
-public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
-        DtlMerchantRepository.MerchantUpdatedListener {
+public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> {
 
     @Inject
     LocationDelegate locationDelegate;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlMerchantRepository.attachListener(this);
         //
         view.attachFilterData(dtlFilterDelegate.getFilterData());
-    }
-
-    @Override
-    public void dropView() {
-        dtlMerchantRepository.detachListener(this);
-        super.dropView();
-    }
-
-    @Override
-    public void onMerchantsUploaded() {
-        attachAmenities();
-    }
-
-    @Override
-    public void onMerchantsFailed(SpiceException spiceException) {
-        //nothing to do here
+        //
+        bindJobCached(dtlMerchantManager.getMerchantsExecutor)
+                .onSuccess(dtlMerchants -> attachAmenities());
     }
 
     /**

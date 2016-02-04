@@ -31,4 +31,7 @@
         <attr name="holdInitialDelay" format="integer"/>
         <attr name="holdRepeatDelay" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="AvatarView">
+        <attr name="av_online_indicator_size" format="dimension|reference" />
+    </declare-styleable>
 </resources>

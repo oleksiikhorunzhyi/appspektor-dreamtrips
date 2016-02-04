@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoC
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForeign;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
@@ -63,8 +61,6 @@ import dagger.Provides;
                 BucketAddPhotoCell.class,
                 BucketPhotoUploadCell.class,
                 BucketPhotoCell.class,
-                BucketPhotoCellForeign.class,
-                BucketPhotoCellForDetails.class,
                 FixedListPhotosFullScreenPresenter.class,
                 BucketPhotosView.class,
                 ForeignBucketItemDetailsPresenter.class,

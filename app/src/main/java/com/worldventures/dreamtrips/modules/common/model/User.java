@@ -58,7 +58,7 @@ public class User extends BaseEntity implements Parcelable {
      */
     private List<String> subscriptions;
 
-    //TODO TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
+    //TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
     private boolean socialEnabled;
 
     @SerializedName("circles")

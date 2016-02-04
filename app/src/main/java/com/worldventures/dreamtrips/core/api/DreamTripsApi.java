@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.PhotoUploadResponse;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
@@ -75,6 +76,10 @@ public interface DreamTripsApi {
     @POST("/api/profile/avatar")
     @Multipart
     User uploadAvatar(@Part("avatar") TypedFile image);
+
+    @POST("/uploadery/upload ")
+    @Multipart
+    PhotoUploadResponse uploadPhoto(@Part("photo") TypedFile image);
 
     @POST("/api/profile/background_photo")
     @Multipart

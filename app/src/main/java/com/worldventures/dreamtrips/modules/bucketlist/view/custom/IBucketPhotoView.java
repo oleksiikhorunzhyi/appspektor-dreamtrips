@@ -10,7 +10,7 @@ public interface IBucketPhotoView {
 
     void addImage(UploadTask images);
 
-    UploadTask getBucketPhotoUploadTask(String filePath);
+    UploadTask getBucketPhotoUploadTask(long filePath);
 
     void addImages(List<UploadTask> tasks);
 
@@ -22,5 +22,4 @@ public interface IBucketPhotoView {
 
     void itemChanged(Object item);
 
-    List getImages();
 }

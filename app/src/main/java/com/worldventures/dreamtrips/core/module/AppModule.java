@@ -30,7 +30,6 @@ import dagger.Provides;
                 ManagerModule.class,
                 //
                 ApiModule.class,
-                AmazonModule.class,
                 //
                 UiBindingModule.class,
                 //

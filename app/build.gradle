@@ -212,8 +212,6 @@ dependencies {
     compile 'io.techery:ijkmediaplayer:0.4.0@aar'
     compile 'io.techery:ijkmediawidget:0.4.0@aar'
     // 3rd services
-    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
-    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.google.android.gms:play-services-analytics:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'

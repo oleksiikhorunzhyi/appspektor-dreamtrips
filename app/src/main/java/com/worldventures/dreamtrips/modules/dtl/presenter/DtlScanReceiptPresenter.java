@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -133,10 +133,7 @@ public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.V
 
         UploadTask uploadTask = new UploadTask();
         uploadTask.setFilePath(filePath);
-        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
-        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
-        dtlTransaction.setUploadTask(uploadTask);
+        photoUploadingManager.upload(uploadTask, UploadPurpose.DTL_RECEIPT);
 
         snapper.saveDtlTransaction(merchantId, dtlTransaction);
 

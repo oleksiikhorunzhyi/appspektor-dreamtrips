@@ -3,14 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.api.merchant.EarnPointsRequest;
@@ -22,11 +19,12 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import javax.inject.Inject;
 
-public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.View> implements TransferListener {
+import rx.Observable;
+
+public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.View> {
 
     private final String merchantId;
     private DtlMerchant dtlMerchant;
-    private TransferObserver transferObserver;
 
     DtlTransaction dtlTransaction;
 
@@ -45,6 +43,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
     }
 
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
@@ -55,6 +54,25 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
 
         if (!TextUtils.isEmpty(dtlTransaction.getCode()))
             checkReceiptUploading();
+
+        photoUploadingManager.getTaskChangingObservable(UploadPurpose.DTL_RECEIPT).subscribe(uploadTask -> {
+            if (dtlTransaction.getUploadTask().getId() == uploadTask.getId()) {
+                switch (uploadTask.getStatus()) {
+                    case COMPLETED:
+                        dtlTransaction.getUploadTask().setOriginUrl(uploadTask.getOriginUrl());
+                        onReceiptUploaded();
+                        break;
+                    case CANCELED:
+                        break;
+                    case STARTED:
+                        break;
+                    case FAILED:
+                        receiptUploadError();
+                        break;
+                }
+            }
+        });
+
     }
 
     public void codeScanned(String content) {
@@ -75,8 +93,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     private void onReceiptUploaded() {
         view.showProgress(R.string.dtl_wait_for_earn);
         //
-        dtlTransaction.setReceiptPhotoUrl(photoUploadingSpiceManager.
-                getResultUrl(dtlTransaction.getUploadTask()));
+        dtlTransaction.setReceiptPhotoUrl(dtlTransaction.getUploadTask().getOriginUrl());
         //
         doRequest(new EarnPointsRequest(dtlMerchant.getId(), dtlMerchant.getDefaultCurrency().getCode(),
                         dtlTransaction),
@@ -107,61 +124,25 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     //////////////////////////////////////////////////
 
     private void checkReceiptUploading() {
-        UploadTask uploadTask = dtlTransaction.getUploadTask();
-
-        transferObserver =
-                photoUploadingSpiceManager.getTransferById(uploadTask.getAmazonTaskId());
-
-        switch (transferObserver.getState()) {
-            case FAILED:
-                //restart upload if failed
-                transferObserver = photoUploadingSpiceManager.upload(dtlTransaction.getUploadTask());
-                uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-                setListener();
-                break;
-            case IN_PROGRESS:
-                setListener();
-                break;
-            case COMPLETED:
-                onReceiptUploaded();
-                break;
-            case WAITING_FOR_NETWORK:
-                view.noConnection();
-                break;
-        }
-
-    }
-
-    private void setListener() {
-        transferObserver.setTransferListener(this);
-        //
-        view.showProgress(R.string.dtl_wait_for_receipt);
-    }
-
-    @Override
-    public void onStateChanged(int id, TransferState state) {
-        if (Integer.valueOf(dtlTransaction.getUploadTask().getAmazonTaskId()) == id) {
-            switch (state) {
-                case COMPLETED:
-                    onReceiptUploaded();
-                    break;
-                case FAILED:
-                    receiptUploadError();
-                    break;
-                case WAITING_FOR_NETWORK:
-                    view.noConnection();
-            }
-        }
-    }
-
-    @Override
-    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-        //nothing to do here
-    }
-
-    @Override
-    public void onError(int id, Exception ex) {
-        receiptUploadError();
+        photoUploadingManager.getUploadTasksObservable(UploadPurpose.DTL_RECEIPT)
+                .flatMap(Observable::from)
+                .first(uploadTask -> dtlTransaction.getUploadTask().getId() == uploadTask.getId())
+                .subscribe(uploadTask -> {
+                    switch (uploadTask.getStatus()) {
+                        case COMPLETED:
+                            onReceiptUploaded();
+                            break;
+                        case CANCELED:
+                            break;
+                        case STARTED:
+                            view.showProgress(R.string.dtl_wait_for_receipt);
+                            break;
+                        case FAILED:
+                            photoUploadingManager.upload(dtlTransaction.getUploadTask(), UploadPurpose.DTL_RECEIPT);
+                            view.showProgress(R.string.dtl_wait_for_receipt);
+                            break;
+                    }
+                });
     }
 
     private void receiptUploadError() {
@@ -172,7 +153,6 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Override
     public void dropView() {
         super.dropView();
-        if (transferObserver != null) transferObserver.setTransferListener(null);
     }
 
     public interface View extends ApiErrorView {
@@ -183,8 +163,6 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         void hideProgress();
 
         void photoUploadError();
-
-        void noConnection();
 
         void setMerchant(DtlMerchant DtlMerchant);
 

@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
@@ -10,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DtlFilterData implements Parcelable {
 
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
     public static final int MAX_DISTANCE = 50;
     // TODO : current MAX_DISTANCE assumes miles - wrong
+public class DtlFilterData {
 
     private int minPrice;
     private int maxPrice;
@@ -121,45 +118,5 @@ public class DtlFilterData implements Parcelable {
 
     public DistanceType getDistanceType() {
         return distanceType;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable part
-    ///////////////////////////////////////////////////////////////////////////
-
-    protected DtlFilterData(Parcel in) {
-        minPrice = in.readInt();
-        maxPrice = in.readInt();
-        maxDistance = in.readInt();
-        distanceType = (DistanceType) in.readSerializable();
-        amenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
-        selectedAmenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(minPrice);
-        dest.writeInt(maxPrice);
-        dest.writeInt(maxDistance);
-        dest.writeSerializable(distanceType);
-        dest.writeTypedList(amenities);
-        dest.writeTypedList(selectedAmenities);
-    }
-
-    public static final Creator<DtlFilterData> CREATOR = new Creator<DtlFilterData>() {
-        @Override
-        public DtlFilterData createFromParcel(Parcel in) {
-            return new DtlFilterData(in);
-        }
-
-        @Override
-        public DtlFilterData[] newArray(int size) {
-            return new DtlFilterData[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 }

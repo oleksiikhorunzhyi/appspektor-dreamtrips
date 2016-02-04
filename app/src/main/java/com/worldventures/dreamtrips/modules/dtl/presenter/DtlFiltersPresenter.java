@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
 
 import javax.inject.Inject;
 
-import icepick.State;
-
 public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> implements
         DtlMerchantRepository.MerchantUpdatedListener {
 
@@ -25,9 +23,6 @@ public class DtlFiltersPresenter extends Presenter<DtlFiltersPresenter.View> imp
     DtlFilterDelegate dtlFilterDelegate;
     @Inject
     DtlMerchantRepository dtlMerchantRepository;
-    //
-    @State
-    DtlFilterData dtlFilterData;
 
     @Override
     public void takeView(View view) {

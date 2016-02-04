@@ -1,14 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DtlFilterParameters implements Parcelable {
+public class DtlFilterParameters {
 
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
@@ -49,6 +46,10 @@ public class DtlFilterParameters implements Parcelable {
         return selectedAmenities;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Builder
+    ///////////////////////////////////////////////////////////////////////////
+
     public static class Builder {
 
         private DtlFilterParameters filter;
@@ -67,19 +68,9 @@ public class DtlFilterParameters implements Parcelable {
             return this;
         }
 
-        public DtlFilterParameters.Builder minPrice(int minPrice) {
-            filter.minPrice = minPrice;
-            return this;
-        }
-
-        public DtlFilterParameters.Builder maxPrice(int maxPrice) {
-            filter.maxPrice = maxPrice;
-            return this;
-        }
-
         public DtlFilterParameters.Builder price(int minPrice, int maxPrice) {
-            filter.minPrice = minPrice < MIN_PRICE ? MIN_PRICE : minPrice;
-            filter.maxPrice = maxPrice > MAX_PRICE ? MAX_PRICE : maxPrice;
+            filter.minPrice = minPrice;
+            filter.maxPrice = maxPrice;
             return this;
         }
 
@@ -91,37 +82,5 @@ public class DtlFilterParameters implements Parcelable {
         public DtlFilterParameters build() {
             return filter;
         }
-    }
-
-    protected DtlFilterParameters(Parcel in) {
-        minPrice = in.readInt();
-        maxPrice = in.readInt();
-        maxDistance = in.readInt();
-        selectedAmenities = in.createTypedArrayList(DtlMerchantAttribute.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(minPrice);
-        dest.writeInt(maxPrice);
-        dest.writeInt(maxDistance);
-        dest.writeTypedList(selectedAmenities);
-    }
-
-    public static final Parcelable.Creator<DtlFilterParameters> CREATOR = new Parcelable.Creator<DtlFilterParameters>() {
-        @Override
-        public DtlFilterParameters createFromParcel(Parcel in) {
-            return new DtlFilterParameters(in);
-        }
-
-        @Override
-        public DtlFilterParameters[] newArray(int size) {
-            return new DtlFilterParameters[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 }

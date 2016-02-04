@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
@@ -14,8 +14,6 @@ import com.messenger.ui.widget.ChatSettingsRow;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
-
-import flow.path.Path;
 
 public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends ChatSettingsScreenImpl<P> {
 
@@ -37,7 +35,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     }
 
     @Override
-    public void setConversation(Conversation conversation) {
+    public void setConversation(DataConversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_group_chat);
         if (!TextUtils.isEmpty(conversation.getSubject())) {
@@ -46,14 +44,14 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     }
 
     @Override
-    public void setParticipants(Conversation conversation, List<User> participants) {
+    public void setParticipants(DataConversation conversation, List<DataUser> participants) {
         groupAvatarsView.setVisibility(VISIBLE);
         groupAvatarsView.updateAvatars(participants);
         conversationHelper.setTitle(chatNameTextView, conversation, participants, false);
         String chatDescriptionFormat = getContext()
                 .getString(R.string.chat_settings_group_chat_description);
         int onlineCount = 0;
-        for (User user : participants) {
+        for (DataUser user : participants) {
             if (user.isOnline()) {
                 onlineCount++;
             }

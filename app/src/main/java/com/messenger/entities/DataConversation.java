@@ -1,8 +1,9 @@
-package com.messenger.messengerservers.entities;
+package com.messenger.entities;
 
 import android.net.Uri;
-import android.support.annotation.StringDef;
 
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -13,12 +14,9 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@TableEndpoint(name = Conversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-@Table(tableName = Conversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class Conversation extends BaseProviderModel<Conversation> {
+@TableEndpoint(name = DataConversation.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = DataConversation.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class DataConversation extends BaseProviderModel<DataConversation> {
     public static final String TABLE_NAME = "Conversations";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
@@ -35,9 +33,20 @@ public class Conversation extends BaseProviderModel<Conversation> {
     @Column long syncTime;
     @Column long lastActiveDate;
 
-    public Conversation() {}
+    public DataConversation() {}
 
-    private Conversation(Builder builder) {
+    public DataConversation(com.messenger.messengerservers.model.Conversation conversation) {
+        setId(conversation.getId());
+        setOwnerId(conversation.getOwnerId());
+        setSubject(conversation.getSubject());
+        setStatus(conversation.getStatus());
+        setType(conversation.getType());
+        setUnreadMessageCount(conversation.getUnreadMessageCount());
+        setAbandoned(conversation.isAbandoned());
+        setLastActiveDate(conversation.getLastActiveDate());
+    }
+
+    private DataConversation(Builder builder) {
         setId(builder.id);
         setOwnerId(builder.ownerId);
         setSubject(builder.subject);
@@ -72,21 +81,21 @@ public class Conversation extends BaseProviderModel<Conversation> {
         this.subject = subject;
     }
 
-    @Type.ConversationType
+    @ConversationType.Type
     public String getType() {
         return type;
     }
 
-    public void setType(@Type.ConversationType String type) {
+    public void setType(@ConversationType.Type String type) {
         this.type = type;
     }
 
-    @Status.ConversationStatus
+    @ConversationStatus.Status
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(@Status.ConversationStatus String status){
+    public void setStatus(@ConversationStatus.Status String status){
         this.status = status;
     }
 
@@ -127,7 +136,7 @@ public class Conversation extends BaseProviderModel<Conversation> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Conversation that = (Conversation) o;
+        DataConversation that = (DataConversation) o;
 
         return _id != null ? _id.equals(that._id) : that._id == null;
 
@@ -171,30 +180,6 @@ public class Conversation extends BaseProviderModel<Conversation> {
         return CONTENT_URI;
     }
 
-    public static final class Type {
-        public static final String CHAT = "chat";
-        public static final String GROUP = "group";
-        public static final String TRIP = "trip";
-        public static final String RINK = "rink";
-        public static final String RANK = "rank";
-
-        @Retention(RetentionPolicy.SOURCE)
-        @StringDef({CHAT, GROUP, TRIP, RINK, RANK})
-        public @interface ConversationType {
-        }
-    }
-
-    public static final class Status {
-        public static final String PRESENT = "present";
-        public static final String KICKED = "kicked";
-        public static final String LEFT = "left";
-
-        @Retention(RetentionPolicy.SOURCE)
-        @StringDef({PRESENT, KICKED, LEFT})
-        public @interface ConversationStatus {
-        }
-    }
-
     public static final class Builder {
         private String id;
         private String ownerId;
@@ -233,12 +218,12 @@ public class Conversation extends BaseProviderModel<Conversation> {
             return this;
         }
 
-        public Builder type(@Type.ConversationType String val) {
+        public Builder type(@ConversationType.Type String val) {
             type = val;
             return this;
         }
 
-        public Builder status(@Status.ConversationStatus String val) {
+        public Builder status(@ConversationStatus.Status String val) {
             status = val;
             return this;
         }
@@ -248,8 +233,8 @@ public class Conversation extends BaseProviderModel<Conversation> {
             return this;
         }
 
-        public Conversation build() {
-            return new Conversation(this);
+        public DataConversation build() {
+            return new DataConversation(this);
         }
     }
 }

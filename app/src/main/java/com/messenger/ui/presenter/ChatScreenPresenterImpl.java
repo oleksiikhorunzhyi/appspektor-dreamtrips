@@ -13,16 +13,21 @@ import android.widget.Toast;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Message$Table;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
+
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -73,7 +78,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private final GlobalEventEmitter messengerGlobalEmitter;
 
     @Inject
-    User user;
+    DataUser user;
     @Inject
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
@@ -115,7 +120,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private int initialConversationUnreadMessagesCount;
 
     private Observable<Chat> chatObservable;
-    private Observable<Conversation> conversationObservable;
+    private Observable<DataConversation> conversationObservable;
     private PublishSubject<ChatChangeStateEvent> chatStateStream;
 
     private Handler handler = new Handler();
@@ -130,21 +135,20 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ((Injector) context.getApplicationContext()).inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
-        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
-        paginationDelegate = new PaginationDelegate(context, messengerServerFacade, MAX_MESSAGE_PER_PAGE);
+        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());        paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
     }
 
-    private Observable<Chat> createChat(ChatManager chatManager, Conversation conversation) {
+    private Observable<Chat> createChat(ChatManager chatManager, DataConversation conversation) {
         switch (conversation.getType()) {
-            case Conversation.Type.CHAT:
+            case ConversationType.CHAT:
                 return participantsDAO
                         .getParticipant(conversation.getId(), user.getId()).compose(new NonNullFilter<>()).first()
                         .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));
-            case Conversation.Type.GROUP:
+            case ConversationType.GROUP:
             default:
                 boolean isOwner = conversationHelper.isOwner(conversation, user);
                 return Observable.defer(() -> Observable.just(chatManager.createMultiUserChat(conversation.getId(), user.getId(), isOwner)));
@@ -210,11 +214,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void connectConversation() {
-        ConnectableObservable<Conversation> source = conversationDAO.getConversation(conversationId)
+        ConnectableObservable<DataConversation> source = conversationDAO.getConversation(conversationId)
                 .onBackpressureLatest()
                 .filter(conversation -> conversation != null)
                 .filter(conversation -> {
-                    if (TextUtils.equals(conversation.getStatus(), Conversation.Status.PRESENT)) {
+                    if (TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT)) {
                         return true;
                     } else {
                         //if we were kicked from conversation
@@ -260,7 +264,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(value -> getView().hideUnreadMessageCount());
     }
 
-    private void onConversationLoadedFirstTime(Conversation conversation) {
+    private void onConversationLoadedFirstTime(DataConversation conversation) {
         notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
         //
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
@@ -296,9 +300,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     protected void connectMembers() {
-        Observable<List<User>> participantCursorObservable = participantsDAO.getParticipants(conversationId)
+        Observable<List<DataUser>> participantCursorObservable = participantsDAO.getParticipants(conversationId)
                 .onBackpressureLatest()
-                .map(c -> SqlUtils.convertToList(User.class, c))
+                .map(c -> SqlUtils.convertToList(DataUser.class, c))
                 .compose(bindViewIoToMainComposer());
 
         Observable.combineLatest(conversationObservable, participantCursorObservable,
@@ -310,7 +314,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Messages
     ///////////////////////////////////////////////////////////////////////////
 
-    private void connectMessages(Conversation conversation) {
+    private void connectMessages(DataConversation conversation) {
         messageDAO.getMessages(conversationId)
                 .onBackpressureLatest()
                 .filter(cursor -> cursor.getCount() > 0)
@@ -328,10 +332,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         int lastVisiblePosition = getView().getLastVisiblePosition() + diff;
                         if (lastVisiblePosition >= 0 && oldCursor != null && lastVisiblePosition < count) {
                             cursor.moveToPosition(lastVisiblePosition);
-                            int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
-                            String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
-                            if (status == Message.Status.SENT && !id.equals(user.getId())) {
-                                Message m = SqlUtils.convertToModel(true, Message.class, cursor);
+                            int status = cursor.getInt(cursor.getColumnIndex(DataMessage$Table.STATUS));
+                            String id = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
+                            if (status == MessageStatus.SENT && !id.equals(user.getId())) {
+                                DataMessage m = SqlUtils.convertToModel(true, DataMessage.class, cursor);
                                 if (timeSinceMessagesUiInitialized() < MARK_AS_READ_DELAY_SINCE_MESSAGES_UI_INITIALIZED) {
                                     long markAsReadDelay = MARK_AS_READ_DELAY_FOR_SCROLL_EVENTS - timeSinceMessagesUiInitialized();
                                     handler.postDelayed(() -> sendAndMarkChatEntities(m), markAsReadDelay);
@@ -357,7 +361,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Message Pagination
     ///////////////////////////////////////////////////////////////////////////
 
-    private void initPagination(Conversation conversation) {
+    private void initPagination(DataConversation conversation) {
         int localUnreadMessagesCount = messageDAO.unreadCount(conversationId, user.getId())
                 .toBlocking().first();
         initialConversationUnreadMessagesCount = conversation.getUnreadMessageCount();
@@ -384,15 +388,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     }
 
-    private void paginationPageLoaded(int loadedPage, List<Message> loadedMessages) {
+    private void paginationPageLoaded(int loadedPage, List<com.messenger.messengerservers.model.Message> loadedMessages) {
         isLoading = false;
         if (loadedMessages == null || loadedMessages.size() == 0) {
             haveMoreElements = false;
         } else {
             int loadedCount = loadedMessages.size();
             haveMoreElements = loadedCount == MAX_MESSAGE_PER_PAGE;
-            Message lastMessage = loadedMessages.get(loadedCount - 1);
-            before = lastMessage.getDate().getTime();
+            com.messenger.messengerservers.model.Message lastMessage = loadedMessages.get(loadedCount - 1);
+            before = lastMessage.getDate();
         }
 
         if (isInitialUnreadMessagesLoading) {
@@ -435,7 +439,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Unread and Mark as read
     ///////////////////////////////////////////////////////////////////////////
 
-    private void subscribeUnreadMessageCount(Conversation conversation) {
+    private void subscribeUnreadMessageCount(DataConversation conversation) {
         messageDAO.unreadCount(conversationId, user.getId())
                 .onBackpressureLatest()
                 .compose(bindVisibilityIoToMainComposer())
@@ -451,20 +455,21 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void markAsReadWithMessagePosition(Cursor cursor, int position, long delay) {
         if (cursor == null || cursor.isClosed() || !cursor.moveToPosition(position)) return;
 
-        int status = cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS));
-        String id = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
+        int status = cursor.getInt(cursor.getColumnIndex(DataMessage$Table.STATUS));
+        String id = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
         // not outgoing and unread
-        if (status == Message.Status.SENT && !id.equals(user.getId())) {
-            Message m = SqlUtils.convertToModel(true, Message.class, cursor);
+        if (status == MessageStatus.SENT && !id.equals(user.getId())) {
+            DataMessage m = SqlUtils.convertToModel(true, DataMessage.class, cursor);
             handler.postDelayed(() -> sendAndMarkChatEntities(m), delay);
         }
     }
 
-    private void sendAndMarkChatEntities(Message firstMessage) {
+    private void sendAndMarkChatEntities(DataMessage firstMessage) {
         if (!isConnectionPresent()) return;
 
         chatObservable.first()
-                .flatMap(chat -> chat.sendReadStatus(firstMessage).flatMap(this::markMessagesAsRead))
+                .flatMap(chat -> chat.sendReadStatus(firstMessage.getId())
+                        .flatMap(msgId -> markMessagesAsRead(firstMessage)))
                 .compose(new IoToMainComposer<>())
                 .doOnNext(m -> Timber.i("Message marked as read %s", m))
                 //// TODO: 1/20/16 it's temporary crutch, that must be replaced with refactoring logic of invoking this method and using rxjava instead of handler
@@ -474,7 +479,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 });
     }
 
-    private Observable<Message> markMessagesAsRead(Message firstIncomingMessage) {
+    private Observable<DataMessage> markMessagesAsRead(DataMessage firstIncomingMessage) {
         //message does not contain toId
         return messageDAO
                 .markMessagesAsRead(conversationId, user.getId(), firstIncomingMessage.getDate().getTime())
@@ -506,11 +511,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             return false;
         }
 
+        MessageBody body = new MessageBody();
+        body.setText(message);
+        body.setLocaleName(Locale.getDefault().toString());
+
         submitOneChatAction(chat -> {
-            chat.send(new Message.Builder()
-                            .locale(Locale.getDefault())
-                            .text(message)
-                            .from(user.getId())
+            chat.send(new com.messenger.messengerservers.model.Message.Builder()
+                            .messageBody(body)
+                            .fromId(user.getId())
                             .build()
             )
                     .subscribeOn(Schedulers.io())
@@ -523,6 +531,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void retrySendMessage(String messageId) {
         submitOneChatAction(chat -> messageDAO.getMessage(messageId)
                 .first()
+                .map(DataMessage::toChatMessage)
                 .flatMap(chat::send)
                 .subscribeOn(Schedulers.io())
                 .subscribe());
@@ -533,12 +542,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void openUserProfile(User user) {
+    public void openUserProfile(DataUser user) {
         profileCrosser.crossToProfile(user);
     }
 
     @Override
-    public User getUser() {
+    public DataUser getUser() {
         return user;
     }
 

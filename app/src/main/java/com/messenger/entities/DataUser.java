@@ -1,7 +1,8 @@
-package com.messenger.messengerservers.entities;
+package com.messenger.entities;
 
 import android.net.Uri;
 import android.os.Parcel;
+import android.provider.BaseColumns;
 
 import com.messenger.model.ChatUser;
 import com.messenger.storage.MessengerDatabase;
@@ -14,9 +15,9 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
-@TableEndpoint(name = User.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-@Table(tableName = User.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class User extends BaseProviderModel<User> implements ChatUser {
+@TableEndpoint(name = DataUser.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = DataUser.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     public static final String TABLE_NAME = "Users";
     public static final String COLUMN_NAME = "userName";
 
@@ -25,18 +26,23 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     @PrimaryKey
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @Column String _id;
+    @Column(name = BaseColumns._ID) String id;
     @Column int socialId;
     @Column String userName;
     @Column boolean online;
     @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
     @Column Boolean friend;
 
-    public User() {
+    public DataUser() {
     }
 
-    public User(String userId) {
-        this._id = userId;
+    public DataUser(com.messenger.messengerservers.model.User user) {
+        this(user.getName());
+        setOnline(user.isOnline());
+    }
+
+    public DataUser(String userId) {
+        this.id = userId;
         this.userName = userId;
     }
 
@@ -44,9 +50,13 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         return userName;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public String getId() {
-        return _id;
+        return id;
     }
 
     public int getSocialId() {
@@ -109,20 +119,20 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        DataUser user = (DataUser) o;
 
-        return !(_id != null ? !_id.equals(user._id) : user._id != null);
+        return !(id != null ? !id.equals(user.id) : user.id != null);
     }
 
     @Override
     public int hashCode() {
-        return _id.hashCode();
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "_id='" + _id + '\'' +
+                "_id='" + id + '\'' +
                 '}';
     }
 
@@ -153,7 +163,7 @@ public class User extends BaseProviderModel<User> implements ChatUser {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this._id);
+        dest.writeString(this.id);
         dest.writeInt(this.socialId);
         dest.writeString(this.userName);
         dest.writeByte(online ? (byte) 1 : (byte) 0);
@@ -161,8 +171,8 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         dest.writeValue(this.friend);
     }
 
-    protected User(Parcel in) {
-        this._id = in.readString();
+    protected DataUser(Parcel in) {
+        this.id = in.readString();
         this.socialId = in.readInt();
         this.userName = in.readString();
         this.online = in.readByte() != 0;
@@ -170,13 +180,13 @@ public class User extends BaseProviderModel<User> implements ChatUser {
         this.friend = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        public User createFromParcel(Parcel source) {
-            return new User(source);
+    public static final Creator<DataUser> CREATOR = new Creator<DataUser>() {
+        public DataUser createFromParcel(Parcel source) {
+            return new DataUser(source);
         }
 
-        public User[] newArray(int size) {
-            return new User[size];
+        public DataUser[] newArray(int size) {
+            return new DataUser[size];
         }
     };
 }

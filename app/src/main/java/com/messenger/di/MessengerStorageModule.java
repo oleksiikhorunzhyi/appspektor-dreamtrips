@@ -3,7 +3,8 @@ package com.messenger.di;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataUser;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -36,7 +37,7 @@ public class MessengerStorageModule {
                     if (!TextUtils.isEmpty(query.sortOrder)) {
                         builder.append(" ").append(query.sortOrder);
                     }
-                    return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                    return FlowManager.getDatabaseForTable(DataUser.class).getWritableDatabase()
                             .rawQuery(builder.toString(), query.selectionArgs);
                 });
     }
@@ -65,4 +66,9 @@ public class MessengerStorageModule {
         return new MessageDAO(rxContentResolver, context);
     }
 
+    @Provides
+    @Singleton
+    AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new AttachmentDAO(context, rxContentResolver);
+    }
 }

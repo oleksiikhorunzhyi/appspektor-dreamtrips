@@ -1,13 +1,13 @@
 package com.messenger.messengerservers;
 
 
-import com.messenger.messengerservers.entities.ConversationData;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.loaders.Loader;
+import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.User;
 
 public interface LoaderManager {
 
     Loader<User> createContactLoader();
 
-    Loader<ConversationData> createConversationLoader();
+    Loader<Conversation> createConversationLoader();
 }

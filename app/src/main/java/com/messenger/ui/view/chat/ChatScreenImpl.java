@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.helper.ConversationHelper;
@@ -206,7 +206,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void setTitle(Conversation conversation, List<User> members) {
+    public void setTitle(DataConversation conversation, List<DataUser> members) {
         conversationHelper.setTitle(title, conversation, members, false);
         conversationHelper.setSubtitle(subtitle, conversation, members);
     }
@@ -223,17 +223,17 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void addTypingUser(User user) {
+    public void addTypingUser(DataUser user) {
         chatUsersTypingView.addTypingUser(user);
     }
 
     @Override
-    public void removeTypingUser(User user) {
+    public void removeTypingUser(DataUser user) {
         chatUsersTypingView.removeTypingUser(user);
     }
 
     @Override
-    public void showMessages(Cursor cursor, Conversation conversation, boolean pendingScroll) {
+    public void showMessages(Cursor cursor, DataConversation conversation, boolean pendingScroll) {
         adapter.setConversation(conversation);
 
         int firstVisibleViewTop = 0;

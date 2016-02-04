@@ -10,8 +10,9 @@ import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.di.MessengerStorageModule;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -41,13 +42,13 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
 
     String conversationId;
-    Observable<Conversation> conversationObservable;
-    Observable<List<User>> participantsObservable;
+    Observable<DataConversation> conversationObservable;
+    Observable<List<DataUser>> participantsObservable;
 
     protected final ChatLeavingDelegate chatLeavingDelegate;
 
     @Inject
-    User user;
+    DataUser user;
     @Inject
     MessengerServerFacade facade;
 
@@ -105,10 +106,10 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         });
     }
 
-    private void connectToParticipants(Conversation conversation) {
+    private void connectToParticipants(DataConversation conversation) {
         participantsObservable = participantsDAO.getParticipants(conversationId)
                 .onBackpressureLatest()
-                .map(c -> SqlUtils.convertToList(User.class, c))
+                .map(c -> SqlUtils.convertToList(DataUser.class, c))
                 .compose(bindViewIoToMainComposer());
 
         participantsObservable.subscribe(users ->
@@ -197,7 +198,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     @Override
     public void applyNewChatSubject(String subject) {
         Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
-                .createMultiUserChatObservable(conversationId, facade.getOwner().getId())
+                .createMultiUserChatObservable(conversationId, facade.getUsername())
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject));
 
         Observable.zip(multiUserChatObservable, conversationObservable,
@@ -245,11 +246,11 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     ///// Helpers
     ////////////////////////////////////////////////////
 
-    private boolean isUserOwner(Conversation conversation) {
+    private boolean isUserOwner(DataConversation conversation) {
         return TextUtils.equals(conversation.getOwnerId(), user.getId());
     }
 
-    private boolean isSingleChat(Conversation conversation) {
-        return TextUtils.equals(conversation.getType(), Conversation.Type.CHAT);
+    private boolean isSingleChat(DataConversation conversation) {
+        return TextUtils.equals(conversation.getType(), ConversationType.CHAT);
     }
 }

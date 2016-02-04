@@ -1,31 +1,28 @@
-package com.messenger.messengerservers.entities;
+package com.messenger.messengerservers.model;
 
-import android.database.Cursor;
 import android.support.annotation.StringDef;
-
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class Participant {
 
-    private User user;
+    private String userId;
     private String affiliation;
     private String conversationId;
 
-    public Participant(User user, String affiliation, String conversationId) {
-        this.user = user;
+    public Participant(String userId, String affiliation, String conversationId) {
+        this.userId = userId;
         this.affiliation = affiliation;
         this.conversationId = conversationId;
     }
 
     public Participant(Participant participant, String conversationId) {
-        this(participant.user, participant.affiliation, conversationId);
+        this(participant.getUserId(), participant.getAffiliation(), conversationId);
     }
 
-    public User getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
     @Affiliation.AffiliationType
@@ -35,12 +32,6 @@ public class Participant {
 
     public String getConversationId() {
         return conversationId;
-    }
-
-    public static Participant from(Cursor cursor){
-        User user = SqlUtils.convertToModel(true, User.class, cursor);
-        ParticipantsRelationship relationship = SqlUtils.convertToModel(true, ParticipantsRelationship.class, cursor);
-        return new Participant(user, relationship.getAffiliation(), relationship.getConversationId());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -54,14 +45,14 @@ public class Participant {
 
         Participant that = (Participant) o;
 
-        if (user != null ? !user.equals(that.user) : that.user != null) return false;
+        if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
         return conversationId != null ? conversationId.equals(that.conversationId) : that.conversationId == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = user != null ? user.hashCode() : 0;
+        int result = userId != null ? userId.hashCode() : 0;
         result = 31 * result + (conversationId != null ? conversationId.hashCode() : 0);
         return result;
     }
@@ -69,7 +60,7 @@ public class Participant {
     @Override
     public String toString() {
         return "Participant{" +
-                "user=" + user +
+                "user=" + userId +
                 ", affiliation='" + affiliation + '\'' +
                 ", conversationId='" + conversationId + '\'' +
                 '}';

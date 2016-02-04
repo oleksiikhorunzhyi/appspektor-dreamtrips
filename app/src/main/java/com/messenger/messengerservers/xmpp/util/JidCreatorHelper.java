@@ -1,8 +1,9 @@
 package com.messenger.messengerservers.xmpp.util;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.model.User;
 
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public final class JidCreatorHelper {
         return new User(obtainId(jid));
     }
 
-    public static String obtainId(String jid) {
+    public static String obtainId(@NonNull String jid) {
         int pos = jid.indexOf("@");
         return jid.substring(0, pos);
     }

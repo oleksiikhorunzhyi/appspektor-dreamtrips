@@ -1,12 +1,11 @@
 package com.messenger.messengerservers;
 
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
+import com.messenger.messengerservers.model.User;
 
 public interface MessengerServerFacade {
 
-    // TODO: 11/24/15 rename to connect
     void authorizeAsync(String username, String password);
 
     void disconnectAsync();
@@ -35,6 +34,6 @@ public interface MessengerServerFacade {
 
     GlobalEventEmitter getGlobalEventEmitter();
 
-    User getOwner();
+    String getUsername();
 
 }

@@ -1,9 +1,10 @@
-package com.messenger.messengerservers.entities;
+package com.messenger.entities;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.support.annotation.IntDef;
 
+import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -15,11 +16,10 @@ import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.util.Date;
-import java.util.Locale;
 
-@TableEndpoint(name = Message.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-@Table(tableName = Message.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class Message extends BaseProviderModel<Message> {
+@TableEndpoint(name = DataMessage.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+@Table(tableName = DataMessage.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+public class DataMessage extends BaseProviderModel<DataMessage> {
     public static final String TABLE_NAME = "Messages";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
@@ -32,29 +32,39 @@ public class Message extends BaseProviderModel<Message> {
     @Column String text;
     @Column Date date;
     @Column String conversationId;
-    @Status.MessageStatus @Column int status;
+    @MessageStatus.Status @Column int status;
 
-    // TODO: 1/9/16 store this column
-    private Locale locale;
-
-    public Message() {
+    public DataMessage() {
     }
 
-    public Message(String from, String to, String text, String id) {
+    public DataMessage(String from, String to, String text, String id) {
         this.fromId = from;
         this.toId = to;
         this.text = text;
         this.id = id;
     }
 
-    private Message(Builder builder) {
+    public DataMessage(com.messenger.messengerservers.model.Message message) {
+        setId(message.getId());
+        setConversationId(message.getConversationId());
+        setFromId(message.getFromId());
+        setToId(message.getToId());
+        setStatus(message.getStatus());
+        setDate(new Date(message.getDate()));
+
+        MessageBody body = message.getMessageBody();
+        if (body != null) {
+            setText(body.getText());
+        }
+    }
+
+    private DataMessage(Builder builder) {
         setId(builder.id);
         setConversationId(builder.conversationId);
         setFromId(builder.from);
         setToId(builder.to);
         setText(builder.text);
         setDate(builder.date);
-        setLocale(builder.locale);
         setStatus(builder.status);
     }
 
@@ -106,19 +116,11 @@ public class Message extends BaseProviderModel<Message> {
         this.date = date;
     }
 
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(@Status.MessageStatus int status) {
+    public void setStatus(@MessageStatus.Status int status) {
         this.status = status;
     }
 
@@ -154,7 +156,7 @@ public class Message extends BaseProviderModel<Message> {
         private String to;
         private String text;
         private Date date;
-        private Locale locale;
+        private String locale;
         private int status;
 
         public Builder() {
@@ -190,28 +192,29 @@ public class Message extends BaseProviderModel<Message> {
             return this;
         }
 
-        public Builder locale(Locale val) {
+        public Builder locale(String val) {
             locale = val;
             return this;
         }
 
-        public Builder status(@Status.MessageStatus int val) {
+        public Builder status(@MessageStatus.Status int val) {
             status = val;
             return this;
         }
 
-        public Message build() {
-            return new Message(this);
+        public DataMessage build() {
+            return new DataMessage(this);
         }
     }
 
-    public static class Status {
-        public static final int ERROR = -1;
-        public static final int SENDING = 0;
-        public static final int SENT = 1;
-        public static final int READ = 2;
-
-        @IntDef({ERROR, SENDING, SENT, READ})
-        @interface MessageStatus {}
+    public com.messenger.messengerservers.model.Message toChatMessage() {
+        MessageBody body = new MessageBody(text,null, null);
+        return new com.messenger.messengerservers.model.Message.Builder()
+                .fromId(fromId)
+                .toId(toId)
+                .id(id)
+                .messageBody(body)
+                .status(status)
+                .build();
     }
 }

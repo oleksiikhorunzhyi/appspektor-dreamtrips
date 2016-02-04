@@ -11,11 +11,12 @@ import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
 import com.messenger.util.SwipeClickListener;
 import com.worldventures.dreamtrips.R;
+
 import java.util.List;
 
 import butterknife.InjectView;
@@ -30,7 +31,7 @@ public class ActionButtonsContactsCursorAdapter
     private DeleteRequestListener deleteRequestListener;
     private UserClickListener userClickListener;
 
-    public ActionButtonsContactsCursorAdapter(Context context, User user, boolean owner) {
+    public ActionButtonsContactsCursorAdapter(Context context, DataUser user, boolean owner) {
         super(context, null);
         this.userId = user.getId();
         this.owner = owner;
@@ -44,7 +45,7 @@ public class ActionButtonsContactsCursorAdapter
         return new ActionButtonsViewHolder(itemRow);
     }
 
-    protected void onBindUserHolder(ContactViewHolder h, Cursor cursor, final User user) {
+    protected void onBindUserHolder(ContactViewHolder h, Cursor cursor, final DataUser user) {
         super.onBindUserHolder(h, cursor, user);
         ActionButtonsViewHolder holder = (ActionButtonsViewHolder)h;
 
@@ -143,11 +144,11 @@ public class ActionButtonsContactsCursorAdapter
     }
 
     public interface DeleteRequestListener {
-        void onDeleteUserRequired(User user);
+        void onDeleteUserRequired(DataUser user);
     }
 
     public interface UserClickListener {
-        void onUserClicked(User user);
+        void onUserClicked(DataUser user);
     }
 
     public static class ActionButtonsViewHolder extends ContactViewHolder {

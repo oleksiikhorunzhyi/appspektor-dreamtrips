@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.RxContentResolver;
 import com.messenger.util.RxContentResolver.Query;
@@ -37,7 +37,7 @@ class BaseDAO {
                     if (!TextUtils.isEmpty(query.sortOrder)) {
                         builder.append(" ").append(query.sortOrder);
                     }
-                    return FlowManager.getDatabaseForTable(User.class).getWritableDatabase()
+                    return FlowManager.getDatabaseForTable(DataUser.class).getWritableDatabase()
                             .rawQuery(builder.toString(), query.selectionArgs);
                 });
     }

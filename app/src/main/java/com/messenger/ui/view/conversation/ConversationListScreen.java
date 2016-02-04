@@ -2,7 +2,7 @@ package com.messenger.ui.view.conversation;
 
 import android.database.Cursor;
 
-import com.messenger.messengerservers.entities.Conversation;
+import com.messenger.entities.DataConversation;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 public interface ConversationListScreen extends MessengerScreen {
@@ -12,6 +12,6 @@ public interface ConversationListScreen extends MessengerScreen {
     void setSelectedConversationId(String conversationId);
     void showConversations(Cursor cursor);
     void showConversations(Cursor cursor, String searchFilter);
-    void showConversationDeletionConfirmationDialog(Conversation conversation);
-    void showConversationMoreActionsDialog(Conversation conversation);
+    void showConversationDeletionConfirmationDialog(DataConversation conversation);
+    void showConversationMoreActionsDialog(DataConversation conversation);
 }

@@ -3,6 +3,8 @@ package com.messenger.messengerservers.xmpp;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.ChatManager;
@@ -10,11 +12,13 @@ import com.messenger.messengerservers.ContactManager;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
-import com.messenger.messengerservers.entities.User;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
+import com.messenger.messengerservers.model.AttachmentHolder;
+import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGanarator;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -59,8 +63,10 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final XmppGlobalEventEmitter globalEventEmitter;
     private final ChatManager chatManager;
     private final RosterManager rosterManager;
+    private final Gson gson;
 
-    public XmppServerFacade(XmppServerParams serverParams, Context context, DreamSpiceManager requester) {
+    public XmppServerFacade(XmppServerParams serverParams, Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
+        gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
         this.context = context;
         this.serverParams = serverParams;
         this.requester = requester;
@@ -69,7 +75,8 @@ public class XmppServerFacade implements MessengerServerFacade {
         paginationManager = new XmppPaginationManager(this);
         globalEventEmitter = new XmppGlobalEventEmitter(this);
         chatManager = new XmppChatManager(this);
-        rosterManager = new RosterManager(context, new UserProcessor(requester));
+        rosterManager = new RosterManager(new UserProcessor(usersDAO, requester), globalEventEmitter);
+
     }
 
     private MessengerConnection createConnection() {
@@ -202,12 +209,15 @@ public class XmppServerFacade implements MessengerServerFacade {
     }
 
     @Override
-    public User getOwner() {
-        return new User(connection.getUser().split("@")[0]);
+    public String getUsername() {
+        return connection.getUser().split("@")[0];
     }
 
     public AbstractXMPPConnection getConnection() {
         return connection;
     }
 
+    public Gson getGson() {
+        return gson;
+    }
 }

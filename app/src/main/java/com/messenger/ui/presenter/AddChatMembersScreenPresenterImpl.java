@@ -6,18 +6,19 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataParticipant;
+import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Table;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +30,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
-import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
+import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 
 public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
@@ -39,8 +40,8 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     ParticipantsDAO participantsDAO;
 
     private String conversationId;
-    private Observable<Conversation> conversationStream;
-    private PublishSubject<List<User>> selectedStream;
+    private Observable<DataConversation> conversationStream;
+    private PublishSubject<List<DataUser>> selectedStream;
 
     public AddChatMembersScreenPresenterImpl(Context context, String conversationId) {
         super(context);
@@ -88,13 +89,13 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     }
 
     @Override
-    public void onSelectedUsersStateChanged(List<User> selectedContacts) {
+    public void onSelectedUsersStateChanged(List<DataUser> selectedContacts) {
         super.onSelectedUsersStateChanged(selectedContacts);
         selectedStream.onNext(selectedContacts);
     }
 
     private void tryCreateChat() {
-        List<User> newChatUsers = getViewState().getSelectedContacts();
+        List<DataUser> newChatUsers = getViewState().getSelectedContacts();
         if (newChatUsers == null || newChatUsers.isEmpty()) {
             Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
                     Toast.LENGTH_SHORT).show();
@@ -105,19 +106,27 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
             showAbsentConnectionMessage(getContext());
             return;
         }
-
+        // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
+        List<String> newChatUserIds = Queryable.from(newChatUsers).map(u -> u.getId()).toList();
         conversationStream
                 .flatMap(conversation -> participantsDAO
                         .getParticipants(conversation.getId()).first()
-                        .map(cursor -> SqlUtils.convertToList(User.class, cursor))
+                        .map(cursor -> {
+                            List<String> userIds = new ArrayList<>(cursor.getCount());
+                            while (cursor.moveToFirst()) {
+                                userIds.add(cursor.getString(cursor.getColumnIndex(DataUser$Table._ID)));
+                            }
+                            cursor.close();
+                            return userIds;
+                        })
                         .map(currentUsers -> {
-                            Conversation newConversation = chatDelegate.modifyConversation(
-                                    conversation, currentUsers, newChatUsers, getView().getConversationName()
+                            DataConversation newConversation = chatDelegate.modifyConversation(
+                                    conversation, currentUsers, newChatUserIds, getView().getConversationName()
                             );
                             Queryable.from(newChatUsers).forEachR(u ->
-                                            new ParticipantsRelationship(newConversation.getId(), u, Participant.Affiliation.MEMBER).save()
+                                            new DataParticipant(newConversation.getId(), u.getId(), Participant.Affiliation.MEMBER).save()
                             );
-                            ContentUtils.insert(Conversation.CONTENT_URI, newConversation);
+                            ContentUtils.insert(DataConversation.CONTENT_URI, newConversation);
                             return newConversation;
                         }))
                 .subscribeOn(Schedulers.io())

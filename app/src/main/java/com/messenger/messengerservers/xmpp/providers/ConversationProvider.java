@@ -4,10 +4,11 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.xmpp.entities.ConversationWithLastMessage;
-import com.messenger.messengerservers.xmpp.entities.MessageBody;
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
@@ -19,20 +20,24 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Locale;
 
 import timber.log.Timber;
 
 public class ConversationProvider extends IQProvider<ConversationsPacket> {
+    private final Gson gson;
+
+    public ConversationProvider(Gson gson) {
+        this.gson = gson;
+    }
 
     @Override
     public ConversationsPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         ConversationsPacket conversationsPacket = new ConversationsPacket();
 
+        String thread = null;
         String elementName;
-        Message message = null;
-        Conversation conversation = null;
+        Message.Builder messageBuilder = null;
+        Conversation.Builder conversationBuilder = null;
 
         boolean done = false;
         while (!done) {
@@ -42,65 +47,62 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                     elementName = parser.getName();
                     switch (elementName) {
                         case "chat":
-                            String thread = parser.getAttributeValue("", "thread");
+                            thread = parser.getAttributeValue("", "thread");
                             String type = getTypeByThread(thread);
                             if (type == null) {
                                 type = parser.getAttributeValue("", "type");
                             }
                             String subject = parser.getAttributeValue("", "subject");
                             int unreadMessegeCount = ParserUtils.getIntegerAttribute(parser, "unread-count");
-                            //noinspection all
-                            conversation = new Conversation.Builder()
+
+                            conversationBuilder = new Conversation.Builder()
                                     .id(thread)
                                     .type(type.toLowerCase())
                                     .subject(subject)
                                     //// TODO: 1/19/16 set status depends on status will be sent in future
-                                    .status(Conversation.Status.PRESENT)
-                                    .unreadMessageCount(unreadMessegeCount)
-                                    .build();
+                                    .status(ConversationStatus.PRESENT)
+                                    .unreadMessageCount(unreadMessegeCount);
                             break;
                         case "last-message":
                             long timestamp = ParserUtils.getLongAttribute(parser, "time");
                             //noinspection all
-                            conversation.setLastActiveDate(timestamp);
+                            conversationBuilder.lastActiveDate(timestamp);
 
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             if (TextUtils.isEmpty(messageId)) {
-                                message = null;
+                                messageBuilder = null;
                                 continue;
                             }
                             String from = parser.getAttributeValue("", "from");
                             String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
-                            Message.Builder builder = new Message.Builder()
+                            messageBuilder = new Message.Builder()
                                     .id(messageId)
-                                    .conversationId(conversation.getId())
-                                    //// TODO: 12/18/15 today attribute secs is millisecond
-                                    .date(new Date(timestamp))
-                                    .from(JidCreatorHelper.obtainId(from));
+                                    .date(timestamp)
+                                    .fromId(JidCreatorHelper.obtainId(from));
 
                             MessageBody stanzaMessageBody = null;
                             try {
-                                stanzaMessageBody = new Gson().fromJson(messageBody, MessageBody.class);
+                                stanzaMessageBody = gson.fromJson(messageBody, MessageBody.class);
                             } catch (JsonSyntaxException e) {
-                                Timber.e(e, "Parce error");
+                                Timber.w(e, getClass().getName());
                             }
 
-                            if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null) {
-                                builder.text("")
-                                        .locale(Locale.getDefault());
-                            } else {
-                                builder.text(stanzaMessageBody.getText())
-                                        .locale(new Locale(stanzaMessageBody.getLocale()));
-                            }
-
-                            message = builder.build();
+                            messageBuilder.messageBody(stanzaMessageBody);
                     }
                     break;
                 case XmlPullParser.END_TAG:
                     elementName = parser.getName();
                     switch (elementName) {
                         case "chat":
-                            conversationsPacket.addConversation(new ConversationWithLastMessage(conversation, message));
+                            if (conversationBuilder == null) break;
+                            Conversation conversation = conversationBuilder
+                                    .lastMessage(messageBuilder != null ? messageBuilder.conversationId(thread).build() : null)
+                                    .build();
+                            //noinspection all // conversationBuilder cannot be null
+                            conversationsPacket.addConversation(conversation);
+                            messageBuilder = null;
+                            thread =  null;
+                            conversationBuilder = null;
                             break;
                         case "list":
                             done = true;
@@ -112,10 +114,9 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
         return conversationsPacket;
     }
 
-    @Conversation.Type.ConversationType
     private String getTypeByThread(String thread) {
         if (thread.startsWith("dreamtrip_auto_gen")) {
-            return Conversation.Type.TRIP;
+            return ConversationType.TRIP;
         }
         return null;
     }

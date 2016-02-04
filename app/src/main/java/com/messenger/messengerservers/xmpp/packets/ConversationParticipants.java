@@ -1,7 +1,7 @@
 package com.messenger.messengerservers.xmpp.packets;
 
 
-import com.messenger.messengerservers.entities.Participant;
+import com.messenger.messengerservers.model.Participant;
 
 import org.jivesoftware.smack.packet.IQ;
 
@@ -39,7 +39,10 @@ public class ConversationParticipants extends IQ {
     }
 
     public void addParticipant(Participant participant) {
-        participants.add(participant);
+        // TODO: 2/2/16 remove this condition
+        if (!participants.contains(participant)) {
+            participants.add(participant);
+        }
     }
 
     public List<Participant> getParticipants() {

@@ -1,12 +1,11 @@
 package com.messenger.messengerservers.xmpp.loaders;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.ConversationData;
-import com.messenger.messengerservers.entities.Participant;
-import com.messenger.messengerservers.entities.User;
+import com.google.gson.Gson;
+import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.entities.ConversationWithLastMessage;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationListPacket;
 import com.messenger.messengerservers.xmpp.providers.ConversationProvider;
@@ -22,18 +21,19 @@ import java.util.List;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.messenger.messengerservers.entities.Conversation.Type.CHAT;
+import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 
-public class XmppConversationLoader extends Loader<ConversationData> {
+public class XmppConversationLoader extends Loader<Conversation> {
 
     private static final int MAX_CONVERSATIONS = 512;
     private final XmppServerFacade facade;
-
+    private Gson gson;
     public XmppConversationLoader(XmppServerFacade facade) {
         this.facade = facade;
+        gson = facade.getGson();
         ProviderManager.addIQProvider(
                 ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE,
-                new ConversationProvider()
+                new ConversationProvider(gson)
         );
     }
 
@@ -47,7 +47,7 @@ public class XmppConversationLoader extends Loader<ConversationData> {
             facade.getConnection().sendStanzaWithResponseCallback(packet,
                     (stanza) -> stanza instanceof ConversationsPacket,
                     (stanzaPacket) -> {
-                        List<ConversationWithLastMessage> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
+                        List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
                         obtainConversationsWithParticipants(conversations)
                                 .subscribe(conversationWithParticipants -> {
                                     Timber.i("Conversations loaded: %s", conversations);
@@ -59,22 +59,23 @@ public class XmppConversationLoader extends Loader<ConversationData> {
         }
     }
 
-    private Observable<List<ConversationData>> obtainConversationsWithParticipants(List<ConversationWithLastMessage> conversations) {
+    private Observable<List<Conversation>> obtainConversationsWithParticipants(List<Conversation> conversations) {
         ParticipantProvider provider = new ParticipantProvider(facade.getConnection());
         return Observable.from(conversations)
-                .filter(c -> !hasNoOtherUsers(c.conversation))
-                .flatMap(conversationWithLastMessage -> Observable.<ConversationData>create(subscriber -> {
-                    Conversation conversation = conversationWithLastMessage.conversation;
+                .filter(c -> !hasNoOtherUsers(c))
+                .flatMap(conversation -> Observable.<Conversation>create(subscriber -> {
                     if (conversation.getType().equals(CHAT)) {
+                        // TODO: 2/1/16  participants has jid
                         List<Participant> participants = provider.getSingleChatParticipants(conversation);
                         if (subscriber.isUnsubscribed()) return;
-                        if (singleChatInvalid(conversation, facade.getOwner())) {
+                        if (singleChatInvalid(conversation, facade.getUsername())) {
                             Timber.w("Single Conversation is invalid: %s", conversation);
                             subscriber.onCompleted();
                             return;
                         }
-                        //
-                        subscriber.onNext(new ConversationData(conversation, participants, conversationWithLastMessage.lastMessage));
+
+                        conversation.getParticipants().addAll(participants);
+                        subscriber.onNext(conversation);
                         subscriber.onCompleted();
                     } else {
                         provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
@@ -86,11 +87,12 @@ public class XmppConversationLoader extends Loader<ConversationData> {
                             }
                             //
                             if (owner != null) {
-                                conversation.setOwnerId(owner.getUser().getId());
+                                conversation.setOwnerId(owner.getUserId());
                                 members.add(0, owner);
                             }
                             conversation.setAbandoned(abandoned);
-                            subscriber.onNext(new ConversationData(conversation, members, conversationWithLastMessage.lastMessage));
+                            conversation.getParticipants().addAll(members);
+                            subscriber.onNext(conversation);
                             subscriber.onCompleted();
                         });
                     }
@@ -99,22 +101,22 @@ public class XmppConversationLoader extends Loader<ConversationData> {
     }
 
     private boolean groupChatInvalid(Conversation conversation, Participant owner, List<Participant> members) {
-        boolean withoutOwner = owner == null && (conversation.getType().equals(Conversation.Type.CHAT) || conversation.getType().equals(Conversation.Type.GROUP));
+        boolean withoutOwner = owner == null && (conversation.getType().equals(ConversationType.CHAT) || conversation.getType().equals(ConversationType.GROUP));
         boolean noParticipants = owner == null && (members == null || members.isEmpty());
         return withoutOwner || noParticipants;
     }
 
-    private boolean singleChatInvalid(Conversation conversation, User user) {
-        boolean wrongSingleChat = !conversation.getId().contains(user.getId());
+    private boolean singleChatInvalid(Conversation conversation, String userId) {
+        boolean wrongSingleChat = !conversation.getId().contains(userId);
         return wrongSingleChat;
     }
 
     private boolean hasNoOtherUsers(Conversation conversation) {
-        String companion = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation, facade.getConnection().getUser());
+        String companion = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation.getId(), facade.getConnection().getUser());
         return companion == null;
     }
 
-    public void notifyListeners(List<ConversationData> conversations) {
+    public void notifyListeners(List<Conversation> conversations) {
         if (persister != null) {
             persister.save(conversations);
         }

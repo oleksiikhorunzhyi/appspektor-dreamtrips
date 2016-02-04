@@ -10,7 +10,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.model.ChatUser;
 import com.worldventures.dreamtrips.R;
 
@@ -80,7 +80,7 @@ public class GroupAvatarsView extends GridLayout {
         }
     }
 
-    public void updateAvatars(List<User> chatUsers) {
+    public void updateAvatars(List<DataUser> chatUsers) {
         for (int i = 0; i < MAX_AVATARS_COUNT; i++) {
             SimpleDraweeView avatarImageView = avatarImageViews.get(i);
             if (i > chatUsers.size() - 1) {

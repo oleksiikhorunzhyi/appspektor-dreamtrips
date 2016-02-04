@@ -55,7 +55,10 @@ public class MessengerConnector {
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
-        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade, new UserProcessor(spiceManager), conversationsDAO, participantsDAO, messageDAO, usersDAO);
+        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade,
+                new UserProcessor(usersDAO, spiceManager),
+                conversationsDAO, participantsDAO, messageDAO, usersDAO
+        );
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
         this.connectionStream = ReplaySubject.create(1);
 

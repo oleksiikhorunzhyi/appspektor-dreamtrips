@@ -1,7 +1,6 @@
 package com.messenger.messengerservers.xmpp.chats;
 
 import com.messenger.messengerservers.ConnectionException;
-import com.messenger.messengerservers.entities.Message;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 
 import org.jivesoftware.smack.SmackException;
@@ -9,19 +8,19 @@ import org.jivesoftware.smack.packet.Stanza;
 
 import rx.Observable;
 
-class StatusMessageTransformer implements Observable.Transformer<Message, Message> {
+class StatusMessageTranformer implements Observable.Transformer<String, String> {
     private final StatusMessagePacket statusMessagePacket;
     private final SendAction<Stanza> sendAction;
 
-    StatusMessageTransformer(StatusMessagePacket statusMessagePacket, SendAction<Stanza> sendAction) {
+    StatusMessageTranformer(StatusMessagePacket statusMessagePacket, SendAction<Stanza> sendAction) {
         this.statusMessagePacket = statusMessagePacket;
         this.sendAction = sendAction;
     }
 
     @Override
-    public Observable<Message> call(Observable<Message> messageObservable) {
-        return messageObservable
-                .flatMap(message -> Observable.<Message>create(subscriber -> {
+    public Observable<String> call(Observable<String> messageIdObservable) {
+        return messageIdObservable
+                .flatMap(message -> Observable.<String>create(subscriber -> {
                     subscriber.onStart();
                     try {
                         if (sendAction.call(statusMessagePacket)) {

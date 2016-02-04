@@ -20,7 +20,7 @@ public abstract class PagePagination<T> {
         this.persister = persister;
     }
 
-    public void setOnEntityLoadedListener(OnLoadedListener onEntityLoadedListener) {
+    public void setOnEntityLoadedListener(OnLoadedListener<T> onEntityLoadedListener) {
         this.onEntityLoadedListener = onEntityLoadedListener;
     }
 

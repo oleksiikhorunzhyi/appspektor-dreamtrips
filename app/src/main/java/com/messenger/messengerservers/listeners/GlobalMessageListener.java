@@ -1,10 +1,12 @@
 package com.messenger.messengerservers.listeners;
 
-import com.messenger.messengerservers.entities.Message;
+import com.messenger.messengerservers.model.Message;
 
 public interface GlobalMessageListener {
 
     void onReceiveMessage(Message message);
+
+    void onPreSendMessage(Message message);
 
     void onSendMessage(Message message);
 
@@ -12,6 +14,11 @@ public interface GlobalMessageListener {
 
         @Override
         public void onReceiveMessage(Message message) {
+        }
+
+        @Override
+        public void onPreSendMessage(Message message) {
+
         }
 
         @Override

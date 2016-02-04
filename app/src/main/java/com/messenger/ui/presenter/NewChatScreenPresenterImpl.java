@@ -4,9 +4,10 @@ import android.content.Context;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
@@ -51,7 +52,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     }
 
     @Override
-    public void onSelectedUsersStateChanged(List<User> selectedContacts) {
+    public void onSelectedUsersStateChanged(List<DataUser> selectedContacts) {
         super.onSelectedUsersStateChanged(selectedContacts);
         if (selectedContacts.size() <= 1) {
             slideOutConversationNameEditText();
@@ -64,7 +65,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                List<User> selectedUsers = getViewState().getSelectedContacts();
+                List<DataUser> selectedUsers = getViewState().getSelectedContacts();
 
                 if (selectedUsers == null || selectedUsers.isEmpty()) {
                     Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
@@ -77,7 +78,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                     return true;
                 }
 
-                Action1<Conversation> action1 = conversation -> {
+                Action1<DataConversation> action1 = conversation -> {
                     History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
                     history.pop();
                     history.push(new ChatPath(conversation.getId()));
@@ -85,13 +86,17 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 };
 
                 if (selectedUsers.size() == 1) {
-                    startChatDelegate.startSingleChat(selectedUsers.get(0), action1);
+                    startChatDelegate.startSingleChat(convertToIds(selectedUsers).get(0), action1);
                 } else {
-                    startChatDelegate.startNewGroupChat(user, selectedUsers, getView().getConversationName(), action1);
+                    startChatDelegate.startNewGroupChat(user.getId(), convertToIds(selectedUsers), getView().getConversationName(), action1);
                 }
 
                 return true;
         }
         return false;
+    }
+
+    private List<String> convertToIds(List<DataUser> users) {
+        return Queryable.from(users).map(DataUser::getId).toList();
     }
 }

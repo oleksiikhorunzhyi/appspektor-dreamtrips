@@ -2,7 +2,7 @@ package com.messenger.ui.adapter.holder;
 
 import android.view.View;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
 
@@ -20,7 +20,7 @@ public class GroupConversationViewHolder extends BaseConversationViewHolder{
     }
 
     @Override
-    protected void setConversationPicture(List<User> participants) {
+    protected void setConversationPicture(List<DataUser> participants) {
         groupAvatarsView.updateAvatars(participants);
     }
 }

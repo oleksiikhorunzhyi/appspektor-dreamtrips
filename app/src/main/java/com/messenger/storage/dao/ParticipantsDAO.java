@@ -6,12 +6,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.messenger.messengerservers.entities.Conversation$Table;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.ParticipantsRelationship$Adapter;
-import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.DataConversation$Table;
+import com.messenger.entities.DataParticipant;
+import com.messenger.entities.DataParticipant$Adapter;
+import com.messenger.entities.DataParticipant$Table;
+import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
@@ -35,7 +35,7 @@ public class ParticipantsDAO extends BaseDAO {
     public static Observable<Cursor> selectParticipants(RxContentResolver contentResolver, String conversationId, Uri... observeUris) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
+                        "JOIN " + DataParticipant.TABLE_NAME + " p " +
                         "ON p.userId = u._id " +
                         "WHERE p.conversationId = ?")
                 .withSelectionArgs(new String[]{conversationId})
@@ -45,10 +45,10 @@ public class ParticipantsDAO extends BaseDAO {
         return contentResolver.query(q, observeUris);
     }
 
-    public Observable<User> getParticipant(String conversationId, String yourId) {
+    public Observable<DataUser> getParticipant(String conversationId, String yourId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users u " +
-                        "JOIN ParticipantsRelationship p " +
+                        "JOIN " + DataParticipant.TABLE_NAME + " p " +
                         "ON p.userId = u._id " +
                         "WHERE p.conversationId = ? AND u._id<>?")
                 .withSelectionArgs(new String[]{conversationId, yourId})
@@ -58,7 +58,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> {
-                    User res = SqlUtils.convertToModel(false, User.class, cursor);
+                    DataUser res = SqlUtils.convertToModel(false, DataUser.class, cursor);
                     cursor.close();
                     return res;
                 });
@@ -71,19 +71,19 @@ public class ParticipantsDAO extends BaseDAO {
                 .withSortOrder(userOrder())
                 .build();
 
-        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
+        return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI);
     }
 
-    public Observable<List<User>> getParticipantsEntities(String conversationId) {
+    public Observable<List<DataUser>> getParticipantsEntities(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection(participantsSelection("*"))
                 .withSelectionArgs(new String[]{conversationId})
                 .withSortOrder(userOrder())
                 .build();
 
-        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+        return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
                 .map(cursor -> {
-                    List<User> users = SqlUtils.convertToList(User.class, cursor);
+                    List<DataUser> users = SqlUtils.convertToList(DataUser.class, cursor);
                     cursor.close();
                     return users;
                 });
@@ -92,14 +92,14 @@ public class ParticipantsDAO extends BaseDAO {
     public Observable<Cursor> getNewParticipantsCandidates(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM Users " +
-                        "where (" + User$Table._ID + " not in (" + participantsSelection(User$Table._ID) + "))" +
-                        "and (" + User$Table.FRIEND + " = 1)"
+                        "where (" + DataUser$Table._ID + " not in (" + participantsSelection(DataUser$Table._ID) + "))" +
+                        "and (" + DataUser$Table.FRIEND + " = 1)"
                 )
                 .withSelectionArgs(new String[]{conversationId})
                 .withSortOrder(userOrder())
                 .build();
 
-        return query(q, User.CONTENT_URI, ParticipantsRelationship.CONTENT_URI)
+        return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
     }
@@ -107,46 +107,46 @@ public class ParticipantsDAO extends BaseDAO {
     @NonNull
     private static String participantsSelection(String projection) {
         return "SELECT " + projection + " FROM Users u " +
-                "JOIN ParticipantsRelationship p " +
+                "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p.userId = u._id " +
                 "WHERE p.conversationId = ?";
     }
 
     @NonNull
     private static String userOrder() {
-        return "ORDER BY " + User$Table.USERNAME + " COLLATE NOCASE ASC";
+        return "ORDER BY " + DataUser$Table.USERNAME + " COLLATE NOCASE ASC";
     }
 
     public void delete(String conversationId, String userId) {
-        getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
-                ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
-                        ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
+        getContentResolver().delete(DataParticipant.CONTENT_URI,
+                DataParticipant$Table.CONVERSATIONID + "=? AND " +
+                        DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
     }
 
     public void delete(String conversationId) {
-        getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
-                ParticipantsRelationship$Table.CONVERSATIONID + "=?", new String[]{conversationId});
+        getContentResolver().delete(DataParticipant.CONTENT_URI,
+                DataParticipant$Table.CONVERSATIONID + "=?", new String[]{conversationId});
     }
 
     @Deprecated
     public static void delete(ContentResolver resolver, String conversationId, String userId) {
-        resolver.delete(ParticipantsRelationship.CONTENT_URI,
-                ParticipantsRelationship$Table.CONVERSATIONID + "=? AND " +
-                        ParticipantsRelationship$Table.USERID + "=?", new String[]{conversationId, userId});
+        resolver.delete(DataParticipant.CONTENT_URI,
+                DataParticipant$Table.CONVERSATIONID + "=? AND " +
+                        DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
     }
 
-    public void save(List<ParticipantsRelationship> participants) {
-        bulkInsert(participants, new ParticipantsRelationship$Adapter(), ParticipantsRelationship.CONTENT_URI);
+    public void save(List<DataParticipant> participants) {
+        bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
     }
 
     public void deleteBySyncTime(long time) {
-        getContentResolver().delete(ParticipantsRelationship.CONTENT_URI,
-                ParticipantsRelationship$Table.SYNCTIME + " < " + "?" +
-                        " AND " + ParticipantsRelationship$Table.SYNCTIME + " NOT IN " +
-                        "(SELECT " + Conversation$Table.TABLE_NAME + "." + Conversation$Table.SYNCTIME +
-                        " FROM " + Conversation$Table.TABLE_NAME +
-                        " WHERE " + Conversation$Table.TABLE_NAME + "." + Conversation$Table._ID + " = " +
-                        ParticipantsRelationship$Table.TABLE_NAME + "." + ParticipantsRelationship$Table.CONVERSATIONID + ")",
+        getContentResolver().delete(DataParticipant.CONTENT_URI,
+                DataParticipant$Table.SYNCTIME + " < " + "?" +
+                        " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
+                        "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
+                        " FROM " + DataConversation$Table.TABLE_NAME +
+                        " WHERE " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
+                        DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")",
                 new String[]{String.valueOf(time)});
     }
 }

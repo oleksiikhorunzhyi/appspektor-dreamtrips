@@ -5,13 +5,18 @@ import android.util.Pair;
 
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.delegate.UserProcessor;
+import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataParticipant;
+import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.model.User;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -24,7 +29,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Collections;
-import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -33,7 +38,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
-import static com.messenger.messengerservers.entities.Participant.Affiliation.MEMBER;
+import static com.messenger.messengerservers.model.Participant.Affiliation.MEMBER;
 import static java.util.Collections.singletonList;
 import static rx.Observable.just;
 
@@ -49,6 +54,8 @@ public class ChatFacadeInitializer implements AppInitializer {
     UsersDAO usersDAO;
     @Inject
     MessageDAO messageDAO;
+    @Inject
+    AttachmentDAO attachmentDAO;
     //
     @Inject
     DreamSpiceManager spiceManager;
@@ -58,7 +65,7 @@ public class ChatFacadeInitializer implements AppInitializer {
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-        userProcessor = new UserProcessor(spiceManager);
+        userProcessor = new UserProcessor(usersDAO, spiceManager);
         //
         GlobalEventEmitter emitter = messengerServerFacade.getGlobalEventEmitter();
         //
@@ -66,21 +73,33 @@ public class ChatFacadeInitializer implements AppInitializer {
             @Override
             public void onReceiveMessage(Message message) {
                 long time = System.currentTimeMillis();
-                message.setDate(new Date(time));
-                message.setStatus(Message.Status.SENT);
-                message.save();
+                message.setDate(time);
+                message.setStatus(MessageStatus.SENT);
+                List<DataAttachment> attachments = DataAttachment.fromMessage(message);
+                if (attachments != null) attachmentDAO.save(attachments);
+                messageDAO.save(new DataMessage(message));
                 conversationsDAO.incrementUnreadField(message.getConversationId());
+                conversationsDAO.updateDate(message.getConversationId(), time);
+            }
+
+            @Override
+            public void onPreSendMessage(Message message) {
+                long time = System.currentTimeMillis();
+                messageDAO.updateStatus(message.getId(), message.getStatus(), time);
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
 
             @Override
             public void onSendMessage(Message message) {
                 long time = System.currentTimeMillis();
-                message.setDate(new Date(time));
-                message.save();
+                message.setDate(time);
+                List<DataAttachment> attachments = DataAttachment.fromMessage(message);
+                if (attachments != null) attachmentDAO.save(attachments);
+                messageDAO.save(new DataMessage(message));
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
         });
+
         emitter.addOnSubjectChangesListener((conversationId, subject) -> {
             conversationsDAO.getConversation(conversationId).first()
                     .filter(c -> c != null && !TextUtils.equals(c.getSubject(), subject))
@@ -105,7 +124,7 @@ public class ChatFacadeInitializer implements AppInitializer {
             Timber.i("Chat invited :: chat=%s", conversationId);
             conversationsDAO.getConversation(conversationId).first()
                     .filter(conversation -> conversation != null // in other case addOnChatCreatedListener will be called
-                            && !TextUtils.equals(conversation.getStatus(), Conversation.Status.PRESENT))
+                            && !TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
                     .flatMap(conversation -> {
                         LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO, participantsDAO, messageDAO, usersDAO);
                         return loaderDelegate.loadConversations();
@@ -118,19 +137,19 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .first()
                     .flatMap(cachedUser -> {
                         if (cachedUser != null) return just(singletonList(cachedUser));
-                        else return userProcessor.connectToUserProvider(just(singletonList(new User(userId))));
+                        else return userProcessor.connectToUserProvider(just(singletonList(createUser(userId))));
                     })
                     .doOnNext(users -> from(users).filter(u -> u.isOnline() != isOnline).forEachR(u -> {
                         u.setOnline(isOnline);
                         u.save();
                     }))
                     .flatMap(users -> participantsDAO.getParticipants(conversationId).first()
-                            .map(c -> SqlUtils.convertToList(ParticipantsRelationship.class, c))
-                            .map(list -> from(list).map(ParticipantsRelationship::getUserId).contains(userId))
+                            .map(c -> SqlUtils.convertToList(DataParticipant.class, c))
+                            .map(list -> from(list).map(DataParticipant::getUserId).contains(userId))
                     )
                     .filter(isAlreadyConnected -> !isAlreadyConnected)
                     .doOnNext(isAlreadyConnected -> {
-                        new ParticipantsRelationship(conversationId, userId, MEMBER).save();
+                        new DataParticipant(conversationId, userId, MEMBER).save();
                     })
                     .subscribeOn(Schedulers.io())
                     .subscribe();
@@ -144,13 +163,17 @@ public class ChatFacadeInitializer implements AppInitializer {
             )
                     .subscribeOn(Schedulers.io()).first()
                     .subscribe(pair -> {
-                        Conversation conversation = pair.first;
+                        DataConversation conversation = pair.first;
                         participantsDAO.delete(conversation.getId(), pair.second.getId());
-                        if (messengerServerFacade.getOwner().equals(pair.second)) { // if it is owner action
-                            conversation.setStatus(leave ? Conversation.Status.LEFT : Conversation.Status.KICKED);
+                        if (TextUtils.equals(messengerServerFacade.getUsername(), pair.second.getId())) { // if it is owner action
+                            conversation.setStatus(leave ? ConversationStatus.LEFT : ConversationStatus.KICKED);
                             conversationsDAO.save(Collections.singletonList(conversation));
                         }
                     });
         });
+    }
+
+    private User createUser(String userId) {
+        return new User(userId);
     }
 }

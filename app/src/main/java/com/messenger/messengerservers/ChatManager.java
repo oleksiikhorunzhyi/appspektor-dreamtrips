@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.chat.SingleUserChat;
-import com.messenger.messengerservers.entities.User;
 
 import rx.Observable;
 

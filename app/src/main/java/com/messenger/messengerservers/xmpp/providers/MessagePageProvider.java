@@ -1,9 +1,12 @@
 package com.messenger.messengerservers.xmpp.providers;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.xmpp.entities.MessageBody;
+import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
@@ -15,15 +18,15 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Locale;
+
+import timber.log.Timber;
 
 public class MessagePageProvider extends IQProvider<MessagePagePacket> {
 
-    private Gson gson;
+    private final Gson gson;
 
-    public MessagePageProvider() {
-        gson = new Gson();
+    public MessagePageProvider(Gson gson) {
+        this.gson = gson;
     }
 
     @Override
@@ -48,10 +51,9 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                             Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
-                                    .status((unread == null || !unread) ? Message.Status.READ : Message.Status.SENT)
-                                    //// TODO: 12/18/15 today attribute secs is millisecond
-                                    .date(new Date(timestamp))
-                                    .from(JidCreatorHelper.obtainId(jid));
+                                    .status((unread == null || !unread) ? MessageStatus.READ : MessageStatus.SENT)
+                                    .date(timestamp)
+                                    .fromId(JidCreatorHelper.obtainId(jid));
                             break;
                         case "body":
                             String messageBody = StringEscapeUtils.unescapeXml(parser.nextText());
@@ -59,14 +61,11 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                             MessageBody stanzaMessageBody = null;
                             try {
                                 stanzaMessageBody = gson.fromJson(messageBody, MessageBody.class);
-                            } catch (JsonSyntaxException ignore){}
-
-                            if (stanzaMessageBody == null || stanzaMessageBody.getLocale() == null || stanzaMessageBody.getText() == null){
-                                messageBuilder = null;
-                            } else {
-                                messageBuilder.text(stanzaMessageBody.getText())
-                                        .locale( new Locale(stanzaMessageBody.getLocale()));
+                            } catch (JsonSyntaxException e) {
+                                Timber.w(e, getClass().getName());
                             }
+                            //noinspection all //messageBuilder cannot be null
+                            messageBuilder.messageBody(stanzaMessageBody);
 
                     }
                     break;
@@ -77,7 +76,7 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                         case "from":
                             if (messageBuilder == null) continue;
                             Message message = messageBuilder.build();
-                            if (message.getText() == null) continue;
+                            if (TextUtils.isEmpty(message.getId()) || message.getMessageBody() == null) continue;
                             messagePagePacket.add(message);
                             break;
                         case "chat":

@@ -3,6 +3,7 @@ package com.messenger.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -189,7 +190,7 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
     }
 
     @Override
-    public Object getSystemService(String name) {
+    public Object getSystemService(@NonNull String name) {
         Object service = null;
         if (flowActivityHelper != null) service = flowActivityHelper.getSystemService(name);
         if (service == null) service = super.getSystemService(name);

@@ -6,15 +6,17 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Conversation$Adapter;
-import com.messenger.messengerservers.entities.Conversation$Table;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Message$Table;
-import com.messenger.messengerservers.entities.ParticipantsRelationship;
-import com.messenger.messengerservers.entities.ParticipantsRelationship$Table;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataConversation$Adapter;
+import com.messenger.entities.DataConversation$Table;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataParticipant;
+import com.messenger.entities.DataParticipant$Table;
+import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Table;
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -41,99 +43,99 @@ public class ConversationsDAO extends BaseDAO {
 
     @Deprecated
     @Nullable
-    public static Conversation getConversationById(String conversationId) {
+    public static DataConversation getConversationById(String conversationId) {
         return new Select()
-                .from(Conversation.class)
+                .from(DataConversation.class)
                 .byIds(conversationId)
                 .querySingle();
     }
 
-    public Observable<Conversation> getConversation(String conversationId) {
+    public Observable<DataConversation> getConversation(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection(new Select().from(Conversation.class).byIds(conversationId).toString())
+                .withSelection(new Select().from(DataConversation.class).byIds(conversationId).toString())
                 .build();
-        return query(q, Conversation.CONTENT_URI)
+        return query(q, DataConversation.CONTENT_URI)
                 .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> {
-                    Conversation conversation = SqlUtils.convertToModel(false, Conversation.class, cursor);
+                    DataConversation conversation = SqlUtils.convertToModel(false, DataConversation.class, cursor);
                     cursor.close();
                     return conversation;
                 });
     }
 
-    public List<Conversation> getConversationsList(@Conversation.Type.ConversationType String type) {
+    public List<DataConversation> getConversationsList(@ConversationType.Type String type) {
         return new Select()
-                .from(Conversation.class)
-                .where(Condition.column(Conversation$Table.TYPE).is(type))
+                .from(DataConversation.class)
+                .where(Condition.column(DataConversation$Table.TYPE).is(type))
                 .queryList();
     }
 
-    public void save(List<Conversation> conversations) {
-        bulkInsert(conversations, new Conversation$Adapter(), Conversation.CONTENT_URI);
+    public void save(List<DataConversation> conversations) {
+        bulkInsert(conversations, new DataConversation$Adapter(), DataConversation.CONTENT_URI);
     }
 
     public void deleteConversation(String conversationId) {
         //server sends so many packets about kicking as devices with the same user are online
-        Conversation conversation = getConversationById(conversationId);
+        DataConversation conversation = getConversationById(conversationId);
         if (conversation != null) conversation.delete();
     }
 
     @Deprecated
-    public void deleteConversations(@Nullable Collection<Conversation> conversations) {
+    public void deleteConversations(@Nullable Collection<DataConversation> conversations) {
         if (conversations != null && conversations.size() > 0) {
             String firstArg = Queryable.from(conversations).first().getId();
-            String[] args = Queryable.from(conversations).skip(1).map(Conversation::getId).toArray(String.class);
+            String[] args = Queryable.from(conversations).skip(1).map(DataConversation::getId).toArray(String.class);
             new Delete()
-                    .from(ParticipantsRelationship.class)
-                    .where(Condition.column(ParticipantsRelationship$Table.CONVERSATIONID).in(firstArg, args))
+                    .from(DataParticipant.class)
+                    .where(Condition.column(DataParticipant$Table.CONVERSATIONID).in(firstArg, args))
                     .query();
 
             new Delete()
-                    .from(Conversation.class)
-                    .where(Condition.column(Conversation$Table._ID).in(firstArg, args))
+                    .from(DataConversation.class)
+                    .where(Condition.column(DataConversation$Table._ID).in(firstArg, args))
                     .query();
-            getContentResolver().notifyChange(Conversation.CONTENT_URI, null);
-            getContentResolver().notifyChange(ParticipantsRelationship.CONTENT_URI, null);
+            getContentResolver().notifyChange(DataConversation.CONTENT_URI, null);
+            getContentResolver().notifyChange(DataParticipant.CONTENT_URI, null);
         }
     }
 
     public void deleteBySyncTime(long time) {
-        new Delete().from(Conversation.class)
-                .where(Condition.column(Conversation$Table.SYNCTIME).lessThan(time))
-                .and(Condition.column(Conversation$Table.SYNCTIME).isNot(0))
+        new Delete().from(DataConversation.class)
+                .where(Condition.column(DataConversation$Table.SYNCTIME).lessThan(time))
+                .and(Condition.column(DataConversation$Table.SYNCTIME).isNot(0))
                 .queryClose();
     }
 
-    public Observable<Cursor> selectConversationsList(@Nullable @Conversation.Type.ConversationType String type) {
+    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type) {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
-                "m." + Message$Table.TEXT + " as " + Message$Table.TEXT + ", " +
-                "m." + Message$Table.FROMID + " as " + Message$Table.FROMID + ", " +
-                "m." + Message$Table.DATE + " as " + Message$Table.DATE + ", " +
-                "u." + User$Table.USERNAME + " as " + User$Table.USERNAME + " " +
-                "FROM " + Conversation.TABLE_NAME + " c " +
-                "LEFT JOIN " + Message.TABLE_NAME + " m " +
-                "ON m." + Message$Table._ID + "=(" +
-                "SELECT " + Message$Table._ID + " FROM " + Message.TABLE_NAME + " mm " +
-                "WHERE mm." + Message$Table.CONVERSATIONID + "=c." + Conversation$Table._ID + " " +
-                "ORDER BY mm." + Message$Table.DATE + " DESC LIMIT 1) " +
-                "LEFT JOIN " + User.TABLE_NAME + " u " +
-                "ON m." + Message$Table.FROMID + "=u." + User$Table._ID + " " +
-                "LEFT JOIN " + ParticipantsRelationship.TABLE_NAME + " p " +
-                "ON p." + ParticipantsRelationship$Table.CONVERSATIONID + "=c." + Conversation$Table._ID + " "
+                "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
+                "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
+                "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
+                "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + " " +
+                "FROM " + DataConversation.TABLE_NAME + " c " +
+                "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +
+                "ON m." + DataMessage$Table._ID + "=(" +
+                "SELECT " + DataMessage$Table._ID + " FROM " + DataMessage.TABLE_NAME + " mm " +
+                "WHERE mm." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+                "ORDER BY mm." + DataMessage$Table.DATE + " DESC LIMIT 1) " +
+                "LEFT JOIN " + DataUser.TABLE_NAME + " u " +
+                "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
+                "LEFT JOIN " + DataParticipant.TABLE_NAME + " p " +
+                "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " "
         );
 
-        query.append("WHERE c." + Conversation$Table.STATUS + " = ? ");
-        boolean onlyGroup = type != null && Conversation.Type.GROUP.equals(type);
+        query.append("WHERE c." + DataConversation$Table.STATUS + " = ? ");
+        boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
             query.append("AND c.type not like ?");
         }
 
-        query.append("GROUP BY c." + Conversation$Table._ID + " " +
-                "HAVING c." + Conversation$Table.TYPE + "=? " +
-                "OR COUNT(p." + ParticipantsRelationship$Table.ID + ") > 1 " +
-                "ORDER BY c." + Conversation$Table.ABANDONED + ", " +
-                "c." + Conversation$Table.LASTACTIVEDATE + " DESC"
+        query.append("GROUP BY c." + DataConversation$Table._ID + " " +
+                "HAVING c." + DataConversation$Table.TYPE + "=? " +
+                "OR COUNT(p." + DataParticipant$Table.ID + ") > 1 " +
+                "ORDER BY c." + DataConversation$Table.ABANDONED + ", " +
+                "c." + DataConversation$Table.LASTACTIVEDATE + " DESC"
         );
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
@@ -141,45 +143,45 @@ public class ConversationsDAO extends BaseDAO {
 
         String[] args;
         if (onlyGroup) {
-            args = new String[]{Conversation.Status.PRESENT, Conversation.Type.CHAT, Conversation.Type.CHAT};
+            args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT, ConversationType.CHAT};
         } else {
-            args = new String[]{Conversation.Status.PRESENT, Conversation.Type.CHAT};
+            args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT};
         }
         queryBuilder.withSelectionArgs(args);
-        return query(queryBuilder.build(), Conversation.CONTENT_URI, Message.CONTENT_URI, ParticipantsRelationship.CONTENT_URI);
+        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI);
     }
 
     public int updateDate(String conversationId, long date) {
         ContentValues contentValues = new ContentValues(1);
-        contentValues.put(Conversation$Table.LASTACTIVEDATE, date);
-        return getContentResolver().update(Conversation.CONTENT_URI, contentValues,
-                Conversation$Table._ID + "=?", new String[]{conversationId});
+        contentValues.put(DataConversation$Table.LASTACTIVEDATE, date);
+        return getContentResolver().update(DataConversation.CONTENT_URI, contentValues,
+                DataConversation$Table._ID + "=?", new String[]{conversationId});
     }
 
     public void incrementUnreadField(String conversationId) {
-        new Update<>(Conversation.class)
-                .set(Conversation$Table.UNREADMESSAGECOUNT + " = " + Conversation$Table.UNREADMESSAGECOUNT + " +1 ")
-                .where(Condition.column(Conversation$Table._ID).is(conversationId))
+        new Update<>(DataConversation.class)
+                .set(DataConversation$Table.UNREADMESSAGECOUNT + " = " + DataConversation$Table.UNREADMESSAGECOUNT + " +1 ")
+                .where(Condition.column(DataConversation$Table._ID).is(conversationId))
                 .queryClose();
-        getContentResolver().notifyChange(Conversation.CONTENT_URI, null);
+        getContentResolver().notifyChange(DataConversation.CONTENT_URI, null);
     }
 
     public Observable<Integer> getUnreadConversationsCount() {
-        String selection = "SELECT con." + Conversation$Table._ID // cause Count(con._id) is interpreted as field for every id
-                + " FROM " + Conversation.TABLE_NAME + " con"
-                        + " LEFT JOIN " + ParticipantsRelationship.TABLE_NAME + " par"
-                        + " ON par." + ParticipantsRelationship$Table.CONVERSATIONID + "=con." + Conversation$Table._ID
-                        + " WHERE " + Conversation$Table.UNREADMESSAGECOUNT + ">0"
-                        + " AND " + Conversation$Table.STATUS + " like ? "
-                        + " GROUP BY con." + Conversation$Table._ID
-                        + " HAVING con." + Conversation$Table.TYPE + "=? "
-                        + " OR COUNT(par." + ParticipantsRelationship$Table.ID + ")>1 ";
-        String[] args = new String[] {Conversation.Status.PRESENT, Conversation.Type.CHAT};
+        String selection = "SELECT con." + DataConversation$Table._ID // cause Count(con._id) is interpreted as field for every id
+                + " FROM " + DataConversation.TABLE_NAME + " con"
+                        + " LEFT JOIN " + DataParticipant.TABLE_NAME + " par"
+                        + " ON par." + DataParticipant$Table.CONVERSATIONID + "=con." + DataConversation$Table._ID
+                        + " WHERE " + DataConversation$Table.UNREADMESSAGECOUNT + ">0"
+                        + " AND " + DataConversation$Table.STATUS + " like ? "
+                        + " GROUP BY con." + DataConversation$Table._ID
+                        + " HAVING con." + DataConversation$Table.TYPE + "=? "
+                        + " OR COUNT(par." + DataParticipant$Table.ID + ")>1 ";
+        String[] args = new String[] {ConversationStatus.PRESENT, ConversationType.CHAT};
 
         RxContentResolver.Query query = new RxContentResolver.Query.Builder(null).withSelection(selection)
                                             .withSelectionArgs(args).build();
 
-        return query(query, Conversation.CONTENT_URI)
+        return query(query, DataConversation.CONTENT_URI)
                 .map(cursor -> cursor.getCount()); // BUG!!! because query is interpreted as object list with one field COUNT(*)
     }
 }

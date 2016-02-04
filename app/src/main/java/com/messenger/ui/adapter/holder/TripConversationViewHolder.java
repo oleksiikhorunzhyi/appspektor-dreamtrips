@@ -3,7 +3,7 @@ package com.messenger.ui.adapter.holder;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataUser;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class TripConversationViewHolder extends BaseConversationViewHolder{
     }
 
     @Override
-    protected void setConversationPicture(List<User> participants) {
+    protected void setConversationPicture(List<DataUser> participants) {
         // nothing
     }
 

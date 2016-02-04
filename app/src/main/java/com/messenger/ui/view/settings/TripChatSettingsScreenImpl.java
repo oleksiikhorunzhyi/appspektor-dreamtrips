@@ -3,8 +3,8 @@ package com.messenger.ui.view.settings;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class TripChatSettingsScreenImpl extends GroupChatSettingsScreenImpl<Trip
     }
 
     @Override
-    public void setParticipants(Conversation conversation, List<User> participants) {
+    public void setParticipants(DataConversation conversation, List<DataUser> participants) {
         super.setParticipants(conversation, participants);
         groupAvatarsView.setVisibility(GONE);
         groupPicView.setVisibility(VISIBLE);

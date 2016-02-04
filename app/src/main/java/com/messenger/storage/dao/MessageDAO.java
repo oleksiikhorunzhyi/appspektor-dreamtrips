@@ -4,11 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Message$Adapter;
-import com.messenger.messengerservers.entities.Message$Table;
-import com.messenger.messengerservers.entities.User;
-import com.messenger.messengerservers.entities.User$Table;
+import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataAttachment$Table;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataMessage$Adapter;
+import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Table;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
@@ -29,29 +32,37 @@ public class MessageDAO extends BaseDAO {
 
     public Observable<Cursor> getMessages(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT m.*, u." + User$Table.USERNAME + " as " + User$Table.USERNAME +
-                        ", u." + User$Table.USERAVATARURL + " as " + User$Table.USERAVATARURL +
-                        ", u." + User$Table.SOCIALID + " as " + User$Table.SOCIALID +
+                .withSelection("SELECT m.*, " +
+                        "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
+                        "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
+                        "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
-                        " FROM " + Message.TABLE_NAME + " m LEFT JOIN " + User$Table.TABLE_NAME + " u" +
-                        " ON m." + Message$Table.FROMID + " = u." + User$Table._ID +
-                        " WHERE " + Message$Table.CONVERSATIONID + " = ?" +
-                        " ORDER BY " + Message$Table.DATE)
+                        "a." +  DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
+                        "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + " " +
+
+                        "FROM " + DataMessage.TABLE_NAME + " m " +
+                        "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
+                        "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
+                        "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
+                        "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
+
+                        "WHERE " + DataMessage$Table.CONVERSATIONID + "=? " +
+                        "ORDER BY " + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId}).build();
 
-        return query(q, Message.CONTENT_URI, User.CONTENT_URI);
+        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI);
     }
 
-    public Observable<Message> getMessage(String messageId) {
+    public Observable<DataMessage> getMessage(String messageId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM " + Message$Table.TABLE_NAME + " " +
-                "WHERE " + Message$Table._ID + "=?")
+                .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
+                "WHERE " + DataMessage$Table._ID + "=?")
                 .withSelectionArgs(new String[] {messageId})
                 .build();
 
-        return query(q, Message.CONTENT_URI)
+        return query(q, DataMessage.CONTENT_URI)
                 .map(cursor -> {
-                    Message res = SqlUtils.convertToModel(false, Message.class, cursor);
+                    DataMessage res = SqlUtils.convertToModel(false, DataMessage.class, cursor);
                     cursor.close();
                     return res;
                 });
@@ -59,16 +70,16 @@ public class MessageDAO extends BaseDAO {
     public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
         return Observable.create(subscriber -> {
             subscriber.onStart();
-            String clause = Message$Table.CONVERSATIONID + " = ? "
-                    + "AND " + Message$Table.DATE + " <= ? "
-                    + "AND " + Message$Table.FROMID + " <> ? "
-                    + "AND " + Message$Table.STATUS + " = ? ";
+            String clause = DataMessage$Table.CONVERSATIONID + " = ? "
+                    + "AND " + DataMessage$Table.DATE + " <= ? "
+                    + "AND " + DataMessage$Table.FROMID + " <> ? "
+                    + "AND " + DataMessage$Table.STATUS + " = ? ";
             ContentValues cv = new ContentValues(1);
-            cv.put(Message$Table.STATUS, Message.Status.READ);
+            cv.put(DataMessage$Table.STATUS, MessageStatus.READ);
             try {
-                subscriber.onNext(getContentResolver().update(Message.CONTENT_URI, cv, clause,
+                subscriber.onNext(getContentResolver().update(DataMessage.CONTENT_URI, cv, clause,
                         new String[]{conversationId, String.valueOf(visibleTime),
-                                userId, String.valueOf(Message.Status.SENT)})
+                                userId, String.valueOf(MessageStatus.SENT)})
                 );
                 subscriber.onCompleted();
             } catch (Exception e) {
@@ -79,14 +90,14 @@ public class MessageDAO extends BaseDAO {
 
     public Observable<Integer> unreadCount(String conversationId, String userId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT COUNT(_id) FROM " + Message.TABLE_NAME + " " +
-                        "WHERE " + Message$Table.CONVERSATIONID + " = ? "
-                        + "AND " + Message$Table.FROMID + " <> ? "
-                        + "AND " + Message$Table.STATUS + " = ? ")
-                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(Message.Status.SENT)})
+                .withSelection("SELECT COUNT(_id) FROM " + DataMessage.TABLE_NAME + " " +
+                        "WHERE " + DataMessage$Table.CONVERSATIONID + " = ? "
+                        + "AND " + DataMessage$Table.FROMID + " <> ? "
+                        + "AND " + DataMessage$Table.STATUS + " = ? ")
+                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
                 .build();
 
-        return query(q, Message.CONTENT_URI)
+        return query(q, DataMessage.CONTENT_URI)
                 .map(cursor -> {
                     int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
                     cursor.close();
@@ -100,16 +111,16 @@ public class MessageDAO extends BaseDAO {
      */
     public Observable<Integer> countFromFirstUnreadMessage(String conversationId, String userId){
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT COUNT(_id) FROM " + Message.TABLE_NAME + " " +
-                        "WHERE " + Message$Table.CONVERSATIONID + " = ? "
-                        + "AND " + Message$Table.DATE + " >=  " +
-                        "( SELECT MIN(" + Message$Table.DATE + ") FROM " + Message.TABLE_NAME + " "
-                        + "WHERE " + Message$Table.FROMID + " <> ? "
-                        + "AND " + Message$Table.STATUS + " = ? )")
-                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(Message.Status.SENT)})
+                .withSelection("SELECT COUNT(_id) FROM " + DataMessage.TABLE_NAME + " " +
+                        "WHERE " + DataMessage$Table.CONVERSATIONID + " = ? "
+                        + "AND " + DataMessage$Table.DATE + " >=  " +
+                        "( SELECT MIN(" + DataMessage$Table.DATE + ") FROM " + DataMessage.TABLE_NAME + " "
+                        + "WHERE " + DataMessage$Table.FROMID + " <> ? "
+                        + "AND " + DataMessage$Table.STATUS + " = ? )")
+                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
                 .build();
 
-        return query(q, Message.CONTENT_URI)
+        return query(q, DataMessage.CONTENT_URI)
                 .map(cursor -> {
                     int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
                     cursor.close();
@@ -117,7 +128,18 @@ public class MessageDAO extends BaseDAO {
                 });
     }
 
-    public void save(List<Message> messages) {
-        bulkInsert(messages, new Message$Adapter(), Message.CONTENT_URI);
+    public void save(List<DataMessage> messages) {
+        bulkInsert(messages, new DataMessage$Adapter(), DataMessage.CONTENT_URI);
+    }
+
+    public void save(DataMessage message) {
+        message.save();
+    }
+
+    public void updateStatus(String msgId, int messageStatus, long time) {
+        ContentValues contentValues = new ContentValues(2);
+        contentValues.put(DataMessage$Table.STATUS, messageStatus);
+        contentValues.put(DataMessage$Table.DATE, time);
+        getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID +"=?", new String[] {msgId});
     }
 }

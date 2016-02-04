@@ -2,26 +2,24 @@ package com.messenger.messengerservers.chat;
 
 
 import com.messenger.messengerservers.MultiUserChatStateChanged;
-import com.messenger.messengerservers.entities.User;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import rx.Observable;
-import rx.functions.Action0;
 
 
 public abstract class MultiUserChat extends Chat {
 
     protected static final int MAX_GROUP_MEMBERS = 100;
 
-    protected final ArrayList<MultiUserChatStateChanged> multiUserChatStateListeners = new ArrayList<>();
+    protected final List<MultiUserChatStateChanged> multiUserChatStateListeners = new CopyOnWriteArrayList<>();
 
-    public abstract void invite(List<User> users);
+    public abstract void invite(List<String> userIds);
 
-    public abstract Observable<List<User>> kick(List<User> users);
+    public abstract Observable<List<String>> kick(List<String> userIds);
 
-    public abstract void join(User user);
+    public abstract void join(String userId);
 
     public abstract void leave();
 
@@ -41,9 +39,9 @@ public abstract class MultiUserChat extends Chat {
         }
     }
 
-    protected void notifyParticipantsChanged(List<User> participants) {
+    protected void notifyParticipantsChanged(List<String> participantIds) {
         for (MultiUserChatStateChanged listener : multiUserChatStateListeners) {
-            listener.onParticipantListChanged(participants);
+            listener.onParticipantListChanged(participantIds);
         }
     }
 

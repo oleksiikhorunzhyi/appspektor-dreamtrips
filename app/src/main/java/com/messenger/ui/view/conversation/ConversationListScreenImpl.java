@@ -22,8 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Spinner;
 
+import com.messenger.entities.DataConversation;
 import com.messenger.flow.path.StyledPath;
-import com.messenger.messengerservers.entities.Conversation;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
@@ -187,12 +187,12 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     }
 
     @Override
-    public void onDeleteButtonPressed(Conversation conversation) {
+    public void onDeleteButtonPressed(DataConversation conversation) {
         getPresenter().onDeleteButtonPressed(conversation);
     }
 
     @Override
-    public void showConversationDeletionConfirmationDialog(Conversation conversation) {
+    public void showConversationDeletionConfirmationDialog(DataConversation conversation) {
         new AlertDialog.Builder(getContext())
                 .setMessage(R.string.conversation_list_delete_dialog_message)
                 .setPositiveButton(R.string.conversation_list_delete_dialog_pos_button,
@@ -205,12 +205,12 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     }
 
     @Override
-    public void onMoreOptionsButtonPressed(Conversation conversation) {
+    public void onMoreOptionsButtonPressed(DataConversation conversation) {
         getPresenter().onMoreOptionsButtonPressed(conversation);
     }
 
     @Override
-    public void showConversationMoreActionsDialog(Conversation conversation) {
+    public void showConversationMoreActionsDialog(DataConversation conversation) {
         new AlertDialog.Builder(getContext())
                 .setItems(R.array.conversation_list_more_actions, (dialogInterface, i) -> {
                     switch (i) {

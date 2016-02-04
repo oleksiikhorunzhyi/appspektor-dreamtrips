@@ -17,10 +17,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.messenger.messengerservers.entities.Conversation;
-import com.messenger.messengerservers.entities.Message;
-import com.messenger.messengerservers.entities.Message$Table;
-import com.messenger.messengerservers.entities.User;
+import com.messenger.entities.DataAttachment$Table;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.holder.MessageHolder;
 import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
 import com.messenger.ui.adapter.holder.UserMessageViewHolder;
@@ -35,11 +37,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private static final int VIEW_TYPE_OWN_MESSAGE = 1;
     private static final int VIEW_TYPE_SOMEONES_MESSAGE = 2;
 
-    private final User user;
+    private final DataUser user;
     private final Context context;
     private final ConversationHelper conversationHelper;
     private final ChatTimestampFormatter timestampFormatter;
-    private Conversation conversation;
+    private DataConversation conversation;
 
     private OnAvatarClickListener avatarClickListener;
     private OnRepeatMessageSend onRepeatMessageSend;
@@ -52,7 +54,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private int manualTimestampPositionToRemove = -1;
 
     public interface OnAvatarClickListener {
-        void onAvatarClick(User user);
+        void onAvatarClick(DataUser user);
     }
 
     public interface OnRepeatMessageSend {
@@ -60,10 +62,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     public interface OnMessageClickListener {
-        void onMessageClick(Message message);
+        void onMessageClick(DataMessage message);
     }
 
-    public MessagesCursorAdapter(@NonNull Context context, @NonNull User user, @Nullable Cursor cursor) {
+    public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user, @Nullable Cursor cursor) {
         super(cursor);
         this.context = context;
         this.user = user;
@@ -104,14 +106,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         }
     }
 
-    private void bindMessageHolder(MessageHolder holder, int position, Cursor cursor, Message message) {
+    private void bindMessageHolder(MessageHolder holder, int position, Cursor cursor, DataMessage message) {
         boolean manualTimestamp = manualTimestampPosition == position
                 || manualTimestampPositionToAdd == position
                 || manualTimestampPositionToRemove == position;
         String dateDivider;
         if (manualTimestamp) {
             dateDivider = timestampFormatter.getMessageDateManualTimestamp(cursor
-                    .getLong(cursor.getColumnIndex(Message$Table.DATE)));
+                    .getLong(cursor.getColumnIndex(DataMessage$Table.DATE)));
         } else {
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
         }
@@ -170,12 +172,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private class TextSelectableClickListener
             implements View.OnTouchListener, GestureDetector.OnGestureListener {
 
-        Message message;
+        DataMessage message;
         int position;
         GestureDetectorCompat gestureDetector;
         boolean clickableTimestamp;
 
-        public TextSelectableClickListener(Context context, int position, Message message,
+        public TextSelectableClickListener(Context context, int position, DataMessage message,
                                            boolean clickableTimestamp) {
             this.gestureDetector = new GestureDetectorCompat(context, this);
             this.position = position;
@@ -225,7 +227,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private String getMessageTimestampBetweenMessagesIfNeeded(Cursor cursor) {
-        int dateColumnIndex = cursor.getColumnIndex(Message$Table.DATE);
+        int dateColumnIndex = cursor.getColumnIndex(DataMessage$Table.DATE);
         long currentDate = cursor.getLong(dateColumnIndex);
         long previousDate = 0;
         boolean moveCursorToPrev = cursor.moveToPrevious();
@@ -249,24 +251,24 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {
-        String currentId = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
+        String currentId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
         boolean moveCursorToPrev = cursor.moveToPrevious();
         if (!moveCursorToPrev) {
             return false;
         }
-        String prevId = cursor.getString(cursor.getColumnIndex(Message$Table.FROMID));
+        String prevId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
         cursor.moveToNext();
         return prevId.equals(currentId);
     }
 
     private void bindOwnMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
-        holder.setMessageId(cursor.getString(cursor.getColumnIndex(Message$Table._ID)));
+        holder.setMessageId(cursor.getString(cursor.getColumnIndex(DataMessage$Table._ID)));
         holder.setOnRepeatMessageSend(onRepeatMessageSend);
-        holder.visibleError(cursor.getInt(cursor.getColumnIndex(Message$Table.STATUS)) == Message.Status.ERROR);
-        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(Message$Table.TEXT)));
+        holder.visibleError(cursor.getInt(cursor.getColumnIndex(DataMessage$Table.STATUS)) == MessageStatus.ERROR);
+        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT)));
 
         int position = cursor.getPosition();
-        Message message = SqlUtils.convertToModel(true, Message.class, cursor);
+        DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
 
         bindMessageHolder(holder, position, cursor, message);
 
@@ -284,9 +286,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindUserMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
+        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
+        String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
+
         int position = cursor.getPosition();
-        Message message = SqlUtils.convertToModel(true, Message.class, cursor);
-        User userFrom = SqlUtils.convertToModel(true, User.class, cursor);
+        DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
+        DataUser userFrom = SqlUtils.convertToModel(true, DataUser.class, cursor);
 
         bindMessageHolder(holder, position, cursor, message);
 
@@ -324,7 +329,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         }
         holder.messageTextView.setBackgroundResource(backgroundResource);
 
-        if (message.getStatus() == Message.Status.SENT) {
+        if (message.getStatus() == MessageStatus.SENT) {
             holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_unread_background);
         } else {
             holder.chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
@@ -348,11 +353,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public int getItemViewType(int position) {
         Cursor cursor = getCursor();
         cursor.moveToPosition(position);
-        return cursor.getString(cursor.getColumnIndex(Message$Table.FROMID))
+        return cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID))
                 .equals(user.getId()) ? VIEW_TYPE_OWN_MESSAGE : VIEW_TYPE_SOMEONES_MESSAGE;
     }
 
-    public void setConversation(Conversation conversation) {
+    public void setConversation(DataConversation conversation) {
         this.conversation = conversation;
     }
 

@@ -218,12 +218,14 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
     @Override
     public void dispatch(Flow.Traversal traversal, Flow.TraversalCallback callback) {
         SoftInputUtil.hideSoftInputMethod(this);
-        photoPickerLayoutDelegate.hidePicker();
         //
         Path path = traversal.destination.top();
         setNavigation(path);
         //
-        weakHandler.post(() -> container.dispatch(traversal, callback));
+        weakHandler.post(() -> {
+            photoPickerLayoutDelegate.hidePicker();
+            container.dispatch(traversal, callback);
+        });
     }
 
     void setNavigation(Path path) {

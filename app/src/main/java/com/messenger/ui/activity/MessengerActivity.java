@@ -24,6 +24,8 @@ import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
@@ -48,6 +50,8 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
     protected Gson gson;
     @Inject
     protected NavigationDrawerPresenter navigationDrawerPresenter;
+    @Inject
+    PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
 
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
@@ -55,6 +59,8 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
     protected NavigationDrawerViewImpl navDrawer;
     @InjectView(R.id.root_container)
     protected PathContainerView container;
+    @InjectView(R.id.chat_photo_picker)
+    PhotoPickerLayout photoPickerLayout;
 
     private FlowActivityHelper flowActivityHelper;
 
@@ -66,6 +72,7 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
         //
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         //
+        initPickerLayout();
         initNavDrawer();
         initFlow(conversationId);
         //
@@ -119,6 +126,14 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return flowActivityHelper.provideNonConfigurationInstance();
+    }
+
+    //TODO photo picker should be fully reworked to fit UI needs
+    private void initPickerLayout() {
+        inject(photoPickerLayout);
+        photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
+        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager(), false);
+        photoPickerLayoutDelegate.hidePicker();
     }
 
     private void initNavDrawer() {
@@ -203,6 +218,7 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
     @Override
     public void dispatch(Flow.Traversal traversal, Flow.TraversalCallback callback) {
         SoftInputUtil.hideSoftInputMethod(this);
+        photoPickerLayoutDelegate.hidePicker();
         //
         Path path = traversal.destination.top();
         setNavigation(path);

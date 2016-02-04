@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +31,7 @@ import com.messenger.ui.widget.UnreadMessagesView;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
 import java.util.List;
 
@@ -41,7 +41,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import butterknife.Optional;
 import rx.Observable;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
@@ -51,7 +50,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private static final int POST_DELAY_TIME = 2;
 
     @Inject
-    FragmentManager fragmentManager;
+    PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -72,11 +71,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     UnreadMessagesView unreadMessagesView;
     @InjectView(R.id.chat_users_typing_view)
     ChatUsersTypingView chatUsersTypingView;
-    @InjectView(R.id.chat_photo_picker)
-    PhotoPickerLayout photoPickerLayout;
 
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
+    @InjectView(R.id.input_holder)
+    ViewGroup inputHolder;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -183,7 +182,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @OnClick(R.id.chat_message_add_button)
     protected void onAttachmentButtonClicked() {
-        photoPickerLayout.showPanel();
+        photoPickerLayoutDelegate.showPicker();
     }
 
     @Override
@@ -323,16 +322,30 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     /////// Photo picking
     ////////////////////////////////////////
 
-    private void initPhotoPicker() {
-        injector.inject(photoPickerLayout);
+    //TODO Feb 4, 2016 Refactor this part after new picker implemented
+    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
+        @Override
+        public void onClosed() {
+            MarginLayoutParams params = (MarginLayoutParams) inputHolder.getLayoutParams();
+            params.bottomMargin = 0;
+            inputHolder.setLayoutParams(params);
+        }
 
-        photoPickerLayout.setup(fragmentManager, false);
-        photoPickerLayout.hidePanel();
-        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
+        @Override
+        public void onOpened() {
+            MarginLayoutParams params = (MarginLayoutParams) inputHolder.getLayoutParams();
+            params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.picker_panel_height);
+            inputHolder.setLayoutParams(params);
+        }
+    };
+
+    private void initPhotoPicker() {
+        photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
+        photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
     }
 
     private void onImagesPicked(List<ChosenImage> images) {
-        photoPickerLayout.hidePanel();
+        photoPickerLayoutDelegate.hidePicker();
         //
         getPresenter().onImagesPicked(images);
     }
@@ -343,8 +356,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public boolean onBackPressed() {
-        if (photoPickerLayout.isPanelVisible()) {
-            photoPickerLayout.hidePanel();
+        if (photoPickerLayoutDelegate.isPanelVisible()) {
+            photoPickerLayoutDelegate.hidePicker();
             return true;
         }
         return false;

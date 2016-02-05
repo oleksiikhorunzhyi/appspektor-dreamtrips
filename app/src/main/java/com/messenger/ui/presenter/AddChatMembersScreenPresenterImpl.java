@@ -9,16 +9,15 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
-import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -111,14 +110,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
         conversationStream
                 .flatMap(conversation -> participantsDAO
                         .getParticipants(conversation.getId()).first()
-                        .map(cursor -> {
-                            List<String> userIds = new ArrayList<>(cursor.getCount());
-                            while (cursor.moveToFirst()) {
-                                userIds.add(cursor.getString(cursor.getColumnIndex(DataUser$Table._ID)));
-                            }
-                            cursor.close();
-                            return userIds;
-                        })
+                        .map(cursor -> Queryable.from(SqlUtils.convertToList(DataUser.class, cursor)).map(DataUser::getId).toList())
                         .map(currentUsers -> {
                             DataConversation newConversation = chatDelegate.modifyConversation(
                                     conversation, currentUsers, newChatUserIds, getView().getConversationName()

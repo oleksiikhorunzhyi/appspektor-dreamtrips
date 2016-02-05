@@ -88,8 +88,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         ImageView userPhoto = ButterKnife.findById(feedView, R.id.user_photo);
         if (userPhoto != null) {
             userPhoto.setDrawingCacheEnabled(true);
-            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user,
-                    drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
+            new FriendActionDialogDelegate(getActivity(), getEventBus())
+                    .showFriendDialogSkipChat
+                            (user, drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
         }
     }
 

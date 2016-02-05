@@ -3,7 +3,6 @@ package com.messenger.ui.adapter.holder;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -117,8 +116,14 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
     public void bindConversation(@NonNull DataConversation conversation, String selectedConversationId) {
         this.conversation = conversation;
         loadParticipants(conversation);
-        setUnreadMessageCount(conversation.getUnreadMessageCount());
-        applySelection(selectedConversationId);
+        //
+        int unreadMessageCount = conversation.getUnreadMessageCount();
+        final boolean hasNewMessage = unreadMessageCount > 0;
+
+        unreadMessagesCountTextView.setVisibility(hasNewMessage ? View.VISIBLE : View.GONE);
+        unreadMessagesCountTextView.setText(hasNewMessage ? String.valueOf(unreadMessageCount) : null);
+
+        applySelection(selectedConversationId, hasNewMessage);
     }
 
     protected void onClickDeleteButton() {
@@ -154,23 +159,6 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
 
     public void setLastMessage(String message) {
         lastMessageTextView.setText(message);
-    }
-
-    protected void setUnreadMessageCount(int unreadMessageCount) {
-        final boolean hasNewMessage = unreadMessageCount > 0;
-        final int countMessageVisible = hasNewMessage ? View.VISIBLE : View.GONE;
-
-        if (countMessageVisible != unreadMessagesCountTextView.getVisibility()) {
-            setUnreadProperties(countMessageVisible,
-                    hasNewMessage ? R.color.conversation_list_unread_conversation_bg : R.color.conversation_list_read_conversation_bg);
-        }
-
-        unreadMessagesCountTextView.setText(hasNewMessage ? String.valueOf(unreadMessageCount) : null);
-    }
-
-    private void setUnreadProperties(int visible, @ColorRes int backgroundProperties) {
-        unreadMessagesCountTextView.setVisibility(visible);
-        itemView.setBackgroundColor(ContextCompat.getColor(context, backgroundProperties));
     }
 
     public void setDeleteButtonVisibility(boolean visible) {
@@ -227,11 +215,13 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
     // Selection
     ///////////////////////////////////////////////////////////////////////////
 
-    private void applySelection(String conversationId) {
-        if (!conversation.getId().equals(conversationId)) {
-            contentLayout.setBackgroundColor(context.getResources().getColor(R.color.conversation_list_read_conversation_bg));
+    private void applySelection(String conversationId, boolean unread) {
+        if (conversation.getId().equals(conversationId)) {
+            contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_selected_conversation_bg));
+        } else if (unread) {
+            contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_unread_conversation_bg));
         } else {
-            contentLayout.setBackgroundColor(context.getResources().getColor(R.color.conversation_list_selected_conversation_bg));
+            contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
         }
     }
 

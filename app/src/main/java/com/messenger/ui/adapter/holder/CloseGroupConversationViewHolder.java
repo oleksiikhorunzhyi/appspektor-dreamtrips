@@ -25,10 +25,6 @@ public class CloseGroupConversationViewHolder extends GroupConversationViewHolde
     }
 
     @Override
-    protected void setUnreadMessageCount(int unreadMessageCount) {
-    }
-
-    @Override
     public void setLastMessage(String message) {
     }
 }

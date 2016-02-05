@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.entities.DataConversation;
@@ -22,11 +23,11 @@ import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
-import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
-
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -90,6 +91,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     MessengerServerFacade messengerServerFacade;
     @Inject
     OpenedConversationTracker openedConversationTracker;
+    @Inject
+    AttachmentDelegate attachmentDelegate;
 
     protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
@@ -516,15 +519,19 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         body.setLocaleName(Locale.getDefault().toString());
 
         submitOneChatAction(chat -> {
-            chat.send(new com.messenger.messengerservers.model.Message.Builder()
-                            .messageBody(body)
-                            .fromId(user.getId())
-                            .build()
-            )
+            chat.send(createMessage(body))
                     .subscribeOn(Schedulers.io())
                     .subscribe();
         });
         return true;
+    }
+
+    public Message createMessage(MessageBody body) {
+        return new Message.Builder()
+                .messageBody(body)
+                .fromId(user.getId())
+                .conversationId(conversationId)
+                .build();
     }
 
     @Override
@@ -630,6 +637,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onImagesPicked(List<ChosenImage> photos) {
         //TODO process picked images
+        Timber.d("onImagesPicked %s", photos);
+        attachmentDelegate.prepareMessageWithAttachment(
+                createMessage(null), photos.get(0).getFileThumbnail())
+                .subscribeOn(Schedulers.io())
+                .doOnError(throwable -> Timber.e(throwable, "Upload image failed"))
+                .subscribe(message -> submitOneChatAction(chat -> chat.send(message).subscribe()));
     }
 
 

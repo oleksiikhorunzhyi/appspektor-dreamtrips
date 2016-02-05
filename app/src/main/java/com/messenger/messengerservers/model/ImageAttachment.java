@@ -7,4 +7,12 @@ public class ImageAttachment implements Attachment {
     public String getUrl() {
         return url;
     }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public ImageAttachment(String url) {
+        this.url = url;
+    }
 }

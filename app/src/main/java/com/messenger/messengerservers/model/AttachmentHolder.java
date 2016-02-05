@@ -9,7 +9,11 @@ public class AttachmentHolder {
     public AttachmentHolder() {
     }
 
-    public AttachmentHolder(@AttachmentType.Type String type, Attachment item) {
+    public static AttachmentHolder newImageAttachment(String url) {
+        return new AttachmentHolder(AttachmentType.IMAGE, new ImageAttachment(url));
+    }
+
+    protected AttachmentHolder(@AttachmentType.Type String type, Attachment item) {
         this.type = type;
         this.item = item;
     }

@@ -39,7 +39,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     public DataAttachment() {
     }
 
-    protected DataAttachment(@NonNull AttachmentHolder attachment, String messageId, int index) {
+    public DataAttachment(@NonNull AttachmentHolder attachment, String messageId, int index) {
         this.id = createId(messageId, index);
         this.messageId = messageId;
         String type = this.type = attachment.getType();

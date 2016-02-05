@@ -1,18 +1,16 @@
 package com.worldventures.dreamtrips.modules.settings.api;
 
 import com.worldventures.dreamtrips.core.api.request.Query;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 
-import java.util.ArrayList;
-
-public class GetSettingsQuery extends Query<ArrayList<Setting>> {
+public class GetSettingsQuery extends Query<SettingsHolder> {
 
     public GetSettingsQuery() {
-        super((Class<ArrayList<Setting>>) new ArrayList<Setting>().getClass());
+        super(SettingsHolder.class);
     }
 
     @Override
-    public ArrayList<Setting> loadDataFromNetwork() throws Exception {
+    public SettingsHolder loadDataFromNetwork() throws Exception {
         return getService().getSettings();
     }
 }

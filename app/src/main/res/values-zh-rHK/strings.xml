@@ -523,8 +523,6 @@
 
     <string name="settings_distance_units">Distance Units</string>
     <string name="settings_friend_requests">Friend Requests</string>
-    <string name="settings_new_posts">New Posts</string>
-    <string name="settings_likes_and_comments">Likes and Comments</string>
     <string name="settings_new_message">New Message</string>
     <string name="settings_photo_tagging">Photo Tagging</string>
 

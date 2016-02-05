@@ -38,10 +38,9 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        SettingsFactory settingsFactory = new SettingsFactory();
         if (this.settingsList == null)
             this.settingsList = (ArrayList<Setting>) SettingsManager.merge(db.getSettings(),
-                    settingsFactory.createSettings(group));
+                    SettingsFactory.createSettings(group));
         //
         if (immutableSettingsList == null)
             immutableSettingsList = cloneList(this.settingsList);
@@ -73,7 +72,7 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
             List<Setting> changes = getChanges();
             doRequest(new UpdateSettingsCommand(changes),
                     aVoid -> {
-                        db.saveSettings(changes);
+                        db.saveSettings(changes, false);
                         immutableSettingsList = cloneList(this.settingsList);
                         //
                         view.hideLoading();

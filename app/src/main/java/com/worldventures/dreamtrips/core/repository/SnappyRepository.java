@@ -286,8 +286,10 @@ public class SnappyRepository {
     // Settings
     ///////////////////////////////////////////////////////////////////////////
 
-    public void saveSettings(List<Setting> settingsList) {
+    public void saveSettings(List<Setting> settingsList, boolean withClear) {
         act(db -> {
+            if (withClear) clearSettings(db);
+            //
             for (Setting settings : settingsList) {
                 db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
             }
@@ -307,6 +309,13 @@ public class SnappyRepository {
             }
             return settingsList;
         }).or(Collections.emptyList());
+    }
+
+    public void clearSettings(DB snappyDb) throws SnappydbException {
+        String[] settingsKeys = snappyDb.findKeys(SETTINGS_KEY);
+        for (String key : settingsKeys) {
+            snappyDb.del(key);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

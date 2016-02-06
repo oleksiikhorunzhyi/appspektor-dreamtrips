@@ -3,7 +3,6 @@ package com.messenger.entities;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.constant.AttachmentType;
@@ -20,6 +19,8 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
@@ -57,11 +58,13 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         return String.format("%s__%s", messageId, index);
     }
 
-    @Nullable
+    @NonNull
     public static List<DataAttachment> fromMessage(@NonNull com.messenger.messengerservers.model.Message message) {
         MessageBody body = message.getMessageBody();
         List<AttachmentHolder> attachmentHolders;
-        if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) return null;
+        if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
+            return new ArrayList<>(0);
+        }
 
         return Queryable.from(attachmentHolders)
                 .map((elem, idx) -> new DataAttachment(elem, message.getId(), idx))

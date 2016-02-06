@@ -30,6 +30,7 @@ import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.notification.MessengerNotificationFactory;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -108,6 +109,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     MessageDAO messageDAO;
     @Inject
     ParticipantsDAO participantsDAO;
+    @Inject
+    AttachmentDAO attachmentDAO;
 
     protected int page = 0;
     protected long before = 0;
@@ -138,7 +141,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ((Injector) context.getApplicationContext()).inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
-        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());        paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, MAX_MESSAGE_PER_PAGE);
+        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
+        paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         //

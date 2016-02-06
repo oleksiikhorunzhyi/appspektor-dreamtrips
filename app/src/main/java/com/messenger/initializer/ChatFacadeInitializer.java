@@ -76,7 +76,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                 message.setDate(time);
                 message.setStatus(MessageStatus.SENT);
                 List<DataAttachment> attachments = DataAttachment.fromMessage(message);
-                if (attachments != null) attachmentDAO.save(attachments);
+                if (!attachments.isEmpty()) attachmentDAO.save(attachments);
                 messageDAO.save(new DataMessage(message));
                 conversationsDAO.incrementUnreadField(message.getConversationId());
                 conversationsDAO.updateDate(message.getConversationId(), time);
@@ -94,7 +94,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                 long time = System.currentTimeMillis();
                 message.setDate(time);
                 List<DataAttachment> attachments = DataAttachment.fromMessage(message);
-                if (attachments != null) attachmentDAO.save(attachments);
+                if (!attachments.isEmpty()) attachmentDAO.save(attachments);
                 messageDAO.save(new DataMessage(message));
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
@@ -104,6 +104,7 @@ public class ChatFacadeInitializer implements AppInitializer {
             conversationsDAO.getConversation(conversationId).first()
                     .filter(c -> c != null && !TextUtils.equals(c.getSubject(), subject))
                     .compose(new IoToMainComposer<>())
+                    .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(conversation -> {
                         conversation.setSubject(subject);
                         conversation.save();
@@ -114,8 +115,10 @@ public class ChatFacadeInitializer implements AppInitializer {
             if (createLocally) return;
             conversationsDAO.getConversation(conversationId).first()
                     .filter(conversation -> conversation == null)
+                    .doOnError(throwable -> Timber.d(throwable, ""))
                     .flatMap(conversation -> {
-                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO, participantsDAO, messageDAO, usersDAO);
+                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
+                                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
                         return loaderDelegate.loadConversations();
                     })
                     .subscribe();
@@ -126,9 +129,11 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .filter(conversation -> conversation != null // in other case addOnChatCreatedListener will be called
                             && !TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
                     .flatMap(conversation -> {
-                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO, participantsDAO, messageDAO, usersDAO);
+                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
+                                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
                         return loaderDelegate.loadConversations();
                     })
+                    .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe();
         });
         emitter.addOnChatJoinedListener((conversationId, userId, isOnline) -> {
@@ -151,6 +156,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .doOnNext(isAlreadyConnected -> {
                         new DataParticipant(conversationId, userId, MEMBER).save();
                     })
+                    .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribeOn(Schedulers.io())
                     .subscribe();
         });
@@ -162,6 +168,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                     (conversation, user) -> new Pair<>(conversation, user)
             )
                     .subscribeOn(Schedulers.io()).first()
+                    .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(pair -> {
                         DataConversation conversation = pair.first;
                         participantsDAO.delete(conversation.getId(), pair.second.getId());

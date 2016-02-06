@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -43,6 +44,8 @@ public class MessengerInitializer implements AppInitializer {
     @Inject
     MessageDAO messageDAO;
     @Inject
+    AttachmentDAO attachmentDAO;
+    @Inject
     ParticipantsDAO participantsDAO;
     @Inject
     EventBusWrapper eventBusWrapper;
@@ -57,7 +60,7 @@ public class MessengerInitializer implements AppInitializer {
         injector.inject(this);
         //
         MessengerConnector.init(context, watcher, appSessionHolder, messengerServerFacade, spiceManager,
-                conversationsDAO, participantsDAO, messageDAO, usersDAO, eventBusWrapper);
+                conversationsDAO, participantsDAO, messageDAO, attachmentDAO, usersDAO, eventBusWrapper);
         //// TODO: 12/29/15 refactor
         app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
 

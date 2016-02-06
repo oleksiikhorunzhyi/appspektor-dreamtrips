@@ -1,24 +1,30 @@
 package com.messenger.delegate;
 
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
-import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import static com.innahema.collections.query.queriables.Queryable.from;
+
 public class PaginationDelegate {
     private final MessengerServerFacade messengerServerFacade;
     private final MessageDAO messageDAO;
+    private final AttachmentDAO attachmentDAO;
     private final int pageSize;
 
     private PagePagination<Message> messagePagePagination;
@@ -31,9 +37,10 @@ public class PaginationDelegate {
         void onPageError();
     }
 
-    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, int pageSize) {
+    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO, int pageSize) {
         this.messengerServerFacade = messengerServerFacade;
         this.messageDAO = messageDAO;
+        this.attachmentDAO = attachmentDAO;
         this.pageSize = pageSize;
     }
 
@@ -44,11 +51,18 @@ public class PaginationDelegate {
                     .getConversationHistoryPagination(conversation.getId(), pageSize);
         }
 
-        messagePagePagination.setPersister(
-                messages -> Observable.just(messages)
+        messagePagePagination.setPersister(messages ->
+                Observable.just(messages)
                 .subscribeOn(Schedulers.io())
-                .map(serverMessages -> Queryable.from(serverMessages).map(DataMessage::new).toList())
-                .subscribe(messageDAO::save))
+                .map(serverMessages -> {
+                    List<DataMessage> msgs = from(serverMessages).map(DataMessage::new).toList();
+                    List<DataAttachment> attachments = getDataAttachment(serverMessages);
+                    return new Pair<>(msgs, attachments);
+                })
+                .subscribe(listListPair -> {
+                    messageDAO.save(listListPair.first);
+                    attachmentDAO.save(listListPair.second);
+                }))
         ;
         messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
             @Override
@@ -64,6 +78,14 @@ public class PaginationDelegate {
             }
         });
         messagePagePagination.loadPage(page, before);
+    }
+
+    private List<DataAttachment> getDataAttachment(List<Message> messages) {
+        List<DataAttachment> result = new LinkedList<>();
+        for (Message m : messages) {
+            result.addAll(DataAttachment.fromMessage(m));
+        }
+        return result;
     }
 
     public void stopPaginate(){

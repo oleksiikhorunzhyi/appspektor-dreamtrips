@@ -11,10 +11,10 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
@@ -549,18 +549,14 @@ public class SnappyRepository {
         clearAllForKey(DTL_TRANSACTION_PREFIX);
     }
 
+    //TODO add implementation
+    public DistanceType getMerchantsDistanceType() {
+        return DistanceType.KMS;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // DTL Transaction
     ///////////////////////////////////////////////////////////////////////////
-
-    public void saveDistanceToggle(DtlFilterData.DistanceType distanceType) {
-        act(db -> db.put(DTL_DISTANCE_TOGGLE, distanceType));
-    }
-
-    public DtlFilterData.DistanceType getDistanceType() {
-        return actWithResult(db -> db.get(DTL_DISTANCE_TOGGLE, DtlFilterData.DistanceType.class))
-                .or(DtlFilterData.DistanceType.MILES);
-    }
 
     public DtlTransaction getDtlTransaction(String id) {
         return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();

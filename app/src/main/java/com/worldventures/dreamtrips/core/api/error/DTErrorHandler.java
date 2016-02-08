@@ -28,18 +28,18 @@ public class DTErrorHandler implements ErrorHandler {
     @Override
     public Throwable handleError(RetrofitError cause) {
         if (cause.getKind() == RetrofitError.Kind.NETWORK) {
-            return new DtApiException(context.getString(R.string.no_connection));
+            return new DtApiException(context.getString(R.string.no_connection), cause);
         } else {
             if (cause.getResponse() == null) {
-                return new DtApiException(context.getString(R.string.smth_went_wrong));
+                return new DtApiException(context.getString(R.string.smth_went_wrong), cause);
             } else {
 
                 try {
                     ErrorResponse errorResponse = (ErrorResponse) cause.getBodyAs(ErrorResponse.class);
-                    return new DtApiException(errorResponse, cause.getResponse().getStatus());
+                    return new DtApiException(errorResponse, cause.getResponse().getStatus(), cause);
                 } catch (Exception ex) {
                     Timber.e(ex, "Something went wrong while parsing responseh");
-                    return new DtApiException(context.getString(R.string.smth_went_wrong));
+                    return new DtApiException(context.getString(R.string.smth_went_wrong), cause);
                 }
             }
         }

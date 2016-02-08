@@ -17,10 +17,22 @@ public class SimpleSelectionManager implements SelectionManager {
     public void toggleSelection(int position) {
         if (!enabled) return;
         //
-        toggle(position);
+        toggleSelectionImpl(position);
     }
 
-    protected void toggle(int position) {
+    @Override
+    public void setSelection(int position, boolean isSelected) {
+        if (!enabled) return;
+        //
+        setSelectionImpl(position, isSelected);
+    }
+
+    protected void setSelectionImpl(int pos, boolean isSelection) {
+        selectableWrapperAdapter.setSelection(pos, isSelection);
+        selectableWrapperAdapter.notifyDataSetChanged();
+    }
+
+    protected void toggleSelectionImpl(int position) {
         selectableWrapperAdapter.toggleSelection(position);
         selectableWrapperAdapter.notifyDataSetChanged();
     }

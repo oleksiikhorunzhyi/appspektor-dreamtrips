@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -32,6 +34,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
+import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
@@ -66,13 +69,14 @@ public class DtlMerchantDetailsFragment
     DtlMerchantCommonDataInflater commonDataInflater;
     DtlMerchantInfoInflater merchantInfoInflater;
     DtlMerchantHelper helper;
+    //
+    private WeakHandler handler = new WeakHandler();
 
     @Inject
     ActivityResultDelegate activityResultDelegate;
-
     @Inject
     BackStackDelegate backStackDelegate;
-
+    //
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     @InjectView(R.id.merchant_details_earn_wrapper)
@@ -99,6 +103,14 @@ public class DtlMerchantDetailsFragment
     ViewGroup additionalContainer;
     @InjectView(R.id.merchant_details_share)
     View share;
+    @InjectView(R.id.scrollView)
+    ScrollView scrollViewRoot;
+    @InjectView(R.id.points_legal_text)
+    ShowMoreTextView pointsLegalText;
+    @InjectView(R.id.perks_legal_text)
+    ShowMoreTextView perksLegalText;
+    @InjectView(R.id.additional_legal_text)
+    ShowMoreTextView additionalLegalText;
     //
     SupportMapFragment destinationMap;
 
@@ -140,7 +152,11 @@ public class DtlMerchantDetailsFragment
         }
         commonDataInflater.setView(rootView);
         merchantInfoInflater.setView(rootView);
-
+        //
+        pointsLegalText.setSimpleListener((view, collapsed) -> {
+            if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));}
+        );
+        //
         getPresenter().trackScreen();
     }
 
@@ -154,11 +170,6 @@ public class DtlMerchantDetailsFragment
         setMap(merchant);
     }
 
-    @Override
-    public void distanceTypeChanged(DtlMerchant merchant) {
-        merchantInfoInflater.apply(merchant);
-    }
-
     private void setType(DtlMerchant DtlMerchant) {
         earnWrapper.setVisibility(DtlMerchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
         merchantWrapper.setVisibility(DtlMerchant.hasNoOffers() ? View.VISIBLE : View.GONE);
@@ -167,7 +178,6 @@ public class DtlMerchantDetailsFragment
     private void setDescriptions(DtlMerchant merchant) {
         this.description.setText(Html.fromHtml(merchant.getDescription()));
         this.description.setMovementMethod(new LinkMovementMethod());
-
         //
         String perksDescription = "";
         if (merchant.hasOffer(DtlOffer.TYPE_PERK))
@@ -176,6 +186,27 @@ public class DtlMerchantDetailsFragment
         //
         this.descriptionHeader.setVisibility(TextUtils.isEmpty(merchant.getDescription()) ? View.GONE : View.VISIBLE);
         this.perksDescriptionHeader.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
+        //
+        if (!merchant.getDisclaimers().isEmpty()) {
+            ((View) this.perksLegalText.getParent()).setVisibility(View.VISIBLE);
+            //
+            Queryable.from(merchant.getDisclaimers()).forEachR(disclaimer -> {
+                switch (disclaimer.getType()) {
+                    case POINTS:
+                        pointsLegalText.setVisibility(View.VISIBLE);
+                        pointsLegalText.setFullText(disclaimer.getText());
+                        break;
+                    case PERKS:
+                        perksLegalText.setVisibility(View.VISIBLE);
+                        perksLegalText.setFullText(disclaimer.getText());
+                        break;
+                    case ADDITIONAL:
+                        additionalLegalText.setVisibility(View.VISIBLE);
+                        additionalLegalText.setFullText(disclaimer.getText());
+                        break;
+                }
+            });
+        }
     }
 
     private void setAdditional(DtlMerchant merchant) {
@@ -220,13 +251,6 @@ public class DtlMerchantDetailsFragment
             );
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, MERCHANT_MAP_ZOOM));
         });
-    }
-
-    @OnClick(R.id.distance_holder)
-    public void onDistanceClicked() {
-        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
-                .fragmentManager(getChildFragmentManager())
-                .build());
     }
 
     @Override

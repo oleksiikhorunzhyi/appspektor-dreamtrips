@@ -7,7 +7,8 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.DtlDisclaimer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
@@ -48,6 +49,7 @@ public class DtlMerchant implements Parcelable {
     List<DtlMerchantAttribute> amenities;
     List<DtlMerchantMedia> images;
     List<OperationDay> operationDays;
+    List<DtlDisclaimer> disclaimers;
 
     public DtlMerchant() {
     }
@@ -116,9 +118,17 @@ public class DtlMerchant implements Parcelable {
         return budget;
     }
 
+    public List<DtlDisclaimer> getDisclaimers() {
+        return disclaimers;
+    }
+
     //from 1 to 5
     public void setBudget(int budget) {
         this.budget = budget;
+    }
+
+    public void setDisclaimers(List<DtlDisclaimer> disclaimers) {
+        this.disclaimers = disclaimers;
     }
 
     public float getRating() {
@@ -214,23 +224,23 @@ public class DtlMerchant implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     private transient double distance;
-    private transient DtlFilterData.DistanceType distanceType;
+    private transient DistanceType distanceType;
 
     public void setDistance(double distance) {
         this.distance = distance;
     }
 
-    public void setDistanceType(DtlFilterData.DistanceType distanceType) {
+    public void setDistanceType(DistanceType distanceType) {
         this.distanceType = distanceType;
     }
 
     public double getDistance() {
-        return distanceType == DtlFilterData.DistanceType.KMS ?
+        return distanceType == DistanceType.KMS ?
                 DtlLocationHelper.metresToKilometers(distance) :
                 DtlLocationHelper.metresToMiles(distance);
     }
 
-    public DtlFilterData.DistanceType getDistanceType() {
+    public DistanceType getDistanceType() {
         return distanceType;
     }
 
@@ -251,40 +261,6 @@ public class DtlMerchant implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.type);
-        dest.writeInt(this.partnerStatus == null ? -1 : this.partnerStatus.ordinal());
-        dest.writeString(this.displayName);
-        dest.writeString(this.address1);
-        dest.writeString(this.address2);
-        dest.writeString(this.city);
-        dest.writeString(this.state);
-        dest.writeString(this.country);
-        dest.writeString(this.zip);
-        dest.writeParcelable(this.coordinates, 0);
-        dest.writeString(this.phone);
-        dest.writeString(this.email);
-        dest.writeString(this.description);
-        dest.writeString(this.website);
-        dest.writeInt(this.budget);
-        dest.writeFloat(this.rating);
-        dest.writeString(this.timeZone);
-        dest.writeList(this.offers);
-        dest.writeList(this.categories);
-        dest.writeList(this.amenities);
-        dest.writeTypedList(images);
-        dest.writeList(this.operationDays);
-        dest.writeDouble(this.distance);
-    }
 
     protected DtlMerchant(Parcel in) {
         this.id = in.readString();
@@ -315,7 +291,37 @@ public class DtlMerchant implements Parcelable {
         this.images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
         this.operationDays = new ArrayList<OperationDay>();
         in.readList(this.operationDays, List.class.getClassLoader());
+        this.disclaimers = in.createTypedArrayList(DtlDisclaimer.CREATOR);
         this.distance = in.readDouble();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.type);
+        dest.writeInt(this.partnerStatus == null ? -1 : this.partnerStatus.ordinal());
+        dest.writeString(this.displayName);
+        dest.writeString(this.address1);
+        dest.writeString(this.address2);
+        dest.writeString(this.city);
+        dest.writeString(this.state);
+        dest.writeString(this.country);
+        dest.writeString(this.zip);
+        dest.writeParcelable(this.coordinates, 0);
+        dest.writeString(this.phone);
+        dest.writeString(this.email);
+        dest.writeString(this.description);
+        dest.writeString(this.website);
+        dest.writeInt(this.budget);
+        dest.writeFloat(this.rating);
+        dest.writeString(this.timeZone);
+        dest.writeList(this.offers);
+        dest.writeList(this.categories);
+        dest.writeList(this.amenities);
+        dest.writeTypedList(images);
+        dest.writeList(this.operationDays);
+        dest.writeList(this.disclaimers);
+        dest.writeDouble(this.distance);
     }
 
     public static final Parcelable.Creator<DtlMerchant> CREATOR = new Parcelable.Creator<DtlMerchant>() {
@@ -327,4 +333,9 @@ public class DtlMerchant implements Parcelable {
             return new DtlMerchant[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

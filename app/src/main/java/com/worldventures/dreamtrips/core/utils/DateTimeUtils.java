@@ -167,6 +167,10 @@ public class DateTimeUtils {
         return null;
     }
 
+    public static String currentUtcString() {
+        return convertDateToUTCString(new Date(System.currentTimeMillis()));
+    }
+
     public static String convertDateToUTCString(Date date) {
         DateTime dt = new DateTime(date);
         DateTimeFormatter fmt = DateTimeFormat.forPattern(ISO_FORMAT_WITH_TIMEZONE);

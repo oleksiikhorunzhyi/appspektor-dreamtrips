@@ -1,22 +1,24 @@
 package com.worldventures.dreamtrips.core.selectable;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.ViewGroup;
 
 import com.h6ah4i.android.widget.advrecyclerview.utils.BaseWrapperAdapter;
+import com.innahema.collections.query.queriables.Queryable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SelectableWrapperAdapter<VH extends RecyclerView.ViewHolder> extends BaseWrapperAdapter<VH> {
 
-    private SparseBooleanArray selectedItems;
+    private Set<Integer> selectedItems;
     private SelectableDelegateWrapper selectableDelegateWrapper;
 
     public SelectableWrapperAdapter(RecyclerView.Adapter<VH> adapter, SelectionManager selectionManager) {
         super(adapter);
-        selectedItems = new SparseBooleanArray();
+        selectedItems = new HashSet<>();
         this.selectableDelegateWrapper = new SelectableDelegateWrapper(selectionManager);
     }
 
@@ -26,7 +28,7 @@ public class SelectableWrapperAdapter<VH extends RecyclerView.ViewHolder> extend
         if (holder instanceof SelectableCell) {
             ((SelectableCell) holder).setSelectableDelegate(selectableDelegateWrapper);
         }
-
+        //
         return holder;
     }
 
@@ -35,12 +37,15 @@ public class SelectableWrapperAdapter<VH extends RecyclerView.ViewHolder> extend
         super.onBindViewHolder(holder, position);
     }
 
-    void toggleSelection(int pos) {
-        if (selectedItems.get(pos, false)) {
-            selectedItems.delete(pos);
-        } else {
-            selectedItems.put(pos, true);
-        }
+    void toggleSelection(Integer pos) {
+        if (selectedItems.contains(pos))
+            selectedItems.remove(pos);
+        else selectedItems.add(pos);
+    }
+
+    void setSelection(Integer pos, boolean isSelected) {
+        if (isSelected) selectedItems.add(pos);
+        else selectedItems.remove(pos);
     }
 
     void clearSelections() {
@@ -52,12 +57,7 @@ public class SelectableWrapperAdapter<VH extends RecyclerView.ViewHolder> extend
     }
 
     List<Integer> getSelectedItems() {
-        List<Integer> items =
-                new ArrayList<Integer>(selectedItems.size());
-        for (int i = 0; i < selectedItems.size(); i++) {
-            items.add(selectedItems.keyAt(i));
-        }
-        return items;
+        return Queryable.from(selectedItems).toList();
     }
 
     private static class SelectableDelegateWrapper implements SelectableDelegate {
@@ -66,6 +66,11 @@ public class SelectableWrapperAdapter<VH extends RecyclerView.ViewHolder> extend
 
         public SelectableDelegateWrapper(SelectionManager selectionManager) {
             this.selectionManager = selectionManager;
+        }
+
+        @Override
+        public void setSelection(int position, boolean isSelected) {
+            selectionManager.setSelection(position, isSelected);
         }
 
         @Override

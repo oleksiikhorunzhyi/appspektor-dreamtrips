@@ -14,11 +14,11 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
@@ -34,7 +34,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
 
 @Layout(R.layout.fragment_dtl_merchants_tabs)
-public class DtlMerchantsTabsFragment extends BaseFragment<DtlMerchantsTabsPresenter>
+public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPresenter>
         implements DtlMerchantsTabsPresenter.View {
 
     @InjectView(R.id.tabs)
@@ -75,13 +75,13 @@ public class DtlMerchantsTabsFragment extends BaseFragment<DtlMerchantsTabsPrese
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
-            //
+
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
                 getPresenter().trackTabChange(position);
             }
-            //
+
             @Override
             public void onPageScrollStateChanged(int state) {
             }
@@ -120,8 +120,12 @@ public class DtlMerchantsTabsFragment extends BaseFragment<DtlMerchantsTabsPrese
             adapter.notifyDataSetChanged();
         }
         tabStrip.setupWithPagerBadged(pager);
-        //
-        tabStrip.getTabAt(1).select();
+    }
+
+    @Override
+    public void preselectOfferTab(boolean preselectOffer) {
+        if (preselectOffer) tabStrip.getTabAt(0).select();
+        else tabStrip.getTabAt(1).select();
     }
 
     @Override

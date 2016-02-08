@@ -1,32 +1,62 @@
 package com.worldventures.dreamtrips.modules.dtl.delegate;
 
+import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class DtlFilterDelegate {
 
-    private DtlFilterData dtlFilterData;
+    @Inject
+    SnappyRepository db;
+    //
+    private DtlFilterData filterData;
+
+    public DtlFilterDelegate(Injector injector) {
+        injector.inject(this);
+    }
+
+    public void init() {
+        if (filterData == null) {
+            filterData = DtlFilterData.createDefault();
+            filterData.setAmenities(db.getAmenities());
+            filterData.selectAllAmenities();
+        }
+        filterData.setDistanceType(db.getMerchantsDistanceType());
+    }
+
+    public DtlFilterData getFilterData() {
+        return filterData;
+    }
+
+    public void applyNewFilter(DtlFilterParameters filterParameters) {
+        filterData.from(filterParameters);
+        performFiltering();
+    }
+
+    public void obtainAmenities() {
+        filterData.setAmenities(db.getAmenities());
+    }
+
+    public void selectAll() {
+        filterData.selectAllAmenities();
+    }
+
+    public void reset() {
+        filterData.reset();
+        performFiltering();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Listener part
+    ///////////////////////////////////////////////////////////////////////////
 
     private List<FilterListener> filterListeners = new ArrayList<>();
-    private List<FilterChangedListener> filterDataChangedListener = new ArrayList<>();
-
-    public void setDtlFilterData(DtlFilterData dtlFilterData) {
-        this.dtlFilterData = dtlFilterData;
-    }
-
-    public DtlFilterData getDtlFilterData() {
-        return dtlFilterData;
-    }
-
-    public DtlFilterData.DistanceType getDistanceType() {
-        return dtlFilterData.getDistanceType();
-    }
-
-    public void setDistanceType(DtlFilterData.DistanceType distanceType) {
-        dtlFilterData.setDistanceType(distanceType);
-    }
 
     public void addListener(FilterListener filterListener) {
         filterListeners.add(filterListener);
@@ -38,29 +68,11 @@ public class DtlFilterDelegate {
 
     public void performFiltering() {
         for (FilterListener filterListener : filterListeners) {
-            filterListener.onFilter();
-        }
-    }
-
-    public void addDataChangedListener(FilterChangedListener filterListener) {
-        filterDataChangedListener.add(filterListener);
-    }
-
-    public void removeDataChangedListener(FilterChangedListener filterListener) {
-        filterDataChangedListener.remove(filterListener);
-    }
-
-    public void onFilterDataChanged() {
-        for (FilterChangedListener filterListener : filterDataChangedListener) {
-            filterListener.onFilterDataChanged();
+            filterListener.onFilter(filterData);
         }
     }
 
     public interface FilterListener {
-        void onFilter();
-    }
-
-    public interface FilterChangedListener {
-        void onFilterDataChanged();
+        void onFilter(DtlFilterData filterData);
     }
 }

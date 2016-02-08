@@ -6,14 +6,15 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlLocation implements Parcelable {
 
     String id;
@@ -22,6 +23,7 @@ public class DtlLocation implements Parcelable {
     String longName;
     Location coordinates;
     int merchantCount;
+    int partnerCount;
     List<DtlLocation> locatedIn;
 
     public DtlLocation() {
@@ -62,6 +64,18 @@ public class DtlLocation implements Parcelable {
         return location;
     }
 
+    public String asStringLatLong() {
+        return coordinates.getLat() + "," + coordinates.getLng();
+    }
+
+    public int getPartnerCount() {
+        return partnerCount;
+    }
+
+    public void setPartnerCount(int partnerCount) {
+        this.partnerCount = partnerCount;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
@@ -73,6 +87,7 @@ public class DtlLocation implements Parcelable {
         longName = in.readString();
         coordinates = in.readParcelable(Location.class.getClassLoader());
         merchantCount = in.readInt();
+        partnerCount = in.readInt();
         locatedIn = in.createTypedArrayList(DtlLocation.CREATOR);
     }
 
@@ -84,6 +99,7 @@ public class DtlLocation implements Parcelable {
         dest.writeString(longName);
         dest.writeParcelable(coordinates, flags);
         dest.writeInt(merchantCount);
+        dest.writeInt(partnerCount);
         dest.writeTypedList(locatedIn);
     }
 
@@ -135,11 +151,15 @@ public class DtlLocation implements Parcelable {
     public static Comparator<DtlLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) ->
             lhs.getLongName().compareToIgnoreCase(rhs.getLongName());
 
+    public static Comparator<DtlLocation> provideComparator(String query)  {
+        return new DtlLocationRangeComparator(query);
+    }
+
     public static class DtlLocationRangeComparator implements Comparator<DtlLocation> {
 
         private String subString;
 
-        public DtlLocationRangeComparator(String subString) {
+        private DtlLocationRangeComparator(String subString) {
             this.subString = subString;
         }
 
@@ -153,6 +173,7 @@ public class DtlLocation implements Parcelable {
                 return ALPHABETICAL_COMPARATOR.compare(lhs, rhs);
             }
         }
+
     }
 }
 

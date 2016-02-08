@@ -4,19 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
@@ -25,7 +23,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
-import com.worldventures.dreamtrips.modules.dtl.view.custom.MerchantCellDelegate;
 
 import java.util.List;
 
@@ -37,14 +34,14 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_dtl_merchants_list)
 public class DtlMerchantsListFragment
         extends RxBaseFragment<DtlMerchantListPresenter>
-        implements DtlMerchantListPresenter.View, MerchantCellDelegate {
+        implements DtlMerchantListPresenter.View, CellDelegate<DtlMerchant> {
 
     public static final String EXTRA_TYPE = "EXTRA_TYPE";
 
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-
+    //
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
@@ -54,19 +51,15 @@ public class DtlMerchantsListFragment
     @InjectView(R.id.merchant_holder_offers)
     protected TextView emptyTextView;
     //
-    BaseDelegateAdapter<DtlMerchant> adapter;
-    RecyclerView.Adapter wrappedAdapter;
+    BaseDelegateAdapter<DtlMerchant> baseDelegateAdapter;
     //
     RecyclerViewStateDelegate stateDelegate;
     //
     SelectionManager selectionManager;
 
-    private WeakHandler weakHandler;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        weakHandler = new WeakHandler();
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
     }
@@ -87,15 +80,15 @@ public class DtlMerchantsListFragment
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
-        adapter.registerCell(DtlMerchant.class, DtlMerchantCell.class);
-        adapter.registerDelegate(DtlMerchant.class, this);
-
+        //
+        baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
+        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantCell.class);
+        baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
+        //
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
         //
-        wrappedAdapter = selectionManager.provideWrappedAdapter(adapter);
-        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
+        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
         recyclerView.setEmptyView(emptyView);
         //
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -104,48 +97,32 @@ public class DtlMerchantsListFragment
     }
 
     @Override
-    public void onDistanceClicked() {
-        showDistanceSettings();
-    }
-
-    @Override
     public void onCellClicked(DtlMerchant model) {
-        //TODO
+        // TODO
     }
 
     @Override
     public void setItems(List<DtlMerchant> merchants) {
         if (merchants != null && !merchants.isEmpty()) hideProgress();
         //
-        adapter.setItems(merchants);
+        baseDelegateAdapter.setItems(merchants);
         stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
     public void showProgress() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
+        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(true));
     }
 
     @Override
     public void hideProgress() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
-    }
-
-    public void showDistanceSettings() {
-        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
-                .fragmentManager(getChildFragmentManager())
-                .build());
+        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(false));
     }
 
     @Override
     public void toggleSelection(DtlMerchant DtlMerchant) {
-        int index = adapter.getItems().indexOf(DtlMerchant);
-        if (index != -1)
-            selectionManager.toggleSelection(index);
+        int index = baseDelegateAdapter.getItems().indexOf(DtlMerchant);
+        if (index != -1) selectionManager.toggleSelection(index);
     }
 
     @Override
@@ -160,4 +137,12 @@ public class DtlMerchantsListFragment
         super.onDestroyView();
     }
 
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
+    }
 }

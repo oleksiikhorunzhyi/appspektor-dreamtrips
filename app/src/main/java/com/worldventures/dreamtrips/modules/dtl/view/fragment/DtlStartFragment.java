@@ -7,7 +7,6 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
 import com.techery.spares.annotations.Layout;
@@ -41,18 +40,6 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
 
     @Inject
     ActivityResultDelegate activityResultDelegate;
-
-    private void showDtlFilters() {
-        Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
-        if (filtersFragment != null && filtersFragment.getClass().getName()
-                .equals(Route.DTL_FILTERS.getClazzName())) return;
-
-        router.moveTo(Route.DTL_FILTERS, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .containerId(R.id.container_filters)
-                .fragmentManager(getFragmentManager())
-                .build());
-    }
 
     @Override
     public void checkPermissions() {
@@ -136,6 +123,5 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
         super.onResume();
         activityResult(activityResultDelegate.getRequestCode(),
                 activityResultDelegate.getResultCode(), activityResultDelegate.getData());
-        showDtlFilters();
     }
 }

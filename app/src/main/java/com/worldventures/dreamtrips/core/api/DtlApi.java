@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.http.Body;
 import retrofit.http.Field;
@@ -20,10 +21,10 @@ import retrofit.http.Query;
 public interface DtlApi {
 
     @GET("/api/dtl/v2/locations")
-    ArrayList<DtlLocation> getNearbyDtlLocations(@Query("ll") String latLng, @Query("query") String query);
+    List<DtlLocation> getNearbyLocations(@Query("ll") String latLng);
 
-    @GET("/api/dtl/v2/locations/{id}/merchants")
-    ArrayList<DtlMerchant> getDtlMerchants(@Path("id") String locationId);
+    @GET("/api/dtl/v2/locations")
+    List<DtlLocation> searchLocations(@Query("query") String query);
 
     @GET("/api/dtl/v2/merchants")
     ArrayList<DtlMerchant> getNearbyDtlMerchants(@Query("ll") String ll);

@@ -40,36 +40,54 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     }
 
     public boolean checkQuery(DtlMerchant dtlMerchant) {
+        if (query == null) return false;
+        //
         List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
-
         return dtlMerchant.getDisplayName().toLowerCase().contains(query.toLowerCase()) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
                         element.getName().toLowerCase().contains(query.toLowerCase())) != null);
     }
 
+    /**
+     * Apply filter on merchant
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     public boolean applyFilter(DtlMerchant dtlMerchant) {
         return checkPrice(dtlMerchant)
                 && checkDistance(dtlMerchant)
                 && checkAmenities(dtlMerchant);
     }
 
+    /**
+     * Filtering criteria for merchant that checks price criteria
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     public boolean checkPrice(DtlMerchant dtlMerchant) {
         return dtlMerchant.getBudget() >= dtlFilterData.getMinPrice() &&
                 dtlMerchant.getBudget() <= dtlFilterData.getMaxPrice();
     }
 
+    /**
+     * Filtering criteria for merchant that checks distance criteria
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     public boolean checkDistance(DtlMerchant dtlMerchant) {
-        return dtlFilterData.getMaxDistance() == DtlFilterData.MAX_DISTANCE
+        return dtlFilterData.getMaxDistance() == DtlFilterParameters.MAX_DISTANCE
                 || currentLatLng == null
                 || dtlMerchant.getDistance() < dtlFilterData.getMaxDistance();
     }
 
+    /**
+     * Filtering criteria for merchant that checks amenities criteria
+     * @param dtlMerchant merchant to filter
+     * @return true if merchant passes filter
+     */
     public boolean checkAmenities(DtlMerchant dtlMerchant) {
-        List<DtlMerchantsFilterAttribute> selectedAmenities = dtlFilterData.getSelectedAmenities();
-        return selectedAmenities == null || dtlMerchant.getAmenities() == null ||
-                !Collections.disjoint(selectedAmenities, Queryable.from(dtlMerchant.getAmenities()).map(element ->
-                                new DtlMerchantsFilterAttribute(element.getName())
-                ).toList());
+        return dtlMerchant.getAmenities() == null || dtlMerchant.getAmenities().isEmpty() ||
+                !Collections.disjoint(dtlFilterData.getSelectedAmenities(), dtlMerchant.getAmenities());
     }
 
     public static class Builder {
@@ -107,5 +125,4 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
                     merchantType);
         }
     }
-
 }

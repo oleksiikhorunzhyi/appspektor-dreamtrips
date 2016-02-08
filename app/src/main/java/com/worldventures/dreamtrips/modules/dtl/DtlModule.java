@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlDistancePresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
@@ -19,11 +18,9 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlSuggestMerchantPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlDistanceCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
-import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlDistanceFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
@@ -89,10 +86,6 @@ import dagger.Provides;
                 DtlVerifyAmountPresenter.class,
 
                 DtlImageFragment.class,
-
-                DtlDistanceFragment.class,
-                DtlDistanceCell.class,
-                DtlDistancePresenter.class,
         },
         complete = false,
         library = true

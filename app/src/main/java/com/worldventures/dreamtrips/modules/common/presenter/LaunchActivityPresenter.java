@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
@@ -62,7 +62,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     LocalesHolder localeStorage;
 
     @Inject
-    DtlLocationRepository dtlLocationRepository;
+    DtlLocationManager dtlLocationManager;
 
     @Inject
     StaticPageHolder staticPageHolder;
@@ -86,7 +86,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         startPreloadChain();
 
         // we should clean dtl location when app was relaunched
-        dtlLocationRepository.cleanLocation();
+        dtlLocationManager.cleanLocation();
     }
 
     @Override

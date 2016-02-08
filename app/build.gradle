@@ -68,13 +68,14 @@ android {
     productFlavors {
         dev {
             applicationIdSuffix ".dev"
+            minSdkVersion 23 // temporary, until new build gradle merged - to decrease build time
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
 
             manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             ext.enableCrashlytics = false
 
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
@@ -231,6 +232,8 @@ dependencies {
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
     compile 'io.reactivex:rxjava:1.0.15'
     compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'com.github.techery:job-executor:0.1.1'
+    compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
@@ -250,7 +253,7 @@ dependencies {
     compile 'com.github.afollestad.material-dialogs:commons:0.8.5.2'
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
-    compile 'com.github.techery:material-range-bar:d5f61f2f50'
+    compile 'com.github.techery:material-range-bar:9762c0a79b'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.4'
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
     compile 'me.relex:circleindicator:1.1.5@aar'

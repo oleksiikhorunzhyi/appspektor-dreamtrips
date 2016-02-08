@@ -109,7 +109,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
             // we should clean transaction, as for now we don't allow user to save his progress
             // in the enrollment wizard(maybe needed in future)
             if (dtlTransaction.getUploadTask() != null)
-                photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+                photoUploadingManager.cancelUpload(dtlTransaction.getUploadTask());
             snapper.cleanDtlTransaction(merchant.getId(), dtlTransaction);
             view.openTransaction(merchant, dtlTransaction);
         } else {

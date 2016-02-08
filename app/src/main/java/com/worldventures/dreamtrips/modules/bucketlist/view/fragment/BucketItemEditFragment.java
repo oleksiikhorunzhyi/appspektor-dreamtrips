@@ -28,8 +28,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoCellDelegate;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
@@ -163,8 +163,8 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        bucketPhotosView.init(this, BucketPhotosView.Type.EDIT);
-
+        setupPhotoCellCallbacks();
+        bucketPhotosView.init(this);
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
@@ -173,6 +173,26 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
         photoPickerLayout.setup(getChildFragmentManager(), true, 5);
         photoPickerLayout.hidePanel();
         photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
+    }
+
+    protected void setupPhotoCellCallbacks() {
+        bucketPhotosView.setBucketAddPhotoCellDelegate(model -> {
+            if (isVisibleOnScreen()) {
+                showPhotoPicker();
+            }
+        });
+        bucketPhotosView.setBucketPhotoUploadCellDelegate(getPresenter()::onUploadTaskClicked);
+        bucketPhotosView.setBucketPhotoCellDelegate(new BucketPhotoCellDelegate() {
+            @Override
+            public void deletePhotoRequest(BucketPhoto photo) {
+                getPresenter().deletePhotoRequest(photo);
+            }
+
+            @Override
+            public void onCellClicked(BucketPhoto model) {
+
+            }
+        });
     }
 
     @Override
@@ -287,11 +307,6 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     }
 
     @Override
-    public IBucketPhotoView getBucketPhotosView() {
-        return bucketPhotosView;
-    }
-
-    @Override
     public void hidePhotoPicker() {
         photoPickerLayout.hidePanel();
     }
@@ -354,7 +369,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     }
 
     @Override
-    public UploadTask getBucketPhotoUploadTask(String taskId) {
+    public UploadTask getBucketPhotoUploadTask(long taskId) {
         return bucketPhotosView.getBucketPhotoUploadTask(taskId);
     }
 

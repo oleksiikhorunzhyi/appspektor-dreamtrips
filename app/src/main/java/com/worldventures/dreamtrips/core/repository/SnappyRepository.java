@@ -321,7 +321,9 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
     // Image Tasks
     ///////////////////////////////////////////////////////////////////////////
-
+    /**
+     * Use it from PhotoUploadManager
+     */
     public void saveUploadTask(UploadTask uploadTask) {
         act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getFilePath(), uploadTask));
     }
@@ -342,13 +344,6 @@ public class SnappyRepository {
                 Timber.e(e, "Error while deleting");
             }
         }));
-    }
-
-    public List<UploadTask> getUploadTasksForId(String linkedId) {
-        List<UploadTask> items = getAllUploadTask();
-        return Queryable.from(items)
-                .filter(item -> linkedId.equals(item.getLinkedItemId()))
-                .toList();
     }
 
     public List<UploadTask> getAllUploadTask() {

@@ -54,7 +54,7 @@ public class ImageUtils {
                         if (bitmap != null && !bitmap.isRecycled()) {
                             //you can use bitmap here
                             if (bitmapReciveListener != null) {
-                                bitmapReciveListener.onBitmapReceived(bitmap);
+                                bitmapReciveListener.onBitmapReceived(bitmap.copy(bitmap.getConfig(), true));
                             }
                         }
                     } finally {

@@ -8,11 +8,11 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoCellDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -20,7 +20,7 @@ import butterknife.OnLongClick;
 import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_bucket_photo_cell)
-public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
+public class BucketPhotoCell extends AbstractDelegateCell<BucketPhoto, BucketPhotoCellDelegate> {
 
     @InjectView(R.id.imageViewPhoto)
     protected SimpleDraweeView imageViewPhoto;
@@ -81,17 +81,9 @@ public class BucketPhotoCell extends AbstractCell<BucketPhoto> {
                 .content(R.string.delete_photo_text)
                 .positiveText(R.string.delete_photo_positiove)
                 .negativeText(R.string.delete_photo_negative)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        getEventBus().post(new BucketPhotoDeleteRequestEvent(getModelObject()));
-                    }
+                .onPositive((materialDialog, dialogAction) -> cellDelegate.deletePhotoRequest(getModelObject()))
+                .onNegative((materialDialog, dialogAction) -> materialDialog.dismiss());
 
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
     }
 
 }

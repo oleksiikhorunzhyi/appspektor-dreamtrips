@@ -11,12 +11,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEv
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-
-import java.util.List;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
@@ -86,8 +83,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
     }
 
     @Override
-    protected void syncUI(List<UploadTask> tasks) {
-        super.syncUI(tasks);
+    protected void syncUI() {
+        super.syncUI();
         if (bucketItem != null) {
             if (!TextUtils.isEmpty(bucketItem.getType())) {
                 String s = bucketItem.getCategoryName();
@@ -95,6 +92,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             }
             view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
             view.setupDiningView(bucketItem.getDining());
+
         }
     }
 

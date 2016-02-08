@@ -1,19 +1,24 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
+import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
@@ -21,7 +26,6 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +43,17 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     public void takeView(BucketItemEditPresenterView view) {
         priorityEventBus = 1;
         super.takeView(view);
+        photoUploadingManager.getTaskChangingObservable(UploadPurpose.BUCKET_IMAGE).subscribe(uploadTask -> stateChanged(uploadTask));
+
+    }
+
+
+    @Override
+    protected void syncUI() {
+        super.syncUI();
+        List<UploadTask> tasks = photoUploadingManager.getUploadTasksForLinkedItemId(UploadPurpose.BUCKET_IMAGE, bucketItemId);
+        Queryable.from(tasks).forEachR(task -> stateChanged(task));
+        if (!tasks.isEmpty()) view.addImages(tasks);
     }
 
     @Override
@@ -63,8 +78,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         bucketPostItem.setName(view.getTitle());
         bucketPostItem.setDescription(view.getDescription());
         bucketPostItem.setStatus(view.getStatus());
-        bucketPostItem.setTags(getListFromString(view.getTags()));
-        bucketPostItem.setPeople(getListFromString(view.getPeople()));
+        bucketPostItem.setTags(TextUtils.getListFromString(view.getTags()));
+        bucketPostItem.setPeople(TextUtils.getListFromString(view.getPeople()));
         bucketPostItem.setCategory(view.getSelectedItem());
         bucketPostItem.setDate(selectedDate);
         getBucketItemManager().updateBucketItem(bucketPostItem, item -> {
@@ -90,6 +105,13 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
+    public void deletePhotoRequest(BucketPhoto bucketPhoto) {
+        if (bucketItem.getPhotos().size() > 0 && bucketItem.getPhotos().contains(bucketPhoto)) {
+            getBucketItemManager().deleteBucketItemPhoto(bucketPhoto,
+                    bucketItem, jsonObject -> view.deleteImage(bucketPhoto), this);
+        }
+    }
+
     public void onDateSet(int year, int month, int day) {
         String date = DateTimeUtils.convertDateToString(year, month, day);
         view.setTime(date);
@@ -105,24 +127,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         setDate(null);
     }
 
-    public List<String> getListFromString(String temp) {
-        if (TextUtils.isEmpty(temp)) {
-            return Collections.emptyList();
-        } else {
-            return Queryable.from(temp.split(",")).map(String::trim).toList();
-        }
-    }
 
     ////////////////////////////////////////
     /////// Photo picking
     ////////////////////////////////////////
-
-    public void onEvent(BucketAddPhotoClickEvent event) {
-        if (view.isVisibleOnScreen()) {
-            eventBus.cancelEventDelivery(event);
-            view.showPhotoPicker();
-        }
-    }
 
     public void onEvent(AttachPhotoEvent event) {
         if (view.isVisibleOnScreen() && event.getRequestType() != -1)
@@ -149,9 +157,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         if (chosenImages.size() == 0) {
             return;
         }
-
         view.hidePhotoPicker();
-
         saveItem(false);
 
         Queryable.from(chosenImages).forEachR(choseImage ->
@@ -173,11 +179,67 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
 
         UploadTask task = new UploadTask();
-        task.setStatus(UploadTask.Status.IN_PROGRESS);
+        task.setStatus(UploadTask.Status.STARTED);
         task.setFilePath(uri.toString());
         task.setType(type);
         task.setLinkedItemId(String.valueOf(bucketItemId));
 
-        copyFileIfNeeded(task);
+        doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> {
+            task.setFilePath(filePath);
+            startUpload(task);
+        });
+    }
+
+    public void onUploadTaskClicked(UploadTask uploadTask) {
+        if (uploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
+            startUpload(uploadTask);
+        } else {
+            cancelUpload(uploadTask);
+        }
+    }
+
+    protected void startUpload(UploadTask uploadTask) {
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, uploadTask.getType(), bucketItem.getType());
+        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
+        photoUploadingManager.upload(uploadTask, UploadPurpose.BUCKET_IMAGE);
+    }
+
+    private void onError(long id, Exception ex) {
+        if (view == null) return;
+        //
+        UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(id);
+        if (bucketPhotoUploadTask != null) view.itemChanged(bucketPhotoUploadTask);
+    }
+
+    private void addPhotoToBucketItem(UploadTask task) {
+        doRequest(new UploadBucketPhotoCommand(bucketItemId, task),
+                photo -> photoAdded(task, photo),
+                spiceException -> onError(task.getId(), spiceException));
+    }
+
+    private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
+        view.replace(bucketPhotoUploadTask, bucketPhoto);
+        getBucketItemManager().updateBucketItemWithPhoto(bucketItem, bucketPhoto);
+    }
+
+    protected void cancelUpload(UploadTask uploadTask) {
+        photoUploadingManager.cancelUpload(uploadTask);
+    }
+
+    protected void stateChanged(UploadTask uploadTask) {
+        switch (uploadTask.getStatus()) {
+            case COMPLETED:
+                addPhotoToBucketItem(uploadTask);
+                break;
+            case CANCELED:
+                view.deleteImage(uploadTask);
+                break;
+            case STARTED:
+                view.addImage(uploadTask);
+                break;
+            case FAILED:
+                view.itemChanged(uploadTask);
+                break;
+        }
     }
 }

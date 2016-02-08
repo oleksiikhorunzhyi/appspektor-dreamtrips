@@ -3,13 +3,11 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
+import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
@@ -22,7 +20,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddPhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -37,7 +34,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter.View>
-        extends Presenter<VT> implements TransferListener {
+        extends Presenter<VT> {
 
     public static final int PER_PAGE = 15;
     public final static int VISIBLE_TRESHOLD = 5;
@@ -111,6 +108,26 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             prepareTasks(photos);
             reload();
         }
+
+        photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE).subscribe(uploadTask -> {
+            if (uploadTask != null) {
+                switch (uploadTask.getStatus()) {
+                    case COMPLETED:
+                        photoUploaded(uploadTask);
+                        break;
+                    case CANCELED:
+                        break;
+                    case STARTED:
+                        int index = photos.indexOf(uploadTask);
+                        if (index >= 0) updateTask(uploadTask);
+                        else addTask(uploadTask);
+                        break;
+                    case FAILED:
+                        photoError(getCurrentTask(uploadTask.getId()));
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -159,11 +176,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             IFullScreenObject obj = photos.get(position);
             if (obj instanceof UploadTask) {
                 if (((UploadTask) obj).getStatus().equals(UploadTask.Status.FAILED)) {
-                    ((UploadTask) obj).setStatus(UploadTask.Status.IN_PROGRESS);
-
+                    ((UploadTask) obj).setStatus(UploadTask.Status.STARTED);
                     view.replace(photos.indexOf(obj), obj);
-
-                    startUpload((UploadTask) obj);
+                    uploadPhoto((UploadTask) obj);
                 }
             } else {
                 if (this instanceof MembersImagesPresenter) {
@@ -173,6 +188,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 view.openFullscreen(getFullscreenArgs(position).build());
             }
         }
+
+
     }
 
     @NonNull
@@ -199,60 +216,23 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    @Override
-    public void onStateChanged(int id, TransferState state) {
-        if (view != null) {
-            UploadTask uploadTask = getCurrentTask(String.valueOf(id));
-            if (uploadTask != null) {
-                if (state.equals(TransferState.COMPLETED)) {
-                    if (uploadTask.getStatus() != UploadTask.Status.COMPLETED) {
-                        uploadTask.setStatus(UploadTask.Status.COMPLETED);
-                        uploadTask.setOriginUrl
-                                (photoUploadingSpiceManager.getResultUrl(uploadTask));
-                        photoUploaded(uploadTask);
-                    }
-                } else if (state.equals(TransferState.FAILED)) {
-                    photoError(getCurrentTask(String.valueOf(id)));
-                }
+    protected void photoUploaded(UploadTask task) {
 
-                updateTask(uploadTask);
-            }
-
-        }
     }
 
-    @Override
-    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-    }
-
-    @Override
-    public void onError(int id, Exception ex) {
-        photoError(getCurrentTask(String.valueOf(id)));
-    }
-
-    private void photoUploaded(UploadTask task) {
-        doRequest(new AddTripPhotoCommand(task), photo -> {
-            processPhoto(photos.indexOf(task), photo);
-            db.removeUploadTask(task);
-            uploadTags(photo.getFSId());
-        }, spiceException -> {
-            photoError(getCurrentTask(task.getAmazonTaskId()));
-        });
-    }
-
-    private void uploadTags(String id) {
+    protected void uploadTags(String id) {
         if (photoTags == null || photoTags.isEmpty()) return;
         doRequest(new AddPhotoTagsCommand(id, photoTags));
     }
 
-    private void photoError(UploadTask uploadTask) {
+    protected void photoError(UploadTask uploadTask) {
         if (uploadTask != null) {
             uploadTask.setStatus(UploadTask.Status.FAILED);
             updateTask(uploadTask);
         }
     }
 
-    private void processPhoto(int index, Photo photo) {
+    protected void processPhoto(int index, Photo photo) {
         photos.set(index, photo);
         db.savePhotoEntityList(type, userId, photos);
 
@@ -261,16 +241,22 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }, 300);
     }
 
+    private void addTask(UploadTask task) {
+        if (view == null) return;
+        photos.add(0, task);
+        view.add(0, task);
+    }
+
     private void updateTask(UploadTask task) {
         if (view == null) return;
         int index = photos.indexOf(task);
         view.replace(index, task);
     }
 
-    private UploadTask getCurrentTask(String id) {
+    protected UploadTask getCurrentTask(long id) {
         return (UploadTask) Queryable.from(photos).firstOrDefault(item ->
                 item instanceof UploadTask
-                        && id.equals(((UploadTask) item).getAmazonTaskId()));
+                        && id == (((UploadTask) item).getId()));
 
     }
 
@@ -333,7 +319,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                         photos.addAll(items);
                     }
 
-                    db.savePhotoEntityList(type, userId, photos);
+                    db.savePhotoEntityList(type, userId, items);
                 } else {
                     handleError(spiceException);
                 }
@@ -348,19 +334,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     private void prepareTask(UploadTask uploadTask) {
-        if (uploadTask.getAmazonTaskId() == null) {
-            UploadTask savedTask = db.getUploadTask(uploadTask.getFilePath());
-            if (savedTask != null) {
-                uploadTask.setAmazonTaskId(savedTask.getAmazonTaskId());
-                uploadTask.setBucketName(savedTask.getBucketName());
-                uploadTask.setKey(savedTask.getKey());
-            }
-        }
-        //
-        TransferObserver transferObserver = photoUploadingSpiceManager
-                .getTransferById(uploadTask.getAmazonTaskId());
-        transferObserver.setTransferListener(this);
-        onStateChanged(transferObserver.getId(), transferObserver.getState());
+
     }
 
     private void resetLazyLoadFields() {
@@ -401,19 +375,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     private void uploadPhoto(UploadTask uploadTask) {
-        photos.add(0, uploadTask);
-        view.add(0, uploadTask);
-        db.savePhotoEntityList(type, userId, photos);
-        startUpload(uploadTask);
-    }
-
-    private void startUpload(UploadTask uploadTask) {
         TrackingHelper.photoUploadStarted(uploadTask.getType(), "");
-        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
-        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
-        db.saveUploadTask(uploadTask);
-        transferObserver.setTransferListener(this);
+        photoUploadingManager.upload(uploadTask, UploadPurpose.TRIP_IMAGE);
     }
 
     public void onEvent(FeedEntityChangedEvent event) {

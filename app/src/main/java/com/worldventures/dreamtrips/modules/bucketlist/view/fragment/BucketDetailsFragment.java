@@ -315,37 +315,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
-    public void addImages(List<UploadTask> tasks) {
-
-    }
-
-    @Override
-    public void addImage(UploadTask uploadTask) {
-
-    }
-
-    @Override
-    public void deleteImage(UploadTask task) {
-
-    }
-
-    @Override
-    public void deleteImage(BucketPhoto bucketPhoto) {
-
-    }
-
-    @Override
-    public void itemChanged(UploadTask uploadTask) {
-
-    }
-
-    @Override
-    public void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
-
-    }
-
-    @Override
-    public UploadTask getBucketPhotoUploadTask(String taskId) {
+    public UploadTask getBucketPhotoUploadTask(long taskId) {
         return null;
     }
 

@@ -298,7 +298,6 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
 
         SoftInputUtil.hideSoftInputMethod(post);
-        getPresenter().cancel();
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
                 .fragmentManager(getFragmentManager())
                 .build());

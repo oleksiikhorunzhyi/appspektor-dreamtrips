@@ -6,22 +6,25 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForDetails;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCellForeign;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketAddPhotoCellDelegate;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoCellDelegate;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddBucketPhotoModel;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 
 
@@ -29,6 +32,14 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     private IgnoreFirstItemAdapter imagesAdapter;
     private AddBucketPhotoModel createBtnObject = new AddBucketPhotoModel();
+
+    @Inject
+    @Global
+    EventBus eventBus;
+
+    BucketAddPhotoCellDelegate bucketAddPhotoCellDelegate;
+    BucketPhotoCellDelegate bucketPhotoCellDelegate;
+    BucketPhotoUploadCellDelegate bucketPhotoUploadCellDelegate;
 
     public BucketPhotosView(Context context) {
         super(context);
@@ -43,28 +54,23 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
 
-    public void init(Injector injector, Type type) {
+    public void init(Injector injector) {
+        injector.inject(this);
         if (imagesAdapter == null) {
             imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
 
-            if (type == Type.EDIT) {
-                imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
-            } else if (type == Type.FOREIGN) {
-                imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForeign.class);
-            } else {
-                imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCellForDetails.class);
-            }
-
+            imagesAdapter.registerCell(BucketPhoto.class, BucketPhotoCell.class);
             imagesAdapter.registerCell(UploadTask.class, BucketPhotoUploadCell.class);
             imagesAdapter.registerCell(AddBucketPhotoModel.class, BucketAddPhotoCell.class);
+
+            imagesAdapter.registerDelegate(BucketPhoto.class, bucketPhotoCellDelegate);
+            imagesAdapter.registerDelegate(UploadTask.class, bucketPhotoUploadCellDelegate);
+            imagesAdapter.registerDelegate(AddBucketPhotoModel.class, bucketAddPhotoCellDelegate);
+
             createBtnObject.setVisibility(true);
             imagesAdapter.addItem(createBtnObject);
 
-            setLayoutManager(new LinearLayoutManager(
-                            getContext(),
-                            LinearLayoutManager.HORIZONTAL,
-                            false)
-            );
+            setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
             setAdapter(imagesAdapter);
         }
     }
@@ -102,8 +108,7 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     public void deleteImage(UploadTask photo) {
         for (int i = 0; i < imagesAdapter.getCount(); i++) {
             Object item = imagesAdapter.getItem(i);
-            if (item instanceof UploadTask &&
-                    photo.getAmazonTaskId().equals(((UploadTask) item).getAmazonTaskId())) {
+            if (item instanceof UploadTask && photo.getId() == ((UploadTask) item).getId()) {
                 imagesAdapter.remove(item);
                 break;
             }
@@ -130,7 +135,10 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
     @Override
     public void addImage(UploadTask image) {
-        if (imagesAdapter.getItems().contains(image)) return;
+        if (imagesAdapter.getItems().contains(image)) {
+            imagesAdapter.notifyDataSetChanged();
+            return;
+        }
         //
         imagesAdapter.addItem(1, image);
         imagesAdapter.notifyItemInserted(1);
@@ -144,28 +152,27 @@ public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
     }
 
     @Override
-    public List getImages() {
-        return Queryable.from(imagesAdapter.getItems()).filter((Predicate) element -> element instanceof IFullScreenObject).toList();
-    }
-
-    @Override
     public void itemChanged(Object item) {
-        imagesAdapter.notifyItemChanged(imagesAdapter.getItems().indexOf(item) + 1);
+        imagesAdapter.notifyItemChanged(imagesAdapter.getItems().indexOf(item));
     }
 
     @Override
-    public UploadTask getBucketPhotoUploadTask(String taskId) {
+    public UploadTask getBucketPhotoUploadTask(long taskId) {
         return (UploadTask) Queryable.from(imagesAdapter.getItems()).firstOrDefault(element ->
                 element instanceof UploadTask &&
-                        ((UploadTask) element).getAmazonTaskId().equals(taskId));
+                        ((UploadTask) element).getId() == (taskId));
     }
 
-    public void hideCreateBtn() {
-        createBtnObject.setVisibility(false);
+    public void setBucketPhotoCellDelegate(BucketPhotoCellDelegate bucketPhotoCellDelegate) {
+        this.bucketPhotoCellDelegate = bucketPhotoCellDelegate;
     }
 
-    public enum Type {
-        DETAILS, EDIT, FOREIGN
+    public void setBucketPhotoUploadCellDelegate(BucketPhotoUploadCellDelegate bucketPhotoUploadCellDelegate) {
+        this.bucketPhotoUploadCellDelegate = bucketPhotoUploadCellDelegate;
+    }
+
+    public void setBucketAddPhotoCellDelegate(BucketAddPhotoCellDelegate bucketAddPhotoCellDelegate) {
+        this.bucketAddPhotoCellDelegate = bucketAddPhotoCellDelegate;
     }
 
 }

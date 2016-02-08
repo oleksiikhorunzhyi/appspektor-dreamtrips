@@ -46,7 +46,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     @Inject
     protected VideoDownloadSpiceManager videoDownloadSpiceManager;
     @Inject
-    protected PhotoUploadingManager photoUploadingSpiceManager;
+    protected PhotoUploadingManager photoUploadingManager;
 
     protected int priorityEventBus = 0;
 

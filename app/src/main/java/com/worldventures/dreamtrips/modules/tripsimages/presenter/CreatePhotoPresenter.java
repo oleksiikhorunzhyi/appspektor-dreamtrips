@@ -73,8 +73,6 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
                 imageUploadTask.setLongitude(0);
                 imageUploadTask.setLocationName(view.getLocation());
 
-                imageUploadTask.setModule(UploadTask.Module.IMAGES);
-
                 Date date = DateTimeUtils.dateFromString(view.getDate());
                 Date time = DateTimeUtils.timeFromString(view.getTime());
                 imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
@@ -82,7 +80,7 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
 
                 doRequest(new CopyFileCommand(context, imageUploadTask.getFilePath()), filePath -> {
                     imageUploadTask.setFilePath(filePath);
-                    imageUploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
+                    imageUploadTask.setStatus(UploadTask.Status.STARTED);
                     eventBus.post(new InsertNewImageUploadTaskEvent(imageUploadTask, view.getTagsToUpload()));
                     view.end();
                 });

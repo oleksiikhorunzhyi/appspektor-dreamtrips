@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified -->
 <resources>
     <string name="dtl_locations_title">选择地点</string>
     <string name="dtl_locations_try_search">我们无法找到一个靠近您的城市。 请试试我们的城市搜索</string>
@@ -102,9 +103,6 @@
     <string name="dtl_coming_soon_offers">更多优惠即将到来</string>
     <string name="dtl_details_share_title_without_points">我发现%s在使用DreamTrips app</string>
     <string name="rep_suggest_restaurant">推荐餐厅</string>
-    <string name="distance_miles" formatted="false">%.1f 英里</string>
-    <string name="distance_kms" formatted="false">%.1f 公里</string>
-    <string name="distance_dialog_miles">英里</string>
-    <string name="distance_dialog_kms">公里</string>
-    <string name="distance_header">显示距离以：</string>
+    <string name="details_collapsed_text_caption">显示更多</string>
+    <string name="details_expanded_text_caption">显示更多</string>
 </resources>

@@ -87,10 +87,10 @@ public class ShowMoreTextView extends TextView {
         pokeListeners();
     }
 
-    @Override
-    public void setText(CharSequence text, BufferType type) {
-        super.setText(text, type);
-//        redraw(); // TODO : enhance with ability to set text with automatic redrawing
+    public void setFullText(String fullText) {
+        setText(fullText);
+        this.fullText = fullText;
+        redraw();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -144,6 +144,9 @@ public class ShowMoreTextView extends TextView {
     }
 
     private ClickableSpan clickableSpan = new ClickableSpan() {
+
+        private Typeface typeface;
+
         @Override
         public void onClick(View widget) {
             toggleShowMore();
@@ -151,7 +154,8 @@ public class ShowMoreTextView extends TextView {
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            ds.setTypeface(Typeface.create(ds.getTypeface(), Typeface.BOLD));
+            if (typeface == null) typeface = Typeface.create(ds.getTypeface(), Typeface.BOLD);
+            ds.setTypeface(typeface);
             ds.setColor(captionColor);
         }
     };
@@ -235,12 +239,12 @@ public class ShowMoreTextView extends TextView {
         this.simpleListener = simpleListener;
     }
 
-    public static interface Listener {
+    public interface Listener {
         void onExpanded(ShowMoreTextView view);
         void onCollapsed(ShowMoreTextView view);
     }
 
-    public static interface SimpleListener {
+    public interface SimpleListener {
         void onToggled(ShowMoreTextView view, boolean collapsed);
     }
 

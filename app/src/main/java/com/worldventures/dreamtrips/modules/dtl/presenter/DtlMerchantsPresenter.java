@@ -104,7 +104,6 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
         LatLng currentLatLng = dtlLocationHelper.getAcceptedLocation(location,
                 dtlLocationManager.getCachedSelectedLocation());
         DistanceType distanceType = dtlFilterDelegate.getFilterData().getDistanceType();
-        DtlFilterData dtlFilterData = dtlFilterDelegate.getFilterData();
         //
         for (DtlMerchant dtlMerchant : dtlMerchants) {
             dtlMerchant.setDistanceType(distanceType);

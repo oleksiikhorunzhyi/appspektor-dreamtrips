@@ -108,6 +108,8 @@ public class DtlMerchantDetailsFragment
     ShowMoreTextView pointsLegalText;
     @InjectView(R.id.perks_legal_text)
     ShowMoreTextView perksLegalText;
+    @InjectView(R.id.additional_legal_text)
+    ShowMoreTextView additionalLegalText;
     //
     SupportMapFragment destinationMap;
 
@@ -184,10 +186,25 @@ public class DtlMerchantDetailsFragment
         this.descriptionHeader.setVisibility(TextUtils.isEmpty(merchant.getDescription()) ? View.GONE : View.VISIBLE);
         this.perksDescriptionHeader.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
         //
-        if (merchant.hasOffer(DtlOffer.TYPE_POINTS) || merchant.hasOffer(DtlOffer.TYPE_PERK)) {
+        if (!merchant.getDisclaimers().isEmpty()) {
             ((View) this.perksLegalText.getParent()).setVisibility(View.VISIBLE);
-            this.pointsLegalText.setVisibility(merchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
-            this.perksLegalText.setVisibility(merchant.hasOffer(DtlOffer.TYPE_PERK) ? View.VISIBLE : View.GONE);
+            //
+            Queryable.from(merchant.getDisclaimers()).forEachR(disclaimer -> {
+                switch (disclaimer.getType()) {
+                    case POINTS:
+                        pointsLegalText.setVisibility(View.VISIBLE);
+                        pointsLegalText.setFullText(disclaimer.getText());
+                        break;
+                    case PERKS:
+                        perksLegalText.setVisibility(View.VISIBLE);
+                        perksLegalText.setFullText(disclaimer.getText());
+                        break;
+                    case ADDITIONAL:
+                        additionalLegalText.setVisibility(View.VISIBLE);
+                        additionalLegalText.setFullText(disclaimer.getText());
+                        break;
+                }
+            });
         }
     }
 

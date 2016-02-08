@@ -35,6 +35,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.view.add_member.ExistingChatPath;
@@ -640,8 +641,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onImagesPicked(List<ChosenImage> photos) {
-        //TODO process picked images
         Timber.d("onImagesPicked %s", photos);
+        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) {
+            //todo: show same waring
+            return;
+        }
         attachmentDelegate.prepareMessageWithAttachment(
                 createMessage(null), photos.get(0).getFileThumbnail())
                 .subscribeOn(Schedulers.io())

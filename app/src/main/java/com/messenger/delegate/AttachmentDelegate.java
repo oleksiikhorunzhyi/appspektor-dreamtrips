@@ -1,8 +1,7 @@
 package com.messenger.delegate;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.messenger.delegate.RxTransferObserver.UploadProblemException;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.model.AttachmentHolder;
@@ -18,7 +17,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class AttachmentDelegate {
     private final PhotoUploadingManager photoUploadingManager;
@@ -45,67 +43,48 @@ public class AttachmentDelegate {
     * */
     public Observable<Message> prepareMessageWithAttachment(Message message, String imagePath) {
         return Observable.just(message)
-                .map(msg -> {
-                    AttachmentHolder holder = AttachmentHolder.newImageAttachment(imagePath);
-                    MessageBody messageBody = msg.getMessageBody();
-                    if (messageBody == null) msg.setMessageBody(messageBody = new MessageBody());
-                    messageBody.setAttachments(Collections.singletonList(holder));
-                    return holder;
-                })
+                .map(msg -> createAttachmentAndAttachToMessage(msg, imagePath))
                 .flatMap(attachmentHolder -> {
                     message.setId(UUID.randomUUID().toString());
                     message.setDate(System.currentTimeMillis());
                     final DataAttachment attachment = new DataAttachment(attachmentHolder, message.getId(), 0);
-                    attachmentDAO.save(attachment);
-                    messageDAO.save(new DataMessage(message));
+                    save(attachment, new DataMessage(message));
 
-                    final UploadTask uploadTask = new UploadTask();
-                    uploadTask.setFilePath(imagePath);
-                    return RxTransferObserver.bind(photoUploadingManager.upload(uploadTask))
-                            .map(aVoid -> {
-                                String remoteUrl = photoUploadingManager.getResultUrl(uploadTask);
-                                attachment.setUrl(remoteUrl);
-                                // noinspection all
-                                ((ImageAttachment) message.getMessageBody()
-                                        .getAttachments().get(0).getItem()).setUrl(remoteUrl);
-
-                                attachmentDAO.save(attachment);
-                                return message;
-                            });
+                    return uploadImageForMessage(message, imagePath);
                 });
     }
 
-    public static class RxTransferObserver implements Observable.OnSubscribe<Void> {
-        private final TransferObserver uploadObservable;
+    private void save(DataAttachment attachment, DataMessage message) {
+        attachmentDAO.save(attachment);
+        messageDAO.save(message);
+    }
 
-        private RxTransferObserver(TransferObserver uploadObservable) {
-            this.uploadObservable = uploadObservable;
-        }
-
-        public static Observable<Void> bind(TransferObserver uploadObservable)  {
-            return Observable.create(new RxTransferObserver(uploadObservable));
-        }
-
-        @Override
-        public void call(Subscriber<? super Void> subscriber) {
-            uploadObservable.setTransferListener(new TransferListener() {
-                @Override
-                public void onStateChanged(int id, TransferState state) {
-                    if (state == TransferState.COMPLETED) {
-                        subscriber.onNext((Void) null);
-                        subscriber.onCompleted();
+    private Observable<Message> uploadImageForMessage(Message message, String imagePath) {
+        final UploadTask uploadTask = new UploadTask();
+        uploadTask.setFilePath(imagePath);
+        TransferObserver transferObserver = photoUploadingManager.upload(uploadTask);
+        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
+        return RxTransferObserver.bind(transferObserver)
+                .doOnError(throwable -> {
+                    if (throwable instanceof UploadProblemException) {
+                        photoUploadingManager.cancelUploading(uploadTask);
                     }
-                }
+                })
+                .map(aVoid -> setRemoteImageUrl(message, photoUploadingManager.getResultUrl(uploadTask)));
+    }
 
-                @Override
-                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                }
+    private AttachmentHolder createAttachmentAndAttachToMessage(Message message, String imagePath) {
+        AttachmentHolder holder = AttachmentHolder.newImageAttachment(imagePath);
+        MessageBody messageBody = message.getMessageBody();
+        if (messageBody == null) message.setMessageBody(messageBody = new MessageBody());
+        messageBody.setAttachments(Collections.singletonList(holder));
+        return holder;
+    }
 
-                @Override
-                public void onError(int id, Exception ex) {
-                    subscriber.onError(ex);
-                }
-            });
-        }
+    private Message setRemoteImageUrl(Message message, String remoteUrl) {
+        // noinspection all
+        ((ImageAttachment) message.getMessageBody()
+                .getAttachments().get(0).getItem()).setOriginUrl(remoteUrl);
+        return message;
     }
 }

@@ -19,7 +19,7 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
@@ -62,7 +62,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         MessageBody body = message.getMessageBody();
         List<AttachmentHolder> attachmentHolders;
         if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
-            return new ArrayList<>(0);
+            return Collections.emptyList();
         }
 
         return Queryable.from(attachmentHolders)

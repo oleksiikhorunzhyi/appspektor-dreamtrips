@@ -265,7 +265,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.setMessageId(cursor.getString(cursor.getColumnIndex(DataMessage$Table._ID)));
         holder.setOnRepeatMessageSend(onRepeatMessageSend);
         holder.visibleError(cursor.getInt(cursor.getColumnIndex(DataMessage$Table.STATUS)) == MessageStatus.ERROR);
-        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT)));
+
+        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
+        String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
+        String msgText = cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT));
+        holder.messageTextView.setText(attachmentType == null ? msgText : String.format("%s\n%s", msgText, imageUrl));
 
         int position = cursor.getPosition();
         DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
@@ -304,7 +308,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             holder.nameTextView.setVisibility(View.GONE);
         }
 
-        holder.messageTextView.setText(message.getText());
+        holder.messageTextView.setText(attachmentType == null ? message.getText() : String.format("%s\n%s", message.getText(), imageUrl));
 
         int backgroundResource;
         View itemView = holder.itemView;

@@ -8,6 +8,7 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -20,8 +21,11 @@ public class MessengerCacheSynchronizer {
 
     private LoaderDelegate loaderDelegate;
 
-    public MessengerCacheSynchronizer(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor, ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO, MessageDAO messageDAO, UsersDAO usersDAO) {
-        this.loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor, conversationsDAO, participantsDAO, messageDAO, usersDAO);
+    public MessengerCacheSynchronizer(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
+                                      ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
+                                      MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
+        this.loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
+                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
     }
 
     public void updateCache(OnUpdatedListener listener) {

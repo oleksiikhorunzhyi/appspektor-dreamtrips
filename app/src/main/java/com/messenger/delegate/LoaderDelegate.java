@@ -1,5 +1,6 @@
 package com.messenger.delegate;
 
+import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
@@ -8,7 +9,9 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.User;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -17,6 +20,7 @@ import com.messenger.storage.dao.UsersDAO;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.Observable;
@@ -34,15 +38,18 @@ public class LoaderDelegate {
     private final ParticipantsDAO participantsDAO;
     private final MessageDAO messageDAO;
     private final UsersDAO usersDAO;
+    private final AttachmentDAO attachmentDAO;
 
     public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
-                          ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO, MessageDAO messageDAO, UsersDAO usersDAO) {
+                          ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
+                          MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.userProcessor = userProcessor;
         this.conversationsDAO = conversationsDAO;
         this.participantsDAO = participantsDAO;
         this.messageDAO = messageDAO;
         this.usersDAO = usersDAO;
+        this.attachmentDAO = attachmentDAO;
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
@@ -72,8 +79,11 @@ public class LoaderDelegate {
                             .toList();
                     from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
 
+                    List<DataAttachment> attachments = getDataAttachments(data);
+
                     conversationsDAO.save(convs);
                     conversationsDAO.deleteBySyncTime(syncTime);
+                    attachmentDAO.save(attachments);
                     messageDAO.save(messages);
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
@@ -93,6 +103,16 @@ public class LoaderDelegate {
             Timber.d("ConversationLoader %s", users);
             return (Void) null;
         });
+    }
+
+    private List<DataAttachment> getDataAttachments(List<Conversation> conversations) {
+        List<DataAttachment> attachments = new LinkedList<>();
+        for (Conversation c : conversations) {
+            Message message = c.getLastMessage();
+            if (message != null) attachments.addAll(DataAttachment.fromMessage(message));
+        }
+
+        return attachments;
     }
 
     public Observable<List<DataUser>> loadContacts() {

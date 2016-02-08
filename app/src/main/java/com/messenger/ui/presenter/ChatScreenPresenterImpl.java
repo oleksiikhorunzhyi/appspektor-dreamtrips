@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.entities.DataConversation;
@@ -22,17 +23,19 @@ import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
-import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
-
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.notification.MessengerNotificationFactory;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.view.add_member.ExistingChatPath;
@@ -90,6 +93,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     MessengerServerFacade messengerServerFacade;
     @Inject
     OpenedConversationTracker openedConversationTracker;
+    @Inject
+    AttachmentDelegate attachmentDelegate;
 
     protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
@@ -105,6 +110,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     MessageDAO messageDAO;
     @Inject
     ParticipantsDAO participantsDAO;
+    @Inject
+    AttachmentDAO attachmentDAO;
 
     protected int page = 0;
     protected long before = 0;
@@ -135,7 +142,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ((Injector) context.getApplicationContext()).inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
-        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());        paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, MAX_MESSAGE_PER_PAGE);
+        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
+        paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         //
@@ -516,15 +524,19 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         body.setLocaleName(Locale.getDefault().toString());
 
         submitOneChatAction(chat -> {
-            chat.send(new com.messenger.messengerservers.model.Message.Builder()
-                            .messageBody(body)
-                            .fromId(user.getId())
-                            .build()
-            )
+            chat.send(createMessage(body))
                     .subscribeOn(Schedulers.io())
                     .subscribe();
         });
         return true;
+    }
+
+    public Message createMessage(MessageBody body) {
+        return new Message.Builder()
+                .messageBody(body)
+                .fromId(user.getId())
+                .conversationId(conversationId)
+                .build();
     }
 
     @Override
@@ -629,7 +641,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onImagesPicked(List<ChosenImage> photos) {
-        //TODO process picked images
+        Timber.d("onImagesPicked %s", photos);
+        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) {
+            //todo: show same waring
+            return;
+        }
+        attachmentDelegate.prepareMessageWithAttachment(
+                createMessage(null), photos.get(0).getFileThumbnail())
+                .subscribeOn(Schedulers.io())
+                .doOnError(throwable -> Timber.e(throwable, "Upload image failed"))
+                .subscribe(message -> submitOneChatAction(chat -> chat.send(message).subscribe()));
     }
 
 

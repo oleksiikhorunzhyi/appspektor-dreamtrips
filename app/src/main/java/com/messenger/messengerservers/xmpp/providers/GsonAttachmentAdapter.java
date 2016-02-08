@@ -17,9 +17,10 @@ public class GsonAttachmentAdapter implements JsonSerializer<AttachmentHolder>, 
     @Override
     public AttachmentHolder deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject =  json.getAsJsonObject();
-        String type = jsonObject.get("type").toString();
+        String type = jsonObject.get("type").getAsString();
 
         AttachmentHolder holder = new AttachmentHolder();
+        // noinspection all
         holder.setType(type);
         Class<?> clazz;
         switch (type) {

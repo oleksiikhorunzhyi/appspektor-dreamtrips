@@ -3,7 +3,6 @@ package com.messenger.entities;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.constant.AttachmentType;
@@ -20,6 +19,7 @@ import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
 import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
+import java.util.Collections;
 import java.util.List;
 
 @Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
@@ -39,7 +39,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     public DataAttachment() {
     }
 
-    protected DataAttachment(@NonNull AttachmentHolder attachment, String messageId, int index) {
+    public DataAttachment(@NonNull AttachmentHolder attachment, String messageId, int index) {
         this.id = createId(messageId, index);
         this.messageId = messageId;
         String type = this.type = attachment.getType();
@@ -47,7 +47,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         switch (type) {
             case AttachmentType.IMAGE: {
                 ImageAttachment image = (ImageAttachment) attachment.getItem();
-                url = image.getUrl();
+                url = image.getOriginUrl();
             }
         }
         attachment.getItem();
@@ -57,11 +57,13 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         return String.format("%s__%s", messageId, index);
     }
 
-    @Nullable
+    @NonNull
     public static List<DataAttachment> fromMessage(@NonNull com.messenger.messengerservers.model.Message message) {
         MessageBody body = message.getMessageBody();
         List<AttachmentHolder> attachmentHolders;
-        if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) return null;
+        if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         return Queryable.from(attachmentHolders)
                 .map((elem, idx) -> new DataAttachment(elem, message.getId(), idx))

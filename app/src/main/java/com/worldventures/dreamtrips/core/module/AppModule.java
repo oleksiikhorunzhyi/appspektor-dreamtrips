@@ -31,6 +31,7 @@ import dagger.Provides;
                 //
                 ApiModule.class,
                 ApiFactoryModule.class,
+                RetryModule.class,
                 //
                 UiBindingModule.class,
                 //

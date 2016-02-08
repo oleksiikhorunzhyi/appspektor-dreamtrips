@@ -27,6 +27,7 @@ public class ApiErrorPresenter {
     }
 
     public void handleError(Throwable exception) {
+        Timber.e(exception, this.getClass().getName() + " handled caught exception");
         if (!hasView()) {
             Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
             return;

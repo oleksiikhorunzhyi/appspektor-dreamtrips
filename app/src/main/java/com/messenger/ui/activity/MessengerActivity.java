@@ -15,6 +15,7 @@ import com.messenger.di.MessengerActivityModule;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
 import com.messenger.flow.util.GsonParceler;
+import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.techery.spares.annotations.Layout;
@@ -23,7 +24,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
@@ -39,7 +40,7 @@ import flow.path.Path;
 import flow.path.PathContainerView;
 
 @Layout(R.layout.activity_base_messenger)
-public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> implements Flow.Dispatcher {
+public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPresenter> implements Flow.Dispatcher {
 
     public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
@@ -183,8 +184,8 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        //TrackingHelper.logout();
-                        //getPresentationModel().logout();
+                        TrackingHelper.logout();
+                        getPresentationModel().logout();
                     }
                 }).show();
     }
@@ -242,8 +243,8 @@ public class MessengerActivity extends ActivityWithPresenter<ActivityPresenter> 
     }
 
     @Override
-    protected ActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new ActivityPresenter<>();
+    protected MessengerActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new MessengerActivityPresenter();
     }
 
 }

@@ -46,8 +46,8 @@ public class MessageDAO extends BaseDAO {
                         "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
 
-                        "WHERE " + DataMessage$Table.CONVERSATIONID + "=? " +
-                        "ORDER BY " + DataMessage$Table.DATE)
+                        "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
+                        "ORDER BY m." + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId}).build();
 
         return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI);

@@ -18,6 +18,7 @@ public class AttachmentHolder {
         this.item = item;
     }
 
+    @AttachmentType.Type
     public String getType() {
         return type;
     }
@@ -26,7 +27,6 @@ public class AttachmentHolder {
         this.type = type;
     }
 
-    @AttachmentType.Type
     public Attachment getItem() {
         return item;
     }

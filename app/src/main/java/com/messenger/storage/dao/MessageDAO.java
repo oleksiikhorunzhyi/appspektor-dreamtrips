@@ -30,7 +30,22 @@ public class MessageDAO extends BaseDAO {
         super(context, rxContentResolver);
     }
 
-    public Observable<Cursor> getMessages(String conversationId) {
+    public Observable<DataMessage> getMessage(String messageId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
+                        "WHERE " + DataMessage$Table._ID + "=?")
+                .withSelectionArgs(new String[] {messageId})
+                .build();
+
+        return query(q, DataMessage.CONTENT_URI)
+                .map(cursor -> {
+                    DataMessage res = SqlUtils.convertToModel(false, DataMessage.class, cursor);
+                    cursor.close();
+                    return res;
+                });
+    }
+
+    public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, " +
                         "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
@@ -47,17 +62,22 @@ public class MessageDAO extends BaseDAO {
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
 
                         "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
+                        "AND m." + DataMessage$Table.SYNCTIME +" >=? " +
                         "ORDER BY m." + DataMessage$Table.DATE)
-                .withSelectionArgs(new String[]{conversationId}).build();
+                .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)}).build();
 
         return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI);
     }
 
-    public Observable<DataMessage> getMessage(String messageId) {
+    public Observable<DataMessage> findNewestUnreadMessage(String conversationId, String currentUserId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
-                "WHERE " + DataMessage$Table._ID + "=?")
-                .withSelectionArgs(new String[] {messageId})
+                .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME +
+                        " WHERE " + DataMessage$Table.CONVERSATIONID + " =?" +
+                        " AND " + DataMessage$Table.FROMID + " <>?" +
+                        " AND " + DataMessage$Table.SYNCTIME +" >=?" +
+                        " ORDER BY " + DataMessage$Table.DATE + " DESC "+
+                        " LIMIT 1")
+                .withSelectionArgs(new String[]{conversationId, currentUserId, Long.toString(syncTime)})
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
@@ -67,6 +87,7 @@ public class MessageDAO extends BaseDAO {
                     return res;
                 });
     }
+
     public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
         return Observable.create(subscriber -> {
             subscriber.onStart();
@@ -78,8 +99,8 @@ public class MessageDAO extends BaseDAO {
             cv.put(DataMessage$Table.STATUS, MessageStatus.READ);
             try {
                 subscriber.onNext(getContentResolver().update(DataMessage.CONTENT_URI, cv, clause,
-                        new String[]{conversationId, String.valueOf(visibleTime),
-                                userId, String.valueOf(MessageStatus.SENT)})
+                                new String[]{conversationId, String.valueOf(visibleTime),
+                                        userId, String.valueOf(MessageStatus.SENT)})
                 );
                 subscriber.onCompleted();
             } catch (Exception e) {

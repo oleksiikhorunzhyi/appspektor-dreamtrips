@@ -14,11 +14,14 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+
 public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extends Parcelable>
         extends BaseViewStateMvpPresenter<V, S> implements MessengerPresenter<V, S> {
 
     protected Context context;
 
+    protected Observable<ConnectionStatus> connectionStatusStream;
     protected ConnectionStatus currentConnectivityStatus = ConnectionStatus.DISCONNECTED;
 
     public MessengerPresenterImpl(Context context) {
@@ -28,9 +31,12 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        MessengerConnector.getInstance().status()
-                .compose(bindView())
+
+        connectionStatusStream = MessengerConnector.getInstance().status()
                 .throttleLast(50, TimeUnit.MILLISECONDS)
+                .compose(bindViewIoToMainComposer());
+
+        connectionStatusStream
                 .subscribe(connectionStatus -> {
                     currentConnectivityStatus = connectionStatus;
                     if (isViewAttached()) {

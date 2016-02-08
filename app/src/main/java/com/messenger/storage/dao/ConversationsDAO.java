@@ -139,14 +139,13 @@ public class ConversationsDAO extends BaseDAO {
         query.append("WHERE c." + DataConversation$Table.STATUS + " = ? ");
         boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("AND c.type not like ?");
+            query.append("AND c."+ DataConversation$Table.TYPE + " not like ?");
         }
 
         query.append("GROUP BY c." + DataConversation$Table._ID + " " +
                 "HAVING c." + DataConversation$Table.TYPE + "=? " +
                 "OR COUNT(p." + DataParticipant$Table.ID + ") > 1 " +
-                "ORDER BY c." + DataConversation$Table.ABANDONED + ", " +
-                "c." + DataConversation$Table.LASTACTIVEDATE + " DESC"
+                "ORDER BY c." + DataConversation$Table.LASTACTIVEDATE + " DESC"
         );
 
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)

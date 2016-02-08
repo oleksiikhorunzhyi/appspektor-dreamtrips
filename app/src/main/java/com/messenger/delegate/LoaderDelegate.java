@@ -72,6 +72,7 @@ public class LoaderDelegate {
                     List<DataMessage> messages = from(data)
                             .filter(c -> c.getLastMessage() != null)
                             .map(c -> new DataMessage(c.getLastMessage())).notNulls().toList();
+                    from(messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
                     List<DataParticipant> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
                             .filter(c -> c.getParticipants() != null)

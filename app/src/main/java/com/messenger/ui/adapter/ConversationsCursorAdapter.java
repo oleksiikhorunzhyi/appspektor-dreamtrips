@@ -22,6 +22,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.AttachmentType;
+import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
@@ -216,7 +217,7 @@ public class ConversationsCursorAdapter
             throw new IllegalStateException("couldn't move cursor to position " + position);
         }
         final String type = cursor.getString(cursor.getColumnIndex(DataConversation$Table.TYPE));
-        boolean abandoned = cursor.getInt(cursor.getColumnIndex(DataConversation$Table.ABANDONED)) != 0;
+        boolean abandoned = !TextUtils.equals(cursor.getString(cursor.getColumnIndex(DataConversation$Table.STATUS)), ConversationStatus.PRESENT);
         cursor.moveToPosition(previousPosition);
         switch (type) {
             case CHAT:

@@ -27,21 +27,17 @@ public interface ChatScreen extends MessengerScreen {
 
     void addTypingUser(DataUser user);
 
+    void setShowMarkUnreadMessage(boolean needShow);
+
     void removeTypingUser(DataUser uxzser);
 
-    void showMessages(Cursor cursor, DataConversation conversation, boolean pendingScroll);
+    void showMessages(Cursor cursor, DataConversation conversation);
 
     void smoothScrollToPosition(int position);
 
     boolean onBackPressed();
 
-    int getFirstVisiblePosition();
-
-    int getLastVisiblePosition();
-
     int getTotalShowingMessageCount();
 
     Observable<TextViewTextChangeEvent> getEditMessageObservable();
-
-    Cursor getCurrentMessagesCursor();
 }

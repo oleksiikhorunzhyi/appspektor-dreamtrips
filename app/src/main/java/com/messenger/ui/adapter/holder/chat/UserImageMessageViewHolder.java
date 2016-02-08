@@ -50,9 +50,9 @@ public class UserImageMessageViewHolder extends ImageMessageViewHolder
     }
 
     @Override
-    public void updateMessageStatusUi() {
-        super.updateMessageStatusUi();
-        if (message.getStatus() == MessageStatus.SENT) {
+    public void updateMessageStatusUi(boolean needMarkUnreadMessage) {
+        super.updateMessageStatusUi(needMarkUnreadMessage);
+        if (message.getStatus() == MessageStatus.SENT && needMarkUnreadMessage) {
             chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_unread_background);
         } else {
             chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);

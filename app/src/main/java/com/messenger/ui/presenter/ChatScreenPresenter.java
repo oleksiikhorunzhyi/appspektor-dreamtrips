@@ -1,5 +1,7 @@
 package com.messenger.ui.presenter;
 
+import android.database.Cursor;
+
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.view.chat.ChatScreen;
@@ -16,7 +18,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onNextPageReached();
 
-    void onLastVisibleMessageChanged(int position);
+    void onLastVisibleMessageChanged(Cursor cursor, int position);
 
     void openUserProfile(DataUser user);
 

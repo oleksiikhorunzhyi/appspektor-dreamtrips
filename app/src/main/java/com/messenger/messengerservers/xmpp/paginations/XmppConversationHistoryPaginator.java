@@ -16,7 +16,6 @@ import java.util.List;
 
 import timber.log.Timber;
 
-
 public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     private AbstractXMPPConnection connection;
     private String conversationId;
@@ -42,9 +41,14 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         try {
             ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider(gson));
             connection.sendStanzaWithResponseCallback(packet,
-                    stanza -> stanza instanceof MessagePagePacket,
+                    stanza -> stanza instanceof MessagePagePacket
+                            || (stanza.getStanzaId() != null && stanza.getStanzaId().startsWith("page")),
                     stanzaPacket -> {
-                        notifyLoaded(((MessagePagePacket) stanzaPacket).getMessages());
+                        if (!(stanzaPacket instanceof MessagePagePacket)){
+                            notifyError(new SmackException("No history"));
+                        } else {
+                            notifyLoaded(((MessagePagePacket) stanzaPacket).getMessages());
+                        }
                         ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);
                     },
                     exception -> {
@@ -53,6 +57,7 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
                     });
         } catch (SmackException.NotConnectedException e) {
             Timber.i(e, "%s, Loading error", getClass().getSimpleName());
+            notifyError(e);
         }
     }
 
@@ -70,7 +75,7 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         }
     }
 
-    private void notifyError(Exception e){
+    private void notifyError(Exception e) {
         if (onEntityLoadedListener != null) {
             onEntityLoadedListener.onError(e);
         }

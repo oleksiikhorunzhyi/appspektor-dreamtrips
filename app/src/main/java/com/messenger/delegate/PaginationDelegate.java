@@ -57,6 +57,7 @@ public class PaginationDelegate {
                 .map(serverMessages -> {
                     List<DataMessage> msgs = from(serverMessages).map(DataMessage::new).toList();
                     List<DataAttachment> attachments = getDataAttachment(serverMessages);
+                    from(msgs).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
                     return new Pair<>(msgs, attachments);
                 })
                 .subscribe(listListPair -> {

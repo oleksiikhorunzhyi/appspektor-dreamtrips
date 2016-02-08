@@ -32,7 +32,9 @@ import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -55,7 +57,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private BusWrapper busWrapper;
     private NetworkEvents networkEvents;
-
 
     @Inject
     LocalesHolder localeStorage;
@@ -114,8 +115,9 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         doRequest(new GetSettingsQuery(), this::onSettingsLoaded);
     }
 
-    private void onSettingsLoaded(List<Setting> settings) {
-        snappyRepository.saveSettings(settings);
+    private void onSettingsLoaded(SettingsHolder settingsHolder) {
+        snappyRepository.saveSettings(SettingsManager.merge(settingsHolder.getSettings(),
+                SettingsFactory.createSettings()), true);
         loadStaticPagesContent();
     }
 

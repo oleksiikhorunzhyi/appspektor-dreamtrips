@@ -10,6 +10,7 @@ import com.google.gson.JsonParseException;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -18,12 +19,13 @@ import java.util.Map;
 public class SettingsDeserializer<T extends Setting> implements JsonDeserializer<T> {
 
     private Gson gson;
-    private Map<Setting.Type, Class<? extends Setting>> modelByType = new HashMap<>();
+    private Map<String, Class<? extends Setting>> modelByName = new HashMap<>();
 
     {
-        modelByType.put(Setting.Type.FLAG, FlagSetting.class);
-        modelByType.put(Setting.Type.SELECT, SelectSetting.class);
-        modelByType.put(Setting.Type.UNKNOWN, Setting.class);
+        modelByName.put(SettingsFactory.DISTANCE_UNITS, SelectSetting.class);
+        modelByName.put(SettingsFactory.FRIEND_REQUEST, FlagSetting.class);
+        modelByName.put(SettingsFactory.NEW_MESSAGE, FlagSetting.class);
+        modelByName.put(SettingsFactory.PHOTO_TAGGING, FlagSetting.class);
     }
 
     public SettingsDeserializer() {
@@ -36,13 +38,17 @@ public class SettingsDeserializer<T extends Setting> implements JsonDeserializer
     @Override
     public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
-        Setting.Type type = null;
-        JsonElement typeElement = json.getAsJsonObject().get("type");
-        if (!typeElement.isJsonNull()) {
-            type = gson.fromJson(typeElement.getAsJsonPrimitive(), Setting.Type.class);
+        String name = null;
+        JsonElement nameElement = json.getAsJsonObject().get("name");
+        if (!nameElement.isJsonNull()) {
+            name = gson.fromJson(nameElement.getAsJsonPrimitive(), String.class);
         }
-        if (type == null) type = Setting.Type.UNKNOWN;
-        Setting model = gson.fromJson(json, modelByType.get(type));
+        Setting model;
+        if (name == null || !modelByName.containsKey(name))
+            model = new Setting<>("", Setting.Type.UNKNOWN, "");
+        else
+            model = gson.fromJson(json, modelByName.get(name));
+
         return (T) model;
     }
 }

@@ -16,8 +16,6 @@ public class SettingsFactory {
     public static final String DISTANCE_UNITS = "distance_measurement_unit";
     //
     public static final String FRIEND_REQUEST = "receive_friend_request_notifications";
-    public static final String NEW_POSTS = "receive_new_post_notifications";
-    public static final String LIKES_AND_COMMENTS = "receive_likes_and_comments_notifications";
     public static final String NEW_MESSAGE = "receive_new_message_notifications";
     public static final String PHOTO_TAGGING = "receive_tagged_on_photo_notifications";
 
@@ -27,7 +25,7 @@ public class SettingsFactory {
     public static final String MILES = "miles";
     public static final String KILOMETERS = "kilometers";
 
-    public List<Setting> createSettings(SettingsGroup group) {
+    public static List<Setting> createSettings(SettingsGroup group) {
         switch (group.getType()) {
             case GENERAL:
                 return createGeneralSettings();
@@ -38,7 +36,14 @@ public class SettingsFactory {
         }
     }
 
-    private List<Setting> createGeneralSettings() {
+    public static List<Setting> createSettings() {
+        List<Setting> settings = new ArrayList<>();
+        settings.addAll(createGeneralSettings());
+        settings.addAll(createNotificationSettings());
+        return settings;
+    }
+
+    private static List<Setting> createGeneralSettings() {
         List<Setting> settingsList = new ArrayList<>();
         List<String> options = new ArrayList<>();
         options.add(MILES);
@@ -48,11 +53,9 @@ public class SettingsFactory {
         return settingsList;
     }
 
-    private List<Setting> createNotificationSettings() {
+    private static List<Setting> createNotificationSettings() {
         List<Setting> settingsList = new ArrayList<>();
         settingsList.add(new FlagSetting(FRIEND_REQUEST, Setting.Type.FLAG, true));
-        settingsList.add(new FlagSetting(NEW_POSTS, Setting.Type.FLAG, true));
-        settingsList.add(new FlagSetting(LIKES_AND_COMMENTS, Setting.Type.FLAG, true));
         settingsList.add(new FlagSetting(NEW_MESSAGE, Setting.Type.FLAG, true));
         settingsList.add(new FlagSetting(PHOTO_TAGGING, Setting.Type.FLAG, true));
 

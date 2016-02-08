@@ -87,10 +87,10 @@ public class ShowMoreTextView extends TextView {
         pokeListeners();
     }
 
-    @Override
-    public void setText(CharSequence text, BufferType type) {
-        super.setText(text, type);
-//        redraw(); // TODO : enhance with ability to set text with automatic redrawing
+    public void setFullText(String fullText) {
+        setText(fullText);
+        this.fullText = fullText;
+        redraw();
     }
 
     ///////////////////////////////////////////////////////////////////////////

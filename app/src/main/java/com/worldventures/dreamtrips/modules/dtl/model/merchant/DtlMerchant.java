@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.DtlDisclaimer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
@@ -49,6 +49,7 @@ public class DtlMerchant implements Parcelable {
     List<DtlMerchantAttribute> amenities;
     List<DtlMerchantMedia> images;
     List<OperationDay> operationDays;
+    List<DtlDisclaimer> disclaimers;
 
     public DtlMerchant() {
     }
@@ -117,9 +118,17 @@ public class DtlMerchant implements Parcelable {
         return budget;
     }
 
+    public List<DtlDisclaimer> getDisclaimers() {
+        return disclaimers;
+    }
+
     //from 1 to 5
     public void setBudget(int budget) {
         this.budget = budget;
+    }
+
+    public void setDisclaimers(List<DtlDisclaimer> disclaimers) {
+        this.disclaimers = disclaimers;
     }
 
     public float getRating() {
@@ -282,6 +291,7 @@ public class DtlMerchant implements Parcelable {
         this.images = in.createTypedArrayList(DtlMerchantMedia.CREATOR);
         this.operationDays = new ArrayList<OperationDay>();
         in.readList(this.operationDays, List.class.getClassLoader());
+        this.disclaimers = in.createTypedArrayList(DtlDisclaimer.CREATOR);
         this.distance = in.readDouble();
     }
 
@@ -310,6 +320,7 @@ public class DtlMerchant implements Parcelable {
         dest.writeList(this.amenities);
         dest.writeTypedList(images);
         dest.writeList(this.operationDays);
+        dest.writeList(this.disclaimers);
         dest.writeDouble(this.distance);
     }
 

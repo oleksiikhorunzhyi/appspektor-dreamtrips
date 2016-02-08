@@ -40,8 +40,9 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     }
 
     public boolean checkQuery(DtlMerchant dtlMerchant) {
+        if (query == null) return false;
+        //
         List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
-
         return dtlMerchant.getDisplayName().toLowerCase().contains(query.toLowerCase()) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
                         element.getName().toLowerCase().contains(query.toLowerCase())) != null);

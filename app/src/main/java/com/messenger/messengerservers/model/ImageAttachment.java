@@ -1,18 +1,21 @@
 package com.messenger.messengerservers.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ImageAttachment implements Attachment {
 
-    private String url;
+    @SerializedName("origin_url")
+    private String originUrl;
 
-    public String getUrl() {
-        return url;
+    public String getOriginUrl() {
+        return originUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setOriginUrl(String originUrl) {
+        this.originUrl = originUrl;
     }
 
-    public ImageAttachment(String url) {
-        this.url = url;
+    public ImageAttachment(String originUrl) {
+        this.originUrl = originUrl;
     }
 }

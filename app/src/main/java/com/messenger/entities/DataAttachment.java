@@ -20,7 +20,6 @@ import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
@@ -48,7 +47,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         switch (type) {
             case AttachmentType.IMAGE: {
                 ImageAttachment image = (ImageAttachment) attachment.getItem();
-                url = image.getUrl();
+                url = image.getOriginUrl();
             }
         }
         attachment.getItem();

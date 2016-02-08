@@ -1,8 +1,7 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.chat;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -11,7 +10,7 @@ import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
-public class OwnMessageViewHolder extends TextMessageViewHolder implements MessageHolder.OwnMessageHolder {
+public class OwnTextMessageViewHolder extends TextMessageViewHolder implements MessageHolder.OwnMessageHolder {
     private MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSend;
 
     @InjectView(R.id.iv_message_error)
@@ -31,7 +30,7 @@ public class OwnMessageViewHolder extends TextMessageViewHolder implements Messa
         }
     };
 
-    public OwnMessageViewHolder(View itemView) {
+    public OwnTextMessageViewHolder(View itemView) {
         super(itemView);
         ivMessageError.setOnClickListener(onClickListener);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) messageTextView.getLayoutParams();

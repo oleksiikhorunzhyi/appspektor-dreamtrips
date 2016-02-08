@@ -1,35 +1,34 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.chat;
 
 import android.graphics.drawable.Animatable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
-import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
+import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.MessageHolder;
 import com.worldventures.dreamtrips.R;
 
-import butterknife.InjectView;
+public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements MessageHolder.OwnMessageHolder {
 
-public class UserImageMessageViewHolder extends ImageMessageViewHolder
-        implements MessageHolder.SomeoneUserMessageHolder {
+    private MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSendListener;
 
-    @InjectView(R.id.chat_item_avatar)
-    public ImageView avatarImageView;
-    @InjectView(R.id.chat_username)
-    public TextView nameTextView;
-
-    public UserImageMessageViewHolder(View itemView) {
+    public OwnImageMessageViewHolder(View itemView) {
         super(itemView);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) imagePostView.getLayoutParams();
-        params.setMargins(params.leftMargin, params.topMargin, freeSpaceForMessageRowUserMessage,
+        params.setMargins(freeSpaceForMessageRowOwnMessage, params.topMargin, params.rightMargin,
                 params.bottomMargin);
-        errorView.setOnClickListener(view -> reloadImage());
+        errorView.setOnClickListener(view -> {
+            reloadImage();
+            if (message.getStatus() == MessageStatus.ERROR) {
+                if (onRepeatMessageSendListener != null) {
+                    onRepeatMessageSendListener.onRepeatMessageSend(message.getId());
+                }
+            }
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -41,10 +40,10 @@ public class UserImageMessageViewHolder extends ImageMessageViewHolder
         int backgroundResource;
         if (isPreviousMessageFromTheSameUser) {
             itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = isSelected? R.drawable.dark_grey_bubble_image_post: R.drawable.grey_bubble_image_post;
+            backgroundResource = isSelected? R.drawable.dark_blue_bubble_image_post: R.drawable.blue_bubble_image_post;
         } else {
             itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = isSelected? R.drawable.dark_grey_bubble_comics_image_post: R.drawable.grey_bubble_comics_image_post;
+            backgroundResource = isSelected? R.drawable.dark_blue_bubble_comics_image_post: R.drawable.blue_bubble_comics_image_post;
         }
         imagePostView.setBackgroundResource(backgroundResource);
     }
@@ -52,11 +51,11 @@ public class UserImageMessageViewHolder extends ImageMessageViewHolder
     @Override
     public void updateMessageStatusUi() {
         super.updateMessageStatusUi();
-        if (message.getStatus() == MessageStatus.SENT) {
-            chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_unread_background);
-        } else {
-            chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
+        if (message.getStatus() == MessageStatus.SENDING) {
+            applyLoadingStatusUi();
+            imagePostView.setAlpha(ALPHA_IMAGE_POST_SENDING);
         }
+        chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -73,7 +72,9 @@ public class UserImageMessageViewHolder extends ImageMessageViewHolder
 
             @Override
             public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                progressBar.setVisibility(View.GONE);
+                if (message.getStatus() != MessageStatus.SENDING) {
+                    progressBar.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -84,29 +85,11 @@ public class UserImageMessageViewHolder extends ImageMessageViewHolder
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Someones message logic, delegate execution to SomeoneMessageHolderDelegate
+    // Own message logic
     ///////////////////////////////////////////////////////////////////////////
 
-    private SomeoneMessageHolderDelegate someoneMessageHolderHelper =
-            new SomeoneMessageHolderDelegate(avatarImageView, nameTextView);
-
     @Override
-    public void setAuthor(DataUser user) {
-        someoneMessageHolderHelper.setAuthor(user);
-    }
-
-    @Override
-    public void setAvatarClickListener(MessagesCursorAdapter.OnAvatarClickListener listener) {
-        someoneMessageHolderHelper.setAvatarClickListener(listener);
-    }
-
-    @Override
-    public void updateAvatar() {
-        someoneMessageHolderHelper.updateAvatar();
-    }
-
-    @Override
-    public void updateName(DataConversation dataConversation) {
-        someoneMessageHolderHelper.updateName(dataConversation);
+    public void setOnRepeatMessageListener(MessagesCursorAdapter.OnRepeatMessageSend listener) {
+        this.onRepeatMessageSendListener = listener;
     }
 }

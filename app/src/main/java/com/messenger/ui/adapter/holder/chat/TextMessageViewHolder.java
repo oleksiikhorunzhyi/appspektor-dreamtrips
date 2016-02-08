@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.chat;
 
 import android.view.View;
 import android.widget.TextView;

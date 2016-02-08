@@ -20,7 +20,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
-import com.messenger.ui.adapter.holder.MessageHolder;
+import com.messenger.ui.adapter.holder.chat.MessageHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;

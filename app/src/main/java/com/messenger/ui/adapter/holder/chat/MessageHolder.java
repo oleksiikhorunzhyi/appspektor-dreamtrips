@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.chat;
 
 import android.content.res.Resources;
 import android.net.Uri;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
+import com.messenger.ui.adapter.holder.ViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.worldventures.dreamtrips.R;
 
@@ -23,7 +23,7 @@ public abstract class MessageHolder extends ViewHolder {
         void setOnRepeatMessageListener(MessagesCursorAdapter.OnRepeatMessageSend listener);
     }
 
-    public interface SomeoneUserMessageHolder {
+    public interface UserMessageHolder {
         void setAuthor(DataUser user);
         void setAvatarClickListener(MessagesCursorAdapter.OnAvatarClickListener listener);
         void updateAvatar();
@@ -79,13 +79,13 @@ public abstract class MessageHolder extends ViewHolder {
     /**
      * Contains logic such as updating avatar, user name textview and read status background
      */
-    protected class SomeoneMessageHolderDelegate implements SomeoneUserMessageHolder {
+    protected class UserMessageHolderDelegate implements UserMessageHolder {
         private DataUser user;
 
         private ImageView avatarImageView;
         private TextView nameTextView;
 
-        public SomeoneMessageHolderDelegate(ImageView avatarImageView, TextView userNameTextView) {
+        public UserMessageHolderDelegate(ImageView avatarImageView, TextView userNameTextView) {
             this.avatarImageView = avatarImageView;
             this.nameTextView = userNameTextView;
         }

@@ -1,16 +1,13 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.chat;
 
-import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.ViewSwitcher;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
@@ -18,7 +15,6 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
-import timber.log.Timber;
 
 public abstract class ImageMessageViewHolder extends MessageHolder {
 

@@ -23,13 +23,13 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
-import com.messenger.ui.adapter.holder.ImageMessageViewHolder;
-import com.messenger.ui.adapter.holder.MessageHolder;
-import com.messenger.ui.adapter.holder.OwnImageMessageViewHolder;
-import com.messenger.ui.adapter.holder.OwnMessageViewHolder;
-import com.messenger.ui.adapter.holder.TextMessageViewHolder;
-import com.messenger.ui.adapter.holder.UserImageMessageViewHolder;
-import com.messenger.ui.adapter.holder.UserMessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.MessageHolder;
+import com.messenger.ui.adapter.holder.chat.OwnImageMessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.OwnTextMessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.TextMessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.UserImageMessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.UserTextMessageViewHolder;
 import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.ChatTimestampFormatter;
@@ -38,9 +38,9 @@ import com.worldventures.dreamtrips.R;
 
 public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHolder> {
     private static final int VIEW_TYPE_OWN_TEXT_MESSAGE = 1;
-    private static final int VIEW_TYPE_SOMEONES_TEXT_MESSAGE = 2;
+    private static final int VIEW_TYPE_USER_TEXT_MESSAGE = 2;
     private static final int VIEW_TYPE_OWN_IMAGE_MESSAGE = 3;
-    private static final int VIEW_TYPE_SOMEONES_IMAGE_MESSAGE = 4;
+    private static final int VIEW_TYPE_USER_IMAGE_MESSAGE = 4;
 
     private final DataUser user;
     private final Context context;
@@ -79,13 +79,13 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_OWN_TEXT_MESSAGE:
-                return new OwnMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_own_messsage));
-            case VIEW_TYPE_SOMEONES_TEXT_MESSAGE:
-                return new UserMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_someones_message));
+                return new OwnTextMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_own_text_messsage));
+            case VIEW_TYPE_USER_TEXT_MESSAGE:
+                return new UserTextMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_user_text_message));
             case VIEW_TYPE_OWN_IMAGE_MESSAGE:
                 return new OwnImageMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_own_image_message));
-            case VIEW_TYPE_SOMEONES_IMAGE_MESSAGE:
-                return new UserImageMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_someones_image_message));
+            case VIEW_TYPE_USER_IMAGE_MESSAGE:
+                return new UserImageMessageViewHolder(inflateRow(parent, R.layout.list_item_chat_user_image_message));
         }
         throw new IllegalArgumentException("No such view type in adapter");
     }
@@ -94,15 +94,15 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public void onBindViewHolderCursor(MessageHolder holder, Cursor cursor) {
         switch (getItemViewType(cursor.getPosition())) {
             case VIEW_TYPE_OWN_TEXT_MESSAGE:
-                bindOwnTextMessageHolder((OwnMessageViewHolder) holder, cursor);
+                bindOwnTextMessageHolder((OwnTextMessageViewHolder) holder, cursor);
                 break;
-            case VIEW_TYPE_SOMEONES_TEXT_MESSAGE:
-                bindUserTextMessageHolder((UserMessageViewHolder) holder, cursor);
+            case VIEW_TYPE_USER_TEXT_MESSAGE:
+                bindUserTextMessageHolder((UserTextMessageViewHolder) holder, cursor);
                 break;
             case VIEW_TYPE_OWN_IMAGE_MESSAGE:
                 bindOwnImageMessageHolder((OwnImageMessageViewHolder) holder, cursor);
                 break;
-            case VIEW_TYPE_SOMEONES_IMAGE_MESSAGE:
+            case VIEW_TYPE_USER_IMAGE_MESSAGE:
                 bindUserImageMessageHolder((UserImageMessageViewHolder) holder, cursor);
                 break;
         }
@@ -131,16 +131,16 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT)));
     }
 
-    private void bindOwnTextMessageHolder(OwnMessageViewHolder holder, Cursor cursor) {
+    private void bindOwnTextMessageHolder(OwnTextMessageViewHolder holder, Cursor cursor) {
         bindMessageHolder(holder, cursor);
         bindTextMessageHolder(holder, cursor);
         bindOwnUserMessageHolder(holder, cursor);
     }
 
-    private void bindUserTextMessageHolder(UserMessageViewHolder holder, Cursor cursor) {
+    private void bindUserTextMessageHolder(UserTextMessageViewHolder holder, Cursor cursor) {
         bindMessageHolder(holder, cursor);
         bindTextMessageHolder(holder, cursor);
-        bindSomeoneUserMessageHolder(holder, cursor);
+        bindUserMessageHolder(holder, cursor);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -155,7 +155,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public void bindUserImageMessageHolder(UserImageMessageViewHolder holder, Cursor cursor) {
         bindMessageHolder(holder, cursor);
-        bindSomeoneUserMessageHolder(holder, cursor);
+        bindUserMessageHolder(holder, cursor);
         bindImageMessageHolder(holder, cursor);
     }
 
@@ -172,7 +172,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.setOnRepeatMessageListener(onRepeatMessageSend);
     }
 
-    public void bindSomeoneUserMessageHolder(MessageHolder.SomeoneUserMessageHolder holder, Cursor cursor) {
+    public void bindUserMessageHolder(MessageHolder.UserMessageHolder holder, Cursor cursor) {
         DataUser userFrom = SqlUtils.convertToModel(true, DataUser.class, cursor);
         holder.setAuthor(userFrom);
 
@@ -190,9 +190,9 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
         boolean imageMessage = AttachmentType.IMAGE.equals(attachmentType);
         if (!imageMessage) {
-            return ownMessage ? VIEW_TYPE_OWN_TEXT_MESSAGE : VIEW_TYPE_SOMEONES_TEXT_MESSAGE;
+            return ownMessage ? VIEW_TYPE_OWN_TEXT_MESSAGE : VIEW_TYPE_USER_TEXT_MESSAGE;
         } else {
-            return ownMessage ? VIEW_TYPE_OWN_IMAGE_MESSAGE : VIEW_TYPE_SOMEONES_IMAGE_MESSAGE;
+            return ownMessage ? VIEW_TYPE_OWN_IMAGE_MESSAGE : VIEW_TYPE_USER_IMAGE_MESSAGE;
         }
     }
 

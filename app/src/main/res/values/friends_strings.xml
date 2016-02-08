@@ -3,7 +3,7 @@
     <string-array name="friend_settings_dialog">
         <item>@string/social_remove_friend_title</item>
         <item>@string/social_friend_preference_title</item>
-        <item>@string/messenger</item>
+        <item>@string/chat</item>
     </string-array>
     <string-array name="friend_settings_dialog_skip_chat">
         <item>@string/social_remove_friend_title</item>

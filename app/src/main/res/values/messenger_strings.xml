@@ -2,7 +2,8 @@
 <resources>
     <!-- messenger-->
 
-    <string name="messenger">Chat</string>
+    <string name="messenger">Messenger</string>
+    <string name="chat">Chat</string>
 
     <!---->
     <!--Conversation List -->

@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataConversation$Adapter;
 import com.messenger.entities.DataConversation$Table;
@@ -31,6 +33,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class ConversationsDAO extends BaseDAO {
+    public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
 
     @Deprecated
     public ConversationsDAO(Context context) {
@@ -112,17 +115,25 @@ public class ConversationsDAO extends BaseDAO {
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
                 "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
-                "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + " " +
+                "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
+                "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + " " +
+
                 "FROM " + DataConversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +
                 "ON m." + DataMessage$Table._ID + "=(" +
                 "SELECT " + DataMessage$Table._ID + " FROM " + DataMessage.TABLE_NAME + " mm " +
                 "WHERE mm." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
                 "ORDER BY mm." + DataMessage$Table.DATE + " DESC LIMIT 1) " +
+
                 "LEFT JOIN " + DataUser.TABLE_NAME + " u " +
                 "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
+
                 "LEFT JOIN " + DataParticipant.TABLE_NAME + " p " +
-                "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " "
+                "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+
+                "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
+                "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " "
+
         );
 
         query.append("WHERE c." + DataConversation$Table.STATUS + " = ? ");

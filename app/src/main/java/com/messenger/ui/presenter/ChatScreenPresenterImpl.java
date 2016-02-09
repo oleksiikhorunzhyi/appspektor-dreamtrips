@@ -656,9 +656,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onImagesPicked(List<ChosenImage> photos) {
         Timber.d("onImagesPicked %s", photos);
-        attachmentDelegate
-                .prepareMessageWithAttachment(user.getId(), conversationId, photos.get(0).getFileThumbnail())
-                .subscribe();
+        Observable.from(photos)
+                .first()
+                .map(photo -> photos.get(0).getFileThumbnail())
+                .map(filePath -> UploadingFileManager.copyFileIfNeed(filePath, context))
+                .compose(new IoToMainComposer<>())
+                .subscribe(this::uploadAttachment);
     }
 
     private void disconnectFromPhotoPicker() {

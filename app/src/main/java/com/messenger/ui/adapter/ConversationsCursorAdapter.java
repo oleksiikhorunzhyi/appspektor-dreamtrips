@@ -16,11 +16,14 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
+import com.messenger.messengerservers.constant.AttachmentType;
+import com.messenger.messengerservers.model.Attachment;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
@@ -42,6 +45,7 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
+import timber.log.Timber;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 import static com.messenger.messengerservers.constant.ConversationType.GROUP;
@@ -108,6 +112,8 @@ public class ConversationsCursorAdapter
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
         DataConversation conversation = SqlUtils.convertToModel(true, DataConversation.class, cursor);
         DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
+        DataAttachment dataAttachment = SqlUtils.convertToModel(true, DataAttachment.class, cursor);
+        Timber.d("DataAttachment %s, %d", dataAttachment.getType(), cursor.getPosition());
 
         holder.bindConversation(conversation, selectedConversationId);
         holder.setConversationClickListener(conversationClickListener);
@@ -117,7 +123,9 @@ public class ConversationsCursorAdapter
 
         holder.setDate(formatLastConversationMessage(new Date(conversation.getLastActiveDate())));
         String userName = cursor.getString(cursor.getColumnIndex(DataUser$Table.USERNAME));
-        setLastMessage(holder, message, userName, conversationHelper.isGroup(conversation));
+
+        boolean hasImageAttachment = dataAttachment != null && dataAttachment.getType().equals(AttachmentType.IMAGE);
+        setLastMessage(holder, message, userName, conversationHelper.isGroup(conversation), hasImageAttachment);
 
         // init swipe layout
         // TODO: 1/16/16 wtf ????
@@ -131,14 +139,24 @@ public class ConversationsCursorAdapter
         notifyDataSetChanged();
     }
 
-    private void setLastMessage(BaseConversationViewHolder holder, DataMessage message, String userName, boolean isGroupConversation) {
+    private void setLastMessage(BaseConversationViewHolder holder, DataMessage message, String userName,
+                                boolean isGroupConversation, boolean hasImageAttachment) {
         String messageText = null;
-        if (message.getText() != null) {
-            messageText = message.getText();
+        if (!hasImageAttachment) {
+            if (!TextUtils.isEmpty(message.getText())) {
+                messageText = message.getText();
+                if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
+                    messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
+                } else if (isGroupConversation && !TextUtils.isEmpty(userName)) {
+                    messageText = userName + ": " + messageText;
+                }
+            }
+        } else {
+            String sentPhotoString = context.getString(R.string.conversation_list_item_last_message_image);
             if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
-                messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
-            } else if (isGroupConversation && !TextUtils.isEmpty(userName)) {
-                messageText = userName + ": " + messageText;
+                messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), sentPhotoString);
+            } else {
+                messageText = userName + " " + sentPhotoString;
             }
         }
         holder.setLastMessage(messageText);

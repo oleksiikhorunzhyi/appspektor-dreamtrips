@@ -571,7 +571,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         attachmentDAO.getAttachmentByMessageId(messageId)
                 .first()
                 .subscribe(attachment -> {
-                    if (attachment.getUploadTaskId() == 0) retrySendTextMessage(messageId);
+                    if (attachment != null && attachment.getUploadTaskId() == 0)
+                        retrySendTextMessage(messageId);
                     else retryUploadAttachment(messageId);
                 });
     }

@@ -42,12 +42,12 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
+import timber.log.Timber;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
         implements ChatScreen {
 
     private static final int THRESHOLD = 5;
-    private static final int POST_DELAY_TIME = 2;
 
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
@@ -56,8 +56,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ViewGroup contentView;
     @InjectView(R.id.chat_loading_view)
     View loadingView;
-    @InjectView(R.id.chat_error_view)
-    View errorView;
+//    @InjectView(R.id.chat_error_view)
+//    View errorView;
 
     @InjectView(R.id.chat_toolbar)
     Toolbar toolbar;
@@ -121,14 +121,16 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int visibleItemCount = linearLayoutManager.getChildCount();
+                if (adapter == null || adapter.getCursor() == null) return;
+
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                //cause first visible item is included to visibleItemCount
-                getPresenter().onLastVisibleMessageChanged(firstVisibleItem + visibleItemCount - 1);
+                int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                int totalItem = linearLayoutManager.getItemCount();
+                getPresenter().onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem);
 
                 if (dy > 0) return;
 
-                if (firstVisibleItem <= THRESHOLD) {
+                if (firstVisibleItem <= THRESHOLD && totalItem > 0) {
                     getPresenter().onNextPageReached();
                 }
             }
@@ -159,6 +161,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         ChatScreenPresenter presenter = getPresenter();
         adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
         adapter.setAvatarClickListener(presenter::openUserProfile);
+        adapter.setNeedMarkUnreadMessages(true);
         //adapter.setMessageClickListener(message -> //do something);
         return adapter;
     }
@@ -188,21 +191,18 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
-        errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showContent() {
         contentView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
-        errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(Throwable e) {
         contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
-        errorView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -221,7 +221,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     public void hideUnreadMessageCount() {
         unreadMessagesView.hide();
     }
-
+    
+    @Override
+    public void setShowMarkUnreadMessage(boolean needShow) {
+        if (adapter != null) adapter.setNeedMarkUnreadMessages(needShow);
+    }
+    
     @Override
     public void addTypingUser(DataUser user) {
         chatUsersTypingView.addTypingUser(user);
@@ -233,7 +238,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void showMessages(Cursor cursor, DataConversation conversation, boolean pendingScroll) {
+    public void showMessages(Cursor cursor, DataConversation conversation) {
+        Timber.i("Show Cursor with size "+ cursor.getCount());
         adapter.setConversation(conversation);
 
         int firstVisibleViewTop = 0;
@@ -264,7 +270,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
             linearLayoutManager.scrollToPositionWithOffset(position, offset);
         } else if (cursor != null && cursor.getCount() == 1) {
-            getPresenter().onLastVisibleMessageChanged(0);
+            getPresenter().onLastVisibleMessageChanged(cursor, 0);
         }
     }
 
@@ -277,30 +283,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     public void smoothScrollToPosition(int position) {
         recyclerView.smoothScrollToPosition(position);
         unreadMessagesView.setEnabled(true);
-    }
-
-    @Override
-    public int getFirstVisiblePosition() {
-        if (linearLayoutManager == null) {
-            return -1;
-        }
-        return linearLayoutManager.findFirstVisibleItemPosition();
-    }
-
-    @Override
-    public int getLastVisiblePosition() {
-        if (linearLayoutManager == null) {
-            return -1;
-        }
-        return linearLayoutManager.findLastVisibleItemPosition();
-    }
-
-    @Override
-    public Cursor getCurrentMessagesCursor() {
-        if (adapter == null) {
-            return null;
-        }
-        return adapter.getCursor();
     }
 
     @Override

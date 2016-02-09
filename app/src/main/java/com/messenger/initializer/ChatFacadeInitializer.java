@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,15 +70,20 @@ public class ChatFacadeInitializer implements AppInitializer {
         //
         GlobalEventEmitter emitter = messengerServerFacade.getGlobalEventEmitter();
         //
+        int maximumYear = Calendar.getInstance().getMaximum(Calendar.YEAR);
+        //
         emitter.addGlobalMessageListener(new GlobalMessageListener() {
             @Override
             public void onReceiveMessage(Message message) {
                 long time = System.currentTimeMillis();
                 message.setDate(time);
                 message.setStatus(MessageStatus.SENT);
+
+                DataMessage dataMessage = new DataMessage(message);
+                dataMessage.setSyncTime(System.currentTimeMillis());
                 List<DataAttachment> attachments = DataAttachment.fromMessage(message);
                 if (!attachments.isEmpty()) attachmentDAO.save(attachments);
-                messageDAO.save(new DataMessage(message));
+                messageDAO.save(dataMessage);
                 conversationsDAO.incrementUnreadField(message.getConversationId());
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
@@ -91,11 +97,18 @@ public class ChatFacadeInitializer implements AppInitializer {
 
             @Override
             public void onSendMessage(Message message) {
-                long time = System.currentTimeMillis();
+                // for error messages we set max date with purpose to show these on bottom of
+                // the messages list is selected and sorted by syncTime
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, maximumYear);
+                long time = message.getStatus() == MessageStatus.ERROR ? calendar.getTimeInMillis() : System.currentTimeMillis();
                 message.setDate(time);
+
+                DataMessage dataMessage = new DataMessage(message);
+                dataMessage.setSyncTime(time);
                 List<DataAttachment> attachments = DataAttachment.fromMessage(message);
                 if (!attachments.isEmpty()) attachmentDAO.save(attachments);
-                messageDAO.save(new DataMessage(message));
+                messageDAO.save(dataMessage);
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
         });
@@ -142,15 +155,16 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .first()
                     .flatMap(cachedUser -> {
                         if (cachedUser != null) return just(singletonList(cachedUser));
-                        else return userProcessor.connectToUserProvider(just(singletonList(createUser(userId))));
+                        else
+                            return userProcessor.connectToUserProvider(just(singletonList(createUser(userId))));
                     })
                     .doOnNext(users -> from(users).filter(u -> u.isOnline() != isOnline).forEachR(u -> {
                         u.setOnline(isOnline);
                         u.save();
                     }))
                     .flatMap(users -> participantsDAO.getParticipants(conversationId).first()
-                            .map(c -> SqlUtils.convertToList(DataParticipant.class, c))
-                            .map(list -> from(list).map(DataParticipant::getUserId).contains(userId))
+                                    .map(c -> SqlUtils.convertToList(DataParticipant.class, c))
+                                    .map(list -> from(list).map(DataParticipant::getUserId).contains(userId))
                     )
                     .filter(isAlreadyConnected -> !isAlreadyConnected)
                     .doOnNext(isAlreadyConnected -> {

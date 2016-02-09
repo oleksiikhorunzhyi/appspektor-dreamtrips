@@ -56,7 +56,7 @@ public class OwnTextMessageViewHolder extends TextMessageViewHolder implements M
     }
 
     @Override
-    public void updateMessageStatusUi() {
+    public void updateMessageStatusUi(boolean needMarkUnreadMessage) {
         boolean visible = message.getStatus() == MessageStatus.ERROR;
         int viewVisible = visible ? View.VISIBLE : View.GONE;
         if (viewVisible != viewSwitcher.getVisibility()) {

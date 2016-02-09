@@ -33,6 +33,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @Column Date date;
     @Column String conversationId;
     @MessageStatus.Status @Column int status;
+    @Column long syncTime;
 
     public DataMessage() {
     }
@@ -65,6 +66,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setToId(builder.to);
         setText(builder.text);
         setDate(builder.date);
+        setSyncTime(builder.syncTime);
         setStatus(builder.status);
     }
 
@@ -124,6 +126,14 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         this.status = status;
     }
 
+    public long getSyncTime() {
+        return syncTime;
+    }
+
+    public void setSyncTime(long syncTime) {
+        this.syncTime = syncTime;
+    }
+
     @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
@@ -158,6 +168,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         private Date date;
         private String locale;
         private int status;
+        private long syncTime;
 
         public Builder() {
         }
@@ -199,6 +210,11 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
 
         public Builder status(@MessageStatus.Status int val) {
             status = val;
+            return this;
+        }
+
+        public Builder syncTime(long val) {
+            syncTime = val;
             return this;
         }
 

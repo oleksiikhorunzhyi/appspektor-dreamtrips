@@ -29,7 +29,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @Column String type;
     @Column String status;
     @Column int unreadMessageCount;
-    @Column boolean abandoned;
     @Column long syncTime;
     @Column long lastActiveDate;
 
@@ -42,7 +41,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setStatus(conversation.getStatus());
         setType(conversation.getType());
         setUnreadMessageCount(conversation.getUnreadMessageCount());
-        setAbandoned(conversation.isAbandoned());
         setLastActiveDate(conversation.getLastActiveDate());
     }
 
@@ -53,7 +51,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setStatus(builder.status);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
-        setAbandoned(builder.abandoned);
         setLastActiveDate(builder.date);
     }
 
@@ -107,14 +104,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         this.unreadMessageCount = unreadMessageCount;
     }
 
-    public boolean isAbandoned() {
-        return abandoned;
-    }
-
-    public void setAbandoned(boolean abandoned) {
-        this.abandoned = abandoned;
-    }
-
     public long getSyncTime() {
         return syncTime;
     }
@@ -151,7 +140,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
                 ", status='" + status + '\'' +
                 ", type='" + type + '\'' +
                 ", unreadMessageCount=" + unreadMessageCount +
-                ", abandoned=" + abandoned +
                 '}';
     }
 
@@ -188,7 +176,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         private String status;
         private long date;
         private int unreadMessageCount = 0;
-        private boolean abandoned;
 
         public Builder() {
         }
@@ -208,11 +195,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
             return this;
         }
 
-        public Builder abandoned(boolean val) {
-            abandoned = val;
-            return this;
-        }
-
         public Builder subject(String val) {
             subject = val;
             return this;
@@ -225,11 +207,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
         public Builder status(@ConversationStatus.Status String val) {
             status = val;
-            return this;
-        }
-
-        public Builder unreadMessageCount(int unreadMessageCount){
-            this.unreadMessageCount = unreadMessageCount;
             return this;
         }
 

@@ -29,7 +29,7 @@ public class OpenedConversationTracker {
     public void removeOpenedConversation(String conversationId) {
         Timber.i("Untrack conversation %s", conversationId);
         Integer prevCount = openedConversationIds.get(conversationId);
-        if (prevCount == null || prevCount < 0) {
+        if (prevCount == null || prevCount <= 0) {
             openedConversationIds.remove(conversationId);
             return;
         }

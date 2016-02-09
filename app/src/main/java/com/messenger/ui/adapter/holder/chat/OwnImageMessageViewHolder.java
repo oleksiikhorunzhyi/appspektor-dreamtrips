@@ -49,8 +49,8 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
     }
 
     @Override
-    public void updateMessageStatusUi() {
-        super.updateMessageStatusUi();
+    public void updateMessageStatusUi(boolean needMarkUnreadMessage) {
+        super.updateMessageStatusUi(needMarkUnreadMessage);
         if (message.getStatus() == MessageStatus.SENDING) {
             applyLoadingStatusUi();
             imagePostView.setAlpha(ALPHA_IMAGE_POST_SENDING);

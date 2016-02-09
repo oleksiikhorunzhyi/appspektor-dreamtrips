@@ -55,6 +55,8 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private int manualTimestampPosition = -1;
     private int manualTimestampPositionToRemove = -1;
 
+    private boolean needMarkUnreadMessages;
+
     public interface OnAvatarClickListener {
         void onAvatarClick(DataUser user);
     }
@@ -120,7 +122,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         bindTimeStampIfNeeded(holder, cursor, position, message);
         holder.setSelected(position == manualTimestampPosition);
         holder.setBubbleBackground();
-        holder.updateMessageStatusUi();
+        holder.updateMessageStatusUi(needMarkUnreadMessages);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -200,6 +202,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.conversation = conversation;
     }
 
+    public void setNeedMarkUnreadMessages(boolean needMarkUnreadMessages) {
+        this.needMarkUnreadMessages = needMarkUnreadMessages;
+    }
+    
     public void setAvatarClickListener(@Nullable OnAvatarClickListener avatarClickListener) {
         this.avatarClickListener = avatarClickListener;
     }

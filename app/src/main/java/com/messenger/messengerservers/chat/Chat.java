@@ -8,7 +8,7 @@ import rx.Observable;
 public abstract class Chat {
     public abstract Observable<Message> send(Message message);
 
-    public abstract Observable<String> sendReadStatus(String message);
+    public abstract Observable<String> sendReadStatus(String messageId);
 
     public abstract void setCurrentState(@ChatState.State String state);
 

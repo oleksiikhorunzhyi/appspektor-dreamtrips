@@ -35,7 +35,7 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
     }
 
     @Override
-    public void updateMessageStatusUi() {
+    public void updateMessageStatusUi(boolean needMarkUnreadMessage) {
         switch (message.getStatus()) {
             case MessageStatus.ERROR:
                 applyErrorStatusUi();

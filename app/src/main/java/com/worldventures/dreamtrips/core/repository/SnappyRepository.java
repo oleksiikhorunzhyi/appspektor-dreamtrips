@@ -11,7 +11,6 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
@@ -72,7 +71,6 @@ public class SnappyRepository {
     public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
-    public static final String DTL_DISTANCE_TOGGLE = "DTL_DISTANCE_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
     public static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
 
@@ -547,11 +545,6 @@ public class SnappyRepository {
         clearAllForKey(DTL_MERCHANTS);
         clearAllForKey(DTL_AMENITIES);
         clearAllForKey(DTL_TRANSACTION_PREFIX);
-    }
-
-    //TODO add implementation
-    public DistanceType getMerchantsDistanceType() {
-        return DistanceType.KMS;
     }
 
     ///////////////////////////////////////////////////////////////////////////

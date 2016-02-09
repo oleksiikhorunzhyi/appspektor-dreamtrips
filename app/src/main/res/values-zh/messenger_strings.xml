@@ -3,6 +3,7 @@
     <!-- messenger-->
 
     <string name="messenger">消息</string>
+    <string name="chat">聊天</string>
 
     <!---->
     <!--Conversation List -->
@@ -14,7 +15,9 @@
 
     <string name="conversation_list_search_hint">对话搜索</string>
     <string name="conversation_list_search_edittext_hint">搜寻群组或人物</string>
-    <string name="conversation_list_item_last_message_format_you">你：%s </string>
+    <string name="conversation_list_item_last_message_text_format_you">你：%s </string>
+    <string name="conversation_list_item_last_message_image_format_you">您发送图片</string>
+    <string name="conversation_list_item_last_message_image">发送图片</string>
 
     <string name="conversation_list_last_message_date_format_yesterday">昨天</string>
 

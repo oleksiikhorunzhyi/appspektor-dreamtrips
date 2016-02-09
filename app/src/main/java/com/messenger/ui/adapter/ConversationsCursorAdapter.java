@@ -152,7 +152,7 @@ public class ConversationsCursorAdapter
         if (!TextUtils.isEmpty(message.getText())) {
             messageText = message.getText();
             if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
-                messageText = String.format(context.getString(R.string.conversation_list_item_last_message_format_you), messageText);
+                messageText = String.format(context.getString(R.string.conversation_list_item_last_message_text_format_you), messageText);
             } else if (isGroupConversation && !TextUtils.isEmpty(userName)) {
                 messageText = userName + ": " + messageText;
             }
@@ -161,11 +161,10 @@ public class ConversationsCursorAdapter
     }
 
     private String createAttachmentText(DataMessage message, String userName) {
-        String sentPhotoString = context.getString(R.string.conversation_list_item_last_message_image);
         if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
-            return String.format(context.getString(R.string.conversation_list_item_last_message_format_you), sentPhotoString);
+            return context.getString(R.string.conversation_list_item_last_message_image_format_you);
         } else {
-            return userName + " " + sentPhotoString;
+            return userName + " " + context.getString(R.string.conversation_list_item_last_message_image);
         }
     }
 

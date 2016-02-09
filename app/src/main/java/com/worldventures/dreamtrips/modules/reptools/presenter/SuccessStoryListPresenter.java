@@ -3,15 +3,16 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
+import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 
@@ -73,6 +74,16 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
     public void onEvent(OnSuccessStoryCellClickEvent event) {
         handleListItemClick(event.getModelObject(), event.getPosition());
         view.onStoryClicked();
+    }
+
+    public void onEvent(StoryLikedEvent event) {
+        eventBus.removeStickyEvent(event);
+        //
+        List<SuccessStory> stories = view.getAdapter().getItems();
+        Queryable.from(stories).filter(story -> story.getUrl().equals(event.storyUrl)).forEachR(story -> {
+            story.setLiked(event.isLiked);
+            view.getAdapter().notifyItemChanged(stories.indexOf(story));
+        });
     }
 
     public void openFirst(SuccessStory successStory) {

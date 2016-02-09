@@ -150,19 +150,9 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onDestroyView() {
         this.recyclerView.setAdapter(null);
         super.onDestroyView();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override

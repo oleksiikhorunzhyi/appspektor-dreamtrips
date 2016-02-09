@@ -47,6 +47,7 @@ import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -54,6 +55,7 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.util.Collections;
 import java.util.List;
@@ -544,6 +546,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void retrySendMessage(String messageId) {
+        attachmentDAO.getAttachmentByMessageId(messageId)
+                .first()
+                .subscribe(attachment -> {
+                    if (attachment.getUploadTaskId() == 0) retrySendTextMessage(messageId);
+                    else retryUploadAttachment(messageId);
+                });
+    }
+
+    private void retrySendTextMessage(String messageId) {
         submitOneChatAction(chat -> messageDAO.getMessage(messageId)
                 .first()
                 .map(DataMessage::toChatMessage)
@@ -551,6 +562,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribeOn(Schedulers.io())
                 .subscribe());
     }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // User
@@ -657,6 +669,20 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Photo uploading
     ///////////////////////////////////////////////////////////////////////////
 
+    private void uploadAttachment(String filePath) {
+        attachmentDelegate
+                .prepareMessageWithAttachment(user.getId(), conversationId, filePath)
+                .subscribe();
+
+    }
+
+    private void retryUploadAttachment(String messageId) {
+        attachmentDAO.getAttachmentByMessageId(messageId)
+                .first()
+                .doOnNext(BaseProviderModel::delete)
+                .subscribe(dataAttachment -> uploadAttachment(dataAttachment.getUrl()));
+    }
+
     private void connectToPendingAttachments() {
         attachmentDAO
                 .getPendingAttachments(conversationId)
@@ -668,7 +694,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .flatMap(attachmentDelegate::bindToPendingAttachment)
                 .compose(new IoToMainComposer<>())
                 .compose(bindView())
-                .subscribe(this::onAttachmentUploaded);
+                .subscribe(this::onAttachmentUploaded, e -> Timber.e("Image uploading failed"));
     }
 
     private void onAttachmentUploaded(DataAttachment dataAttachment) {

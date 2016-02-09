@@ -7,6 +7,7 @@ import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Adapter;
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 
 import java.util.List;
 
@@ -24,6 +25,21 @@ public class AttachmentDAO extends BaseDAO {
 
     public void save(DataAttachment attachment) {
         attachment.save();
+    }
+
+    public Observable<DataAttachment> getAttachmentByMessageId(String messageId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM " + DataAttachment.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table.MESSAGEID + "=?")
+                .withSelectionArgs(new String[] {messageId})
+                .build();
+        return query(q, DataAttachment.CONTENT_URI)
+                .map(cursor -> {
+                    DataAttachment dataAttachment = SqlUtils.convertToModel(false, DataAttachment.class, cursor);
+                    cursor.close();
+                    return dataAttachment;
+                });
+
     }
 
     public Observable<Cursor> getPendingAttachments(String conversationId) {

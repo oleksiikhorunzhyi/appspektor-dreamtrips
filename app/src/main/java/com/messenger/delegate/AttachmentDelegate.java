@@ -66,6 +66,7 @@ public class AttachmentDelegate {
     public Observable<DataAttachment> bindToPendingAttachment(DataAttachment dataAttachment) {
         return RxTransferObserver
                 .bind(photoUploadingManager.getTransferById(dataAttachment.getUploadTaskId()))
+                .doOnError(e -> messageDAO.updateStatus(dataAttachment.getMessageId(), MessageStatus.ERROR, System.currentTimeMillis()))
                 .filter(observer -> observer.getState().equals(TransferState.COMPLETED))
                 .map(observer -> photoUploadingManager.getResultUrl(observer.getAbsoluteFilePath()))
                 .map(originUrl -> {
@@ -74,7 +75,8 @@ public class AttachmentDelegate {
                     attachmentDAO.save(dataAttachment);
                     //
                     return dataAttachment;
-                });
+                })
+              ;
     }
 
 }

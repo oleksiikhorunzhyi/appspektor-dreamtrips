@@ -15,7 +15,8 @@
 
     <string name="conversation_list_search_hint">Search conversations…</string>
     <string name="conversation_list_search_edittext_hint">Search for groups and people</string>
-    <string name="conversation_list_item_last_message_format_you">You: %s</string>
+    <string name="conversation_list_item_last_message_text_format_you">You: %s</string>
+    <string name="conversation_list_item_last_message_image_format_you">You %s</string>
     <string name="conversation_list_item_last_message_image">sent photo</string>
     <string name="conversation_list_last_message_date_format_today">h:mm aa</string>
     <string name="conversation_list_last_message_date_format_yesterday">Yesterday</string>

@@ -33,6 +33,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class ConversationsDAO extends BaseDAO {
+    public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
 
     @Deprecated
     public ConversationsDAO(Context context) {
@@ -115,7 +116,7 @@ public class ConversationsDAO extends BaseDAO {
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
                 "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
                 "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
-                "a." + DataAttachment$Table.TYPE + " as  attachmentType " +
+                "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +

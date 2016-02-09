@@ -66,8 +66,9 @@ public class MessengerDelegateModule {
             ConversationsDAO conversationsDAO,
             UsersDAO usersDAO,
             ParticipantsDAO participantsDAO,
+            AttachmentDAO attachmentDAO,
             OpenedConversationTracker openedConversationTracker) {
-        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker,  conversationsDAO, participantsDAO, usersDAO);
+        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker,  conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
     }
 
     @Provides

@@ -5,14 +5,17 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.entities.DataAttachment;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -23,6 +26,7 @@ import com.messenger.ui.widget.inappnotification.messanger.InAppMessengerNotific
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewChat;
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewGroup;
 import com.messenger.util.OpenedConversationTracker;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
@@ -53,6 +57,7 @@ public class UnhandledMessageWatcher {
     private ConversationsDAO conversationsDAO;
     private ParticipantsDAO participantsDAO;
     private UsersDAO usersDAO;
+    private AttachmentDAO attachmentDAO;
 
     public UnhandledMessageWatcher(MessengerServerFacade messengerServerFacade,
                                    AppNotification appNotification,
@@ -60,7 +65,8 @@ public class UnhandledMessageWatcher {
                                    OpenedConversationTracker openedConversationTracker,
                                    ConversationsDAO conversationsDAO,
                                    ParticipantsDAO participantsDAO,
-                                   UsersDAO usersDAO) {
+                                   UsersDAO usersDAO,
+                                   AttachmentDAO attachmentDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.appNotification = appNotification;
         this.spiceManager = spiceManager;
@@ -68,12 +74,14 @@ public class UnhandledMessageWatcher {
         this.conversationsDAO = conversationsDAO;
         this.participantsDAO = participantsDAO;
         this.usersDAO = usersDAO;
+        this.attachmentDAO = attachmentDAO;
     }
 
     private GlobalMessageListener messageListener = new SimpleGlobalMessageListener() {
         @Override
         public void onReceiveMessage(Message message) {
-            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity, new DataMessage(message));
+            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity,
+                    new DataMessage(message));
         }
     };
 
@@ -104,8 +112,13 @@ public class UnhandledMessageWatcher {
                 .filter(conversation -> TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
                 .first()
                 .flatMap(conversation -> {
-                    if (isSingleChat(conversation)) return composeSingleChatNotification(conversation, message);
-                    else return composeGroupChatNotification(conversation, message);
+                    DataAttachment attachment = attachmentDAO.getAttachmentByMessageId(message.getId()).toBlocking().first();
+                    boolean imageAttachment = false;
+                    if (attachment != null && AttachmentType.IMAGE.equals(attachment.getType())) {
+                        imageAttachment = true;
+                    }
+                    if (isSingleChat(conversation)) return composeSingleChatNotification(conversation, message, imageAttachment);
+                    else return composeGroupChatNotification(conversation, message, imageAttachment);
                 })
                 .compose(new IoToMainComposer<>())
                 .filter(data -> {
@@ -123,7 +136,7 @@ public class UnhandledMessageWatcher {
     private void showNotification(Activity activity, NotificationData data) {
         InAppMessengerNotificationView view;
         if (data.isGroup) {
-            view = createGroupChatCrouton(activity, data.participants, data.title, data.fromUserName + ": " + data.messageText);
+            view = createGroupChatCrouton(activity, data.participants, data.title, data.messageText);
         } else {
             view = createSingleChatCrouton(activity, data.participants.get(0).getAvatarUrl(), data.title, data.messageText);
         }
@@ -131,7 +144,6 @@ public class UnhandledMessageWatcher {
             @Override
             public void openConversation(String conversationId) {
                 MessengerActivity.startMessengerWithConversation(activity, data.conversation.getId());
-                //ChatActivity.startChat(activity, data.conversation);
             }
         });
     }
@@ -140,26 +152,38 @@ public class UnhandledMessageWatcher {
         return conversation.getType().equalsIgnoreCase(ConversationType.CHAT);
     }
 
+    private String getImagePostMessage(DataUser user) {
+        return user.getName() + " " + currentActivity.getString(R.string.sent_photo);
+    }
+
     //single ava + sender name + sender text
-    private  Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message) {
+    private  Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message, boolean imageMessage) {
         return usersDAO.getUserById(message.getFromId())
                 .compose(new NonNullFilter<>()).first()
-                .map(user -> new NotificationData(user.getName(), user.getName(), Collections.singletonList(user), message.getText(), conversation, false));
+                .map(user -> {
+                    String messageText = imageMessage ? getImagePostMessage(user) : message.getText();
+                    return new NotificationData(user.getName(), user.getName(), Collections.singletonList(user), messageText, conversation, false);
+                });
     }
 
     //group 4 avas + group name/user names + last name : last message
-    private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message) {
+    private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message, boolean imageMessage) {
         return Observable.zip(
                 participantsDAO.getParticipantsEntities(conversation.getId()),
                 usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()),
                 (users, fromUser) -> {
                     String lastName = fromUser.getName();
-                    String lastMessage = message.getText();
+                    String messageText;
+                    if (!imageMessage) {
+                        messageText = lastName + ": " + message.getText();
+                    } else {
+                        messageText = getImagePostMessage(fromUser);
+                    }
 
                     String groupName = TextUtils.isEmpty(conversation.getSubject()) ?
                             TextUtils.join(", ", Queryable.from(users).map(DataUser::getName).toList()) :
                             conversation.getSubject();
-                    return new NotificationData(groupName, lastName, users, lastMessage, conversation, true);
+                    return new NotificationData(groupName, lastName, users, messageText, conversation, true);
         }).first();
     }
 

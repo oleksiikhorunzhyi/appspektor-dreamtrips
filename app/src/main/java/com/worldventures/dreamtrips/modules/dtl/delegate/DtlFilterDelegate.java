@@ -1,9 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.delegate;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +31,7 @@ public class DtlFilterDelegate {
             filterData.setAmenities(db.getAmenities());
             filterData.selectAllAmenities();
         }
-        filterData.setDistanceType(db.getMerchantsDistanceType());
+        filterData.setDistanceType(obtainSetting());
     }
 
     public DtlFilterData getFilterData() {
@@ -50,6 +54,14 @@ public class DtlFilterDelegate {
     public void reset() {
         filterData.reset();
         performFiltering();
+    }
+
+    private DistanceType obtainSetting() {
+        Setting distanceSetting = Queryable.from(db.getSettings()).firstOrDefault(setting ->
+                setting.getName().equals(SettingsFactory.DISTANCE_UNITS));
+        if (distanceSetting == null) return DistanceType.MILES;
+        //
+        return DistanceType.provideFromSetting(distanceSetting);
     }
 
     ///////////////////////////////////////////////////////////////////////////

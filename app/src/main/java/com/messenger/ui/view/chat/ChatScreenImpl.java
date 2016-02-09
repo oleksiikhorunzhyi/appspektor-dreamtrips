@@ -185,7 +185,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @OnClick(R.id.chat_message_add_button)
     protected void onAttachmentButtonClicked() {
-        photoPickerLayoutDelegate.showPicker();
+        if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
+        else {
+            messageEditText.clearFocus();
+            photoPickerLayoutDelegate.showPicker();
+        }
     }
 
     @Override
@@ -221,12 +225,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     public void hideUnreadMessageCount() {
         unreadMessagesView.hide();
     }
-    
+
     @Override
     public void setShowMarkUnreadMessage(boolean needShow) {
         if (adapter != null) adapter.setNeedMarkUnreadMessages(needShow);
     }
-    
+
     @Override
     public void addTypingUser(DataUser user) {
         chatUsersTypingView.addTypingUser(user);
@@ -239,7 +243,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void showMessages(Cursor cursor, DataConversation conversation) {
-        Timber.i("Show Cursor with size "+ cursor.getCount());
+        Timber.i("Show Cursor with size " + cursor.getCount());
         adapter.setConversation(conversation);
 
         int firstVisibleViewTop = 0;

@@ -47,6 +47,10 @@ public class PhotoUploadingManager {
         return transferUtility.getTransferById(Integer.valueOf(id));
     }
 
+    public TransferObserver getTransferById(int id) {
+        return transferUtility.getTransferById(id);
+    }
+
     public TransferObserver upload(UploadTask uploadTask) {
         String path = null;
         try {
@@ -70,6 +74,12 @@ public class PhotoUploadingManager {
     public String getResultUrl(UploadTask uploadTask) {
         return uploadTask == null ? null : "https://" + uploadTask.getBucketName()
                 + ".s3.amazonaws.com/" + uploadTask.getKey();
+    }
+
+    public String getResultUrl(String filePath) {
+        String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
+        String key = BuildConfig.BUCKET_ROOT_PATH + new File(filePath).getName();
+        return "https://" + bucketName + ".s3.amazonaws.com/" + key;
     }
 
     @SuppressLint("NewApi")

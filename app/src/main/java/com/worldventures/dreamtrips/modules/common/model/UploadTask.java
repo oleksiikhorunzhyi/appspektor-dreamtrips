@@ -39,6 +39,10 @@ public class UploadTask implements IFullScreenObject {
     public UploadTask() {
     }
 
+    public UploadTask(String filePath) {
+        this.filePath = filePath;
+    }
+
     protected UploadTask(Parcel in) {
         filePath = in.readString();
         progress = in.readInt();

@@ -13,6 +13,10 @@ public class MessageBody {
     public MessageBody() {
     }
 
+    public MessageBody(List<AttachmentHolder> attachments) {
+        this.attachments = attachments;
+    }
+
     public MessageBody(String text, String localeName, List<AttachmentHolder> attachments) {
         this.text = text;
         this.localeName = localeName;

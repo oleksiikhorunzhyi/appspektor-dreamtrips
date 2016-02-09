@@ -410,7 +410,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                             (loadedPage, loadedMessage) ->
                                     submitActionToUi(o -> paginationPageLoaded(loadedMessage), 0),
                             () ->
-                                    submitActionToUi(o -> { page--; showContent(); }, 0)
+                                    submitActionToUi(o -> {
+                                        page--;
+                                        showContent();
+                                    }, 0)
                     );
                 });
     }
@@ -546,7 +549,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         MessageBody body = new MessageBody();
         body.setText(message);
         body.setLocaleName(Locale.getDefault().toString());
-        
+
         submitOneChatAction(chat -> {
             chat.send(createMessage(body))
                     .subscribeOn(Schedulers.io())
@@ -673,7 +676,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onImagesPicked(List<ChosenImage> photos) {
-        Timber.d("onImagesPicked %s", photos);
+        if (photos == null || photos.isEmpty()) return;
+        //
         Observable.from(photos)
                 .first()
                 .map(photo -> photos.get(0).getFileThumbnail())
@@ -806,7 +810,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private boolean isLastLoadedMessageRead(List<Message> loadedMessages) {
         ListIterator<Message> iterator = loadedMessages.listIterator(loadedMessages.size());
-        while (iterator.hasPrevious()){
+        while (iterator.hasPrevious()) {
             Message message = iterator.previous();
             if (!TextUtils.equals(message.getFromId(), user.getId())) {
                 return message.getStatus() == MessageStatus.READ;

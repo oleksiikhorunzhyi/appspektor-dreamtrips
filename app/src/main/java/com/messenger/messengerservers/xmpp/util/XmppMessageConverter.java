@@ -1,8 +1,11 @@
 package com.messenger.messengerservers.xmpp.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
+import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -11,7 +14,7 @@ public final class XmppMessageConverter {
     private Gson gson;
 
     public XmppMessageConverter() {
-        gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
     }
 
     public org.jivesoftware.smack.packet.Message convert(Message message) {

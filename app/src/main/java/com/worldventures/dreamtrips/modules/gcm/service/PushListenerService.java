@@ -47,6 +47,9 @@ public class PushListenerService extends GcmListenerService {
             case NEW_MESSAGE:
                 delegate.notifyNewMessageReceived(parser.parseMessage(data, NewMessagePushMessage.class));
                 break;
+            case NEW_IMAGE_MESSAGE:
+                delegate.notifyNewImageMessageReceived(parser.parseMessage(data, NewMessagePushMessage.class));
+                break;
             case BADGE_UPDATE:
                 break;
             default:

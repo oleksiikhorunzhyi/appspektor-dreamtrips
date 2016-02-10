@@ -56,7 +56,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         dtlTransaction = snapper.getDtlTransaction(dtlMerchant.getId());
         view.setMerchant(dtlMerchant);
         //
-        if (!TextUtils.isEmpty(dtlTransaction.getCode()))
+        if (dtlTransaction.merchantCodeScanned())
             checkReceiptUploading();
         //
         bindApiJob();

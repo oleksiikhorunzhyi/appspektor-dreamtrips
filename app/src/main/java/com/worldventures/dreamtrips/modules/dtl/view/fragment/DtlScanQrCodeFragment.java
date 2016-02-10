@@ -172,14 +172,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
         });
     }
 
-    @Override
-    public void noConnection() {
-        showImageUploadError(sweetAlertDialog -> {
-            sweetAlertDialog.dismissWithAnimation();
-            scanner.startCamera();
-        });
-    }
-
     private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
         if (alertDialog != null && alertDialog.isShowing()) return;
         //

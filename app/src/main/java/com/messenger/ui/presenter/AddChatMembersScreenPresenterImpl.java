@@ -9,14 +9,14 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.util.List;
 
@@ -106,23 +106,29 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
             return;
         }
         // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
-        List<String> newChatUserIds = Queryable.from(newChatUsers).map(u -> u.getId()).toList();
+        List<String> newChatUserIds = Queryable.from(newChatUsers).map(DataUser::getId).toList();
+
         conversationStream
                 .flatMap(conversation -> participantsDAO
-                        .getParticipants(conversation.getId()).first()
-                        .map(cursor -> Queryable.from(SqlUtils.convertToList(DataUser.class, cursor)).map(DataUser::getId).toList())
+                        .getParticipantsEntities(conversation.getId()).first()
                         .map(currentUsers -> {
                             DataConversation newConversation = chatDelegate.modifyConversation(
-                                    conversation, currentUsers, newChatUserIds, getView().getConversationName()
-                            );
-                            Queryable.from(newChatUsers).forEachR(u ->
-                                            new DataParticipant(newConversation.getId(), u.getId(), Participant.Affiliation.MEMBER).save()
-                            );
-                            ContentUtils.insert(DataConversation.CONTENT_URI, newConversation);
+                                    conversation, Queryable.from(currentUsers).map(DataUser::getId).toList(),
+                                    newChatUserIds, getView().getConversationName());
+
+                            List<DataParticipant> relationships = Queryable.from(newChatUserIds).map(userId ->
+                                    new DataParticipant(conversation.getId(), userId, Participant.Affiliation.MEMBER)).toList();
+                            // we are participants too and if conversation is group then we're owner otherwise we're member
+                            if (conversation.getType().equals(ConversationType.CHAT)) {
+                                relationships.add(new DataParticipant(conversation.getId(), user.getId(), Participant.Affiliation.OWNER));
+                            }
+
+                            participantsDAO.save(relationships);
+                            conversationsDAO.save(newConversation);
+
                             return newConversation;
                         }))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .compose(bindView())
                 .subscribe(newConversation -> {
                     History.Builder history = Flow.get(getContext()).getHistory().buildUpon();

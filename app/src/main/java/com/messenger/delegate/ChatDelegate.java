@@ -67,7 +67,6 @@ public class ChatDelegate {
             // since we create new group chat
             // make sure to invite original participant (addressee) from old single chat
             newChatUserIds.addAll(existParticipantIds);
-            newChatUserIds.add(currentUserId);
         }
 
         return setMultiUserChatData(conversation, newChatUserIds, subject);

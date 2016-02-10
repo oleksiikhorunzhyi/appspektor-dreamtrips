@@ -78,6 +78,10 @@ public class ConversationsDAO extends BaseDAO {
         bulkInsert(conversations, new DataConversation$Adapter(), DataConversation.CONTENT_URI);
     }
 
+    public void save(DataConversation conversation) {
+        conversation.save();
+    }
+
     public void deleteConversation(String conversationId) {
         //server sends so many packets about kicking as devices with the same user are online
         DataConversation conversation = getConversationById(conversationId);

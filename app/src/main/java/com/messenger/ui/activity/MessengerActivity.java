@@ -225,7 +225,9 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         setNavigation(path);
         //
         weakHandler.post(() -> {
-            photoPickerLayoutDelegate.hidePicker();
+            if (!traversal.destination.top().equals(traversal.origin.top())) {
+                photoPickerLayoutDelegate.hidePicker();
+            }
             container.dispatch(traversal, callback);
         });
     }

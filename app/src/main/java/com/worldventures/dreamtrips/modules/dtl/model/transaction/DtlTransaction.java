@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.transaction;
 
+import android.text.TextUtils;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -10,7 +12,7 @@ import java.util.Date;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlTransaction {
 
-    public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000l;
+    public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000L; // 4 hours
 
     public static final String BILL_TOTAL = "bill_total";
     public static final String LOCATION = "location.ll";
@@ -32,13 +34,6 @@ public class DtlTransaction {
     public DtlTransaction() {
     }
 
-    public DtlTransaction(long checkinTime, double billTotal, String receiptPhotoUrl, String code) {
-        this.checkinTimestamp = checkinTime;
-        this.billTotal = billTotal;
-        this.receiptPhotoUrl = receiptPhotoUrl;
-        this.merchantToken = code;
-    }
-
     public void setTimestamp(long timestamp) {
         this.checkinTimestamp = timestamp;
     }
@@ -49,6 +44,10 @@ public class DtlTransaction {
 
     public void setReceiptPhotoUrl(String receiptPhotoUrl) {
         this.receiptPhotoUrl = receiptPhotoUrl;
+    }
+
+    public boolean receiptPhotoUploaded() {
+        return !TextUtils.isEmpty(receiptPhotoUrl);
     }
 
     public void setCode(String code) {
@@ -86,6 +85,10 @@ public class DtlTransaction {
 
     public String getCode() {
         return merchantToken;
+    }
+
+    public boolean merchantCodeScanned() {
+        return !TextUtils.isEmpty(merchantToken);
     }
 
     public DtlTransactionResult getDtlTransactionResult() {

@@ -94,7 +94,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         MenuItem conversationItem = menu.findItem(R.id.action_unread_conversation);
         if (conversationItem != null) {
             unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
-            unreadConversationBadge.setImage(R.drawable.ic_action_message);
+            unreadConversationBadge.setImage(R.drawable.messenger_icon_white);
             unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
             unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
         }

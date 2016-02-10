@@ -96,6 +96,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 break;
             case MESSAGE:
                 com.messenger.messengerservers.model.Message message = messageConverter.convert(messageXMPP);
+                if (message.getFromId() == null) break; // cause server sends type error and returns this message in history
                 notifyGlobalMessage(message, EVENT_INCOMING);
                 notifyNewUnhandledMessage(message); // TODO remove unhandled listeners
                 break;

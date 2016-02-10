@@ -62,6 +62,30 @@ public class UploadTask implements IFullScreenObject {
         this.status = status;
     }
 
+    public String getAmazonTaskId() {
+        return amazonTaskId;
+    }
+
+    public void setAmazonTaskId(String amazonTaskId) {
+        this.amazonTaskId = amazonTaskId;
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public ArrayList<String> getTags() {
         return tags;
     }
@@ -221,6 +245,23 @@ public class UploadTask implements IFullScreenObject {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UploadTask that = (UploadTask) o;
+
+        return id == that.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -264,7 +305,6 @@ public class UploadTask implements IFullScreenObject {
         this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
         this.originUrl = in.readString();
         this.type = in.readString();
-        int tmpModule = in.readInt();
         this.linkedItemId = in.readString();
         this.id = in.readLong();
     }
@@ -278,20 +318,4 @@ public class UploadTask implements IFullScreenObject {
             return new UploadTask[size];
         }
     };
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UploadTask that = (UploadTask) o;
-
-        return id == that.id;
-
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
 }

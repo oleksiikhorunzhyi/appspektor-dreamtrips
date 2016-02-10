@@ -47,6 +47,8 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<SingleS
 
     @Override
     public void setParticipants(DataConversation conversation, List<DataUser> participants) {
+        if (participants.isEmpty()) return;
+        //
         singleChatAvatarView.setVisibility(VISIBLE);
         DataUser addressee = participants.get(0);
         singleChatAvatarView.setImageURI(Uri.parse(addressee.getAvatarUrl()));

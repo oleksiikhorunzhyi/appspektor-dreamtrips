@@ -41,6 +41,7 @@ import de.greenrobot.event.EventBus;
                 VideoCachingDelegate.class,
                 VideoDownloadSpiceService.class,
                 PhotoUploadingManager.class,
+                PhotoUploadingManagerS3.class,
                 BucketItemManager.class,
                 DtlFilterDelegate.class,
                 //

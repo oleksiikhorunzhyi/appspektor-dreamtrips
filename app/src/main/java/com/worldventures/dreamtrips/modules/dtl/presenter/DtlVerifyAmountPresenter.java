@@ -40,7 +40,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     }
 
     public void rescan() {
-        photoUploadingManager.cancelUpload(dtlTransaction.getUploadTask());
+        photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
         dtlTransaction.setUploadTask(null);
 
         snapper.saveDtlTransaction(merchantId, dtlTransaction);

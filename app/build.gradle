@@ -237,6 +237,8 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
+    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
     // Ui
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile 'com.android.support:design:23.1.1'

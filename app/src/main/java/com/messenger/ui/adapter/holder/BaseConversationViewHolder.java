@@ -152,13 +152,21 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
         }
     }
 
-    public void setDate(String date) {
-        lastMessageDateTextView.setText(date);
-    }
 
+    protected void setConversationWithParticipants(DataConversation conversation, List<DataUser> participants) {
+        if (participants == null || participants.size() == 0) return;
+
+        conversationHelper.setTitle(nameTextView, conversation, participants, true);
+        setConversationId(conversation.getId());
+        setParticipants(participants);
+    }
 
     public void setLastMessage(String message) {
         lastMessageTextView.setText(message);
+    }
+
+    public void setDate(String date) {
+        lastMessageDateTextView.setText(date);
     }
 
     public void setDeleteButtonVisibility(boolean visible) {
@@ -166,14 +174,9 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
         if (deleteButton.getVisibility() != viewVisible) deleteButton.setVisibility(viewVisible);
     }
 
-    protected void onParticipantsLoaded(DataConversation conversation, List<DataUser> participants) {
-        if (participants == null || participants.size() == 0) return;
+    protected abstract void setConversationId(String conversationId);
 
-        conversationHelper.setTitle(nameTextView, conversation, participants, true);
-        setConversationPicture(participants);
-    }
-
-    protected abstract void setConversationPicture(List<DataUser> participants);
+    protected abstract void setParticipants(List<DataUser> participants);
 
     private void loadParticipants(final DataConversation conversation) {
         if (participantsSubscriber != null && !participantsSubscriber.isUnsubscribed()) {
@@ -194,7 +197,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder {
                 .compose(RxLifecycle.bindView(itemView))
                 .onErrorReturn(throwable -> Collections.<DataUser>emptyList())
                 .subscribe(users -> {
-                    final Runnable runnable = () -> onParticipantsLoaded(conversation, users);
+                    final Runnable runnable = () -> setConversationWithParticipants(conversation, users);
                     if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
                         handler.post(runnable);
                     } else {

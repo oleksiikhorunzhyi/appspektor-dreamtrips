@@ -1,6 +1,7 @@
 package com.messenger.notification;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -136,7 +137,7 @@ public class UnhandledMessageWatcher {
     private void showNotification(Activity activity, NotificationData data) {
         InAppMessengerNotificationView view;
         if (data.isGroup) {
-            view = createGroupChatCrouton(activity, data.participants, data.title, data.messageText);
+            view = createGroupChatCrouton(activity, data.conversation.getId(), data.title, data.messageText);
         } else {
             view = createSingleChatCrouton(activity, data.participants.get(0).getAvatarUrl(), data.title, data.messageText);
         }
@@ -187,17 +188,17 @@ public class UnhandledMessageWatcher {
         }).first();
     }
 
-    private InAppMessengerNotificationView createSingleChatCrouton(Activity activity, String avaUrl, String title, String text) {
-        InAppNotificationViewChat view = new InAppNotificationViewChat(activity);
+    private InAppMessengerNotificationView createSingleChatCrouton(Context context, String avaUrl, String title, String text) {
+        InAppNotificationViewChat view = new InAppNotificationViewChat(context);
         view.setAvatarUrl(avaUrl);
         view.setTitle(title);
         view.setText(text);
         return view;
     }
 
-    private InAppMessengerNotificationView createGroupChatCrouton(Activity activity, List<DataUser> chatParticipants, String title, String text) {
-        InAppNotificationViewGroup view = new InAppNotificationViewGroup(activity);
-        view.setChatParticipants(chatParticipants);
+    private InAppMessengerNotificationView createGroupChatCrouton(Context context, String conversationId, String title, String text) {
+        InAppNotificationViewGroup view = new InAppNotificationViewGroup(context);
+        view.setConversationId(conversationId);
         view.setTitle(title);
         view.setText(text);
         return view;

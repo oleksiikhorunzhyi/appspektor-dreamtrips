@@ -20,8 +20,13 @@ public class TripConversationViewHolder extends BaseConversationViewHolder{
     }
 
     @Override
-    protected void setConversationPicture(List<DataUser> participants) {
-        // nothing
+    protected void setConversationId(String conversationId) {
+
+    }
+
+    @Override
+    protected void setParticipants(List<DataUser> participants) {
+
     }
 
 }

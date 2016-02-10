@@ -45,8 +45,9 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
 
     @Override
     public void setParticipants(DataConversation conversation, List<DataUser> participants) {
+        groupAvatarsView.setConversationAvatar(conversation.getId());
         groupAvatarsView.setVisibility(VISIBLE);
-        groupAvatarsView.updateAvatars(participants);
+
         conversationHelper.setTitle(chatNameTextView, conversation, participants, false);
         String chatDescriptionFormat = getContext()
                 .getString(R.string.chat_settings_group_chat_description);
@@ -68,16 +69,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
         }
         String membersFormat = getContext().getString(R.string.chat_settings_row_members_format);
         membersSettingsRow.setTitle(String.format(membersFormat, participants.size()));
-
-        // we decided to not add it for now
-//        groupChatInfoTextView.setVisibility(View.VISIBLE);
-//        String groupChatInfoTextViewFormat = getContext().getString(R.string.chat_settings_group_chat_info_text_format);
-//        User owner = participants.get(0);
-//        Date date = new Date();
-//        SimpleDateFormat df = new SimpleDateFormat("MM dd, yyyy");
-//        String dateString = df.format(date);
-//        groupChatInfoTextView.setText(String.format(groupChatInfoTextViewFormat,
-//                owner.getName(), dateString));
     }
 
     @Override

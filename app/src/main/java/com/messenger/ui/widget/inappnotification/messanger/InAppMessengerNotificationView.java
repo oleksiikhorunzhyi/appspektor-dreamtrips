@@ -1,12 +1,9 @@
 package com.messenger.ui.widget.inappnotification.messanger;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 
 import com.messenger.ui.widget.inappnotification.BaseInAppNotificationView;
-import com.worldventures.dreamtrips.R;
 
 public abstract class InAppMessengerNotificationView extends BaseInAppNotificationView {
 

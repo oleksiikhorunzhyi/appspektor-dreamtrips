@@ -20,7 +20,12 @@ public class GroupConversationViewHolder extends BaseConversationViewHolder{
     }
 
     @Override
-    protected void setConversationPicture(List<DataUser> participants) {
-        groupAvatarsView.updateAvatars(participants);
+    protected void setConversationId(String conversationId) {
+        groupAvatarsView.setConversationAvatar(conversationId);
+    }
+
+    @Override
+    protected void setParticipants(List<DataUser> participants) {
+
     }
 }

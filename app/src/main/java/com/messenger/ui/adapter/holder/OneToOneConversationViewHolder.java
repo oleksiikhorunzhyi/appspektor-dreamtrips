@@ -22,15 +22,20 @@ public class OneToOneConversationViewHolder extends BaseConversationViewHolder {
     }
 
     @Override
-    protected void setConversationPicture(List<DataUser> participants) {
-        DataUser addressee = participants.get(0);
-        avatarView.setImageURI(Uri.parse(addressee.getAvatarUrl()));
+    protected void setConversationWithParticipants(DataConversation conversation, List<DataUser> participants) {
+        super.setConversationWithParticipants(conversation, participants);
+        if (participants == null || participants.isEmpty()) return;
+        avatarView.setOnline(participants.get(0).isOnline());
     }
 
     @Override
-    protected void onParticipantsLoaded(DataConversation conversation, List<DataUser> participants) {
-        super.onParticipantsLoaded(conversation, participants);
-        if (participants == null || participants.isEmpty()) return;
-        avatarView.setOnline(participants.get(0).isOnline());
+    protected void setConversationId(String conversationId) {
+
+    }
+
+    @Override
+    protected void setParticipants(List<DataUser> participants) {
+        DataUser addressee = participants.get(0);
+        avatarView.setImageURI(Uri.parse(addressee.getAvatarUrl()));
     }
 }

@@ -22,7 +22,6 @@
         <android.support.v7.widget.CardView
             android:id="@+id/in_app_notif_content"
             xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,10 +40,7 @@
 
                     <com.messenger.ui.widget.GroupAvatarsView
                         android:id="@+id/in_app_notif_avatar_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        app:gav_avatar_size="@dimen/in_app_notification_small_avatar_image_suze"/>
+                        style="@style/InAppNotificationGroupChatAvatarView"/>
 
                     <TextView
                         android:id="@+id/in_app_notif_title"

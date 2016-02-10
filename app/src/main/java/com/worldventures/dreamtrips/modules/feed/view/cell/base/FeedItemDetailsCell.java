@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -40,10 +41,13 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
+    private WeakHandler handler;
+
     public FeedItemDetailsCell(View view) {
         super(view);
         feedItemCommonDataHelper = new FeedItemCommonDataHelper(view.getContext());
         feedItemCommonDataHelper.attachView(view);
+        handler = new WeakHandler();
     }
 
     @Override
@@ -69,8 +73,8 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
         FeedItemMenuBuilder.create(itemView.getContext(), editFeedItem, menuRes)
                 .onDelete(() -> showDeleteDialog(headerDelete, textDelete))
                 .onEdit(this::onEdit)
-                .dismissListener(menu -> editFeedItem.setEnabled(true))
                 .show();
+        handler.postDelayed(() -> editFeedItem.setEnabled(true), 500);
     }
 
     private void showDeleteDialog(@StringRes int headerDelete, @StringRes int textDelete) {

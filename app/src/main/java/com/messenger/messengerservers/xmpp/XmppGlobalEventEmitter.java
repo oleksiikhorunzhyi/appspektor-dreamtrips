@@ -36,7 +36,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     public XmppGlobalEventEmitter(XmppServerFacade facade) {
         this.facade = facade;
-        this.messageConverter = new XmppMessageConverter();
+        this.messageConverter = new XmppMessageConverter(facade.getGson());
         facade.addAuthorizationListener(authorizeListener);
     }
 

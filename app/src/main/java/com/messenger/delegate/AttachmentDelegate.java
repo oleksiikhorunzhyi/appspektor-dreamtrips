@@ -37,6 +37,7 @@ public class AttachmentDelegate {
                 .id(UUID.randomUUID().toString())
                 .date(new Date(System.currentTimeMillis()))
                 .status(MessageStatus.SENDING)
+                .syncTime(System.currentTimeMillis())
                 .build();
         //
         return Observable.just(dataMessage)

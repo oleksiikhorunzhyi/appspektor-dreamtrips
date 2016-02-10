@@ -14,7 +14,11 @@ public final class XmppMessageConverter {
     private Gson gson;
 
     public XmppMessageConverter() {
-        gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
+        gson = new Gson();
+    }
+
+    public XmppMessageConverter(Gson gson) {
+        this.gson = gson;
     }
 
     public org.jivesoftware.smack.packet.Message convert(Message message) {

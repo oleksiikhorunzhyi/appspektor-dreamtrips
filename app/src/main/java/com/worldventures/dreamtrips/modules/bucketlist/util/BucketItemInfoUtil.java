@@ -35,7 +35,7 @@ public class BucketItemInfoUtil {
 
 
     public static String getTime(Context context, BucketItem bucketItem) {
-        String time = DateTimeUtils.convertDateToReference(context, bucketItem.getTarget_date());
+        String time = DateTimeUtils.convertDateToReference(context, bucketItem.getTargetDate());
         if (TextUtils.isEmpty(time)) {
             return context.getString(R.string.someday);
         } else {

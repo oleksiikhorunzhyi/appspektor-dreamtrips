@@ -59,7 +59,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     @Override
     public void onResume() {
         super.onResume();
-        selectedDate = bucketItem.getTarget_date();
+        selectedDate = bucketItem.getTargetDate();
         List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
         if (!list.isEmpty()) {
             view.setCategoryItems(list);
@@ -98,8 +98,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     }
 
     public Date getDate() {
-        if (bucketItem.getTarget_date() != null) {
-            return bucketItem.getTarget_date();
+        if (bucketItem.getTargetDate() != null) {
+            return bucketItem.getTargetDate();
         } else {
             return Calendar.getInstance().getTime();
         }

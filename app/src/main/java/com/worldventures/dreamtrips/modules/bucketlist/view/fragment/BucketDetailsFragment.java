@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -107,6 +108,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @ForActivity
     Provider<Injector> injector;
 
+    WeakHandler handler;
+
     protected ProgressDialogFragment progressDialog;
 
     @Override
@@ -116,6 +119,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         setForeignIntentAction();
 
         progressDialog = ProgressDialogFragment.create();
+        handler = new WeakHandler();
     }
 
     @Override
@@ -147,6 +151,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @OnClick(R.id.edit)
     void onEditClicked() {
+        edit.setEnabled(false);
         FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
                 .onEdit(() -> {
                     if (isVisibleOnScreen()) getPresenter().onEdit();
@@ -154,8 +159,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
                 .onDelete(() -> {
                     if (isVisibleOnScreen()) showDeletionDialog();
                 })
-                .dismissListener(menu -> edit.setEnabled(true))
                 .show();
+        handler.postDelayed(() -> edit.setEnabled(true), 500);
     }
 
     @Override

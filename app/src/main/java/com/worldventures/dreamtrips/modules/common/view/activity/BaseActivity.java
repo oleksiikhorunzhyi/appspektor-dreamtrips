@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
+import com.messenger.di.MessengerActivityModule;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
@@ -131,6 +132,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new FeedModule());
         modules.add(new DtlModule());
         modules.add(new SettingsModule());
+        modules.add(new MessengerActivityModule());
         return modules;
     }
 

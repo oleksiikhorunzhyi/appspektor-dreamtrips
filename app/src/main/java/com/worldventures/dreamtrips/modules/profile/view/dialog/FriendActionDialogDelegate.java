@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
+import com.worldventures.dreamtrips.modules.friends.events.StartSingleChatEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 
 import de.greenrobot.event.EventBus;
@@ -24,29 +25,41 @@ public class FriendActionDialogDelegate {
     }
 
     public void showFriendDialog(User user, Drawable profileIcon) {
+        showFriendSettingsDialog(user, profileIcon,
+                context.getResources().getStringArray(R.array.friend_settings_dialog));
+    }
+
+    public void showFriendDialogSkipChat(User user, Drawable profileIcon) {
+        showFriendSettingsDialog(user, profileIcon,
+                context.getResources().getStringArray(R.array.friend_settings_dialog_skip_chat));
+    }
+
+    public void showFriendSettingsDialog(User user, Drawable profileIcon, String... items) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(user.getFullName());
         if (profileIcon != null)
             builder.setIcon(profileIcon);
         builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) ->
                 dialogInterface.dismiss());
-        builder.setItems(new String[]{
-                        context.getString(R.string.social_remove_friend_title),
-                        context.getString(R.string.social_friend_preference_title)
-                },
-                (dialogInterface, i) -> {
-                    if (i == 0) {
-                        showConfirmationDialog((dialog, which) -> {
-                            eventBus.post(new UnfriendEvent(user));
-                            TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_UNFRIEND);
-                        });
-                    } else if (i == 1) {
-                        eventBus.post(new OpenFriendPrefsEvent(user));
-                    }
-                }
-        );
+        builder.setItems(items, (dialogInterface, i) -> processUserChoice(user, i));
         builder.show();
+    }
 
+    private void processUserChoice(User user, int actionCode) {
+        switch (actionCode) {
+            case 0:
+                showConfirmationDialog((dialog, which) -> {
+                    eventBus.post(new UnfriendEvent(user));
+                    TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_UNFRIEND);
+                });
+                break;
+            case 1:
+                eventBus.post(new OpenFriendPrefsEvent(user));
+                break;
+            case 2:
+                eventBus.post(new StartSingleChatEvent(user));
+                break;
+        }
     }
 
     private void showConfirmationDialog(DialogInterface.OnClickListener accept) {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_overflow"
+        android:title="@string/chat_settings_menu_settings"
+        android:icon="@drawable/ic_profile_more_selector"
+        app:showAsAction="always">
+        <!-- add this as overflow menu as designer suggested-->
+        <menu>
+        <item
+            android:id="@+id/action_edit_chat_name"
+            android:title="@string/chat_settings_menu_edit_chat_name"
+            app:showAsAction="always"/>
+        <!-- change image menu item will be here later -->
+        </menu>
+    </item>
+</menu>

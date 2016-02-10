@@ -61,6 +61,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     private boolean multiPickEnabled;
     private int pickLimit;
 
+    private PhotoPickerListener photoPickerListener;
+
     public PhotoPickerLayout(Context context) {
         this(context, null);
     }
@@ -220,6 +222,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void showPanel() {
+        if (photoPickerListener != null) photoPickerListener.onOpened();
         isShown = true;
         boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
@@ -233,6 +236,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void hidePanel() {
+        if (photoPickerListener != null) photoPickerListener.onClosed();
         isShown = false;
         updatePickedItemsCount(0);
         setPanelHeight(0);
@@ -260,5 +264,16 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
     private void clearAllBackStack() {
         fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    public void setPhotoPickerListener(PhotoPickerListener photoPickerListener) {
+        this.photoPickerListener = photoPickerListener;
+    }
+
+    public interface PhotoPickerListener {
+
+        void onClosed();
+
+        void onOpened();
     }
 }

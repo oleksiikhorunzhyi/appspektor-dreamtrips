@@ -26,6 +26,12 @@ public class ActivityRouter extends ActivityBoundRouter {
         startActivity(MainActivity.class);
     }
 
+    public void openMainWithComponent(String key) {
+        Bundle bundle = new Bundle();
+        bundle.putString(MainActivity.COMPONENT_KEY, key);
+        startActivity(MainActivity.class, bundle);
+    }
+
     public void openLaunch() {
         startActivity(LaunchActivity.class);
     }

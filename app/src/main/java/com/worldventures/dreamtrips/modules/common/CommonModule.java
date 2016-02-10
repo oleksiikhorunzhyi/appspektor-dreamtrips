@@ -1,5 +1,11 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import com.messenger.di.MessengerActivityModule;
+import com.messenger.di.MessengerModule;
+import com.messenger.ui.activity.MessengerActivity;
+import com.messenger.ui.presenter.ToolbarPresenter;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
@@ -15,7 +21,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
@@ -28,13 +33,14 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
-import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
@@ -48,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -56,7 +64,6 @@ import dagger.Provides;
                 ActivityPresenter.class,
                 LaunchActivityPresenter.class,
                 MainActivityPresenter.class,
-                NavigationDrawerPresenter.class,
                 Presenter.class,
                 SharePresenter.class,
                 TermsConditionsDialogPresenter.class,
@@ -69,9 +76,9 @@ import dagger.Provides;
                 Player360Activity.class,
                 FilterableArrayListAdapter.class,
                 DraggableArrayListAdapter.class,
-                NavigationDrawerFragment.class,
                 DownloadVideoListener.class,
                 PresentationVideosPresenter.class,
+                MessengerActivity.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,
@@ -82,6 +89,8 @@ import dagger.Provides;
                 BaseImageFragment.class,
                 BaseImagePresenter.class,
                 BaseDialogFragmentWithPresenter.class,
+                //
+                ToolbarPresenter.class,
         },
         complete = false,
         library = true
@@ -110,7 +119,8 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
-        featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
+        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlModule.DTL));
+        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
         activeComponents.add(TripsModule.OTA);
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(VideoModule.MEMBERSHIP);
@@ -130,6 +140,18 @@ public class CommonModule {
         activeComponents.add(LOGOUT);
 
         return new ComponentsConfig(activeComponents);
+    }
+
+    @Provides
+    @Singleton
+    NavigationDrawerPresenter provideNavDrawerPresenter(@ForApplication Injector injector) {
+        return new NavigationDrawerPresenter(injector);
+    }
+
+    @Provides
+    @Singleton
+    PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate() {
+        return new PhotoPickerLayoutDelegate();
     }
 
 }

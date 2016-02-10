@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 
 import android.content.Context;
 
+import com.messenger.synchmechanism.MessengerConnector;
+import com.messenger.storage.MessengerDatabase;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -43,6 +46,8 @@ public class LogoutDelegate {
     }
 
     public void logout() {
+        MessengerConnector.getInstance().disconnect();
+
         String token = snappyRepository.getGcmRegToken();
         if (token != null) {
             dreamSpiceManager.execute(new UnsubscribeDeviceCommand(token),
@@ -76,6 +81,7 @@ public class LogoutDelegate {
         appSessionHolder.destroy();
         notificationDelegate.cancelAll();
         badgeUpdater.updateBadge(0);
+        FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
     }
 
     public void setOnLogoutSuccessListener(OnLogoutSuccessListener onLogoutSuccessListener) {

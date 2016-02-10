@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
 
+import com.messenger.ui.activity.MessengerActivity;
+import com.messenger.util.UnreadConversationObservable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -19,12 +21,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
+import rx.Subscription;
+
 public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
 
     @Inject
     SnappyRepository db;
     //
+    @Inject
+    UnreadConversationObservable observable;
+
+    Subscription unreadConversationSubscription;
+    //
     Circle filterCircle;
+    @State
+    int unreadConversationCount;
 
     @Override
     public void takeView(View view) {
@@ -36,6 +48,23 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         super.restoreInstanceState(savedState);
         filterCircle = db.getFilterCircle();
         if (filterCircle == null) filterCircle = createDefaultFilterCircle();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        unreadConversationSubscription = observable.subscribe(count -> {
+            unreadConversationCount = count;
+            view.setUnreadConversationCount(count);
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (unreadConversationSubscription != null && !unreadConversationSubscription.isUnsubscribed()) {
+            unreadConversationSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -69,6 +98,10 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         onRefresh();
     }
 
+    public void onUnreadConversationsClick() {
+        MessengerActivity.startMessenger(activityRouter.getContext());
+    }
+
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.setRequestsCount(getFriendsRequestsCount());
     }
@@ -81,7 +114,13 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return db.getFriendsRequestsCount();
     }
 
+    public int getUnreadConversationCount() {
+        return unreadConversationCount;
+    }
+
     public interface View extends BaseFeedPresenter.View {
         void setRequestsCount(int count);
+
+        void setUnreadConversationCount(int count);
     }
 }

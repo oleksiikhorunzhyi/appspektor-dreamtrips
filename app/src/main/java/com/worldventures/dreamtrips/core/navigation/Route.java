@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
@@ -16,7 +17,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
@@ -199,15 +199,15 @@ public enum Route {
     SETTINGS_NOTIFICATIONS(NotificationsSettingsFragment.class),
     SETTINGS_GENERAL(GeneralSettingsFragment.class);
 
-    private Class<? extends BaseFragment> fragmentClass;
+    private Class<? extends Fragment> fragmentClass;
     @StringRes
     private int titleRes;
 
-    Route(Class<? extends BaseFragment> fragmentClass) {
+    Route(Class<? extends Fragment> fragmentClass) {
         this.fragmentClass = fragmentClass;
     }
 
-    Route(Class<? extends BaseFragment> fragmentClass, @StringRes int titleRes) {
+    Route(Class<? extends Fragment> fragmentClass, @StringRes int titleRes) {
         this(fragmentClass);
         this.titleRes = titleRes;
     }
@@ -226,7 +226,7 @@ public enum Route {
         return fragmentClass.getName();
     }
 
-    public Class<? extends BaseFragment> getClazz() {
+    public Class<? extends Fragment> getClazz() {
         return fragmentClass;
     }
 }

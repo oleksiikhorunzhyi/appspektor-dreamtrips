@@ -46,7 +46,8 @@ public class PushMessage {
 
     public enum PushType {
 
-        ACCEPT_REQUEST, SEND_REQUEST, BADGE_UPDATE, TAGGED_ON_PHOTO, UNKNOWN;
+        ACCEPT_REQUEST, SEND_REQUEST, BADGE_UPDATE, TAGGED_ON_PHOTO, NEW_MESSAGE, NEW_IMG_MESSAGE,
+        UNKNOWN;
 
         public static PushType of(String type) {
             PushType result = Queryable.from(PushType.values())

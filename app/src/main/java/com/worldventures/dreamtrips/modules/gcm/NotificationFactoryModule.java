@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.gcm;
 
 import android.content.Context;
 
+import com.messenger.notification.MessengerNotificationFactory;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -21,8 +22,10 @@ import dagger.Provides;
 public class NotificationFactoryModule {
 
     @Provides
-    NotificationFactoryHolder provideNotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory, PhotoNotificationFactory photoNotificationFactory) {
-        return new NotificationFactoryHolder(friendNotificationFactory, photoNotificationFactory);
+    NotificationFactoryHolder provideNotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory,
+                                                               PhotoNotificationFactory photoNotificationFactory,
+                                                               MessengerNotificationFactory messengerNotificationFactory) {
+        return new NotificationFactoryHolder(friendNotificationFactory, photoNotificationFactory, messengerNotificationFactory);
     }
 
     @Provides
@@ -33,5 +36,10 @@ public class NotificationFactoryModule {
     @Provides
     PhotoNotificationFactory providePhotoNotificationFactory(@ForApplication Context context) {
         return new PhotoNotificationFactory(context);
+    }
+
+    @Provides
+    MessengerNotificationFactory provideMessengerNotificationFactory(@ForApplication Context context) {
+        return new MessengerNotificationFactory(context);
     }
 }

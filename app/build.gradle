@@ -24,9 +24,9 @@ android {
 
     // App version
     def versionMajor = 1
-    def versionMinor = 7
+    def versionMinor = 8
     def versionPatch = 0
-    def versionBuild = 3  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 0  // bump for dogfood builds, public betas, etc.
 
     defaultConfig {
         applicationId "com.worldventures.dreamtrips"
@@ -61,17 +61,23 @@ android {
         buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
         buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
 
+        buildConfigField 'String', 'MESSENGER_API_URL', '"ejabberd-dev-1245504791.us-east-1.elb.amazonaws.com"'
+        buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
+
         manifestPlaceholders = [:]
         manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
 
     }
+
+    flavorDimensions "config", "build"
+
     productFlavors {
         dev {
+            flavorDimension "build"
+
             applicationIdSuffix ".dev"
             minSdkVersion 23 // temporary, until new build gradle merged - to decrease build time
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
-
-            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
             ext.enableCrashlytics = false
 
@@ -79,9 +85,16 @@ android {
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
-            resValue "string", "facebook_app_id", "761062457321921"
+        }
+        external {
+            flavorDimension "build"
+            // don't setup minSdkVersion to inherit the one from the "flavors" dimension
+            ext.enableCrashlytics = true
+            buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
         }
         dtl {
+            flavorDimension "config"
+
             applicationIdSuffix ".dtl"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
 
@@ -96,6 +109,8 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         stage {
+            flavorDimension "config"
+
             applicationIdSuffix ".stage"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"
 
@@ -109,7 +124,26 @@ android {
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             resValue "string", "facebook_app_id", "761062457321921"
         }
+        messenger {
+            flavorDimension "config"
+
+            applicationId "com.worldventures.dreamtrips.messenger"
+            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-messenger" + "-${versionBuild}"
+
+            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
+
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
+
+            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
+
+            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"d1ada40641214b4e9728a832c2d78d5c"'
+            resValue "string", "facebook_app_id", "761062457321921"
+
+            //buildConfigField 'String', 'MESSENGER_API_URL', '"support2.sonrisa.hu"' // tmp test server
+        }
         perf {
+            flavorDimension "config"
             // the same as stage except API endpoint
             applicationIdSuffix ".perf"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-perf" + "-${versionBuild}"
@@ -125,6 +159,8 @@ android {
             resValue "string", "facebook_app_id", "761062457321921"
         }
         prod {
+            flavorDimension "config"
+
             manifestPlaceholders.put 'surveyApiToken', "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"
 
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
@@ -155,6 +191,7 @@ android {
     }
     buildTypes {
         debug {
+            debuggable true
             signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
         }
@@ -230,15 +267,16 @@ dependencies {
         transitive = true;
     }
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
-    compile 'io.reactivex:rxjava:1.0.15'
-    compile 'io.reactivex:rxandroid:1.0.1'
     compile 'com.github.techery:job-executor:0.1.1'
     compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'
-    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
-    compile 'com.trello:rxlifecycle:0.3.0'
-    compile 'com.trello:rxlifecycle-components:0.3.0'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
+    compile 'com.trello:rxlifecycle:0.4.0'
+    compile 'com.trello:rxlifecycle-components:0.4.0'
+    compile 'io.reactivex:rxjava-debug:1.0.3'
     // Ui
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile 'com.android.support:design:23.1.1'
@@ -260,7 +298,7 @@ dependencies {
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
     compile 'me.relex:circleindicator:1.1.5@aar'
     compile 'com.ms-square:expandableTextView:0.1.4'
-    compile 'com.github.daimajia:AndroidSwipeLayout:f66ac6942b066c46a6f2a3db951f3e99740160e7'
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
     compile 'mbanje.kurt:fabbutton:1.2.1'
     compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
@@ -279,16 +317,39 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-annotations:23.1.1'
     compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.jakewharton.timber:timber:4.1.0'
+    compile 'com.jakewharton.timber:timber:4.0.1'
     compile 'com.innahema:collections-query:0.2.9'
     compile 'net.danlew:android.joda:2.9.0'
     compile 'com.badoo.mobile:android-weak-handler:1.1'
     compile 'frankiesardo:icepick:3.1.0'
     apt 'frankiesardo:icepick-processor:3.1.0'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+
+    externalCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+    devCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     compile 'com.github.pwittchen:networkevents:2.1.2'
-    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.0.6'
+    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
+
+    // Messenger
+    compile 'com.github.almozavr.flow:flow:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+    compile 'com.github.almozavr.flow:flow-path:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+    compile 'com.hannesdorfmann.mosby:mvp:2.0.0'
+    compile 'com.hannesdorfmann.mosby:mvp-common:2.0.0'
+    compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
+
+    compile 'frankiesardo:icepick:3.1.0'
+    provided 'frankiesardo:icepick-processor:3.1.0'
+
+    compile "com.raizlabs.android:DBFlow-Core:2.2.1"
+    compile "com.raizlabs.android:DBFlow:2.2.1"
+    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+
+    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
+    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
+
+    compile 'com.apptentive:apptentive-android:2.0.1'
+
+    // Testing
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'

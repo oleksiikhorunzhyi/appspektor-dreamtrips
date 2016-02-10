@@ -2,6 +2,10 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.messenger.di.MessengerInitializerModule;
+import com.messenger.initializer.MessengerInitializer;
+import com.messenger.initializer.PresenceListenerInitializer;
+import com.messenger.initializer.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
@@ -11,6 +15,7 @@ import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
+import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 
 import dagger.Module;
@@ -25,9 +30,20 @@ import dagger.Provides;
                 FrescoInitializer.class,
                 SoftInputInitializer.class,
                 BadgeCountObserverInitializer.class,
-                JodaTimeInitializer.class
+                JodaTimeInitializer.class,
+                //
+                StorageInitializer.class,
+                //
+                MessengerInitializer.class,
+                //
+                PresenceListenerInitializer.class
+
         },
-        library = true, complete = false)
+        includes = {
+                MessengerInitializerModule.class
+        },
+        library = true, complete = false
+)
 public class InitializerModule {
 
     @Provides(type = Provides.Type.SET)
@@ -68,6 +84,11 @@ public class InitializerModule {
     }
 
     @Provides(type = Provides.Type.SET)
+    public AppInitializer provideRxLogInitializer() {
+        return new RxJavaLoggingInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
     public AppInitializer provideFabricInitializer() {
         return new FabricInitializer();
     }
@@ -81,4 +102,5 @@ public class InitializerModule {
     public AppInitializer provideBadgeCountObserverInitializer() {
         return new BadgeCountObserverInitializer();
     }
+
 }

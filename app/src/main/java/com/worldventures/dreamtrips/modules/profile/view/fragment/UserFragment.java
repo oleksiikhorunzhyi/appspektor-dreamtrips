@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import butterknife.ButterKnife;
 public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
 
+    private MenuItem chatActionItem;
     @Inject
     protected DrawableUtil drawableUtil;
 
@@ -44,6 +46,30 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         super.afterCreateView(rootView);
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+
+        profileToolbar.inflateMenu(R.menu.user_profile_fragment);
+        chatActionItem = profileToolbar.getMenu().findItem(R.id.action_chat);
+        chatActionItem.setOnMenuItemClickListener(item -> {
+            getPresenter().onStartChatClicked();
+            return true;
+        });
+        showChatButtonForFriend(getPresenter().getUser());
+    }
+
+    @Override
+    public void setUser(User user) {
+        super.setUser(user);
+        showChatButtonForFriend(user);
+    }
+
+    @Override
+    public void notifyUserChanged() {
+        super.notifyUserChanged();
+        showChatButtonForFriend(getPresenter().getUser());
+    }
+
+    public void showChatButtonForFriend(User user) {
+        chatActionItem.setVisible(user.getRelationship() == User.Relationship.FRIEND);
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
@@ -63,8 +89,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         ImageView userPhoto = ButterKnife.findById(feedView, R.id.user_photo);
         if (userPhoto != null) {
             userPhoto.setDrawingCacheEnabled(true);
-            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user,
-                    drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
+            new FriendActionDialogDelegate(getActivity(), getEventBus())
+                    .showFriendDialogSkipChat
+                            (user, drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
         }
     }
 

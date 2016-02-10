@@ -8,6 +8,7 @@ import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -174,6 +175,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
+            MessengerConnector.getInstance().connect();
         } else {
             router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

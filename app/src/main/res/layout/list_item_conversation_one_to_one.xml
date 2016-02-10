@@ -1,0 +1,37 @@
+<com.daimajia.swipe.SwipeLayout
+    android:id="@+id/swipe"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/list_item_conversation_swappable_action_buttons"/>
+
+    <LinearLayout android:id="@+id/conversation_item_view"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:paddingBottom="@dimen/new_chat_list_item_vertical_padding"
+                  android:paddingLeft="@dimen/new_chat_list_item_horizontal_padding"
+                  android:paddingRight="@dimen/new_chat_list_item_horizontal_padding"
+                  android:paddingTop="@dimen/new_chat_list_item_vertical_padding"
+        >
+
+        <com.messenger.ui.widget.AvatarView
+            android:id="@+id/conversation_avatar_view"
+            style="@style/SingleChatBigAvatarView"
+            android:layout_centerVertical="true"
+            app:placeholderImage="@drawable/noavatar_big"
+            app:roundAsCircle="true"
+            />
+
+        <include
+            layout="@layout/list_item_conversation_common"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+</com.daimajia.swipe.SwipeLayout>

@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import timber.log.Timber;
 
@@ -87,7 +86,7 @@ class FragmentCompass {
         } else {
             String clazzName = route.getClazzName();
             //
-            BaseFragment fragment = (BaseFragment) Fragment.instantiate(activity, clazzName);
+            Fragment fragment = Fragment.instantiate(activity, clazzName);
             setArgsToFragment(fragment, bundle);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             //
@@ -117,7 +116,25 @@ class FragmentCompass {
         this.backStackEnabled = enabled;
     }
 
-    private void setArgsToFragment(BaseFragment fragment, Bundle bundle) {
+    @Deprecated
+    public void disableBackStack() {
+        backStackEnabled = false;
+    }
+
+    @Deprecated
+    public void enableBackStack() {
+        backStackEnabled = true;
+    }
+
+    protected void clearBackStack() {
+        try {
+            fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } catch (IllegalStateException e) {
+            Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
+        }
+    }
+
+    private void setArgsToFragment(Fragment fragment, Bundle bundle) {
         fragment.setArguments(bundle);
     }
 
@@ -125,8 +142,8 @@ class FragmentCompass {
         return activity != null && !activity.isFinishing();
     }
 
-    public BaseFragment getCurrentFragment() {
-        return (BaseFragment) activity.getSupportFragmentManager().findFragmentById(containerId);
+    public Fragment getCurrentFragment() {
+        return activity.getSupportFragmentManager().findFragmentById(containerId);
     }
 
     public boolean empty() {

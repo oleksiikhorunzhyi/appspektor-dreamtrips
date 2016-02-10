@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/list_item_chat_date_entry"/>
+
+    <RelativeLayout
+        android:id="@+id/chat_message_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/ChatMessageContainerStyle"
+        >
+        <com.facebook.drawee.view.SimpleDraweeView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/chat_item_avatar"
+            app:placeholderImage="@drawable/noavatar_small"
+            app:roundAsCircle="true"
+            android:layout_below="@+id/chat_username"
+            style="@style/ChatAvatarImageView"/>
+
+        <TextView
+            android:id="@+id/chat_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
+            android:textColor="@color/chat_color_message"
+            android:layout_toRightOf="@id/chat_item_avatar"
+            android:layout_below="@+id/chat_username"
+            android:textIsSelectable="true"
+            />
+
+        <TextView
+            android:id="@+id/chat_username"
+            android:layout_alignLeft="@id/chat_message"
+            style="@style/ChatUsernameTextView"/>
+    </RelativeLayout>
+</LinearLayout>

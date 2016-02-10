@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
+
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import techery.io.library.JobCacheWiper;
 import techery.io.library.JobExecutor;

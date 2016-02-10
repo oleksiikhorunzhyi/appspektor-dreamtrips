@@ -188,7 +188,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
         else {
             messageEditText.clearFocus();
-            photoPickerLayoutDelegate.showPicker();
+            // put delay to prevent wrong resizing of photo picker panel
+            postDelayed(() -> photoPickerLayoutDelegate.showPicker(), 400);
         }
     }
 

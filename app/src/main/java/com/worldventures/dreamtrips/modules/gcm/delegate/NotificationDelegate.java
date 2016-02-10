@@ -6,20 +6,17 @@ import android.content.Context;
 
 import com.messenger.notification.MessengerNotificationFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
+import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 
-import java.sql.Time;
 import java.util.Random;
 
 import de.greenrobot.event.EventBus;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class NotificationDelegate {
 
@@ -63,7 +60,7 @@ public class NotificationDelegate {
         notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, 0, notification);
     }
 
-    public void notifyNewImageMessageReceived(NewMessagePushMessage message) {
+    public void notifyNewImageMessageReceived(NewImagePushMessage message) {
         notificationFactoryHolder.getMessengerNotificationFactory()
                 .createNewImageMessage(message)
                 .subscribeOn(Schedulers.io())

@@ -13,12 +13,14 @@ import android.text.TextUtils;
 
 import com.messenger.ui.activity.MessengerActivity;
 import com.squareup.picasso.Picasso;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
+import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 
+import java.io.IOException;
+
 import rx.Observable;
-import timber.log.Timber;
 
 public class MessengerNotificationFactory extends NotificationFactory {
 
@@ -28,36 +30,37 @@ public class MessengerNotificationFactory extends NotificationFactory {
         super(context);
     }
 
+    public Observable<Notification> createNewImageMessage(NewImagePushMessage data) {
+        return createNewImageMessageNotification(
+                data.conversationId, data.unreadConversationsCount, createNewMessageImageText(data),
+                data.getImageUrl()
+        ).map(NotificationCompat.Builder::build);
+    }
+
     @NonNull
-    private String createNewMessageText(NewMessagePushMessage data) {
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder
-                .append(TextUtils.join(" ", data.alertWrapper.alert.locArgs.subList(0, 2))) // user
-                .append(": ")
-                .append(data.alertWrapper.alert.locArgs.get(2)); // message text
-        return messageBuilder.toString();
+    private String createNewMessageImageText(NewMessagePushMessage data) {
+        return String.format("%s %s",
+                TextUtils.join(" ", data.alertWrapper.alert.locArgs.subList(0, 2)),
+                context.getString(R.string.sent_photo));
     }
 
     public Notification createNewMessage(NewMessagePushMessage data) {
-        NotificationCompat.Builder notification = createNewMessageNotification(
-                data.conversationId, data.unreadConversationsCount, createNewMessageText(data)
-        );
-        return notification.build();
+        return createNewMessageNotification(
+                data.conversationId, data.unreadConversationsCount, createNewMessageText(data)).build();
     }
 
-    public Observable<Notification> createNewImageMessage(NewMessagePushMessage data) {
-        return createNewImageMessageNotification(
-                data.conversationId, data.unreadConversationsCount, createNewMessageText(data),
-                "http://www.alleycat.org/view.image?Id=2320"
-                //"http://cdn.playbuzz.com/cdn/0079c830-3406-4c05-a5c1-bc43e8f01479/7dd84d70-768b-492b-88f7-a6c70f2db2e9.jpg"
-        ).map(builder -> builder.build());
+    @NonNull
+    private String createNewMessageText(NewMessagePushMessage data) {
+        return String.format("%s: %s",
+                TextUtils.join(" ", data.alertWrapper.alert.locArgs.subList(0, 2)),
+                data.alertWrapper.alert.locArgs.get(2));
     }
 
     /**
      * Shows a push notification with ability to open conversation
      *
      * @param unreadConversations
-     * @param message actual message that will be shown in notification
+     * @param message             actual message that will be shown in notification
      */
     private NotificationCompat.Builder createNewMessageNotification(String conversationId, int unreadConversations, String message) {
         PendingIntent intent = createMessengerIntent(conversationId, false);
@@ -71,25 +74,16 @@ public class MessengerNotificationFactory extends NotificationFactory {
         PendingIntent intent = createMessengerIntent(conversationId, false);
         return Observable.<NotificationCompat.Builder>create((subscriber) -> {
             try {
-                Timber.d("Loading bitmap on %s", Thread.currentThread().getName());
-                // resize in case server sends too big pic, aspect ratio is 16:9
-                int width = context.getResources().getDisplayMetrics().widthPixels;
-                int height = width * 9 / 16;
-                Bitmap imagePreview = Picasso.with(context).load(Uri.parse(url))
-                        .resize(width, height)
-                        .centerCrop()
-                        .onlyScaleDown()
-                        .get();
-                NotificationCompat.BigPictureStyle s = new NotificationCompat.BigPictureStyle()
+                NotificationCompat.BigPictureStyle pictureStyle = new NotificationCompat.BigPictureStyle()
                         .setSummaryText(message)
-                        .bigPicture(imagePreview);
+                        .bigPicture(provideResizedBitmap(url));
 
                 NotificationCompat.Builder notification = super.createNotification()
                         .setContentIntent(intent)
-                        .setStyle(s)
+                        .setStyle(pictureStyle)
                         .setContentText(message)
                         .setNumber(unreadConversations);
-                Timber.d("Loading bitmap FINISHED on %s", Thread.currentThread().getName());
+
                 if (!subscriber.isUnsubscribed()) {
                     subscriber.onNext(notification);
                 }
@@ -97,6 +91,16 @@ public class MessengerNotificationFactory extends NotificationFactory {
                 subscriber.onError(e);
             }
         });
+    }
+
+    private Bitmap provideResizedBitmap(String url) throws IOException{
+        int width = context.getResources().getDisplayMetrics().widthPixels;
+        int height = width * 9 / 16;
+        return Picasso.with(context).load(Uri.parse(url))
+                .resize(width, height)
+                .centerCrop()
+                .onlyScaleDown()
+                .get();
     }
 
     private PendingIntent createMessengerIntent(String conversationId, boolean forAction) {

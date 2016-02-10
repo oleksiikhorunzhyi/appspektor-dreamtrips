@@ -6,6 +6,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
@@ -47,8 +48,8 @@ public class PushListenerService extends GcmListenerService {
             case NEW_MESSAGE:
                 delegate.notifyNewMessageReceived(parser.parseMessage(data, NewMessagePushMessage.class));
                 break;
-            case NEW_IMAGE_MESSAGE:
-                delegate.notifyNewImageMessageReceived(parser.parseMessage(data, NewMessagePushMessage.class));
+            case NEW_IMG_MESSAGE:
+                delegate.notifyNewImageMessageReceived(parser.parseMessage(data, NewImagePushMessage.class));
                 break;
             case BADGE_UPDATE:
                 break;

@@ -571,9 +571,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         attachmentDAO.getAttachmentByMessageId(messageId)
                 .first()
                 .subscribe(attachment -> {
-                    if (attachment != null && attachment.getUploadTaskId() == 0)
-                        retryUploadAttachment(messageId);
-                    else retrySendTextMessage(messageId);
+                    if (attachment != null) {
+                        if (attachment.getUploadTaskId() != 0) retryUploadAttachment(messageId);
+                        else retrySendAttachment(attachment);
+                    } else retrySendTextMessage(messageId);
                 });
     }
 
@@ -700,6 +701,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .prepareMessageWithAttachment(user.getId(), conversationId, filePath)
                 .subscribe();
 
+    }
+
+    private void retrySendAttachment(DataAttachment dataAttachment) {
+        onAttachmentUploaded(dataAttachment);
     }
 
     private void retryUploadAttachment(String messageId) {

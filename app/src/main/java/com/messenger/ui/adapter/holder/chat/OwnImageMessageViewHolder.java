@@ -3,6 +3,7 @@ package com.messenger.ui.adapter.holder.chat;
 import android.graphics.drawable.Animatable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ViewSwitcher;
 
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
@@ -12,7 +13,16 @@ import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
 import com.messenger.ui.adapter.holder.chat.MessageHolder;
 import com.worldventures.dreamtrips.R;
 
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements MessageHolder.OwnMessageHolder {
+
+    @InjectView(R.id.iv_message_error)
+    View messageError;
+
+    @InjectView(R.id.view_switcher)
+    ViewSwitcher viewSwitcher;
 
     private MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSendListener;
 
@@ -40,10 +50,10 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
         int backgroundResource;
         if (isPreviousMessageFromTheSameUser) {
             itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = isSelected? R.drawable.dark_blue_bubble_image_post: R.drawable.blue_bubble_image_post;
+            backgroundResource = isSelected ? R.drawable.dark_blue_bubble_image_post : R.drawable.blue_bubble_image_post;
         } else {
             itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = isSelected? R.drawable.dark_blue_bubble_comics_image_post: R.drawable.blue_bubble_comics_image_post;
+            backgroundResource = isSelected ? R.drawable.dark_blue_bubble_comics_image_post : R.drawable.blue_bubble_comics_image_post;
         }
         imagePostView.setBackgroundResource(backgroundResource);
     }
@@ -55,7 +65,23 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
             applyLoadingStatusUi();
             imagePostView.setAlpha(ALPHA_IMAGE_POST_SENDING);
         }
+        boolean visible = message.getStatus() == MessageStatus.ERROR;
+        int viewVisible = visible ? View.VISIBLE : View.GONE;
+        if (viewVisible != viewSwitcher.getVisibility()) {
+            viewSwitcher.setVisibility(viewVisible);
+        }
+        if (visible && viewSwitcher.getCurrentView().getId() == R.id.progress_bar) {
+            viewSwitcher.showPrevious();
+        }
         chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
+    }
+
+    @OnClick(R.id.iv_message_error)
+    void onMessageErrorClicked() {
+        if (onRepeatMessageSendListener != null) {
+            onRepeatMessageSendListener.onRepeatMessageSend(message.getId());
+            viewSwitcher.showNext();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

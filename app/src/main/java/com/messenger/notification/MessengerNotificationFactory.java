@@ -4,13 +4,23 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.messenger.ui.activity.MessengerActivity;
+import com.squareup.picasso.Picasso;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
+import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
+
+import java.io.IOException;
+
+import rx.Observable;
 
 public class MessengerNotificationFactory extends NotificationFactory {
 
@@ -20,24 +30,37 @@ public class MessengerNotificationFactory extends NotificationFactory {
         super(context);
     }
 
-    public Notification createNewMessage(NewMessagePushMessage data) {
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder
-                .append(TextUtils.join(" ", data.alertWrapper.alert.locArgs.subList(0, 2))) // user
-                .append(": ")
-                .append(data.alertWrapper.alert.locArgs.get(2)); // message text
+    public Observable<Notification> createNewImageMessage(NewImagePushMessage data) {
+        return createNewImageMessageNotification(
+                data.conversationId, data.unreadConversationsCount, createNewMessageImageText(data),
+                data.getImageUrl()
+        ).map(NotificationCompat.Builder::build);
+    }
 
-        NotificationCompat.Builder notification = createNewMessageNotification(
-                data.conversationId, data.unreadConversationsCount, messageBuilder.toString()
-        );
-        return notification.build();
+    @NonNull
+    private String createNewMessageImageText(NewMessagePushMessage data) {
+        return String.format("%s %s",
+                TextUtils.join(" ", data.alertWrapper.alert.locArgs.subList(0, 2)),
+                context.getString(R.string.sent_photo));
+    }
+
+    public Notification createNewMessage(NewMessagePushMessage data) {
+        return createNewMessageNotification(
+                data.conversationId, data.unreadConversationsCount, createNewMessageText(data)).build();
+    }
+
+    @NonNull
+    private String createNewMessageText(NewMessagePushMessage data) {
+        return String.format("%s: %s",
+                TextUtils.join(" ", data.alertWrapper.alert.locArgs.subList(0, 2)),
+                data.alertWrapper.alert.locArgs.get(2));
     }
 
     /**
      * Shows a push notification with ability to open conversation
      *
      * @param unreadConversations
-     * @param message actual message that will be shown in notification
+     * @param message             actual message that will be shown in notification
      */
     private NotificationCompat.Builder createNewMessageNotification(String conversationId, int unreadConversations, String message) {
         PendingIntent intent = createMessengerIntent(conversationId, false);
@@ -45,6 +68,39 @@ public class MessengerNotificationFactory extends NotificationFactory {
                 .setContentIntent(intent)
                 .setContentText(message)
                 .setNumber(unreadConversations);
+    }
+
+    private Observable<NotificationCompat.Builder> createNewImageMessageNotification(String conversationId, int unreadConversations, String message, String url) {
+        PendingIntent intent = createMessengerIntent(conversationId, false);
+        return Observable.<NotificationCompat.Builder>create((subscriber) -> {
+            try {
+                NotificationCompat.BigPictureStyle pictureStyle = new NotificationCompat.BigPictureStyle()
+                        .setSummaryText(message)
+                        .bigPicture(provideResizedBitmap(url));
+
+                NotificationCompat.Builder notification = super.createNotification()
+                        .setContentIntent(intent)
+                        .setStyle(pictureStyle)
+                        .setContentText(message)
+                        .setNumber(unreadConversations);
+
+                if (!subscriber.isUnsubscribed()) {
+                    subscriber.onNext(notification);
+                }
+            } catch (Throwable e) {
+                subscriber.onError(e);
+            }
+        });
+    }
+
+    private Bitmap provideResizedBitmap(String url) throws IOException{
+        int width = context.getResources().getDisplayMetrics().widthPixels;
+        int height = width * 9 / 16;
+        return Picasso.with(context).load(Uri.parse(url))
+                .resize(width, height)
+                .centerCrop()
+                .onlyScaleDown()
+                .get();
     }
 
     private PendingIntent createMessengerIntent(String conversationId, boolean forAction) {

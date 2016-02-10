@@ -66,7 +66,6 @@ class BaseDAO {
             adapter.bindToContentValues(values, t);
             FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase()
                     .insertWithOnConflict(adapter.getTableName(), null, values, ConflictAction.getSQLiteDatabaseAlgorithmInt(adapter.getInsertOnConflictAction()));
-            Timber.d("Insert %s : " + t, adapter.getTableName());
             values.clear();
         }
         contentResolver.notifyChange(uri, null);

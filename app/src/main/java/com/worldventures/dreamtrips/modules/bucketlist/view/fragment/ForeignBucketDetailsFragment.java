@@ -19,6 +19,5 @@ public class ForeignBucketDetailsFragment extends BucketDetailsFragment<ForeignB
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         markAsDone.setVisibility(View.GONE);
-        edit.setVisibility(View.GONE);
     }
 }

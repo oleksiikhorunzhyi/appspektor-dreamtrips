@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.fragment;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,10 +10,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -39,7 +36,6 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
@@ -48,11 +44,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.layout_bucket_item_details)
@@ -99,16 +92,12 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     View diningDivider;
     @InjectView(R.id.contentView)
     ViewGroup contentView;
-    @InjectView(R.id.edit)
-    ImageView edit;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
 
     @Inject
     @ForActivity
     Provider<Injector> injector;
-
-    WeakHandler handler;
 
     protected ProgressDialogFragment progressDialog;
 
@@ -119,7 +108,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         setForeignIntentAction();
 
         progressDialog = ProgressDialogFragment.create();
-        handler = new WeakHandler();
     }
 
     @Override
@@ -147,20 +135,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     public void onPause() {
         super.onPause();
         OrientationUtil.unlockOrientation(getActivity());
-    }
-
-    @OnClick(R.id.edit)
-    void onEditClicked() {
-        edit.setEnabled(false);
-        FeedItemMenuBuilder.create(getActivity(), edit, R.menu.menu_feed_entity_edit)
-                .onEdit(() -> {
-                    if (isVisibleOnScreen()) getPresenter().onEdit();
-                })
-                .onDelete(() -> {
-                    if (isVisibleOnScreen()) showDeletionDialog();
-                })
-                .show();
-        handler.postDelayed(() -> edit.setEnabled(true), 500);
     }
 
     @Override
@@ -324,19 +298,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         return null;
     }
 
-    public void showDeletionDialog() {
-        Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
-                .setTitleText(getResources().getString(R.string.photo_delete))
-                .setContentText(getResources().getString(R.string.photo_delete_caption))
-                .setConfirmText(getResources().getString(R.string.post_delete_confirm))
-                .setConfirmClickListener(sDialog -> {
-                    sDialog.dismissWithAnimation();
-                    getPresenter().onDelete();
-                });
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-    }
-
     @Override
     public void showProgressDialog() {
         progressDialog.show(getFragmentManager());
@@ -345,33 +306,5 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @Override
     public void dismissProgressDialog() {
         progressDialog.dismiss();
-    }
-
-    @Override
-    public void showEdit(BucketBundle bucketBundle) {
-        int containerId = R.id.container_details_floating;
-        router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forRemoval()
-                .containerId(containerId)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .build());
-        if (isTabletLandscape()) {
-            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
-                    .backStackEnabled(true)
-                    .containerId(containerId)
-                    .fragmentManager(getActivity().getSupportFragmentManager())
-                    .data(bucketBundle)
-                    .build());
-            showContainer(containerId);
-        } else {
-            bucketBundle.setLock(true);
-            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
-                    .data(bucketBundle)
-                    .build());
-        }
-    }
-
-    private void showContainer(int containerId) {
-        View container = ButterKnife.findById(getActivity(), containerId);
-        if (container != null) container.setVisibility(View.VISIBLE);
     }
 }

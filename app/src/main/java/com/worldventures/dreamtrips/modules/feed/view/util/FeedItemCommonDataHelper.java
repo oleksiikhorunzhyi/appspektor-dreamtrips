@@ -4,24 +4,19 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Optional;
 import timber.log.Timber;
 
 public class FeedItemCommonDataHelper {
@@ -36,9 +31,6 @@ public class FeedItemCommonDataHelper {
     TextView location;
     @InjectView(R.id.feed_header_date)
     TextView date;
-
-    @InjectView(R.id.edit_feed_item)
-    ImageView editFeedItem;
 
     public FeedItemCommonDataHelper(Context context) {
         this.context = context;
@@ -68,20 +60,8 @@ public class FeedItemCommonDataHelper {
 
             date.setText(DateTimeUtils.convertDateToString(feedItem.getCreatedAt(),
                     DateTimeUtils.FEED_DATE_FORMAT));
-
-            boolean isCurrentUser = entity.getOwner() != null && entity.getOwner().getId() == accountId;
-            boolean isEditableItem = feedItem.getType() == FeedEntityHolder.Type.POST
-                    || feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM
-                    || feedItem.getType() == FeedEntityHolder.Type.PHOTO;
-            editFeedItem.setVisibility(isCurrentUser && isEditableItem ? View.VISIBLE : View.GONE);
         } catch (Exception e) {
             Timber.e(e, "Feed header error");
-        }
-    }
-
-    public void setOnEditClickListener(View.OnClickListener onEditClickListener) {
-        if (editFeedItem != null) {
-            editFeedItem.setOnClickListener(onEditClickListener);
         }
     }
 }

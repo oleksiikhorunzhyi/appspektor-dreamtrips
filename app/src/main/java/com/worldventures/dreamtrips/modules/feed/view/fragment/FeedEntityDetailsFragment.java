@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
 
 @Layout(R.layout.fragment_comments_with_entity_details)
@@ -31,7 +32,7 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
 
     @Override
     protected void registerCells() {
-        adapter.registerCell(BucketFeedItem.class, FeedEntityDetailsCell.class);
+        adapter.registerCell(BucketFeedItem.class, BucketFeedEntityDetailsCell.class);
         adapter.registerCell(TripFeedItem.class, FeedEntityDetailsCell.class);
     }
 

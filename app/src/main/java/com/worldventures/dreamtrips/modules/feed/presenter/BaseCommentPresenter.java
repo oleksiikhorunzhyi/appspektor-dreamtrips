@@ -2,7 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -54,6 +55,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     @Inject
     FeedEntityManager entityManager;
+    @Inject
+    BucketItemManager bucketItemManager;
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
@@ -76,7 +79,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         entityManager.setRequestingPresenter(this);
     }
 
-    /** Request comments and likes only once per view loading if suitable count > 0 */
+    /**
+     * Request comments and likes only once per view loading if suitable count > 0
+     */
     protected void checkCommentsAndLikesToLoad() {
         if (loadInitiated) return;
         //
@@ -179,13 +184,14 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public void onEvent(DeleteBucketEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeleteBucketItemCommand(event.getEntity().getUid()),
-                    aVoid -> itemDeleted(event.getEntity()));
+            bucketItemManager.deleteBucketItem(event.getEntity(), bucketItemManager.getType(event.getEntity().getType()),
+                    jsonObject -> itemDeleted(event.getEntity()), this::handleError);
 
     }
 
     private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
+        eventBus.post(new BucketItemUpdatedEvent((BucketItem) model));
         view.back();
     }
 

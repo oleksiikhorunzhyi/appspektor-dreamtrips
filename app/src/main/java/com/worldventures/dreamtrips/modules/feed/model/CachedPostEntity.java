@@ -8,8 +8,6 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 public class CachedPostEntity implements Parcelable {
 
     private String text;
-    private String filePath;
-
     private UploadTask uploadTask;
 
     public CachedPostEntity() {
@@ -17,7 +15,6 @@ public class CachedPostEntity implements Parcelable {
 
     protected CachedPostEntity(Parcel in) {
         text = in.readString();
-        filePath = in.readString();
         uploadTask = in.readParcelable(UploadTask.class.getClassLoader());
     }
 
@@ -32,14 +29,6 @@ public class CachedPostEntity implements Parcelable {
             return new CachedPostEntity[size];
         }
     };
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
 
     public String getText() {
         return text;
@@ -65,7 +54,6 @@ public class CachedPostEntity implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(text);
-        dest.writeString(filePath);
         dest.writeParcelable(uploadTask, flags);
     }
 }

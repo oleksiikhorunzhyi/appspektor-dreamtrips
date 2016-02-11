@@ -46,7 +46,7 @@ public class PhotoUploadingManager {
         injector.inject(this);
     }
 
-    public void upload(UploadTask uploadTask, String purpose) {
+    public long upload(UploadTask uploadTask, String purpose) {
         if (uploadTask.getId() <= 0) {
             uploadTask.setId(System.currentTimeMillis());
         }
@@ -78,6 +78,7 @@ public class PhotoUploadingManager {
             db.saveUploadTask(uploadTask);
             bus.onNext(uploadTask);
         });
+        return uploadTask.getId();
     }
 
     public List<UploadTask> getUploadTasksForLinkedItemId(String purpose, String linkedId) {

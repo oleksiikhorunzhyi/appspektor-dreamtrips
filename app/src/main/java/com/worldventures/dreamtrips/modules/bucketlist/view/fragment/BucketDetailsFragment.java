@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -33,7 +34,6 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -49,7 +49,7 @@ import butterknife.OnCheckedChanged;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.layout_bucket_item_details)
-public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragmentWithArgs<T, BucketBundle>
+public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends RxBaseFragmentWithArgs<T, BucketBundle>
         implements BucketItemDetailsPresenter.View {
 
     @InjectView(R.id.textViewName)

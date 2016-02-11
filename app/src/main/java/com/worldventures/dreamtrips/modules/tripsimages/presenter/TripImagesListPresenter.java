@@ -7,9 +7,11 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.adapter.RoboSpiceAdapterController;
+import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
@@ -109,25 +111,15 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             reload();
         }
 
-        photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE).subscribe(uploadTask -> {
-            if (uploadTask != null) {
-                switch (uploadTask.getStatus()) {
-                    case COMPLETED:
-                        photoUploaded(uploadTask);
-                        break;
-                    case CANCELED:
-                        break;
-                    case STARTED:
-                        int index = photos.indexOf(uploadTask);
-                        if (index >= 0) updateTask(uploadTask);
-                        else addTask(uploadTask);
-                        break;
-                    case FAILED:
-                        photoError(getCurrentTask(uploadTask.getId()));
-                        break;
-                }
-            }
-        });
+        PhotoUploadSubscriber.bind(view,
+                photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE))
+                .onError(uploadTask -> photoError(getCurrentTask(uploadTask.getId())))
+                .onSuccess(this::photoUploaded)
+                .onProgress(uploadTask -> {
+                    int index = photos.indexOf(uploadTask);
+                    if (index >= 0) updateTask(uploadTask);
+                    else addTask(uploadTask);
+                });
     }
 
     @Override
@@ -391,7 +383,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    public interface View extends Presenter.View, AdapterView<IFullScreenObject> {
+    public interface View extends RxView, AdapterView<IFullScreenObject> {
         void startLoading();
 
         void finishLoading();

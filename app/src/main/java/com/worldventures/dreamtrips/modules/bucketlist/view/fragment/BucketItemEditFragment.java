@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
@@ -33,7 +34,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosV
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.Calendar;
@@ -47,7 +47,7 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
+public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
     @Inject

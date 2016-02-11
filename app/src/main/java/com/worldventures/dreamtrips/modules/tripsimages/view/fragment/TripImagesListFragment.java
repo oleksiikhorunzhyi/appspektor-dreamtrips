@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -42,7 +43,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreen
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter>
-        extends BaseFragmentWithArgs<T, TripsImagesBundle>
+        extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
         implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)

@@ -35,11 +35,6 @@ import rx.schedulers.Schedulers;
 public class ConversationsDAO extends BaseDAO {
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
 
-    @Deprecated
-    public ConversationsDAO(Context context) {
-        super(context);
-    }
-
     public ConversationsDAO(Context context, RxContentResolver rxContentResolver) {
         super(context, rxContentResolver);
     }

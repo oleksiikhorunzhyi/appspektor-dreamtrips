@@ -22,11 +22,6 @@ import rx.schedulers.Schedulers;
 
 public class UsersDAO extends BaseDAO {
 
-    @Deprecated
-    public UsersDAO(Context context) {
-        super(context);
-    }
-
     public UsersDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
     }

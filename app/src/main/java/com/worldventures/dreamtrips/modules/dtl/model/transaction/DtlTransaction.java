@@ -10,7 +10,7 @@ import java.util.Date;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlTransaction {
 
-    public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000l;
+    public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000L;
 
     public static final String BILL_TOTAL = "bill_total";
     public static final String LOCATION = "location.ll";
@@ -30,13 +30,6 @@ public class DtlTransaction {
     UploadTask uploadTask;
 
     public DtlTransaction() {
-    }
-
-    public DtlTransaction(long checkinTime, double billTotal, String receiptPhotoUrl, String code) {
-        this.checkinTimestamp = checkinTime;
-        this.billTotal = billTotal;
-        this.receiptPhotoUrl = receiptPhotoUrl;
-        this.merchantToken = code;
     }
 
     public void setTimestamp(long timestamp) {

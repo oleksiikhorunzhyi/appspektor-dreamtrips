@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
+import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -42,8 +42,6 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
     DtlLocationManager dtlLocationManager;
     @Inject
     DtlSearchDelegate dtlSearchDelegate;
-    @Inject
-    SnappyRepository snappyRepository;
     //
     protected DtlMerchantType dtlMerchantType;
 
@@ -130,7 +128,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
     }
 
     private void track(List<DtlMerchant> merchants, String query) {
-        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, merchants.size());
+        if (!TextUtils.isEmpty(query)) TrackingHelper.dtlMerchantSearch(query, merchants.size());
     }
 
     private void onError(Throwable e) {

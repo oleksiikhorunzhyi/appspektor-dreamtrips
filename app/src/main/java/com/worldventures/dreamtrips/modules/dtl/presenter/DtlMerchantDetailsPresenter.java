@@ -15,13 +15,11 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 
 import java.util.Calendar;
 
@@ -39,10 +37,6 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     FeatureManager featureManager;
     @Inject
     LocationDelegate locationDelegate;
-    @Inject
-    DtlLocationManager locationRepository;
-    @Inject
-    DtlFilterDelegate dtlFilterDelegate;
 
     public DtlMerchantDetailsPresenter(String id) {
         super(id);

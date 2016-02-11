@@ -170,8 +170,8 @@ public class UnhandledMessageWatcher {
     //group 4 avas + group name/user names + last name : last message
     private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message, boolean imageMessage) {
         return Observable.zip(
-                participantsDAO.getParticipantsEntities(conversation.getId()),
-                usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()),
+                participantsDAO.getParticipantsEntities(conversation.getId()).first(),
+                usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()).first(),
                 (users, fromUser) -> {
                     String lastName = fromUser.getName();
                     String messageText;

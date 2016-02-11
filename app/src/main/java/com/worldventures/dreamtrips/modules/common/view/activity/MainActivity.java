@@ -226,6 +226,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         // check if current
         boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
         if (theSame) return;
+        //
+        navigationDrawerPresenter.setCurrentComponent(component);
         // check if in stack
         String backStackName = null;
         FragmentManager fm = getSupportFragmentManager();
@@ -246,8 +248,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
                 .backStackEnabled(true)
                 .data(args)
                 .build());
-
-        navigationDrawerPresenter.setCurrentComponent(component);
     }
 
     private void itemReseleted(ComponentDescription route) {

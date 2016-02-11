@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
+import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
@@ -130,7 +131,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
     }
 
     private void track(List<DtlMerchant> merchants, String query) {
-        if (!query.isEmpty()) TrackingHelper.dtlMerchantSearch(query, merchants.size());
+        if (!TextUtils.isEmpty(query)) TrackingHelper.dtlMerchantSearch(query, merchants.size());
     }
 
     private void onError(Throwable e) {

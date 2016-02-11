@@ -100,7 +100,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
             view.disableCheckinButton();
             view.bind(locationDelegate
                             .requestLocationUpdate()
-                            .compose(IoToMainComposer.get())
+                            .compose(new IoToMainComposer<>())
             ).subscribe(this::onLocationObtained, this::onLocationError);
         }
     }
@@ -183,7 +183,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     }
 
     public void routeToMerchantRequested(@Nullable final Intent intent) {
-        view.bind(locationDelegate.getLastKnownLocation().compose(IoToMainComposer.get()))
+        view.bind(locationDelegate.getLastKnownLocation().compose(new IoToMainComposer<>()))
                 .subscribe(location -> {
                     TrackingHelper.dtlMapDestination(location.getLatitude(), location.getLongitude(),
                             merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());

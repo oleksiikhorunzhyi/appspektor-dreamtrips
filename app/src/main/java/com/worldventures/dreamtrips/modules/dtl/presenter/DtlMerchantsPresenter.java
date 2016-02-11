@@ -93,7 +93,7 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
                             .asAndroidLocation()))
                     .flatMap(location -> mapToMerchantList(location, query))
                     .doOnNext(merchants -> track(merchants, query))
-                    .compose(IoToMainComposer.get())
+                    .compose(new IoToMainComposer<>())
             ).subscribe(this::merchantsPrepared, this::onError);
     }
 

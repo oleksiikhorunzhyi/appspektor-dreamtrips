@@ -50,7 +50,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
     public void permissionGranted() {
         view.bind(gpsLocationDelegate.requestLocationUpdate()
-                .compose(IoToMainComposer.get()))
+                .compose(new IoToMainComposer<>()))
                 .subscribe(this::onLocationObtained, this::onLocationError);
     }
 

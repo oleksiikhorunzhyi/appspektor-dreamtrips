@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 
 @Layout(R.layout.adapter_item_entity_details)
-public class FeedEntityDetailsCell extends BaseFeedCell<FeedItem> {
+public class FeedEntityDetailsCell<T extends FeedItem> extends BaseFeedCell<T> {
 
     public FeedEntityDetailsCell(View view) {
         super(view);
@@ -19,6 +19,10 @@ public class FeedEntityDetailsCell extends BaseFeedCell<FeedItem> {
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
         getEventBus().post(new FeedEntityShowEvent(getModelObject()));
+    }
+
+    @Override
+    protected void onMore() {
     }
 
 }

@@ -382,7 +382,7 @@ public class BucketItemManager {
         return null;
     }
 
-    private BucketType getType(String name) {
+    public BucketType getType(String name) {
         return BucketType.valueOf(name.toUpperCase());
     }
 }

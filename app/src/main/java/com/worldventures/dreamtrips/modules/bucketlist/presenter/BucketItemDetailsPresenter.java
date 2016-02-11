@@ -21,32 +21,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         super(bundle);
     }
 
-    public void onEdit() {
-        BucketBundle bundle = new BucketBundle();
-        bundle.setType(type);
-        bundle.setBucketItemUid(bucketItemId);
-
-        view.showEdit(bundle);
-        eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_EDIT));
-    }
-
-    public void onDelete() {
-        eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_DELETE));
-        //
-        view.showProgressDialog();
-        getBucketItemManager().deleteBucketItem(bucketItem, type,
-                jsonObject -> {
-                    view.dismissProgressDialog();
-                    view.done();
-                    eventBus.post(new BucketItemUpdatedEvent(bucketItem));
-                    eventBus.post(new FeedEntityDeletedEvent(bucketItem));
-                },
-                spiceException -> {
-                    BucketItemDetailsPresenter.super.handleError(spiceException);
-                    view.dismissProgressDialog();
-                });
-    }
-
     public void deleteBucketItem(BucketItem bucketItem) {
         view.showProgressDialog();
         getBucketItemManager().deleteBucketItem(bucketItem, type,
@@ -143,7 +117,5 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void showProgressDialog();
 
         void dismissProgressDialog();
-
-        void showEdit(BucketBundle bucketBundle);
     }
 }

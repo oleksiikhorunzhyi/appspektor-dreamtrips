@@ -246,6 +246,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(EditBucketEvent event) {
+        if (!view.isVisibleOnScreen()) return;
+        //
         BucketBundle bundle = new BucketBundle();
         bundle.setType(event.getType());
         bundle.setBucketItemUid(event.getUid());

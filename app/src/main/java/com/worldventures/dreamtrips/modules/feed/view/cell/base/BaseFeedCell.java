@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 
+import android.support.annotation.MenuRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
@@ -11,7 +13,9 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
@@ -22,7 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
+public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
 
     @Inject
     FeedActionPanelViewActionHandler feedActionHandler;
@@ -60,6 +64,9 @@ public class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
         syncUIStateWithModelWasCalled = true;
         //
         actionView.setState(getModelObject(), isForeignItem(getModelObject()));
+        actionView.setOnMoreClickListener(feedItem -> onMore());
+        actionView.setOnDeleteClickListener(feedItem -> onDelete());
+        actionView.setOnEditClickListener(feedItem -> onEdit());
         feedActionHandler.init(actionView, navigationWrapper);
         //
         if (likersPanel != null) {
@@ -82,6 +89,25 @@ public class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
             throw new IllegalStateException("super.syncUIStateWithModel was not called");
         }
     }
+
+    protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
+        actionView.showMoreDialog(menuRes, headerDelete, textDelete);
+    }
+
+    protected void onDelete() {
+        sendAnalyticEvent(TrackingHelper.ATTRIBUTE_DELETE);
+    }
+
+    protected void onEdit() {
+        sendAnalyticEvent(TrackingHelper.ATTRIBUTE_EDIT);
+    }
+
+    private void sendAnalyticEvent(String eventType) {
+        FeedItem feedItem = getModelObject();
+        getEventBus().post(new FeedItemAnalyticEvent(eventType, feedItem.getItem().getUid(), feedItem.getType()));
+    }
+
+    protected abstract void onMore();
 
     @Override
     public void prepareForReuse() {

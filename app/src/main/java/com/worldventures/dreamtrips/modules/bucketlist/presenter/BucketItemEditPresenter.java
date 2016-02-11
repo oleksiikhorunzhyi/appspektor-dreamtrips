@@ -6,6 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -35,6 +36,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     private boolean savingItem = false;
 
+    PhotoUploadSubscriber photoUploadSubscriber;
+
     public BucketItemEditPresenter(BucketBundle bundle) {
         super(bundle);
     }
@@ -43,17 +46,22 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     public void takeView(BucketItemEditPresenterView view) {
         priorityEventBus = 1;
         super.takeView(view);
-        photoUploadingManager.getTaskChangingObservable(UploadPurpose.BUCKET_IMAGE).subscribe(uploadTask -> stateChanged(uploadTask));
 
+
+        photoUploadSubscriber = PhotoUploadSubscriber.bind(view, photoUploadingManager.getTaskChangingObservable(UploadPurpose.BUCKET_IMAGE));
+        photoUploadSubscriber
+                .onError(view::itemChanged)
+                .onSuccess(this::addPhotoToBucketItem)
+                .onProgress(view::addImage)
+                .onCancel(view::deleteImage);
     }
-
 
     @Override
     protected void syncUI() {
         super.syncUI();
         List<UploadTask> tasks = photoUploadingManager.getUploadTasksForLinkedItemId(UploadPurpose.BUCKET_IMAGE, bucketItemId);
-        Queryable.from(tasks).forEachR(task -> stateChanged(task));
-        if (!tasks.isEmpty()) view.addImages(tasks);
+        Queryable.from(tasks).forEachR(photoUploadSubscriber::onNext);
+        view.addImages(tasks);
     }
 
     @Override
@@ -226,20 +234,5 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         photoUploadingManager.cancelUpload(uploadTask);
     }
 
-    protected void stateChanged(UploadTask uploadTask) {
-        switch (uploadTask.getStatus()) {
-            case COMPLETED:
-                addPhotoToBucketItem(uploadTask);
-                break;
-            case CANCELED:
-                view.deleteImage(uploadTask);
-                break;
-            case STARTED:
-                view.addImage(uploadTask);
-                break;
-            case FAILED:
-                view.itemChanged(uploadTask);
-                break;
-        }
-    }
+
 }

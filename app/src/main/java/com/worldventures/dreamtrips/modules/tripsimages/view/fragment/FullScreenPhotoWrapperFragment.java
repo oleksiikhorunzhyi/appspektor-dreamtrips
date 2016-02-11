@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -34,7 +35,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment
-        extends BaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+        extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
         implements TripImagesListPresenter.View {
 
     @InjectView(R.id.pager)
@@ -89,7 +90,7 @@ public class FullScreenPhotoWrapperFragment
         super.onResume();
         toolbar.getBackground().mutate().setAlpha(0);
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,12 +99,12 @@ public class FullScreenPhotoWrapperFragment
     }
 
     protected void setDefaultSocialPagerState(boolean firstLaunch) {
-        SocialViewPagerState state  = db.getSocialViewPagerState();
-        state = state == null ?  new SocialViewPagerState() : state;
+        SocialViewPagerState state = db.getSocialViewPagerState();
+        state = state == null ? new SocialViewPagerState() : state;
 
         boolean isFromNotification = getArgs().getNotificationId() != FullScreenImagesBundle.NO_NOTIFICATION;
 
-        if (isFromNotification){
+        if (isFromNotification) {
             state.setContentWrapperVisible(false);
             state.setTagHolderVisible(true);
         } else if (firstLaunch) {

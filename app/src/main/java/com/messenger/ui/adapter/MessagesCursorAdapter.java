@@ -33,6 +33,7 @@ import com.messenger.ui.adapter.holder.chat.UserTextMessageViewHolder;
 import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.ChatTimestampFormatter;
+import com.messenger.util.MessageVersionHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.worldventures.dreamtrips.R;
 
@@ -129,10 +130,6 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     // Text Messages
     ///////////////////////////////////////////////////////////////////////////
 
-    private void bindTextMessageHolder(TextMessageViewHolder holder, Cursor cursor) {
-        holder.messageTextView.setText(cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT)));
-    }
-
     private void bindOwnTextMessageHolder(OwnTextMessageViewHolder holder, Cursor cursor) {
         bindMessageHolder(holder, cursor);
         bindTextMessageHolder(holder, cursor);
@@ -143,6 +140,15 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         bindMessageHolder(holder, cursor);
         bindTextMessageHolder(holder, cursor);
         bindUserMessageHolder(holder, cursor);
+    }
+
+    private void bindTextMessageHolder(TextMessageViewHolder holder, Cursor cursor) {
+        int version = cursor.getInt(cursor.getColumnIndex(DataMessage$Table.VERSION));
+        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
+
+        if (MessageVersionHelper.isUnsupported(version, attachmentType))
+            holder.showUnsupportMessage();
+        else holder.showMessage();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -205,7 +211,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     public void setNeedMarkUnreadMessages(boolean needMarkUnreadMessages) {
         this.needMarkUnreadMessages = needMarkUnreadMessages;
     }
-    
+
     public void setAvatarClickListener(@Nullable OnAvatarClickListener avatarClickListener) {
         this.avatarClickListener = avatarClickListener;
     }
@@ -222,7 +228,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     // Util and helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    private View inflateRow (ViewGroup parent, int layoutId) {
+    private View inflateRow(ViewGroup parent, int layoutId) {
         return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
     }
 
@@ -281,7 +287,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             if (messageClickListener != null) {
                 messageClickListener.onMessageClick(message);
             }
-            return true;
+            return false;
         }
 
         @Override
@@ -353,13 +359,13 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
                 dateTextView.requestLayout();
             });
             animator.start();
-        } else if (manualTimestampPositionToRemove == position){
+        } else if (manualTimestampPositionToRemove == position) {
             manualTimestampPositionToRemove = -1;
             manualTimestampPosition = -1;
             ValueAnimator animator = ValueAnimator.ofFloat(0, -dateTextView.getMeasuredHeight());
             animator.addUpdateListener(valueAnimator -> {
-                float margin = (Float)valueAnimator.getAnimatedValue();
-                params.bottomMargin = (int)margin;
+                float margin = (Float) valueAnimator.getAnimatedValue();
+                params.bottomMargin = (int) margin;
                 dateTextView.requestLayout();
             });
             animator.addListener(new SimpleAnimatorListener() {

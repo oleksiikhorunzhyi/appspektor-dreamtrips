@@ -3,14 +3,14 @@ package com.messenger.notification;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.entities.DataAttachment;
-import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
@@ -26,6 +26,7 @@ import com.messenger.ui.inappnotifications.MessengerInAppNotificationListener;
 import com.messenger.ui.widget.inappnotification.messanger.InAppMessengerNotificationView;
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewChat;
 import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationViewGroup;
+import com.messenger.util.MessageVersionHelper;
 import com.messenger.util.OpenedConversationTracker;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -113,13 +114,11 @@ public class UnhandledMessageWatcher {
                 .filter(conversation -> TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
                 .first()
                 .flatMap(conversation -> {
-                    DataAttachment attachment = attachmentDAO.getAttachmentByMessageId(message.getId()).toBlocking().first();
-                    boolean imageAttachment = false;
-                    if (attachment != null && AttachmentType.IMAGE.equals(attachment.getType())) {
-                        imageAttachment = true;
-                    }
-                    if (isSingleChat(conversation)) return composeSingleChatNotification(conversation, message, imageAttachment);
-                    else return composeGroupChatNotification(conversation, message, imageAttachment);
+                    String attachmentType = attachmentDAO.getAttachmentByMessageId(message.getId()).toBlocking().first().getType();
+
+                    if (isSingleChat(conversation))
+                        return composeSingleChatNotification(conversation, message, attachmentType);
+                    else return composeGroupChatNotification(conversation, message, attachmentType);
                 })
                 .compose(new IoToMainComposer<>())
                 .filter(data -> {
@@ -158,25 +157,27 @@ public class UnhandledMessageWatcher {
     }
 
     //single ava + sender name + sender text
-    private  Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message, boolean imageMessage) {
+    private Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message, String attachmentType) {
         return usersDAO.getUserById(message.getFromId())
                 .compose(new NonNullFilter<>()).first()
                 .map(user -> {
-                    String messageText = imageMessage ? getImagePostMessage(user) : message.getText();
+                    String messageText = TextUtils.equals(attachmentType, AttachmentType.IMAGE) ?
+                            getImagePostMessage(user) :
+                            getMessageText(message, attachmentType);
                     return new NotificationData(user.getName(), user.getName(), Collections.singletonList(user), messageText, conversation, false);
                 });
     }
 
     //group 4 avas + group name/user names + last name : last message
-    private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message, boolean imageMessage) {
+    private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message, String attachmentType) {
         return Observable.zip(
                 participantsDAO.getParticipantsEntities(conversation.getId()).first(),
                 usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()).first(),
                 (users, fromUser) -> {
                     String lastName = fromUser.getName();
                     String messageText;
-                    if (!imageMessage) {
-                        messageText = lastName + ": " + message.getText();
+                    if (!TextUtils.equals(attachmentType, AttachmentType.IMAGE)) {
+                        messageText = lastName + ": " + getMessageText(message, attachmentType);
                     } else {
                         messageText = getImagePostMessage(fromUser);
                     }
@@ -185,7 +186,14 @@ public class UnhandledMessageWatcher {
                             TextUtils.join(", ", Queryable.from(users).map(DataUser::getName).toList()) :
                             conversation.getSubject();
                     return new NotificationData(groupName, lastName, users, messageText, conversation, true);
-        }).first();
+                }).first();
+    }
+
+    private String getMessageText(DataMessage dataMessage, String attachmentType) {
+        return MessageVersionHelper.isUnsupported(dataMessage.getVersion(), attachmentType) ?
+                Html.fromHtml(currentActivity.getString(R.string.chat_update_proposition)).toString() :
+                dataMessage.getText();
+
     }
 
     private InAppMessengerNotificationView createSingleChatCrouton(Context context, String avaUrl, String title, String text) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
+import com.messenger.util.MessageVersionHelper;
 import com.messenger.util.ParticipantsDaoHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -126,8 +128,7 @@ public class ConversationsCursorAdapter
         holder.setDate(formatLastConversationMessage(new Date(conversation.getLastActiveDate())));
         String userName = cursor.getString(cursor.getColumnIndex(DataUser$Table.USERNAME));
 
-        boolean hasImageAttachment = attachmentType != null && attachmentType.equals(AttachmentType.IMAGE);
-        setLastMessage(holder, message, userName, conversationHelper.isGroup(conversation), hasImageAttachment);
+        setLastMessage(holder, message, userName, ConversationHelper.isGroup(conversation), attachmentType);
 
         // init swipe layout
         // TODO: 1/16/16 wtf ????
@@ -142,18 +143,24 @@ public class ConversationsCursorAdapter
     }
 
     private void setLastMessage(BaseConversationViewHolder holder, DataMessage message, String userName,
-                                boolean isGroupConversation, boolean hasImageAttachment) {
+                                boolean isGroupConversation, String attachmentType) {
+        boolean hasImageAttachment = TextUtils.equals(attachmentType, AttachmentType.IMAGE);
         holder.setLastMessage(hasImageAttachment ?
                 createAttachmentText(message, userName) :
-                createMessageText(message, userName, isGroupConversation));
+                createMessageText(message, userName, attachmentType, isGroupConversation));
     }
 
-    private String createMessageText(DataMessage message, String userName, boolean isGroupConversation) {
+    private String createMessageText(DataMessage message, String userName, String attachmentType,
+                                     boolean isGroupConversation) {
         String messageText = null;
         if (!TextUtils.isEmpty(message.getText())) {
-            messageText = message.getText();
+            if (MessageVersionHelper.isUnsupported(message.getVersion(), attachmentType))
+                messageText = Html.fromHtml(context.getString(R.string.chat_update_proposition)).toString();
+            else messageText = message.getText();
+
             if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
-                messageText = String.format(context.getString(R.string.conversation_list_item_last_message_text_format_you), messageText);
+                messageText = String.format(context.getString(R.string.conversation_list_item_last_message_text_format_you),
+                        messageText);
             } else if (isGroupConversation && !TextUtils.isEmpty(userName)) {
                 messageText = userName + ": " + messageText;
             }
@@ -254,7 +261,7 @@ public class ConversationsCursorAdapter
     }
 
     private void closeCursorIfNeed(Cursor oldCursor) {
-        if (oldCursor instanceof FilterCursorWrapper){
+        if (oldCursor instanceof FilterCursorWrapper) {
             oldCursor = ((FilterCursorWrapper) oldCursor).getWrappedCursor();
         }
 

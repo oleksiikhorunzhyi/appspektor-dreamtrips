@@ -8,33 +8,35 @@
 
     <RelativeLayout
         android:id="@+id/chat_message_container"
+        style="@style/ChatMessageContainerStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/ChatMessageContainerStyle"
         >
+
         <com.facebook.drawee.view.SimpleDraweeView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/chat_item_avatar"
-            app:placeholderImage="@drawable/noavatar_small"
-            app:roundAsCircle="true"
+            style="@style/ChatAvatarImageView"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_below="@+id/chat_username"
-            style="@style/ChatAvatarImageView"/>
+            app:placeholderImage="@drawable/noavatar_small"
+            app:roundAsCircle="true"/>
 
         <TextView
             android:id="@+id/chat_message"
+            style="@style/ChatMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/chat_username"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
-            android:textColor="@color/chat_color_message"
             android:layout_toRightOf="@id/chat_item_avatar"
-            android:layout_below="@+id/chat_username"
+            android:textColor="@color/chat_color_message"
             android:textIsSelectable="true"
             />
 
         <TextView
             android:id="@+id/chat_username"
-            android:layout_alignLeft="@id/chat_message"
-            style="@style/ChatUsernameTextView"/>
+            style="@style/ChatUsernameTextView"
+            android:layout_alignLeft="@id/chat_message"/>
     </RelativeLayout>
 </LinearLayout>

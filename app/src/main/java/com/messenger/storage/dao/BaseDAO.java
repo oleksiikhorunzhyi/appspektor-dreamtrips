@@ -4,10 +4,9 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.text.TextUtils;
 
-import com.messenger.entities.DataUser;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.RxContentResolver;
 import com.messenger.util.RxContentResolver.Query;
@@ -25,22 +24,6 @@ class BaseDAO {
     private final Context context;
     private final ContentResolver contentResolver;
     private RxContentResolver rxContentResolver;
-
-    @Deprecated
-    BaseDAO(Context context) {
-        this.context = context;
-        this.contentResolver = context.getContentResolver();
-
-        this.rxContentResolver = new RxContentResolver(contentResolver,
-                query -> {
-                    StringBuilder builder = new StringBuilder(query.selection);
-                    if (!TextUtils.isEmpty(query.sortOrder)) {
-                        builder.append(" ").append(query.sortOrder);
-                    }
-                    return FlowManager.getDatabaseForTable(DataUser.class).getWritableDatabase()
-                            .rawQuery(builder.toString(), query.selectionArgs);
-                });
-    }
 
     BaseDAO(Context context, RxContentResolver rxContentResolver) {
         this.context = context;
@@ -62,10 +45,13 @@ class BaseDAO {
 
     protected <T extends BaseModel> void bulkInsert(List<T> collection, ModelAdapter<T> adapter, Uri uri) {
         ContentValues values = new ContentValues();
+        SQLiteDatabase db = FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase();
+
         for (T t : collection) {
             adapter.bindToContentValues(values, t);
-            FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase()
-                    .insertWithOnConflict(adapter.getTableName(), null, values, ConflictAction.getSQLiteDatabaseAlgorithmInt(adapter.getInsertOnConflictAction()));
+            db.insertWithOnConflict(adapter.getTableName(), null, values,
+                    ConflictAction.getSQLiteDatabaseAlgorithmInt(adapter.getInsertOnConflictAction()));
+            Timber.d("Insert %s : %s", adapter.getTableName(), t);
             values.clear();
         }
         contentResolver.notifyChange(uri, null);

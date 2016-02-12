@@ -11,7 +11,6 @@ import android.os.Process;
 import java.util.Arrays;
 
 import rx.Observable;
-import rx.Observer;
 
 public class RxContentResolver {
 
@@ -28,12 +27,12 @@ public class RxContentResolver {
 
     public Observable<Cursor> query(Query query, Uri... uriToObserve) {
         final ContentObserver[] contentObserver = {null};
-        return Observable.<Cursor>create(subscriber -> {
-            contentObserver[0] = new ContentObserver(new Handler(thread.getLooper())) {
+        return Observable.<Void>create(subscriber -> {
+                    contentObserver[0] = new ContentObserver(new Handler(thread.getLooper())) {
                         @Override
                         public void onChange(boolean selfChange) {
                             if (!subscriber.isUnsubscribed()) {
-                                tryFetchCursor(query, subscriber);
+                                subscriber.onNext(null);
                             } else {
                                 unsubscribeFromContentUpdates(this);
                             }
@@ -47,31 +46,30 @@ public class RxContentResolver {
                             subscribeToContentUpdates(uri, contentObserver[0]);
                         }
                     }
-                    tryFetchCursor(query, subscriber);
+                    subscriber.onNext(null);
                 }
-        ).doOnUnsubscribe(() -> {
-            if (contentObserver[0] != null) unsubscribeFromContentUpdates(contentObserver[0]);
-        }).compose(new CursorSweeper());
+        )
+                .doOnUnsubscribe(() -> {
+                    if (contentObserver[0] != null)
+                        unsubscribeFromContentUpdates(contentObserver[0]);
+                })
+                .onBackpressureLatest()
+                .flatMap(aVoid -> fetchCursor(query))
+                .compose(new CursorSweeper());
     }
 
-    private void tryFetchCursor(Query query, Observer<? super Cursor> subscriber) {
-        try {
-            subscriber.onNext(fetchCursor(query));
-        } catch (Exception e) {
-            subscriber.onError(e);
-        }
-    }
-
-    private Cursor fetchCursor(Query query) {
-        Cursor cursor = cursorFetcher.fetchCursor(query);
-        try {
-            // Ensure the cursor window is filled.
-            cursor.getCount();
-        } catch (RuntimeException ex) {
-            cursor.close();
-            throw ex;
-        }
-        return cursor;
+    private Observable<Cursor> fetchCursor(Query query) {
+        return Observable.create(subscriber -> {
+            Cursor cursor = cursorFetcher.fetchCursor(query);
+            try {
+                // Ensure the cursor window is filled.
+                cursor.getCount();
+                subscriber.onNext(cursor);
+            } catch (RuntimeException ex) {
+                cursor.close();
+                subscriber.onError(new RxFetchCursorException(query.toString(), ex));
+            }
+        });
     }
 
     private void subscribeToContentUpdates(Uri uri, ContentObserver contentObserver) {
@@ -136,6 +134,17 @@ public class RxContentResolver {
         }
 
         @Override
+        public String toString() {
+            return "Query{" +
+                    "uri=" + uri +
+                    ", projection=" + Arrays.toString(projection) +
+                    ", selection='" + selection + '\'' +
+                    ", selectionArgs=" + Arrays.toString(selectionArgs) +
+                    ", sortOrder='" + sortOrder + '\'' +
+                    '}';
+        }
+
+        @Override
         public int hashCode() {
             int result = uri != null ? uri.hashCode() : 0;
             result = 31 * result + (projection != null ? Arrays.hashCode(projection) : 0);
@@ -180,6 +189,13 @@ public class RxContentResolver {
             public Query build() {
                 return new Query(uri, projection, selection, selectionArgs, sortOrder);
             }
+        }
+    }
+
+    public static class RxFetchCursorException extends Exception {
+
+        private RxFetchCursorException(String message, Exception ex) {
+            super(message, ex);
         }
     }
 

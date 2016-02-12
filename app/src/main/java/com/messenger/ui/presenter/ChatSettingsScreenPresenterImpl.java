@@ -7,11 +7,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.messenger.delegate.ChatLeavingDelegate;
-import com.messenger.di.MessengerStorageModule;
-import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -22,7 +21,6 @@ import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
-import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -32,7 +30,6 @@ import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import flow.Flow;
 import flow.History;
@@ -56,10 +53,6 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     ConversationsDAO conversationsDAO;
     @Inject
     ParticipantsDAO participantsDAO;
-
-    @Inject
-    @Named(MessengerStorageModule.DB_FLOW_RX_RESOLVER)
-    RxContentResolver rxContentResolver;
 
     public ChatSettingsScreenPresenterImpl(Context context, String conversationId) {
         super(context);

@@ -123,6 +123,9 @@ public class ConversationsCursorAdapter
         holder.setConversationClickListener(conversationClickListener);
         holder.setSwipeButtonsListener(swipeButtonsListener);
 
+        if (holder instanceof OneToOneConversationViewHolder) {
+            bindParticipantData((OneToOneConversationViewHolder) holder, cursor);
+        }
         holder.setDeleteButtonVisibility(deleteButtonEnable(conversation));
 
         holder.setDate(formatLastConversationMessage(new Date(conversation.getLastActiveDate())));
@@ -135,6 +138,13 @@ public class ConversationsCursorAdapter
         swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
         //// TODO: 1/11/16 enable swipe and use comments below for future functional
         holder.getSwipeLayout().setSwipeEnabled(false);
+    }
+
+    private void bindParticipantData(OneToOneConversationViewHolder holder, Cursor cursor) {
+        String avatar = cursor.getString(cursor.getColumnIndex(DataUser$Table.USERAVATARURL));
+        boolean online = cursor.getInt(cursor.getColumnIndex(DataUser$Table.ONLINE)) == 1;
+        String name = cursor.getString(cursor.getColumnIndex(ConversationsDAO.SINGLE_CONVERSATION_NAME_COLUMN));
+        holder.bindUserProperties(name, avatar, online);
     }
 
     public void setSelectedConversationId(String selectedConversationId) {

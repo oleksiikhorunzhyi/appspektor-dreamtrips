@@ -30,14 +30,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import dagger.Lazy;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class ConversationsDAO extends BaseDAO {
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
+    public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
+    private Lazy<DataUser> profile;
 
-    public ConversationsDAO(Context context, RxContentResolver rxContentResolver) {
+    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, Lazy<DataUser> profile) {
         super(context, rxContentResolver);
+        this.profile = profile;
     }
 
     @Deprecated
@@ -116,6 +120,9 @@ public class ConversationsDAO extends BaseDAO {
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
                 "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
                 "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
+                "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
+                "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", " +
+                "uu." + DataUser$Table.USERNAME + " as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
@@ -132,18 +139,23 @@ public class ConversationsDAO extends BaseDAO {
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
 
                 "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
-                "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " "
+                "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
 
+                "LEFT JOIN " + DataUser.TABLE_NAME + " uu " +
+                "ON uu." + DataUser$Table._ID + "=(" +
+                "SELECT pp." + DataParticipant$Table.USERID + " FROM " + DataParticipant.TABLE_NAME + " pp " +
+                "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1)"
         );
 
-        query.append("WHERE c." + DataConversation$Table.STATUS + " = ? ");
+        query.append("WHERE c." + DataConversation$Table.STATUS + "='" + ConversationStatus.PRESENT + "' ");
         boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("AND c."+ DataConversation$Table.TYPE + " not like ?");
+            query.append("AND c." + DataConversation$Table.TYPE + " not like '" + ConversationType.CHAT + "'");
         }
 
         query.append("GROUP BY c." + DataConversation$Table._ID + " " +
-                "HAVING c." + DataConversation$Table.TYPE + "=? " +
+                "HAVING c." + DataConversation$Table.TYPE + "='" + ConversationType.CHAT + "' " +
                 "OR COUNT(p." + DataParticipant$Table.ID + ") > 1 " +
                 "ORDER BY c." + DataConversation$Table.LASTACTIVEDATE + " DESC"
         );
@@ -151,12 +163,7 @@ public class ConversationsDAO extends BaseDAO {
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());
 
-        String[] args;
-        if (onlyGroup) {
-            args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT, ConversationType.CHAT};
-        } else {
-            args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT};
-        }
+        String[] args = new String[]{profile.get().getId()};
         queryBuilder.withSelectionArgs(args);
         return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI);
     }
@@ -179,17 +186,17 @@ public class ConversationsDAO extends BaseDAO {
     public Observable<Integer> getUnreadConversationsCount() {
         String selection = "SELECT con." + DataConversation$Table._ID // cause Count(con._id) is interpreted as field for every id
                 + " FROM " + DataConversation.TABLE_NAME + " con"
-                        + " LEFT JOIN " + DataParticipant.TABLE_NAME + " par"
-                        + " ON par." + DataParticipant$Table.CONVERSATIONID + "=con." + DataConversation$Table._ID
-                        + " WHERE " + DataConversation$Table.UNREADMESSAGECOUNT + ">0"
-                        + " AND " + DataConversation$Table.STATUS + " like ? "
-                        + " GROUP BY con." + DataConversation$Table._ID
-                        + " HAVING con." + DataConversation$Table.TYPE + "=? "
-                        + " OR COUNT(par." + DataParticipant$Table.ID + ")>1 ";
-        String[] args = new String[] {ConversationStatus.PRESENT, ConversationType.CHAT};
+                + " LEFT JOIN " + DataParticipant.TABLE_NAME + " par"
+                + " ON par." + DataParticipant$Table.CONVERSATIONID + "=con." + DataConversation$Table._ID
+                + " WHERE " + DataConversation$Table.UNREADMESSAGECOUNT + ">0"
+                + " AND " + DataConversation$Table.STATUS + " like ? "
+                + " GROUP BY con." + DataConversation$Table._ID
+                + " HAVING con." + DataConversation$Table.TYPE + "=? "
+                + " OR COUNT(par." + DataParticipant$Table.ID + ")>1 ";
+        String[] args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT};
 
         RxContentResolver.Query query = new RxContentResolver.Query.Builder(null).withSelection(selection)
-                                            .withSelectionArgs(args).build();
+                .withSelectionArgs(args).build();
 
         return query(query, DataConversation.CONTENT_URI)
                 .map(cursor -> cursor.getCount()); // BUG!!! because query is interpreted as object list with one field COUNT(*)

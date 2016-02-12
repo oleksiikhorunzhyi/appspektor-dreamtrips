@@ -32,6 +32,7 @@ import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
+import com.messenger.util.ParticipantsDaoHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -70,11 +71,11 @@ public class ConversationsCursorAdapter
     private ConversationClickListener conversationClickListener;
 
     private ConversationHelper conversationHelper;
+    private ParticipantsDaoHelper participantsDaoHelper;
     private SimpleDateFormat todayDateFormat;
     private SimpleDateFormat moreThanTwoDaysAgoFormat;
 
     // for filter
-    private ParticipantsDAO participantsDAO;
     private Subscription mainSubscription;
 
     //
@@ -95,9 +96,9 @@ public class ConversationsCursorAdapter
         this.context = context;
         this.recyclerView = recyclerView;
         this.currentUser = currentUser;
-        this.participantsDAO = participantsDAO;
 
         conversationHelper = new ConversationHelper();
+        participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
         todayDateFormat = new SimpleDateFormat(context
                 .getString(R.string.conversation_list_last_message_date_format_today));
         moreThanTwoDaysAgoFormat = new SimpleDateFormat(context
@@ -240,9 +241,9 @@ public class ConversationsCursorAdapter
             return;
         }
         mainSubscription = Observable.from(SqlUtils.convertToList(DataConversation.class, newCursor))
-                .flatMap(c -> participantsDAO.getParticipants(c.getId()).first()
-                        .map(cursor -> SqlUtils.convertToList(DataUser.class, cursor))
-                        .map(users -> new Pair<>(c, users))
+                .flatMap(conversation -> participantsDaoHelper.obtainParticipantsStream(conversation, currentUser)
+                                .first()
+                                .map(users -> new Pair<>(conversation, users))
                 )
                 .toMap(p -> p.first, p -> p.second)
                 .compose(new IoToMainComposer<>())

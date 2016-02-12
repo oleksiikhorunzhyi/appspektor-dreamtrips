@@ -19,6 +19,7 @@ import com.messenger.storage.dao.UsersDAO;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,11 +75,15 @@ public class LoaderDelegate {
                             .map(c -> new DataMessage(c.getLastMessage())).notNulls().toList();
                     from(messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
-                    List<DataParticipant> relationships = data.isEmpty() ? Collections.emptyList() : from(data)
-                            .filter(c -> c.getParticipants() != null)
-                            .mapMany(d -> from(d.getParticipants()).map(DataParticipant::new))
-                            .toList();
-                    from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
+                    List<DataParticipant> relationships = new ArrayList<DataParticipant>();
+                    if (!data.isEmpty()) {
+                        from(data)
+                                .filter(conversation -> conversation.getParticipants() != null)
+                                .map(conversation -> conversation.getParticipants())
+                                .map(participants -> from(participants).map(DataParticipant::new).toList())
+                                .forEachR(bunchRelationships -> relationships.addAll(bunchRelationships));
+                        from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
+                    }
 
                     List<DataAttachment> attachments = getDataAttachments(data);
 

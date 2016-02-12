@@ -21,7 +21,7 @@ import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.messenger.util.ParticipantsDaoHelper;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -38,11 +38,12 @@ import rx.Observable;
 public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter {
 
-    String conversationId;
-    Observable<DataConversation> conversationObservable;
-    Observable<List<DataUser>> participantsObservable;
+    protected String conversationId;
+    protected Observable<DataConversation> conversationObservable;
+    protected Observable<List<DataUser>> participantsObservable;
 
     protected final ChatLeavingDelegate chatLeavingDelegate;
+    protected final ParticipantsDaoHelper participantsDaoHelper;
 
     @Inject
     DataUser user;
@@ -61,6 +62,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         injector.inject(this);
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
+        participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
 
         this.conversationId = conversationId;
     }
@@ -100,10 +102,8 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     }
 
     private void connectToParticipants(DataConversation conversation) {
-        participantsObservable = participantsDAO.getParticipants(conversationId)
-                .onBackpressureLatest()
-                .map(c -> SqlUtils.convertToList(DataUser.class, c))
-                .compose(bindViewIoToMainComposer());
+        participantsObservable = participantsDaoHelper.obtainParticipantsStream(conversation, user)
+                                            .compose(bindViewIoToMainComposer());
 
         participantsObservable.subscribe(users ->
                 getView().setParticipants(conversation, users));

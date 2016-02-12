@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
+import com.messenger.ui.adapter.util.swipe.SwipeableAdapterManager;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -52,6 +53,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     private ActionButtonsContactsCursorAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
+    private SwipeableAdapterManager swipeableAdapterManager = new SwipeableAdapterManager();
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     public EditChatMembersScreenImpl(Context context) {
@@ -81,16 +83,13 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
         Context context = getContext();
         EditChatMembersScreenPresenter presenter = getPresenter();
 
-        // Use this class until sorting logic in ContactCursorAdapter is checked
-        // to be working (provided users are sorted alphabetically) or fixed if needed if
-        // it does not work when contacts sorting is fixed.
-        adapter = new ActionButtonsContactsCursorAdapter(context, user, isOwner);
+        adapter = new ActionButtonsContactsCursorAdapter(context, user, isOwner, swipeableAdapterManager);
         adapter.setDeleteRequestListener(presenter::onDeleteUserFromChat);
         adapter.setUserClickListener(presenter::onUserClicked);
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(context));
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(swipeableAdapterManager.provideWrappedAdapter(adapter));
         recyclerView.addItemDecoration(new VerticalDivider(
                 ContextCompat.getDrawable(context, R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
@@ -148,17 +147,17 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     @Override
     public void invalidateAllSwipedLayouts() {
-        adapter.closeAllItems();
+        swipeableAdapterManager.closeAllItems();
     }
 
     @Override
     public void showDeletionConfirmationDialog(DataUser user) {
         new AlertDialog.Builder(getContext())
                 .setNegativeButton(android.R.string.cancel, (dialogInterface, i)
-                        -> adapter.closeAllItems())
+                        -> swipeableAdapterManager.closeAllItems())
                 .setPositiveButton(R.string.edit_chat_dialog_confirm_user_deletion_button_delete, (dialog1, which1) -> {
                     getPresenter().onDeleteUserFromChatConfirmed(user);
-                    adapter.closeAllItems();
+                    swipeableAdapterManager.closeAllItems();
                 })
                 .setMessage(R.string.edit_chat_dialog_confirm_user_deletion_message)
                 .create()

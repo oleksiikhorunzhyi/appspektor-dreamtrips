@@ -7,34 +7,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
-import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
-import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
-import com.daimajia.swipe.util.Attributes;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
+import com.messenger.ui.adapter.util.swipe.SwipeableAdapterManager;
+import com.messenger.ui.adapter.util.swipe.SwipeableWrapperAdapter;
 import com.messenger.util.SwipeClickListener;
 import com.worldventures.dreamtrips.R;
-
-import java.util.List;
 
 import butterknife.InjectView;
 
 public class ActionButtonsContactsCursorAdapter
-        extends ContactCursorAdapter implements SwipeItemMangerInterface, SwipeAdapterInterface {
+        extends ContactCursorAdapter
+        implements SwipeableWrapperAdapter.SwipeLayoutContainer {
 
-    public final SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
     public final String userId;
     private final boolean owner;
+
+    private SwipeableAdapterManager swipeableAdapterManager;
 
     private DeleteRequestListener deleteRequestListener;
     private UserClickListener userClickListener;
 
-    public ActionButtonsContactsCursorAdapter(Context context, DataUser user, boolean owner) {
+    public ActionButtonsContactsCursorAdapter(Context context, DataUser user, boolean owner,
+                                              SwipeableAdapterManager swipeableAdapterManager) {
         super(context, null);
         this.userId = user.getId();
         this.owner = owner;
+        this.swipeableAdapterManager = swipeableAdapterManager;
         setAdminSectionEnabled(true);
     }
 
@@ -52,7 +52,6 @@ public class ActionButtonsContactsCursorAdapter
         holder.swipeLayout.setSwipeEnabled(owner && !user.equals(admin));
 
         holder.getTickImageView().setVisibility(View.GONE);
-        mItemManger.bindView(holder.itemView, cursor.getPosition());
         View.OnClickListener clickListener = view -> {
             if (userClickListener != null) {
                 userClickListener.onUserClicked(user);
@@ -78,69 +77,22 @@ public class ActionButtonsContactsCursorAdapter
 
     @Override
     public Cursor swapCursor(Cursor cursor, String filter, String column) {
-        if (mItemManger != null) mItemManger.closeAllItems(); // cause sometime there is magic NullPointerException
+        if (swipeableAdapterManager != null) swipeableAdapterManager.closeAllItems(); // cause sometime there is magic NullPointerException
         return super.swapCursor(cursor, filter, column);
     }
 
     @Override
     public void changeCursor(Cursor cursor) {
-        if (mItemManger != null) mItemManger.closeAllItems(); // cause sometime there is magic NullPointerException
+        if (swipeableAdapterManager != null) swipeableAdapterManager.closeAllItems(); // cause sometime there is magic NullPointerException
         super.changeCursor(cursor);
     }
 
     @Override
     public int getSwipeLayoutResourceId(int position) {
-        return R.id.swipe;
-    }
-
-    @Override
-    public void openItem(int position) {
-        mItemManger.openItem(position);
-    }
-
-    @Override
-    public void closeItem(int position) {
-        mItemManger.closeItem(position);
-    }
-
-    @Override
-    public void closeAllExcept(SwipeLayout layout) {
-        mItemManger.closeAllExcept(layout);
-    }
-
-    @Override
-    public void closeAllItems() {
-        mItemManger.closeAllItems();
-    }
-
-    @Override
-    public List<Integer> getOpenItems() {
-        return mItemManger.getOpenItems();
-    }
-
-    @Override
-    public List<SwipeLayout> getOpenLayouts() {
-        return mItemManger.getOpenLayouts();
-    }
-
-    @Override
-    public void removeShownLayouts(SwipeLayout layout) {
-        mItemManger.removeShownLayouts(layout);
-    }
-
-    @Override
-    public boolean isOpen(int position) {
-        return mItemManger.isOpen(position);
-    }
-
-    @Override
-    public Attributes.Mode getMode() {
-        return mItemManger.getMode();
-    }
-
-    @Override
-    public void setMode(Attributes.Mode mode) {
-        mItemManger.setMode(mode);
+        if (getItemViewType(position) == VIEW_TYPE_CONTACT) {
+            return R.id.swipe;
+        }
+        return 0;
     }
 
     public interface DeleteRequestListener {

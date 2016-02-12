@@ -10,11 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
-import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
-import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
-import com.daimajia.swipe.util.Attributes;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataConversation$Table;
@@ -30,6 +25,7 @@ import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
+import com.messenger.ui.adapter.util.swipe.SwipeableWrapperAdapter;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -53,15 +49,13 @@ import static com.messenger.messengerservers.constant.ConversationType.TRIP;
 
 public class ConversationsCursorAdapter
         extends CursorRecyclerViewAdapter<BaseConversationViewHolder>
-        implements SwipeItemMangerInterface, SwipeAdapterInterface {
+        implements SwipeableWrapperAdapter.SwipeLayoutContainer {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
     private static final int VIEW_TYPE_TRIP_CONVERSATION = 3;
     private static final int VIEW_TYPE_GROUP_CLOSE_CONVERSATION = 4;
-    private static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
 
-    private final SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
     private final Context context;
     private final RecyclerView recyclerView;
     private final DataUser currentUser;
@@ -114,7 +108,6 @@ public class ConversationsCursorAdapter
         DataConversation conversation = SqlUtils.convertToModel(true, DataConversation.class, cursor);
         DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
         String attachmentType = cursor.getString(cursor.getColumnIndex(ConversationsDAO.ATTACHMENT_TYPE_COLUMN));
-        Timber.d("DataAttachment %s, %d", attachmentType, cursor.getPosition());
 
         holder.bindConversation(conversation, selectedConversationId);
         holder.setConversationClickListener(conversationClickListener);
@@ -128,9 +121,6 @@ public class ConversationsCursorAdapter
         boolean hasImageAttachment = attachmentType != null && attachmentType.equals(AttachmentType.IMAGE);
         setLastMessage(holder, message, userName, conversationHelper.isGroup(conversation), hasImageAttachment);
 
-        // init swipe layout
-        // TODO: 1/16/16 wtf ????
-        swipeButtonsManger.bindView(holder.itemView, cursor.getPosition());
         //// TODO: 1/11/16 enable swipe and use comments below for future functional
         holder.getSwipeLayout().setSwipeEnabled(false);
     }
@@ -268,63 +258,13 @@ public class ConversationsCursorAdapter
     // Swipe layout
     ///////////////////////////////////////////////////////////////////////////
 
-    public void setSwipeButtonsListener(SwipeButtonsListener swipeButtonsListener) {
-        this.swipeButtonsListener = swipeButtonsListener;
-    }
-
     @Override
     public int getSwipeLayoutResourceId(int position) {
         return R.id.swipe;
     }
 
-    @Override
-    public void openItem(int position) {
-        swipeButtonsManger.openItem(position);
-    }
-
-    @Override
-    public void closeItem(int position) {
-        swipeButtonsManger.closeItem(position);
-    }
-
-    @Override
-    public void closeAllExcept(SwipeLayout layout) {
-        swipeButtonsManger.closeAllExcept(layout);
-    }
-
-    @Override
-    public void closeAllItems() {
-        swipeButtonsManger.closeAllItems();
-    }
-
-    @Override
-    public List<Integer> getOpenItems() {
-        return swipeButtonsManger.getOpenItems();
-    }
-
-    @Override
-    public List<SwipeLayout> getOpenLayouts() {
-        return swipeButtonsManger.getOpenLayouts();
-    }
-
-    @Override
-    public void removeShownLayouts(SwipeLayout layout) {
-        swipeButtonsManger.removeShownLayouts(layout);
-    }
-
-    @Override
-    public boolean isOpen(int position) {
-        return swipeButtonsManger.isOpen(position);
-    }
-
-    @Override
-    public Attributes.Mode getMode() {
-        return swipeButtonsManger.getMode();
-    }
-
-    @Override
-    public void setMode(Attributes.Mode mode) {
-        swipeButtonsManger.setMode(mode);
+    public void setSwipeButtonsListener(SwipeButtonsListener swipeButtonsListener) {
+        this.swipeButtonsListener = swipeButtonsListener;
     }
 
     ///////////////////////////////////////////////////////////////////////////

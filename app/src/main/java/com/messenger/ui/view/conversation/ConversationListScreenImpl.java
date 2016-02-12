@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import com.messenger.entities.DataConversation;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
+import com.messenger.ui.adapter.util.swipe.SwipeableAdapterManager;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -63,6 +64,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     SearchView searchView;
 
     private ConversationsCursorAdapter adapter;
+    private SwipeableAdapterManager swipeableAdapterManager = new SwipeableAdapterManager();
 
     private LinearLayoutManager linearLayoutManager;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
@@ -150,7 +152,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         adapter.setConversationClickListener(getPresenter()::onConversationSelected);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(swipeableAdapterManager.provideWrappedAdapter(adapter));
         //
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
     }
@@ -198,9 +200,9 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
                 .setPositiveButton(R.string.conversation_list_delete_dialog_pos_button,
                         (d, i) -> {
                             presenter.onDeletionConfirmed(conversation);
-                            adapter.closeAllItems();
+                            swipeableAdapterManager.closeAllItems();
                         })
-                .setNeutralButton(R.string.cancel, (d, i) -> adapter.closeAllItems())
+                .setNeutralButton(R.string.cancel, (d, i) -> swipeableAdapterManager.closeAllItems())
                 .show();
     }
 
@@ -221,7 +223,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
                             getPresenter().onTurnOffNotificationsButtonPressed(conversation);
                             break;
                     }
-                    adapter.closeAllItems();
+                    swipeableAdapterManager.closeAllItems();
                 })
                 .show();
     }

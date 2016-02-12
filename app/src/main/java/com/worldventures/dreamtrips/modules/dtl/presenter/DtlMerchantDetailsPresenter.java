@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEve
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 
 import java.util.Calendar;
 
@@ -29,14 +30,14 @@ import timber.log.Timber;
 
 public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View> {
 
-    private DtlTransaction dtlTransaction;
-
     @Inject
-    SnappyRepository snapper;
+    SnappyRepository db;
     @Inject
     FeatureManager featureManager;
     @Inject
     LocationDelegate locationDelegate;
+    //
+    private DtlTransaction dtlTransaction;
 
     public DtlMerchantDetailsPresenter(String id) {
         super(id);
@@ -57,8 +58,8 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     }
 
     private void processTransaction() {
-        dtlTransaction = snapper.getDtlTransaction(merchant.getId());
-
+        dtlTransaction = db.getDtlTransaction(merchant.getId());
+        //
         if (dtlTransaction != null) {
             checkSucceedEvent();
             checkTransactionOutOfDate();
@@ -76,8 +77,8 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     }
 
     private void checkTransactionOutOfDate() {
-        if (dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
-            snapper.deleteDtlTransaction(merchant.getId());
+        if (dtlTransaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
+            db.deleteDtlTransaction(merchant.getId());
             dtlTransaction = null;
         }
     }
@@ -86,9 +87,10 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
         if (dtlTransaction != null) {
             // we should clean transaction, as for now we don't allow user to save his progress
             // in the enrollment wizard(maybe needed in future)
+            // NOTE! :: but we save checkin (coordinates and checkin time)
             if (dtlTransaction.getUploadTask() != null)
                 photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-            snapper.cleanDtlTransaction(merchant.getId(), dtlTransaction);
+            db.cleanDtlTransaction(merchant.getId(), dtlTransaction);
             view.openTransaction(merchant, dtlTransaction);
         } else {
             view.disableCheckinButton();
@@ -119,13 +121,15 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
 
     private void onLocationObtained(Location location) {
         view.enableCheckinButton();
-        dtlTransaction = new DtlTransaction();
-        dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
-        dtlTransaction.setLat(location.getLatitude());
-        dtlTransaction.setLng(location.getLongitude());
-
-        snapper.saveDtlTransaction(merchant.getId(), dtlTransaction);
+        //
+        dtlTransaction = ImmutableDtlTransaction.builder()
+                .lat(location.getLatitude())
+                .lng(location.getLongitude())
+                .build();
+        db.saveDtlTransaction(merchant.getId(), dtlTransaction);
+        //
         view.setTransaction(dtlTransaction);
+        //
         TrackingHelper.dtlCheckin(merchant.getId());
     }
 

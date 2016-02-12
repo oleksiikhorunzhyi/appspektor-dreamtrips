@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -512,17 +513,19 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public DtlTransaction getDtlTransaction(String id) {
-        return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();
+        return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, ImmutableDtlTransaction.class)).orNull();
     }
 
     public void cleanDtlTransaction(String id, DtlTransaction dtlTransaction) {
-        dtlTransaction.setUploadTask(null);
-        dtlTransaction.setBillTotal(0.0d);
-        dtlTransaction.setReceiptPhotoUrl(null);
-        dtlTransaction.setCode(null);
-        dtlTransaction.setVerified(false);
-        dtlTransaction.setDtlTransactionResult(null);
-        saveDtlTransaction(id, dtlTransaction);
+        DtlTransaction transaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withUploadTask(null)
+                .withBillTotal(0d)
+                .withReceiptPhotoUrl(null)
+                .withMerchantToken(null)
+                .withIsVerified(false)
+                .withDtlTransactionResult(null)
+                .withPoints(0d);
+        saveDtlTransaction(id, transaction);
     }
 
     public void saveDtlTransaction(String id, DtlTransaction dtlTransaction) {
@@ -532,5 +535,4 @@ public class SnappyRepository {
     public void deleteDtlTransaction(String id) {
         act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
     }
-
 }

@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
-import android.text.TextUtils;
-
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -21,7 +19,7 @@ public class DtlTransactionRouteCreator implements RouteCreator<DtlTransaction> 
             return Route.DTL_SCAN_RECEIPT;
         } else if (!dtlTransaction.isVerified()) {
             return Route.DTL_VERIFY;
-        } else if (TextUtils.isEmpty(dtlTransaction.getCode()) ||
+        } else if (!dtlTransaction.isMerchantCodeScanned() ||
                 dtlTransaction.getDtlTransactionResult() == null) {
             return Route.DTL_SCAN_QR;
         } else {

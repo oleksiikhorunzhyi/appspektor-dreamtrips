@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -68,8 +67,6 @@ public class DtlMerchantDetailsFragment
     DtlMerchantCommonDataInflater commonDataInflater;
     DtlMerchantInfoInflater merchantInfoInflater;
     DtlMerchantHelper helper;
-    //
-    private WeakHandler handler = new WeakHandler();
 
     @Inject
     ActivityResultDelegate activityResultDelegate;
@@ -269,6 +266,16 @@ public class DtlMerchantDetailsFragment
     }
 
     @Override
+    public void openMap() {
+        router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.dtl_landscape_slave_container)
+                .backStackEnabled(false)
+                .fragmentManager(getFragmentManager())
+                .data(new DtlMapBundle(true))
+                .build());
+    }
+
+    @Override
     public void openTransaction(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
         router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
                 .data(new MerchantIdBundle(dtlMerchant.getId()))
@@ -287,16 +294,6 @@ public class DtlMerchantDetailsFragment
     public void setTransaction(DtlTransaction dtlTransaction) {
         earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
         checkedIn.setVisibility(dtlTransaction != null ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void openMap() {
-        router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment()
-                .containerId(R.id.dtl_landscape_slave_container)
-                .backStackEnabled(false)
-                .fragmentManager(getFragmentManager())
-                .data(new DtlMapBundle(true))
-                .build());
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.model.Conversation;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -35,7 +36,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
     public DataConversation() {}
 
-    public DataConversation(com.messenger.messengerservers.model.Conversation conversation) {
+    public DataConversation(Conversation conversation) {
         setId(conversation.getId());
         setOwnerId(conversation.getOwnerId());
         setSubject(conversation.getSubject());

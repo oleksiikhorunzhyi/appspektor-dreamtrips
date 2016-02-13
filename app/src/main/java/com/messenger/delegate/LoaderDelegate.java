@@ -2,9 +2,11 @@ package com.messenger.delegate;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
@@ -16,6 +18,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.util.CursorObservable;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +29,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
@@ -105,10 +109,26 @@ public class LoaderDelegate {
             });
             conversationLoader.load();
         });
-        return userProcessor.connectToUserProvider(loader).map(users -> {
-            Timber.d("ConversationLoader %s", users);
-            return (Void) null;
-        });
+        return userProcessor.connectToUserProvider(loader)
+                .flatMap(user -> conversationsDAO.getGroupConversationNames())
+                .first()
+                .flatMap(CursorObservable::create)
+                .filter(cursor -> android.text.TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(DataConversation$Table.SUBJECT))))
+                .doOnNext(cursor -> {
+                    String conversationId = cursor.getString(cursor.getColumnIndex(DataConversation$Table._ID));
+                    participantsDAO.getParticipants(conversationId)
+                            .subscribeOn(Schedulers.immediate())
+                            .subscribe(participantsCursor -> {
+                                List<String> names = new ArrayList<>(participantsCursor.getCount());
+                                while (participantsCursor.moveToNext()) {
+                                    names.add(participantsCursor.getString(participantsCursor.getColumnIndex(DataUser$Table.USERNAME)));
+                                }
+                                participantsCursor.close();
+                                conversationsDAO.updateDefaultSubject(conversationId, names);
+                            });
+                })
+                .toList()
+                .map(var -> (Void) null);
     }
 
     private List<DataAttachment> getDataAttachments(List<Conversation> conversations) {

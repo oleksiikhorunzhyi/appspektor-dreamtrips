@@ -18,7 +18,6 @@ import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import java.util.List;
 
 import rx.Observable;
-import timber.log.Timber;
 
 class BaseDAO {
     private final Context context;
@@ -55,5 +54,9 @@ class BaseDAO {
             values.clear();
         }
         contentResolver.notifyChange(uri, null);
+    }
+
+    protected SQLiteDatabase getWritableDatabase() {
+        return FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase();
     }
 }

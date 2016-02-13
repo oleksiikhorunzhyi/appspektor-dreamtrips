@@ -3,7 +3,9 @@ package com.messenger.storage.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataAttachment;
@@ -74,6 +76,14 @@ public class ConversationsDAO extends BaseDAO {
                 .queryList();
     }
 
+    public void updateDefaultSubject(String conversationId, @NonNull List<String> participantsName) {
+        ContentValues cv = new ContentValues(1);
+        TextUtils.join(", ", participantsName);
+        cv.put(DataConversation$Table.DEFAULTSUBJECT, "");
+        getContentResolver().update(DataConversation.CONTENT_URI,
+                cv, DataConversation$Table._ID + "=?", new String[] {conversationId});
+    }
+
     public void save(List<DataConversation> conversations) {
         bulkInsert(conversations, new DataConversation$Adapter(), DataConversation.CONTENT_URI);
     }
@@ -112,6 +122,16 @@ public class ConversationsDAO extends BaseDAO {
                 .where(Condition.column(DataConversation$Table.SYNCTIME).lessThan(time))
                 .and(Condition.column(DataConversation$Table.SYNCTIME).isNot(0))
                 .queryClose();
+    }
+
+    public Observable<Cursor> getGroupConversationNames() {
+        String selection = "SELECT " + DataConversation$Table._ID + ", " + DataConversation$Table.SUBJECT + " " +
+                "FROM " + DataConversation.TABLE_NAME + " WHERE " + DataConversation$Table.TYPE + "=?";
+        return query(new RxContentResolver.Query.Builder(null)
+                .withSelection(selection)
+                .withSelectionArgs(new String[] {String.valueOf(ConversationType.GROUP)})
+                .build(),
+                DataConversation.CONTENT_URI);
     }
 
     public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type) {

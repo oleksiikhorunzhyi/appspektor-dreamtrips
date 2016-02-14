@@ -15,13 +15,12 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 
 import java.util.Calendar;
 
@@ -31,18 +30,14 @@ import timber.log.Timber;
 
 public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View> {
 
-    private DtlTransaction dtlTransaction;
-
     @Inject
-    SnappyRepository snapper;
+    SnappyRepository db;
     @Inject
     FeatureManager featureManager;
     @Inject
     LocationDelegate locationDelegate;
-    @Inject
-    DtlLocationManager locationRepository;
-    @Inject
-    DtlFilterDelegate dtlFilterDelegate;
+    //
+    private DtlTransaction dtlTransaction;
 
     public DtlMerchantDetailsPresenter(String id) {
         super(id);
@@ -63,8 +58,8 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     }
 
     private void processTransaction() {
-        dtlTransaction = snapper.getDtlTransaction(merchant.getId());
-
+        dtlTransaction = db.getDtlTransaction(merchant.getId());
+        //
         if (dtlTransaction != null) {
             checkSucceedEvent();
             checkTransactionOutOfDate();
@@ -82,8 +77,8 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     }
 
     private void checkTransactionOutOfDate() {
-        if (dtlTransaction.outOfDate(Calendar.getInstance().getTimeInMillis())) {
-            snapper.deleteDtlTransaction(merchant.getId());
+        if (dtlTransaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
+            db.deleteDtlTransaction(merchant.getId());
             dtlTransaction = null;
         }
     }
@@ -92,15 +87,16 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
         if (dtlTransaction != null) {
             // we should clean transaction, as for now we don't allow user to save his progress
             // in the enrollment wizard(maybe needed in future)
+            // NOTE! :: but we save checkin (coordinates and checkin time)
             if (dtlTransaction.getUploadTask() != null)
                 photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
-            snapper.cleanDtlTransaction(merchant.getId(), dtlTransaction);
+            db.cleanDtlTransaction(merchant.getId(), dtlTransaction);
             view.openTransaction(merchant, dtlTransaction);
         } else {
             view.disableCheckinButton();
             view.bind(locationDelegate
                             .requestLocationUpdate()
-                            .compose(IoToMainComposer.get())
+                            .compose(new IoToMainComposer<>())
             ).subscribe(this::onLocationObtained, this::onLocationError);
         }
     }
@@ -125,13 +121,15 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
 
     private void onLocationObtained(Location location) {
         view.enableCheckinButton();
-        dtlTransaction = new DtlTransaction();
-        dtlTransaction.setTimestamp(Calendar.getInstance().getTimeInMillis());
-        dtlTransaction.setLat(location.getLatitude());
-        dtlTransaction.setLng(location.getLongitude());
-
-        snapper.saveDtlTransaction(merchant.getId(), dtlTransaction);
+        //
+        dtlTransaction = ImmutableDtlTransaction.builder()
+                .lat(location.getLatitude())
+                .lng(location.getLongitude())
+                .build();
+        db.saveDtlTransaction(merchant.getId(), dtlTransaction);
+        //
         view.setTransaction(dtlTransaction);
+        //
         TrackingHelper.dtlCheckin(merchant.getId());
     }
 
@@ -183,7 +181,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     }
 
     public void routeToMerchantRequested(@Nullable final Intent intent) {
-        view.bind(locationDelegate.getLastKnownLocation().compose(IoToMainComposer.get()))
+        view.bind(locationDelegate.getLastKnownLocation().compose(new IoToMainComposer<>()))
                 .subscribe(location -> {
                     TrackingHelper.dtlMapDestination(location.getLatitude(), location.getLongitude(),
                             merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());

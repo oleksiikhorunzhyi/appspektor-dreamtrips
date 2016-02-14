@@ -6,8 +6,8 @@ import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
-import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 import javax.inject.Inject;
 

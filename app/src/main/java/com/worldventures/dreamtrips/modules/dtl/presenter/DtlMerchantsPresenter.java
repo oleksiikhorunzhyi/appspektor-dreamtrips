@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlMerchantsPredicate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
@@ -96,10 +96,10 @@ public abstract class DtlMerchantsPresenter<VT extends RxView> extends JobPresen
                 patchMerchantDistance(merchant, acceptedLocation, filterData.getDistanceType()));
         //
         List<DtlMerchant> merchants = Queryable.from(dtlMerchants)
-                .filter(DtlMerchantsPredicate.Builder.create()
-                        .withMerchantType(dtlMerchantType)
-                        .withDtlFilterData(filterData)
-                        .withLatLng(acceptedLocation)
+                .filter(ImmutableDtlMerchantsPredicate.builder()
+                        .merchantType(dtlMerchantType)
+                        .filterData(filterData)
+                        .currentLatLng(acceptedLocation)
                         .build()).toList();
         //
         afterMapping(merchants);

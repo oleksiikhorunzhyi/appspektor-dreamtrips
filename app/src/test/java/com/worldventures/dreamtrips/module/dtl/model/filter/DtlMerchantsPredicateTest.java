@@ -49,7 +49,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Success_inDisplayName() {
         DtlMerchantsPredicate predicate =
-                DtlMerchantsPredicate.Builder.create().withQuery("Plano").build();
+                DtlMerchantsPredicate.Builder.create().build(); // .withQuery("Plano").build();
         DtlMerchant dtlMerchant = new DtlMerchant();
         dtlMerchant.setDisplayName("Plano");
 
@@ -61,7 +61,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Fail_inDisplayName() {
         DtlMerchantsPredicate predicate =
-                DtlMerchantsPredicate.Builder.create().withQuery("Plano").build();
+                DtlMerchantsPredicate.Builder.create().build(); // .withQuery("Plano").build();
         DtlMerchant dtlMerchant = new DtlMerchant();
         dtlMerchant.setDisplayName("Texas");
 
@@ -73,7 +73,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Success_inCategory() {
         DtlMerchantsPredicate predicate =
-                DtlMerchantsPredicate.Builder.create().withQuery("pizza").build();
+                DtlMerchantsPredicate.Builder.create().build(); // .withQuery("pizza").build();
         DtlMerchant dtlMerchant = new DtlMerchant();
         dtlMerchant.setDisplayName("Texas");
         dtlMerchant.setCategories(Collections.singletonList(new DtlMerchantAttribute("pizza")));
@@ -86,7 +86,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Fail_inCategory() {
         DtlMerchantsPredicate predicate =
-                DtlMerchantsPredicate.Builder.create().withQuery("bbq").build();
+                DtlMerchantsPredicate.Builder.create().build(); // .withQuery("bbq").build();
         DtlMerchant dtlMerchant = new DtlMerchant();
         dtlMerchant.setDisplayName("Plano");
         dtlMerchant.setCategories(Collections.singletonList(new DtlMerchantAttribute("pizza")));

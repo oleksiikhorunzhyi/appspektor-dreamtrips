@@ -14,7 +14,7 @@ import timber.log.Timber;
 
 public class SearchViewHelper {
 
-    private static final int DEBOUNCE_INTERVAL_LENGTH = 900; // milliseconds
+    private static final int THROTTLE_SEARCH_DURATION = 900;
 
     private QueryChangedListener onQueryChangedListener;
     private SearchView searchView;
@@ -30,7 +30,8 @@ public class SearchViewHelper {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     searchViewSubscription = RxSearchView.queryTextChangeEvents(searchView)
-                            .compose(new DelayedComposer<>(DEBOUNCE_INTERVAL_LENGTH))
+                            .compose(new DelayedComposer<>(THROTTLE_SEARCH_DURATION))
+                            .distinctUntilChanged()
                             .subscribe(SearchViewHelper.this::onQueryTextChange, e ->
                                     Timber.e("Fail while search", e));
                     return true;
@@ -42,7 +43,7 @@ public class SearchViewHelper {
                     return true;
                 }
             });
-
+            //
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setQueryHint(searchView.getResources().getString(R.string.search));
             searchView.post(() -> searchView.setQuery(defValue, true));

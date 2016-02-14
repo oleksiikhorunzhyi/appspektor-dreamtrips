@@ -32,17 +32,18 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     }
 
     public boolean checkType(DtlMerchant dtlMerchant) {
-        return merchantType == null ||
-                dtlMerchant.getMerchantType() == merchantType;
+        return merchantType == null || dtlMerchant.getMerchantType() == merchantType;
     }
 
     public boolean checkQuery(DtlMerchant dtlMerchant) {
-        if (query == null) return false;
+        if (dtlFilterData.getSearchQuery() == null) return false;
         //
         List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
-        return dtlMerchant.getDisplayName().toLowerCase().contains(query.toLowerCase()) || (categories != null &&
+        return dtlMerchant.getDisplayName().toLowerCase()
+                .contains(dtlFilterData.getSearchQuery().toLowerCase()) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
-                        element.getName().toLowerCase().contains(query.toLowerCase())) != null);
+                        element.getName().toLowerCase()
+                                .contains(dtlFilterData.getSearchQuery().toLowerCase())) != null);
     }
 
     /**

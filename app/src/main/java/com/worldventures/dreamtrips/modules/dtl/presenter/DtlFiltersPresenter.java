@@ -36,7 +36,6 @@ public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> 
 
     private void attachAmenities() {
         dtlFilterDelegate.obtainAmenities();
-        dtlFilterDelegate.selectAll();
         view.attachFilterData(dtlFilterDelegate.getFilterData());
     }
 
@@ -45,7 +44,7 @@ public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> 
      * @param data new filter parameters
      */
     public void apply() {
-        dtlFilterDelegate.applyNewFilter(view.getFilterParameters());
+        dtlFilterDelegate.applyFilter(view.getFilterParameters());
         TrackingHelper.dtlMerchantFilter(dtlFilterDelegate.getFilterData());
     }
 

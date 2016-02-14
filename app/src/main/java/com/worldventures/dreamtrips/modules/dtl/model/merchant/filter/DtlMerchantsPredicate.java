@@ -15,15 +15,12 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     private DtlFilterData dtlFilterData;
     private LatLng currentLatLng;
     //
-    private String query;
-    //
     private DtlMerchantType merchantType;
 
-    private DtlMerchantsPredicate(DtlFilterData dtlFilterData, LatLng currentLatLng, String query,
+    private DtlMerchantsPredicate(DtlFilterData dtlFilterData, LatLng currentLatLng,
                                   DtlMerchantType merchantType) {
         this.dtlFilterData = dtlFilterData;
         this.currentLatLng = currentLatLng;
-        this.query = query;
         this.merchantType = merchantType;
     }
 
@@ -91,9 +88,9 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     }
 
     public static class Builder {
+
         private DtlFilterData dtlFilterData;
         private LatLng currentLatLng;
-        private String query;
         private DtlMerchantType merchantType;
 
         public static Builder create() {
@@ -110,19 +107,13 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
             return this;
         }
 
-        public Builder withQuery(String query) {
-            this.query = query;
-            return this;
-        }
-
         public Builder withMerchantType(DtlMerchantType merchantType) {
             this.merchantType = merchantType;
             return this;
         }
 
         public DtlMerchantsPredicate build() {
-            return new DtlMerchantsPredicate(dtlFilterData, currentLatLng, query,
-                    merchantType);
+            return new DtlMerchantsPredicate(dtlFilterData, currentLatLng, merchantType);
         }
     }
 }

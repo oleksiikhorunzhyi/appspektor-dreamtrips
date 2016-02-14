@@ -9,6 +9,8 @@ import java.util.List;
 
 public class DtlFilterData {
 
+    private String searchQuery = "";
+    //
     private int minPrice;
     private int maxPrice;
     //
@@ -68,6 +70,14 @@ public class DtlFilterData {
     public void selectAllAmenities() {
         this.selectedAmenities.clear();
         this.selectedAmenities.addAll(amenities);
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
     }
 
     public int getMaxDistance() {

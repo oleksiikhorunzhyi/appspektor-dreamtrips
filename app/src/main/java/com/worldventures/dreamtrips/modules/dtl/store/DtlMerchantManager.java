@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import techery.io.library.Job1Executor;
-import timber.log.Timber;
 
 public class DtlMerchantManager {
 
@@ -103,18 +102,5 @@ public class DtlMerchantManager {
 
     private void getCachedMerchants() {
         merchants = db.getDtlMerchants();
-    }
-
-    /**
-     * Logs a warning if no listener of desired type attached.<br />
-     * Helps to figure out possible fucked-up setup faster.
-     *
-     * @param listenersLists all lists of listeners that are to be triggered
-     */
-    protected void checkListeners(List... listenersLists) {
-        for(List list : listenersLists) {
-            if (list.isEmpty())
-                Timber.w("Checking store listeners: no registered listener of desired type! Check your setup.");
-        }
     }
 }

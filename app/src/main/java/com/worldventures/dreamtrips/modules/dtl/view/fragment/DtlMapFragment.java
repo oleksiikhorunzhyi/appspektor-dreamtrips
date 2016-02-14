@@ -76,7 +76,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         searchViewHelper = new SearchViewHelper();
-        searchViewHelper. init(searchItem, lastQuery, query -> {
+        searchViewHelper.init(searchItem, lastQuery, query -> {
             lastQuery = query;
             getPresenter().applySearch(query);
         });

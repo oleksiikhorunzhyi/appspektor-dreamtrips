@@ -78,7 +78,6 @@ public class DtlFilterData {
         this.maxDistance = maxDistance;
     }
 
-
     public void setDistanceType(DistanceType distanceType) {
         this.distanceType = distanceType;
     }

@@ -7,8 +7,7 @@ import android.view.MenuItem;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding.support.v7.widget.SearchViewQueryTextEvent;
 import com.worldventures.dreamtrips.R;
-
-import java.util.concurrent.TimeUnit;
+import com.worldventures.dreamtrips.core.rx.transfromer.DelayedComposer;
 
 import rx.Subscription;
 import timber.log.Timber;
@@ -31,7 +30,7 @@ public class SearchViewHelper {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     searchViewSubscription = RxSearchView.queryTextChangeEvents(searchView)
-                            .debounce(DEBOUNCE_INTERVAL_LENGTH, TimeUnit.MILLISECONDS)
+                            .compose(new DelayedComposer<>(DEBOUNCE_INTERVAL_LENGTH))
                             .subscribe(SearchViewHelper.this::onQueryTextChange, e ->
                                     Timber.e("Fail while search", e));
                     return true;

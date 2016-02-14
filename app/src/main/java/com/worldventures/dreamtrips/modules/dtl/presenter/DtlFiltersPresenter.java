@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -13,8 +12,6 @@ import javax.inject.Inject;
 
 public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> {
 
-    @Inject
-    LocationDelegate locationDelegate;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
     @Inject

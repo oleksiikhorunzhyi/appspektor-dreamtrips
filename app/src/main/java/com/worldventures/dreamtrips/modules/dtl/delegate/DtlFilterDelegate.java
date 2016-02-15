@@ -2,8 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.delegate;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,11 +30,9 @@ public class DtlFilterDelegate {
 
     public void init() {
         if (filterData == null) {
-            filterData = DtlFilterData.createDefault();
-            filterData.setAmenities(db.getAmenities());
-            filterData.selectAllAmenities();
+            filterData = ImmutableDtlFilterData.builder().build();
         }
-        filterData.setDistanceType(db.getMerchantsDistanceType());
+        filterData = ImmutableDtlFilterData.copyOf(filterData).withDistanceType(db.getMerchantsDistanceType());
         filterStream.onNext(filterData);
     }
 
@@ -39,12 +41,12 @@ public class DtlFilterDelegate {
     }
 
     public void applySearch(String query) {
-        filterData.setSearchQuery(query);
+        filterData = ImmutableDtlFilterData.copyOf(filterData).withSearchQuery(query);
         filterStream.onNext(filterData);
     }
 
     public void applyFilter(DtlFilterParameters filterParameters) {
-        filterData.from(filterParameters);
+        filterData = DtlFilterData.merge(filterParameters, filterData);
         filterStream.onNext(filterData);
     }
 
@@ -53,8 +55,12 @@ public class DtlFilterDelegate {
     }
 
     public void obtainAmenities() {
-        filterData.setAmenities(db.getAmenities());
-        filterData.selectAllAmenities();
+        final List<DtlMerchantAttribute> amenities = db.getAmenities();
+        filterData = ImmutableDtlFilterData
+                .copyOf(filterData)
+                .withAmenities(amenities)
+                .withSelectedAmenities(amenities);
+        filterStream.onNext(filterData);
     }
 
     public void reset() {

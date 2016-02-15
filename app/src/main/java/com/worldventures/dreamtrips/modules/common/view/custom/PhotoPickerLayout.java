@@ -228,7 +228,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         //
         if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
         updateCancelButtonState();
-        int panelHeight = (int) container.getResources().getDimension(R.dimen.picker_panel_height);
+        int panelHeight = (int) getResources().getDimension(R.dimen.picker_panel_height);
         if (isKeyboardClosed)
             handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
         else

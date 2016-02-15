@@ -3,7 +3,9 @@ package com.messenger.delegate;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
@@ -14,8 +16,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import java.util.List;
 import java.util.UUID;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Observable;
 
 public class ChatDelegate {
     private final String currentUserId;
@@ -26,23 +27,23 @@ public class ChatDelegate {
         this.messengerServerFacade = messengerServerFacade;
     }
 
-    public DataConversation createNewConversation(List<String> participantIds, @Nullable String subject) {
-    if (BuildConfig.DEBUG && participantIds.size() < 1) throw new RuntimeException();
-        return participantIds.size() == 1 ?
-                createSingleChat(participantIds.get(0)) : createMultiUserChat(participantIds, subject);
+    public Observable<DataConversation> createNewConversation(List<DataUser> participants, @Nullable String subject) {
+    if (BuildConfig.DEBUG && participants.size() < 1) throw new RuntimeException();
+        return participants.size() == 1 ?
+                createSingleChat(participants.get(0).getId()) : createMultiUserChat(participants, subject);
     }
 
-    private DataConversation createSingleChat(String participantId) {
-        return new DataConversation.Builder()
+    private Observable<DataConversation> createSingleChat(String participantId) {
+        return Observable.just(new DataConversation.Builder()
                 .type(ConversationType.CHAT)
                 .id(ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId))
                 .ownerId(currentUserId)
                 .lastActiveDate(System.currentTimeMillis())
                 .status(ConversationStatus.PRESENT)
-                .build();
+                .build());
     }
 
-    private DataConversation createMultiUserChat(List<String> participans, @Nullable String subject){
+    private Observable<DataConversation> createMultiUserChat(List<DataUser> participans, @Nullable String subject){
         DataConversation conversation = new DataConversation.Builder()
                 .type(ConversationType.GROUP)
                 .id(UUID.randomUUID().toString())
@@ -55,7 +56,7 @@ public class ChatDelegate {
         return setMultiUserChatData(conversation, participans, subject);
     }
 
-    public DataConversation modifyConversation(DataConversation conversation, List<String> existParticipantIds, List<String> newChatUserIds, @Nullable String subject) {
+    public Observable<DataConversation> modifyConversation(DataConversation conversation, List<DataUser> existParticipants, List<DataUser> newChatUserIds, @Nullable String subject) {
         if (conversation.getType().equals(ConversationType.CHAT)) {
             conversation = new DataConversation.Builder()
                     .ownerId(currentUserId)
@@ -66,7 +67,7 @@ public class ChatDelegate {
                     .build();
             // since we create new group chat
             // make sure to invite original participant (addressee) from old single chat
-            newChatUserIds.addAll(existParticipantIds);
+            newChatUserIds.addAll(existParticipants);
         }
 
         return setMultiUserChatData(conversation, newChatUserIds, subject);
@@ -78,15 +79,25 @@ public class ChatDelegate {
         return existingConversation;
     }
 
-    public DataConversation setMultiUserChatData(DataConversation conversation, List<String> newParticipantIds, @Nullable String subject) {
-        messengerServerFacade.getChatManager()
+    private Observable<DataConversation> setMultiUserChatData(DataConversation conversation, List<DataUser> newParticipants, @Nullable String subject) {
+        return messengerServerFacade.getChatManager()
                 .createMultiUserChatObservable(conversation.getId(), currentUserId)
-                .doOnNext(multiUserChat -> multiUserChat.invite(newParticipantIds))
+                .doOnNext(multiUserChat -> multiUserChat.invite(getIdFromUsers(newParticipants)))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .map(chat -> conversation)
+                .doOnNext(dataConversation -> dataConversation.setDefaultSubject(getDefaultSubject(newParticipants)));
+    }
 
-        return conversation;
+    private List<String> getIdFromUsers(List<DataUser> dataUsers) {
+        return Queryable.from(dataUsers).map(DataUser::getId).toList();
+    }
+
+    private String getDefaultSubject(List<DataUser> dataUsers) {
+        StringBuilder builder = new StringBuilder();
+        for (DataUser user : dataUsers) {
+            if (builder.length() > 0) builder.append(", ");
+            builder.append(user.getUserName());
+        }
+        return builder.toString();
     }
 }

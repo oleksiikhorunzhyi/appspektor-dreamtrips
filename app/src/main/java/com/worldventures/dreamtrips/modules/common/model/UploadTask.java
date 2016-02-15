@@ -18,7 +18,7 @@ public class UploadTask implements IFullScreenObject {
     private String amazonTaskId;
     private String bucketName;
     private String key;
-
+    private String purpose;
     private ArrayList<String> tags;
 
     private String title;
@@ -32,59 +32,10 @@ public class UploadTask implements IFullScreenObject {
 
     private String type;
 
-    private Module module;
-
     private String linkedItemId;
+    private long id;
 
     public UploadTask() {
-    }
-
-    public UploadTask(String filePath) {
-        this.filePath = filePath;
-    }
-
-    protected UploadTask(Parcel in) {
-        filePath = in.readString();
-        progress = in.readInt();
-        amazonTaskId = in.readString();
-        bucketName = in.readString();
-        key = in.readString();
-        tags = in.createStringArrayList();
-        title = in.readString();
-        locationName = in.readString();
-        latitude = in.readFloat();
-        longitude = in.readFloat();
-        originUrl = in.readString();
-        type = in.readString();
-        linkedItemId = in.readString();
-    }
-
-    public static final Creator<UploadTask> CREATOR = new Creator<UploadTask>() {
-        @Override
-        public UploadTask createFromParcel(Parcel in) {
-            return new UploadTask(in);
-        }
-
-        @Override
-        public UploadTask[] newArray(int size) {
-            return new UploadTask[size];
-        }
-    };
-
-    public void changed(UploadTask newTask) {
-        amazonTaskId = newTask.getAmazonTaskId();
-        bucketName = newTask.getBucketName();
-        key = newTask.getKey();
-        status = newTask.getStatus();
-        originUrl = newTask.getOriginUrl();
-    }
-
-    public Module getModule() {
-        return module;
-    }
-
-    public void setModule(Module module) {
-        this.module = module;
     }
 
     public String getFilePath() {
@@ -199,27 +150,12 @@ public class UploadTask implements IFullScreenObject {
         this.type = type;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UploadTask that = (UploadTask) o;
-
-        return !(filePath != null ? !filePath.equals(that.filePath) : that.filePath != null);
-    }
-
     public String getLinkedItemId() {
         return linkedItemId;
     }
 
     public void setLinkedItemId(String linkedItemId) {
         this.linkedItemId = linkedItemId;
-    }
-
-    @Override
-    public int hashCode() {
-        return filePath != null ? filePath.hashCode() : 0;
     }
 
     @Override
@@ -280,39 +216,106 @@ public class UploadTask implements IFullScreenObject {
         return amazonTaskId;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+
+    public String getPurpose() {
+        return purpose;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(filePath);
-        parcel.writeInt(progress);
-        parcel.writeString(amazonTaskId);
-        parcel.writeString(bucketName);
-        parcel.writeString(key);
-        parcel.writeStringList(tags);
-        parcel.writeString(title);
-        parcel.writeString(locationName);
-        parcel.writeFloat(latitude);
-        parcel.writeFloat(longitude);
-        parcel.writeString(originUrl);
-        parcel.writeString(type);
-        parcel.writeString(linkedItemId);
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
+
 
     @Override
     public User getUser() {
         return null;
     }
 
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
     public enum Status {
-        COMPLETED, CANCELED, IN_PROGRESS, FAILED
+        COMPLETED, CANCELED, STARTED, FAILED
     }
 
-    public enum Module {
-        BUCKET, IMAGES, POST
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UploadTask that = (UploadTask) o;
+
+        return id == that.id;
+
     }
 
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.filePath);
+        dest.writeInt(this.progress);
+        dest.writeInt(this.status == null ? -1 : this.status.ordinal());
+        dest.writeString(this.amazonTaskId);
+        dest.writeString(this.bucketName);
+        dest.writeString(this.key);
+        dest.writeString(this.purpose);
+        dest.writeStringList(this.tags);
+        dest.writeString(this.title);
+        dest.writeString(this.locationName);
+        dest.writeFloat(this.latitude);
+        dest.writeFloat(this.longitude);
+        dest.writeLong(shotAt != null ? shotAt.getTime() : -1);
+        dest.writeString(this.originUrl);
+        dest.writeString(this.type);
+        dest.writeString(this.linkedItemId);
+        dest.writeLong(this.id);
+    }
+
+    protected UploadTask(Parcel in) {
+        this.filePath = in.readString();
+        this.progress = in.readInt();
+        int tmpStatus = in.readInt();
+        this.status = tmpStatus == -1 ? null : Status.values()[tmpStatus];
+        this.amazonTaskId = in.readString();
+        this.bucketName = in.readString();
+        this.key = in.readString();
+        this.purpose = in.readString();
+        this.tags = in.createStringArrayList();
+        this.title = in.readString();
+        this.locationName = in.readString();
+        this.latitude = in.readFloat();
+        this.longitude = in.readFloat();
+        long tmpShotAt = in.readLong();
+        this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
+        this.originUrl = in.readString();
+        this.type = in.readString();
+        this.linkedItemId = in.readString();
+        this.id = in.readLong();
+    }
+
+    public static final Creator<UploadTask> CREATOR = new Creator<UploadTask>() {
+        public UploadTask createFromParcel(Parcel source) {
+            return new UploadTask(source);
+        }
+
+        public UploadTask[] newArray(int size) {
+            return new UploadTask[size];
+        }
+    };
 }

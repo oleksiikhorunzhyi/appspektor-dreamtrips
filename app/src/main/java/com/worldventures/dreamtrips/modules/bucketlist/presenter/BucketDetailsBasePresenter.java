@@ -1,25 +1,18 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoDeleteRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoFullscreenRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -33,15 +26,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
-public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V>
-        implements TransferListener {
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
 
     @Inject
     BucketItemManager bucketItemManager;
     @Inject
     protected SnappyRepository db;
+    @Inject
+    protected PhotoUploadingManager photoUploadingManager;
 
     protected BucketItem.BucketType type;
     protected String bucketItemId;
@@ -63,19 +55,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
         restoreBucketItem();
 
-        List<UploadTask> tasks = db.getUploadTasksForId(bucketItemId);
-
-        if (!tasks.isEmpty()) {
-            Collections.reverse(tasks);
-            Queryable.from(tasks).forEachR(task -> {
-                TransferObserver transferObserver = photoUploadingSpiceManager
-                        .getTransferById(task.getAmazonTaskId());
-                transferObserver.setTransferListener(this);
-                onStateChanged(transferObserver.getId(), transferObserver.getState());
-            });
-        }
-
-        syncUI(tasks);
+        syncUI();
     }
 
     protected void restoreBucketItem() {
@@ -92,10 +72,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     protected void syncUI() {
-        syncUI(db.getUploadTasksForId(bucketItemId));
-    }
-
-    protected void syncUI(List<UploadTask> tasks) {
         if (bucketItem != null) {
             view.setTitle(bucketItem.getName());
             view.setDescription(bucketItem.getDescription());
@@ -107,11 +83,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             List<BucketPhoto> photos = bucketItem.getPhotos();
             if (photos != null && !photos.isEmpty()) {
                 int coverIndex = Math.max(photos.indexOf(bucketItem.getCoverPhoto()), 0);
+                Collections.reverse(photos);
                 Collections.swap(photos, coverIndex, 0);
                 view.setImages(photos);
             }
-
-            if (!tasks.isEmpty()) view.addImages(tasks);
         }
     }
 
@@ -122,30 +97,16 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
     /**
      * Current tab name will be override to null on BucketTypePresenter::dropView()
+     *
+     * @return
      * @see BucketDetailsBasePresenter#openFullScreen(int)
      * @see BucketTabsPresenter#dropView()
-     * @return
      */
     private boolean isTabTrulyVisible() {
         String currentTabTypeName = db.getOpenBucketTabType();
         return currentTabTypeName == null || currentTabTypeName.equalsIgnoreCase(type.getName());
     }
 
-    public void onEvent(BucketPhotoUploadCancelRequestEvent event) {
-        photoUploadingSpiceManager.cancelUploading(event.getModelObject());
-
-        db.removeUploadTask(event.getModelObject());
-        view.deleteImage(event.getModelObject());
-    }
-
-    public void onCoverClicked() {
-        if (!bucketItem.getPhotos().isEmpty())
-            openFullScreen(Queryable.from(bucketItem.getPhotos()).first());
-    }
-
-    public void onEvent(BucketPhotoFullscreenRequestEvent event) {
-        openFullScreen(event.getPhoto());
-    }
 
     /**
      * On Bucket List all instance of BucketDetailsFragment (with presenters) are initialized
@@ -153,17 +114,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
      * It is not expected behaviour so I save current tab type onTabChange and
      * execute openFullScreen for truly visible tab.
      *
+     * @param position
      * @see BucketTabsPresenter#onTabChange(com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType)
-     *
+     * <p>
      * Method view.isVisibleOnScreen() cannot help to resolve this issue, because it returns
      * true for any BucketDetails instance (current tab and all others)
-     *
+     * <p>
      * If this method calls from external code (so current type is null) -
      * isTabVisible will return true
-     *
      * @see BucketDetailsBasePresenter#isTabTrulyVisible()
-     *
-     * @param position
      */
     public void openFullScreen(int position) {
         if (isTabTrulyVisible()) {
@@ -205,111 +164,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         getBucketItemManager().updateBucketItemCoverId(bucketItem, coverID, this);
     }
 
-    public void onEvent(BucketPhotoDeleteRequestEvent event) {
-        if (bucketItem.getPhotos().size() > 0 &&
-                bucketItem.getPhotos().contains(event.getPhoto())) {
-            eventBus.cancelEventDelivery(event);
-            getBucketItemManager().deleteBucketItemPhoto(event.getPhoto(),
-                    bucketItem, jsonObject -> deleted(event.getPhoto()), this);
-        }
-    }
-
-    protected void deleted(BucketPhoto bucketPhoto) {
-        view.deleteImage(bucketPhoto);
-    }
-
-    ////////////////////////////////////////
-    /////// Photo upload
-    ////////////////////////////////////////
-
-    protected void copyFileIfNeeded(UploadTask task) {
-        doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> upload(task, filePath));
-    }
-
-    private void upload(UploadTask uploadTask, String filePath) {
-        Timber.d("Starting bucket photo upload");
-        uploadTask.setFilePath(filePath);
-
-        view.addImage(uploadTask);
-
-        startUpload(uploadTask);
-    }
-
-    private void startUpload(UploadTask uploadTask) {
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START,
-                uploadTask.getType(), bucketItem.getType());
-        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
-
-        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
-
-        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
-        db.saveUploadTask(uploadTask);
-
-        transferObserver.setTransferListener(this);
-    }
-
-    @Override
-    public void onStateChanged(int id, TransferState state) {
-        if (view != null) {
-            UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(String.valueOf(id));
-            if (bucketPhotoUploadTask != null) {
-                if (state.equals(TransferState.COMPLETED)
-                        && !bucketPhotoUploadTask.getStatus().equals(UploadTask.Status.COMPLETED)) {
-                    bucketPhotoUploadTask.setOriginUrl(photoUploadingSpiceManager
-                            .getResultUrl(bucketPhotoUploadTask));
-                    bucketPhotoUploadTask.setStatus(UploadTask.Status.COMPLETED);
-                    addPhotoToBucketItem(bucketPhotoUploadTask);
-                } else if (state.equals(TransferState.FAILED)
-                        && !bucketPhotoUploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
-                    photoUploadError(bucketPhotoUploadTask);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-    }
-
-    @Override
-    public void onError(int id, Exception ex) {
-        if (view == null) return;
-        //
-        UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(String.valueOf(id));
-        if (bucketPhotoUploadTask != null)
-            photoUploadError(bucketPhotoUploadTask);
-    }
-
-    private void addPhotoToBucketItem(UploadTask task) {
-        doRequest(new UploadBucketPhotoCommand(bucketItemId, task),
-                photo -> photoAdded(task, photo),
-                spiceException -> onError(Integer.valueOf(task.getAmazonTaskId()), spiceException));
-    }
-
-    private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
-        view.replace(bucketPhotoUploadTask, bucketPhoto);
-        db.removeUploadTask(bucketPhotoUploadTask);
-
-        getBucketItemManager().updateBucketItemWithPhoto(bucketItem, bucketPhoto);
-    }
-
-    private void photoUploadError(UploadTask uploadTask) {
-        uploadTask.setStatus(UploadTask.Status.FAILED);
-        db.saveUploadTask(uploadTask);
-        view.itemChanged(uploadTask);
-    }
-
-    public void onEvent(BucketPhotoReuploadRequestEvent event) {
-        eventBus.cancelEventDelivery(event);
-
-        db.removeUploadTask(event.getTask());
-        view.deleteImage(event.getTask());
-
-        event.getTask().setStatus(UploadTask.Status.IN_PROGRESS);
-        upload(event.getTask(), event.getTask().getFilePath());
-    }
-
     protected BucketItemManager getBucketItemManager() {
         return bucketItemManager;
     }
@@ -317,12 +171,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     @Override
     public void dropView() {
         super.dropView();
-        Queryable.from(photoUploadingSpiceManager.getUploadingTranferListeners())
-                .forEachR(observer ->
-                        observer.setTransferListener(null));
     }
 
-    public interface View extends Presenter.View {
+
+    public interface View extends RxView {
         void setTitle(String title);
 
         void setDescription(String description);
@@ -341,18 +193,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         void setImages(List<BucketPhoto> photos);
 
-        void addImages(List<UploadTask> tasks);
-
-        void addImage(UploadTask uploadTask);
-
-        void deleteImage(UploadTask task);
-
-        void deleteImage(BucketPhoto bucketPhoto);
-
-        void itemChanged(UploadTask uploadTask);
-
-        void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto);
-
-        UploadTask getBucketPhotoUploadTask(String taskId);
+        UploadTask getBucketPhotoUploadTask(long taskId);
     }
 }

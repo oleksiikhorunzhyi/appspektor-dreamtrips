@@ -65,6 +65,12 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        photoPickerDelegate.setSelectedPhotosProvider(null);
+    }
+
     protected abstract void registerCells();
 
     protected abstract int getPhotosType();

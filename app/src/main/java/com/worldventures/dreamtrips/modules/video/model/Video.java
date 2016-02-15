@@ -60,7 +60,7 @@ public class Video {
     }
 
     public boolean isFeatured() {
-        return !TextUtils.isEmpty(category) && category.equals(FEATURED);
+        return !TextUtils.isEmpty(category) && category.trim().equals(FEATURED);
     }
 
     public boolean isRecent() {

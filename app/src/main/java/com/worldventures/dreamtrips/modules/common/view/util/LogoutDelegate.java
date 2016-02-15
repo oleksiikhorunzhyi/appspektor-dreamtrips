@@ -89,6 +89,7 @@ public class LogoutDelegate {
     }
 
     public interface OnLogoutSuccessListener {
+
         void onLogoutSuccess();
     }
 }

@@ -21,6 +21,7 @@ import timber.log.Timber;
 public class DrawableUtil {
 
     public static final int THUMBNAIL_BIG = 1;
+    private static final int FULL_HD_WIDTH = 1920;
 
     private Context context;
 
@@ -72,16 +73,8 @@ public class DrawableUtil {
             int what = w > l ? w : l;
 
             BitmapFactory.Options options = new BitmapFactory.Options();
-            if (what > 3000) {
-                options.inSampleSize = scale * 6;
-            } else if (what > 2000 && what <= 3000) {
-                options.inSampleSize = scale * 5;
-            } else if (what > 1500 && what <= 2000) {
-                options.inSampleSize = scale * 4;
-            } else if (what > 1000 && what <= 1500) {
-                options.inSampleSize = scale * 3;
-            } else if (what > 400 && what <= 1000) {
-                options.inSampleSize = scale * 2;
+            if (what > FULL_HD_WIDTH) {
+                options.inSampleSize = scale * (int)Math.round((double)what / FULL_HD_WIDTH);
             } else {
                 options.inSampleSize = scale;
             }
@@ -102,7 +95,7 @@ public class DrawableUtil {
                         bitmap.getHeight(), matrix, false);
             }
 
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
 
             return file.getAbsolutePath();
         } catch (IOException e) {

@@ -4,11 +4,8 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
@@ -21,6 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
@@ -35,6 +33,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFeedReloadEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,7 +44,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import icepick.State;
-
 
 public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extends Presenter<V> {
 
@@ -248,18 +246,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(EditBucketEvent event) {
+        if (!view.isVisibleOnScreen()) return;
+        //
         BucketBundle bundle = new BucketBundle();
         bundle.setType(event.getType());
         bundle.setBucketItemUid(event.getUid());
 
-        if (view.isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.container_details_floating);
-            fragmentCompass.showContainer();
-            NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);
-        } else {
-            bundle.setLock(true);
-            NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
-        }
+        view.showEdit(bundle);
     }
 
     private void itemDeleted(FeedEntity feedEntity) {
@@ -284,12 +277,20 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
                     event.getFlagReasonId(), event.getNameOfReason()));
     }
 
+
+    public void onEvent(DownloadPhotoEvent event) {
+        if (view.isVisibleOnScreen())
+            doRequest(new DownloadImageCommand(context, event.url));
+    }
+
     public interface View extends Presenter.View {
         void startLoading();
 
         void finishLoading();
 
         void refreshFeedItems(List<FeedItem> events, boolean needLoader);
+
+        void showEdit(BucketBundle bucketBundle);
 
     }
 

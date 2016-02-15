@@ -16,22 +16,22 @@ import java.lang.reflect.Type;
 public class GsonAttachmentAdapter implements JsonSerializer<AttachmentHolder>, JsonDeserializer<AttachmentHolder> {
     @Override
     public AttachmentHolder deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject jsonObject =  json.getAsJsonObject();
+        JsonObject jsonObject = json.getAsJsonObject();
         String type = jsonObject.get("type").getAsString();
 
         AttachmentHolder holder = new AttachmentHolder();
         // noinspection all
         holder.setType(type);
-        Class<?> clazz;
         switch (type) {
             case AttachmentType.IMAGE:
-                clazz = ImageAttachment.class;
+                holder.setItem(context.deserialize(jsonObject.get("item"), ImageAttachment.class));
                 break;
             default:
-                return null;
+                holder.setItem(null);
+                holder.setType(AttachmentType.UNSUPPORTED);
+                return holder;
         }
 
-        holder.setItem(context.deserialize(jsonObject.get("item"), clazz));
         return holder;
     }
 

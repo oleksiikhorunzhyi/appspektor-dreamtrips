@@ -14,7 +14,7 @@ public class StaticPageConfig {
         String result = "";
         if (documents != null && documents.size() > 0) {
             Document document = Queryable.from(documents).where(temp ->
-                    title.equalsIgnoreCase(temp.name)).first();
+                    title.equalsIgnoreCase(temp.name)).firstOrDefault();
             if (document != null) {
                 result = document.url;
             }

@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import icepick.State;
 
-
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     @Inject
@@ -45,6 +44,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     BucketItem currentItem;
 
     private List<BucketItem> bucketItems = new ArrayList<>();
+
+    private List<BucketItem> filteredItems= new ArrayList<>();
 
     public BucketListPresenter(BucketItem.BucketType type, ObjectGraph objectGraph) {
         super();
@@ -87,10 +88,10 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     private void fillWithItems() {
-        List<BucketItem> filteredItems = new ArrayList<>();
         if (bucketItems.isEmpty()) {
             currentItem = null;
         } else {
+            filteredItems.clear();
             if (showToDO) {
                 Collection<BucketItem> toDo = Queryable.from(bucketItems)
                         .filter((bucketItem) -> !bucketItem.isDone())
@@ -207,10 +208,15 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             return;
         }
 
-        refresh(bucketItemManager.moveItem(fromPosition, toPosition, type, spiceException -> {
+        refresh(bucketItemManager.moveItem(getOriginalPosition(fromPosition),
+                getOriginalPosition(toPosition), type, spiceException -> {
             refresh();
             handleError(spiceException);
         }));
+    }
+
+    private int getOriginalPosition(int filteredPosition){
+        return bucketItems.indexOf(filteredItems.get(filteredPosition));
     }
 
     public void addToBucketList(String title) {

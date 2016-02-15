@@ -4,6 +4,7 @@ import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -23,6 +24,7 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
 import java.util.List;
+
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
@@ -87,8 +89,12 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 ChatStateExtension extension = (ChatStateExtension) messageXMPP.getExtension(ChatStateExtension.NAMESPACE);
                 String from = messageXMPP.getFrom();
                 if (((Message) packet).getType() == Message.Type.chat) {
-                    notifyOnChatStateChangedListener(messageXMPP.getThread(),
-                            JidCreatorHelper.obtainId(from), extension.getChatState());
+                    //CRUTCH! There is no thread element in iOS message packet. So we obtain single chat thread from from and to ids
+                    String fromUserId = JidCreatorHelper.obtainId(from);
+                    String toUserId = JidCreatorHelper.obtainId(messageXMPP.getTo());
+                    String thread = ThreadCreatorHelper.obtainThreadSingleChat(fromUserId, toUserId);
+
+                    notifyOnChatStateChangedListener(thread, fromUserId, extension.getChatState());
                 } else {
                     notifyOnChatStateChangedListener(JidCreatorHelper.obtainId(from),
                             JidCreatorHelper.obtainUserIdFromGroupJid(from), extension.getChatState());

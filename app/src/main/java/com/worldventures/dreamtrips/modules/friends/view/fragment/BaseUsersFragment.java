@@ -18,10 +18,10 @@ import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -88,7 +88,10 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
         layoutManager = createLayoutManager();
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+            recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
+                    .getDrawable(R.drawable.list_divider), true));
+        }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
@@ -149,7 +152,9 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     @Override
     public void openFriendPrefs(UserBundle userBundle) {
         if (isVisibleOnScreen())
-            NavigationBuilder.create().with(activityRouter).data(userBundle).move(Route.FRIEND_PREFERENCES);
+            router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
+                    .data(userBundle)
+                    .build());
     }
 
     @Override
@@ -170,10 +175,10 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     @Override
     public void openUser(UserBundle userBundle) {
         if (isVisibleOnScreen())
-            NavigationBuilder.create().with(activityRouter)
-                    .data(userBundle)
+            router.moveTo(routeCreator.createRoute(userBundle.getUser().getId()), NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .move(routeCreator.createRoute(userBundle.getUser().getId()));
+                    .data(userBundle)
+                    .build());
 
     }
 

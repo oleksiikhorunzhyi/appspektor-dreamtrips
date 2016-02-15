@@ -105,6 +105,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         ButterKnife.reset(this);
+        photoPickerDelegate.setupPhotoPickerLayout(null);
+        setScrollableView(null);
     }
 
     @Override
@@ -212,6 +214,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     private void updateCancelButtonState() {
+        if (cancel == null) return;
         if (fragmentManager.getBackStackEntryCount() < 2)
             cancel.setText(R.string.cancel);
         else
@@ -225,7 +228,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         //
         if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
         updateCancelButtonState();
-        int panelHeight = (int) container.getResources().getDimension(R.dimen.picker_panel_height);
+        int panelHeight = (int) getResources().getDimension(R.dimen.picker_panel_height);
         if (isKeyboardClosed)
             handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
         else

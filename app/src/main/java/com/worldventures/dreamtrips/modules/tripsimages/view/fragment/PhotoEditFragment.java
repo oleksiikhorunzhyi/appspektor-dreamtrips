@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -119,11 +118,8 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     }
 
     protected void showTagViewGroup() {
-        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         tag.setSelected(true);
-        RectF imageBounds = new RectF();
-        ivImage.getHierarchy().getActualImageBounds(imageBounds);
-        taggableImageHolder.show(imageBounds);
+        taggableImageHolder.show(ivImage);
     }
 
     protected void hideTagViewGroup() {
@@ -141,7 +137,6 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
             } else {
                 hideTagViewGroup();
             }
-            taggableImageHolder.restoreState();
         });
     }
 
@@ -214,6 +209,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     public void setupTaggingHolder(Photo photo) {
         taggableImageHolder.setup(this, photo);
         taggableImageHolder.setCompleteListener(this::finish);
+        showTagViewGroup();
     }
 
     @Override

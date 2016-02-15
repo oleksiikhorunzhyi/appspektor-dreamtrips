@@ -9,15 +9,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <View
-        android:id="@+id/comment_divider"
+    <LinearLayout
+        android:id="@+id/comment_container"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/grey"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <include
-        android:id="@+id/comment_preview"
-        layout="@layout/adapter_item_comment_preview"/>
+        <View
+            android:id="@+id/comment_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/grey"/>
+
+        <include
+            android:id="@+id/comment_preview"
+            layout="@layout/adapter_item_comment_preview"/>
+    </LinearLayout>
 
 </LinearLayout>

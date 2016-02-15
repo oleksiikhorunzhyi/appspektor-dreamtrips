@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.custom.tagview;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,8 @@ import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.InjectView;
+import butterknife.Optional;
 
 public abstract class TagView<T extends TagActionListener> extends RelativeLayout {
     protected PhotoTag photoTag;
@@ -24,27 +21,29 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
     protected User account;
     protected Photo photo;
 
+    @Optional
     @InjectView(R.id.pointer_top)
     View pointerTop;
+    @Optional
     @InjectView(R.id.pointer_bottom)
     View pointerBottom;
+    @Optional
     @InjectView(R.id.pointer_shift_x)
     View space;
 
     PhotoTag.TagPosition absoluteTagPosition;
 
     public TagView(Context context) {
-        super(context);
-        initialize();
+        this(context, null);
     }
 
     public TagView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initialize();
+        this(context, attrs, 0);
     }
 
     public TagView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         initialize();
     }
 
@@ -63,12 +62,18 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        setupPointers();
+    }
+
+    protected void setupPointers() {
         int leftMargin = ((LayoutParams) this.getLayoutParams()).leftMargin;
         int topMargin = ((LayoutParams) this.getLayoutParams()).topMargin;
         float tagPosition = absoluteTagPosition.getTopLeft().getX();
         pointerTop.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int width = pointerTop.getMeasuredWidth();
-        space.getLayoutParams().width = (int) (tagPosition - leftMargin - (width / 2));
+        int pointerMargin = (int) (tagPosition - leftMargin - (width / 2));
+        int absoluteWidth = (int) (absoluteTagPosition.getBottomRight().getX() - absoluteTagPosition.getTopLeft().getX());
+        space.getLayoutParams().width = pointerMargin + absoluteWidth / 2;
 
         int y = (int) absoluteTagPosition.getTopLeft().getY();
         if (y > topMargin + this.getHeight()) {
@@ -97,19 +102,6 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
         ((ViewGroup) getParent()).removeView(this);
     }
 
-    public static TagView create(Context context, PhotoTag photoTag, User account, Photo photo) {
-        TagView tagView;
-        if (photoTag.getUser() == null) {
-            tagView = new CreationTagView(context);
-        } else {
-            tagView = new ExistsTagView(context);
-        }
-
-        tagView.setPhotoTag(photoTag);
-        tagView.setAccount(account);
-        tagView.setPhoto(photo);
-        return tagView;
-    }
 
     public PhotoTag.TagPosition getAbsoluteTagPosition() {
         return absoluteTagPosition;

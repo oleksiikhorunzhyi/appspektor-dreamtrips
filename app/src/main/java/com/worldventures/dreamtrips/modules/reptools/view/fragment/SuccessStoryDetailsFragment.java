@@ -7,12 +7,16 @@ import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 
@@ -55,13 +59,15 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         } else {
             Bundle bundle = new Bundle();
             bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, story);
-            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.SUCCESS_STORES_DETAILS);
+            router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forActivity()
+                    .data(bundle)
+                    .build());
         }
     }
 
     @Override
     public void afterCreateView(View rootView) {
-        slave = getArguments().getBoolean(EXTRA_SLAVE);
+        slave = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getBoolean(EXTRA_SLAVE);
 
         if (!ViewUtils.isTablet(getActivity())) {
             ivFullscreen.setVisibility(View.GONE);
@@ -97,7 +103,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @Override
     protected SuccessStoryDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        story = getArguments().getParcelable(EXTRA_STORY);
+        story = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getParcelable(EXTRA_STORY);
         return new SuccessStoryDetailsPresenter(story, getURL());
     }
 
@@ -119,5 +125,17 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         } else {
             informUser(getString(R.string.ss_has_been_removed_from_favorites));
         }
+
+        eventBus.postSticky(new StoryLikedEvent(story.getUrl(), story.isLiked()));
+    }
+
+    @Override
+    public void openShare(String url, @ShareType String type) {
+        ShareBundle data = new ShareBundle();
+        data.setShareUrl(url);
+        data.setShareType(type);
+        router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
     }
 }

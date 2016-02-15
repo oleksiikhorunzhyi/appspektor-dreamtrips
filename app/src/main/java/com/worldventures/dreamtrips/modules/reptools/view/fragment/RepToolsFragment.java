@@ -10,17 +10,12 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -35,9 +30,6 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     protected ViewPager pager;
 
     private BaseStatePagerAdapter adapter;
-
-    @Inject
-    protected FragmentCompass fragmentCompass;
 
     @Override
     public void afterCreateView(View rootView) {

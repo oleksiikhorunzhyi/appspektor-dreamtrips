@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -9,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
@@ -17,11 +20,18 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
+
+import java.util.ArrayList;
+import java.util.List;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
@@ -29,7 +39,6 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import icepick.State;
-
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
@@ -45,6 +54,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     protected NavigationDrawerViewImpl navDrawer;
 
     private ActionBarDrawerToggle mDrawerToggle;
+    private List<DrawerListener> rightDrawerListeners = new ArrayList<>();
 
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
@@ -93,7 +103,9 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         setUpBurger();
         setUpMenu();
         //
-        Fragment currentFragment = fragmentCompass.getCurrentFragment();
+
+        BaseFragment currentFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.container_main);
+
         if (currentComponent == null && currentFragment != null) {
             currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
         }
@@ -200,8 +212,42 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         disableRightDrawer();
         makeActionBarGone(component.isSkipGeneralToolbar());
         //
+        currentComponent = component;
+        openComponent(component);
+    }
+
+    private void openComponent(ComponentDescription component) {
+        openComponent(component, null);
+    }
+
+    private void openComponent(ComponentDescription component, @Nullable Bundle args) {
+        setTitle(component.getToolbarTitle());
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
+        // check if current
+        boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
+        if (theSame) return;
+        //
         navigationDrawerPresenter.setCurrentComponent(component);
-        getPresentationModel().openComponent(component);
+        // check if in stack
+        String backStackName = null;
+        FragmentManager fm = getSupportFragmentManager();
+        for (int entry = 0; entry < fm.getBackStackEntryCount(); entry++) {
+            String name = fm.getBackStackEntryAt(entry).getName();
+            if (name.equals(component.getKey())) {
+                backStackName = name;
+                break;
+            }
+        }
+        if (backStackName != null) {
+            fm.popBackStack(backStackName, 0);
+            return;
+        }
+        router.moveTo(Route.restoreByKey(component.getKey()), NavigationConfigBuilder.forFragment()
+                .fragmentManager(getSupportFragmentManager())
+                .containerId(R.id.container_main)
+                .backStackEnabled(true)
+                .data(args)
+                .build());
     }
 
     private void itemReseleted(ComponentDescription route) {
@@ -256,10 +302,12 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     public void openRightDrawer() {
         drawerLayout.openDrawer(GravityCompat.END);
         enableRightDrawer();
+        Queryable.from(rightDrawerListeners).forEachR(DrawerListener::onDrawerOpened);
     }
 
     public void closeRightDrawer() {
         drawerLayout.closeDrawer(GravityCompat.END);
+        Queryable.from(rightDrawerListeners).forEachR(DrawerListener::onDrawerClosed);
     }
 
     public void disableLeftDrawer() {
@@ -301,4 +349,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         }
     }
 
+    public void attachRightDrawerListener(DrawerListener listener) {
+        rightDrawerListeners.add(listener);
+    }
+
+    public void detachRightDrawerListener(DrawerListener listener) {
+        rightDrawerListeners.remove(listener);
+    }
 }

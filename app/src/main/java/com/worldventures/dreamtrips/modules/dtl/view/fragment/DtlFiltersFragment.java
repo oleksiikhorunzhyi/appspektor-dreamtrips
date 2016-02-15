@@ -3,59 +3,69 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.widget.TextView;
 
 import com.appyvet.rangebar.RangeBar;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterHeaderAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
-import java.util.Collections;
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_filters)
-public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> implements DtlFiltersPresenter.View {
+public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
+        implements DtlFiltersPresenter.View, DrawerListener {
 
     @InjectView(R.id.range_bar_distance)
     protected RangeBar rangeBarDistance;
     @InjectView(R.id.range_bar_price)
     protected RangeBar rangeBarPrice;
-    @InjectView(R.id.switchView)
-    protected SwitchCompat switchCompat;
+    @InjectView(R.id.distance_filter_caption)
+    protected TextView distanceCaption;
     @InjectView(R.id.recyclerViewFilters)
-    protected EmptyRecyclerView recyclerViewFilters;
-
-    protected BaseArrayListAdapter<DtlMerchantsFilterAttribute> filtersAdapter;
+    protected RecyclerView recyclerView;
+    //
+    MultiSelectionManager selectionManager;
+    //
+    protected BaseDelegateAdapter baseDelegateAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        //
+        baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), this);
+        baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
+        baseDelegateAdapter.registerCell(DtlMerchantAttribute.class, DtlFilterAttributeCell.class);
+        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, filterHeaderClickDelegate);
+        baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, filterItemClickDelegate);
+        //
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        this.recyclerViewFilters.setLayoutManager(layoutManager);
-
-        this.filtersAdapter = new BaseArrayListAdapter<>(getActivity(), this);
-        this.filtersAdapter.registerCell(DtlMerchantsFilterHeaderAttribute.class, DtlFilterAttributeHeaderCell.class);
-        this.filtersAdapter.registerCell(DtlMerchantsFilterAttribute.class, DtlFilterAttributeCell.class);
-
-        recyclerViewFilters.setAdapter(filtersAdapter);
-
-        rangeBarDistance.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
-                getPresenter().distanceChanged(Integer.valueOf(rightValue)));
-        rangeBarPrice.setOnRangeBarChangeListener((rangeBar, leftIndex, rightIndex, leftValue, rightValue) ->
-                getPresenter().priceChanged(Integer.valueOf(leftValue), Integer.valueOf(rightValue)));
-        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().toggleDistance(isChecked));
+        recyclerView.setLayoutManager(layoutManager);
+        //
+        selectionManager = new MultiSelectionManager(recyclerView);
+        selectionManager.setEnabled(true);
+        //
+        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
+        //
+        ((MainActivity) getActivity()).attachRightDrawerListener(this);
     }
 
     @OnClick(R.id.apply)
@@ -77,23 +87,85 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter> impl
         return new DtlFiltersPresenter();
     }
 
-    @Override
-    public void attachFilterData(DtlFilterData filterData) {
-        rangeBarDistance.setRangePinsByValue(10.0f, filterData.getMaxDistance());
-        rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
-        switchCompat.setChecked(filterData.getDistanceType() == DtlFilterData.DistanceType.KMS);
-        if (filterData.getAmenities() != null && !filterData.getAmenities().isEmpty())
-            setupAttributesHeader(filterData);
+    private CellDelegate<SelectableHeaderItem> filterHeaderClickDelegate = new CellDelegate<SelectableHeaderItem>() {
+        @Override
+        public void onCellClicked(SelectableHeaderItem model) {
+            selectionManager.setSelectionForAll(model.isSelected());
+        }
+    };
+
+    private CellDelegate<DtlMerchantAttribute> filterItemClickDelegate = new CellDelegate<DtlMerchantAttribute>() {
+        @Override
+        public void onCellClicked(DtlMerchantAttribute model) {
+            drawHeaderSelection();
+        }
+    };
+
+    private void drawHeaderSelection() {
+        final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class);
+        final boolean allSelected = selectionManager.isAllSelected(amenityViewTypeId);
+        selectionManager.setSelection(0, allSelected);
+    }
+
+    private List<DtlMerchantAttribute> obtainSelectedAmenities() {
+        List<Integer> positions = selectionManager
+                .getSelectedPositions(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
+        return Queryable.from(baseDelegateAdapter.getItems())
+                .filter((element, index) -> positions.contains(index)).toList();
     }
 
     @Override
-    public void dataSetChanged() {
-        filtersAdapter.notifyDataSetChanged();
+    public void attachFilterData(DtlFilterData filterData) {
+        if (filterData.hasAmenities()) setupAttributesHeader(filterData);
+        syncUi(filterData);
+    }
+
+    @Override
+    public void syncUi(DtlFilterData filterData) {
+        rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
+        rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
+        distanceCaption.setText(getString(R.string.dtl_distance,
+                getString(filterData.getDistanceType() == DistanceType.MILES ?
+                        R.string.mi : R.string.km)));
+        updateSelection(filterData);
+        drawHeaderSelection();
+    }
+
+    private void updateSelection(DtlFilterData filterData) {
+        if (filterData.hasAmenities()) {
+            selectionManager.setSelectedPositions(Queryable.from(filterData.getSelectedAmenities())
+                    .map(element -> baseDelegateAdapter.getItems().indexOf(element)).toList());
+        }
     }
 
     private void setupAttributesHeader(DtlFilterData filterData) {
-        Collections.sort(filterData.getAmenities());
-        filtersAdapter.clearAndUpdateItems(filterData.getAmenities());
-        filtersAdapter.addItem(0, new DtlMerchantsFilterHeaderAttribute(getString(R.string.dtl_amenities)));
+        baseDelegateAdapter.clearAndUpdateItems(filterData.getAmenities());
+        baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getString(R.string.dtl_amenities), true));
+    }
+
+    @Override
+    public DtlFilterParameters getFilterParameters() {
+        return DtlFilterParameters.Builder.create()
+                .price(Integer.valueOf(rangeBarPrice.getLeftValue()),
+                        Integer.valueOf(rangeBarPrice.getRightValue()))
+                .maxDistance(Integer.valueOf(rangeBarDistance.getRightValue()))
+                .selectedAmenities(obtainSelectedAmenities())
+                .build();
+    }
+
+    @Override
+    public void onDestroyView() {
+        ((MainActivity) getActivity()).detachRightDrawerListener(this);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDrawerOpened() {
+        getPresenter().requestActualFilterData();
+    }
+
+    @Override
+    public void onDrawerClosed() {
+        // do nothing?
     }
 }

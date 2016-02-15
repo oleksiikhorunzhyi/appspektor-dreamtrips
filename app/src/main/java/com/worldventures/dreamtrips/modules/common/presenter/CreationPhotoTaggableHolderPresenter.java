@@ -24,13 +24,17 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         super(photo);
     }
 
-    public void addPhotoTag(PhotoTag tag) {
-        view.addTag(tag);
+
+    @Override
+    public void showExistingTags() {
+        view.showSuggestions();
+        super.showExistingTags();
     }
 
     @Override
     public void deletePhotoTag(PhotoTag tag) {
         view.deleteTag(tag);
+        view.showSuggestions();
     }
 
     public void pushRequests() {
@@ -52,6 +56,9 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
             doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
                 newDeletedTags.clear();
                 deleteComplete = true;
+                List<PhotoTag> tags = Queryable.from(photo.getPhotoTags())
+                        .filter(tag -> userIds.contains(tag.getUser().getId())).toList();
+                photo.getPhotoTags().removeAll(tags);
                 onComplete();
             });
         } else {
@@ -97,7 +104,7 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
     }
 
     private boolean isContainUser(List<PhotoTag> tagList, User user) {
-        return Queryable.from(tagList).map(tag -> tag.getUser()).contains(user);
+        return Queryable.from(tagList).map(tag -> tag.getUser() == null ? new User() : tag.getUser()).contains(user);
     }
 
     public interface View extends TaggableImageHolderPresenter.View {
@@ -110,6 +117,8 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         ArrayList<PhotoTag> getLocallyAddedTags();
 
         ArrayList<PhotoTag> getLocallyDeletedTags();
+
+        void showSuggestions();
     }
 
 }

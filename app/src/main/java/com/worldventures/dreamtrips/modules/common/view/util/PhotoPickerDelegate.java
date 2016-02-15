@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 import android.os.Bundle;
 import android.view.View;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import java.util.List;
@@ -57,6 +56,7 @@ public class PhotoPickerDelegate {
     }
 
     public interface SelectedPhotosProvider {
+
         List provideSelectedPhotos();
 
         int getType();

@@ -31,6 +31,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
+import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -69,6 +72,17 @@ public class ApiModule {
     }
 
     @Provides
+    RestAdapter.Builder provideRestAdapterBuilder(GsonConverter gsonConverter, RequestInterceptor requestInterceptor, OkClient okClient) {
+        return new RestAdapter.Builder()
+                .setEndpoint(BuildConfig.DreamTripsApi)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setConverter(gsonConverter)
+                .setClient(okClient)
+                .setRequestInterceptor(requestInterceptor);
+    }
+
+
+    @Provides
     RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper, AppVersionNameBuilder appVersionNameBuilder) {
         return request -> {
             if (appSessionHolder.get().isPresent()) {
@@ -100,6 +114,8 @@ public class ApiModule {
                 .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
                 .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
                 .registerTypeAdapter(DtlOffer.class, new DtlOfferDeserializer())
+                .registerTypeAdapter(Setting.class, new SettingsDeserializer())
+                .registerTypeAdapter(Setting.class, new SettingsSerializer())
                 .create();
     }
 
@@ -111,8 +127,9 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    DtlApi provideDtlApi(RestAdapter adapter) {
-        return adapter.create(DtlApi.class);
+    DtlApi provideDtlApi(RestAdapter.Builder builder, DTErrorHandler errorHandler) {
+        return builder.setErrorHandler(errorHandler).build()
+                .create(DtlApi.class);
     }
 
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {

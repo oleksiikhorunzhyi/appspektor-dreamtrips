@@ -1,0 +1,1 @@
+-keepclassmembernames class com.messenger.api.** { *; }

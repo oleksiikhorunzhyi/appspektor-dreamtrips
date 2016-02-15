@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.model;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,6 +20,7 @@ public interface FeedEntity extends Serializable, UidItem {
 
     void setCommentsCount(int count);
 
+    @NotNull
     List<Comment> getComments();
 
     void setComments(List<Comment> comments);

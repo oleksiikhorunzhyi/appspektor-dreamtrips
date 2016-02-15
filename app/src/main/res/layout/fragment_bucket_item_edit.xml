@@ -12,7 +12,6 @@
         android:gravity="bottom"
         sothree:umanoOverlay="true"
         sothree:umanoPanelHeight="@dimen/picker_panel_height"
-        sothree:umanoParallaxOffset="100dp"
         sothree:umanoShadowHeight="4dp">
 
         <include layout="@layout/layout_bucket_item_edit"/>

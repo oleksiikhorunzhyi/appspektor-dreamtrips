@@ -45,6 +45,7 @@ import com.messenger.ui.view.settings.GroupSettingsPath;
 import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
+import com.messenger.util.ParticipantsDaoHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import com.techery.spares.module.Injector;
@@ -59,7 +60,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileMa
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -107,6 +107,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
+    protected ParticipantsDaoHelper participantsDaoHelper;
     protected PhotoPickerDelegate photoPickerDelegate;
 
     protected String conversationId;
@@ -136,6 +137,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private boolean typing;
 
     private Subscription messageStreamSubscription;
+    private Subscription participantsStreamSubcription;
     private Observable<Chat> chatObservable;
     private Observable<DataConversation> conversationObservable;
     private PublishSubject<ChatChangeStateEvent> chatStateStream;
@@ -152,6 +154,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
+        participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
         openScreenTime = System.currentTimeMillis();
@@ -236,9 +239,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .replay(1)
                 .autoConnect();
 
-        source.doOnSubscribe(() -> {
-            getView().showLoading();
-        });
+        source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
     }
 
@@ -249,14 +250,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     protected void connectMembersStream() {
-        Observable<List<DataUser>> participantCursorObservable = participantsDAO.getParticipants(conversationId)
-                .onBackpressureLatest()
-                .map(cursor -> SqlUtils.convertToList(DataUser.class, cursor))
-                .compose(bindViewIoToMainComposer());
+        conversationObservable.subscribe(dataConversation -> {
+            if (participantsStreamSubcription != null && !participantsStreamSubcription.isUnsubscribed()){
+                participantsStreamSubcription.unsubscribe();
+            }
 
-        Observable.combineLatest(conversationObservable, participantCursorObservable,
-                (conversation, cursor) -> new Pair<>(conversation, cursor))
-                .subscribe(pair -> getView().setTitle(pair.first, pair.second));
+            participantsStreamSubcription = participantsDaoHelper.obtainParticipantsStream(dataConversation, user)
+                    .compose(bindViewIoToMainComposer())
+                    .subscribe(dataUsers -> getView().setTitle(dataConversation, dataUsers));
+        });
     }
 
     private void connectToUnreadCounterStream() {
@@ -546,9 +548,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             return false;
         }
 
-        MessageBody body = new MessageBody();
-        body.setText(message);
-        body.setLocaleName(Locale.getDefault().toString());
+        MessageBody body = new MessageBody(message);
 
         submitOneChatAction(chat -> {
             chat.send(createMessage(body))

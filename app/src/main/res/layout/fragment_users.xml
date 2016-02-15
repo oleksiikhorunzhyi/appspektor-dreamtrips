@@ -30,7 +30,6 @@
                 android:layout_centerInParent="true"
                 android:alpha="0.54"
                 android:padding="25dp"
-                android:text="@string/users_who_liked_empty"
                 android:gravity="center"
                 android:textColor="@android:color/black"
                 android:textSize="18dp"/>

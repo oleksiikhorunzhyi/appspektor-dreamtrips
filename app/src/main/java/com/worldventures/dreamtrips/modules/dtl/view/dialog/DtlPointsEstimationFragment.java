@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
@@ -22,7 +22,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_points_estimation)
-public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsEstimationPresenter, PointsEstimationDialogBundle>
+public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPointsEstimationPresenter, PointsEstimationDialogBundle>
         implements DtlPointsEstimationPresenter.View {
 
     @InjectView(R.id.inputPoints)
@@ -133,5 +133,4 @@ public class DtlPointsEstimationFragment extends BaseFragmentWithArgs<DtlPointsE
         progressBar.setVisibility(View.INVISIBLE);
         calculateButton.setVisibility(View.VISIBLE);
     }
-
 }

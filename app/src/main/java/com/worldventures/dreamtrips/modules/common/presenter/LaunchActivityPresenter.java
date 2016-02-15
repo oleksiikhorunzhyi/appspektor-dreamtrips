@@ -12,9 +12,10 @@ import com.messenger.synchmechanism.MessengerConnector;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -30,7 +31,11 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
+import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -54,18 +59,20 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     private BusWrapper busWrapper;
     private NetworkEvents networkEvents;
 
-
     @Inject
     LocalesHolder localeStorage;
 
     @Inject
-    DtlLocationRepository dtlLocationRepository;
+    DtlLocationManager dtlLocationManager;
 
     @Inject
     StaticPageHolder staticPageHolder;
 
     @Inject
     SnappyRepository snappyRepository;
+
+    @Inject
+    Router router;
 
     private boolean requestInProgress = false;
 
@@ -80,7 +87,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         startPreloadChain();
 
         // we should clean dtl location when app was relaunched
-        dtlLocationRepository.cleanLocation();
+        dtlLocationManager.cleanLocation();
     }
 
     @Override
@@ -98,6 +105,20 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
         localeStorage.put(locales);
+        UserSession userSession = appSessionHolder.get().isPresent() ? appSessionHolder.get().get() : null;
+        if (userSession != null && userSession.getApiToken() != null)
+            loadSettings();
+        else
+            done();
+    }
+
+    private void loadSettings() {
+        doRequest(new GetSettingsQuery(), this::onSettingsLoaded);
+    }
+
+    private void onSettingsLoaded(SettingsHolder settingsHolder) {
+        snappyRepository.saveSettings(SettingsManager.merge(settingsHolder.getSettings(),
+                SettingsFactory.createSettings()), true);
         loadStaticPagesContent();
     }
 
@@ -156,9 +177,9 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             activityRouter.openMain();
             MessengerConnector.getInstance().connect();
         } else {
-            NavigationBuilder.create()
+            router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .with(activityRouter).move(Route.LOGIN);
+                    .build());
         }
         activityRouter.finish();
     }

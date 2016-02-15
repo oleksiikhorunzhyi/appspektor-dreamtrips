@@ -8,7 +8,9 @@ import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
@@ -47,6 +49,9 @@ import dagger.Provides;
 
                 TermsTabFragment.class,
                 WebViewFragmentPresenter.class,
+
+                SendFeedbackFragment.class,
+                SendFeedbackPresenter.class
         },
         complete = false,
         library = true
@@ -55,6 +60,7 @@ public class InfoModule {
 
     public static final String FAQ = Route.FAQ.name();
     public static final String TERMS = Route.TERMS.name();
+    public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
 
     @Provides
     StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> session, StaticPageHolder holder, LocaleHelper localeHelper) {
@@ -69,5 +75,10 @@ public class InfoModule {
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideFAQComponent() {
         return new ComponentDescription(FAQ, R.string.faq, R.string.faq, R.drawable.ic_faq, StaticInfoFragment.FAQFragment.class);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    ComponentDescription provideFeedbackComponent() {
+        return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback, R.drawable.ic_send_feedback, SendFeedbackFragment.class);
     }
 }

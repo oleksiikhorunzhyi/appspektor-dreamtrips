@@ -8,19 +8,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.ExistsTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagActionListener;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagCreationActionsListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
-
-import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.List;
 
@@ -35,22 +35,25 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     @State
     boolean isShown;
 
-    protected RectF imageBounds;
+    protected RectF imageBounds = new RectF();
+    protected PhotoTaggableHolderViewDelegate delegate;
 
     public TaggableImageViewGroup(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public TaggableImageViewGroup(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public TaggableImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        delegate = new PhotoTaggableHolderViewDelegate(this);
+
     }
 
     public void setup(Injector injector, Photo photo) {
-        presenter = getPresenter(photo);
+        presenter = createPresenter(photo);
         injector.inject(presenter);
         presenter.takeView(this);
         presenter.onStart();
@@ -69,7 +72,7 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     }
 
     @NonNull
-    protected abstract P getPresenter(Photo photo);
+    protected abstract P createPresenter(Photo photo);
 
     public boolean isSetuped() {
         return setuped;
@@ -83,16 +86,22 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         isShown = false;
     }
 
-    public void show(RectF imageBounds) {
-        this.imageBounds = imageBounds;
+    public void show(SimpleDraweeView imageView) {
+        imageView.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+        imageView.getHierarchy().getActualImageBounds(imageBounds);
         setVisibility(View.VISIBLE);
-        presenter.setupTags();
+        redrawTags();
         isShown = true;
     }
 
     @Override
     public boolean isShown() {
         return isShown;
+    }
+
+    public void redrawTags() {
+        removeAllViews();
+        presenter.showExistingTags();
     }
 
     @Override
@@ -105,13 +114,26 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         super.onDetachedFromWindow();
     }
 
-    protected void addTagView(PhotoTag photoTag) {
-        TagView view = TagView.create(getContext(), photoTag, presenter.getAccount(), presenter.getPhoto());
-        PhotoTag.TagPosition tagPosition = CoordinatesTransformer.convertToAbsolute(photoTag.getPosition(), getImageBounds());
-        view.setAbsoluteTagPosition(tagPosition);
+    protected void addExistsTagView(PhotoTag photoTag) {
+        TagView view = new ExistsTagView(getContext());
         view.setTagListener(createTagListener(view));
+        addTagView(view, photoTag);
+    }
+
+
+    protected <T extends TagView> void addTagView(T view, PhotoTag photoTag) {
+        addTagView(view, photoTag, -1);
+    }
+
+    protected <T extends TagView> void addTagView(T view, PhotoTag photoTag, int viewPos) {
+        PhotoTag.TagPosition tagPosition = CoordinatesTransformer.convertToAbsolute(photoTag.getProportionalPosition(), getImageBounds());
+        view.setAbsoluteTagPosition(tagPosition);
+
+        view.setPhotoTag(photoTag);
+        view.setAccount(presenter.getAccount());
+        view.setPhoto(presenter.getPhoto());
         LayoutParams layoutParams = calculatePosition(view);
-        addView(view, layoutParams);
+        addView(view, viewPos, layoutParams);
     }
 
     @NonNull
@@ -125,19 +147,19 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         Size tagSize = view.getSize();
         float tagWidth = tagSize.getWidth();
         float tagHeight = tagSize.getHeight();
-        int photoTagXPos = (int) (view.getAbsoluteTagPosition().getTopLeft().getX() - tagWidth / 2);
-        int photoTagYPos = (int) (view.getAbsoluteTagPosition().getTopLeft().getY());
+        int photoTagXPos = (int) (view.getAbsoluteTagPosition().getBottomRight().getX() - tagWidth / 2);
+        int photoTagYPos = (int) (view.getAbsoluteTagPosition().getBottomRight().getY());
 
         if (photoTagXPos < 0) {
             photoTagXPos = 0;
         }
-        if (photoTagXPos > getWidth() - tagWidth) {
+        if (view.getAbsoluteTagPosition().getTopLeft().getX() > getWidth() - tagWidth) {
             photoTagXPos = (int) (getWidth() - tagWidth);
         }
         if (photoTagYPos < 0) {
             photoTagYPos = 0;
         }
-        if (photoTagYPos > getHeight() - tagHeight) {
+        if (view.getAbsoluteTagPosition().getTopLeft().getY() > getHeight() - tagHeight) {
             photoTagYPos = (int) (getHeight() - tagHeight - (getHeight() - photoTagYPos));
         }
 
@@ -148,7 +170,9 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
 
     @Override
     public void addTags(List<PhotoTag> tags) {
-        Queryable.from(tags).forEachR(this::addTagView);
+        Queryable.from(tags)
+                .filter((photoTag) -> !delegate.isExistingViewExist(photoTag))
+                .forEachR(this::addExistsTagView);
     }
 
     @Override

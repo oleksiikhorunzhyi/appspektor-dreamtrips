@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,7 +191,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
                 TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_FILTER);
                 break;
             case R.id.action_map:
-                getPresenter().actionMap();
+                actionMap();
                 TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_MAP);
                 break;
         }
@@ -255,5 +254,13 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
             searchView.setQuery("", true);
             searchView.clearFocus();
         }
+    }
+
+    private void actionMap() {
+        router.moveTo(Route.MAP, NavigationConfigBuilder.forFragment()
+                .fragmentManager(getFragmentManager())
+                .containerId(R.id.container_main)
+                .backStackEnabled(true)
+                .build());
     }
 }

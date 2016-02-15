@@ -14,9 +14,10 @@ import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -42,7 +43,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreen
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter>
-        extends BaseFragmentWithArgs<T, TripsImagesBundle>
+        extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
         implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.lv_items)
@@ -160,9 +161,10 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        NavigationBuilder.create().with(activityRouter)
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data)
+                .build());
     }
 
     @Override

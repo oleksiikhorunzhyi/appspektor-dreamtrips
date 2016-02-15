@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.view.cell;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -192,10 +191,10 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
 
         setAvatarImage(Uri.parse(user.getAvatar() == null ? "" : user.getAvatar().getMedium()));
         setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
-        setFriendButtonText(R.string.profile_friends);
 
         setTripImagesCount(user.getTripImagesCount());
         setBucketItemsCount(user.getBucketListItemsCount());
+        setFriendsCount(user.getFriendsCount());
         if (isAccount()) {
             setRoviaBucks(df.format(user.getRoviaBucks()));
             setDreamTripPoints(df.format(user.getDreamTripsPoints()));
@@ -240,13 +239,13 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     }
 
 
-    public void setAvatarImage(Uri uri) {
+    private void setAvatarImage(Uri uri) {
         if (uri != null) {
             setImage(uri, userPhoto);
         }
     }
 
-    public void setCoverImage(Uri uri) {
+    private void setCoverImage(Uri uri) {
         if (uri != null) {
             setImage(uri, userCover);
         }
@@ -267,64 +266,63 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
         draweeView.setTag(uri);
     }
 
-
-    public void setDateOfBirth(String format) {
+    private void setDateOfBirth(String format) {
         dateOfBirth.setText(format);
     }
 
-    public void setFrom(String location) {
+    private void setFrom(String location) {
         etFrom.setText(location);
     }
 
-    public void setUserName(String username) {
+    private void setUserName(String username) {
         userName.setText(username);
     }
 
-    public void setUserId(String username) {
+    private void setUserId(String username) {
         etUserId.setText(username);
     }
 
-    public void setEnrollDate(String date) {
+    private void setEnrollDate(String date) {
         etEnroll.setText(date);
     }
 
-    public void setTripImagesCount(int count) {
+    private void setTripImagesCount(int count) {
         int stringResource = QuantityHelper.chooseResource(count, R.string.profile_zero_trip_images,
                 R.string.profile_trip_images, R.string.profile_trip_images);
         tripImages.setText(String.format(context.getString(stringResource), count));
     }
 
-    public void setBucketItemsCount(int count) {
+    private void setBucketItemsCount(int count) {
         int stringResource = QuantityHelper.chooseResource(count, R.string.profile_zero_bucket_list,
                 R.string.profile_bucket_list, R.string.profile_bucket_list);
         buckets.setText(String.format(context.getString(stringResource), count));
     }
 
-    public void setSocial(Boolean isEnabled) {
+    private void setFriendsCount(int count) {
+        int stringResource = QuantityHelper.chooseResource(count, R.string.profile_friends_formatter,
+                R.string.profile_friend_formatter, R.string.profile_friends_formatter);
+        friends.setText(String.format(context.getString(stringResource), count));
+    }
+
+    private void setSocial(Boolean isEnabled) {
         addFriend.setEnabled(isEnabled);
         friendRequest.setEnabled(isEnabled);
         friendRequest.setEnabled(isEnabled);
     }
 
-    public void setFriendButtonText(@StringRes int res) {
-        friends.setText(res);
-    }
-
-
-    public void setIsExpandEnabled(boolean isExpandEnabled) {
+    private void setIsExpandEnabled(boolean isExpandEnabled) {
         this.isExpandEnabled = isExpandEnabled;
     }
 
-
-    public void setRoviaBucks(String count) {
+    private void setRoviaBucks(String count) {
         roviaBucks.setText(Html.fromHtml(context.getString(R.string.profile_rovia_bucks, count)));
     }
 
-    public void setDreamTripPoints(String count) {
+    private void setDreamTripPoints(String count) {
         dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, count)));
     }
 
-    public void setIsFriend(boolean isFriend) {
+    private void setIsFriend(boolean isFriend) {
         addFriend.setText(isFriend ? R.string.profile_friends : R.string.profile_add_friend);
         addFriend.setCompoundDrawablesWithIntrinsicBounds(0,
                 isFriend ? R.drawable.ic_profile_friend
@@ -332,26 +330,26 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
                 0, 0);
     }
 
-    public void setWaiting() {
+    private void setWaiting() {
         addFriend.setText(R.string.profile_waiting);
         addFriend.setCompoundDrawablesWithIntrinsicBounds(0,
                 R.drawable.ic_profile_friend_respond,
                 0, 0);
     }
 
-    public void setRespond() {
+    private void setRespond() {
         addFriend.setText(R.string.profile_respond);
         addFriend.setCompoundDrawablesWithIntrinsicBounds(0,
                 R.drawable.ic_profile_respond,
                 0, 0);
     }
 
-    public void showFriendRequest(String name) {
+    private void showFriendRequest(String name) {
         friendRequestCaption.setText(String.format(context.getString(R.string.profile_friend_request), name));
         friendRequest.setVisibility(View.VISIBLE);
     }
 
-    public void hideFriendRequest() {
+    private void hideFriendRequest() {
         friendRequest.setVisibility(View.GONE);
     }
 

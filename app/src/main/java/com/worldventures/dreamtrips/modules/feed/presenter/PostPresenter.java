@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
+import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public class PostPresenter extends Presenter<PostPresenter.View> implements TransferListener {
+public class PostPresenter extends Presenter<PostPresenter.View> {
 
     public static final int REQUESTER_ID = -2;
 
@@ -38,6 +38,7 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
 
     @State
     CachedPostEntity cachedPostEntity;
+    private PhotoUploadSubscriber photoUploadSubscriber;
 
     public PostPresenter() {
         priorityEventBus = 1;
@@ -46,16 +47,17 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        photoUploadSubscriber = PhotoUploadSubscriber.bind(view, photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE));
+        photoUploadSubscriber.afterEach(uploadTask -> {
+            if (cachedPostEntity != null && cachedPostEntity.getUploadTask().getId() == uploadTask.getId()) {
+                cachedPostEntity.getUploadTask().setStatus(uploadTask.getStatus());
+                processUploadTask();
+            }
+        });
         if (cachedPostEntity == null) {
             cachedPostEntity = new CachedPostEntity();
-        } else if (!TextUtils.isEmpty(cachedPostEntity.getFilePath())) {
-            cachedPostEntity.setUploadTask(snapper.getUploadTask(cachedPostEntity.getFilePath()));
-            if (cachedPostEntity.getUploadTask() != null) {
-                TransferObserver transferObserver =
-                        photoUploadingSpiceManager.getTransferById(cachedPostEntity.getUploadTask().getAmazonTaskId());
-                onStateChanged(transferObserver.getId(), transferObserver.getState());
-                transferObserver.setTransferListener(this);
-            }
+        } else {
+            Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
         }
 
         view.setName(getAccount().getFullName());
@@ -79,10 +81,6 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         }
 
         enablePostButton();
-    }
-
-    public void cancel() {
-        cancelUpload();
     }
 
     public void cancelClicked() {
@@ -127,9 +125,6 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     }
 
     protected void processPost(FeedEntity feedEntity) {
-        if (cachedPostEntity.getUploadTask() != null)
-            snapper.removeUploadTask(cachedPostEntity.getUploadTask());
-
         eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
         view.cancel();
         view = null;
@@ -144,57 +139,16 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
     /////// Photo upload
     ////////////////////////////////////////
 
-    private void savePhotoIfNeeded() {
-        doRequest(new CopyFileCommand(context, cachedPostEntity.getUploadTask().getFilePath()), this::uploadPhoto);
-    }
-
-    private void uploadPhoto(String filePath) {
-        cachedPostEntity.setFilePath(filePath);
-        cachedPostEntity.getUploadTask().setFilePath(filePath);
-        view.attachPhoto(Uri.parse(filePath));
-        startUpload(cachedPostEntity.getUploadTask());
-    }
-
     private void startUpload(UploadTask uploadTask) {
         view.showProgress();
-        TransferObserver transferObserver = photoUploadingSpiceManager.upload(cachedPostEntity.getUploadTask());
-        uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
-        snapper.saveUploadTask(uploadTask);
-        transferObserver.setTransferListener(this);
-    }
-
-    @Override
-    public void onStateChanged(int id, TransferState state) {
-        if (view != null && cachedPostEntity.getUploadTask() != null) {
-            if (state.equals(TransferState.COMPLETED)) {
-                cachedPostEntity.getUploadTask().setStatus(UploadTask.Status.COMPLETED);
-                cachedPostEntity.getUploadTask().setOriginUrl
-                        (photoUploadingSpiceManager.getResultUrl(cachedPostEntity.getUploadTask()));
-            } else if (state.equals(TransferState.FAILED)) {
-                cachedPostEntity.getUploadTask().setStatus(UploadTask.Status.FAILED);
-            }
-
-            processUploadTask();
-        }
-    }
-
-    @Override
-    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-    }
-
-    @Override
-    public void onError(int id, Exception ex) {
-        cachedPostEntity.getUploadTask().setStatus(UploadTask.Status.FAILED);
-        processUploadTask();
+        long upload = photoUploadingManager.upload(uploadTask, UploadPurpose.TRIP_IMAGE);
+        cachedPostEntity.getUploadTask().setId(upload);
     }
 
     private void processUploadTask() {
         if (cachedPostEntity != null && cachedPostEntity.getUploadTask() != null) {
-            snapper.saveUploadTask(cachedPostEntity.getUploadTask());
-
             switch (cachedPostEntity.getUploadTask().getStatus()) {
-                case IN_PROGRESS:
+                case STARTED:
                     photoInProgress();
                     break;
                 case FAILED:
@@ -228,31 +182,23 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         }
     }
 
+    ////////////////////////////////////////
+    /////// Photo picking
+
     public void onProgressClicked() {
         if (cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
             startUpload(cachedPostEntity.getUploadTask());
         }
     }
 
+
     public void removeImage() {
-        cancelUpload();
         cachedPostEntity.setUploadTask(null);
         enablePostButton();
         view.attachPhoto(null);
         view.enableImagePicker();
     }
 
-    private void cancelUpload() {
-        if (cachedPostEntity.getUploadTask() != null) {
-            photoUploadingSpiceManager.cancelUploading(cachedPostEntity.getUploadTask());
-            snapper.removeUploadTask(cachedPostEntity.getUploadTask());
-            cachedPostEntity.setUploadTask(null);
-        }
-    }
-
-
-    ////////////////////////////////////////
-    /////// Photo picking
     ////////////////////////////////////////
 
     public void onEvent(AttachPhotoEvent event) {
@@ -290,13 +236,16 @@ public class PostPresenter extends Presenter<PostPresenter.View> implements Tran
         if (view != null) {
             UploadTask imageUploadTask = new UploadTask();
             imageUploadTask.setFilePath(filePath);
-            imageUploadTask.setStatus(UploadTask.Status.IN_PROGRESS);
+            imageUploadTask.setStatus(UploadTask.Status.STARTED);
             cachedPostEntity.setUploadTask(imageUploadTask);
-            savePhotoIfNeeded();
+            view.attachPhoto(Uri.parse(filePath));
+            doRequest(new CopyFileCommand(context, cachedPostEntity.getUploadTask().getFilePath()), s -> {
+                startUpload(imageUploadTask);
+            });
         }
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void setName(String userName);
 

@@ -1,13 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
+import android.content.res.Resources;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import butterknife.InjectView;
@@ -36,13 +37,14 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
     protected void onMerchantApply(DtlMerchant merchant) {
         title.setText(merchant.getDisplayName());
         pricing.setRating(merchant.getBudget());
-
+        //
+        Resources res = distance.getResources();
         if (merchant.getDistance() != 0.0d) {
             distance.setVisibility(View.VISIBLE);
-            distance.setText(distance.getResources().getString(
-                    merchant.getDistanceType() == DtlFilterData.DistanceType.MILES ?
-                            R.string.distance_miles : R.string.distance_kms,
-                    merchant.getDistance()));
+            distance.setText(res.getString(
+                    R.string.distance_caption_format,
+                    merchant.getDistance(),
+                    res.getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
         } else distance.setVisibility(View.GONE);
 
         String categoriesString = helper.getCategories(merchant);

@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,24 +22,20 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.dialog.DeleteBucketDialog;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityEditClickEvent;
-import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 
@@ -53,73 +49,55 @@ import butterknife.OnCheckedChanged;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.layout_bucket_item_details)
-public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends BaseFragmentWithArgs<T, BucketBundle>
+public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends RxBaseFragmentWithArgs<T, BucketBundle>
         implements BucketItemDetailsPresenter.View {
 
     @InjectView(R.id.textViewName)
     protected TextView textViewName;
-
     @InjectView(R.id.textViewFriends)
     protected TextView textViewFriends;
-
     @InjectView(R.id.textViewTags)
     protected TextView textViewTags;
-
     @InjectView(R.id.textViewDescription)
     protected TextView textViewDescription;
-
     @InjectView(R.id.textViewCategory)
     protected TextView textViewCategory;
-
     @InjectView(R.id.textViewDate)
     protected TextView textViewDate;
-
     @InjectView(R.id.textViewPlace)
     protected TextView textViewPlace;
-
     @InjectView(R.id.checkBoxDone)
     protected CheckBox markAsDone;
-
     @InjectView(R.id.viewPagerBucketGallery)
     protected ViewPager viewPagerBucketGallery;
-
     @InjectView(R.id.circleIndicator)
     protected CircleIndicator circleIndicator;
-
     @InjectView(R.id.bucket_tags_container)
     View bucketTags;
-
     @InjectView(R.id.bucket_who_container)
     View bucketWho;
-
     @InjectView(R.id.diningName)
     TextView diningName;
-
     @InjectView(R.id.diningPriceRange)
     TextView diningPriceRange;
-
     @InjectView(R.id.diningAddress)
     TextView diningAddress;
-
     @InjectView(R.id.diningSite)
     TextView diningSite;
-
     @InjectView(R.id.diningPhone)
     TextView diningPhone;
-
     @InjectView(R.id.diningContainer)
     View diningContainer;
-
     @InjectView(R.id.diningDivider)
     View diningDivider;
+    @InjectView(R.id.contentView)
+    ViewGroup contentView;
+    @InjectView(R.id.toolbar_actionbar)
+    Toolbar toolbar;
 
     @Inject
     @ForActivity
     Provider<Injector> injector;
-
-
-    @InjectView(R.id.contentView)
-    ViewGroup contentView;
 
     protected ProgressDialogFragment progressDialog;
 
@@ -127,12 +105,6 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     public void afterCreateView(View view) {
         super.afterCreateView(view);
 
-        boolean slave = getArgs().isSlave();
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (!slave && actionBar != null && ViewUtils.isFullVisibleOnScreen(this)) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("");
-        }
         setForeignIntentAction();
 
         progressDialog = ProgressDialogFragment.create();
@@ -143,26 +115,19 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         return (T) new BucketItemDetailsPresenter(getArgs());
     }
 
-    public void onEvent(FeedEntityEditClickEvent event) {
-        if (isVisibleOnScreen()) {
-            event.getAnchor().setEnabled(false);
-            FeedItemMenuBuilder.create(getActivity(), event.getAnchor(), R.menu.menu_feed_entity_edit)
-                    .onDelete(() -> {
-                        if (isVisibleOnScreen()) getPresenter().onDelete();
-                    })
-                    .onEdit(() -> {
-                        if (isVisibleOnScreen()) getPresenter().onEdit();
-                    })
-                    .dismissListener(menu -> event.getAnchor().setEnabled(true))
-                    .show();
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         if (isVisible() && ViewUtils.isTablet(getActivity()) && !ViewUtils.isLandscapeOrientation(getActivity())) {
             OrientationUtil.lockOrientation(getActivity());
+        }
+        if (!getArgs().isSlave()) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+            toolbar.getBackground().mutate().setAlpha(0);
+        } else {
+            toolbar.setVisibility(View.GONE);
         }
     }
 
@@ -329,45 +294,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
-    public void addImages(List<UploadTask> tasks) {
-
-    }
-
-    @Override
-    public void addImage(UploadTask uploadTask) {
-
-    }
-
-    @Override
-    public void deleteImage(UploadTask task) {
-
-    }
-
-    @Override
-    public void deleteImage(BucketPhoto bucketPhoto) {
-
-    }
-
-    @Override
-    public void itemChanged(UploadTask uploadTask) {
-
-    }
-
-    @Override
-    public void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
-
-    }
-
-    @Override
-    public UploadTask getBucketPhotoUploadTask(String taskId) {
+    public UploadTask getBucketPhotoUploadTask(long taskId) {
         return null;
-    }
-
-    @Override
-    public void showDeletionDialog(BucketItem bucketItem) {
-        DeleteBucketDialog dialog = new DeleteBucketDialog();
-        dialog.setBucketItemId(bucketItem.getUid());
-        dialog.show(getFragmentManager());
     }
 
     @Override

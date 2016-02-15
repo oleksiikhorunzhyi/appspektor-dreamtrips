@@ -40,6 +40,7 @@ public class User extends BaseEntity implements Parcelable {
     private double roviaBucks;
     private int tripImagesCount;
     private int bucketListItemsCount;
+    private int friendsCount;
 
     private boolean termsAccepted;
 
@@ -57,7 +58,7 @@ public class User extends BaseEntity implements Parcelable {
      */
     private List<String> subscriptions;
 
-    //TODO TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
+    //TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
     private boolean socialEnabled;
 
     @SerializedName("circles")
@@ -156,6 +157,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public int getBucketListItemsCount() {
         return bucketListItemsCount;
+    }
+
+    public int getFriendsCount() {
+        return friendsCount;
     }
 
     public String getLocation() {

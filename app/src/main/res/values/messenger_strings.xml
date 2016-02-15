@@ -111,5 +111,6 @@
 
     <string name="warning_no_internet_connection">Internet connection is absent</string>
 
+    <string name="chat_update_proposition"><![CDATA[To see attachment, update to latest version of DreamTrips App <a href="https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips">here</a>]]></string>
     <!-- messenger ends-->
 </resources>

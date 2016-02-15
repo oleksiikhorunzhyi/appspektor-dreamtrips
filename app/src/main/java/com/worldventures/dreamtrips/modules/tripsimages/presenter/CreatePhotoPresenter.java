@@ -8,16 +8,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
+import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -74,15 +73,17 @@ public class CreatePhotoPresenter extends Presenter<CreatePhotoPresenter.View> {
                 imageUploadTask.setLongitude(0);
                 imageUploadTask.setLocationName(view.getLocation());
 
-                imageUploadTask.setModule(UploadTask.Module.IMAGES);
-
                 Date date = DateTimeUtils.dateFromString(view.getDate());
                 Date time = DateTimeUtils.timeFromString(view.getTime());
                 imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
                 imageUploadTask.setType(type);
 
-                eventBus.post(new InsertNewImageUploadTaskEvent(imageUploadTask, view.getTagsToUpload()));
-                view.end();
+                doRequest(new CopyFileCommand(context, imageUploadTask.getFilePath()), filePath -> {
+                    imageUploadTask.setFilePath(filePath);
+                    imageUploadTask.setStatus(UploadTask.Status.STARTED);
+                    eventBus.post(new InsertNewImageUploadTaskEvent(imageUploadTask, view.getTagsToUpload()));
+                    view.end();
+                });
             }
     }
 

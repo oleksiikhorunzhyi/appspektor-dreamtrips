@@ -74,7 +74,7 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
 
     @OnClick({R.id.tagged_user_delete_tag})
     public void onDeleteTag() {
-        tagListener.onTagDeleted(photoTag);
         deleteTag();
+        tagListener.onTagDeleted(photoTag);
     }
 }

@@ -23,6 +23,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
@@ -54,6 +55,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected NavigationDrawerPresenter navigationDrawerPresenter;
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    @Inject
+    ActivityRouter activityRouter;
 
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
@@ -166,7 +169,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     }
 
     private void itemSelected(ComponentDescription component) {
-        router.openMainWithComponent(component.getKey());
+        activityRouter.openMainWithComponent(component.getKey());
     }
 
     private void itemReseleted(ComponentDescription route) {

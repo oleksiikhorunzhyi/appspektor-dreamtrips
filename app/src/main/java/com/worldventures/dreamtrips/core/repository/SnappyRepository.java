@@ -14,12 +14,15 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
+import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
+import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
@@ -46,6 +49,7 @@ public class SnappyRepository {
     public static final String ACTIVITIES = "activities_new";
     public static final String BUCKET_LIST = "bucket_items";
     public static final String TRIP_KEY = "trip_rezopia_v2";
+    public static final String SETTINGS_KEY = "settings";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
@@ -67,8 +71,8 @@ public class SnappyRepository {
     public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
-    public static final String DTL_DISTANCE_TOGGLE = "DTL_DISTANCE_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
+    public static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
 
     private Context context;
     private ExecutorService executorService;
@@ -277,9 +281,47 @@ public class SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Image Tasks
+    // Settings
     ///////////////////////////////////////////////////////////////////////////
 
+    public void saveSettings(List<Setting> settingsList, boolean withClear) {
+        act(db -> {
+            if (withClear) clearSettings(db);
+            //
+            for (Setting settings : settingsList) {
+                db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
+            }
+        });
+    }
+
+    public List<Setting> getSettings() {
+        return actWithResult(db -> {
+            List<Setting> settingsList = new ArrayList<>();
+            String[] keys = db.findKeys(SETTINGS_KEY);
+            for (String key : keys) {
+                if (key.contains(Setting.Type.FLAG.name())) {
+                    settingsList.add(db.get(key, FlagSetting.class));
+                } else if (key.contains(Setting.Type.SELECT.name())) {
+                    settingsList.add(db.get(key, SelectSetting.class));
+                }
+            }
+            return settingsList;
+        }).or(Collections.emptyList());
+    }
+
+    public void clearSettings(DB snappyDb) throws SnappydbException {
+        String[] settingsKeys = snappyDb.findKeys(SETTINGS_KEY);
+        for (String key : settingsKeys) {
+            snappyDb.del(key);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Image Tasks
+    ///////////////////////////////////////////////////////////////////////////
+    /**
+     * Use it from PhotoUploadManager
+     */
     public void saveUploadTask(UploadTask uploadTask) {
         act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getFilePath(), uploadTask));
     }
@@ -302,13 +344,6 @@ public class SnappyRepository {
         }));
     }
 
-    public List<UploadTask> getUploadTasksForId(String linkedId) {
-        List<UploadTask> items = getAllUploadTask();
-        return Queryable.from(items)
-                .filter(item -> linkedId.equals(item.getLinkedItemId()))
-                .toList();
-    }
-
     public List<UploadTask> getAllUploadTask() {
         return actWithResult(db -> {
             List<UploadTask> tasks = new ArrayList<>();
@@ -327,7 +362,6 @@ public class SnappyRepository {
 
     public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type + ":" + userId, items);
-
     }
 
     public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
@@ -449,6 +483,16 @@ public class SnappyRepository {
         return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
     }
 
+    public List<FeedbackType> getFeedbackTypes() {
+        return readList(FEEDBACK_TYPES, FeedbackType.class);
+    }
+
+    public void setFeedbackTypes(ArrayList<FeedbackType> types) {
+        clearAllForKey(FEEDBACK_TYPES);
+        putList(FEEDBACK_TYPES, types);
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////
     // GCM
     ///////////////////////////////////////////////////////////////////////////
@@ -505,15 +549,6 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
     // DTL Transaction
     ///////////////////////////////////////////////////////////////////////////
-
-    public void saveDistanceToggle(DtlFilterData.DistanceType distanceType) {
-        act(db -> db.put(DTL_DISTANCE_TOGGLE, distanceType));
-    }
-
-    public DtlFilterData.DistanceType getDistanceType() {
-        return actWithResult(db -> db.get(DTL_DISTANCE_TOGGLE, DtlFilterData.DistanceType.class))
-                .or(DtlFilterData.DistanceType.MILES);
-    }
 
     public DtlTransaction getDtlTransaction(String id) {
         return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, DtlTransaction.class)).orNull();

@@ -14,9 +14,13 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 public class CommentCellHelper {
 
+    @Optional
+    @InjectView(R.id.comment_container)
+    View commentContainer;
     @InjectView(R.id.user_photo)
     SimpleDraweeView userPhoto;
     @InjectView(R.id.user_name)
@@ -51,5 +55,13 @@ public class CommentCellHelper {
 
     public Comment getComment() {
         return comment;
+    }
+
+    public void showContainer() {
+        commentContainer.setVisibility(View.VISIBLE);
+    }
+
+    public void hideContainer() {
+        commentContainer.setVisibility(View.GONE);
     }
 }

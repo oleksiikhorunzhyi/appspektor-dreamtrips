@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPrese
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketListPresenter;
 
 @Layout(R.layout.fragment_foreign_bucket_list)
-@MenuResource(R.menu.menu_bucket_foreign)
 public class ForeignBucketListFragment extends BucketListFragment<ForeignBucketListPresenter> {
 
     @Override

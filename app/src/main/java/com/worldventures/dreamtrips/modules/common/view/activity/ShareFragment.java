@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.StringDef;
-import android.util.Log;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
@@ -16,14 +14,15 @@ import com.facebook.widget.WebDialog;
 import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import butterknife.InjectView;
+import timber.log.Timber;
 
 import static android.text.TextUtils.isEmpty;
 import static com.facebook.widget.FacebookDialog.ShareDialogFeature.SHARE_DIALOG;
@@ -31,14 +30,6 @@ import static com.facebook.widget.FacebookDialog.ShareDialogFeature.SHARE_DIALOG
 @Layout(R.layout.share_fragment)
 public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBundle>
         implements SharePresenter.View {
-
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({FB, TW})
-    public @interface ShareType {
-    }
-
-    public static final String FB = "fb";
-    public static final String TW = "tw";
 
     @InjectView(R.id.login_button)
     protected LoginButton loginButton;
@@ -138,10 +129,18 @@ public class ShareFragment extends BaseFragmentWithArgs<SharePresenter, ShareBun
             loginButton.setFragment(this);
             loginButton.setReadPermissions("user_photos");
             loginButton.setSessionStatusCallback((s, state, exception) -> {
-                Log.w("Session callback: ", "" + s + "; " + state + "; " + exception);
+                Timber.w(exception, "Session callback:", s, state);
                 if (session != null && session.isOpened()) {
-                    getActivity().runOnUiThread(() -> new Handler().postDelayed(() ->
-                            activityRouter.openShare(picture, link, text, ShareFragment.FB), 150));
+                    getActivity().runOnUiThread(() -> new Handler().postDelayed(() -> {
+                        ShareBundle data = new ShareBundle();
+                        data.setImageUrl(picture);
+                        data.setShareUrl(link);
+                        data.setText(text == null ? "" : text);
+                        data.setShareType(ShareType.FACEBOOK);
+                        router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                                .data(data)
+                                .build());
+                    }, 150));
                 }
             });
             loginButton.performClick();

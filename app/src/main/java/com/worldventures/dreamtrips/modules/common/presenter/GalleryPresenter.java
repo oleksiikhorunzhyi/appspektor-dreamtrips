@@ -31,7 +31,7 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
     }
 
     private void loadGallery() {
-        if (photos != null) {
+        if (photos != null && photos.size() > 0) {
             view.addItems(photos);
             return;
         }

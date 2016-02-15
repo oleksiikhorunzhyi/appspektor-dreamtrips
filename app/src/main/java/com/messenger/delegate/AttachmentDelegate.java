@@ -9,6 +9,7 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
+import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import java.util.Date;
@@ -17,11 +18,11 @@ import java.util.UUID;
 import rx.Observable;
 
 public class AttachmentDelegate {
-    private final PhotoUploadingManager photoUploadingManager;
+    private final PhotoUploadingManagerS3 photoUploadingManager;
     private final MessageDAO messageDAO;
     private final AttachmentDAO attachmentDAO;
 
-    public AttachmentDelegate(PhotoUploadingManager photoUploadingManager,
+    public AttachmentDelegate(PhotoUploadingManagerS3 photoUploadingManager,
                               MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
         this.photoUploadingManager = photoUploadingManager;
         this.messageDAO = messageDAO;

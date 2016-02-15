@@ -90,8 +90,6 @@
             android:layout_gravity="end"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:drawableEnd="@drawable/ic_drop_down"
-            android:drawableRight="@drawable/ic_drop_down"
             android:drawablePadding="@dimen/spacing_tiny"
             tools:text="20.97 mi"/>
 

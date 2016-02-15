@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.facebook;
 
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumPresenter;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
-import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPickPhotoPresenter;
-import com.worldventures.dreamtrips.modules.facebook.view.activity.FacebookPickPhotoActivity;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumCell;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
@@ -13,14 +11,12 @@ import dagger.Module;
 
 @Module(
         injects = {
-                FacebookPickPhotoPresenter.class,
                 FacebookAlbumPresenter.class,
                 FacebookPhotoPresenter.class,
                 FacebookAlbumFragment.class,
                 FacebookPhotoFragment.class,
                 FacebookAlbumCell.class,
                 FacebookPhotoCell.class,
-                FacebookPickPhotoActivity.class,
         },
         complete = false,
         library = true

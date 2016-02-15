@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
@@ -16,7 +16,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     @Inject
     SnappyRepository snapper;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
     private DtlMerchant dtlMerchant;
 
     private DtlTransaction dtlTransaction;
@@ -28,7 +28,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
+        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     }
 
     public void rescan() {
-        photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+        photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
         dtlTransaction.setUploadTask(null);
 
         snapper.saveDtlTransaction(merchantId, dtlTransaction);

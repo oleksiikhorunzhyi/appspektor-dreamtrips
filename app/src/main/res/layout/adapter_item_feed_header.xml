@@ -63,19 +63,4 @@
             android:textSize="@dimen/abc_text_size_small_material"
             tools:text="Jan 27, 2015   9:00AM"/>
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/edit_feed_item"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="1dp"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:focusableInTouchMode="false"
-        android:padding="6dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_comment_edit"
-        android:visibility="gone"/>
 </LinearLayout>

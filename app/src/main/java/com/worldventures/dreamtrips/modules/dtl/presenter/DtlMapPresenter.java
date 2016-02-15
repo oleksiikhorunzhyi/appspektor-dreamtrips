@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 
 import java.util.List;
 
@@ -18,13 +19,13 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.initToolbar(locationRepository.getCachedSelectedLocation());
+        view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
     }
 
     public void onMapLoaded() {
         mapReady = true;
         //
-        view.centerIn(locationRepository.getCachedSelectedLocation());
+        view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         performFiltering();
         checkPendingMapInfo();
     }
@@ -60,9 +61,9 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
     }
 
     @Override
-    public void onFilter() {
+    public void onFilter(DtlFilterData filterData) {
         if (mapReady)
-            super.onFilter();
+            super.onFilter(filterData);
     }
 
     public void onEvent(DtlMapInfoReadyEvent event) {

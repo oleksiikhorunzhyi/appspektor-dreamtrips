@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.view.custom;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.MenuRes;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.PopupMenu;
 import android.text.Html;
 import android.text.Spanned;
@@ -13,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
@@ -20,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
@@ -28,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class FeedActionPanelView extends LinearLayout implements Flaggable {
 
@@ -55,10 +61,16 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
     OnViewClickListener onLikersClickListener;
     OnViewClickListener onShareClickListener;
     OnViewClickListener onFlagClickListener;
+    OnViewClickListener onMoreClickListener;
+    OnViewClickListener onEditClickListener;
+    OnViewClickListener onDeleteClickListener;
 
     OnFlagDialogClickListener onFlagDialogClickListener;
 
     private FeedItem feedItem;
+    private boolean foreign;
+
+    private WeakHandler handler;
 
     public FeedActionPanelView(Context context) {
         this(context, null);
@@ -74,6 +86,7 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         ButterKnife.inject(this);
         setOrientation(VERTICAL);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        handler = new WeakHandler();
     }
 
     @OnClick(R.id.likes)
@@ -106,25 +119,61 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
 
     @OnClick(R.id.more)
     public void onMoreClick() {
-        PopupMenu popup = new PopupMenu(getContext(), more);
-        popup.inflate(R.menu.menu_feed_flag);
-        popup.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_flag:
-                    if (onFlagClickListener != null) {
-                        onFlagClickListener.onClick(feedItem);
-                    }
+        if (foreign) {
+            if (onMoreClickListener != null)
+                onMoreClickListener.onClick(feedItem);
+        } else {
+            PopupMenu popup = new PopupMenu(getContext(), more);
+            popup.inflate(R.menu.menu_feed_flag);
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_flag:
+                        if (onFlagClickListener != null) {
+                            onFlagClickListener.onClick(feedItem);
+                        }
 
-                    break;
-            }
+                        break;
+                }
 
-            return true;
-        });
-        popup.show();
+                return true;
+            });
+            popup.show();
+        }
+    }
+
+    public void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
+        more.setEnabled(false);
+        FeedItemMenuBuilder.create(getContext(), more, menuRes)
+                .onDelete(() -> showDeleteDialog(headerDelete, textDelete))
+                .onEdit(this::onEdit)
+                .show();
+        handler.postDelayed(() -> more.setEnabled(true), 500);
+    }
+
+    private void showDeleteDialog(@StringRes int headerDelete, @StringRes int textDelete) {
+        Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(headerDelete))
+                .setContentText(getResources().getString(textDelete))
+                .setConfirmText(getResources().getString(R.string.post_delete_confirm))
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    onDelete();
+                });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+
+    protected void onDelete() {
+        onDeleteClickListener.onClick(feedItem);
+    }
+
+    protected void onEdit() {
+        onEditClickListener.onClick(feedItem);
     }
 
     public void setState(FeedItem feedItem, boolean foreign) {
         this.feedItem = feedItem;
+        this.foreign = foreign;
         FeedEntity feedEntity = feedItem.getItem();
         Resources res = getResources();
 
@@ -161,10 +210,11 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
             comments.setEnabled(true);
         }
 
-        if (foreign || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
-            more.setVisibility(View.GONE);
-        } else {
+        boolean isEditableItem = feedItem.getType() != FeedEntityHolder.Type.TRIP;
+        if ((foreign && isEditableItem) || isEditableItem) {
             more.setVisibility(View.VISIBLE);
+        } else {
+            more.setVisibility(View.GONE);
         }
 
         if (feedItem.getType() == FeedEntityHolder.Type.POST
@@ -173,8 +223,6 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         } else {
             share.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     public void setOnCommentIconClickListener(OnViewClickListener onCommentIconClickListener) {
@@ -199,6 +247,18 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
 
     public void setOnFlagDialogClickListener(OnFlagDialogClickListener onFlagDialogClickListener) {
         this.onFlagDialogClickListener = onFlagDialogClickListener;
+    }
+
+    public void setOnMoreClickListener(OnViewClickListener onMoreClickListener) {
+        this.onMoreClickListener = onMoreClickListener;
+    }
+
+    public void setOnEditClickListener(OnViewClickListener onEditClickListener) {
+        this.onEditClickListener = onEditClickListener;
+    }
+
+    public void setOnDeleteClickListener(OnViewClickListener onDeleteClickListener) {
+        this.onDeleteClickListener = onDeleteClickListener;
     }
 
     @Override

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_horizontal"
     >
 
@@ -84,7 +85,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="dfijndfi rtign tg ijrth rietnh rthijn rtin "
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit "
                 android:textSize="@dimen/font_small"/>
 
             <View
@@ -109,7 +110,8 @@
                     android:gravity="center"
                     android:paddingBottom="10dp"
                     android:paddingTop="10dp"
-                    android:text="@string/profile_friends"/>
+                    android:text="@string/profile_friends"
+                    android:textSize="@dimen/font_small"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
                     android:id="@+id/badge"

@@ -22,11 +22,6 @@ import rx.Observable;
 
 public class MessageDAO extends BaseDAO {
 
-    @Deprecated
-    public MessageDAO(Context context) {
-        super(context);
-    }
-
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
     }

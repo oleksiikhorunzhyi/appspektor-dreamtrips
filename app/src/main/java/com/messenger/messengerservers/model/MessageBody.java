@@ -1,30 +1,37 @@
 package com.messenger.messengerservers.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.messenger.entities.DataMessage;
 
 import java.util.List;
+import java.util.Locale;
 
 public class MessageBody {
     private String text;
     @SerializedName("locale")
-    private String localeName;
+    private String localeName = Locale.getDefault().getDisplayName(); // we should send locale to support release/1.6.0
+    private int version;
     private List<AttachmentHolder> attachments;
 
     public MessageBody() {
     }
 
     public MessageBody(List<AttachmentHolder> attachments) {
-        this.attachments = attachments;
+        this(null, attachments);
     }
 
-    public MessageBody(String text, String localeName, List<AttachmentHolder> attachments) {
+    public MessageBody(String text) {
+        this(text, null);
+    }
+
+    public MessageBody(String text, List<AttachmentHolder> attachments) {
+        setVersion();
         this.text = text;
-        this.localeName = localeName;
         this.attachments = attachments;
     }
 
-    public MessageBody(String localeName) {
-        this.localeName = localeName;
+    private void setVersion() {
+        version = DataMessage.MESSAGE_FORMAT_VERSION;
     }
 
     public String getText() {
@@ -35,12 +42,8 @@ public class MessageBody {
         this.text = text;
     }
 
-    public String getLocaleName() {
-        return localeName;
-    }
-
-    public void setLocaleName(String localeName) {
-        this.localeName = localeName;
+    public int getVersion() {
+        return version;
     }
 
     public List<AttachmentHolder> getAttachments() {

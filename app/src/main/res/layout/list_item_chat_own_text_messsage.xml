@@ -9,23 +9,24 @@
 
     <RelativeLayout
         android:id="@+id/chat_message_container"
+        style="@style/ChatMessageContainerStyle"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/ChatMessageContainerStyle">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/chat_message"
             style="@style/ChatMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/chat_color_message_own"
+            android:textColorLink="@color/chat_color_message_own"
             android:textIsSelectable="true"
-            tools:textColor="@color/black"
             tools:text="MESSAGES"
+            tools:textColor="@color/black"
             />
 
         <ViewSwitcher

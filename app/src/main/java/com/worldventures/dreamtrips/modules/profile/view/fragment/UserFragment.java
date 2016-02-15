@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -106,4 +107,5 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
+
 }

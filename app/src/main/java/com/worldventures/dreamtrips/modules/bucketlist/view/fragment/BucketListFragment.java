@@ -32,8 +32,9 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
@@ -49,7 +50,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
@@ -257,10 +258,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void openPopular(BucketBundle args) {
-        NavigationBuilder.create()
-                .with(activityRouter)
+        router.moveTo(Route.POPULAR_TAB_BUCKER, NavigationConfigBuilder.forActivity()
                 .data(args)
-                .move(Route.POPULAR_TAB_BUCKER);
+                .build());
     }
 
     private void actionFilter() {
@@ -358,25 +358,23 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void openDetails(BucketItem bucketItem) {
-        FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
+        FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
 
-        Route detailsRoute = Route.FEED_ITEM_DETAILS;
         if (isTabletLandscape()) {
-            fragmentCompass.disableBackStack();
-            fragmentCompass.setFragmentManager(getChildFragmentManager());
-            fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.removeDetailed();
-            NavigationBuilder.create()
-                    .with(fragmentCompass)
+            bundle.setSlave(true);
+            router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(false)
+                    .containerId(R.id.detail_container)
+                    .fragmentManager(getChildFragmentManager())
                     .data(bundle)
-                    .move(detailsRoute);
+                    .build());
             showDetailsContainer();
         } else {
             hideDetailContainer();
-            NavigationBuilder.create()
-                    .with(activityRouter)
+            router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .data(bundle)
-                    .move(detailsRoute);
+                    .build());
         }
     }
 }

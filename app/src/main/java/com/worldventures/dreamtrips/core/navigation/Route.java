@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlDistanceFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
@@ -39,14 +38,13 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbum
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.PhotoDetailsFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.TextualPostDetailsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendSearchFragment;
@@ -54,6 +52,7 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -69,12 +68,14 @@ import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryD
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryListFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuggestRestaurantFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
+import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettingsFragment;
+import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
+import com.worldventures.dreamtrips.modules.settings.view.fragment.SettingsGroupFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripWithSocialDetailsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -123,7 +124,7 @@ public enum Route {
     USER_IMAGES(MemberImagesListFragment.class),
     BASE_IMAGES(BaseImageFragment.class),
     MEMBERSHIP(MembershipFragment.class),
-    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class),
+    SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
     INVITE(InviteFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
     BUCKET_TABS(BucketTabsFragment.class, R.string.bucket_list),
@@ -152,11 +153,8 @@ public enum Route {
     USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
     FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
 
-    DETAILS_TEXTUAL_POST(TextualPostDetailsFragment.class, R.string.empty),
-    FEED_DETAILS_PHOTO(PhotoDetailsFeedFragment.class, R.string.empty),
-    DETAILS_TRIP_WITH_SOCIAL(TripWithSocialDetailsFragment.class, R.string.empty),
-
     FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
+    FEED_ENTITY_DETAILS(FeedEntityDetailsFragment.class, R.string.empty),
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
     FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty),
 
@@ -168,7 +166,6 @@ public enum Route {
     DTL_MERCHANTS_LIST(DtlMerchantsListFragment.class),
     DTL_IMAGE(DtlImageFragment.class),
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
-    DTL_DISTANCE_SETTINGS(DtlDistanceFragment.class),
     DTL_FILTERS(DtlFiltersFragment.class),
     DTL_MAP(DtlMapFragment.class),
     DTL_MAP_INFO(DtlMapInfoFragment.class),
@@ -195,7 +192,12 @@ public enum Route {
     BUCKET_PHOTO_FULLSCREEN(BucketPhotoFullscreenFragment.class),
 
     THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),
-    PRESENTATION_VIDEOS(PresentationVideosFragment.class);
+    PRESENTATION_VIDEOS(PresentationVideosFragment.class),
+    SEND_FEEDBACK(SendFeedbackFragment.class),
+
+    SETTINGS(SettingsGroupFragment.class, R.string.settings),
+    SETTINGS_NOTIFICATIONS(NotificationsSettingsFragment.class),
+    SETTINGS_GENERAL(GeneralSettingsFragment.class);
 
     private Class<? extends Fragment> fragmentClass;
     @StringRes

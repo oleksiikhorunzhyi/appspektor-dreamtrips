@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
+import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
@@ -130,8 +131,11 @@ public class CommonModule {
 
         activeComponents.add(InfoModule.FAQ);
         activeComponents.add(InfoModule.TERMS);
+        activeComponents.add(InfoModule.SEND_FEEDBACK);
 
         activeComponents.add(TripsModule.MAP_TRIPS);
+
+        activeComponents.add(SettingsModule.SETTINGS);
 
         activeComponents.add(LOGOUT);
 

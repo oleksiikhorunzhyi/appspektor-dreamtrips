@@ -15,12 +15,14 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.PostEditPresenter;
@@ -36,7 +38,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.layout_post)
-public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle> implements PostPresenter.View {
+public class PostFragment extends RxBaseFragmentWithArgs<PostPresenter, PostBundle> implements PostPresenter.View {
 
     @Inject
     BackStackDelegate backStackDelegate;
@@ -296,8 +298,9 @@ public class PostFragment extends BaseFragmentWithArgs<PostPresenter, PostBundle
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
 
         SoftInputUtil.hideSoftInputMethod(post);
-        getPresenter().cancel();
-        fragmentCompass.removePost();
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+                .fragmentManager(getFragmentManager())
+                .build());
     }
 
     private boolean onBackPressed() {

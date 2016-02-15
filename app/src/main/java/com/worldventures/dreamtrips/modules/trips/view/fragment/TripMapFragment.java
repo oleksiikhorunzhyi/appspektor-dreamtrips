@@ -5,11 +5,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -17,14 +13,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapInfoBundle;
 
-import icepick.Icepick;
 import icepick.State;
-
 
 @Layout(R.layout.fragment_map_with_info)
 @MenuResource(R.menu.menu_map)
@@ -103,6 +99,30 @@ public class TripMapFragment extends MapFragment<TripMapPresenter> implements Tr
     @Override
     public void prepareInfoWindow(int offset) {
         animateToMarker(selectedLocation, offset);
+    }
+
+    @Override
+    public void moveTo(Route route, TripMapInfoBundle bundle) {
+        router.moveTo(route, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.container_info)
+                .fragmentManager(getFragmentManager())
+                .backStackEnabled(false)
+                .data(bundle)
+                .build());
+    }
+
+    @Override
+    public void removeIfNeeded(Route route) {
+        if (getFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapInfoFragment)
+            router.moveTo(route, NavigationConfigBuilder.forRemoval()
+                    .containerId(R.id.container_info)
+                    .fragmentManager(getFragmentManager())
+                    .build());
+    }
+
+    @Override
+    public void back() {
+        router.back();
     }
 
     @Override

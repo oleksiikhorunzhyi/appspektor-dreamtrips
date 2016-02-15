@@ -9,20 +9,21 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.api.merchant.EarnPointsRequest;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
-public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.View> implements TransferListener {
+public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
     private final String merchantId;
     private DtlMerchant dtlMerchant;
@@ -33,7 +34,9 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Inject
     SnappyRepository snapper;
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
+    @Inject
+    DtlJobManager jobManager;
 
     public DtlScanQrCodePresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -42,7 +45,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantRepository.getMerchantById(merchantId);
+        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     @Override
@@ -52,9 +55,18 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         //
         dtlTransaction = snapper.getDtlTransaction(dtlMerchant.getId());
         view.setMerchant(dtlMerchant);
-
-        if (!TextUtils.isEmpty(dtlTransaction.getCode()))
+        //
+        if (dtlTransaction.merchantCodeScanned())
             checkReceiptUploading();
+        //
+        bindApiJob();
+    }
+
+    private void bindApiJob() {
+        bindJobCached(jobManager.earnPointsExecutor)
+                .onProgress(() -> view.showProgress(R.string.dtl_wait_for_earn))
+                .onError(apiErrorPresenter::handleError)
+                .onSuccess(this::processTransactionResult);
     }
 
     public void codeScanned(String content) {
@@ -73,14 +85,10 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
     }
 
     private void onReceiptUploaded() {
-        view.showProgress(R.string.dtl_wait_for_earn);
-        //
-        dtlTransaction.setReceiptPhotoUrl(photoUploadingSpiceManager.
+        dtlTransaction.setReceiptPhotoUrl(photoUploadingManagerS3.
                 getResultUrl(dtlTransaction.getUploadTask()));
-        //
-        doRequest(new EarnPointsRequest(dtlMerchant.getId(), dtlMerchant.getDefaultCurrency().getCode(),
-                        dtlTransaction),
-                this::processTransactionResult);
+        jobManager.earnPointsExecutor.createJobWith(dtlMerchant.getId(), dtlMerchant.getDefaultCurrency().getCode(),
+                dtlTransaction).subscribe();
     }
 
     @Override
@@ -101,21 +109,20 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         view.finish();
     }
 
-
-    //////////////////////////////////////////////////
-    /////////// Receipt uploading
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    // Receipt uploading
+    ///////////////////////////////////////////////////////////////////////////
 
     private void checkReceiptUploading() {
         UploadTask uploadTask = dtlTransaction.getUploadTask();
-
+        //
         transferObserver =
-                photoUploadingSpiceManager.getTransferById(uploadTask.getAmazonTaskId());
-
+                photoUploadingManagerS3.getTransferById(uploadTask.getAmazonTaskId());
+        //
         switch (transferObserver.getState()) {
             case FAILED:
                 //restart upload if failed
-                transferObserver = photoUploadingSpiceManager.upload(dtlTransaction.getUploadTask());
+                transferObserver = photoUploadingManagerS3.upload(dtlTransaction.getUploadTask());
                 uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
                 setListener();
                 break;
@@ -129,7 +136,6 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
                 view.noConnection();
                 break;
         }
-
     }
 
     private void setListener() {
@@ -175,7 +181,7 @@ public class DtlScanQrCodePresenter extends Presenter<DtlScanQrCodePresenter.Vie
         if (transferObserver != null) transferObserver.setTransferListener(null);
     }
 
-    public interface View extends ApiErrorView {
+    public interface View extends RxView, ApiErrorView {
         void finish();
 
         void showProgress(@StringRes int titleRes);

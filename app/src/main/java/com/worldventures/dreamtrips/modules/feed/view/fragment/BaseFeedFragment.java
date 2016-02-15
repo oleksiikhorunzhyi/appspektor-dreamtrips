@@ -14,14 +14,15 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -108,9 +109,9 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     @Optional
     @OnClick(R.id.tv_search_friends)
     public void onFriendsSearchClicked() {
-        NavigationBuilder.create().with(activityRouter)
+        router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
                 .data(new FriendGlobalSearchBundle(""))
-                .move(Route.FRIEND_SEARCH);
+                .build());
     }
 
     protected void showPostContainer() {
@@ -143,12 +144,14 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     public void onEvent(CommentIconClickedEvent event) {
         if (isVisibleOnScreen()) {
             Route detailsRoute = Route.FEED_ITEM_DETAILS;
-            FeedItemDetailsBundle bundle = new FeedItemDetailsBundle(event.getFeedItem());
+            FeedDetailsBundle bundle = new FeedDetailsBundle(event.getFeedItem());
             if (tabletAnalytic.isTabletLandscape()) {
                 bundle.setSlave(true);
             }
             bundle.setOpenKeyboard(true);
-            NavigationBuilder.create().with(activityRouter).data(bundle).move(detailsRoute);
+            router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
+                    .data(bundle)
+                    .build());
         }
     }
 
@@ -158,10 +161,10 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     }
 
     protected void openUser(User user) {
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(user))
+        router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(user.getId()));
+                .data(new UserBundle(user))
+                .build());
     }
 
     @Override
@@ -172,5 +175,29 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
     private boolean isPhoneLandscape() {
         return !ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
+    }
+
+    @Override
+    public void showEdit(BucketBundle bucketBundle) {
+        int containerId = R.id.container_details_floating;
+        if (isTabletLandscape()) {
+            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(true)
+                    .containerId(containerId)
+                    .fragmentManager(getActivity().getSupportFragmentManager())
+                    .data(bucketBundle)
+                    .build());
+            showContainer(containerId);
+        } else {
+            bucketBundle.setLock(true);
+            router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
+                    .data(bucketBundle)
+                    .build());
+        }
+    }
+
+    private void showContainer(int containerId) {
+        View container = ButterKnife.findById(getActivity(), containerId);
+        if (container != null) container.setVisibility(View.VISIBLE);
     }
 }

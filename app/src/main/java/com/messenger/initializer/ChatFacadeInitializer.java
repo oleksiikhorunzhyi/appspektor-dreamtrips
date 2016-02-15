@@ -177,8 +177,8 @@ public class ChatFacadeInitializer implements AppInitializer {
         emitter.addOnChatLeftListener((conversationId, userId, leave) -> {
             Timber.i("Chat left :: chat=%s , user=%s", conversationId, userId);
             Observable.zip(
-                    conversationsDAO.getConversation(conversationId).compose(new NonNullFilter<>()),
-                    usersDAO.getUserById(userId).compose(new NonNullFilter<>()),
+                    conversationsDAO.getConversation(conversationId).compose(new NonNullFilter<>()).first(),
+                    usersDAO.getUserById(userId).compose(new NonNullFilter<>()).first(),
                     (conversation, user) -> new Pair<>(conversation, user)
             )
                     .subscribeOn(Schedulers.io()).first()

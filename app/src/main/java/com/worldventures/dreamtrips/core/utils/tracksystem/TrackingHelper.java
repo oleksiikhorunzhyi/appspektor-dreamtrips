@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsFilterAttribute;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -211,7 +211,7 @@ public class TrackingHelper {
         trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_INSPR, ACTION_INSPR_DETAILS, String.valueOf(id));
     }
 
-    public static void insprShare(String id, @ShareFragment.ShareType String type) {
+    public static void insprShare(String id, @ShareType String type) {
         Map<String, Object> data = new HashMap<>();
         data.put(TYPE, resolveSharingType(type));
         data.put(ID, id);
@@ -519,11 +519,11 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, prepareAttributeMap(attribute));
     }
 
-    public static String resolveSharingType(@ShareFragment.ShareType String type) {
+    public static String resolveSharingType(@ShareType String type) {
         switch (type) {
-            case ShareFragment.FB:
+            case ShareType.FACEBOOK:
                 return ATTRIBUTE_FACEBOOK;
-            case ShareFragment.TW:
+            case ShareType.TWITTER:
                 return ATTRIBUTE_TWITTER;
             default:
                 return ATTRIBUTE_SHARING_UNRESOLVED;
@@ -750,7 +750,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
     }
 
-    public static void shareSuccessStory(@ShareFragment.ShareType String socialNet, String storyId) {
+    public static void shareSuccessStory(@ShareType String socialNet, String storyId) {
         Map data = new HashMap<>();
         data.put(resolveSharingType(socialNet), storyId);
         data.put(ATTRIBUTE_SHARE, "1");
@@ -839,7 +839,7 @@ public class TrackingHelper {
         //
         if (filterData.getSelectedAmenities() != null && !filterData.getSelectedAmenities().isEmpty())
             stringBuilder.append(Queryable.from(filterData.getSelectedAmenities())
-                    .joinStrings(":", DtlMerchantsFilterAttribute::getAttributeName));
+                    .joinStrings(":", DtlMerchantAttribute::getName));
         //
         data.put(DTL_ATTRIBUTE_FILTER, stringBuilder.toString());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);
@@ -936,7 +936,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_POINTS_EARNED, data);
     }
 
-    public static void dtlShare(@ShareFragment.ShareType String sharingType) {
+    public static void dtlShare(@ShareType String sharingType) {
         Map data = prepareAttributeMap(ATTRIBUTE_SHARE);
         data.put(DTL_ATTRIBUTE_SHARE, resolveSharingType(sharingType));
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_SHARE, data);

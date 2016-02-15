@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEve
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 
 import java.util.Calendar;
 
@@ -29,8 +29,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View>
-        implements DtlFilterDelegate.FilterListener {
+public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresenter<DtlMerchantDetailsPresenter.View> {
 
     private DtlTransaction dtlTransaction;
 
@@ -41,7 +40,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     @Inject
     LocationDelegate locationDelegate;
     @Inject
-    DtlLocationRepository locationRepository;
+    DtlLocationManager locationRepository;
     @Inject
     DtlFilterDelegate dtlFilterDelegate;
 
@@ -58,24 +57,9 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlFilterDelegate.addListener(this);
         if (merchant.hasNoOffers())
             featureManager.with(Feature.REP_SUGGEST_MERCHANT, () -> view.setSuggestMerchantButtonAvailable(true),
                     () -> view.setSuggestMerchantButtonAvailable(false));
-    }
-
-    @Override
-    public void dropView() {
-        dtlFilterDelegate.removeListener(this);
-        super.dropView();
-    }
-
-    @Override
-    public void onFilter() {
-        if (view != null) {
-            merchant.setDistanceType(dtlFilterDelegate.getDistanceType());
-            view.distanceTypeChanged(merchant);
-        }
     }
 
     private void processTransaction() {
@@ -109,14 +93,14 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
             // we should clean transaction, as for now we don't allow user to save his progress
             // in the enrollment wizard(maybe needed in future)
             if (dtlTransaction.getUploadTask() != null)
-                photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+                photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
             snapper.cleanDtlTransaction(merchant.getId(), dtlTransaction);
             view.openTransaction(merchant, dtlTransaction);
         } else {
             view.disableCheckinButton();
             view.bind(locationDelegate
                             .requestLocationUpdate()
-                            .compose(new IoToMainComposer<>())
+                            .compose(IoToMainComposer.get())
             ).subscribe(this::onLocationObtained, this::onLocationError);
         }
     }
@@ -180,7 +164,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     /**
      * Analytic-related
      */
-    public void trackSharing(@ShareFragment.ShareType String type) {
+    public void trackSharing(@ShareType String type) {
         TrackingHelper.dtlShare(type);
     }
 
@@ -199,7 +183,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     }
 
     public void routeToMerchantRequested(@Nullable final Intent intent) {
-        view.bind(locationDelegate.getLastKnownLocation().compose(new IoToMainComposer<>()))
+        view.bind(locationDelegate.getLastKnownLocation().compose(IoToMainComposer.get()))
                 .subscribe(location -> {
                     TrackingHelper.dtlMapDestination(location.getLatitude(), location.getLongitude(),
                             merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());

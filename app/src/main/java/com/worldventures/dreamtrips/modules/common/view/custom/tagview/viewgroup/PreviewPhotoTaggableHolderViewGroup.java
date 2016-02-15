@@ -27,7 +27,7 @@ public class PreviewPhotoTaggableHolderViewGroup extends TaggableImageViewGroup<
 
     @NonNull
     @Override
-    protected PreviewPhotoTaggableHolderPresenter getPresenter(Photo photo) {
+    protected PreviewPhotoTaggableHolderPresenter createPresenter(Photo photo) {
         return new PreviewPhotoTaggableHolderPresenter(photo);
     }
 

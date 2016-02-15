@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.PhotoUploadResponse;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
@@ -21,11 +22,13 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
+import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
@@ -33,7 +36,6 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
@@ -60,6 +62,7 @@ import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 import static com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand.RequestBody;
+import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
 
 public interface DreamTripsApi {
 
@@ -74,6 +77,10 @@ public interface DreamTripsApi {
     @POST("/api/profile/avatar")
     @Multipart
     User uploadAvatar(@Part("avatar") TypedFile image);
+
+    @POST("/uploadery/upload ")
+    @Multipart
+    PhotoUploadResponse uploadPhoto(@Part("photo") TypedFile image);
 
     @POST("/api/profile/background_photo")
     @Multipart
@@ -97,6 +104,11 @@ public interface DreamTripsApi {
     @GET("/api/activities")
     List<ActivityModel> getActivities();
 
+    /* *** PHOTOS *****************************/
+
+    /**
+     * Photo of all members
+     */
     @GET("/api/photos")
     ArrayList<Photo> getMembersPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
@@ -109,8 +121,6 @@ public interface DreamTripsApi {
     @GET("/api/ysbh_photos")
     ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
-    @GET("/api/success_stories")
-    ArrayList<SuccessStory> getSuccessStores();
 
     @FormUrlEncoded
     @POST("/api/photos/{id}/flags")
@@ -119,20 +129,21 @@ public interface DreamTripsApi {
     @DELETE("/api/photos/{id}")
     JsonObject deletePhoto(@Path("id") String photoId);
 
-    @POST("/api/success_stories/{id}/like")
-    JsonObject likeSS(@Path("id") int photoId);
-
-    @DELETE("/api/success_stories/{id}/like")
-    JsonObject unlikeSS(@Path("id") int photoId);
-
-    @POST("/api/photos")
-    Photo uploadTripPhoto(@Body ImageUploadTask uploadTask);
-
     @POST("/api/photos")
     Photo uploadTripPhoto(@Body UploadTask uploadTask);
 
     @PUT("/api/photos/{uid}")
     Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
+    /* *** END PHOTOS *****************************/
+
+    @GET("/api/success_stories")
+    ArrayList<SuccessStory> getSuccessStores();
+
+    @POST("/api/success_stories/{id}/like")
+    JsonObject likeSS(@Path("id") int photoId);
+
+    @DELETE("/api/success_stories/{id}/like")
+    JsonObject unlikeSS(@Path("id") int photoId);
 
     @POST("/api/bucket_list_items/{uid}/photos")
     BucketPhoto uploadBucketPhoto(@Path("uid") String uid, @Body BucketPhoto bucketPhoto);
@@ -369,4 +380,17 @@ public interface DreamTripsApi {
 
     @GET("/api/photos/{uid}")
     Photo getPhotoInfo(@Path("uid") String uid);
+
+    @GET("/api/user/settings")
+    SettingsHolder getSettings();
+
+    @PATCH("/api/user/settings")
+    Void updateSettings(@Body SettingsHolder settingsHolder);
+
+
+    @GET("/api/feedbacks/reasons")
+    ArrayList<FeedbackType> getFeedbackReasons();
+
+    @POST("/api/feedbacks")
+    Void sendFeedback(@Body FeedbackBody feedbackBody);
 }

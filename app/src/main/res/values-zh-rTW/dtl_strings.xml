@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional -->
 <resources>
     <string name="dtl_locations_title">選擇地點</string>
     <string name="dtl_locations_try_search">我們無法找到您附近的城市。請試試我們的城市搜索</string>
@@ -17,7 +18,7 @@
     <string name="dtl_field_validation_empty_input_error">不能是空白！</string>
     <string name="dtl_points_estimation_negative_input_error">不能少於0！</string>
     <string name="dtl_price">價格 ($)</string>
-    <string name="dtl_distance">距離</string>
+    <string name="dtl_distance">距離, %s</string>
     <string name="dtl_receipt_hint">輸入金額</string>
     <string name="dtl_receipt_note">&lt;b&gt;備註:&lt;/b&gt; 金額應是賬單的總數，不包括小費和稅</string>
     <string name="dtl_receipt_scan">捕捉收據</string>
@@ -102,9 +103,6 @@
     <string name="dtl_coming_soon_offers">更多優惠即將到來</string>
     <string name="dtl_details_share_title_without_points">我發現%s在使用DreamTrips app</string>
     <string name="rep_suggest_restaurant">推薦餐廳</string>
-    <string name="distance_miles" formatted="false">%.1f 英里</string>
-    <string name="distance_kms" formatted="false">%.1f 公里</string>
-    <string name="distance_dialog_miles">英里</string>
-    <string name="distance_dialog_kms">公里</string>
-    <string name="distance_header">顯示距離以：</string>
+    <string name="details_collapsed_text_caption">顯示更多</string>
+    <string name="details_expanded_text_caption">顯示更少</string>
 </resources>

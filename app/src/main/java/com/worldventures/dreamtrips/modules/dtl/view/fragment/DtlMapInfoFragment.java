@@ -46,13 +46,6 @@ public class DtlMapInfoFragment
         observeSize(rootView);
     }
 
-    @OnClick(R.id.distance_holder)
-    public void onDistanceClicked() {
-        router.moveTo(Route.DTL_DISTANCE_SETTINGS, NavigationConfigBuilder.forDialog()
-                .fragmentManager(getChildFragmentManager())
-                .build());
-    }
-
     private void observeSize(final View rootView) {
         ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -74,11 +67,6 @@ public class DtlMapInfoFragment
     @Override
     public void setMerchant(DtlMerchant merchant) {
         commonDataInflater.apply(merchant);
-        categoryDataInflater.apply(merchant);
-    }
-
-    @Override
-    public void distanceTypeChanged(DtlMerchant merchant) {
         categoryDataInflater.apply(merchant);
     }
 

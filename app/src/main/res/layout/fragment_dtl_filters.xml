@@ -76,7 +76,6 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="6dp"
             custom:connectingLineColor="#54B5FC"
             custom:pinColor="#54B5FC"
             custom:rangeBar="false"
@@ -85,46 +84,15 @@
             custom:tickInterval="10"
             custom:tickStart="10"/>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/distance_filter_caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_weight="1"
             android:paddingLeft="25dp"
             android:paddingTop="15dp"
-            >
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dtl_distance"
-                android:textColor="@color/black"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="@string/mi"/>
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/switchView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/spacing_small"
-                android:paddingRight="@dimen/spacing_small"
-                materialdesign:check="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_marginRight="@dimen/spacing_large"
-                android:layout_marginEnd="@dimen/spacing_large"
-                android:text="@string/km"/>
-
-
-        </LinearLayout>
-
+            android:text="@string/dtl_distance"
+            android:textColor="@color/black"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -152,7 +120,7 @@
 
     </FrameLayout>
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

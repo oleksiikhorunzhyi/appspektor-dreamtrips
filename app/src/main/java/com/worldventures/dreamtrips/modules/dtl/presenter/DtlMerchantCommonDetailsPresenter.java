@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantRepository;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
@@ -11,7 +11,7 @@ public class DtlMerchantCommonDetailsPresenter<T extends DtlMerchantCommonDetail
     protected final String merchantId;
 
     @Inject
-    DtlMerchantRepository dtlMerchantRepository;
+    DtlMerchantManager dtlMerchantManager;
 
     public DtlMerchantCommonDetailsPresenter(String id) {
         this.merchantId = id;
@@ -20,7 +20,7 @@ public class DtlMerchantCommonDetailsPresenter<T extends DtlMerchantCommonDetail
     @Override
     public void onInjected() {
         super.onInjected();
-        merchant = dtlMerchantRepository.getMerchantById(merchantId);
+        merchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     @Override
@@ -30,8 +30,7 @@ public class DtlMerchantCommonDetailsPresenter<T extends DtlMerchantCommonDetail
     }
 
     public interface View extends Presenter.View {
-        void setMerchant(DtlMerchant merchant);
 
-        void distanceTypeChanged(DtlMerchant merchant);
+        void setMerchant(DtlMerchant merchant);
     }
 }

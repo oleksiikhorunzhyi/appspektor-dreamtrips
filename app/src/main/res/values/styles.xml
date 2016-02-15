@@ -159,6 +159,13 @@
         <item name="holdRepeatDelay">1000</item>
     </style>
 
+
+    <style name="EditTextMessage" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/theme_main_darker</item>
+        <item name="colorControlActivated">@color/theme_main_darker</item>
+        <item name="android:textColorSecondary">@color/theme_main_darker</item>
+    </style>
+
     <!--messenger-->
     <style name="SmallSingleChatAvatarView">
         <item name="android:layout_width">@dimen/list_item_small_avatar_image_size</item>
@@ -218,7 +225,7 @@
         <item name="android:layout_marginBottom">@dimen/chat_list_username_bottom_margin</item>
     </style>
 
-    <style name="ChatMessageTextView">
+    <style name="ChatMessageTextView" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/chat_list_message_text_size</item>
     </style>
 

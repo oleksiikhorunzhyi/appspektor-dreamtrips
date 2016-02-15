@@ -3,7 +3,6 @@ package com.messenger.storage.dao;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.messenger.entities.DataConversation$Table;
@@ -23,27 +22,8 @@ import rx.schedulers.Schedulers;
 
 public class ParticipantsDAO extends BaseDAO {
 
-    @Deprecated
-    public ParticipantsDAO(Context context) {
-        super(context);
-    }
-
     public ParticipantsDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
-    }
-
-    @Deprecated
-    public static Observable<Cursor> selectParticipants(RxContentResolver contentResolver, String conversationId, Uri... observeUris) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users u " +
-                        "JOIN " + DataParticipant.TABLE_NAME + " p " +
-                        "ON p.userId = u._id " +
-                        "WHERE p.conversationId = ?")
-                .withSelectionArgs(new String[]{conversationId})
-                .withSortOrder(userOrder())
-                .build();
-
-        return contentResolver.query(q, observeUris);
     }
 
     public Observable<DataUser> getParticipant(String conversationId, String yourId) {

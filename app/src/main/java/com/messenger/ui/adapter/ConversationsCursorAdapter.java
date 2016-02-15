@@ -25,7 +25,7 @@ import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
-import com.messenger.ui.adapter.util.swipe.SwipeableWrapperAdapter;
+import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -41,7 +41,6 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
-import timber.log.Timber;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 import static com.messenger.messengerservers.constant.ConversationType.GROUP;
@@ -49,7 +48,7 @@ import static com.messenger.messengerservers.constant.ConversationType.TRIP;
 
 public class ConversationsCursorAdapter
         extends CursorRecyclerViewAdapter<BaseConversationViewHolder>
-        implements SwipeableWrapperAdapter.SwipeLayoutContainer {
+        implements SwipeLayoutContainer {
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;

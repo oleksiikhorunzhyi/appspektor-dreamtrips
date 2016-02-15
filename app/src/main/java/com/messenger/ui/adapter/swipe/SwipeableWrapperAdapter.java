@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.util.swipe;
+package com.messenger.ui.adapter.swipe;
 
 import android.support.v7.widget.RecyclerView;
 
@@ -14,7 +14,7 @@ import java.util.List;
 /*
  * Wrapper for providing swipe functionality.
  */
-public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeableWrapperAdapter.SwipeLayoutContainer, VH extends RecyclerView.ViewHolder>
+public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeLayoutContainer, VH extends RecyclerView.ViewHolder>
         extends BaseWrapperAdapter<VH>
         implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
@@ -24,10 +24,6 @@ public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeableW
     public SwipeableWrapperAdapter(A adapter) {
         super(adapter);
         swipeLayoutContainer = adapter;
-    }
-
-    public interface SwipeLayoutContainer {
-        int getSwipeLayoutResourceId(int position);
     }
 
     @Override

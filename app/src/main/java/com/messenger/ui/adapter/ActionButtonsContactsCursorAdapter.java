@@ -10,8 +10,8 @@ import com.daimajia.swipe.SwipeLayout;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
-import com.messenger.ui.adapter.util.swipe.SwipeableAdapterManager;
-import com.messenger.ui.adapter.util.swipe.SwipeableWrapperAdapter;
+import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
+import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
 import com.messenger.util.SwipeClickListener;
 import com.worldventures.dreamtrips.R;
 
@@ -19,7 +19,7 @@ import butterknife.InjectView;
 
 public class ActionButtonsContactsCursorAdapter
         extends ContactCursorAdapter
-        implements SwipeableWrapperAdapter.SwipeLayoutContainer {
+        implements SwipeLayoutContainer {
 
     public final String userId;
     private final boolean owner;

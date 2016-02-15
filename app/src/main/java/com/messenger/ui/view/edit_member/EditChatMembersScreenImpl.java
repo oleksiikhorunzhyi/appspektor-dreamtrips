@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
-import com.messenger.ui.adapter.util.swipe.SwipeableAdapterManager;
+import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -89,7 +89,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(context));
-        recyclerView.setAdapter(swipeableAdapterManager.provideWrappedAdapter(adapter));
+        recyclerView.setAdapter(swipeableAdapterManager.wrapAdapter(adapter));
         recyclerView.addItemDecoration(new VerticalDivider(
                 ContextCompat.getDrawable(context, R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);

@@ -25,7 +25,7 @@ import android.widget.Spinner;
 import com.messenger.entities.DataConversation;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
-import com.messenger.ui.adapter.util.swipe.SwipeableAdapterManager;
+import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -152,7 +152,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         adapter.setConversationClickListener(getPresenter()::onConversationSelected);
-        recyclerView.setAdapter(swipeableAdapterManager.provideWrappedAdapter(adapter));
+        recyclerView.setAdapter(swipeableAdapterManager.wrapAdapter(adapter));
         //
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
     }

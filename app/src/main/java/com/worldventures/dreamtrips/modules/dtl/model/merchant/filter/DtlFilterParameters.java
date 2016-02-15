@@ -25,15 +25,4 @@ public abstract class DtlFilterParameters {
     //
     public abstract List<DtlMerchantAttribute> getSelectedAmenities();
 
-    /**
-     * Create default dtl filter parameters.
-     * @return the default dtl filter parameters
-     */
-    public static DtlFilterParameters createDefault() {
-        return ImmutableDtlFilterParameters.builder()
-                .minPrice(MIN_PRICE)
-                .maxPrice(MAX_PRICE)
-                .maxDistance(MAX_DISTANCE)
-                .selectedAmenities(Collections.emptyList()).build();
-    }
 }

@@ -56,6 +56,9 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
             doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
                 newDeletedTags.clear();
                 deleteComplete = true;
+                List<PhotoTag> tags = Queryable.from(photo.getPhotoTags())
+                        .filter(tag -> userIds.contains(tag.getUser().getId())).toList();
+                photo.getPhotoTags().removeAll(tags);
                 onComplete();
             });
         } else {

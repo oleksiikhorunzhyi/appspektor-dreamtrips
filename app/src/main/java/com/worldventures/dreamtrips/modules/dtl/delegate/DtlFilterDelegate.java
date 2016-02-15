@@ -33,7 +33,6 @@ public class DtlFilterDelegate {
             filterData = ImmutableDtlFilterData.builder().build();
         }
         filterData = ImmutableDtlFilterData.copyOf(filterData).withDistanceType(db.getMerchantsDistanceType());
-        filterStream.onNext(filterData);
     }
 
     public Observable<DtlFilterData> getFilterStream(){
@@ -42,12 +41,12 @@ public class DtlFilterDelegate {
 
     public void applySearch(String query) {
         filterData = ImmutableDtlFilterData.copyOf(filterData).withSearchQuery(query);
-        filterStream.onNext(filterData);
+        notifySubscribers();
     }
 
     public void applyFilter(DtlFilterParameters filterParameters) {
         filterData = DtlFilterData.merge(filterParameters, filterData);
-        filterStream.onNext(filterData);
+        notifySubscribers();
     }
 
     public DtlFilterData getFilterData() {
@@ -60,11 +59,15 @@ public class DtlFilterDelegate {
                 .copyOf(filterData)
                 .withAmenities(amenities)
                 .withSelectedAmenities(amenities);
-        filterStream.onNext(filterData);
+        notifySubscribers();
     }
 
     public void reset() {
-        filterData.reset();
+        filterData = ImmutableDtlFilterData.copyOf(filterData).withSelectedAmenities(filterData.getAmenities());
+        notifySubscribers();
+    }
+
+    public void notifySubscribers(){
         filterStream.onNext(filterData);
     }
 }

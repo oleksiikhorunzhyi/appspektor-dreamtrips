@@ -50,11 +50,7 @@ public abstract class DtlFilterData {
                 .withSelectedAmenities(filterParameters.getSelectedAmenities());
     }
 
-    public void reset() {
-//        from(DtlFilterParameters.createDefault());
-//        selectAllAmenities();
-    }
-
+    @Value.Derived
     public boolean hasAmenities() {
         return !getAmenities().isEmpty();
     }

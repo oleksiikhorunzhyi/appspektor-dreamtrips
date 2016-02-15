@@ -28,6 +28,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
+import timber.log.Timber;
 
 public class PhotoUploadingManager {
 
@@ -44,6 +45,7 @@ public class PhotoUploadingManager {
 
     public PhotoUploadingManager(Injector injector) {
         injector.inject(this);
+        bus.doOnError(throwable -> Timber.d("", throwable));
     }
 
     public long upload(UploadTask uploadTask, String purpose) {

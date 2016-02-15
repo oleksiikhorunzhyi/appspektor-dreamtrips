@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -37,7 +38,9 @@ public class TripCell extends AbstractCell<TripModel> {
 
     @Override
     protected void syncUIStateWithModel() {
-        tripFeedViewInjector.initTripData(getModelObject(), appSessionHolder.get().get().getUser());
+        Optional<UserSession> userSessionOptional = appSessionHolder.get();
+        if (userSessionOptional.isPresent())
+            tripFeedViewInjector.initTripData(getModelObject(), userSessionOptional.get().getUser());
     }
 
     @Override

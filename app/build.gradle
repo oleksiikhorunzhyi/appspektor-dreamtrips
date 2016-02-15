@@ -75,7 +75,6 @@ android {
         dev {
             flavorDimension "build"
 
-            applicationIdSuffix ".dev"
             minSdkVersion 23 // temporary, until new build gradle merged - to decrease build time
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
 
@@ -87,10 +86,7 @@ android {
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
         stage { // the same as dev except minSdk
-
             flavorDimension "build"
-
-            applicationIdSuffix ".dev"
 
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
 
@@ -110,7 +106,7 @@ android {
         dtl {
             flavorDimension "config"
 
-            applicationIdSuffix ".dtl"
+            applicationId "com.worldventures.dreamtrips.dtl"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
 
             manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
@@ -126,7 +122,7 @@ android {
         social {
             flavorDimension "config"
 
-            applicationIdSuffix ".stage"
+            applicationId "com.worldventures.dreamtrips.stage"
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"
 
             manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"

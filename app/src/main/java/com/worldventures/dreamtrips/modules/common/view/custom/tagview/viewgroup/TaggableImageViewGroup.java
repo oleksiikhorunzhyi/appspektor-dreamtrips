@@ -99,6 +99,11 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         return isShown;
     }
 
+    public void redrawTags() {
+        removeAllViews();
+        presenter.showExistingTags();
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         hide();

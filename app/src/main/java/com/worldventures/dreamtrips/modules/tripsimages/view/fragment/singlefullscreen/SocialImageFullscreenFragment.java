@@ -103,6 +103,11 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     }
 
     @Override
+    public void redrawTags() {
+        taggableImageHolder.redrawTags();
+    }
+
+    @Override
     public void showFlagDialog(List<Flag> flags) {
         hideProgress();
         flag.showFlagsPopup(flags, (flagReasonId, reason) -> getPresenter().sendFlagAction(flagReasonId, reason));

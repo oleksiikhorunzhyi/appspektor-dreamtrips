@@ -143,6 +143,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
             if (photo.equals(temp)) {
                 this.photo = temp;
                 setupActualViewState();
+                view.redrawTags();
             }
         }
     }
@@ -157,5 +158,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         void showContentWrapper();
 
         void openEdit(EditPhotoBundle editPhotoBundle);
+
+        void redrawTags();
     }
 }

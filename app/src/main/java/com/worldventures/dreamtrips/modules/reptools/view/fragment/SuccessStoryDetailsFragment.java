@@ -67,7 +67,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @Override
     public void afterCreateView(View rootView) {
-        slave = getArguments().getBoolean(EXTRA_SLAVE);
+        slave = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getBoolean(EXTRA_SLAVE);
 
         if (!ViewUtils.isTablet(getActivity())) {
             ivFullscreen.setVisibility(View.GONE);

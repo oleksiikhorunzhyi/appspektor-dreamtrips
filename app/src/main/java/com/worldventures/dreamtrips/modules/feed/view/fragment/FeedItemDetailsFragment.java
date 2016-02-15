@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -86,5 +87,16 @@ public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetails
     private boolean isShowAdditionalInfo() {
         return getActivity().getSupportFragmentManager().findFragmentById(R.id.comments_additional_info_container) == null
                 && getArgs().isShowAdditionalInfo();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        /* Hiding keyboard saves app from crash on Samsung Tablets. Here is crash log from samsung tab
+        Fatal Exception: java.lang.NullPointerException
+            at android.widget.LinearLayout.layoutHorizontal(LinearLayout.java:1629)
+            at android.widget.LinearLayout.onLayout(LinearLayout.java:1442)
+            at android.view.View.layout(View.java:15746)*/
+        SoftInputUtil.hideSoftInputMethod(getActivity());
     }
 }

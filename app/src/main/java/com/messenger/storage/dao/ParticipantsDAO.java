@@ -14,6 +14,7 @@ import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -118,6 +119,11 @@ public class ParticipantsDAO extends BaseDAO {
     public void save(List<DataParticipant> participants) {
         bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
     }
+
+    public void save(DataParticipant participant) {
+        save(Collections.singletonList(participant));
+    }
+
 
     public void deleteBySyncTime(long time) {
         getContentResolver().delete(DataParticipant.CONTENT_URI,

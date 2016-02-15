@@ -10,6 +10,7 @@ import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.OnUserStatusChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
 
 import java.util.List;
@@ -135,9 +136,9 @@ public abstract class GlobalEventEmitter {
         onChatJoinedListeners.remove(listener);
     }
 
-    protected void notifyOnChatJoinedListener(String conversationId, String userId, boolean isOnline) {
+    protected void notifyOnChatJoinedListener(Participant participant, boolean isOnline) {
         for (OnChatJoinedListener listener : onChatJoinedListeners) {
-            listener.onChatJoined(conversationId, userId, isOnline);
+            listener.onChatJoined(participant, isOnline);
         }
     }
 

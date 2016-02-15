@@ -1,10 +1,9 @@
 package com.messenger.messengerservers.xmpp.loaders;
 
-import com.google.gson.Gson;
 import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationListPacket;
@@ -27,13 +26,12 @@ public class XmppConversationLoader extends Loader<Conversation> {
 
     private static final int MAX_CONVERSATIONS = 512;
     private final XmppServerFacade facade;
-    private Gson gson;
+
     public XmppConversationLoader(XmppServerFacade facade) {
         this.facade = facade;
-        gson = facade.getGson();
         ProviderManager.addIQProvider(
                 ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE,
-                new ConversationProvider(gson)
+                new ConversationProvider(facade.getGson())
         );
     }
 
@@ -66,7 +64,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
                 .flatMap(conversation -> Observable.<Conversation>create(subscriber -> {
                     if (conversation.getType().equals(CHAT)) {
                         // TODO: 2/1/16  participants has jid
-                        List<Participant> participants = provider.getSingleChatParticipants(conversation);
+                        List<Participant> participants = provider.getSingleChatParticipants(conversation.getId());
                         if (subscriber.isUnsubscribed()) return;
                         if (singleChatInvalid(conversation, facade.getUsername())) {
                             Timber.w("Single Conversation is invalid: %s", conversation);
@@ -78,7 +76,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
                         subscriber.onNext(conversation);
                         subscriber.onCompleted();
                     } else {
-                        provider.loadMultiUserChatParticipants(conversation, (owner, members, abandoned) -> {
+                        provider.loadMultiUserChatParticipants(conversation.getId(), (owner, members, abandoned) -> {
                             if (subscriber.isUnsubscribed()) return;
                             if (XmppConversationLoader.this.groupChatInvalid(conversation, owner, members)) {
                                 Timber.w("Group Conversation is invalid: %s", conversation);

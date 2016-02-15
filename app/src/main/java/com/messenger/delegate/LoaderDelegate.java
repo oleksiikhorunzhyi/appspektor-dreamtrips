@@ -137,6 +137,14 @@ public class LoaderDelegate {
         return userProcessor.connectToUserProvider(loader);
     }
 
+    public Observable<List<DataUser>> loadParticipants(String conversationId) {
+        return userProcessor.connectToUserProvider(messengerServerFacade.getLoaderManager().createParticipantsLoader()
+                .load(conversationId)
+                .doOnNext(participants -> participantsDAO.save(from(participants).map(DataParticipant::new).toList()))
+                .map(participants -> from(participants).map(p -> new User(p.getUserId())).toList()))
+                .doOnNext(usersDAO::save);
+    }
+
     private static abstract class SubscriberLoaderListener<I, R> implements OnLoadedListener<I> {
 
         private Subscriber<? super List<R>> subscriber;

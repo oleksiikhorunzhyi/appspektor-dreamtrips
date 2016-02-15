@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -145,9 +146,9 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
 
     @Override
     public DtlFilterParameters getFilterParameters() {
-        return DtlFilterParameters.Builder.create()
-                .price(Integer.valueOf(rangeBarPrice.getLeftValue()),
-                        Integer.valueOf(rangeBarPrice.getRightValue()))
+        return ImmutableDtlFilterParameters.builder()
+                .minPrice(Integer.valueOf(rangeBarPrice.getLeftValue()))
+                .maxPrice(Integer.valueOf(rangeBarPrice.getRightValue()))
                 .maxDistance(Integer.valueOf(rangeBarDistance.getRightValue()))
                 .selectedAmenities(obtainSelectedAmenities())
                 .build();

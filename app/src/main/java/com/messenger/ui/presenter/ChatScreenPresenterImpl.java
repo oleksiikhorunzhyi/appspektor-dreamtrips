@@ -60,7 +60,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileMa
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -549,9 +548,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             return false;
         }
 
-        MessageBody body = new MessageBody();
-        body.setText(message);
-        body.setLocaleName(Locale.getDefault().toString());
+        MessageBody body = new MessageBody(message);
 
         submitOneChatAction(chat -> {
             chat.send(createMessage(body))

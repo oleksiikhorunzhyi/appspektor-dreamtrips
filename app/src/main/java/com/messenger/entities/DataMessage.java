@@ -22,6 +22,8 @@ import java.util.Date;
 public class DataMessage extends BaseProviderModel<DataMessage> {
     public static final String TABLE_NAME = "Messages";
 
+    public static final int MESSAGE_FORMAT_VERSION = 1;
+
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
@@ -34,6 +36,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @Column String conversationId;
     @MessageStatus.Status @Column int status;
     @Column long syncTime;
+    @Column int version = MESSAGE_FORMAT_VERSION;
 
     public DataMessage() {
     }
@@ -56,6 +59,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         MessageBody body = message.getMessageBody();
         if (body != null) {
             setText(body.getText());
+            setVersion(body.getVersion());
         }
     }
 
@@ -68,6 +72,14 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setDate(builder.date);
         setSyncTime(builder.syncTime);
         setStatus(builder.status);
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getId() {
@@ -173,12 +185,12 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         public Builder() {
         }
 
-        public Builder id(String val){
+        public Builder id(String val) {
             this.id = val;
             return this;
         }
 
-        public Builder conversationId(String conversationId){
+        public Builder conversationId(String conversationId) {
             this.conversationId = conversationId;
             return this;
         }
@@ -224,7 +236,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     }
 
     public com.messenger.messengerservers.model.Message toChatMessage() {
-        MessageBody body = new MessageBody(text,null, null);
+        MessageBody body = new MessageBody(text, null);
         return new com.messenger.messengerservers.model.Message.Builder()
                 .fromId(fromId)
                 .toId(toId)

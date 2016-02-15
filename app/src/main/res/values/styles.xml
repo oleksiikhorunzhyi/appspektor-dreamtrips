@@ -225,7 +225,7 @@
         <item name="android:layout_marginBottom">@dimen/chat_list_username_bottom_margin</item>
     </style>
 
-    <style name="ChatMessageTextView">
+    <style name="ChatMessageTextView" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/chat_list_message_text_size</item>
     </style>
 

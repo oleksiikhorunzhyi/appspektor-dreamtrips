@@ -30,8 +30,8 @@ import java.util.TreeMap;
 public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<BaseViewHolder>
         implements SectionIndexer {
 
-    private static final int VIEW_TYPE_CONTACT = 1;
-    private static final int VIEW_TYPE_HEADER = 2;
+    protected static final int VIEW_TYPE_CONTACT = 1;
+    protected static final int VIEW_TYPE_HEADER = 2;
 
     // Put -1 as 0 section is the section corresponding to first letter in alphabet index
     private static final int ADMIN_SECTION_INDEX = -1;

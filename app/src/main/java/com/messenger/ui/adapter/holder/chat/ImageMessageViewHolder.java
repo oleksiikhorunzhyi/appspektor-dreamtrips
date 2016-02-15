@@ -85,7 +85,7 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
     }
 
     @Override
-    public View getViewForClickableTimestamp() {
+    public View getMessageView() {
         return imagePostView;
     }
 

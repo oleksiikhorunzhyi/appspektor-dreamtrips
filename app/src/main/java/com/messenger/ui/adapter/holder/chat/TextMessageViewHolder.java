@@ -34,7 +34,7 @@ public abstract class TextMessageViewHolder extends MessageHolder {
     }
 
     @Override
-    public View getViewForClickableTimestamp() {
+    public View getMessageView() {
         return messageTextView;
     }
 }

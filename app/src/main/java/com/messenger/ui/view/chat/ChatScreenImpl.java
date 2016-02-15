@@ -4,10 +4,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -18,6 +20,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.ui.adapter.holder.chat.MessageHolder;
@@ -161,6 +164,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         ChatScreenPresenter presenter = getPresenter();
         adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
         adapter.setAvatarClickListener(presenter::openUserProfile);
+        adapter.setMessageLongClickListener(presenter::onShowContextualMenu);
         adapter.setNeedMarkUnreadMessages(true);
         //adapter.setMessageClickListener(message -> //do something);
         return adapter;
@@ -277,6 +281,24 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         } else if (cursor != null && cursor.getCount() == 1) {
             getPresenter().onLastVisibleMessageChanged(cursor, 0);
         }
+    }
+
+    @Override
+    public void showContextualAction(Menu menu, DataMessage message) {
+        CharSequence[] menuItems = new CharSequence[menu.size()];
+        for (int i = 0; i < menu.size(); i++) {
+            menuItems[i] = menu.getItem(i).getTitle();
+        }
+        new AlertDialog.Builder(getContext()).setItems(menuItems, ((dialogInterface, i) -> {
+            switch (menu.getItem(i).getItemId()) {
+                case R.id.action_copy_message:
+                    getPresenter().onCopyMessageTextToClipboard(message);
+                    break;
+                case R.id.action_start_chat:
+                    getPresenter().onStartNewChatForMessageOwner(message);
+                    break;
+            }
+        })).show();
     }
 
     @Override

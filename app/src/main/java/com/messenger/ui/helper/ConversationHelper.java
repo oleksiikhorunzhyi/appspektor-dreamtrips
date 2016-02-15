@@ -80,6 +80,10 @@ public class ConversationHelper {
         return conversation.getType() != null && !conversation.getType().equals(ConversationType.CHAT);
     }
 
+    public static boolean isSingleChat(DataConversation conversation) {
+        return ConversationType.CHAT.equals(conversation.getType());
+    }
+
     public static boolean isOwner(DataConversation conversation, DataUser user) {
         return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }

@@ -47,7 +47,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         priorityEventBus = 1;
         super.takeView(view);
 
-
         photoUploadSubscriber = PhotoUploadSubscriber.bind(view, photoUploadingManager.getTaskChangingObservable(UploadPurpose.BUCKET_IMAGE));
         photoUploadSubscriber
                 .onError(view::itemChanged)

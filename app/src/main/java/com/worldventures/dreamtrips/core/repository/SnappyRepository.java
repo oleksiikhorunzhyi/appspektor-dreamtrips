@@ -362,7 +362,6 @@ public class SnappyRepository {
 
     public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
         putList(IMAGE + ":" + type + ":" + userId, items);
-
     }
 
     public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {

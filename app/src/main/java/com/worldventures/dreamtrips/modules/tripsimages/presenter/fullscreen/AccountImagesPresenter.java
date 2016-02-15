@@ -4,6 +4,7 @@ import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
+import com.worldventures.dreamtrips.modules.tripsimages.events.ImageUploadedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -35,11 +36,8 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
     @Override
     protected void photoUploaded(UploadTask task) {
         super.photoUploaded(task);
-        doRequest(new AddTripPhotoCommand(task), photo -> {
-            processPhoto(photos.indexOf(task), photo);
-            uploadTags(photo.getFSId());
-        }, spiceException -> {
-            photoError(getCurrentTask(task.getId()));
-        });
+        doRequest(new AddTripPhotoCommand(task),
+                photo -> eventBus.post(new ImageUploadedEvent(true, task, photo)),
+                spiceException -> eventBus.post(new ImageUploadedEvent(false, task, null)));
     }
 }

@@ -120,7 +120,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(conversation -> {
                         conversation.setSubject(subject);
-                        conversation.save();
+                        conversationsDAO.save(conversation);
                     });
         });
         emitter.addOnChatCreatedListener((conversationId, createLocally) -> {
@@ -160,7 +160,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                     })
                     .doOnNext(users -> from(users).filter(u -> u.isOnline() != isOnline).forEachR(u -> {
                         u.setOnline(isOnline);
-                        u.save();
+                        usersDAO.save(u);
                     }))
                     .flatMap(users -> participantsDAO.getParticipants(conversationId).first()
                                     .map(c -> SqlUtils.convertToList(DataParticipant.class, c))
@@ -168,7 +168,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                     )
                     .filter(isAlreadyConnected -> !isAlreadyConnected)
                     .doOnNext(isAlreadyConnected -> {
-                        new DataParticipant(conversationId, userId, MEMBER).save();
+                        participantsDAO.save(new DataParticipant(conversationId, userId, MEMBER));
                     })
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribeOn(Schedulers.io())

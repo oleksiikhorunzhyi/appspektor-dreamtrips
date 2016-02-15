@@ -15,6 +15,7 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -154,7 +155,8 @@ public class MessageDAO extends BaseDAO {
     }
 
     public void save(DataMessage message) {
-        message.save();
+        // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
+        save(Collections.singletonList(message));
     }
 
     public void updateStatus(String msgId, int messageStatus, long time) {

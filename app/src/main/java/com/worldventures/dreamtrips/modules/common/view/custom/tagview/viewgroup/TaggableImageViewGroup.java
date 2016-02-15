@@ -90,7 +90,7 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         imageView.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         imageView.getHierarchy().getActualImageBounds(imageBounds);
         setVisibility(View.VISIBLE);
-        presenter.showExistingTags();
+        redrawTags();
         isShown = true;
     }
 

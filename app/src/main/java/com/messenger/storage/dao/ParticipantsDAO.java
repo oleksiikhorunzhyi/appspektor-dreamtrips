@@ -15,6 +15,7 @@ import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -133,6 +134,11 @@ public class ParticipantsDAO extends BaseDAO {
         resolver.delete(DataParticipant.CONTENT_URI,
                 DataParticipant$Table.CONVERSATIONID + "=? AND " +
                         DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
+    }
+
+    public void save(DataParticipant participant) {
+        // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
+        save(Collections.singletonList(participant));
     }
 
     public void save(List<DataParticipant> participants) {

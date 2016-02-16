@@ -31,7 +31,6 @@
             android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
             android:layout_toRightOf="@id/chat_item_avatar"
             android:textColor="@color/chat_color_message"
-            android:textIsSelectable="true"
             />
 
         <TextView

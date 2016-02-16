@@ -7,11 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -51,6 +48,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private OnAvatarClickListener avatarClickListener;
     private OnRepeatMessageSend onRepeatMessageSend;
     private OnMessageClickListener messageClickListener;
+    private OnMessageLongClickListener messageLongClickListener;
 
     private int manualTimestampPositionToAdd = -1;
     private int manualTimestampPosition = -1;
@@ -68,6 +66,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public interface OnMessageClickListener {
         void onMessageClick(DataMessage message);
+    }
+
+    public interface OnMessageLongClickListener {
+        void onMessageLongClick(DataMessage message);
     }
 
     public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user, @Nullable Cursor cursor) {
@@ -124,6 +126,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.setSelected(position == manualTimestampPosition);
         holder.setBubbleBackground();
         holder.updateMessageStatusUi(needMarkUnreadMessages);
+        holder.getMessageView().setOnLongClickListener(view -> {
+            if (messageLongClickListener != null) {
+                messageLongClickListener.onMessageLongClick(message);
+            }
+            return true;
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -224,6 +232,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.messageClickListener = messageClickListener;
     }
 
+    public void setMessageLongClickListener(OnMessageLongClickListener messageLongClickListener) {
+        this.messageLongClickListener = messageLongClickListener;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Util and helpers
     ///////////////////////////////////////////////////////////////////////////
@@ -247,63 +259,6 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     ///////////////////////////////////////////////////////////////////////////
     // Message timestamps
     ///////////////////////////////////////////////////////////////////////////
-
-    private class TextSelectableClickListener
-            implements View.OnTouchListener, GestureDetector.OnGestureListener {
-
-        DataMessage message;
-        int position;
-        GestureDetectorCompat gestureDetector;
-        boolean clickableTimestamp;
-
-        public TextSelectableClickListener(Context context, int position, DataMessage message,
-                                           boolean clickableTimestamp) {
-            this.gestureDetector = new GestureDetectorCompat(context, this);
-            this.position = position;
-            this.message = message;
-            this.clickableTimestamp = clickableTimestamp;
-        }
-
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return gestureDetector.onTouchEvent(motionEvent);
-        }
-
-        @Override
-        public boolean onDown(MotionEvent motionEvent) {
-            return false;
-        }
-
-        @Override
-        public void onShowPress(MotionEvent motionEvent) {
-
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent motionEvent) {
-            if (clickableTimestamp) {
-                showManualTimestampForPosition(position);
-            }
-            if (messageClickListener != null) {
-                messageClickListener.onMessageClick(message);
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-            return false;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent motionEvent) {
-        }
-
-        @Override
-        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-            return false;
-        }
-    }
 
     private void showManualTimestampForPosition(int position) {
         if (position == manualTimestampPosition) {
@@ -330,14 +285,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
         }
         boolean clickableTimestamp = manualTimestamp || TextUtils.isEmpty(dateDivider);
-        if (holder instanceof TextMessageViewHolder) {
-            holder.getViewForClickableTimestamp()
-                    .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(),
-                            message, clickableTimestamp));
-        } else {
-            holder.getViewForClickableTimestamp()
-                    .setOnClickListener(view -> showManualTimestampForPosition(position));
-        }
+        holder.getMessageView().setOnClickListener(view -> {
+            if (messageClickListener != null) {
+                messageClickListener.onMessageClick(message);
+            }
+            if (clickableTimestamp) {
+                showManualTimestampForPosition(position);
+            }
+        });
 
         TextView dateTextView = holder.dateTextView;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();

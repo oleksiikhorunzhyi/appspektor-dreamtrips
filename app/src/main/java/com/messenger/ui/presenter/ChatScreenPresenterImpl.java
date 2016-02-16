@@ -13,6 +13,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
+import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
@@ -38,7 +39,9 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.PhotoPickerDelegate;
+import com.messenger.ui.util.ChatContextualMenuProvider;
 import com.messenger.ui.view.add_member.ExistingChatPath;
+import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.settings.GroupSettingsPath;
@@ -46,6 +49,7 @@ import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.ParticipantsDaoHelper;
+import com.messenger.util.Utils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import com.techery.spares.module.Injector;
@@ -66,6 +70,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import flow.Flow;
+import flow.History;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -123,6 +128,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     AttachmentDAO attachmentDAO;
 
+    @Inject
+    StartChatDelegate startChatDelegate;
+
     private int page = 0;
     private long before = 0;
     private long openScreenTime;
@@ -143,6 +151,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private PublishSubject<ChatChangeStateEvent> chatStateStream;
     private PublishSubject<Pair<Cursor, Integer>> lastVisibleItemStream = PublishSubject.create();
 
+    private ChatContextualMenuProvider contextualMenuInflater;
+
     public ChatScreenPresenterImpl(Context context, String conversationId) {
         super(context);
         this.conversationId = conversationId;
@@ -155,6 +165,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
+        contextualMenuInflater = new ChatContextualMenuProvider(context);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
         openScreenTime = System.currentTimeMillis();
@@ -251,7 +262,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     protected void connectMembersStream() {
         conversationObservable.subscribe(dataConversation -> {
-            if (participantsStreamSubcription != null && !participantsStreamSubcription.isUnsubscribed()){
+            if (participantsStreamSubcription != null && !participantsStreamSubcription.isUnsubscribed()) {
                 participantsStreamSubcription.unsubscribe();
             }
 
@@ -587,6 +598,22 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe());
     }
 
+    @Override
+    public void onCopyMessageTextToClipboard(DataMessage message) {
+        Utils.copyToClipboard(context, message.getText());
+    }
+
+    @Override
+    public void onStartNewChatForMessageOwner(DataMessage message) {
+        Action1<DataConversation> action1 = conversation -> {
+            History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
+            history.pop();
+            history.push(new ChatPath(conversation.getId()));
+            Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
+        };
+        startChatDelegate.startSingleChat(message.getFromId(), action1);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // User
     ///////////////////////////////////////////////////////////////////////////
@@ -657,6 +684,19 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 return true;
         }
         return false;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Contextual Menu
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onShowContextualMenu(DataMessage message) {
+        contextualMenuInflater
+                .provideMenu(message, user, conversationObservable,
+                        attachmentDAO.getAttachmentByMessageId(message.getId()))
+                .filter(menu -> menu.size() > 0)
+                .subscribe(menu -> getView().showContextualAction(menu, message));
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -28,8 +28,6 @@ import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListP
 import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 
-import java.util.List;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -166,7 +164,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     }
 
     @Override
-    public void finishLoading(List<SuccessStory> result) {
+    public void finishLoading() {
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
             openFirst();

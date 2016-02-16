@@ -13,17 +13,12 @@ public class YSBHPresenter extends TripImagesListPresenter<TripImagesListPresent
     }
 
     @Override
-    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
-        return new TripImagesRoboSpiceController() {
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-                return new GetYSBHPhotosQuery(PER_PAGE, 1);
-            }
+    public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+        return new GetYSBHPhotosQuery(PER_PAGE, 1);
+    }
 
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-                return new GetYSBHPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
-            }
-        };
+    @Override
+    public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+        return new GetYSBHPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
     }
 }

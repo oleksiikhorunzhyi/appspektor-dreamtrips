@@ -35,18 +35,13 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
     }
 
     @Override
-    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
-        return new TripImagesRoboSpiceController() {
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-                return new GetMemberPhotosQuery(PER_PAGE, 1);
-            }
+    protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+        return new GetMemberPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
+    }
 
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-                return new GetMemberPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
-            }
-        };
+    @Override
+    protected SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+        return new GetMemberPhotosQuery(PER_PAGE, 1);
     }
 
     public void onEvent(AttachPhotoEvent event) {
@@ -101,6 +96,7 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
     }
 
     public interface View extends TripImagesListPresenter.View {
+
         void hidePhotoPicker();
     }
 }

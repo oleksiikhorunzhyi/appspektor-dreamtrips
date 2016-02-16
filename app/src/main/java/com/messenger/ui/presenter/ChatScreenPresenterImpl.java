@@ -216,7 +216,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
                     long syncTime = connectionStatus == ConnectionStatus.CONNECTED ? openScreenTime : 0;
                     messageStreamSubscription = connectMessagesStream(syncTime);
-                });
+                }, e -> Timber.w("Unable to connect connectivity status"));
     }
 
     private void connectConversationStream() {
@@ -251,14 +251,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     protected void connectMembersStream() {
         conversationObservable.subscribe(dataConversation -> {
-            if (participantsStreamSubcription != null && !participantsStreamSubcription.isUnsubscribed()){
+            if (participantsStreamSubcription != null && !participantsStreamSubcription.isUnsubscribed()) {
                 participantsStreamSubcription.unsubscribe();
             }
 
             participantsStreamSubcription = participantsDaoHelper.obtainParticipantsStream(dataConversation, user)
                     .compose(bindViewIoToMainComposer())
                     .subscribe(dataUsers -> getView().setTitle(dataConversation, dataUsers));
-        });
+        }, e -> Timber.w("Unable to connectMembersStream"));
     }
 
     private void connectToUnreadCounterStream() {
@@ -275,7 +275,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         unreadCounterShown = true;
                         screen.showUnreadMessageCount(count);
                     }
-                });
+                }, e -> Timber.w("Unable to connect to unread counter"));
     }
 
     private void connectChatTypingStream(Chat chat) {
@@ -300,8 +300,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                                             getView().removeTypingUser(user);
                                             break;
                                     }
-                                })
-                );
+                                }, e -> Timber.w("Unable to get user")),
+                        e -> Timber.w("Unable to connect chat stream"));
     }
 
     private void loadInitialData() {
@@ -313,7 +313,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     //
                     getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
                     connectUnreadMessageCountStream(conversation);
-                });
+                }, e -> Timber.w("Unable to load initial Data"));
     }
 
     private Subscription connectMessagesStream(long syncTime) {
@@ -338,8 +338,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                             .compose(bindViewIoToMainComposer())
                             .subscribe(conversation -> {
                                 getView().showMessages(cursor, conversation);
-                            });
-                });
+                            }, e -> Timber.w("Unable to get conversation"));
+                }, e -> Timber.w("Unable to get messages"));
     }
 
     private void markUnreadMessageFromDB(long syncTime) {
@@ -386,7 +386,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
                         tryMarkAsReadMessage(message);
                     }
-                });
+                }, e -> Timber.w("Unable to submitOneChatAction"));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -417,10 +417,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                                         showContent();
                                     }, 0)
                     );
-                });
+                }, e -> Timber.w("Unable to get conversation"));
     }
 
     private void paginationPageLoaded(List<Message> loadedMessages) {
+        if (getView() == null) return;
+
         loading = false;
         // pagination stops when we loaded nothing. In otherwise we can load not whole page cause localeName is present in some messages
         if (loadedMessages == null || loadedMessages.size() == 0) {
@@ -457,7 +459,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .filter(conversation -> !loading)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(conversation -> loadNextPage());
+                .subscribe(conversation -> loadNextPage(),
+                        e -> Timber.w("Unable to reach next page"));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -475,7 +478,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(chat -> {
                     typing = true;
                     chat.setCurrentState(ChatState.COMPOSING);
-                });
+                }, e -> Timber.w("Unable to connect to Typing start"));
     }
 
 
@@ -488,7 +491,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(chat -> {
                     typing = false;
                     chat.setCurrentState(ChatState.PAUSE);
-                });
+                }, e -> Timber.w("Unable to connect to Typing stop"));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -620,7 +623,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         menu.findItem(R.id.action_add).setVisible(false);
                         menu.findItem(R.id.action_settings).setVisible(false);
                     }
-                });
+                }, e -> Timber.w("Unable to get last conversation"));
 
         conversationObservable
                 .first()
@@ -634,7 +637,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         menu.findItem(R.id.action_add).setVisible(true);
                     }
                     menu.findItem(R.id.action_settings).setVisible(true);
-                });
+                }, e -> Timber.w("Unable to get conversation"));
     }
 
     @Override
@@ -778,7 +781,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void showContent() {
-        submitActionToUi(o -> getView().showContent(), 0);
+        submitActionToUi(o -> {
+            if (getView() != null) getView().showContent();
+        }, 0);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -802,7 +807,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         chatObservable.first()
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
-                .subscribe(action1);
+                .subscribe(action1, e -> Timber.w("Unable to submitOneChatAction"));
     }
 
     private void submitActionToUi(Action1 action, int delay) {
@@ -811,7 +816,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         observable
                 .compose(new IoToMainComposer<>())
-                .subscribe(action);
+                .subscribe(action, e -> Timber.w("Unable to submit action to UI"));
     }
 
     private boolean isLastLoadedMessageRead(List<Message> loadedMessages) {

@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import android.support.annotation.Nullable;
 
-import com.esotericsoftware.kryo.DefaultSerializer;
-import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 

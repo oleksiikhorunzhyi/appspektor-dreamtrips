@@ -365,7 +365,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .doOnNext(unreadCount -> {
                     if (conversation.getUnreadMessageCount() != unreadCount) {
                         conversation.setUnreadMessageCount(unreadCount);
-                        conversation.save();
+                        conversationDAO.save(conversation);
                     }
                 })
                 .subscribe();

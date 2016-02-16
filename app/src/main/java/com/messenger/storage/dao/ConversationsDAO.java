@@ -27,6 +27,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -74,7 +75,7 @@ public class ConversationsDAO extends BaseDAO {
     }
 
     public void save(DataConversation conversation) {
-        conversation.save();
+        save(Collections.singletonList(conversation));
     }
 
     public void deleteConversation(String conversationId) {

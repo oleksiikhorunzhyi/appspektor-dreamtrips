@@ -15,6 +15,7 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -77,6 +78,6 @@ public class UsersDAO extends BaseDAO {
     }
 
     public void save(DataUser user) {
-        user.save();
+        save(Collections.singletonList(user));
     }
 }

@@ -9,6 +9,7 @@ import com.messenger.entities.DataAttachment$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -24,7 +25,7 @@ public class AttachmentDAO extends BaseDAO {
     }
 
     public void save(DataAttachment attachment) {
-        attachment.save();
+        save(Collections.singletonList(attachment));
     }
 
     public Observable<DataAttachment> getAttachmentByMessageId(String messageId) {

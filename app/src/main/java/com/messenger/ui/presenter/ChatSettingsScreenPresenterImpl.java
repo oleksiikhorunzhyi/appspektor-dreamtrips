@@ -199,7 +199,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
                 .compose(new IoToMainComposer<>())
                 .subscribe(conversation -> {
                     conversation.setSubject(subject);
-                    conversation.save();
+                    conversationsDAO.save(conversation);
                     getView().setConversation(conversation);
                 }, throwable -> {
                     getView().showErrorDialog(R.string.chat_settings_error_change_subject);

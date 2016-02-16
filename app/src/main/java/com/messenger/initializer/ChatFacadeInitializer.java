@@ -128,7 +128,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(conversation -> {
                         conversation.setSubject(subject);
-                        conversation.save();
+                        conversationsDAO.save(conversation);
                     });
         });
         emitter.addInvitationListener((conversationId) -> {

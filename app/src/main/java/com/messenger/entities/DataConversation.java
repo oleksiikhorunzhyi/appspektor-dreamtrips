@@ -27,7 +27,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @PrimaryKey @Column String _id;
     @Column String ownerId;
     @Column String subject;
-    @Column String defaultSubject = "Unnamed conversation";
+    @Column String defaultSubject;
     @Column String type;
     @Column String status;
     @Column int unreadMessageCount;
@@ -51,7 +51,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setOwnerId(builder.ownerId);
         setSubject(builder.subject);
         setStatus(builder.status);
-//        setDefaultSubject(builder.defaultSubject);
+        setDefaultSubject(builder.defaultSubject);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
         setLastActiveDate(builder.date);

@@ -21,6 +21,7 @@ public class ConversationNameDelegate {
 
     public Observable<String> obtainGroupConversationName(String conversationId) {
         return participantsDAO.getParticipants(conversationId)
+                .first()
                 .map(participantsCursor -> {
                     List<String> names = new ArrayList<>(participantsCursor.getCount());
                     while (participantsCursor.moveToNext()) {

@@ -36,11 +36,11 @@ import rx.schedulers.Schedulers;
 public class ConversationsDAO extends BaseDAO {
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
     public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
-    private Lazy<DataUser> profile;
+    private Lazy<DataUser> currentUser;
 
-    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, Lazy<DataUser> profile) {
+    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, Lazy<DataUser> currentUser) {
         super(context, rxContentResolver);
-        this.profile = profile;
+        this.currentUser = currentUser;
     }
 
     @Deprecated
@@ -160,7 +160,7 @@ public class ConversationsDAO extends BaseDAO {
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());
 
-        String[] args = new String[]{profile.get().getId()};
+        String[] args = new String[]{currentUser.get().getId()};
         queryBuilder.withSelectionArgs(args);
         return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI);
     }

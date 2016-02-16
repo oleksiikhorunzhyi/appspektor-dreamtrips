@@ -45,8 +45,8 @@ public class MessengerStorageModule {
 
     @Provides
     @Singleton
-    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, Lazy<DataUser> profile) {
-        return new ConversationsDAO(context, rxContentResolver, profile);
+    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, Lazy<DataUser> currentUser) {
+        return new ConversationsDAO(context, rxContentResolver, currentUser);
     }
 
     @Provides

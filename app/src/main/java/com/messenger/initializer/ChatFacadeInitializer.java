@@ -3,6 +3,7 @@ package com.messenger.initializer;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.messenger.delegate.ConversationNameDelegate;
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.entities.DataAttachment;
@@ -67,10 +68,12 @@ public class ChatFacadeInitializer implements AppInitializer {
     private UserProcessor userProcessor;
     private final ConversationIdHelper conversationIdHelper = new ConversationIdHelper();
     private LoaderDelegate loaderDelegate;
+    private ConversationNameDelegate conversationNameDelegate;
+
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-
+        conversationNameDelegate = new ConversationNameDelegate(participantsDAO);
         userProcessor = new UserProcessor(usersDAO, spiceManager);
         loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
                 conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
@@ -155,6 +158,10 @@ public class ChatFacadeInitializer implements AppInitializer {
                         u.setOnline(isOnline);
                         usersDAO.save(u);
                     }))
+                    .flatMap(users -> conversationNameDelegate
+                            .obtainGroupConversationName(participant.getConversationId())
+                            .doOnNext(defaultName -> conversationsDAO.updateDefaultSubject(participant.getConversationId(), defaultName))
+                    )
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe();
         });

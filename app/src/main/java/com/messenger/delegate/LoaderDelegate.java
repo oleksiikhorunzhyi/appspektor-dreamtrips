@@ -113,8 +113,7 @@ public class LoaderDelegate {
             conversationLoader.load();
         });
         return userProcessor.connectToUserProvider(loader)
-                .flatMap(user -> conversationsDAO.getGroupConversationNames())
-                .first()
+                .flatMap(user -> conversationsDAO.getGroupConversationNames().first())
                 .flatMap(CursorObservable::create)
                 .filter(cursor -> android.text.TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(DataConversation$Table.SUBJECT))))
                 .doOnNext(cursor -> {

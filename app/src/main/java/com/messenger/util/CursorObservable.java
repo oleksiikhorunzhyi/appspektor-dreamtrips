@@ -23,9 +23,10 @@ public class CursorObservable implements Observable.OnSubscribe<Cursor> {
                 subscriber.onNext(originCursor);
             }
             subscriber.onCompleted();
-            originCursor.close();
         } catch (Throwable throwable) {
             subscriber.onError(throwable);
+        } finally {
+            originCursor.close();
         }
     }
 }

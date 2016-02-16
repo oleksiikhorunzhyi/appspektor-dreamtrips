@@ -142,6 +142,7 @@ public class ConversationsCursorAdapter
 
     private void bindParticipantData(OneToOneConversationViewHolder holder, Cursor cursor) {
         String avatar = cursor.getString(cursor.getColumnIndex(DataUser$Table.USERAVATARURL));
+        // Database does not have boolean type and store true as 1, false as 0
         boolean online = cursor.getInt(cursor.getColumnIndex(DataUser$Table.ONLINE)) == 1;
         String name = cursor.getString(cursor.getColumnIndex(ConversationsDAO.SINGLE_CONVERSATION_NAME_COLUMN));
         holder.bindUserProperties(name, avatar, online);

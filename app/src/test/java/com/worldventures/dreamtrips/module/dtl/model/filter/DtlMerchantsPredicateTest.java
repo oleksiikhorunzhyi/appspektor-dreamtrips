@@ -129,11 +129,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkAmenities_Empty() {
         DtlFilterData dtlFilterData = DtlFilterData.createDefault();
-<<<<<<< HEAD
         dtlFilterData.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
-=======
-//        dtlFilterData.setAmenities(Collections.singletonList(new DtlPlacesFilterAttribute("Free beer", true)));
->>>>>>> Messenger :: save
         DtlMerchantsPredicate predicate =
                 DtlMerchantsPredicate.Builder.create().withDtlFilterData(dtlFilterData).build();
         DtlMerchant dtlMerchant = new DtlMerchant();
@@ -150,6 +146,7 @@ public class DtlMerchantsPredicateTest {
         dtlFilterData.selectAllAmenities();
         DtlMerchantsPredicate predicate = DtlMerchantsPredicate.Builder.create()
                 .withDtlFilterData(dtlFilterData).build();
+        //
         DtlMerchant dtlMerchant = new DtlMerchant();
         dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
         //

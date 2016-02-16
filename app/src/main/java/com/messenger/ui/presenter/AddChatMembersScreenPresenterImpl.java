@@ -106,8 +106,6 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
             return;
         }
         // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
-//        List<String> newChatUserIds = Queryable.from(newChatUsers).map(DataUser::getId).toList();
-
         conversationStream
                 .flatMap(conversation -> participantsDAO
                         .getParticipantsEntities(conversation.getId())

@@ -5,8 +5,6 @@ import android.support.v7.view.SupportMenuInflater;
 import android.support.v7.view.menu.MenuBuilder;
 import android.util.Pair;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.widget.PopupMenu;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
@@ -17,22 +15,23 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import rx.Observable;
+import rx.functions.Func2;
 
-public class ChatContextualMenuInflater {
+public class ChatContextualMenuProvider {
 
     private Context context;
 
-    public ChatContextualMenuInflater(Context context) {
+    public ChatContextualMenuProvider(Context context) {
         this.context = context;
     }
 
-    public Observable<Menu> inflateMenu(DataMessage message, DataUser user,
+    public Observable<Menu> provideMenu(DataMessage message, DataUser user,
                                         Observable<DataConversation> conversationObservable,
                                         Observable<DataAttachment> attachmentObservable) {
-        return Observable.combineLatest(conversationObservable.first().compose(new IoToMainComposer<>()),
-                attachmentObservable.first().compose(new IoToMainComposer<>()),
-                (conversation, attachment)
-                        -> new Pair<DataConversation, DataAttachment>(conversation, attachment) {})
+        return Observable
+                .combineLatest(conversationObservable.first(), attachmentObservable.first(),
+                        (Func2<DataConversation, DataAttachment, Pair<DataConversation, DataAttachment>>) Pair::new)
+                .compose(new IoToMainComposer<>())
                 .map(pair -> {
                     Menu menu = new MenuBuilder(context);
                     new SupportMenuInflater(context).inflate(R.menu.menu_chat_contextual, menu);

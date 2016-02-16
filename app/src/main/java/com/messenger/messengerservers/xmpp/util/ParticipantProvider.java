@@ -1,8 +1,8 @@
 package com.messenger.messengerservers.xmpp.util;
 
-import com.innahema.collections.query.queriables.Queryable;
+import android.text.TextUtils;
 
-import com.messenger.messengerservers.model.Conversation;
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
 import com.messenger.messengerservers.xmpp.packets.ObtainConversationParticipants;
@@ -35,40 +35,40 @@ public class ParticipantProvider {
         );
     }
 
-    public List<Participant> getSingleChatParticipants(Conversation conversation) {
+    public List<Participant> getSingleChatParticipants(String conversationId) {
         ArrayList<Participant> participants = new ArrayList<>();
-        String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversation.getId(), connection.getUser());
-        Participant companion = new Participant(JidCreatorHelper.obtainId(companionJid), Participant.Affiliation.MEMBER, conversation.getId());
+        String companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(conversationId, connection.getUser());
+        Participant companion = new Participant(JidCreatorHelper.obtainId(companionJid), Participant.Affiliation.MEMBER, conversationId);
         participants.add(companion);
         return participants;
     }
 
-    public void loadMultiUserChatParticipants(Conversation conversation, @NotNull OnGroupChatParticipantsLoaded listener) {
+    public void loadMultiUserChatParticipants(String conversationId, @NotNull OnGroupChatParticipantsLoaded listener) {
         ObtainConversationParticipants participantsPacket = new ObtainConversationParticipants();
-        participantsPacket.setTo(JidCreatorHelper.obtainGroupJid(conversation.getId()));
+        participantsPacket.setTo(JidCreatorHelper.obtainGroupJid(conversationId));
         participantsPacket.setFrom(connection.getUser());
 
         try {
             connection.sendStanzaWithResponseCallback(participantsPacket,
                     stanza -> stanza instanceof ConversationParticipants
-                            && conversation.getId().equals(JidCreatorHelper.obtainId(stanza.getFrom())),
+                            && TextUtils.equals(conversationId, JidCreatorHelper.obtainId(stanza.getFrom())),
                     packet -> {
                         ConversationParticipants conversationParticipants = (ConversationParticipants) packet;
                         //
                         Participant owner = conversationParticipants.getOwner();
                         if (owner != null) {
-                            owner = new Participant(owner, conversation.getId());
+                            owner = new Participant(owner, conversationId);
                         }
                         List<Participant> participants = conversationParticipants.getParticipants();
                         if (participants != null) {
-                            participants = Queryable.from(participants).map(p -> new Participant(p, conversation.getId())).toList();
+                            participants = Queryable.from(participants).map(p -> new Participant(p, conversationId)).toList();
                         }
                         boolean abandoned = conversationParticipants.isAbandoned();
                         //
                         listener.onLoaded(owner, participants, abandoned);
                     },
                     exception -> {
-                        Timber.w(exception, "Can't get participants for conversation: %s", conversation);
+                        Timber.w(exception, "Can't get participants for conversation: %s", conversationId);
                         listener.onLoaded(null, Collections.emptyList(), false);
                     }
             );

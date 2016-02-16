@@ -2,6 +2,7 @@ package com.messenger.messengerservers.xmpp;
 
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
@@ -17,22 +18,22 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
-import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
 import java.util.List;
 
+import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
 
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
-
     private final XmppServerFacade facade;
-    private AbstractXMPPConnection abstractXMPPConnection;
     private final XmppMessageConverter messageConverter;
 
 
@@ -46,7 +47,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         @Override
         public void onSuccess() {
             super.onSuccess();
-            abstractXMPPConnection = facade.getConnection();
+            AbstractXMPPConnection abstractXMPPConnection = facade.getConnection();
             abstractXMPPConnection.addPacketInterceptor(XmppGlobalEventEmitter.this::interceptOutgoingPacket, StanzaTypeFilter.MESSAGE);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingMessage, StanzaTypeFilter.MESSAGE);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
@@ -102,7 +103,9 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 break;
             case MESSAGE:
                 com.messenger.messengerservers.model.Message message = messageConverter.convert(messageXMPP);
-                if (message.getFromId() == null) break; // cause server sends type error and returns this message in history
+                if (message.getFromId() == null) {
+                    break; // cause server sends type error and returns this message in history
+                }
                 notifyGlobalMessage(message, EVENT_INCOMING);
                 notifyNewUnhandledMessage(message); // TODO remove unhandled listeners
                 break;
@@ -134,15 +137,17 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         String userId = jid == null ?
                 JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
         //
-        MUCRole role = extension.getItem().getRole();
+        MUCItem item = extension.getItem();
+        MUCRole role = item.getRole();
         if (role == null) return false;
         //
         if (role == MUCRole.none) {
             boolean leave = presence.getType() == Type.unsubscribed;
             notifyOnChatLeftListener(conversationId, userId, leave);
         } else {
+            MUCAffiliation affiliation = item.getAffiliation();
             boolean isOnline = presence.getType() == Type.available;
-            notifyOnChatJoinedListener(conversationId, userId, isOnline);
+            notifyOnChatJoinedListener(new Participant(userId, String.valueOf(affiliation), conversationId), isOnline);
         }
         return true;
     }

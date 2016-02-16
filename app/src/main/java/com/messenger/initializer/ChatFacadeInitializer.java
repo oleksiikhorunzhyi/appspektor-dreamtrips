@@ -9,9 +9,11 @@ import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
-import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.ConversationIdHelper;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
@@ -21,7 +23,6 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -34,12 +35,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
-import static com.messenger.messengerservers.model.Participant.Affiliation.MEMBER;
 import static java.util.Collections.singletonList;
 import static rx.Observable.just;
 
@@ -57,16 +58,23 @@ public class ChatFacadeInitializer implements AppInitializer {
     MessageDAO messageDAO;
     @Inject
     AttachmentDAO attachmentDAO;
+    @Inject
+    Lazy<DataUser> currentUser;
     //
     @Inject
     DreamSpiceManager spiceManager;
     //
     private UserProcessor userProcessor;
-
+    private final ConversationIdHelper conversationIdHelper = new ConversationIdHelper();
+    private LoaderDelegate loaderDelegate;
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
+
         userProcessor = new UserProcessor(usersDAO, spiceManager);
+        loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
+                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
+
         //
         GlobalEventEmitter emitter = messengerServerFacade.getGlobalEventEmitter();
         //
@@ -123,55 +131,31 @@ public class ChatFacadeInitializer implements AppInitializer {
                         conversation.save();
                     });
         });
-        emitter.addOnChatCreatedListener((conversationId, createLocally) -> {
-            Timber.i("Chat created :: chat=%s", conversationId);
-            if (createLocally) return;
-            conversationsDAO.getConversation(conversationId).first()
-                    .filter(conversation -> conversation == null)
-                    .doOnError(throwable -> Timber.d(throwable, ""))
-                    .flatMap(conversation -> {
-                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
-                                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
-                        return loaderDelegate.loadConversations();
-                    })
-                    .subscribe();
-        });
         emitter.addInvitationListener((conversationId) -> {
             Timber.i("Chat invited :: chat=%s", conversationId);
-            conversationsDAO.getConversation(conversationId).first()
-                    .filter(conversation -> conversation != null // in other case addOnChatCreatedListener will be called
-                            && !TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
-                    .flatMap(conversation -> {
-                        LoaderDelegate loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
-                                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
-                        return loaderDelegate.loadConversations();
-                    })
+            loadConversation(conversationId)
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe();
         });
-        emitter.addOnChatJoinedListener((conversationId, userId, isOnline) -> {
-            Timber.i("Chat joined :: chat=%s , user=%s", conversationId, userId);
-            usersDAO.getUserById(userId)
-                    .first()
+        emitter.addOnChatJoinedListener((participant, isOnline) -> {
+            Timber.i("Chat joined :: participant=%s", participant);
+
+            Observable.just(new DataParticipant(participant))
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext(participantsDAO::save)
+                    .flatMap(p -> usersDAO.getUserById(p.getUserId()).first())
+
                     .flatMap(cachedUser -> {
                         if (cachedUser != null) return just(singletonList(cachedUser));
-                        else
-                            return userProcessor.connectToUserProvider(just(singletonList(createUser(userId))));
+                        else {
+                            return userProcessor.connectToUserProvider(just(singletonList(createUser(participant.getUserId()))));
+                        }
                     })
                     .doOnNext(users -> from(users).filter(u -> u.isOnline() != isOnline).forEachR(u -> {
                         u.setOnline(isOnline);
-                        u.save();
+                        usersDAO.save(u);
                     }))
-                    .flatMap(users -> participantsDAO.getParticipants(conversationId).first()
-                                    .map(c -> SqlUtils.convertToList(DataParticipant.class, c))
-                                    .map(list -> from(list).map(DataParticipant::getUserId).contains(userId))
-                    )
-                    .filter(isAlreadyConnected -> !isAlreadyConnected)
-                    .doOnNext(isAlreadyConnected -> {
-                        new DataParticipant(conversationId, userId, MEMBER).save();
-                    })
                     .doOnError(throwable -> Timber.d(throwable, ""))
-                    .subscribeOn(Schedulers.io())
                     .subscribe();
         });
         emitter.addOnChatLeftListener((conversationId, userId, leave) -> {
@@ -196,5 +180,19 @@ public class ChatFacadeInitializer implements AppInitializer {
 
     private User createUser(String userId) {
         return new User(userId);
+    }
+
+    private Observable<List<DataUser>> loadConversation(String conversationId) {
+        return Observable.just(conversationId)
+                .flatMap(convId -> {
+                    conversationsDAO.save(new DataConversation.Builder()
+                            .id(convId)
+                            .lastActiveDate(System.currentTimeMillis())
+                            .status(ConversationStatus.PRESENT)
+                            .type(conversationIdHelper.obtainType(convId, currentUser.get().getId()))
+                            .build()
+                    );
+                    return loaderDelegate.loadParticipants(conversationId);
+                });
     }
 }

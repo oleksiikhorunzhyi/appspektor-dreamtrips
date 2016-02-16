@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttrib
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
 
 import java.util.List;
 
@@ -23,11 +24,18 @@ public class DtlFilterDelegate {
     //
     private final BehaviorSubject<DtlFilterData> filterStream;
 
+    /**
+     * Instantiates a new Dtl filter delegate.
+     * @param injector the injector
+     */
     public DtlFilterDelegate(Injector injector) {
         injector.inject(this);
         this.filterStream = BehaviorSubject.create();
     }
 
+    /**
+     * Create filter data with default parameters
+     */
     public void init() {
         if (filterData == null) {
             filterData = ImmutableDtlFilterData.builder().build();
@@ -35,24 +43,43 @@ public class DtlFilterDelegate {
         filterData = ImmutableDtlFilterData.copyOf(filterData).withDistanceType(db.getMerchantsDistanceType());
     }
 
-    public Observable<DtlFilterData> getFilterStream(){
+    /**
+     * Gets filter stream.
+     * @return the filter stream
+     */
+    public Observable<DtlFilterData> getFilterStream() {
         return filterStream;
     }
 
+    /**
+     * Apply search with selected query
+     * @param query the search query
+     */
     public void applySearch(String query) {
         filterData = ImmutableDtlFilterData.copyOf(filterData).withSearchQuery(query);
         notifySubscribers();
     }
 
+    /**
+     * Apply filter.
+     * @param filterParameters the filter parameters
+     */
     public void applyFilter(DtlFilterParameters filterParameters) {
         filterData = DtlFilterData.merge(filterParameters, filterData);
         notifySubscribers();
     }
 
+    /**
+     * Gets filer data
+     * @return the
+     */
     public DtlFilterData getFilterData() {
         return filterData;
     }
 
+    /**
+     * Attach amenities to filter
+     */
     public void obtainAmenities() {
         final List<DtlMerchantAttribute> amenities = db.getAmenities();
         filterData = ImmutableDtlFilterData
@@ -62,12 +89,19 @@ public class DtlFilterDelegate {
         notifySubscribers();
     }
 
+    /**
+     * Reset filter
+     */
     public void reset() {
-        filterData = ImmutableDtlFilterData.copyOf(filterData).withSelectedAmenities(filterData.getAmenities());
+        final DtlFilterParameters defaultParameters = ImmutableDtlFilterParameters.builder().selectedAmenities(db.getAmenities()).build();
+        filterData = DtlFilterData.merge(defaultParameters, filterData);
         notifySubscribers();
     }
 
-    public void notifySubscribers(){
+    /**
+     * Notify subscribers when filter is changed
+     */
+    public void notifySubscribers() {
         filterStream.onNext(filterData);
     }
 }

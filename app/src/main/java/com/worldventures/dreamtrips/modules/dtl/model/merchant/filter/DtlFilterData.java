@@ -12,8 +12,6 @@ import org.immutables.value.Value;
 import java.util.List;
 
 @Value.Immutable
-@Value.Style(privateNoargConstructor = true, defaultAsDefault = true)
-@DefaultSerializer(CompatibleFieldSerializer.class)
 public abstract class DtlFilterData {
 
     @Value.Default

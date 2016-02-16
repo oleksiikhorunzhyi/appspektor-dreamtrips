@@ -5,9 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataConversation;
@@ -28,7 +26,6 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,10 +73,9 @@ public class ConversationsDAO extends BaseDAO {
                 .queryList();
     }
 
-    public void updateDefaultSubject(String conversationId, @NonNull List<String> participantsName) {
+    public void updateDefaultSubject(String conversationId, @NonNull String name) {
         ContentValues cv = new ContentValues(1);
-        TextUtils.join(", ", participantsName);
-        cv.put(DataConversation$Table.DEFAULTSUBJECT, "");
+        cv.put(DataConversation$Table.DEFAULTSUBJECT, name);
         getContentResolver().update(DataConversation.CONTENT_URI,
                 cv, DataConversation$Table._ID + "=?", new String[] {conversationId});
     }
@@ -96,25 +92,6 @@ public class ConversationsDAO extends BaseDAO {
         //server sends so many packets about kicking as devices with the same user are online
         DataConversation conversation = getConversationById(conversationId);
         if (conversation != null) conversation.delete();
-    }
-
-    @Deprecated
-    public void deleteConversations(@Nullable Collection<DataConversation> conversations) {
-        if (conversations != null && conversations.size() > 0) {
-            String firstArg = Queryable.from(conversations).first().getId();
-            String[] args = Queryable.from(conversations).skip(1).map(DataConversation::getId).toArray(String.class);
-            new Delete()
-                    .from(DataParticipant.class)
-                    .where(Condition.column(DataParticipant$Table.CONVERSATIONID).in(firstArg, args))
-                    .query();
-
-            new Delete()
-                    .from(DataConversation.class)
-                    .where(Condition.column(DataConversation$Table._ID).in(firstArg, args))
-                    .query();
-            getContentResolver().notifyChange(DataConversation.CONTENT_URI, null);
-            getContentResolver().notifyChange(DataParticipant.CONTENT_URI, null);
-        }
     }
 
     public void deleteBySyncTime(long time) {

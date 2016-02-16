@@ -25,7 +25,7 @@ public class HockeyInitializer implements AppInitializer {
         app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                CrashManager.register(activity, BuildConfig.HOCKEY_APP_ID);
+                CrashManager.register(activity.getBaseContext(), BuildConfig.HOCKEY_APP_ID);
             }
         });
     }

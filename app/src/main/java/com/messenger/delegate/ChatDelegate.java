@@ -21,10 +21,13 @@ import rx.Observable;
 public class ChatDelegate {
     private final String currentUserId;
     private final MessengerServerFacade messengerServerFacade;
+    private final ConversationNameDelegate conversationNameDelegate;
 
-    public ChatDelegate(String currentUserId, MessengerServerFacade messengerServerFacade) {
+    public ChatDelegate(String currentUserId, MessengerServerFacade messengerServerFacade,
+                        ConversationNameDelegate conversationNameDelegate) {
         this.currentUserId = currentUserId;
         this.messengerServerFacade = messengerServerFacade;
+        this.conversationNameDelegate = conversationNameDelegate;
     }
 
     public Observable<DataConversation> createNewConversation(List<DataUser> participants, @Nullable String subject) {
@@ -43,7 +46,7 @@ public class ChatDelegate {
                 .build());
     }
 
-    private Observable<DataConversation> createMultiUserChat(List<DataUser> participans, @Nullable String subject){
+    private Observable<DataConversation> createMultiUserChat(List<DataUser> participants, @Nullable String subject){
         DataConversation conversation = new DataConversation.Builder()
                 .type(ConversationType.GROUP)
                 .id(UUID.randomUUID().toString())
@@ -53,10 +56,11 @@ public class ChatDelegate {
                 .subject(TextUtils.isEmpty(subject)? null : subject)
                 .build();
 
-        return setMultiUserChatData(conversation, participans, subject);
+        return setMultiUserChatData(conversation, participants, subject);
     }
 
-    public Observable<DataConversation> modifyConversation(DataConversation conversation, List<DataUser> existParticipants, List<DataUser> newChatUserIds, @Nullable String subject) {
+    public Observable<DataConversation> modifyConversation(DataConversation conversation, List<DataUser> existParticipants,
+                                                           List<DataUser> newChatUserIds, @Nullable String subject) {
         if (conversation.getType().equals(ConversationType.CHAT)) {
             conversation = new DataConversation.Builder()
                     .ownerId(currentUserId)
@@ -73,31 +77,24 @@ public class ChatDelegate {
         return setMultiUserChatData(conversation, newChatUserIds, subject);
     }
 
-    public DataConversation getExistingSingleConverastion(String participantId) {
+    public DataConversation getExistingSingleConversation(String participantId) {
         String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId);
         DataConversation existingConversation = ConversationsDAO.getConversationById(conversationId);
         return existingConversation;
     }
 
-    private Observable<DataConversation> setMultiUserChatData(DataConversation conversation, List<DataUser> newParticipants, @Nullable String subject) {
+    private Observable<DataConversation> setMultiUserChatData(DataConversation conversation,
+                                                              List<DataUser> newParticipants, @Nullable String subject) {
         return messengerServerFacade.getChatManager()
                 .createMultiUserChatObservable(conversation.getId(), currentUserId)
                 .doOnNext(multiUserChat -> multiUserChat.invite(getIdFromUsers(newParticipants)))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .map(chat -> conversation)
-                .doOnNext(dataConversation -> dataConversation.setDefaultSubject(getDefaultSubject(newParticipants)));
+                .doOnNext(dataConversation -> dataConversation
+                        .setDefaultSubject(conversationNameDelegate.obtainGroupConversationName(newParticipants)));
     }
 
     private List<String> getIdFromUsers(List<DataUser> dataUsers) {
         return Queryable.from(dataUsers).map(DataUser::getId).toList();
-    }
-
-    private String getDefaultSubject(List<DataUser> dataUsers) {
-        StringBuilder builder = new StringBuilder();
-        for (DataUser user : dataUsers) {
-            if (builder.length() > 0) builder.append(", ");
-            builder.append(user.getUserName());
-        }
-        return builder.toString();
     }
 }

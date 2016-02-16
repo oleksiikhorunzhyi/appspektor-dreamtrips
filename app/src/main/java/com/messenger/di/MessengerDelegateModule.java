@@ -2,9 +2,10 @@ package com.messenger.di;
 
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.ConversationNameDelegate;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -16,7 +17,6 @@ import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
@@ -37,8 +37,8 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade) {
-        return new ChatDelegate(user.getId(), messengerServerFacade);
+    ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade, ParticipantsDAO participantsDAO) {
+        return new ChatDelegate(user.getId(), messengerServerFacade, new ConversationNameDelegate(participantsDAO));
     }
 
     @Provides

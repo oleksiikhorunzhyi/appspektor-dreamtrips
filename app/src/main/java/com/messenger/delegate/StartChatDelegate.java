@@ -64,7 +64,7 @@ public class StartChatDelegate {
     }
 
     private Observable<DataConversation> startSingleChatObservable(DataUser participant) {
-        DataConversation conversation = chatDelegate.getExistingSingleConverastion(participant.getId());
+        DataConversation conversation = chatDelegate.getExistingSingleConversation(participant.getId());
         if (conversation != null) return Observable.just(conversation);
 
         return chatDelegate.createNewConversation(Collections.singletonList(participant), "")

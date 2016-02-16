@@ -7,8 +7,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 
-import timber.log.Timber;
-
 public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
     protected double randomSeed;
 
@@ -17,20 +15,13 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
     }
 
     @Override
-    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
-        return new TripImagesRoboSpiceController() {
+    public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+        randomSeed = Math.random();
+        return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
+    }
 
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-                randomSeed = Math.random();
-                return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
-            }
-
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-                Timber.d("LoadNext", "count:" + currentCount + "; page: " + ((currentCount / PER_PAGE) + 1));
-                return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
-            }
-        };
+    @Override
+    public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+        return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
     }
 }

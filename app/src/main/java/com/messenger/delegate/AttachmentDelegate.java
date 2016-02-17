@@ -8,7 +8,6 @@ import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 

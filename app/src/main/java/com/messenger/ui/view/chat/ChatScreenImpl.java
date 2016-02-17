@@ -104,7 +104,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @NonNull
     @Override
     public ChatScreenPresenter createPresenter() {
-        return new ChatScreenPresenterImpl(getContext(), getPath().getConversationId());
+        return new ChatScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 
     @SuppressWarnings("Deprecated")
@@ -164,6 +164,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         ChatScreenPresenter presenter = getPresenter();
         adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
         adapter.setAvatarClickListener(presenter::openUserProfile);
+        adapter.setOnImageClickListener(presenter::onImageClicked);
         adapter.setMessageLongClickListener(presenter::onShowContextualMenu);
         adapter.setNeedMarkUnreadMessages(true);
         //adapter.setMessageClickListener(message -> //do something);

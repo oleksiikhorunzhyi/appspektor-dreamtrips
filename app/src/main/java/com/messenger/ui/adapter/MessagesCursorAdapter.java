@@ -19,7 +19,9 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.AttachmentType;
+import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
 import com.messenger.ui.adapter.holder.chat.MessageHolder;
 import com.messenger.ui.adapter.holder.chat.OwnImageMessageViewHolder;
@@ -41,7 +43,6 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private static final int VIEW_TYPE_USER_IMAGE_MESSAGE = 4;
 
     private final DataUser user;
-    private final Context context;
     private final ChatTimestampFormatter timestampFormatter;
     private DataConversation conversation;
 
@@ -49,6 +50,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private OnRepeatMessageSend onRepeatMessageSend;
     private OnMessageClickListener messageClickListener;
     private OnMessageLongClickListener messageLongClickListener;
+    private OnImageClickListener onImageClickListener;
 
     private int manualTimestampPositionToAdd = -1;
     private int manualTimestampPosition = -1;
@@ -56,27 +58,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private boolean needMarkUnreadMessages;
 
-    public interface OnAvatarClickListener {
-        void onAvatarClick(DataUser user);
-    }
-
-    public interface OnRepeatMessageSend {
-        void onRepeatMessageSend(String messageId);
-    }
-
-    public interface OnMessageClickListener {
-        void onMessageClick(DataMessage message);
-    }
-
-    public interface OnMessageLongClickListener {
-        void onMessageLongClick(DataMessage message);
-    }
-
     public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user, @Nullable Cursor cursor) {
         super(cursor);
-        this.context = context;
-        this.user = user;
 
+        this.user = user;
         this.timestampFormatter = new ChatTimestampFormatter(context);
     }
 
@@ -176,8 +161,15 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     public void bindImageMessageHolder(ImageMessageViewHolder holder, Cursor cursor) {
+        String attachmentImageId = cursor.getString(cursor.getColumnIndex(MessageDAO.ATTACHMENT_ID));
+        String senderId = cursor.getString(cursor.getColumnIndex(MessageDAO.USER_SENDER_ID));
         String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
+
         holder.showImageMessage(TextUtils.isEmpty(imageUrl) ? null : Uri.parse(imageUrl));
+        holder.setOnImageClickListener(v -> {
+            if (onImageClickListener != null)
+                onImageClickListener.onImageClickListener(attachmentImageId, senderId);
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -234,6 +226,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public void setMessageLongClickListener(OnMessageLongClickListener messageLongClickListener) {
         this.messageLongClickListener = messageLongClickListener;
+    }
+
+    public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
+        this.onImageClickListener = onImageClickListener;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -363,6 +359,30 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             return timestampFormatter.getMessageDateDividerTimestamp(currentDate);
         }
         return null;
+    }
+
+    ///////////////////////////////////////////
+    ////// Listeners
+    ///////////////////////////////////////////
+
+    public interface OnAvatarClickListener {
+        void onAvatarClick(DataUser user);
+    }
+
+    public interface OnRepeatMessageSend {
+        void onRepeatMessageSend(String messageId);
+    }
+
+    public interface OnMessageClickListener {
+        void onMessageClick(DataMessage message);
+    }
+
+    public interface OnMessageLongClickListener {
+        void onMessageLongClick(DataMessage message);
+    }
+
+    public interface OnImageClickListener {
+        void onImageClickListener(String attachmentImageId, String senderId);
     }
 
 }

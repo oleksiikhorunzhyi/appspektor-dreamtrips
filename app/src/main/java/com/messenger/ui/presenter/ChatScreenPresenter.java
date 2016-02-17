@@ -26,6 +26,8 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onUnreadMessagesHeaderClicked();
 
+    void onImageClicked(String attachmentImageId, String userSenderId);
+
     void onImagesPicked(List<ChosenImage>images);
 
     void onShowContextualMenu(DataMessage message);

@@ -30,7 +30,7 @@ import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.MessageVersionHelper;
-import com.messenger.util.ParticipantsDaoHelper;
+import com.messenger.storage.helper.ParticipantsDaoHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;

@@ -21,13 +21,10 @@ import rx.Observable;
 public class ChatDelegate {
     private final String currentUserId;
     private final MessengerServerFacade messengerServerFacade;
-    private final ConversationNameDelegate conversationNameDelegate;
 
-    public ChatDelegate(String currentUserId, MessengerServerFacade messengerServerFacade,
-                        ConversationNameDelegate conversationNameDelegate) {
+    public ChatDelegate(String currentUserId, MessengerServerFacade messengerServerFacade) {
         this.currentUserId = currentUserId;
         this.messengerServerFacade = messengerServerFacade;
-        this.conversationNameDelegate = conversationNameDelegate;
     }
 
     public Observable<DataConversation> createNewConversation(List<DataUser> participants, @Nullable String subject) {
@@ -89,9 +86,7 @@ public class ChatDelegate {
                 .createMultiUserChatObservable(conversation.getId(), currentUserId)
                 .doOnNext(multiUserChat -> multiUserChat.invite(getIdFromUsers(newParticipants)))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
-                .map(chat -> conversation)
-                .doOnNext(dataConversation -> dataConversation
-                        .setDefaultSubject(conversationNameDelegate.obtainGroupConversationName(newParticipants)));
+                .map(chat -> conversation);
     }
 
     private List<String> getIdFromUsers(List<DataUser> dataUsers) {

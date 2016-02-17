@@ -2,7 +2,6 @@ package com.messenger.delegate;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
@@ -17,7 +16,6 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.util.CursorObservable;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +26,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
@@ -44,8 +41,6 @@ public class LoaderDelegate {
     private final UsersDAO usersDAO;
     private final AttachmentDAO attachmentDAO;
 
-    private final ConversationNameDelegate conversationNameDelegate;
-
     public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
                           ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
                           MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
@@ -56,8 +51,6 @@ public class LoaderDelegate {
         this.messageDAO = messageDAO;
         this.usersDAO = usersDAO;
         this.attachmentDAO = attachmentDAO;
-
-        this.conversationNameDelegate = new ConversationNameDelegate(participantsDAO);
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
@@ -82,7 +75,7 @@ public class LoaderDelegate {
                             .map(c -> new DataMessage(c.getLastMessage())).notNulls().toList();
                     from(messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
-                    List<DataParticipant> relationships = new ArrayList<DataParticipant>();
+                    List<DataParticipant> relationships = new ArrayList<>();
                     if (!data.isEmpty()) {
                         from(data)
                                 .filter(conversation -> conversation.getParticipants() != null)
@@ -113,16 +106,6 @@ public class LoaderDelegate {
             conversationLoader.load();
         });
         return userProcessor.connectToUserProvider(loader)
-                .flatMap(user -> conversationsDAO.getGroupConversationNames().first())
-                .flatMap(CursorObservable::create)
-                .filter(cursor -> android.text.TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(DataConversation$Table.SUBJECT))))
-                .doOnNext(cursor -> {
-                    String conversationId = cursor.getString(cursor.getColumnIndex(DataConversation$Table._ID));
-                    conversationNameDelegate.obtainGroupConversationName(conversationId)
-                            .subscribeOn(Schedulers.immediate())
-                            .subscribe(defaultName -> conversationsDAO.updateDefaultSubject(conversationId, defaultName));
-                })
-                .toList()
                 .map(var -> (Void) null);
     }
 

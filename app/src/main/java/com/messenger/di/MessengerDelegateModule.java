@@ -2,7 +2,6 @@ package com.messenger.di;
 
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
-import com.messenger.delegate.ConversationNameDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -38,7 +37,7 @@ public class MessengerDelegateModule {
 
     @Provides
     ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade, ParticipantsDAO participantsDAO) {
-        return new ChatDelegate(user.getId(), messengerServerFacade, new ConversationNameDelegate(participantsDAO));
+        return new ChatDelegate(user.getId(), messengerServerFacade);
     }
 
     @Provides

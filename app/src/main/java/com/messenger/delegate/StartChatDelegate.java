@@ -3,12 +3,13 @@ package com.messenger.delegate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.converter.UserConverter;
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.entities.DataParticipant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,9 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class StartChatDelegate {
@@ -41,9 +40,7 @@ public class StartChatDelegate {
     public void startSingleChat(User user, @NotNull Action1<DataConversation> crossingAction) {
         if (user.getUsername() == null) return;
 
-        usersDAO.getUserById(user.getUsername())
-                .subscribeOn(Schedulers.io())
-                .first()
+        usersDAO.getUserById(user.getUsername()).first()
                 .map(participant -> {
                     if (participant == null) {
                         participant = UserConverter.convert(user);
@@ -52,14 +49,13 @@ public class StartChatDelegate {
                     return participant;
                 })
                 .flatMap(this::startSingleChatObservable)
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
     }
 
     public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction) {
         startSingleChatObservable(user)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
     }
 
@@ -81,7 +77,6 @@ public class StartChatDelegate {
                                   List<DataUser> participant,
                                   @Nullable String subject, @NotNull Action1<DataConversation> crossingAction) {
         chatDelegate.createNewConversation(participant, subject)
-                .subscribeOn(Schedulers.io())
                 .doOnNext(conversation -> {
                     conversation.setOwnerId(ownerId);
                     List<DataParticipant> relationships = Queryable.from(participant).map(user ->
@@ -92,7 +87,7 @@ public class StartChatDelegate {
                     participantsDAO.save(relationships);
                     conversationsDAO.save(Collections.singletonList(conversation));
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .subscribe(crossingAction, throwable -> Timber.d(throwable, "Error"));
     }
 

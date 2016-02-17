@@ -3,7 +3,6 @@ package com.messenger.storage.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.messenger.entities.DataAttachment;
@@ -36,6 +35,8 @@ import rx.schedulers.Schedulers;
 public class ConversationsDAO extends BaseDAO {
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
     public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
+    public static final String GROUP_CONVERSATION_NAME_COLUMN = "groupName";
+
     private Lazy<DataUser> currentUser;
 
     public ConversationsDAO(Context context, RxContentResolver rxContentResolver, Lazy<DataUser> currentUser) {
@@ -73,13 +74,6 @@ public class ConversationsDAO extends BaseDAO {
                 .queryList();
     }
 
-    public void updateDefaultSubject(String conversationId, @NonNull String name) {
-        ContentValues cv = new ContentValues(1);
-        cv.put(DataConversation$Table.DEFAULTSUBJECT, name);
-        getContentResolver().update(DataConversation.CONTENT_URI,
-                cv, DataConversation$Table._ID + "=?", new String[] {conversationId});
-    }
-
     public void save(List<DataConversation> conversations) {
         bulkInsert(conversations, new DataConversation$Adapter(), DataConversation.CONTENT_URI);
     }
@@ -101,16 +95,6 @@ public class ConversationsDAO extends BaseDAO {
                 .queryClose();
     }
 
-    public Observable<Cursor> getGroupConversationNames() {
-        String selection = "SELECT " + DataConversation$Table._ID + ", " + DataConversation$Table.SUBJECT + " " +
-                "FROM " + DataConversation.TABLE_NAME + " WHERE " + DataConversation$Table.TYPE + "=?";
-        return query(new RxContentResolver.Query.Builder(null)
-                .withSelection(selection)
-                .withSelectionArgs(new String[] {String.valueOf(ConversationType.GROUP)})
-                .build(),
-                DataConversation.CONTENT_URI);
-    }
-
     public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type) {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
@@ -120,7 +104,9 @@ public class ConversationsDAO extends BaseDAO {
                 "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                 "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", " +
                 "uu." + DataUser$Table.USERNAME + " as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
-                "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + " " +
+                "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
+
+                "GROUP_CONCAT(uuu." + DataUser$Table.USERNAME + ") as " + GROUP_CONVERSATION_NAME_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +
@@ -137,6 +123,9 @@ public class ConversationsDAO extends BaseDAO {
 
                 "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                 "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
+
+                "LEFT JOIN " + DataUser.TABLE_NAME + " uuu " +
+                "ON p." + DataParticipant$Table.USERID + "=uuu." + DataUser$Table._ID + " " +
 
                 "LEFT JOIN " + DataUser.TABLE_NAME + " uu " +
                 "ON uu." + DataUser$Table._ID + "=(" +

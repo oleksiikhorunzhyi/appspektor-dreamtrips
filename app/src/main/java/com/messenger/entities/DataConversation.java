@@ -27,7 +27,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @PrimaryKey @Column String _id;
     @Column String ownerId;
     @Column String subject;
-    @Column String defaultSubject;
     @Column String type;
     @Column String status;
     @Column int unreadMessageCount;
@@ -51,7 +50,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setOwnerId(builder.ownerId);
         setSubject(builder.subject);
         setStatus(builder.status);
-        setDefaultSubject(builder.defaultSubject);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
         setLastActiveDate(builder.date);
@@ -79,14 +77,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public String getDefaultSubject() {
-        return defaultSubject;
-    }
-
-    public void setDefaultSubject(String defaultSubject) {
-        this.defaultSubject = defaultSubject;
     }
 
     @ConversationType.Type
@@ -182,7 +172,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     public static final class Builder {
         private String id;
         private String ownerId;
-        private String defaultSubject;
         private String subject;
         private String type;
         private String status;
@@ -209,11 +198,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
         public Builder subject(String val) {
             subject = val;
-            return this;
-        }
-
-        public Builder defaultSubject(String val) {
-            defaultSubject = val;
             return this;
         }
 

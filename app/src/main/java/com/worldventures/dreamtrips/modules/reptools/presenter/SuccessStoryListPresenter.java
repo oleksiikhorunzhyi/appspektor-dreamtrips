@@ -51,8 +51,6 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
     }
 
     public void onEvent(StoryLikedEvent event) {
-        eventBus.removeStickyEvent(event);
-        //
         List<SuccessStory> stories = view.getAdapter().getItems();
         Queryable.from(stories).filter(story -> story.getUrl().equals(event.storyUrl)).forEachR(story -> {
             story.setLiked(event.isLiked);

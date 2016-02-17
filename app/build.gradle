@@ -38,10 +38,10 @@ android {
     String[] BUILD_CODES = [DEV_CODE, EXTERNAL_CODE]
     //
     String DTL_CODE = "dtl"
-    String MSGR_CODE = "msgr"
+    String MESSENGER_CODE = "messenger"
     String SOCIAL_CODE = "social"
     String STABLE_CODE = "stable"
-    String[] STREAM_CODES = [DTL_CODE, MSGR_CODE, SOCIAL_CODE, STABLE_CODE]
+    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE]
     //
     String STAGE_CODE = "stage"
     String PERF_CODE = "perf"
@@ -56,16 +56,16 @@ android {
 
     defaultConfig {
         applicationId APP_ID_BASE
-
+        //
         archivesBaseName = "DreamTrips"
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName APP_VERSION_NAME_BASE
-
+        //
         minSdkVersion 15
         targetSdkVersion 22
-
+        //
         multiDexEnabled true
-
+        //
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
@@ -110,14 +110,14 @@ android {
 
         // possible "stream"-dimension flavors:
         dtl { dimension "stream" }
-        msgr { dimension "stream" }
+        messenger { dimension "stream" }
         social { dimension "stream" }
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
         stage {
             dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-200-42-102.us-west-2.compute.amazonaws.com/"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com/"'
         }
         perf {
             dimension "config"
@@ -144,7 +144,7 @@ android {
         variant.ignore = true
         //
         String build = variant.flavors.get(0).name.toLowerCase() // dev / external
-        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / msgr / social / stable
+        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / stable
         String config  = variant.flavors.get(2).name.toLowerCase() // stage / perf / prod
         //
         if (variant.buildType.name.equals("debug") && config.equals(STAGE_CODE)) {

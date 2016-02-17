@@ -9,7 +9,7 @@
 //def boolean ignoreVariant(com.android.build.gradle.api.VariantFilter variant) {
 def boolean ignoreVariant(Variant variant) {
     String build = variant.flavors.get(0).name.toLowerCase() // dev / external
-    String stream = variant.flavors.get(1).name.toLowerCase() // dtl / msgr / social / stable
+    String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / stable
     String config  = variant.flavors.get(2).name.toLowerCase() // stage / perf / prod
     //
     if (variant.buildType.name.equals("debug") && config.equals(STAGE_CODE)) {

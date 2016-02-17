@@ -1,0 +1,28 @@
+
+//import com.android.build.gradle.api.VariantFilter
+
+///////////////////////////////////////////////////////////////////////////
+// Variant filter
+///////////////////////////////////////////////////////////////////////////
+
+// TODO : will not work because cannot import VariantFilter
+//def boolean ignoreVariant(com.android.build.gradle.api.VariantFilter variant) {
+def boolean ignoreVariant(Variant variant) {
+    String build = variant.flavors.get(0).name.toLowerCase() // dev / external
+    String stream = variant.flavors.get(1).name.toLowerCase() // dtl / msgr / social / stable
+    String config  = variant.flavors.get(2).name.toLowerCase() // stage / perf / prod
+    //
+    if (variant.buildType.name.equals("debug") && config.equals(STAGE_CODE)) {
+        return false
+    }
+    //
+    if (variant.buildType.name.equals("release") &&
+            build.equals(EXTERNAL_CODE) &&
+            (containsAnyOf(config, STAGE_CODE, PERF_CODE) ||
+                    (stream.equals(STABLE_CODE) && config.equals(PROD_CODE))))
+        return false
+}
+
+ext {
+    ignoreVariant = this.&ignoreVariant
+}

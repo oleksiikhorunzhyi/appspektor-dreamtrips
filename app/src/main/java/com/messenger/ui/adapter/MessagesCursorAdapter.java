@@ -32,6 +32,7 @@ import com.messenger.ui.adapter.holder.chat.UserTextMessageViewHolder;
 import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.ChatTimestampFormatter;
+import com.messenger.util.LinkHandlerMovementMethod;
 import com.messenger.util.MessageVersionHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.worldventures.dreamtrips.R;
@@ -60,7 +61,6 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user, @Nullable Cursor cursor) {
         super(cursor);
-
         this.user = user;
         this.timestampFormatter = new ChatTimestampFormatter(context);
     }
@@ -142,6 +142,8 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         if (MessageVersionHelper.isUnsupported(version, attachmentType))
             holder.showUnsupportMessage();
         else holder.showMessage();
+
+        holder.getMessageTextView().setMovementMethod(LinkHandlerMovementMethod.getInstance());
     }
 
     ///////////////////////////////////////////////////////////////////////////

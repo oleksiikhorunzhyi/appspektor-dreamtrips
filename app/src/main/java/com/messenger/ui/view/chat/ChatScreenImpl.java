@@ -299,7 +299,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                     getPresenter().onStartNewChatForMessageOwner(message);
                     break;
             }
-        })).show();
+        }))
+        .show();
     }
 
     @Override

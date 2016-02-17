@@ -74,7 +74,6 @@ android {
         buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
         buildConfigField 'String', 'API_VERSION', '"2"'
         buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-        buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
         resValue "string", "facebook_app_id", "761062457321921"
         //
         buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
@@ -110,22 +109,10 @@ android {
         external { dimension "build" }
 
         // possible "stream"-dimension flavors:
-        dtl {
-            dimension "stream"
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"bf3b066f88a8468298f15cc915105bdf"'
-        }
-        msgr {
-            dimension "stream"
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"58cb62f129434d25bf7e442bda61f4cf"'
-        }
-        social {
-            dimension "stream"
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"bc46745e381940af9f89faf40e9ecbbf"'
-        }
-        stable {
-            dimension "stream"
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"48de37eaf46ec363d392ae15ae521df6"'
-        }
+        dtl { dimension "stream" }
+        msgr { dimension "stream" }
+        social { dimension "stream" }
+        stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
         stage {
@@ -143,7 +130,6 @@ android {
                                     fabricApiKey  : "972fab2f24886a59812168179ef81f2858329206"]
             //
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
             buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
         }
@@ -315,7 +301,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:8.3.0'
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
     compile 'com.instabug.library:instabugsupport:1.7.1'
-    compile 'net.hockeyapp.android:HockeySDK:3.6.2'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
     compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
         transitive = true;
@@ -386,33 +371,4 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.assertj:assertj-core:1.7.1'
-}
-
-apply plugin: "de.felixschulze.gradle.hockeyapp"
-
-hockeyapp {
-    variantToApiToken = [
-            stageDebug  : 'ba6b9a28a53947f287f62fdaed6086ad',
-            stageRelease: 'c0cccff726ec45f28237523fa3918769',
-            perfDebug   : 'a4bdfbd09db6462d9e6b41e84124d0f7',
-            prodRelease : '7bfe2802eb7947968190f0a0d1555fe2',
-    ]
-    variantToApplicationId = [
-            stageDebug  : '48de37eaf46ec363d392ae15ae521df6',
-            stageRelease: 'e25cd69fc32f855a3aab0f85f9ee8e58',
-            perfDebug   : '48de37eaf46ec363d392ae15ae521df6',
-            prodRelease : '4fc6063859b3388635cb834dbb004324',
-    ]
-    variantToStatus = [
-            stageDebug  : '2',
-            stageRelease: '2',
-            perfDebug   : '2',
-            prodRelease : '1'
-    ]
-    notes = rootProject.hasProperty('releaseNotes') ? rootProject.releaseNotes : ''
-    notesType = 1
-    releaseType = 0
-    notify = 0
-    repositoryUrl = 'https://github.com/techery/DreamTrips-Android'
-    teamCityLog = rootProject.hasProperty('teamCity')
 }

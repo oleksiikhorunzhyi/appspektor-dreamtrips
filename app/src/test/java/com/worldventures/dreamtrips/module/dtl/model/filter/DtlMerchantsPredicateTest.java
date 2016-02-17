@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlMerchantsPredicate;
@@ -16,10 +15,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collections;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DtlMerchantsPredicateTest {
@@ -173,28 +172,28 @@ public class DtlMerchantsPredicateTest {
     }
 
     @Test
-    // TODO this test always true. Change it when fix location check;
+    // TODO check comparing distance
     public void checkDistance_Success() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
         DtlMerchantsPredicate predicate = createWith(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDistanceType(DistanceType.KMS);
-        dtlMerchant.setDistance(25d); //
+        dtlMerchant.setDistance(2500d); //
 
         boolean result = predicate.apply(dtlMerchant);
         assertThat(result).isTrue();
     }
 
     @Test
-    // TODO this test always false. Change it when fix location check;
+    // TODO check comparing distance
     public void checkDistance_Fail() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
+        DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();// max distance 50 km
         DtlMerchantsPredicate predicate = createWith(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDistanceType(DistanceType.KMS);
-        dtlMerchant.setDistance(38000d); //
+        dtlMerchant.setDistance(70000d); //70 km
 
         boolean result = predicate.apply(dtlMerchant);
         assertThat(result).isFalse();
@@ -218,7 +217,7 @@ public class DtlMerchantsPredicateTest {
 
     public static DtlMerchant createDefaultMerchant() {
         DtlMerchant merchant = new DtlMerchant();
-        merchant.setBudget(2); // default from 1 tp 5;
+        merchant.setBudget(2); // default from 1 to 5;
         merchant.setDisplayName(TestConstants.DEFAULT_SEARCH_QUERY);
         return merchant;
     }

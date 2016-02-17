@@ -86,10 +86,10 @@ public abstract class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
      * @param dtlMerchant merchant to filter
      * @return true if merchant passes filter
      */
+    // TODO check getCurrentLatLng() == null && getFilterData().getMaxDistance() == DtlFilterParameters.MAX_DISTANCE
     @Value.Derived
     private boolean checkDistance(DtlMerchant dtlMerchant) {
         return getFilterData().getMaxDistance() == DtlFilterParameters.MAX_DISTANCE
-                || getCurrentLatLng() == null
                 || dtlMerchant.getDistance() < getFilterData().getMaxDistance();
     }
 

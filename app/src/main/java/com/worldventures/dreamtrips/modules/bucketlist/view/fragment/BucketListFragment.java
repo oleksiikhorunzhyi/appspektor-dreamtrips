@@ -358,8 +358,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void openDetails(BucketItem bucketItem) {
+        router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forRemoval()
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.detail_container)
+                .build());
+        //
         FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
-
         if (isTabletLandscape()) {
             bundle.setSlave(true);
             router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forFragment()

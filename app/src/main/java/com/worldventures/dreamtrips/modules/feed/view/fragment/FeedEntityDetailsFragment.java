@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
@@ -34,6 +35,13 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
     protected void registerCells() {
         adapter.registerCell(BucketFeedItem.class, BucketFeedEntityDetailsCell.class);
         adapter.registerCell(TripFeedItem.class, FeedEntityDetailsCell.class);
+    }
+
+    @Override
+    public void onDestroyView() {
+        FragmentHelper.resetChildFragmentManagerField(this);
+        //
+        super.onDestroyView();
     }
 
     @Override

@@ -29,6 +29,21 @@ public class AttachmentDAO extends BaseDAO {
         save(Collections.singletonList(attachment));
     }
 
+    public Observable<DataAttachment> getAttachmentById(String attachmentId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM " + DataAttachment.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table._ID + "=?")
+                .withSelectionArgs(new String[] {attachmentId})
+                .build();
+        return query(q, DataAttachment.CONTENT_URI)
+                .map(cursor -> {
+                    DataAttachment dataAttachment = SqlUtils.convertToModel(false, DataAttachment.class, cursor);
+                    cursor.close();
+                    return dataAttachment;
+                });
+
+    }
+
     public Observable<DataAttachment> getAttachmentByMessageId(String messageId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM " + DataAttachment.TABLE_NAME + " " +

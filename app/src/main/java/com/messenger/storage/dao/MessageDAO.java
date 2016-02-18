@@ -22,6 +22,9 @@ import rx.Observable;
 
 public class MessageDAO extends BaseDAO {
 
+    public static final String USER_SENDER_ID = DataUser$Table.TABLE_NAME + DataUser$Table._ID;
+    public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
+
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
     }
@@ -44,10 +47,12 @@ public class MessageDAO extends BaseDAO {
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, " +
+                        "u." + DataUser$Table._ID + " as " + USER_SENDER_ID + ", " +
                         "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
+                        "a." +  DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
                         "a." +  DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
                         "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + " " +
 

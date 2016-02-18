@@ -36,6 +36,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.storage.helper.AttachmentHelper;
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.PhotoPickerDelegate;
@@ -48,19 +49,27 @@ import com.messenger.ui.view.settings.GroupSettingsPath;
 import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
-import com.messenger.util.ParticipantsDaoHelper;
+import com.messenger.storage.helper.ParticipantsDaoHelper;
 import com.messenger.util.Utils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -96,6 +105,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     DataUser user;
     @Inject
+    Router router;
+    @Inject
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
     @Inject
@@ -113,6 +124,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
     protected ParticipantsDaoHelper participantsDaoHelper;
+    protected AttachmentHelper attachmentHelper;
     protected PhotoPickerDelegate photoPickerDelegate;
 
     protected String conversationId;
@@ -153,11 +165,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private ChatContextualMenuProvider contextualMenuInflater;
 
-    public ChatScreenPresenterImpl(Context context, String conversationId) {
+    public ChatScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
         this.conversationId = conversationId;
 
-        ((Injector) context.getApplicationContext()).inject(this);
+        injector.inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
         backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
@@ -165,6 +177,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
+        attachmentHelper = new AttachmentHelper(attachmentDAO, usersDAO);
         contextualMenuInflater = new ChatContextualMenuProvider(context);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
@@ -702,6 +715,27 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
     // Photo picking
     ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onImageClicked(String attachmentImageId, String userSenderId) {
+        attachmentHelper.obtainPhotoAttachment(attachmentImageId, userSenderId)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(photoAttachment -> {
+                    ArrayList<IFullScreenObject> items = new ArrayList<>();
+                    items.add(photoAttachment);
+                    FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                            .position(0)
+                            .type(TripImagesType.FIXED)
+                            .route(Route.MESSAGE_IMAGE_FULLSCREEN)
+                            .fixedList(items)
+                            .build();
+
+                    router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+                            .data(data)
+                            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                            .build());
+                });
+    }
 
     private void connectToPhotoPicker() {
         photoPickerDelegate = new PhotoPickerDelegate();

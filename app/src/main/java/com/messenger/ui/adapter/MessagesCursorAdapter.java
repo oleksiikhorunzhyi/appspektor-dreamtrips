@@ -19,7 +19,6 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
-import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
@@ -162,13 +161,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public void bindImageMessageHolder(ImageMessageViewHolder holder, Cursor cursor) {
         String attachmentImageId = cursor.getString(cursor.getColumnIndex(MessageDAO.ATTACHMENT_ID));
-        String senderId = cursor.getString(cursor.getColumnIndex(MessageDAO.USER_SENDER_ID));
         String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
 
         holder.showImageMessage(TextUtils.isEmpty(imageUrl) ? null : Uri.parse(imageUrl));
         holder.setOnImageClickListener(v -> {
             if (onImageClickListener != null)
-                onImageClickListener.onImageClickListener(attachmentImageId, senderId);
+                onImageClickListener.onImageClickListener(attachmentImageId);
         });
     }
 
@@ -382,7 +380,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     public interface OnImageClickListener {
-        void onImageClickListener(String attachmentImageId, String senderId);
+        void onImageClickListener(String attachmentImageId);
     }
 
 }

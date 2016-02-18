@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.database.Cursor;
-import android.view.MenuItem;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataMessage;
@@ -26,7 +25,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onUnreadMessagesHeaderClicked();
 
-    void onImageClicked(String attachmentImageId, String userSenderId);
+    void onImageClicked(String attachmentImageId);
 
     void onImagesPicked(List<ChosenImage>images);
 

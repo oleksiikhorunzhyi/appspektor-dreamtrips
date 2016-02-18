@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
              android:background="@android:color/black"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
@@ -31,6 +32,14 @@
             android:padding="20dp"
             android:gravity="right">
 
+            <TextView
+                android:id="@+id/tv_date"
+                style="@style/MessengerImageFullscreenDateStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="visible"
+                tools:text="Hello"/>
 
             <ImageView
                 android:id="@+id/iv_share"

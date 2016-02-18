@@ -55,8 +55,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), this);
         baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
         baseDelegateAdapter.registerCell(DtlMerchantAttribute.class, DtlFilterAttributeCell.class);
-        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, filterHeaderClickDelegate);
-        baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, filterItemClickDelegate);
+        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, model -> ((SelectableHeaderItem) model).isSelected());
+        baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, model -> drawHeaderSelection());
         //
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -88,19 +88,6 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         return new DtlFiltersPresenter();
     }
 
-    private CellDelegate<SelectableHeaderItem> filterHeaderClickDelegate = new CellDelegate<SelectableHeaderItem>() {
-        @Override
-        public void onCellClicked(SelectableHeaderItem model) {
-            selectionManager.setSelectionForAll(model.isSelected());
-        }
-    };
-
-    private CellDelegate<DtlMerchantAttribute> filterItemClickDelegate = new CellDelegate<DtlMerchantAttribute>() {
-        @Override
-        public void onCellClicked(DtlMerchantAttribute model) {
-            drawHeaderSelection();
-        }
-    };
 
     private void drawHeaderSelection() {
         final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class);

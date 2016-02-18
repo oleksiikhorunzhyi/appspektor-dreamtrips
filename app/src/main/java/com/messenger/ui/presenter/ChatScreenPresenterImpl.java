@@ -177,7 +177,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
-        attachmentHelper = new AttachmentHelper(attachmentDAO, usersDAO);
+        attachmentHelper = new AttachmentHelper(attachmentDAO, messageDAO, usersDAO);
         contextualMenuInflater = new ChatContextualMenuProvider(context);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
@@ -717,8 +717,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onImageClicked(String attachmentImageId, String userSenderId) {
-        attachmentHelper.obtainPhotoAttachment(attachmentImageId, userSenderId)
+    public void onImageClicked(String attachmentImageId) {
+        attachmentHelper.obtainPhotoAttachment(attachmentImageId)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photoAttachment -> {
                     ArrayList<IFullScreenObject> items = new ArrayList<>();

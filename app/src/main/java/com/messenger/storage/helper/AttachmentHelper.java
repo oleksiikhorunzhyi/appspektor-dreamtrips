@@ -31,8 +31,9 @@ public class AttachmentHelper {
                     DataMessage dataMessage = messageDAO.getMessage(dataAttachment.getMessageId()).toBlocking().first();
                     DataUser dataUser = usersDAO.getUserById(dataMessage.getFromId()).toBlocking().first();
 
+                    String url = dataAttachment.getUrl().replace(" ", "%20");
                     Image image = new Image();
-                    image.setUrl(dataAttachment.getUrl());
+                    image.setUrl(url);
                     image.setFromFile(false);
 
                     User user = new User(dataUser.getSocialId());
